@@ -1,0 +1,40 @@
+# --- Node / Slidev (from the Slidev starter) ---
+node_modules
+dist
+.vite-inspect
+.remote-assets
+components.d.ts
+*.local
+
+# --- Editor backups and autosaves ---
+# Emacs: `foo~` backups, `#foo#` autosaves, `.#foo` lock symlinks.
+# The first `#` must be escaped or git reads the line as a comment.
+*~
+\#*\#
+.\#*
+# Vim
+*.sw[po]
+
+# --- macOS ---
+.DS_Store
+
+# --- Python (tasks/*/tools) ---
+.venv
+__pycache__/
+*.py[cod]
+
+# --- Deploy CLI state (netlify.toml / vercel.json) ---
+.netlify
+.vercel
+
+# --- Mutagen (file sync sessions) ---
+mutagen.yml
+mutagen.yml.lock
+
+# --- Machine-local tool state ---
+# .claude/settings.json is shared; settings.local.json holds personal
+# permission grants with absolute paths, so it stays out of the repo.
+.claude/settings.local.json
+
+# Note: .vscode/ is intentionally NOT ignored — settings.json and
+# extensions.json are project config meant to be shared.

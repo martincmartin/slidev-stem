@@ -1,0 +1,22 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<path d="M22 44 C42 36 56 52 80 42" stroke="#8B9686" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="14 10">
+  <animate attributeName="stroke-dashoffset" values="48;0" dur="1.5s" repeatCount="indefinite"/>
+</path>
+<path d="M30 70 C48 62 62 76 86 68" stroke="#8B9686" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="14 10">
+  <animate attributeName="stroke-dashoffset" values="48;0" dur="1.8s" repeatCount="indefinite"/>
+</path>
+<rect x="100" y="52" width="40" height="124" stroke="#F6B44C" stroke-width="3" fill="#F6B44C" fill-opacity="0.08"/>
+<g stroke="#F6B44C" stroke-opacity="0.55" stroke-width="2">
+  <line x1="100" y1="72" x2="140" y2="72"/>
+  <line x1="100" y1="92" x2="140" y2="92"/>
+  <line x1="100" y1="112" x2="140" y2="112"/>
+  <line x1="100" y1="132" x2="140" y2="132"/>
+  <line x1="100" y1="152" x2="140" y2="152"/>
+</g>
+<line x1="120" y1="52" x2="120" y2="43" stroke="#FFF0D3" stroke-width="2" stroke-linecap="round"/>
+<path d="M120 12 C130 24 133 34 120 44 C107 34 110 24 120 12 Z" fill="#F6B44C">
+  <animate attributeName="d" values="M120 12 C130 24 133 34 120 44 C107 34 110 24 120 12 Z;M125 10 C132 24 132 35 120 44 C108 35 113 23 125 10 Z;M120 12 C130 24 133 34 120 44 C107 34 110 24 120 12 Z" dur="1.6s" repeatCount="indefinite"/>
+</path>
+<path d="M120 27 C125 32 126 37 120 42 C114 37 115 32 120 27 Z" fill="#FFF0D3" fill-opacity="0.7"/>
+<rect x="80" y="176" width="80" height="8" rx="4" fill="#8B9686"/>
+</svg>
