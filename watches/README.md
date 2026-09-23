@@ -4,7 +4,7 @@ A [Slidev](https://github.com/slidevjs/slidev) deck for a monthly STEM meetup:
 15–20 minutes, weekday evening, back room of a bar.
 
 ```bash
-pnpm install      # run at the repo root (stem/); pnpm, not npm — see AGENTS.md
+pnpm install      # run at the repo root (stem/); pnpm, not npm — see ../AGENTS.md
 pnpm dev          # http://localhost:3030
 pnpm format       # prettier; run after editing any file
 ```

@@ -163,7 +163,7 @@ the history.
 ## Before you ship
 
 ```bash
-pnpm format                       # prettier -- required, see AGENTS.md
+pnpm format                       # prettier -- required, see stem/AGENTS.md
 python3 tools/palette.py          # the palette still passes its own gates
 python3 tools/artcheck.py         # every SVG: structure, grammar, legibility
 pnpm build                        # it actually builds
