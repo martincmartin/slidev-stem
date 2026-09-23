@@ -125,11 +125,13 @@ What moved:
 - `TimekeeperCard.vue`: fonts from `@apply font-serif` / `font-mono`.
 - `watches/tools/lib.py`: reads the palette from the theme.
 
-Found on the way:
+Corrected on the way:
 
-- Four lines of the `slides.md` headmatter comment (which drawing set, and how to
-  open its archive) had gone missing earlier in the same session. Prettier did not
-  remove them (tested); the cause is not known. Restored.
+- The user had removed four lines from the `slides.md` headmatter comment (which
+  drawing set, and how to open its archive) on purpose: `slides.md` does not
+  describe rejected alternatives or how to revisit them; that belongs in the
+  task archive. This task first misread the removal as a loss and restored the
+  lines, then removed them again.
 
 Not verified:
 

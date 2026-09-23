@@ -3,10 +3,6 @@
 theme: ledger
 title: What Every Nerd Should Know About Watches
 
-# Illustrations are drawing set 2, "Line, weighted", and only that set. Fifteen
-# other sets were built and compared; they live in
-# tasks/2026-09-20-animation-style/, which renders as a deck of its own:
-#   pnpm exec slidev tasks/2026-09-20-animation-style/deck/slides.md
 # Read docs/legibility.md ("The known risk in the current choice") before
 # swapping the art for anything else -- in particular, this set tolerates about
 # half the room light the top-ranked one does (mean Fmax 0.138 vs 0.254), which

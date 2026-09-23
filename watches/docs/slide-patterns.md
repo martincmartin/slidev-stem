@@ -64,12 +64,6 @@ at the venue. Only the weights listed above are imported. **If you use a new
 weight, add its import to the theme in the same change.** If you do not, the
 browser uses the nearest imported weight or fakes a bold, and gives no error.
 
-**History.** Until 2026-09-23 the deck used Slidev's `seriph` theme, and each
-Ledger slide set its own palette and fonts. Seriph also asked Google Fonts for
-its fonts and Unsplash for a cover photo, so offline the title slide showed
-white text on a grey placeholder. Before that, no font was loaded at all, and
-every card stat rendered in Courier New.
-
 ## `TimekeeperCard.vue`
 
 One card: a drawing, a date, a name, one big number, its unit, and the catch.
