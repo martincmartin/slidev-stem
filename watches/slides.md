@@ -23,19 +23,19 @@ class: tk-timekeepers
 // One card per click, in this order; the takeaway comes after the last card.
 const cards = [
   {
-    name: "Sundial", date: "c. 1500 BCE", img: "/timekeepers/line-weighted/sundial.svg",
+    name: "Sundial", date: "c. 1500 BCE", img: "/timekeepers/sundial.svg",
     stat: "±16 min", unit: "the Sun vs. a steady clock", problem: "No sun, no time",
   },
   {
-    name: "Water clock", date: "c. 1400 BCE", img: "/timekeepers/line-weighted/water-clock.svg",
+    name: "Water clock", date: "c. 1400 BCE", img: "/timekeepers/water-clock.svg",
     stat: "~15 min", unit: "per day, the best ones", problem: "Freezes in winter",
   },
   {
-    name: "Candle", date: "9th c. CE", img: "/timekeepers/line-weighted/candle.svg",
+    name: "Candle", date: "9th c. CE", img: "/timekeepers/candle.svg",
     stat: "?", unknown: true, unit: "no good data found", problem: "Drafts speed it up",
   },
   {
-    name: "Hourglass", date: "by 1338", img: "/timekeepers/line-weighted/hourglass.svg",
+    name: "Hourglass", date: "by 1338", img: "/timekeepers/hourglass.svg",
     stat: "?", unknown: true, unit: "no good data found", problem: "Someone must flip it",
   },
 ];

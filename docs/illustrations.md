@@ -2,7 +2,7 @@
 
 Deep blue line work on the card panel, for every STEM talk. The examples are the
 four timekeepers in `watches`:
-`watches/public/timekeepers/line-weighted/{sundial,water-clock,candle,hourglass}.svg`.
+`watches/public/timekeepers/{sundial,water-clock,candle,hourglass}.svg`.
 
 **The style is a grammar, not a look.** All of it is a stated size, a palette, a
 stroke ladder and a habit about what moves. Follow those four and a new drawing
@@ -215,6 +215,6 @@ building rather than while re-deciding.
 
 ## Regenerating, and where the art came from
 
-The four SVGs in `watches/public/timekeepers/line-weighted/` are **source files:
+The four SVGs in `watches/public/timekeepers/` are **source files:
 edit them directly.** Do not regenerate them with `reline.py` from the animation-style
 archive: it writes into the archive's own copy of the art, not into the live deck.

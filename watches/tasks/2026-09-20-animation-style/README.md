@@ -139,6 +139,10 @@ cp tasks/2026-09-20-animation-style/deck/public/timekeepers/line-weighted/*.svg 
    public/timekeepers/line-weighted/
 ```
 
+> **2026-09-23:** the live art moved up one directory, from
+> `public/timekeepers/line-weighted/` to `public/timekeepers/`, because the live
+> deck ships only one set.
+
 **Start by looking at `evidence/grid-all-sets-122px.png`.** It is all sixteen sets
 at the size the deck really renders them, every animation pinned to t = 4 s. Most
 of the arguments below are visible in that one image. Then look at

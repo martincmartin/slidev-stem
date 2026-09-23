@@ -275,6 +275,9 @@ cp .../variants/w1-opaque/water-clock.svg public/timekeepers/line-weighted/water
 python3 tools/artcheck.py && .venv/bin/python3 tools/barroom.py && pnpm build
 ```
 
+> **2026-09-23:** the live water clock is now `public/timekeepers/water-clock.svg`.
+> The live art moved up one directory, out of `line-weighted/`.
+
 > **The archive's own copy was deliberately NOT updated.**
 > `tasks/2026-09-20-animation-style/deck/public/timekeepers/line-weighted/water-clock.svg`
 > still holds the 0.18 / 0.32 drawing, because §8.3 of the parent archive reports

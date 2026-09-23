@@ -28,7 +28,7 @@ python3 tools/palette.py                      # every gate, pass/fail
 python3 tools/palette.py "#C0451C" accent     # a candidate colour, measured
 python3 tools/artcheck.py                     # every SVG in every talk's public/
 python3 tools/artcheck.py path/to/new.svg     # ... or just the new one
-.venv/bin/python3 tools/contact.py watches/public/timekeepers/line-weighted --times 0.2 4 8 11.8
+.venv/bin/python3 tools/contact.py watches/public/timekeepers --times 0.2 4 8 11.8
 .venv/bin/python3 tools/barroom.py --save out/
 .venv/bin/python3 tools/motion.py             # every animated drawing
 .venv/bin/python3 tools/offline_check.py <build dir> 1:0 2:5   # see its docstring

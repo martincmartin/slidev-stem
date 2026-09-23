@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Look at an animated drawing properly: every frame that matters, side by side.
 
-    .venv/bin/python3 tools/contact.py watches/public/timekeepers/line-weighted
+    .venv/bin/python3 tools/contact.py watches/public/timekeepers
     .venv/bin/python3 tools/contact.py new.svg --times 0.2 4 8 11.8
     .venv/bin/python3 tools/contact.py new.svg --out /tmp/sheet.png
 
