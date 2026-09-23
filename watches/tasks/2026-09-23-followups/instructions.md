@@ -188,9 +188,8 @@ clock defect is "recorded, unfixed". It was fixed on 2026-09-21. The global
 AGENTS.md rule: add a dated line to that task's README. Do not change the old
 text.
 
-**D5. Close the house-theme task.** `stem/tasks/2026-09-23-house-theme/PLAN.md` says
-"Part 1 done; waiting for the user to accept it". Ask the user. On acceptance,
-set the status to done. `docs/` is already up to date for it.
+**D5. Done (2026-09-23).** The user accepted Part 1. The house-theme task's
+status says so. Part 2 is E1, below: do not start it before its trigger.
 
 ## E. Palette comparison (Part 2 of the house-theme task)
 

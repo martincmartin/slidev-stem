@@ -1,6 +1,6 @@
 # House theme: Ledger as a shared Slidev theme — plan
 
-**Date:** 2026-09-23 · **Status:** Part 1 done; waiting for the user to accept it
+**Date:** 2026-09-23 · **Status:** Part 1 done (the user accepted it on 2026-09-23). Part 2 not started: it waits for its trigger (below)
 
 ## The request
 
