@@ -44,8 +44,7 @@ WHAT IT REPORTS, all on the 122 px card the deck really shows:
 
 READING THE NUMBER. `hold >= 3.0` at the design venue is the gate -- below it the
 drawing costs attention and returns nothing. Above the gate, more headroom stops
-deciding anything and taste takes over. For reference, the deck's own set was
-the least robust of the sets that cleared the gate: docs/legibility.md has its
+deciding anything and taste takes over. docs/legibility.md has the deck's
 current numbers. Read it before assuming a new drawing is fine.
 """
 import re, sys, math, pathlib, argparse

@@ -93,10 +93,12 @@ water-clock    26.6    5.39   8.13   0.201      7.59        658
                mean    4.40   7.91   0.138
 ```
 
-All four clear the gate. The water clock was `2.66 / 0.000` until 2026-09-21 and was
-the worst of the four; fixing it (illustrations.md) made it the best and lifted the
-set's mean flare tolerance from 0.086 to **0.138**. The weakest drawing is now the
-candle, at `Fmax 0.078`.
+All four clear the gate. The weakest is the candle: `Fmax 0.078`, so it falls
+through 3:1 at about 8% ambient flare. **If the room is bright, ask the venue to
+turn off the lights over the screen.** That costs less than any change to the art.
+Heavier or darker line work raises these numbers but stops being this drawing
+style; it was tried and rejected (`tasks/2026-09-20-animation-style/README.md`
+§14).
 
 **Read `hold` with `p90`, never alone.**
 
@@ -104,13 +106,12 @@ candle, at `Fmax 0.078`.
   of the drawing survives. It is deliberately edge-weighted, because a thin line
   really is mostly antialiased edge.
 - **`p90`** is the same at the 90th percentile: whether _anything_ survives.
-- The gap between them is the finding. The water clock's `hold 2.66 / p90 7.71`
-  does not mean it is invisible; it means **its outline is fine and its washes are
-  gone**, so at the back row the drawing reduces to line work.
+- The gap between them is the finding. `hold 2.66 / p90 7.71` does not mean a
+  drawing is invisible; it means **its outline is fine and its washes are gone**,
+  so at the back row the drawing reduces to line work.
 
-**Measure per drawing, not per set.** The archive reported this set as `hold 3.70`,
-the mean of the four — and that mean cleared the gate while one member did not. An
-average over a set can hide a failing member, and did, for a day.
+**Measure per drawing, not per set.** An average over a set can clear the gate
+while one member fails it.
 
 ### And measure the animation, not just the drawing
 
@@ -125,8 +126,8 @@ px2 >=3:1  how much of the card changes by at least the non-text floor
 
 **The signature to recognise is area at 1.2:1 and nothing at 3:1** — a wide, weak
 change, which means the thing that moves is drawn in marks the room cannot resolve.
-The water clock scored `dPeak 2.34` with **zero** px² over 3:1 while its outline
-measured `p90 7.71`. Nothing else in the toolchain could see that.
+A drawing can measure `p90 7.71` as a still frame and still animate at
+`dPeak 2.34`, with **zero** px² over 3:1. Only `motion.py` can see that.
 
 **Picking the two times is the trick.** Sample half the longest animation apart, so
 the animation you care about is at opposite extremes. When that separation is a
@@ -134,39 +135,6 @@ whole number of a _shorter_ animation's periods, the short one lands at an ident
 phase in both frames and cancels exactly — the water clock's 1 s drip cancels at a
 4 s separation, leaving only the 8 s level. `motion.py` computes this per file and
 says which sub-animations cancelled and which are still in the numbers.
-
-## The known risk in the current choice
-
-**Set 2 tolerates about half the room light the top-ranked set does.**
-
-```
-                      hold    p90    Fmax     at TV 55in @7m
-  2 Line, weighted    4.40   7.91   0.138     <- shipped, measured 2026-09-22
-  2 Line, weighted    3.70   7.84   0.086     as chosen, before the water-clock fix
-  9 Linocut           5.56  12.95   0.207
-  5 Patent, weighted  6.03  11.90   0.223
-  8 Bold              8.54  12.90   0.254
-```
-
-Every row is a mean over the set's four drawings. The last four rows are the
-archive's measurements (`tasks/2026-09-20-animation-style/README.md` §8.3) and were
-not re-measured.
-
-Its weakest drawing, the candle, clears the gate with 21% of headroom (`hold 3.63`
-against 3.00), and the set is the first of the survivors to fall as a room
-brightens. **This is a priced risk, not an oversight** — it was chosen
-because it is the one drawing style anybody outside the project actually liked. Three
-things follow:
-
-1. **There is no third option that is still this drawing.** Making the line work
-   heavier or darker was tried; the versions that measure better stop being this
-   style. A sparse blue-led line drawing cannot reach the contrast ceiling, because
-   the ceiling belongs to the palette and not to the pen.
-2. **If the venue turns out bright, the fallback is decided**: set 8, "Bold", in
-   `tasks/2026-09-20-animation-style/deck/public/timekeepers/bold/`. Swapping is a
-   directory copy and four `img` paths, and costs only charm.
-3. **The cheapest fix is the room, not the deck.** The candle's `Fmax 0.078` is
-   about 8% flare. Ask the venue to kill the lights over the screen.
 
 ## Text sizes
 

@@ -2,11 +2,6 @@
 # Ledger, the house theme for the STEM talks: ../themes/ledger/
 theme: ledger
 title: What Every Nerd Should Know About Watches
-
-# Read docs/legibility.md ("The known risk in the current choice") before
-# swapping the art for anything else -- in particular, this set tolerates about
-# half the room light the top-ranked one does (mean Fmax 0.138 vs 0.254), which
-# is a priced risk and not an oversight.
 ---
 
 # What Every Nerd Should Know About Watches
