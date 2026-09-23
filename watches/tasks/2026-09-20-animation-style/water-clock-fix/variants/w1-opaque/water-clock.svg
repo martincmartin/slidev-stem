@@ -1,0 +1,29 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<!-- W1 - Opaque water
+     The smallest possible change: raise the two water opacities until they clear
+     the 3:1 floor, and touch nothing else. Body 0.18 -> 0.60 (1.37:1 -> 3.38:1),
+     surface 0.32 -> 0.78 (1.80:1 -> 5.35:1). The animation is unchanged and still
+     continuous.
+     Only the WATER changes. The vessel outlines, spout, drip and graduations are
+     byte-identical to the shipped drawing, so this is a controlled comparison:
+     see tasks/2026-09-20-animation-style/README.md S4 on shared geometry. -->
+<defs>
+  <clipPath id="w-up"><path d="M54 0 L186 0 L160 74 A40 12 0 0 1 80 74 Z"/></clipPath>
+  <clipPath id="w-lo"><path d="M64 100 L176 100 L164 170 A44 13 0 0 1 76 170 Z"/></clipPath>
+</defs>
+<g clip-path="url(#w-up)"><rect x="54" y="40" width="132" height="52" fill="#143C6B" fill-opacity="0.60">
+  <animate attributeName="y" values="40;70" dur="8s" repeatCount="indefinite"/><animate attributeName="height" values="52;22" dur="8s" repeatCount="indefinite"/></rect></g>
+<ellipse cx="120" cy="40" rx="54.4" ry="15.8" fill="#143C6B" fill-opacity="0.78">
+  <animate attributeName="cy" values="40;70" dur="8s" repeatCount="indefinite"/><animate attributeName="rx" values="54.4;41.7" dur="8s" repeatCount="indefinite"/><animate attributeName="ry" values="15.8;12.1" dur="8s" repeatCount="indefinite"/></ellipse>
+<ellipse cx="120" cy="22" rx="62" ry="18" fill="none" stroke="#143C6B" stroke-width="6" />
+<path d="M58 22 L80 74 A40 12 0 0 0 160 74 L182 22" fill="none" stroke="#143C6B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+<line x1="126" y1="79" x2="150" y2="97" stroke="#143C6B" stroke-width="6" stroke-linecap="round" />
+<ellipse cx="150" cy="102" rx="4.2" ry="6" fill="#143C6B" ><animate attributeName="cy" values="102;130" dur="1s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.8;1" dur="1s" repeatCount="indefinite"/></ellipse>
+<g clip-path="url(#w-lo)"><rect x="64" y="164" width="112" height="10" fill="#143C6B" fill-opacity="0.60">
+  <animate attributeName="y" values="164;128" dur="8s" repeatCount="indefinite"/><animate attributeName="height" values="22;58" dur="8s" repeatCount="indefinite"/></rect></g>
+<ellipse cx="120" cy="164" rx="45.0" ry="14.7" fill="#143C6B" fill-opacity="0.78">
+  <animate attributeName="cy" values="164;128" dur="8s" repeatCount="indefinite"/><animate attributeName="rx" values="45.0;50.7" dur="8s" repeatCount="indefinite"/><animate attributeName="ry" values="14.7;16.6" dur="8s" repeatCount="indefinite"/></ellipse>
+<ellipse cx="120" cy="120" rx="52" ry="17" fill="none" stroke="#143C6B" stroke-width="6" />
+<path d="M68 120 L76 170 A44 13 0 0 0 164 170 L172 120" fill="none" stroke="#143C6B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+<g fill="none" stroke="#2A2520" stroke-opacity="0.5" stroke-width="4" stroke-linecap="round"><path d="M109 151.6 A49.5 16.2 0 0 0 131 151.6"/><path d="M109 163.6 A47.4 15.5 0 0 0 131 163.6"/></g>
+</svg>

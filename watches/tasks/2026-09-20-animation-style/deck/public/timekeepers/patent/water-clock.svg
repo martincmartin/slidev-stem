@@ -1,0 +1,39 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<!-- Patent set. Inspired by the clarity of a technical drawing, NOT meant to be
+     recognisable as a patent drawing: no reference numerals, no leader lines, no
+     dot terminators. Removing them was an explicit choice by the user
+     (2026-09-21); do not add them back without the user's explicit direction.
+     See sundial.svg for the full note. -->
+<defs>
+  <clipPath id="w-up"><path d="M54 0 L186 0 L160 74 A40 12 0 0 1 80 74 Z"/></clipPath>
+  <clipPath id="w-lo"><path d="M64 100 L176 100 L164 170 A44 13 0 0 1 76 170 Z"/></clipPath>
+</defs>
+<!-- Water is drawn as level contours in true projection: near-half ellipses
+     following the wall taper, one present for each band of liquid. -->
+<g clip-path="url(#w-up)" fill="none" stroke="#2A2520" stroke-width="1.3">
+  <path d="M67.7 45 A52.3 15.2 0 0 0 172.3 45" opacity="1"><animate attributeName="opacity" values="1;0;0" keyTimes="0;0.1667;1" calcMode="discrete" dur="8s" repeatCount="indefinite"/></path>
+  <path d="M69.8 50 A50.2 14.6 0 0 0 170.2 50" opacity="1"><animate attributeName="opacity" values="1;0;0" keyTimes="0;0.3333;1" calcMode="discrete" dur="8s" repeatCount="indefinite"/></path>
+  <path d="M72.0 55 A48.0 13.9 0 0 0 168.0 55" opacity="1"><animate attributeName="opacity" values="1;0;0" keyTimes="0;0.5000;1" calcMode="discrete" dur="8s" repeatCount="indefinite"/></path>
+  <path d="M74.1 60 A45.9 13.3 0 0 0 165.9 60" opacity="1"><animate attributeName="opacity" values="1;0;0" keyTimes="0;0.6667;1" calcMode="discrete" dur="8s" repeatCount="indefinite"/></path>
+  <path d="M76.2 65 A43.8 12.7 0 0 0 163.8 65" opacity="1"><animate attributeName="opacity" values="1;0;0" keyTimes="0;0.8333;1" calcMode="discrete" dur="8s" repeatCount="indefinite"/></path>
+</g>
+<ellipse cx="120" cy="40" rx="54.4" ry="15.8" fill="none" stroke="#2A2520" stroke-width="1.8"><animate attributeName="cy" values="40;70" dur="8s" repeatCount="indefinite"/><animate attributeName="rx" values="54.4;41.7" dur="8s" repeatCount="indefinite"/><animate attributeName="ry" values="15.8;12.1" dur="8s" repeatCount="indefinite"/></ellipse>
+<ellipse cx="120" cy="22" rx="62" ry="18" fill="none" stroke="#2A2520" stroke-width="2.5"/>
+<path d="M58 22 L80 74 A40 12 0 0 0 160 74 L182 22" fill="none" stroke="#2A2520" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="126" y1="79" x2="150" y2="97" stroke="#2A2520" stroke-width="2.5" stroke-linecap="round"/>
+<ellipse cx="150" cy="102" rx="4.2" ry="6" fill="#FAF7F0" stroke="#2A2520" stroke-width="1.5">
+  <animate attributeName="cy" values="102;130" dur="1s" repeatCount="indefinite"/>
+  <animate attributeName="opacity" values="1;1;0" keyTimes="0;0.8;1" dur="1s" repeatCount="indefinite"/>
+</ellipse>
+<g clip-path="url(#w-lo)" fill="none" stroke="#2A2520" stroke-width="1.3">
+  <path d="M74.1 158 A45.9 15.0 0 0 0 165.9 158" opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.1667;1" calcMode="discrete" dur="8s" repeatCount="indefinite"/></path>
+  <path d="M73.1 152 A46.9 15.3 0 0 0 166.9 152" opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.3333;1" calcMode="discrete" dur="8s" repeatCount="indefinite"/></path>
+  <path d="M72.2 146 A47.8 15.6 0 0 0 167.8 146" opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.5000;1" calcMode="discrete" dur="8s" repeatCount="indefinite"/></path>
+  <path d="M71.2 140 A48.8 16.0 0 0 0 168.8 140" opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.6667;1" calcMode="discrete" dur="8s" repeatCount="indefinite"/></path>
+  <path d="M70.2 134 A49.8 16.3 0 0 0 169.8 134" opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;0.8333;1" calcMode="discrete" dur="8s" repeatCount="indefinite"/></path>
+</g>
+<ellipse cx="120" cy="164" rx="45.0" ry="14.7" fill="none" stroke="#2A2520" stroke-width="1.8"><animate attributeName="cy" values="164;128" dur="8s" repeatCount="indefinite"/><animate attributeName="rx" values="45.0;50.7" dur="8s" repeatCount="indefinite"/><animate attributeName="ry" values="14.7;16.6" dur="8s" repeatCount="indefinite"/></ellipse>
+<ellipse cx="120" cy="120" rx="52" ry="17" fill="none" stroke="#2A2520" stroke-width="2.5"/>
+<path d="M68 120 L76 170 A44 13 0 0 0 164 170 L172 120" fill="none" stroke="#2A2520" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<g fill="none" stroke="#2A2520" stroke-width="1.5" stroke-linecap="round"><path d="M109 151.6 A49.5 16.2 0 0 0 131 151.6"/><path d="M109 163.6 A47.4 15.5 0 0 0 131 163.6"/></g>
+</svg>

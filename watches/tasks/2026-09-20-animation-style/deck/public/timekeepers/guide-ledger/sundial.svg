@@ -1,0 +1,37 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <clipPath id="gd-s-gn"><path d="M120 138 L120 56 L174 138 Z"/></clipPath>
+</defs>
+<g fill="none" stroke="#2A2520" stroke-linecap="round">
+  <ellipse cx="120" cy="138" rx="96" ry="36" stroke-width="11" opacity="0.15"/>
+  <g stroke-width="3" opacity="0.85">
+    <path d="M24 138 L24 148"/><path d="M216 138 L216 148"/>
+    <path d="M24 148 A96 36 0 0 0 216 148"/>
+  </g>
+  <ellipse cx="120" cy="138" rx="96" ry="36" stroke-width="4"/>
+  <g stroke-width="2.5" opacity="0.4">
+    <ellipse cx="120" cy="138" rx="72" ry="27"/>
+    <ellipse cx="120" cy="138" rx="48" ry="18"/>
+    <ellipse cx="120" cy="138" rx="24" ry="9"/>
+  </g>
+  <g stroke-width="3" opacity="0.6">
+    <line x1="120" y1="138" x2="199.8" y2="151.5"/><line x1="120" y1="138" x2="186.2" y2="159.1"/>
+    <line x1="120" y1="138" x2="167.3" y2="165.0"/><line x1="120" y1="138" x2="144.7" y2="168.7"/>
+    <line x1="120" y1="138" x2="120.0" y2="170.0"/><line x1="120" y1="138" x2="95.3" y2="168.7"/>
+    <line x1="120" y1="138" x2="72.7" y2="165.0"/><line x1="120" y1="138" x2="53.8" y2="159.1"/>
+    <line x1="120" y1="138" x2="40.2" y2="151.5"/>
+  </g>
+</g>
+<g stroke="#2A2520" stroke-width="4" stroke-linecap="round"><line x1="202.7" y1="148.3" x2="187.7" y2="146.4"/><line x1="184.1" y1="158.6" x2="172.4" y2="154.8"/><line x1="154.8" y1="165.6" x2="148.5" y2="160.5"/><line x1="120" y1="168" x2="120" y2="162.5"/><line x1="85.2" y1="165.6" x2="91.5" y2="160.5"/><line x1="55.9" y1="158.6" x2="67.6" y2="154.8"/><line x1="37.3" y1="148.3" x2="52.3" y2="146.4"/></g>
+<path d="M120 138 L174 138 L199.8 151.5 Z" fill="#736A60" stroke="#736A60" stroke-width="3.5" stroke-linejoin="round">
+  <animate attributeName="d" values="M120 138 L174 138 L199.8 151.5 Z;M120 138 L174 138 L186.2 159.1 Z;M120 138 L174 138 L167.3 165.0 Z;M120 138 L174 138 L144.7 168.7 Z;M120 138 L174 138 L120.0 170.0 Z;M120 138 L174 138 L95.3 168.7 Z;M120 138 L174 138 L72.7 165.0 Z;M120 138 L174 138 L53.8 159.1 Z;M120 138 L174 138 L40.2 151.5 Z" dur="11s" repeatCount="indefinite"/>
+</path>
+<path d="M120 138 L120 56 L174 138 Z" fill="none" stroke="#2A2520" stroke-width="11" stroke-linejoin="round" opacity="0.15"/>
+<path d="M120 138 L120 56 L174 138 Z" fill="#F2EEE4"/>
+<g clip-path="url(#gd-s-gn)" stroke="#2A2520" stroke-width="3" opacity="0.6">
+  <line x1="128" y1="50" x2="128" y2="144"/><line x1="136" y1="50" x2="136" y2="144"/>
+  <line x1="144" y1="50" x2="144" y2="144"/><line x1="152" y1="50" x2="152" y2="144"/>
+  <line x1="160" y1="50" x2="160" y2="144"/><line x1="168" y1="50" x2="168" y2="144"/>
+</g>
+<path d="M120 138 L120 56 L174 138 Z" fill="none" stroke="#2A2520" stroke-width="4" stroke-linejoin="round"/>
+</svg>

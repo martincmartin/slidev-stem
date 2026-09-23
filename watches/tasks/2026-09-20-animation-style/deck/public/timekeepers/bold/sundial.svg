@@ -1,0 +1,21 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<!-- Bold set: solid shapes only, nothing thinner than 5 user units (2.5 CSS px
+     in the 122px card, 5 CSS px at 240px display). Three flat colours. -->
+<ellipse cx="120" cy="145" rx="96" ry="36" fill="#736A60"/>
+<ellipse cx="120" cy="138" rx="96" ry="36" fill="#2A2520"/>
+<g stroke="#FAF7F0" stroke-width="6" stroke-linecap="round">
+  <line x1="202.7" y1="148.3" x2="187.7" y2="146.4"/>
+  <line x1="184.1" y1="158.6" x2="172.4" y2="154.8"/>
+  <line x1="154.8" y1="165.6" x2="148.5" y2="160.5"/>
+  <line x1="120" y1="168" x2="120" y2="162.5"/>
+  <line x1="85.2" y1="165.6" x2="91.5" y2="160.5"/>
+  <line x1="55.9" y1="158.6" x2="67.6" y2="154.8"/>
+  <line x1="37.3" y1="148.3" x2="52.3" y2="146.4"/>
+</g>
+<!-- Shadow drawn as a circular wedge, then squashed to the plate's perspective,
+     so the sweep stays on the dial instead of running off the top and bottom. -->
+<path d="M120 138 L174 138 L199.8 151.5 Z" fill="#1F5FA8">
+  <animate attributeName="d" values="M120 138 L174 138 L199.8 151.5 Z;M120 138 L174 138 L186.2 159.1 Z;M120 138 L174 138 L167.3 165.0 Z;M120 138 L174 138 L144.6 168.7 Z;M120 138 L174 138 L120.0 170.0 Z;M120 138 L174 138 L95.4 168.7 Z;M120 138 L174 138 L72.7 165.0 Z;M120 138 L174 138 L53.8 159.1 Z;M120 138 L174 138 L40.2 151.5 Z" dur="11s" repeatCount="indefinite"/>
+</path>
+<path d="M120 138 L120 56 L174 138 Z" fill="#2A2520" stroke="#FAF7F0" stroke-width="5" stroke-linejoin="round"/>
+</svg>

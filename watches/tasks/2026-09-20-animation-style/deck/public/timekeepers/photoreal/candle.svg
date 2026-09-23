@@ -1,0 +1,112 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="pr-c-wax" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#9C8C70"/><stop offset="0.1" stop-color="#D9C9A8"/>
+    <stop offset="0.28" stop-color="#F7EFDD"/><stop offset="0.5" stop-color="#EDE0C4"/>
+    <stop offset="0.78" stop-color="#C3B192"/><stop offset="1" stop-color="#877659"/>
+  </linearGradient>
+  <linearGradient id="pr-c-sss" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#FFB861" stop-opacity="0"/>
+    <stop offset="0.2" stop-color="#FFB861" stop-opacity="0.55"/>
+    <stop offset="1" stop-color="#E8A63C" stop-opacity="0"/>
+  </linearGradient>
+  <radialGradient id="pr-c-flOut" cx="0.5" cy="0.72" r="0.6">
+    <stop offset="0" stop-color="#FFD98A"/><stop offset="0.5" stop-color="#F08A22"/>
+    <stop offset="1" stop-color="#C2410C" stop-opacity="0.15"/>
+  </radialGradient>
+  <radialGradient id="pr-c-flIn" cx="0.5" cy="0.78" r="0.55">
+    <stop offset="0" stop-color="#FFFFFF"/><stop offset="0.4" stop-color="#FFF0B8"/>
+    <stop offset="1" stop-color="#FFC24E" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="pr-c-brass" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#4A3A18"/><stop offset="0.16" stop-color="#B5923F"/>
+    <stop offset="0.3" stop-color="#F2DFA0"/><stop offset="0.5" stop-color="#B08D57"/>
+    <stop offset="0.75" stop-color="#6B5324"/><stop offset="1" stop-color="#372A10"/>
+  </linearGradient>
+  <filter id="pr-c-waxTex" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.7 0.08" numOctaves="3" seed="3" result="n"/>
+    <feColorMatrix in="n" type="saturate" values="0" result="g"/>
+    <feComponentTransfer in="g" result="g2">
+      <feFuncR type="linear" slope="0.13" intercept="0.88"/>
+      <feFuncG type="linear" slope="0.13" intercept="0.88"/>
+      <feFuncB type="linear" slope="0.13" intercept="0.88"/>
+      <feFuncA type="linear" slope="0" intercept="1"/>
+    </feComponentTransfer>
+    <feBlend in="SourceGraphic" in2="g2" mode="multiply"/>
+    <feComposite in2="SourceGraphic" operator="in"/>
+  </filter>
+  <filter id="pr-c-glow" x="-200%" y="-200%" width="500%" height="500%">
+    <feGaussianBlur stdDeviation="9"/>
+  </filter>
+  <filter id="pr-c-soft" x="-120%" y="-120%" width="340%" height="340%">
+    <feGaussianBlur stdDeviation="2.4"/>
+  </filter>
+  <filter id="pr-c-drop" x="-50%" y="-20%" width="200%" height="160%">
+    <feDropShadow dx="5" dy="4" stdDeviation="4.5" flood-color="#2A2520" flood-opacity="0.42"/>
+  </filter>
+  <!-- The burn is a clip, never a filter input: the turbulence below runs on a
+       static rect, so its result stays cached for the whole 12s loop. -->
+  <clipPath id="pr-c-burn">
+    <rect x="80" y="52" width="92" height="122">
+      <animate attributeName="y" values="62;152" dur="12s" repeatCount="indefinite"/>
+      <animate attributeName="height" values="112;22" dur="12s" repeatCount="indefinite"/>
+    </rect>
+  </clipPath>
+</defs>
+<g clip-path="url(#pr-c-burn)">
+  <g filter="url(#pr-c-drop)">
+    <rect x="96" y="52" width="48" height="122" fill="url(#pr-c-wax)"/>
+  </g>
+  <rect x="96" y="52" width="48" height="122" fill="url(#pr-c-wax)" filter="url(#pr-c-waxTex)" opacity="0.92"/>
+  <path d="M99 54 C99 76 96 88 97 104 C101 92 103 74 103 54 Z" fill="#FBF6EA" opacity="0.85"/>
+  <path d="M139 54 C140 70 143 82 142 96 C138 86 136 70 136 54 Z" fill="#FBF6EA" opacity="0.6"/>
+  <g opacity="0.55">
+    <g stroke="#FBF6EA" stroke-width="2" transform="translate(0,1.4)">
+      <line x1="97" y1="80" x2="143" y2="80"/><line x1="97" y1="104" x2="143" y2="104"/>
+      <line x1="97" y1="128" x2="143" y2="128"/><line x1="97" y1="152" x2="143" y2="152"/>
+    </g>
+    <g stroke="#8A7A5C" stroke-width="2.2">
+      <line x1="97" y1="80" x2="143" y2="80"/><line x1="97" y1="104" x2="143" y2="104"/>
+      <line x1="97" y1="128" x2="143" y2="128"/><line x1="97" y1="152" x2="143" y2="152"/>
+    </g>
+  </g>
+</g>
+<g>
+  <animateTransform attributeName="transform" type="translate" values="0 0;0 90" dur="12s" repeatCount="indefinite"/>
+  <g stroke="#8B8378" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-dasharray="12 14" opacity="0.6" filter="url(#pr-c-soft)">
+    <path d="M24 34 C46 22 58 44 82 30"><animate attributeName="stroke-dashoffset" values="52;0" dur="1.5s" repeatCount="indefinite"/></path>
+    <path d="M30 60 C50 48 64 70 88 54"><animate attributeName="stroke-dashoffset" values="52;0" dur="1.9s" repeatCount="indefinite"/></path>
+  </g>
+  <ellipse cx="120" cy="28" rx="34" ry="44" fill="#F08A22" opacity="0.3" filter="url(#pr-c-glow)"/>
+  <rect x="96" y="52" width="48" height="34" fill="url(#pr-c-sss)"/>
+  <g>
+    <ellipse cx="96" cy="62" rx="3.4" ry="5" fill="#F4EAD6">
+      <animate attributeName="cy" values="62;62;86" keyTimes="0;0.22;1" dur="3.1s" repeatCount="indefinite"/>
+      <animate attributeName="ry" values="5;12;7.5" keyTimes="0;0.45;1" dur="3.1s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.18;0.82;1" dur="3.1s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="94.8" cy="60" rx="1.1" ry="2.2" fill="#FFFFFF" opacity="0.75">
+      <animate attributeName="cy" values="60;60;84" keyTimes="0;0.22;1" dur="3.1s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.75;0.75;0" keyTimes="0;0.18;0.82;1" dur="3.1s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+  <ellipse cx="144" cy="62" rx="3.4" ry="5" fill="#DCCBA8">
+    <animate attributeName="cy" values="62;62;82" keyTimes="0;0.28;1" dur="4.3s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="5;10.5;7.5" keyTimes="0;0.45;1" dur="4.3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.2;0.8;1" dur="4.3s" repeatCount="indefinite"/>
+  </ellipse>
+  <path d="M96 58 C104 53 112 58 120 55 C128 52 136 58 144 58 L144 70 L96 70 Z" fill="#F9F3E4"/>
+  <ellipse cx="120" cy="56" rx="24" ry="6.5" fill="#FFE9C0"/>
+  <ellipse cx="120" cy="56.5" rx="14" ry="3.6" fill="#E8C98E" opacity="0.8"/>
+  <path d="M118.6 54 C118 48 120 44 120 40 C121 44 122 48 121.4 54 Z" fill="#3A2A18"/>
+  <path d="M120 6 C136 22 141 35 120 50 C99 35 104 22 120 6 Z" fill="url(#pr-c-flOut)" filter="url(#pr-c-soft)">
+    <animate attributeName="d" values="M120 6 C136 22 141 35 120 50 C99 35 104 22 120 6 Z;M126 3 C139 21 138 36 120 50 C102 36 111 20 126 3 Z;M116 5 C133 21 140 35 120 50 C100 35 101 21 116 5 Z;M120 6 C136 22 141 35 120 50 C99 35 104 22 120 6 Z" dur="2.2s" repeatCount="indefinite"/>
+  </path>
+  <path d="M120 20 C128 29 130 38 120 47 C110 38 112 29 120 20 Z" fill="url(#pr-c-flIn)">
+    <animate attributeName="d" values="M120 20 C128 29 130 38 120 47 C110 38 112 29 120 20 Z;M123 18 C130 29 129 39 120 47 C111 39 116 28 123 18 Z;M120 20 C128 29 130 38 120 47 C110 38 112 29 120 20 Z" dur="1.6s" repeatCount="indefinite"/>
+  </path>
+  <path d="M120 38 C124 41 125 45 120 49 C115 45 116 41 120 38 Z" fill="#2B6CB0" opacity="0.65"/>
+</g>
+<path d="M70 174 L170 174 C166 182 158 187 146 187 L94 187 C82 187 74 182 70 174 Z" fill="url(#pr-c-brass)" stroke="#2E2410" stroke-width="1.5" stroke-linejoin="round"/>
+<path d="M78 176 L92 176 C90 182 88 184 85 185 C80 184 78 180 78 176 Z" fill="#FFF3CE" opacity="0.6"/>
+</svg>

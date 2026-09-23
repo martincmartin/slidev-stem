@@ -1,0 +1,114 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="pr-h-wood" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#2A1809"/><stop offset="0.14" stop-color="#6B4726"/>
+    <stop offset="0.34" stop-color="#9C6B3E"/><stop offset="0.5" stop-color="#7A5230"/>
+    <stop offset="0.76" stop-color="#4A2E16"/><stop offset="1" stop-color="#241405"/>
+  </linearGradient>
+  <linearGradient id="pr-h-sand" x1="0" y1="0" x2="1" y2="0.25">
+    <stop offset="0" stop-color="#7A5A22"/><stop offset="0.18" stop-color="#D9B464"/>
+    <stop offset="0.42" stop-color="#F0D9A0"/><stop offset="0.68" stop-color="#C79A4E"/>
+    <stop offset="1" stop-color="#8E6B2E"/>
+  </linearGradient>
+  <linearGradient id="pr-h-glass" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.42"/>
+    <stop offset="0.2" stop-color="#DCEAF2" stop-opacity="0.1"/>
+    <stop offset="0.62" stop-color="#A9C2D2" stop-opacity="0.12"/>
+    <stop offset="0.88" stop-color="#6E8697" stop-opacity="0.3"/>
+    <stop offset="1" stop-color="#43555F" stop-opacity="0.45"/>
+  </linearGradient>
+  <linearGradient id="pr-h-brass" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#4A3A18"/><stop offset="0.22" stop-color="#E0C271"/>
+    <stop offset="0.5" stop-color="#B08D57"/><stop offset="1" stop-color="#3A2C10"/>
+  </linearGradient>
+  <filter id="pr-h-grain" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.55 0.022" numOctaves="4" seed="9" result="n"/>
+    <feColorMatrix in="n" type="saturate" values="0" result="g"/>
+    <feComponentTransfer in="g" result="g2">
+      <feFuncR type="linear" slope="0.34" intercept="0.68"/>
+      <feFuncG type="linear" slope="0.34" intercept="0.68"/>
+      <feFuncB type="linear" slope="0.34" intercept="0.68"/>
+      <feFuncA type="linear" slope="0" intercept="1"/>
+    </feComponentTransfer>
+    <feBlend in="SourceGraphic" in2="g2" mode="multiply"/>
+    <feComposite in2="SourceGraphic" operator="in"/>
+  </filter>
+  <filter id="pr-h-grit" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="21" result="n"/>
+    <feColorMatrix in="n" type="saturate" values="0" result="g"/>
+    <feComponentTransfer in="g" result="g2">
+      <feFuncR type="linear" slope="0.26" intercept="0.76"/>
+      <feFuncG type="linear" slope="0.26" intercept="0.76"/>
+      <feFuncB type="linear" slope="0.26" intercept="0.76"/>
+      <feFuncA type="linear" slope="0" intercept="1"/>
+    </feComponentTransfer>
+    <feBlend in="SourceGraphic" in2="g2" mode="multiply"/>
+    <feComposite in2="SourceGraphic" operator="in"/>
+  </filter>
+  <filter id="pr-h-soft" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur stdDeviation="2"/>
+  </filter>
+  <filter id="pr-h-cast" x="-40%" y="-80%" width="180%" height="300%">
+    <feGaussianBlur stdDeviation="5"/>
+  </filter>
+  <clipPath id="pr-h-up"><path d="M90 20 L150 20 C150 62 125 80 122 94 L118 94 C115 80 90 62 90 20 Z"/></clipPath>
+  <clipPath id="pr-h-lo"><path d="M118 96 C115 110 90 128 90 170 L150 170 C150 128 125 110 122 96 Z"/></clipPath>
+  <clipPath id="pr-h-upsand">
+    <rect x="88" y="20" width="64" height="76">
+      <animate attributeName="y" values="20;94" dur="9s" repeatCount="indefinite"/>
+      <animate attributeName="height" values="76;0" dur="9s" repeatCount="indefinite"/>
+    </rect>
+  </clipPath>
+  <clipPath id="pr-h-losand">
+    <path d="M88 172 L152 172 L152 170 C140 169 130 168 120 168 C110 168 100 169 88 170 Z">
+      <animate attributeName="d" values="M88 172 L152 172 L152 170 C140 169 130 168 120 168 C110 168 100 169 88 170 Z;M88 172 L152 172 L152 158 C140 156 130 146 120 146 C110 146 100 156 88 158 Z;M88 172 L152 172 L152 148 C140 145 130 130 120 130 C110 130 100 145 88 148 Z" dur="9s" repeatCount="indefinite"/>
+    </path>
+  </clipPath>
+  <clipPath id="pr-h-bulb"><path d="M86 18 L154 18 C154 62 127 80 125 95 C127 110 154 128 154 172 L86 172 C86 128 113 110 115 95 C113 80 86 62 86 18 Z"/></clipPath>
+</defs>
+<ellipse cx="128" cy="186" rx="76" ry="7" fill="#2A2520" opacity="0.4" filter="url(#pr-h-cast)"/>
+<g>
+  <rect x="58" y="4" width="124" height="15" rx="4" fill="url(#pr-h-wood)"/>
+  <rect x="58" y="4" width="124" height="15" rx="4" fill="url(#pr-h-wood)" filter="url(#pr-h-grain)" opacity="0.9"/>
+  <rect x="66" y="17" width="11" height="156" fill="url(#pr-h-wood)"/>
+  <rect x="66" y="17" width="11" height="156" fill="url(#pr-h-wood)" filter="url(#pr-h-grain)" opacity="0.9"/>
+  <rect x="163" y="17" width="11" height="156" fill="url(#pr-h-wood)"/>
+  <rect x="163" y="17" width="11" height="156" fill="url(#pr-h-wood)" filter="url(#pr-h-grain)" opacity="0.9"/>
+</g>
+<path d="M86 18 L154 18 C154 62 127 80 125 95 C127 110 154 128 154 172 L86 172 C86 128 113 110 115 95 C113 80 86 62 86 18 Z" fill="#1A2126" opacity="0.1"/>
+<g clip-path="url(#pr-h-up)">
+  <rect x="88" y="20" width="64" height="76" fill="url(#pr-h-sand)">
+    <animate attributeName="y" values="20;94" dur="9s" repeatCount="indefinite"/>
+    <animate attributeName="height" values="76;0" dur="9s" repeatCount="indefinite"/>
+  </rect>
+  <g clip-path="url(#pr-h-upsand)">
+    <rect x="88" y="20" width="64" height="76" fill="url(#pr-h-sand)" filter="url(#pr-h-grit)" opacity="0.5"/>
+  </g>
+</g>
+<rect x="117.5" y="96" width="5" height="76" fill="url(#pr-h-sand)" opacity="0.92"/>
+<rect x="118.5" y="96" width="1.6" height="76" fill="#F7E6BE" opacity="0.7"/>
+<g clip-path="url(#pr-h-lo)">
+  <path d="M88 172 L152 172 L152 170 C140 169 130 168 120 168 C110 168 100 169 88 170 Z" fill="url(#pr-h-sand)">
+    <animate attributeName="d" values="M88 172 L152 172 L152 170 C140 169 130 168 120 168 C110 168 100 169 88 170 Z;M88 172 L152 172 L152 158 C140 156 130 146 120 146 C110 146 100 156 88 158 Z;M88 172 L152 172 L152 148 C140 145 130 130 120 130 C110 130 100 145 88 148 Z" dur="9s" repeatCount="indefinite"/>
+  </path>
+  <g clip-path="url(#pr-h-losand)">
+    <path d="M88 172 L152 172 L152 148 C140 145 130 130 120 130 C110 130 100 145 88 148 Z" fill="url(#pr-h-sand)" filter="url(#pr-h-grit)" opacity="0.4"/>
+  </g>
+</g>
+<g clip-path="url(#pr-h-bulb)">
+  <path d="M86 18 L154 18 C154 62 127 80 125 95 C127 110 154 128 154 172 L86 172 C86 128 113 110 115 95 C113 80 86 62 86 18 Z" fill="url(#pr-h-glass)"/>
+  <path d="M95 24 C95 58 111 74 113 90 C111 106 95 126 95 166" fill="none" stroke="#FFFFFF" stroke-width="6" opacity="0.45" filter="url(#pr-h-soft)"/>
+  <path d="M103 22 C103 56 117 70 118 88" fill="none" stroke="#FFFFFF" stroke-width="2.6" opacity="0.5"/>
+  <path d="M145 26 C145 58 131 72 129 90 C131 108 145 126 145 164" fill="none" stroke="#FFFFFF" stroke-width="2.2" opacity="0.22"/>
+</g>
+<path d="M86 18 C86 62 113 80 115 95 C113 110 86 128 86 172" fill="none" stroke="#54646E" stroke-width="2.6"/>
+<path d="M154 18 C154 62 127 80 125 95 C127 110 154 128 154 172" fill="none" stroke="#54646E" stroke-width="2.6"/>
+<path d="M86 18 C86 62 113 80 115 95" fill="none" stroke="#FFFFFF" stroke-width="1.2" opacity="0.5" transform="translate(1.6,0)"/>
+<rect x="108" y="89" width="24" height="12" rx="5" fill="url(#pr-h-brass)" stroke="#2E2410" stroke-width="1.2"/>
+<rect x="111" y="91" width="6" height="8" rx="2" fill="#FFF3CE" opacity="0.55"/>
+<g>
+  <rect x="58" y="170" width="124" height="15" rx="4" fill="url(#pr-h-wood)"/>
+  <rect x="58" y="170" width="124" height="15" rx="4" fill="url(#pr-h-wood)" filter="url(#pr-h-grain)" opacity="0.9"/>
+  <rect x="58" y="170" width="124" height="3" fill="#C89A63" opacity="0.5"/>
+</g>
+</svg>

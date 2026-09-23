@@ -40,8 +40,9 @@ defineProps<{
 
 <style scoped>
 /* Sizes are for Slidev's default 980×552 canvas (half the 1920-wide design).
-   Colors come from --tk-* variables set by the slide; the fallbacks are the
-   original dark theme, so the card still works on a slide that sets nothing. */
+   Colors come from the --tk-* variables that the tk-slide class sets in
+   styles/index.css; the fallbacks are the original dark theme, so the card
+   still works on a slide that sets nothing. */
 .tk-card {
   display: flex;
   align-items: center;
@@ -113,7 +114,7 @@ defineProps<{
   font-size: 20px;
   font-weight: 600;
   line-height: 1.15;
-  color: var(--tk-warn, #ec8a6b);
+  color: var(--tk-second, #ec8a6b);
 }
 
 @media (prefers-reduced-motion: reduce) {

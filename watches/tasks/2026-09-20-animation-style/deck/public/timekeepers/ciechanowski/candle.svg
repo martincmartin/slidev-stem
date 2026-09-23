@@ -1,0 +1,52 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="ci-c-wax" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#ACA89D"/><stop offset="0.32" stop-color="#E2DCCE"/><stop offset="1" stop-color="#BAB6AA"/>
+  </linearGradient>
+  <linearGradient id="ci-c-br" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#9C8053"/><stop offset="0.32" stop-color="#C9A56B"/><stop offset="1" stop-color="#A38657"/>
+  </linearGradient>
+  <radialGradient id="ci-c-fl" cx="0.5" cy="0.74" r="0.6">
+    <stop offset="0" stop-color="#FFFFFF"/><stop offset="0.42" stop-color="#D98A4E"/>
+    <stop offset="1" stop-color="#B67441"/>
+  </radialGradient>
+  <clipPath id="ci-c-burn">
+    <rect x="90" y="52" width="60" height="122">
+      <animate attributeName="y" values="62;152" dur="12s" repeatCount="indefinite"/>
+      <animate attributeName="height" values="112;22" dur="12s" repeatCount="indefinite"/>
+    </rect>
+  </clipPath>
+</defs>
+<g clip-path="url(#ci-c-burn)">
+  <rect x="96" y="52" width="48" height="122" fill="url(#ci-c-wax)"/>
+  <g fill="#BCA06A">
+    <rect x="96" y="76" width="48" height="5"/><rect x="96" y="100" width="48" height="5"/>
+    <rect x="96" y="124" width="48" height="5"/><rect x="96" y="148" width="48" height="5"/>
+  </g>
+</g>
+<g>
+  <animateTransform attributeName="transform" type="translate" values="0 0;0 90" dur="12s" repeatCount="indefinite"/>
+  <g stroke="#7F8489" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="14 11" opacity="0.55">
+    <path d="M26 40 C46 30 60 48 84 36"><animate attributeName="stroke-dashoffset" values="50;0" dur="1.5s" repeatCount="indefinite"/></path>
+    <path d="M32 62 C50 52 64 70 88 58"><animate attributeName="stroke-dashoffset" values="50;0" dur="1.9s" repeatCount="indefinite"/></path>
+  </g>
+  <ellipse cx="96" cy="61" rx="3.4" ry="5" fill="#C9C3B7">
+    <animate attributeName="cy" values="61;61;84" keyTimes="0;0.22;1" dur="3.1s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="5;11.5;7" keyTimes="0;0.45;1" dur="3.1s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.18;0.82;1" dur="3.1s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="144" cy="61" rx="3.4" ry="5" fill="#BAB6AA">
+    <animate attributeName="cy" values="61;61;80" keyTimes="0;0.28;1" dur="4.3s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="5;10;7" keyTimes="0;0.45;1" dur="4.3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.2;0.8;1" dur="4.3s" repeatCount="indefinite"/>
+  </ellipse>
+  <path d="M96 58 C104 53 112 58 120 55 C128 52 136 58 144 58 L144 68 L96 68 Z" fill="#E2DCCE"/>
+  <ellipse cx="120" cy="57" rx="24" ry="6" fill="#DAD4C6"/>
+  <ellipse cx="120" cy="57.5" rx="12" ry="3" fill="#BA9E69"/>
+  <rect x="118.6" y="44" width="2.8" height="14" rx="1.4" fill="#5D636D"/>
+  <path d="M120 8 C133 22 137 34 120 46 C103 34 107 22 120 8 Z" fill="url(#ci-c-fl)">
+    <animate attributeName="d" values="M120 8 C133 22 137 34 120 46 C103 34 107 22 120 8 Z;M125 6 C135 22 134 35 120 46 C106 35 112 21 125 6 Z;M120 8 C133 22 137 34 120 46 C103 34 107 22 120 8 Z" dur="1.6s" repeatCount="indefinite"/>
+  </path>
+</g>
+<path d="M74 174 L166 174 L158 186 L82 186 Z" fill="url(#ci-c-br)"/>
+</svg>

@@ -1,0 +1,731 @@
+
+==============================================================================
+bold   7.8 KB
+==============================================================================
+field    #F2EEE4 (unpainted -- sits on the deck's card panel #F2EEE4)
+ink      colour    uses          vs field   role is yours to assign
+         #2A2520    18 (51.4%)   13.10:1
+         #1F5FA8    10 (28.6%)    5.56:1
+         #736A60     4 (11.4%)    4.58:1
+         #FAF7F0     3 ( 8.6%)    1.08:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         5.0       2.54        x1   
+         6.0       3.05        x3   
+         7.0       3.56        x2   
+         8.0       4.07        x5   
+motion   y x5, height x5, cy x5, ry x4, opacity x3, d x2, rx x2, stroke-dashoffset x2, transform x1, transform/translate x1
+         durations 1s, 1.5s, 1.6s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+ciechanowski   10.8 KB
+==============================================================================
+field    #F2EEE4 (unpainted -- sits on the deck's card panel #F2EEE4)
+ink      colour    uses          vs field   role is yours to assign
+         #C9A56B     4 ( 7.7%)    2.00:1
+         #FFFFFF     3 ( 5.8%)    1.16:1
+         #7F8489     2 ( 3.8%)    3.26:1
+         #B08B6A     2 ( 3.8%)    2.69:1
+         #7FB3D5     2 ( 3.8%)    1.95:1
+         #E2DCCE     2 ( 3.8%)    1.18:1
+         #BAB6AA     2 ( 3.8%)    1.75:1
+         #9C8053     2 ( 3.8%)    3.22:1
+         #A38657     2 ( 3.8%)    2.97:1
+         #A8794E     2 ( 3.8%)    3.29:1
+         #7E8388     1 ( 1.9%)    3.30:1
+         #888D92     1 ( 1.9%)    2.89:1
+         #92979D     1 ( 1.9%)    2.54:1
+         #A68858     1 ( 1.9%)    2.88:1
+         #AD8E5C     1 ( 1.9%)    2.67:1
+         #525861     1 ( 1.9%)    6.19:1
+         #74787C     1 ( 1.9%)    3.84:1
+         #886C52     1 ( 1.9%)    4.20:1
+         #8E7055     1 ( 1.9%)    3.94:1
+         #7CAFD0     1 ( 1.9%)    2.04:1
+         #6E9AB8     1 ( 1.9%)    2.60:1
+         #79AACA     1 ( 1.9%)    2.15:1
+         #ACA89D     1 ( 1.9%)    2.05:1
+         #D98A4E     1 ( 1.9%)    2.36:1
+         #B67441     1 ( 1.9%)    3.26:1
+         #BCA06A     1 ( 1.9%)    2.16:1
+         #C9C3B7     1 ( 1.9%)    1.51:1
+         #DAD4C6     1 ( 1.9%)    1.28:1
+         #BA9E69     1 ( 1.9%)    2.22:1
+         #5D636D     1 ( 1.9%)    5.22:1
+         #805C3B     1 ( 1.9%)    5.16:1
+         #88623F     1 ( 1.9%)    4.69:1
+         #8D6541     1 ( 1.9%)    4.45:1
+         #916843     1 ( 1.9%)    4.25:1
+         #A78E5E     1 ( 1.9%)    2.72:1
+         #D4B478     1 ( 1.9%)    1.71:1
+         #B29764     1 ( 1.9%)    2.42:1
+         #CFB075     1 ( 1.9%)    1.79:1
+         #C4D2DC     1 ( 1.9%)    1.33:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.0       1.02        x1      under the floor
+         3.0       1.52        x1      under the floor
+         4.5       2.29        x1   
+         5.0       2.54        x1   
+         10.0      5.08        x5   
+texture
+         linear-grad   3 stops  #9C8053 -> #C9A56B -> #A38657   x2 ids
+         linear-grad   2 stops  #7E8388 -> #888D92
+         linear-grad   2 stops  #92979D -> #7F8489
+         linear-grad   3 stops  #A68858 -> #C9A56B -> #AD8E5C
+         linear-grad   3 stops  #886C52 -> #B08B6A -> #8E7055
+         linear-grad   2 stops  #7CAFD0 -> #6E9AB8
+         linear-grad   3 stops  #ACA89D -> #E2DCCE -> #BAB6AA
+         radial-grad   3 stops  #FFFFFF -> #D98A4E -> #B67441
+         linear-grad   3 stops  #805C3B -> #A8794E -> #88623F
+         linear-grad   3 stops  #8D6541 -> #A8794E -> #916843
+         linear-grad   3 stops  #A78E5E -> #D4B478 -> #B29764
+motion   cy x5, y x4, height x4, ry x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, transform x1, transform/translate x1
+         durations 1s, 1.5s, 1.6s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+engraved   14.1 KB
+==============================================================================
+field    #F2EEE4 (unpainted -- sits on the deck's card panel #F2EEE4)
+ink      colour    uses          vs field   role is yours to assign
+         #2A2520    49 (83.1%)   13.10:1
+         #FAF7F0    10 (16.9%)    1.08:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         1.0       0.51        x1      under the floor
+         1.3       0.66        x7      under the floor
+         1.4       0.71        x6      under the floor
+         1.5       0.76        x3      under the floor
+         1.6       0.81        x2      under the floor
+         1.8       0.91        x3      under the floor
+         2.0       1.02        x6      under the floor
+         2.2       1.12        x4      under the floor
+         2.4       1.22        x7      under the floor
+         2.6       1.32        x8      under the floor
+texture
+         hatch         8x8u @40deg  line 1.4u on 8u pitch = 18% coverage
+         hatch         4.5x4.5u @40deg  line 1.4u on 4.5u pitch = 31% coverage
+         hatch         5.5x5.5u @20deg  line 1.3u on 5.5u pitch = 24% coverage
+         hatch         8x8u @48deg  line 1.4u on 8u pitch = 18% coverage
+         hatch         7x7u @90deg  line 1.4u on 7u pitch = 20% coverage
+         hatch         3x3u @12deg  line 1u on 3u pitch = 33% coverage
+         hatch         5.5x5.5u @15deg  line 1.3u on 5.5u pitch = 24% coverage
+         hatch         7x7u @90deg  line 1.5u on 7u pitch = 21% coverage
+         dots          6x6u  2 dots r=1.3u on a 6x6u cell
+         hatch         5.5x5.5u @22deg  line 1.3u on 5.5u pitch = 24% coverage
+motion   opacity x13, cy x5, ry x4, height x4, stroke-dashoffset x4, d x2, rx x2, y x1, transform x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.6s, 1.8s, 2.1s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+guide   13.0 KB
+==============================================================================
+field    #000000 
+ink      colour    uses          vs field   role is yours to assign
+         #54E88A    20 (42.6%)   13.29:1
+         #F5D44D     5 (10.6%)   14.41:1
+         #8FC9F5     3 ( 6.4%)   11.84:1
+         #FFF8E0     3 ( 6.4%)   19.76:1
+         #E8452A     2 ( 4.3%)    5.32:1
+         #3FE04A     1 ( 2.1%)   11.97:1
+         #4D9FE8     1 ( 2.1%)    7.44:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.5       1.27        x3      under the floor
+         3.0       1.52        x6      under the floor
+         3.5       1.78        x4   
+         4.0       2.03        x13  
+         11.0      5.59        x5   
+         13.0      6.61        x1   
+texture
+         pattern       8x8u   x3 ids
+         pattern       5x5u
+motion   cy x5, ry x5, y x4, height x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, transform x1, y1 x1, y2 x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+guide-afterhours   13.0 KB
+==============================================================================
+field    #242C35 
+ink      colour    uses          vs field   role is yours to assign
+         #FFB84D    23 (48.9%)    8.22:1
+         #F6F0DF     7 (14.9%)   12.41:1
+         #F9DCAC     3 ( 6.4%)   10.67:1
+         #7FB3E8     2 ( 4.3%)    6.40:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.5       1.27        x3      under the floor
+         3.0       1.52        x6      under the floor
+         3.5       1.78        x4   
+         4.0       2.03        x13  
+         11.0      5.59        x5   
+         13.0      6.61        x1   
+texture
+         pattern       8x8u   x3 ids
+         pattern       5x5u
+motion   cy x5, ry x5, y x4, height x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, transform x1, y1 x1, y2 x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+guide-beacon   13.0 KB
+==============================================================================
+field    #202C41 
+ink      colour    uses          vs field   role is yours to assign
+         #FFC24E    23 (48.9%)    8.73:1
+         #FFFFFF     7 (14.9%)   14.02:1
+         #FFEAC1     3 ( 6.4%)   11.88:1
+         #8FBEEA     2 ( 4.3%)    7.16:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.5       1.27        x3      under the floor
+         3.0       1.52        x6      under the floor
+         3.5       1.78        x4   
+         4.0       2.03        x13  
+         11.0      5.59        x5   
+         13.0      6.61        x1   
+texture
+         pattern       8x8u   x3 ids
+         pattern       5x5u
+motion   cy x5, ry x5, y x4, height x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, transform x1, y1 x1, y2 x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+guide-campfire   13.0 KB
+==============================================================================
+field    #332A24 
+ink      colour    uses          vs field   role is yours to assign
+         #FFB340    23 (48.9%)    7.86:1
+         #F6EEE3     7 (14.9%)   12.19:1
+         #F9D9AA     3 ( 6.4%)   10.37:1
+         #54BCD6     2 ( 4.3%)    6.37:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.5       1.27        x3      under the floor
+         3.0       1.52        x6      under the floor
+         3.5       1.78        x4   
+         4.0       2.03        x13  
+         11.0      5.59        x5   
+         13.0      6.61        x1   
+texture
+         pattern       8x8u   x3 ids
+         pattern       5x5u
+motion   cy x5, ry x5, y x4, height x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, transform x1, y1 x1, y2 x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+guide-ledger   12.8 KB
+==============================================================================
+field    #F2EEE4 (unpainted -- sits on the deck's card panel #F2EEE4)
+ink      colour    uses          vs field   role is yours to assign
+         #2A2520    18 (41.9%)   13.10:1
+         #9A6238     9 (20.9%)    4.34:1
+         #48433D     3 ( 7.0%)    8.45:1
+         #736A60     2 ( 4.7%)    4.58:1
+         #1F5FA8     1 ( 2.3%)    5.56:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.5       1.27        x3      under the floor
+         3.0       1.52        x6      under the floor
+         3.5       1.78        x4   
+         4.0       2.03        x13  
+         11.0      5.59        x5   
+         13.0      6.61        x1   
+texture
+         pattern       8x8u   x3 ids
+         pattern       5x5u
+motion   cy x5, ry x5, y x4, height x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, transform x1, y1 x1, y2 x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+guide-marmalade   13.0 KB
+==============================================================================
+field    #38302C 
+ink      colour    uses          vs field   role is yours to assign
+         #E8883C    23 (48.9%)    4.93:1
+         #FFF4E8     7 (14.9%)   11.90:1
+         #F7CEAC     3 ( 6.4%)    8.84:1
+         #93D096     2 ( 4.3%)    7.19:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.5       1.27        x3      under the floor
+         3.0       1.52        x6      under the floor
+         3.5       1.78        x4   
+         4.0       2.03        x13  
+         11.0      5.59        x5   
+         13.0      6.61        x1   
+texture
+         pattern       8x8u   x3 ids
+         pattern       5x5u
+motion   cy x5, ry x5, y x4, height x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, transform x1, y1 x1, y2 x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+line-weighted   9.1 KB
+==============================================================================
+field    #F2EEE4 (unpainted -- sits on the deck's card panel #F2EEE4)
+ink      colour    uses          vs field   role is yours to assign
+         #143C6B    29 (67.4%)    9.60:1
+         #736A60     9 (20.9%)    4.58:1
+         #2A2520     4 ( 9.3%)   13.10:1
+         #D3DCE3     1 ( 2.3%)    1.20:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         4.0       2.03        x7   
+         5.0       2.54        x1   
+         6.0       3.05        x14  
+         8.0       4.07        x2   
+motion   cy x5, y x4, height x4, ry x4, d x3, opacity x3, stroke-dashoffset x3, rx x2, transform x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.6s, 1.8s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+linocut   12.2 KB
+==============================================================================
+field    #F2EEE4 (unpainted -- sits on the deck's card panel #F2EEE4)
+ink      colour    uses          vs field   role is yours to assign
+         #2A2520    24 (50.0%)   13.10:1
+         #1F5FA8    12 (25.0%)    5.56:1
+         #FAF7F0    12 (25.0%)    1.08:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         0.7       0.36        x1      under the floor
+         0.76      0.39        x2      under the floor
+         0.82      0.42        x1      under the floor
+         1.43      0.73        x1      under the floor
+         1.6       0.81        x3      under the floor
+         1.8       0.91        x1      under the floor
+         1.91      0.97        x4      under the floor
+         2.0       1.02        x1      under the floor
+         2.2       1.12        x1      under the floor
+         2.23      1.13        x1      under the floor
+         2.5       1.27        x1      under the floor
+         2.6       1.32        x4      under the floor
+         2.8       1.42        x1      under the floor
+         3.1       1.58        x1      under the floor
+         3.4       1.73        x2   
+         3.72      1.89        x1   
+         3.85      1.96        x1   
+         4.21      2.14        x1   
+         4.26      2.17        x1   
+         4.5       2.29        x1   
+         5.0       2.54        x2   
+         6.0       3.05        x2   
+         7.0       3.56        x1   
+         9.0       4.57        x5   
+motion   cy x5, y x4, height x4, ry x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, transform x1, transform/translate x1
+         durations 1s, 1.5s, 1.6s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+patent   12.6 KB
+==============================================================================
+field    #F2EEE4 (unpainted -- sits on the deck's card panel #F2EEE4)
+ink      colour    uses          vs field   role is yours to assign
+         #2A2520    21 (70.0%)   13.10:1
+         #FAF7F0     9 (30.0%)    1.08:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         0.96      0.49        x1      under the floor
+         1.0       0.51        x3      under the floor
+         1.28      0.65        x2      under the floor
+         1.3       0.66        x2      under the floor
+         1.5       0.76        x2      under the floor
+         1.52      0.77        x4      under the floor
+         1.8       0.91        x2      under the floor
+         1.92      0.98        x5      under the floor
+         2.48      1.26        x10     under the floor
+         2.5       1.27        x5      under the floor
+texture
+         hatch         6x6u @45deg  line 1u on 6u pitch = 17% coverage   x3 ids
+         dots          7x7u  2 dots r=1.1u on a 7x7u cell
+motion   opacity x13, cy x5, ry x4, height x4, d x2, rx x2, y x1, transform x1, stroke-dashoffset x1, transform/translate x1
+         durations 0.6s, 1s, 1.6s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+patent-weighted   13.2 KB
+==============================================================================
+field    #F2EEE4 (unpainted -- sits on the deck's card panel #F2EEE4)
+ink      colour    uses          vs field   role is yours to assign
+         #2A2520    21 (70.0%)   13.10:1
+         #FAF7F0     9 (30.0%)    1.08:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.2       1.12        x3      under the floor
+         3.4       1.73        x1   
+         4.15      2.11        x2   
+         4.19      2.13        x2   
+         4.66      2.37        x2   
+         4.71      2.39        x4   
+         5.36      2.72        x2   
+         5.64      2.87        x5   
+         6.95      3.53        x10  
+         7.0       3.56        x5   
+texture
+         hatch         6x6u @45deg  line 2.2u on 6u pitch = 37% coverage   x3 ids
+         dots          7x7u  2 dots r=1.7u on a 7x7u cell
+motion   opacity x13, cy x5, ry x4, height x4, d x2, rx x2, y x1, transform x1, stroke-dashoffset x1, transform/translate x1
+         durations 0.6s, 1s, 1.6s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+photoreal   24.3 KB
+==============================================================================
+field    #F2EEE4 (unpainted -- sits on the deck's card panel #F2EEE4)
+ink      colour    uses          vs field   role is yours to assign
+         #FFFFFF     8 ( 7.5%)    1.16:1
+         #2A2520     6 ( 5.6%)   13.10:1
+         #FBF6EA     3 ( 2.8%)    1.07:1
+         #2E2514     2 ( 1.9%)   13.03:1
+         #EFE9DC     2 ( 1.9%)    1.04:1
+         #FFB861     2 ( 1.9%)    1.48:1
+         #F08A22     2 ( 1.9%)    2.17:1
+         #4A3A18     2 ( 1.9%)    9.49:1
+         #B08D57     2 ( 1.9%)    2.67:1
+         #2E2410     2 ( 1.9%)   13.17:1
+         #FFF3CE     2 ( 1.9%)    1.05:1
+         #54646E     2 ( 1.9%)    5.29:1
+         #D8D2C4     1 ( 0.9%)    1.30:1
+         #B6AE9C     1 ( 0.9%)    1.90:1
+         #8C8579     1 ( 0.9%)    3.15:1
+         #6B6459     1 ( 0.9%)    5.05:1
+         #7C7568     1 ( 0.9%)    3.94:1
+         #575147     1 ( 0.9%)    6.78:1
+         #3A352E     1 ( 0.9%)   10.49:1
+         #8E7A52     1 ( 0.9%)    3.59:1
+         #C9A45F     1 ( 0.9%)    2.02:1
+         #6E7F62     1 ( 0.9%)    3.72:1
+         #8A6B3C     1 ( 0.9%)    4.27:1
+         #4A3B22     1 ( 0.9%)    9.34:1
+         #3E382F     1 ( 0.9%)   10.01:1
+         #2F2A23     1 ( 0.9%)   12.28:1
+         #241F1A     1 ( 0.9%)   14.10:1
+         #F0DCA8     1 ( 0.9%)    1.17:1
+         #1E1809     1 ( 0.9%)   15.23:1
+         #4A2314     1 ( 0.9%)   11.76:1
+         #8A452A     1 ( 0.9%)    6.11:1
+         #C77B4C     1 ( 0.9%)    2.85:1
+         #A55C36     1 ( 0.9%)    4.33:1
+         #3E1D10     1 ( 0.9%)   13.06:1
+         #6FAFD8     1 ( 0.9%)    2.06:1
+         #3D7EA6     1 ( 0.9%)    3.83:1
+         #123F63     1 ( 0.9%)    9.46:1
+         #A8D3ED     1 ( 0.9%)    1.37:1
+         #4A87AE     1 ( 0.9%)    3.38:1
+         #F0D7BE     1 ( 0.9%)    1.19:1
+         #9C8C70     1 ( 0.9%)    2.83:1
+         #D9C9A8     1 ( 0.9%)    1.41:1
+         #F7EFDD     1 ( 0.9%)    1.01:1
+         #EDE0C4     1 ( 0.9%)    1.13:1
+         #C3B192     1 ( 0.9%)    1.81:1
+         #877659     1 ( 0.9%)    3.80:1
+         #E8A63C     1 ( 0.9%)    1.82:1
+         #FFD98A     1 ( 0.9%)    1.17:1
+         #C2410C     1 ( 0.9%)    4.47:1
+         #FFF0B8     1 ( 0.9%)    1.02:1
+         #FFC24E     1 ( 0.9%)    1.39:1
+         #B5923F     1 ( 0.9%)    2.54:1
+         #F2DFA0     1 ( 0.9%)    1.14:1
+         #6B5324     1 ( 0.9%)    6.28:1
+         #372A10     1 ( 0.9%)   12.07:1
+         #8A7A5C     1 ( 0.9%)    3.61:1
+         #8B8378     1 ( 0.9%)    3.23:1
+         #F4EAD6     1 ( 0.9%)    1.03:1
+         #DCCBA8     1 ( 0.9%)    1.38:1
+         #F9F3E4     1 ( 0.9%)    1.05:1
+         #FFE9C0     1 ( 0.9%)    1.03:1
+         #E8C98E     1 ( 0.9%)    1.38:1
+         #3A2A18     1 ( 0.9%)   11.89:1
+         #2B6CB0     1 ( 0.9%)    4.68:1
+         #2A1809     1 ( 0.9%)   14.70:1
+         #6B4726     1 ( 0.9%)    7.10:1
+         #9C6B3E     1 ( 0.9%)    3.95:1
+         #7A5230     1 ( 0.9%)    5.89:1
+         #4A2E16     1 ( 0.9%)   10.70:1
+         #241405     1 ( 0.9%)   15.40:1
+         #7A5A22     1 ( 0.9%)    5.47:1
+         #D9B464     1 ( 0.9%)    1.70:1
+         #F0D9A0     1 ( 0.9%)    1.20:1
+         #C79A4E     1 ( 0.9%)    2.22:1
+         #8E6B2E     1 ( 0.9%)    4.22:1
+         #DCEAF2     1 ( 0.9%)    1.06:1
+         #A9C2D2     1 ( 0.9%)    1.60:1
+         #6E8697     1 ( 0.9%)    3.28:1
+         #43555F     1 ( 0.9%)    6.70:1
+         #E0C271     1 ( 0.9%)    1.49:1
+         #3A2C10     1 ( 0.9%)   11.71:1
+         #1A2126     1 ( 0.9%)   14.06:1
+         #F7E6BE     1 ( 0.9%)    1.07:1
+         #C89A63     1 ( 0.9%)    2.19:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         1.2       0.61        x2      under the floor
+         1.4       0.71        x1      under the floor
+         1.5       0.76        x1      under the floor
+         1.6       0.81        x1      under the floor
+         1.8       0.91        x1      under the floor
+         2.0       1.02        x1      under the floor
+         2.2       1.12        x2      under the floor
+         2.6       1.32        x5      under the floor
+         3.0       1.52        x2      under the floor
+         6.0       3.05        x1   
+         10.0      5.08        x10  
+texture
+         filter        GaussianBlur   x6 ids
+         filter        DropShadow   x2 ids
+         linear-grad   4 stops  #D8D2C4 -> #B6AE9C -> #8C8579 -> #6B6459
+         linear-grad   3 stops  #7C7568 -> #575147 -> #3A352E
+         linear-grad   6 stops  #8E7A52 -> #C9A45F -> #6E7F62 -> #8A6B3C
+         radial-grad   2 stops  #2A2520 -> #2A2520
+         linear-grad   5 stops  #4A2314 -> #8A452A -> #C77B4C -> #A55C36
+         linear-grad   3 stops  #6FAFD8 -> #3D7EA6 -> #123F63
+         radial-grad   2 stops  #A8D3ED -> #4A87AE
+         linear-grad   6 stops  #9C8C70 -> #D9C9A8 -> #F7EFDD -> #EDE0C4
+         linear-grad   3 stops  #FFB861 -> #FFB861 -> #E8A63C
+         radial-grad   3 stops  #FFD98A -> #F08A22 -> #C2410C
+         radial-grad   3 stops  #FFFFFF -> #FFF0B8 -> #FFC24E
+         linear-grad   6 stops  #4A3A18 -> #B5923F -> #F2DFA0 -> #B08D57
+         linear-grad   6 stops  #2A1809 -> #6B4726 -> #9C6B3E -> #7A5230
+         linear-grad   5 stops  #7A5A22 -> #D9B464 -> #F0D9A0 -> #C79A4E
+         linear-grad   5 stops  #FFFFFF -> #DCEAF2 -> #A9C2D2 -> #6E8697
+         linear-grad   4 stops  #4A3A18 -> #E0C271 -> #B08D57 -> #3A2C10
+         filter        Turbulence+ColorMatrix+ComponentTransfer+FuncR+FuncG+FuncB+FuncA+Blend+Composite  baseFrequency=0.09 0.22
+         filter        Turbulence+ColorMatrix+ComponentTransfer+FuncR+FuncG+FuncB+FuncA+Blend+Composite  baseFrequency=0.5 0.5
+         filter        Turbulence+ColorMatrix+ComponentTransfer+FuncR+FuncG+FuncB+FuncA+Blend+Composite  baseFrequency=0.7 0.08
+         filter        Turbulence+ColorMatrix+ComponentTransfer+FuncR+FuncG+FuncB+FuncA+Blend+Composite  baseFrequency=0.55 0.022
+         filter        Turbulence+ColorMatrix+ComponentTransfer+FuncR+FuncG+FuncB+FuncA+Blend+Composite  baseFrequency=1.1
+motion   cy x7, d x5, y x5, height x5, opacity x5, ry x4, rx x2, stroke-dashoffset x2, transform x1, transform/translate x1
+         durations 1s, 1.5s, 1.6s, 1.9s, 2.2s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+popart   12.9 KB
+==============================================================================
+field    #F2EEE4 (unpainted -- sits on the deck's card panel #F2EEE4)
+ink      colour    uses          vs field   role is yours to assign
+         #2A2520    36 (46.8%)   13.10:1
+         #9A6238    18 (23.4%)    4.34:1
+         #D8C3B0    10 (13.0%)    1.47:1
+         #1F5FA8     8 (10.4%)    5.56:1
+         #FAF7F0     4 ( 5.2%)    1.08:1
+         #736A60     1 ( 1.3%)    4.58:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         3.0       1.52        x8      under the floor
+         3.5       1.78        x1   
+         4.0       2.03        x3   
+         5.0       2.54        x18  
+         6.0       3.05        x5   
+         8.0       4.07        x1   
+         12.0      6.10        x5   
+texture
+         dots          7x7u  2 dots r=1.9u on a 7x7u cell
+         dots          7x7u  2 dots r=1.6u on a 7x7u cell
+         dots          7x7u  2 dots r=2.0u on a 7x7u cell
+         dots          7x7u  2 dots r=1.7u on a 7x7u cell
+motion   cy x7, ry x6, y x4, height x4, rx x4, d x3, opacity x3, stroke-dashoffset x2, transform x1, y1 x1, y2 x1, transform/translate x1
+         durations 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+riso   13.9 KB
+==============================================================================
+field    #FFFFFF 
+ink      colour    uses          vs field   role is yours to assign
+         #1F5FA8    39 (46.4%)    6.44:1
+         #9A6238    37 (44.0%)    5.03:1
+         #FAF7F0     4 ( 4.8%)    1.07:1
+         #000000     2 ( 2.4%)   21.00:1
+         #736A60     1 ( 1.2%)    5.30:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         4.0       2.03        x3   
+         5.0       2.54        x2   
+         8.0       4.07        x5   
+texture
+         dots          5x5u  2 dots r=1.75u on a 5x5u cell   x8 ids
+         dots          5x5u  2 dots r=1.45u on a 5x5u cell   x8 ids
+         dots          5x5u  2 dots r=1.1u on a 5x5u cell   x8 ids
+motion   cy x5, d x4, y x4, height x4, ry x4, opacity x3, rx x2, stroke-dashoffset x2, transform x1, transform/translate x1
+         durations 1s, 1.5s, 1.8s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+shaded   12.9 KB
+==============================================================================
+field    #F2EEE4 (unpainted -- sits on the deck's card panel #F2EEE4)
+ink      colour    uses          vs field   role is yours to assign
+         #2A2520     7 (10.9%)   13.10:1
+         #5E3A20     6 ( 9.4%)    8.62:1
+         #9A6238     4 ( 6.2%)    4.34:1
+         #C08B4A     3 ( 4.7%)    2.58:1
+         #5A96D4     3 ( 4.7%)    2.69:1
+         #FFFFFF     3 ( 4.7%)    1.16:1
+         #1F5FA8     2 ( 3.1%)    5.56:1
+         #3A2515     2 ( 3.1%)   12.45:1
+         #E8A63C     2 ( 3.1%)    1.82:1
+         #7A4B28     2 ( 3.1%)    6.33:1
+         #5E6B75     2 ( 3.1%)    4.73:1
+         #8E8578     1 ( 1.6%)    3.14:1
+         #6E6659     1 ( 1.6%)    4.89:1
+         #524B41     1 ( 1.6%)    7.42:1
+         #4A443A     1 ( 1.6%)    8.32:1
+         #2F2A23     1 ( 1.6%)   12.28:1
+         #E4B77A     1 ( 1.6%)    1.60:1
+         #A86B3D     1 ( 1.6%)    3.75:1
+         #17457A     1 ( 1.6%)    8.36:1
+         #B8A88C     1 ( 1.6%)    2.01:1
+         #F2E8D2     1 ( 1.6%)    1.05:1
+         #DCCDAE     1 ( 1.6%)    1.35:1
+         #8A7A63     1 ( 1.6%)    3.59:1
+         #FFF3CE     1 ( 1.6%)    1.05:1
+         #736A60     1 ( 1.6%)    4.58:1
+         #EDE0C4     1 ( 1.6%)    1.13:1
+         #C9B894     1 ( 1.6%)    1.68:1
+         #F7EFDD     1 ( 1.6%)    1.01:1
+         #FFF6E4     1 ( 1.6%)    1.08:1
+         #E8C98E     1 ( 1.6%)    1.38:1
+         #3A2A1A     1 ( 1.6%)   11.88:1
+         #4A2C16     1 ( 1.6%)   10.90:1
+         #3E2412     1 ( 1.6%)   12.36:1
+         #E8C37E     1 ( 1.6%)    1.45:1
+         #C79A4E     1 ( 1.6%)    2.22:1
+         #8E6B2E     1 ( 1.6%)    4.22:1
+         #C9DCEA     1 ( 1.6%)    1.22:1
+         #8FA9BD     1 ( 1.6%)    2.11:1
+         #F2DDA8     1 ( 1.6%)    1.16:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.0       1.02        x3      under the floor
+         2.5       1.27        x2      under the floor
+         3.0       1.52        x5      under the floor
+         5.0       2.54        x1   
+         9.0       4.57        x5   
+texture
+         filter        DropShadow   x4 ids
+         linear-grad   3 stops  #8E8578 -> #6E6659 -> #524B41
+         linear-grad   2 stops  #4A443A -> #2F2A23
+         linear-grad   3 stops  #C08B4A -> #9A6238 -> #5E3A20
+         linear-grad   4 stops  #5E3A20 -> #C08B4A -> #A86B3D -> #5E3A20
+         linear-grad   2 stops  #5A96D4 -> #17457A
+         linear-grad   4 stops  #B8A88C -> #F2E8D2 -> #DCCDAE -> #8A7A63
+         radial-grad   3 stops  #FFF3CE -> #E8A63C -> #9A6238
+         linear-grad   3 stops  #5E3A20 -> #C08B4A -> #5E3A20
+         linear-grad   4 stops  #4A2C16 -> #9A6238 -> #7A4B28 -> #3E2412
+         linear-grad   3 stops  #E8C37E -> #C79A4E -> #8E6B2E
+         linear-grad   3 stops  #FFFFFF -> #C9DCEA -> #8FA9BD
+         filter        GaussianBlur
+motion   y x5, cy x5, height x4, ry x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, transform x1, transform/translate x1
+         durations 1s, 1.5s, 1.6s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+t13   9.1 KB
+==============================================================================
+field    #F2EEE4 (unpainted -- sits on the deck's card panel #F2EEE4)
+ink      colour    uses          vs field   role is yours to assign
+         #1F5FA8    29 (67.4%)    5.56:1
+         #928E88     9 (20.9%)    2.81:1
+         #2A2520     4 ( 9.3%)   13.10:1
+         #D3DCE3     1 ( 2.3%)    1.20:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.0       1.02        x7      under the floor
+         2.5       1.27        x1      under the floor
+         3.0       1.52        x14     under the floor
+         4.0       2.03        x2   
+motion   cy x5, y x4, height x4, ry x4, d x3, opacity x3, stroke-dashoffset x3, rx x2, transform x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.6s, 1.8s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+vector   15.7 KB
+==============================================================================
+field    #070A0E 
+ink      colour    uses          vs field   role is yours to assign
+         #A8C4D8    26 (48.1%)   10.91:1
+         #6E8FA6    10 (18.5%)    5.80:1
+         #E2EDF5     6 (11.1%)   16.68:1
+         #C8412F     5 ( 9.3%)    4.02:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.2       1.12        x9      under the floor
+         2.4       1.22        x6      under the floor
+         2.8       1.42        x6      under the floor
+         3.0       1.52        x3      under the floor
+         3.2       1.63        x5      under the floor
+         3.4       1.73        x3   
+         3.6       1.83        x7   
+motion   cy x5, y x4, ry x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, y1 x2, height x1, transform x1, y2 x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+vector-afterhours   15.7 KB
+==============================================================================
+field    #242C35 
+ink      colour    uses          vs field   role is yours to assign
+         #7FB3E8    26 (48.1%)    6.40:1
+         #94948F    10 (18.5%)    4.64:1
+         #F6F0DF     6 (11.1%)   12.41:1
+         #FFB84D     5 ( 9.3%)    8.22:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.2       1.12        x9      under the floor
+         2.4       1.22        x6      under the floor
+         2.8       1.42        x6      under the floor
+         3.0       1.52        x3      under the floor
+         3.2       1.63        x5      under the floor
+         3.4       1.73        x3   
+         3.6       1.83        x7   
+motion   cy x5, y x4, ry x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, y1 x2, height x1, transform x1, y2 x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+vector-beacon   15.7 KB
+==============================================================================
+field    #202C41 
+ink      colour    uses          vs field   role is yours to assign
+         #8FBEEA    26 (48.1%)    7.16:1
+         #9197A1    10 (18.5%)    4.77:1
+         #FFFFFF     6 (11.1%)   14.02:1
+         #FFC24E     5 ( 9.3%)    8.73:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.2       1.12        x9      under the floor
+         2.4       1.22        x6      under the floor
+         2.8       1.42        x6      under the floor
+         3.0       1.52        x3      under the floor
+         3.2       1.63        x5      under the floor
+         3.4       1.73        x3   
+         3.6       1.83        x7   
+motion   cy x5, y x4, ry x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, y1 x2, height x1, transform x1, y2 x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+vector-campfire   15.7 KB
+==============================================================================
+field    #332A24 
+ink      colour    uses          vs field   role is yours to assign
+         #54BCD6    26 (48.1%)    6.37:1
+         #B5A594    10 (18.5%)    5.86:1
+         #F6EEE3     6 (11.1%)   12.19:1
+         #FFB340     5 ( 9.3%)    7.86:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.2       1.12        x9      under the floor
+         2.4       1.22        x6      under the floor
+         2.8       1.42        x6      under the floor
+         3.0       1.52        x3      under the floor
+         3.2       1.63        x5      under the floor
+         3.4       1.73        x3   
+         3.6       1.83        x7   
+motion   cy x5, y x4, ry x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, y1 x2, height x1, transform x1, y2 x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+vector-ledger   15.5 KB
+==============================================================================
+field    #1F5FA8 
+ink      colour    uses          vs field   role is yours to assign
+         #736A60    10 (20.0%)    1.21:1
+         #48433D     6 (12.0%)    1.52:1
+         #9A6238     5 (10.0%)    1.28:1
+         #F2EEE4     3 ( 6.0%)    5.56:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.2       1.12        x9      under the floor
+         2.4       1.22        x6      under the floor
+         2.8       1.42        x6      under the floor
+         3.0       1.52        x3      under the floor
+         3.2       1.63        x5      under the floor
+         3.4       1.73        x3   
+         3.6       1.83        x7   
+motion   cy x5, y x4, ry x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, y1 x2, height x1, transform x1, y2 x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s
+
+==============================================================================
+vector-marmalade   15.7 KB
+==============================================================================
+field    #38302C 
+ink      colour    uses          vs field   role is yours to assign
+         #93D096    26 (48.1%)    7.19:1
+         #A49B92    10 (18.5%)    4.72:1
+         #FFF4E8     6 (11.1%)   11.90:1
+         #E8883C     5 ( 9.3%)    4.93:1
+weights  units   CSS px @122   uses      <- the hierarchy; floor is 1.64 px at 55in @ 7 m
+         2.2       1.12        x9      under the floor
+         2.4       1.22        x6      under the floor
+         2.8       1.42        x6      under the floor
+         3.0       1.52        x3      under the floor
+         3.2       1.63        x5      under the floor
+         3.4       1.73        x3   
+         3.6       1.83        x7   
+motion   cy x5, y x4, ry x4, d x3, opacity x3, rx x2, stroke-dashoffset x2, y1 x2, height x1, transform x1, y2 x1, transform/translate x1
+         durations 0.6s, 1s, 1.5s, 1.9s, 3.1s, 4.3s, 8s, 9s, 11s, 12s

@@ -1,0 +1,46 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <clipPath id="bo-c-burn">
+    <rect x="90" y="52" width="60" height="122">
+      <animate attributeName="y" values="62;152" dur="12s" repeatCount="indefinite"/>
+      <animate attributeName="height" values="112;22" dur="12s" repeatCount="indefinite"/>
+    </rect>
+  </clipPath>
+</defs>
+<g clip-path="url(#bo-c-burn)">
+  <rect x="96" y="52" width="48" height="122" fill="#2A2520"/>
+  <g fill="#FAF7F0">
+    <rect x="96" y="76" width="48" height="6"/>
+    <rect x="96" y="100" width="48" height="6"/>
+    <rect x="96" y="124" width="48" height="6"/>
+    <rect x="96" y="148" width="48" height="6"/>
+  </g>
+</g>
+<g>
+  <animateTransform attributeName="transform" type="translate" values="0 0;0 90" dur="12s" repeatCount="indefinite"/>
+  <g stroke="#736A60" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="16 12">
+    <path d="M26 42 C46 32 60 50 84 38">
+      <animate attributeName="stroke-dashoffset" values="56;0" dur="1.5s" repeatCount="indefinite"/>
+    </path>
+    <path d="M34 70 C52 60 66 78 90 66">
+      <animate attributeName="stroke-dashoffset" values="56;0" dur="1.9s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  <ellipse cx="96" cy="59" rx="3.6" ry="5" fill="#2A2520">
+    <animate attributeName="cy" values="59;59;82" keyTimes="0;0.22;1" dur="3.1s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="5;11.5;7" keyTimes="0;0.45;1" dur="3.1s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.18;0.82;1" dur="3.1s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="144" cy="59" rx="3.6" ry="5" fill="#2A2520">
+    <animate attributeName="cy" values="59;59;78" keyTimes="0;0.28;1" dur="4.3s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="5;10;7" keyTimes="0;0.45;1" dur="4.3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.2;0.8;1" dur="4.3s" repeatCount="indefinite"/>
+  </ellipse>
+  <path d="M96 57 C104 51 112 57 120 54 C128 51 136 57 144 57 L144 66 L96 66 Z" fill="#2A2520"/>
+  <rect x="116" y="42" width="8" height="12" fill="#2A2520"/>
+  <path d="M120 8 C133 22 137 34 120 46 C103 34 107 22 120 8 Z" fill="#1F5FA8">
+    <animate attributeName="d" values="M120 8 C133 22 137 34 120 46 C103 34 107 22 120 8 Z;M126 6 C136 22 135 35 120 46 C105 35 112 21 126 6 Z;M120 8 C133 22 137 34 120 46 C103 34 107 22 120 8 Z" dur="1.6s" repeatCount="indefinite"/>
+  </path>
+</g>
+<rect x="74" y="174" width="92" height="12" rx="6" fill="#2A2520"/>
+</svg>

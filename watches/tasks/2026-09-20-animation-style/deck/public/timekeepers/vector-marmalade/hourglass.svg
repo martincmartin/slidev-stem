@@ -1,0 +1,49 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<clipPath id="v-h-up"><path d="M90 20 L150 20 C150 62 125 80 122 94 L118 94 C115 80 90 62 90 20 Z"/></clipPath>
+<clipPath id="v-h-lo"><path d="M118 96 C115 110 90 128 90 170 L150 170 C150 128 125 110 122 96 Z"/></clipPath>
+<clipPath id="v-h-nostream"><path clip-rule="evenodd" d="M78 8 L164 8 L164 182 L78 182 Z M113 92 L127 92 L127 182 L113 182 Z"/></clipPath>
+<clipPath id="v-h-bulb"><path d="M86 18 L154 18 C154 62 127 80 125 95 C127 110 154 128 154 172 L86 172 C86 128 113 110 115 95 C113 80 86 62 86 18 Z"/></clipPath>
+<clipPath id="v-h-drain"><rect x="80" y="20" width="80" height="76"><animate attributeName="y" values="20;94" dur="9s" repeatCount="indefinite"/></rect></clipPath>
+<clipPath id="v-h-pile"><path d="M88 172 L152 172 L152 170 C140 169 130 168 120 168 C110 168 100 169 88 170 Z"><animate attributeName="d" values="M88 172 L152 172 L152 170 C140 169 130 168 120 168 C110 168 100 169 88 170 Z;M88 172 L152 172 L152 158 C140 156 130 146 120 146 C110 146 100 156 88 158 Z;M88 172 L152 172 L152 148 C140 145 130 130 120 130 C110 130 100 145 88 148 Z" dur="9s" repeatCount="indefinite"/></path></clipPath>
+</defs>
+<rect width="240" height="190" fill="#38302C"/>
+<g fill="none" stroke="#93D096" stroke-width="3.4" stroke-linejoin="round"><rect x="56" y="4" width="128" height="16" rx="4"/><rect x="56" y="170" width="128" height="16" rx="4"/><rect x="64" y="17" width="13" height="156"/><rect x="163" y="17" width="13" height="156"/></g>
+<g clip-path="url(#v-h-bulb)" fill="none" stroke="#A49B92" stroke-width="2.2" opacity="0.22">
+<path d="M86.7 30.0 A33.3 7.3 0 0 0 153.3 30.0"/>
+<path d="M91.4 50.0 A28.6 6.3 0 0 0 148.6 50.0"/>
+<path d="M101.3 70.0 A18.7 4.1 0 0 0 138.7 70.0"/>
+<path d="M107.8 110.0 A12.2 2.7 0 0 0 132.2 110.0"/>
+<path d="M95.7 130.0 A24.3 5.3 0 0 0 144.3 130.0"/>
+<path d="M88.5 150.0 A31.5 6.9 0 0 0 151.5 150.0"/>
+<path d="M86.0 170.0 A34.0 7.5 0 0 0 154.0 170.0"/>
+</g>
+<g clip-path="url(#v-h-up)"><g clip-path="url(#v-h-drain)">
+<rect x="80" y="0" width="80" height="190" fill="#93D096" opacity="0.12"/>
+<g fill="none" stroke="#93D096" stroke-width="2.8">
+<path d="M86.3 26.0 A33.7 7.4 0 0 0 153.7 26.0"/>
+<path d="M87.3 34.0 A32.7 7.2 0 0 0 152.7 34.0"/>
+<path d="M89.0 42.0 A31.0 6.8 0 0 0 151.0 42.0"/>
+<path d="M91.4 50.0 A28.6 6.3 0 0 0 148.6 50.0"/>
+<path d="M94.8 58.0 A25.2 5.6 0 0 0 145.2 58.0"/>
+<path d="M99.0 66.0 A21.0 4.6 0 0 0 141.0 66.0"/>
+<path d="M103.9 74.0 A16.1 3.5 0 0 0 136.1 74.0"/>
+<path d="M109.1 82.0 A10.9 2.4 0 0 0 130.9 82.0"/>
+<path d="M113.5 90.0 A6.5 2.2 0 0 0 126.5 90.0"/>
+</g></g></g>
+<g clip-path="url(#v-h-up)"><line x1="86" y1="20" x2="154" y2="20" stroke="#FFF4E8" stroke-width="3"><animate attributeName="y1" values="20;94" dur="9s" repeatCount="indefinite"/><animate attributeName="y2" values="20;94" dur="9s" repeatCount="indefinite"/></line></g>
+<g stroke="#93D096" stroke-width="2.4"><line x1="117" y1="96" x2="117" y2="172"/><line x1="123" y1="96" x2="123" y2="172"/></g>
+<g clip-path="url(#v-h-lo)"><g clip-path="url(#v-h-pile)">
+<rect x="80" y="0" width="80" height="190" fill="#93D096" opacity="0.12"/>
+<g fill="none" stroke="#93D096" stroke-width="2.8">
+<path d="M95.7 130.0 A24.3 5.3 0 0 0 144.3 130.0"/>
+<path d="M92.2 138.0 A27.8 6.1 0 0 0 147.8 138.0"/>
+<path d="M89.5 146.0 A30.5 6.7 0 0 0 150.5 146.0"/>
+<path d="M87.6 154.0 A32.4 7.1 0 0 0 152.4 154.0"/>
+<path d="M86.5 162.0 A33.5 7.4 0 0 0 153.5 162.0"/>
+<path d="M86.0 170.0 A34.0 7.5 0 0 0 154.0 170.0"/>
+</g></g></g>
+<g clip-path="url(#v-h-lo)"><g clip-path="url(#v-h-nostream)"><path d="M152 170 C140 169 130 168 120 168 C110 168 100 169 88 170" fill="none" stroke="#FFF4E8" stroke-width="3"><animate attributeName="d" values="M152 170 C140 169 130 168 120 168 C110 168 100 169 88 170;M152 158 C140 156 130 146 120 146 C110 146 100 156 88 158;M152 148 C140 145 130 130 120 130 C110 130 100 145 88 148" dur="9s" repeatCount="indefinite"/></path></g></g>
+<g fill="none" stroke="#93D096" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M86 18 C86 62 113 80 115 95 C113 110 86 128 86 172"/><path d="M154 18 C154 62 127 80 125 95 C127 110 154 128 154 172"/></g>
+<rect x="106" y="88" width="28" height="14" rx="4" fill="#38302C" stroke="#93D096" stroke-width="3.4" stroke-linejoin="round"/>
+</svg>

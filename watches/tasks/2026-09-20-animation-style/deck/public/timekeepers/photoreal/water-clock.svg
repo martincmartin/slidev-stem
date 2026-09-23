@@ -1,0 +1,32 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <clipPath id="w-up"><path d="M54 0 L186 0 L160 74 A40 12 0 0 1 80 74 Z"/></clipPath>
+  <clipPath id="w-lo"><path d="M64 100 L176 100 L164 170 A44 13 0 0 1 76 170 Z"/></clipPath>
+  <linearGradient id="pr-w-clay" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4A2314"/><stop offset="0.16" stop-color="#8A452A"/><stop offset="0.36" stop-color="#C77B4C"/><stop offset="0.6" stop-color="#A55C36"/><stop offset="1" stop-color="#3E1D10"/></linearGradient>
+  <linearGradient id="pr-w-water" x1="0.1" y1="0" x2="0.9" y2="1"><stop offset="0" stop-color="#6FAFD8"/><stop offset="0.4" stop-color="#3D7EA6"/><stop offset="1" stop-color="#123F63"/></linearGradient>
+  <radialGradient id="pr-w-surf" cx="0.38" cy="0.32" r="0.72"><stop offset="0" stop-color="#A8D3ED"/><stop offset="1" stop-color="#4A87AE"/></radialGradient>
+  <filter id="pr-w-tex" x="-6%" y="-6%" width="112%" height="112%"><feTurbulence type="fractalNoise" baseFrequency="0.5 0.5" numOctaves="3" seed="5" result="n"/><feColorMatrix in="n" type="saturate" values="0" result="g"/><feComponentTransfer in="g" result="g2"><feFuncR type="linear" slope="0.22" intercept="0.8"/><feFuncG type="linear" slope="0.22" intercept="0.8"/><feFuncB type="linear" slope="0.22" intercept="0.8"/><feFuncA type="linear" slope="0" intercept="1"/></feComponentTransfer><feBlend in="SourceGraphic" in2="g2" mode="multiply"/><feComposite in2="SourceGraphic" operator="in"/></filter>
+  <filter id="pr-w-drop" x="-40%" y="-30%" width="190%" height="190%"><feDropShadow dx="3" dy="4" stdDeviation="4" flood-color="#2A2520" flood-opacity="0.38"/></filter>
+</defs>
+<g clip-path="url(#w-up)"><rect x="54" y="40" width="132" height="52" fill="url(#pr-w-water)" >
+  <animate attributeName="y" values="40;70" dur="8s" repeatCount="indefinite"/><animate attributeName="height" values="52;22" dur="8s" repeatCount="indefinite"/></rect></g>
+<ellipse cx="120" cy="40" rx="54.4" ry="15.8" fill="url(#pr-w-surf)" >
+  <animate attributeName="cy" values="40;70" dur="8s" repeatCount="indefinite"/><animate attributeName="rx" values="54.4;41.7" dur="8s" repeatCount="indefinite"/><animate attributeName="ry" values="15.8;12.1" dur="8s" repeatCount="indefinite"/></ellipse>
+<ellipse cx="120" cy="22" rx="62" ry="18" fill="none" stroke="url(#pr-w-clay)" stroke-width="10" filter="url(#pr-w-drop)"/>
+<path d="M58 22 L80 74 A40 12 0 0 0 160 74 L182 22" fill="none" stroke="url(#pr-w-clay)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" filter="url(#pr-w-drop)"/>
+<line x1="126" y1="79" x2="150" y2="97" stroke="url(#pr-w-clay)" stroke-width="10" stroke-linecap="round" filter="url(#pr-w-drop)"/>
+<ellipse cx="120" cy="22" rx="62" ry="18" fill="none" stroke="url(#pr-w-clay)" stroke-width="10" filter="url(#pr-w-tex)" opacity="0.9"/>
+<path d="M58 22 L80 74 A40 12 0 0 0 160 74 L182 22" fill="none" stroke="url(#pr-w-clay)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" filter="url(#pr-w-tex)" opacity="0.9"/>
+<line x1="126" y1="79" x2="150" y2="97" stroke="url(#pr-w-clay)" stroke-width="10" stroke-linecap="round" filter="url(#pr-w-tex)" opacity="0.9"/>
+<ellipse cx="150" cy="102" rx="4.2" ry="6" fill="url(#pr-w-water)" ><animate attributeName="cy" values="102;130" dur="1s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.8;1" dur="1s" repeatCount="indefinite"/></ellipse>
+<ellipse cx="148.6" cy="100" rx="1.3" ry="2.2" fill="#FFFFFF" opacity="0.8"><animate attributeName="cy" values="100;128" dur="1s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.8;0.8;0" keyTimes="0;0.8;1" dur="1s" repeatCount="indefinite"/></ellipse>
+<g clip-path="url(#w-lo)"><rect x="64" y="164" width="112" height="10" fill="url(#pr-w-water)" >
+  <animate attributeName="y" values="164;128" dur="8s" repeatCount="indefinite"/><animate attributeName="height" values="22;58" dur="8s" repeatCount="indefinite"/></rect></g>
+<ellipse cx="120" cy="164" rx="45.0" ry="14.7" fill="url(#pr-w-surf)" >
+  <animate attributeName="cy" values="164;128" dur="8s" repeatCount="indefinite"/><animate attributeName="rx" values="45.0;50.7" dur="8s" repeatCount="indefinite"/><animate attributeName="ry" values="14.7;16.6" dur="8s" repeatCount="indefinite"/></ellipse>
+<ellipse cx="120" cy="120" rx="52" ry="17" fill="none" stroke="url(#pr-w-clay)" stroke-width="10" filter="url(#pr-w-drop)"/>
+<path d="M68 120 L76 170 A44 13 0 0 0 164 170 L172 120" fill="none" stroke="url(#pr-w-clay)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" filter="url(#pr-w-drop)"/>
+<ellipse cx="120" cy="120" rx="52" ry="17" fill="none" stroke="url(#pr-w-clay)" stroke-width="10" filter="url(#pr-w-tex)" opacity="0.9"/>
+<path d="M68 120 L76 170 A44 13 0 0 0 164 170 L172 120" fill="none" stroke="url(#pr-w-clay)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" filter="url(#pr-w-tex)" opacity="0.9"/>
+<g fill="none" stroke="#F0D7BE" stroke-width="2.6" opacity="0.9" stroke-linecap="round"><path d="M109 151.6 A49.5 16.2 0 0 0 131 151.6"/><path d="M109 163.6 A47.4 15.5 0 0 0 131 163.6"/></g>
+</svg>

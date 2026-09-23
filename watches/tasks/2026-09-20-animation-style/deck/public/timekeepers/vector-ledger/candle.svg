@@ -1,0 +1,31 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs><clipPath id="v-c-burn"><rect x="86" y="52" width="68" height="122"><animate attributeName="y" values="62;152" dur="12s" repeatCount="indefinite"/><animate attributeName="height" values="112;22" dur="12s" repeatCount="indefinite"/></rect></clipPath></defs>
+<g clip-path="url(#v-c-burn)">
+<g fill="none" stroke="#736A60" stroke-width="2.2">
+<path d="M96.0 64.0 A24.0 6.0 0 0 0 144.0 64.0"/>
+<path d="M96.0 88.0 A24.0 6.0 0 0 0 144.0 88.0"/>
+<path d="M96.0 112.0 A24.0 6.0 0 0 0 144.0 112.0"/>
+<path d="M96.0 136.0 A24.0 6.0 0 0 0 144.0 136.0"/>
+<path d="M96.0 160.0 A24.0 6.0 0 0 0 144.0 160.0"/>
+</g>
+<g fill="none" stroke="#9A6238" stroke-width="2.8">
+<path d="M96.0 76.0 A24.0 6.0 0 0 0 144.0 76.0"/>
+<path d="M96.0 100.0 A24.0 6.0 0 0 0 144.0 100.0"/>
+<path d="M96.0 124.0 A24.0 6.0 0 0 0 144.0 124.0"/>
+<path d="M96.0 148.0 A24.0 6.0 0 0 0 144.0 148.0"/>
+</g>
+<g fill="none" stroke="#1F5FA8" stroke-width="3.6" stroke-linecap="round"><line x1="96" y1="52" x2="96" y2="174"/><line x1="144" y1="52" x2="144" y2="174"/><path d="M96.0 174.0 A24.0 6.0 0 0 0 144.0 174.0"/></g>
+</g>
+<g><animateTransform attributeName="transform" type="translate" values="0 0;0 90" dur="12s" repeatCount="indefinite"/>
+<g stroke="#736A60" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-dasharray="15 13" opacity="0.7"><path d="M28 42 C48 32 62 50 86 38"><animate attributeName="stroke-dashoffset" values="56;0" dur="1.5s" repeatCount="indefinite"/></path><path d="M34 66 C54 56 68 74 92 62"><animate attributeName="stroke-dashoffset" values="56;0" dur="1.9s" repeatCount="indefinite"/></path></g>
+<ellipse cx="96" cy="61" rx="4.4" ry="6" fill="#1F5FA8"><animate attributeName="cy" values="61;61;84" keyTimes="0;0.25;1" dur="3.1s" repeatCount="indefinite"/><animate attributeName="ry" values="6;12;7.5" keyTimes="0;0.45;1" dur="3.1s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.2;0.8;1" dur="3.1s" repeatCount="indefinite"/></ellipse>
+<ellipse cx="144" cy="61" rx="4.4" ry="6" fill="#1F5FA8"><animate attributeName="cy" values="61;61;80" keyTimes="0;0.25;1" dur="4.3s" repeatCount="indefinite"/><animate attributeName="ry" values="6;10.5;7.5" keyTimes="0;0.45;1" dur="4.3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.2;0.8;1" dur="4.3s" repeatCount="indefinite"/></ellipse>
+<path d="M96 58 C104 52 112 58 120 55 C128 52 136 58 144 58 L144 69 L96 69 Z" fill="#F2EEE4" stroke="#1F5FA8" stroke-width="3.2" stroke-linejoin="round"/>
+<path d="M96.0 69.0 A24.0 6.0 0 0 0 144.0 69.0" fill="none" stroke="#736A60" stroke-width="2.2"/>
+<line x1="120" y1="57" x2="120" y2="42" stroke="#1F5FA8" stroke-width="3"/>
+<g fill="none" stroke="#9A6238" stroke-linejoin="round"><path d="M120 4 C136 21 141 35 120 50 C99 35 104 21 120 4 Z" stroke-width="3.4"/><path d="M120 16 C130 27 133 37 120 47 C107 37 110 27 120 16 Z" stroke-width="2.4"/><path d="M120 27 C125 33 126 40 120 45 C114 40 115 33 120 27 Z" stroke-width="2.2"/></g>
+<line x1="120" y1="12" x2="120" y2="46" stroke="#48433D" stroke-width="2.4"><animate attributeName="y1" values="12;17;10;15" dur="0.6s" calcMode="discrete" repeatCount="indefinite"/></line>
+</g>
+<g fill="none" stroke="#1F5FA8" stroke-width="3.6" stroke-linejoin="round" stroke-linecap="round"><path d="M70 174 L170 174 L160 188 L80 188 Z"/></g>
+<path d="M70 174 A50 7 0 0 0 170 174" fill="none" stroke="#736A60" stroke-width="2.2"/>
+</svg>

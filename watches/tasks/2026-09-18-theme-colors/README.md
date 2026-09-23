@@ -5,6 +5,16 @@
 **Purpose of this archive:** so the work can be resumed when we have a fuller deck,
 feedback from other people, or — the big one — an actual venue.
 
+> **2026-09-21 — the framework moved.** Making a new slide no longer requires this
+> file: the live palette, its gates and the tools that check them are in `docs/theme.md`
+> and `tools/`. This archive stays frozen so its numbers keep reproducing. **One
+> threshold is enforced differently there**: §3's table states `muted vs panel ≥ 4.6:1`
+> and gives no derivation, and Ledger measures **4.578**, so the chosen theme fails its
+> own written gate by 0.02. `tools/lib.py` enforces **4.5**, which is WCAG AA for
+> normal text, and 17 px body is normal text. Either way the margin is thin, and
+> `docs/theme.md` records that as the real finding: muted-on-panel is the weakest
+> thing in the palette.
+
 Everything here is a frozen snapshot. The live deck in the project root has been
 reduced to Ledger alone; nothing in this directory is referenced by the live deck,
 and deleting this directory would not break it.

@@ -1,0 +1,40 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="ci-h-post" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#805C3B"/><stop offset="0.32" stop-color="#A8794E"/><stop offset="1" stop-color="#88623F"/>
+  </linearGradient>
+  <linearGradient id="ci-h-plate" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#8D6541"/><stop offset="0.28" stop-color="#A8794E"/><stop offset="1" stop-color="#916843"/>
+  </linearGradient>
+  <linearGradient id="ci-h-sand" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#A78E5E"/><stop offset="0.32" stop-color="#D4B478"/><stop offset="1" stop-color="#B29764"/>
+  </linearGradient>
+  <linearGradient id="ci-h-br" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#9C8053"/><stop offset="0.32" stop-color="#C9A56B"/><stop offset="1" stop-color="#A38657"/>
+  </linearGradient>
+  <clipPath id="ci-h-up"><path d="M90 20 L150 20 C150 62 125 80 122 94 L118 94 C115 80 90 62 90 20 Z"/></clipPath>
+  <clipPath id="ci-h-lo"><path d="M118 96 C115 110 90 128 90 170 L150 170 C150 128 125 110 122 96 Z"/></clipPath>
+</defs>
+<rect x="58" y="5" width="124" height="14" rx="4" fill="url(#ci-h-plate)"/>
+<rect x="58" y="171" width="124" height="14" rx="4" fill="url(#ci-h-plate)"/>
+<rect x="66" y="17" width="11" height="156" fill="url(#ci-h-post)"/>
+<rect x="163" y="17" width="11" height="156" fill="url(#ci-h-post)"/>
+<g clip-path="url(#ci-h-up)">
+  <rect x="88" y="20" width="64" height="76" fill="url(#ci-h-sand)">
+    <animate attributeName="y" values="20;94" dur="9s" repeatCount="indefinite"/>
+    <animate attributeName="height" values="76;0" dur="9s" repeatCount="indefinite"/>
+  </rect>
+</g>
+<rect x="117.5" y="96" width="5" height="76" fill="#CFB075"/>
+<g clip-path="url(#ci-h-lo)">
+  <path d="M88 172 L152 172 L152 170 C140 169 130 168 120 168 C110 168 100 169 88 170 Z" fill="url(#ci-h-sand)">
+    <animate attributeName="d" values="M88 172 L152 172 L152 170 C140 169 130 168 120 168 C110 168 100 169 88 170 Z;M88 172 L152 172 L152 158 C140 156 130 146 120 146 C110 146 100 156 88 158 Z;M88 172 L152 172 L152 148 C140 145 130 130 120 130 C110 130 100 145 88 148 Z" dur="9s" repeatCount="indefinite"/>
+  </path>
+</g>
+<!-- Glass uses his other two materials: a flat 40%-alpha body, plus the tight
+     pow(facing,10) glint that the crystal shader adds as near-white. -->
+<path d="M86 18 L154 18 C154 62 127 80 125 95 C127 110 154 128 154 172 L86 172 C86 128 113 110 115 95 C113 80 86 62 86 18 Z" fill="#C4D2DC" opacity="0.4"/>
+<path d="M95 24 C95 58 112 74 114 90 C112 106 95 126 95 166" fill="none" stroke="#FFFFFF" stroke-width="4.5" opacity="0.75"/>
+<path d="M146 26 C146 58 131 72 129 90 C131 108 146 126 146 164" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4"/>
+<rect x="108" y="89" width="24" height="12" rx="5" fill="url(#ci-h-br)"/>
+</svg>

@@ -1,0 +1,44 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <pattern id="ri-c-b77" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1.25" cy="1.25" r="1.75" fill="#1F5FA8"/><circle cx="3.75" cy="3.75" r="1.75" fill="#1F5FA8"/></pattern>
+  <pattern id="ri-c-r77" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1.25" cy="1.25" r="1.75" fill="#9A6238"/><circle cx="3.75" cy="3.75" r="1.75" fill="#9A6238"/></pattern>
+  <pattern id="ri-c-b53" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1.25" cy="1.25" r="1.45" fill="#1F5FA8"/><circle cx="3.75" cy="3.75" r="1.45" fill="#1F5FA8"/></pattern>
+  <pattern id="ri-c-r53" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1.25" cy="1.25" r="1.45" fill="#9A6238"/><circle cx="3.75" cy="3.75" r="1.45" fill="#9A6238"/></pattern>
+  <pattern id="ri-c-b30" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1.25" cy="1.25" r="1.1" fill="#1F5FA8"/><circle cx="3.75" cy="3.75" r="1.1" fill="#1F5FA8"/></pattern>
+  <pattern id="ri-c-r30" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1.25" cy="1.25" r="1.1" fill="#9A6238"/><circle cx="3.75" cy="3.75" r="1.1" fill="#9A6238"/></pattern>
+  <clipPath id="ri-c-burn"><rect x="86" y="52" width="68" height="122"><animate attributeName="y" values="62;152" dur="12s" repeatCount="indefinite"/><animate attributeName="height" values="112;22" dur="12s" repeatCount="indefinite"/></rect></clipPath>
+</defs>
+<rect width="240" height="190" fill="#FAF7F0"/>
+<g style="mix-blend-mode: multiply"><g transform="translate(2.6,1.6)">
+  <g clip-path="url(#ri-c-burn)">
+    <rect x="96" y="52" width="48" height="122" fill="url(#ri-c-r53)"/>
+    <g fill="#9A6238">
+      <rect x="96" y="76" width="48" height="6"/><rect x="96" y="100" width="48" height="6"/>
+      <rect x="96" y="124" width="48" height="6"/><rect x="96" y="148" width="48" height="6"/>
+    </g>
+  </g>
+  <path d="M70 174 L170 174 L160 188 L80 188 Z" fill="#9A6238"/>
+</g></g>
+<g style="mix-blend-mode: multiply">
+  <animateTransform attributeName="transform" type="translate" values="0 0;0 90" dur="12s" repeatCount="indefinite"/>
+  <g stroke="url(#ri-c-r30)" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="15 13">
+    <path d="M28 42 C48 32 62 50 86 38"><animate attributeName="stroke-dashoffset" values="56;0" dur="1.5s" repeatCount="indefinite"/></path>
+    <path d="M34 66 C54 56 68 74 92 62"><animate attributeName="stroke-dashoffset" values="56;0" dur="1.9s" repeatCount="indefinite"/></path>
+  </g>
+  <ellipse cx="96" cy="61" rx="3.6" ry="5" fill="#1F5FA8">
+    <animate attributeName="cy" values="61;61;84" keyTimes="0;0.22;1" dur="3.1s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="5;11.5;7" keyTimes="0;0.45;1" dur="3.1s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.18;0.82;1" dur="3.1s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="144" cy="61" rx="3.6" ry="5" fill="#1F5FA8">
+    <animate attributeName="cy" values="61;61;80" keyTimes="0;0.28;1" dur="4.3s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="5;10;7" keyTimes="0;0.45;1" dur="4.3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.2;0.8;1" dur="4.3s" repeatCount="indefinite"/>
+  </ellipse>
+  <path d="M96 58 C104 52 112 58 120 55 C128 52 136 58 144 58 L144 69 L96 69 Z" fill="url(#ri-c-b53)"/>
+  <rect x="117" y="42" width="6" height="15" fill="#1F5FA8"/>
+  <path d="M120 4 C136 21 141 35 120 50 C99 35 104 21 120 4 Z" fill="#1F5FA8">
+    <animate attributeName="d" values="M120 4 C136 21 141 35 120 50 C99 35 104 21 120 4 Z;M126 2 C138 21 137 36 120 50 C103 36 110 20 126 2 Z;M120 4 C136 21 141 35 120 50 C99 35 104 21 120 4 Z" dur="1.8s" repeatCount="indefinite"/>
+  </path>
+</g>
+</svg>

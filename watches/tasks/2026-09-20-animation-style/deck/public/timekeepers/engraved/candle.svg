@@ -1,0 +1,60 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <pattern id="eg-c-h" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(90)">
+    <line x1="0" y1="0" x2="0" y2="7" stroke="#2A2520" stroke-width="1.4"/>
+  </pattern>
+  <pattern id="eg-c-f" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(12)">
+    <line x1="0" y1="0" x2="0" y2="3" stroke="#2A2520" stroke-width="1"/>
+  </pattern>
+  <pattern id="eg-c-x" width="5.5" height="5.5" patternUnits="userSpaceOnUse" patternTransform="rotate(15)">
+    <line x1="0" y1="0" x2="0" y2="5.5" stroke="#2A2520" stroke-width="1.3"/>
+    <line x1="0" y1="0" x2="5.5" y2="0" stroke="#2A2520" stroke-width="1.3"/>
+  </pattern>
+  <clipPath id="eg-c-burn">
+    <rect x="90" y="52" width="60" height="122">
+      <animate attributeName="y" values="62;152" dur="12s" repeatCount="indefinite"/>
+      <animate attributeName="height" values="112;22" dur="12s" repeatCount="indefinite"/>
+    </rect>
+  </clipPath>
+</defs>
+<g clip-path="url(#eg-c-burn)">
+  <rect x="96" y="52" width="48" height="122" fill="#FAF7F0" stroke="#2A2520" stroke-width="2.6"/>
+  <rect x="128" y="53" width="15" height="120" fill="url(#eg-c-h)" stroke="none" opacity="0.9"/>
+  <g stroke="#2A2520" stroke-width="1.8">
+    <line x1="96" y1="76" x2="144" y2="76"/>
+    <line x1="96" y1="100" x2="144" y2="100"/>
+    <line x1="96" y1="124" x2="144" y2="124"/>
+    <line x1="96" y1="148" x2="144" y2="148"/>
+  </g>
+</g>
+<g>
+  <animateTransform attributeName="transform" type="translate" values="0 0;0 90" dur="12s" repeatCount="indefinite"/>
+  <g stroke="#2A2520" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-dasharray="13 11">
+    <path d="M26 40 C46 30 60 48 84 36"><animate attributeName="stroke-dashoffset" values="48;0" dur="1.5s" repeatCount="indefinite"/></path>
+    <path d="M32 56 C50 46 64 64 88 52"><animate attributeName="stroke-dashoffset" values="48;0" dur="1.8s" repeatCount="indefinite"/></path>
+    <path d="M36 72 C54 62 68 80 92 68"><animate attributeName="stroke-dashoffset" values="48;0" dur="2.1s" repeatCount="indefinite"/></path>
+  </g>
+  <ellipse cx="96" cy="60" rx="3.2" ry="4.5" fill="#FAF7F0" stroke="#2A2520" stroke-width="2">
+    <animate attributeName="cy" values="60;60;82" keyTimes="0;0.22;1" dur="3.1s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="4.5;10.5;6.5" keyTimes="0;0.45;1" dur="3.1s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.18;0.82;1" dur="3.1s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="144" cy="60" rx="3.2" ry="4.5" fill="#FAF7F0" stroke="#2A2520" stroke-width="2">
+    <animate attributeName="cy" values="60;60;78" keyTimes="0;0.28;1" dur="4.3s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="4.5;9;6.5" keyTimes="0;0.45;1" dur="4.3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.2;0.8;1" dur="4.3s" repeatCount="indefinite"/>
+  </ellipse>
+  <path d="M96 58 C104 53 112 58 120 55 C128 52 136 58 144 58 L144 67 L96 67 Z" fill="#FAF7F0" stroke="#2A2520" stroke-width="2.4" stroke-linejoin="round"/>
+  <line x1="120" y1="52" x2="120" y2="44" stroke="#2A2520" stroke-width="2.2" stroke-linecap="round"/>
+  <g stroke="#2A2520" stroke-width="1.3" stroke-linecap="round" opacity="0.75">
+    <line x1="120" y1="2" x2="120" y2="12"/><line x1="98" y1="10" x2="105" y2="19"/>
+    <line x1="142" y1="10" x2="135" y2="19"/><line x1="88" y1="30" x2="99" y2="32"/>
+    <line x1="152" y1="30" x2="141" y2="32"/>
+  </g>
+  <path d="M120 10 C132 24 136 34 120 46 C104 34 108 24 120 10 Z" fill="#FAF7F0" stroke="#2A2520" stroke-width="2.2">
+    <animate attributeName="d" values="M120 10 C132 24 136 34 120 46 C104 34 108 24 120 10 Z;M125 8 C135 23 134 35 120 46 C106 35 112 22 125 8 Z;M120 10 C132 24 136 34 120 46 C104 34 108 24 120 10 Z" dur="1.6s" repeatCount="indefinite"/>
+  </path>
+  <path d="M120 26 C125 31 126 37 120 43 C114 37 115 31 120 26 Z" fill="url(#eg-c-f)" stroke="none"/>
+</g>
+<path d="M74 174 L166 174 L158 186 L82 186 Z" fill="url(#eg-c-x)" stroke="#2A2520" stroke-width="2.4" stroke-linejoin="round"/>
+</svg>

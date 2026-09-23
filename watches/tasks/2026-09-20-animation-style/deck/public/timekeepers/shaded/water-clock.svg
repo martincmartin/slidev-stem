@@ -1,0 +1,24 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <clipPath id="w-up"><path d="M54 0 L186 0 L160 74 A40 12 0 0 1 80 74 Z"/></clipPath>
+  <clipPath id="w-lo"><path d="M64 100 L176 100 L164 170 A44 13 0 0 1 76 170 Z"/></clipPath>
+  <linearGradient id="sh-w-pot" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5E3A20"/><stop offset="0.28" stop-color="#C08B4A"/><stop offset="0.62" stop-color="#A86B3D"/><stop offset="1" stop-color="#5E3A20"/></linearGradient>
+  <linearGradient id="sh-w-wat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5A96D4"/><stop offset="1" stop-color="#17457A"/></linearGradient>
+  <filter id="sh-w-drop" x="-30%" y="-30%" width="170%" height="180%"><feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#2A2520" flood-opacity="0.28"/></filter>
+</defs>
+<g clip-path="url(#w-up)"><rect x="54" y="40" width="132" height="52" fill="url(#sh-w-wat)" >
+  <animate attributeName="y" values="40;70" dur="8s" repeatCount="indefinite"/><animate attributeName="height" values="52;22" dur="8s" repeatCount="indefinite"/></rect></g>
+<ellipse cx="120" cy="40" rx="54.4" ry="15.8" fill="#5A96D4" >
+  <animate attributeName="cy" values="40;70" dur="8s" repeatCount="indefinite"/><animate attributeName="rx" values="54.4;41.7" dur="8s" repeatCount="indefinite"/><animate attributeName="ry" values="15.8;12.1" dur="8s" repeatCount="indefinite"/></ellipse>
+<ellipse cx="120" cy="22" rx="62" ry="18" fill="none" stroke="url(#sh-w-pot)" stroke-width="9" filter="url(#sh-w-drop)"/>
+<path d="M58 22 L80 74 A40 12 0 0 0 160 74 L182 22" fill="none" stroke="url(#sh-w-pot)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" filter="url(#sh-w-drop)"/>
+<line x1="126" y1="79" x2="150" y2="97" stroke="url(#sh-w-pot)" stroke-width="9" stroke-linecap="round" filter="url(#sh-w-drop)"/>
+<ellipse cx="150" cy="102" rx="4.2" ry="6" fill="url(#sh-w-wat)" ><animate attributeName="cy" values="102;130" dur="1s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0" keyTimes="0;0.8;1" dur="1s" repeatCount="indefinite"/></ellipse>
+<g clip-path="url(#w-lo)"><rect x="64" y="164" width="112" height="10" fill="url(#sh-w-wat)" >
+  <animate attributeName="y" values="164;128" dur="8s" repeatCount="indefinite"/><animate attributeName="height" values="22;58" dur="8s" repeatCount="indefinite"/></rect></g>
+<ellipse cx="120" cy="164" rx="45.0" ry="14.7" fill="#5A96D4" >
+  <animate attributeName="cy" values="164;128" dur="8s" repeatCount="indefinite"/><animate attributeName="rx" values="45.0;50.7" dur="8s" repeatCount="indefinite"/><animate attributeName="ry" values="14.7;16.6" dur="8s" repeatCount="indefinite"/></ellipse>
+<ellipse cx="120" cy="120" rx="52" ry="17" fill="none" stroke="url(#sh-w-pot)" stroke-width="9" filter="url(#sh-w-drop)"/>
+<path d="M68 120 L76 170 A44 13 0 0 0 164 170 L172 120" fill="none" stroke="url(#sh-w-pot)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" filter="url(#sh-w-drop)"/>
+<g fill="none" stroke="#5E3A20" stroke-width="3" stroke-linecap="round"><path d="M109 151.6 A49.5 16.2 0 0 0 131 151.6"/><path d="M109 163.6 A47.4 15.5 0 0 0 131 163.6"/></g>
+</svg>

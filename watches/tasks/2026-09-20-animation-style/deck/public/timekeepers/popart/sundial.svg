@@ -1,0 +1,15 @@
+<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<defs><pattern id="pa-s-dot" width="7" height="7" patternUnits="userSpaceOnUse"><circle cx="1.75" cy="1.75" r="1.9" fill="#9A6238"/><circle cx="5.25" cy="5.25" r="1.9" fill="#9A6238"/></pattern>
+  <clipPath id="pa-s-plate"><ellipse cx="120" cy="138" rx="96" ry="36"/></clipPath>
+</defs>
+<path d="M24 138 A96 36 0 0 0 216 138 L216 148 A96 36 0 0 1 24 148 Z" fill="#9A6238" stroke="#2A2520" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="120" cy="138" rx="96" ry="36" fill="#D8C3B0" stroke="#2A2520" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<g clip-path="url(#pa-s-plate)"><rect x="24" y="102" width="192" height="72" fill="url(#pa-s-dot)"/></g>
+<ellipse cx="120" cy="138" rx="96" ry="36" fill="none" stroke="#2A2520" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<g stroke="#2A2520" stroke-width="5" stroke-linecap="round"><line x1="202.7" y1="148.3" x2="187.7" y2="146.4"/><line x1="184.1" y1="158.6" x2="172.4" y2="154.8"/><line x1="154.8" y1="165.6" x2="148.5" y2="160.5"/><line x1="120" y1="168" x2="120" y2="162.5"/><line x1="85.2" y1="165.6" x2="91.5" y2="160.5"/><line x1="55.9" y1="158.6" x2="67.6" y2="154.8"/><line x1="37.3" y1="148.3" x2="52.3" y2="146.4"/></g>
+<path d="M120 138 L174 138 L199.8 151.5 Z" fill="#736A60" stroke="#2A2520" stroke-width="4" stroke-linejoin="round">
+  <animate attributeName="d" values="M120 138 L174 138 L199.8 151.5 Z;M120 138 L174 138 L186.2 159.1 Z;M120 138 L174 138 L167.3 165.0 Z;M120 138 L174 138 L144.7 168.7 Z;M120 138 L174 138 L120.0 170.0 Z;M120 138 L174 138 L95.3 168.7 Z;M120 138 L174 138 L72.7 165.0 Z;M120 138 L174 138 L53.8 159.1 Z;M120 138 L174 138 L40.2 151.5 Z" dur="11s" repeatCount="indefinite"/>
+</path>
+<path d="M120 138 L120 56 L174 138 Z" fill="#1F5FA8" stroke="#2A2520" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M120 138 L120 56 L136 80 L130 138 Z" fill="#FAF7F0" opacity="0.35"/>
+</svg>
