@@ -97,20 +97,26 @@ implying a measurement.
 
 ## Clicks
 
-The cards appear one click at a time, and the takeaway line comes last:
+The cards appear one click at a time, and the takeaway line comes last. The
+cards are an array in the slide's `<script setup>`, so the click numbers come
+from their position:
 
 ```md
-<TimekeeperCard
-v-click="1" :dim="$clicks > 1 && $clicks < 5"
+<div v-for="(card, i) in cards" :key="card.name" v-click="i + 1">
+  <TimekeeperCard v-bind="card" :dim="$clicks > i + 1 && $clicks <= cards.length" />
+</div>
 ...
-/>
-...
-<div v-click="5" class="tk-takeaway">
+<div v-click="cards.length + 1" class="tk-takeaway">
 ```
 
 The `dim` expression means "dim me while a _later_ card is being discussed, then
-un-dim for the takeaway", which is why it has an upper bound. Update the bound when
-you add cards.
+un-dim for the takeaway". To add a card, add it to the array. Add a `[click]`
+line to the speaker notes too.
+
+**Put `v-click` on the wrapper `<div>`, not on the card.** When `dim` changes,
+Vue re-applies the card's `:class` binding and removes the classes that
+`v-click` added (`slidev-vclick-target` and others). The card still shows and
+hides correctly, but a Slidev feature that reads those classes can break.
 
 ## Speaker notes
 

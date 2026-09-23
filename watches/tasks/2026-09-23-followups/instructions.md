@@ -96,21 +96,12 @@ archive's `torture.md` needs the Slidev parser.
 branch or `.tk-art video` CSS, and no `var(--palette-*, #dark)` fallbacks. The
 `video` row and the fallback comment are gone too.
 
-**B3. The reveal logic uses hand-kept numbers.** Each card has
-`v-click="N" :dim="$clicks > N && $clicks < 5"`. The hourglass's
-`$clicks > 4 && $clicks < 5` is never true. `docs/slide-patterns.md` tells you to
-"update the bound when you add cards". Suggested fix: the four cards as an array
-in `<script setup>`, rendered with `v-for`; `:dim="$clicks > i + 1 &&
-$clicks <= cards.length"`; the takeaway at `cards.length + 1`.
-
-- **Known issue to handle at the same time:** when `dim` changes, Vue re-applies
-  the card's `:class` binding and drops the classes the `v-click` directive added
-  (`slidev-vclick-target` and so on). The cards still show, dim and hide
-  correctly in both directions (tested by computed opacity, forward and back),
-  but a Slidev feature that reads those classes could break. Putting `v-click`
-  on a wrapper element, not on the component, avoids the clash.
-- Verify with `./tools/offline_check.py <build> --clicks 2`: the output must be
-  `-----`, `V----`, `dV---`, `ddV--`, `dddV-`, `VVVVV`, and so on backwards.
+**B3. Done (2026-09-23).** The four cards are an array in the slide's
+`<script setup>`, rendered with `v-for`. `v-click` is on a wrapper `<div>`, so
+the `dim` re-render keeps Slidev's classes. `./tools/offline_check.py --clicks 2
+--back` gives the same visibility as before, forward and back. All 5 v-click
+elements keep `slidev-vclick-target` (before: down to 2 of 5 by the fourth click).
+`docs/slide-patterns.md` "Clicks" describes the new pattern.
 
 ## C. Repo and infrastructure
 
@@ -313,9 +304,9 @@ each series' AGENTS.md.
 
 ## Tools in this directory
 
-| file                       | what it does                                                                                                                                                                                                                                                                                                                                |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `./tools/offline_check.py` | Loads a built deck with every outside request blocked. Prints each slide's classes, background, text colour, body font and `h1` style, and the loaded web fonts. Saves screenshots (`--shots`), steps through clicks by opacity (`--clicks`), emulates a dark-mode laptop (`--color-scheme dark`). Exits 1 if any outside request was made. |
-| `./tools/pixel_diff.py`    | Compares two screenshots and counts the differing pixels inside each art box and outside all of them.                                                                                                                                                                                                                                       |
+| file                       | what it does                                                                                                                                                                                                                                                                                                                                                                                                              |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `./tools/offline_check.py` | Loads a built deck with every outside request blocked. Prints each slide's classes, background, text colour, body font and `h1` style, and the loaded web fonts. Saves screenshots (`--shots`), steps through clicks by opacity and counts the elements that keep their v-click class (`--clicks`, and back with `--back`), emulates a dark-mode laptop (`--color-scheme dark`). Exits 1 if any outside request was made. |
+| `./tools/pixel_diff.py`    | Compares two screenshots and counts the differing pixels inside each art box and outside all of them.                                                                                                                                                                                                                                                                                                                     |
 
 Both run with `.venv/bin/python3`.

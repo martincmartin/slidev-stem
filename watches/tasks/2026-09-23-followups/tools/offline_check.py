@@ -18,7 +18,9 @@ body font, the h1's font/weight/size/colour, and the families of every loaded
 web font. --shots PREFIX also saves PREFIX-<slide>-<clicks>.png (1960x1104).
 --clicks N presses the right arrow from slide N and prints, per press, one
 character per v-click element, judged by its opacity: '-' hidden, 'd' dimmed,
-'V' visible.
+'V' visible. --back then presses the left arrow as many times. After each
+string, 'classes k/n' says how many of the n v-click elements still have
+Slidev's slidev-vclick-target class.
 """
 import argparse, asyncio, json, mimetypes, pathlib, urllib.parse
 from playwright.async_api import async_playwright
@@ -40,13 +42,19 @@ INFO_JS = """() => {
 }"""
 # Mark every v-click element once, at clicks=0, then judge each by its computed
 # opacity. Do not judge by Slidev's classes: when a component re-renders its own
-# :class binding (TimekeeperCard's `dim`), Vue drops the classes the v-click
-# directive added, although the element still shows and hides correctly.
+# :class binding, Vue can drop the classes the v-click directive added, although
+# the element still shows and hides correctly. The opacity is multiplied down
+# through single-child descendants, so a v-click wrapper around a dimmed
+# component reads as dimmed.
 MARK_JS = """() => document.querySelectorAll('.slidev-vclick-target').forEach(e => {
   if (e.closest('.slidev-page') && e.closest('.slidev-page').offsetParent !== null) e.dataset.vc = '1' })"""
 CLICKS_JS = """() => [...document.querySelectorAll('[data-vc]')].map(e => {
-  const o = parseFloat(getComputedStyle(e).opacity);
+  let o = 1;
+  for (let x = e; x; x = x.children.length === 1 ? x.children[0] : null)
+    o *= parseFloat(getComputedStyle(x).opacity);
   return o < 0.05 ? '-' : (o < 0.9 ? 'd' : 'V') }).join('')"""
+CLASSES_JS = """() => { const m = [...document.querySelectorAll('[data-vc]')];
+  return m.filter(e => e.classList.contains('slidev-vclick-target')).length + '/' + m.length }"""
 
 
 async def main(a):
@@ -80,9 +88,11 @@ async def main(a):
             await pg.goto(f"http://{HOST}/{a.clicks}")
             await pg.wait_for_timeout(1500)
             await pg.evaluate(MARK_JS)
-            for i in range(a.presses):
-                print(f"after {i} presses: {await pg.evaluate(CLICKS_JS):<12} url={pg.url.split(HOST)[1]}")
-                await pg.keyboard.press("ArrowRight")
+            keys = ["ArrowRight"] * a.presses + (["ArrowLeft"] * a.presses if a.back else [])
+            for i, key in enumerate(keys):
+                state = f"{await pg.evaluate(CLICKS_JS):<12} classes {await pg.evaluate(CLASSES_JS)}"
+                print(f"after {i} presses: {state}  url={pg.url.split(HOST)[1]}")
+                await pg.keyboard.press(key)
                 await pg.wait_for_timeout(500)
         await b.close()
     print("outside requests:", len(blocked))
@@ -98,6 +108,7 @@ if __name__ == "__main__":
     ap.add_argument("--shots", metavar="PREFIX", help="save screenshots as PREFIX-<slide>-<clicks>.png")
     ap.add_argument("--clicks", type=int, metavar="SLIDE", help="step through this slide's clicks")
     ap.add_argument("--presses", type=int, default=7)
+    ap.add_argument("--back", action="store_true", help="then press the left arrow as many times")
     ap.add_argument("--color-scheme", default="light", choices=["light", "dark"],
                     help="emulate the OS setting; a light-only theme must stay light")
     raise SystemExit(asyncio.run(main(ap.parse_args())))

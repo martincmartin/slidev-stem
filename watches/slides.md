@@ -19,31 +19,36 @@ class: tk-timekeepers
 
 # Before clocks, time was a flow
 
+<script setup>
+// One card per click, in this order; the takeaway comes after the last card.
+const cards = [
+  {
+    name: "Sundial", date: "c. 1500 BCE", img: "/timekeepers/line-weighted/sundial.svg",
+    stat: "±16 min", unit: "the Sun vs. a steady clock", problem: "No sun, no time",
+  },
+  {
+    name: "Water clock", date: "c. 1400 BCE", img: "/timekeepers/line-weighted/water-clock.svg",
+    stat: "~15 min", unit: "per day, the best ones", problem: "Freezes in winter",
+  },
+  {
+    name: "Candle", date: "9th c. CE", img: "/timekeepers/line-weighted/candle.svg",
+    stat: "?", unknown: true, unit: "no good data found", problem: "Drafts speed it up",
+  },
+  {
+    name: "Hourglass", date: "by 1338", img: "/timekeepers/line-weighted/hourglass.svg",
+    stat: "?", unknown: true, unit: "no good data found", problem: "Someone must flip it",
+  },
+];
+</script>
+
 <div class="tk-grid">
-  <TimekeeperCard
-    v-click="1" :dim="$clicks > 1 && $clicks < 5"
-    name="Sundial" date="c. 1500 BCE"
-    img="/timekeepers/line-weighted/sundial.svg"
-    stat="±16 min" unit="the Sun vs. a steady clock" problem="No sun, no time"
-  />
-  <TimekeeperCard
-    v-click="2" :dim="$clicks > 2 && $clicks < 5"
-    name="Water clock" date="c. 1400 BCE" img="/timekeepers/line-weighted/water-clock.svg"
-    stat="~15 min" unit="per day, the best ones" problem="Freezes in winter"
-  />
-  <TimekeeperCard
-    v-click="3" :dim="$clicks > 3 && $clicks < 5"
-    name="Candle" date="9th c. CE" img="/timekeepers/line-weighted/candle.svg"
-    stat="?" unknown unit="no good data found" problem="Drafts speed it up"
-  />
-  <TimekeeperCard
-    v-click="4" :dim="$clicks > 4 && $clicks < 5"
-    name="Hourglass" date="by 1338" img="/timekeepers/line-weighted/hourglass.svg"
-    stat="?" unknown unit="no good data found" problem="Someone must flip it"
-  />
+  <!-- v-click is on the wrapper: on the card, the `dim` re-render drops its classes -->
+  <div v-for="(card, i) in cards" :key="card.name" v-click="i + 1">
+    <TimekeeperCard v-bind="card" :dim="$clicks > i + 1 && $clicks <= cards.length" />
+  </div>
 </div>
 
-<div v-click="5" class="tk-takeaway">
+<div v-click="cards.length + 1" class="tk-takeaway">
   Their rate is set by the outside world. <span>A clock sets its own.</span>
 </div>
 
@@ -63,6 +68,9 @@ class: tk-timekeepers
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px 16px;
+}
+.tk-grid > div {
+  display: grid; /* the card fills its wrapper, so a row's cards match in height */
 }
 .tk-takeaway { font-size: 20px; font-weight: 500; }
 .tk-takeaway span { color: var(--palette-accent); }
