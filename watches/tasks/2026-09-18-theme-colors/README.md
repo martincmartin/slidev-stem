@@ -15,6 +15,14 @@ feedback from other people, or — the big one — an actual venue.
 > `docs/theme.md` records that as the real finding: muted-on-panel is the weakest
 > thing in the palette.
 
+> **2026-09-23 — Ledger is now a theme.** Ledger is the house look for every STEM
+> talk, so it moved into a shared Slidev theme, `stem/themes/ledger/`, and the live
+> deck uses `theme: ledger` instead of `seriph`. The palette values did not change.
+> This archive's deck still uses `seriph` and still builds. To compare other
+> palettes on the live talk later, see `stem/tasks/2026-09-23-house-theme/PLAN.md`
+> ("Part 2"): palettes become CSS classes applied to imported slides, not copies of
+> the slide.
+
 Everything here is a frozen snapshot. The live deck in the project root has been
 reduced to Ledger alone; nothing in this directory is referenced by the live deck,
 and deleting this directory would not break it.

@@ -13,8 +13,10 @@ pnpm add -D <pkg>     # not `npm i -D <pkg>`
 pnpm dev              # not `npm run dev`
 ```
 
-`pnpm-lock.yaml` is the lockfile of record. Never create or commit a
-`package-lock.json`.
+The repo root (`stem/`) is the pnpm workspace root. It holds the one lockfile,
+`../pnpm-lock.yaml`, for every talk and for the house theme in
+`../themes/ledger/`. Run `pnpm install` there. Never create or commit a
+`package-lock.json`, or a `pnpm-lock.yaml` inside a talk.
 
 ## Format after editing any file
 
@@ -23,6 +25,9 @@ After editing **any** file, run Prettier before you finish:
 ```bash
 pnpm format           # prettier --write .
 ```
+
+Run it here for this talk. If you edited the house theme, run it at the repo
+root instead, which formats everything.
 
 `pnpm format:check` (`prettier --check .`) verifies formatting without
 writing, which is the one to run in CI or when you only want to know whether

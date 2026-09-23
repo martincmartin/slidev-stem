@@ -17,15 +17,13 @@ change one.
 
 ## How to use it
 
-**Give the slide `class: tk-slide`, and use the variables, not literals.** The
-seven values are set once, on the `.tk-slide` class in
-[`styles/index.css`](../styles/index.css). Components read `var(--tk-ink)` and so
-on, so the class themes everything on the slide. The same seven values are in
-`LEDGER` in `tools/lib.py`, under the same names, because that is what
-`palette.py` measures. **If you change a colour, change it in both places.**
-`python3 tools/palette.py` fails if the two differ. It also fails if a slide,
-page or component declares a `--tk-*` variable itself. [slide-patterns.md](slide-patterns.md) shows a slide
-that uses the class.
+**Use the variables, not literals.** The seven values are set once, on every
+slide, by the house theme (`stem/themes/ledger/styles/ledger.css`). Components
+read `var(--tk-ink)` and so on, so everything on a slide follows the palette.
+The same seven values are in `LEDGER` in `tools/lib.py`, under the same names,
+because that is what `palette.py` measures. **If you change a colour, change it
+in both places.** `python3 tools/palette.py` fails if the two differ. It also
+fails if a slide, page or component in this talk declares a `--tk-*` variable.
 
 **One accent per slide.** The accent is not "the blue one", it is _the thing you
 want them to look at_. A slide with four accented spans has none. The 37 px stat

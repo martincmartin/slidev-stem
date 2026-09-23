@@ -245,14 +245,17 @@ def art_files(paths=None):
     return sorted((ROOT / "public/timekeepers").rglob("*.svg"))
 
 
-THEME_CSS = ROOT / "styles/index.css"   # where the deck sets LEDGER, as --tk-* variables
+# Where the deck gets LEDGER, as --tk-* variables: the house theme shared by all
+# the STEM talks, one level up (stem/themes/ledger/).
+THEME_CSS = ROOT.parent / "themes/ledger/styles/ledger.css"
+THEME_SELECTOR = ".slidev-layout"   # the rule in THEME_CSS that holds the palette
 
 
 def css_palette(path=THEME_CSS):
-    """The --tk-* variables that the `.tk-slide` rule in `path` sets, as
+    """The --tk-* variables that the THEME_SELECTOR rule in `path` sets, as
     {role: value}, with values upper-cased. None if there is no such rule."""
     src = re.sub(r"/\*.*?\*/", "", path.read_text(), flags=re.S)
-    block = re.search(r"(?m)^\s*\.tk-slide\s*\{([^}]*)\}", src)
+    block = re.search(r"(?m)^\s*" + re.escape(THEME_SELECTOR) + r"\s*\{([^}]*)\}", src)
     if not block:
         return None
     return {k: v.strip().upper()
@@ -260,14 +263,12 @@ def css_palette(path=THEME_CSS):
 
 
 def stray_palette_declarations():
-    """Every place outside THEME_CSS that declares a --tk-* variable, as
-    (path, line number, text). The deck sets the palette in one place only."""
+    """Every place in this talk that declares a --tk-* variable, as
+    (path, line number, text). Only the theme sets the palette."""
     files = sorted(ROOT.glob("slides*.md")) + sorted(ROOT.glob("pages/*.md")) \
         + sorted((ROOT / "components").glob("*.vue")) + sorted((ROOT / "styles").glob("*.css"))
     out = []
     for f in files:
-        if f == THEME_CSS:
-            continue
         for n, line in enumerate(f.read_text().splitlines(), 1):
             if re.search(r"--tk-[\w-]+\s*:", line):
                 out.append((f.relative_to(ROOT), n, line.strip()))

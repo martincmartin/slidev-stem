@@ -1,0 +1,13 @@
+{
+  "name": "stem-talks",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "^3.9.8",
+    "prettier-plugin-slidev": "^1.0.5"
+  }
+}

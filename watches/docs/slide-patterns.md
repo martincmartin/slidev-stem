@@ -1,66 +1,73 @@
 # Slide patterns
 
-How a slide in this deck is actually built: the theme block, the components, the
+How a slide in this deck is actually built: the theme, the components, the
 click conventions and the speaker notes. `slides.md` is the working example —
 the "Before clocks" slide uses every pattern here.
 
-## The theme block
+## The theme
 
-Slidev's `seriph` theme is the base. A content slide opts into Ledger with the
-`tk-slide` class. That class is defined once, in
-[`styles/index.css`](../styles/index.css). It sets the seven `--tk-*` palette
-variables, the slide background and the text colour, so it themes the slide and
-every component on it. The slide's own `<style>` holds only its layout:
+Every slide is Ledger, because the deck uses the house theme:
+
+```yaml
+theme: ledger # stem/themes/ledger/, shared by all the STEM talks
+```
+
+The theme sets the seven `--tk-*` palette variables, the slide background, the
+text colour and the fonts, on every slide. A slide needs no class to get them. So
+a slide's own `<style>` holds only its layout:
 
 ```md
 ---
 layout: full
-class: tk-slide tk-timekeepers
+class: tk-timekeepers
 ---
 
-<div class="tk-title">Before clocks, time was a flow</div>
+# Before clocks, time was a flow
 
 ...
 
 <style>
-.tk-slide.tk-timekeepers {
-  font-family: "IBM Plex Sans", Arial, sans-serif;
+.tk-timekeepers {
   padding: 52px 65px 36px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   position: relative;
 }
-.tk-title {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 600;
-  font-size: 37px;
-  line-height: 1.1;
+.tk-timekeepers h1 {
+  margin: 0; /* the flex gap spaces it */
 }
 </style>
 ```
 
-Two notes on that block:
+Three notes on that block:
 
-- **Never set a colour on the slide.** Use `var(--tk-accent)` and the other
-  variables. If a slide needs a colour that the palette does not have, see
-  [theme.md](theme.md#adding-a-colour). Until 2026-09-23 each slide declared the
-  palette itself, and the second role was named `--tk-warn`. Now the palette is in
-  one place, and the names match `LEDGER` in `tools/lib.py`.
+- **Use a markdown `#` heading for the title.** The theme styles `h1` as the
+  slide title: Fraunces 600, 37 px, ink.
+- **Never set a colour or a font on the slide.** Use `var(--tk-accent)` and the
+  other variables for colour. In a component, use `@apply font-serif` or
+  `@apply font-mono` for type. If a slide needs a colour that the palette does
+  not have, see [theme.md](theme.md#adding-a-colour). `tools/palette.py` fails
+  if a slide, page or component declares a `--tk-*` variable.
 - **`layout: full` plus a class, not a custom layout.** It keeps each slide's layout
   next to its content, which has been worth more than the duplication costs — the
   slide you are reading is the slide you are editing.
 
 Typefaces: **Fraunces** (serif, 600) for titles and card names, **IBM Plex Sans**
-(400, 500, 600) for body, **IBM Plex Mono** (600) for numbers. Each has a real
-fallback stack.
+(400, 500, 600) for body, **IBM Plex Mono** (600) for numbers and code. Each has
+a real fallback stack.
 
-**The fonts are self-hosted**, from the `@fontsource/*` packages, and
-[`styles/index.css`](../styles/index.css) imports them. `pnpm build` copies the
-font files into `dist/`, so the deck needs no network at the venue. Only the
-weights listed above are imported. **If you use a new weight, add its import in
-the same change.** If you do not, the browser uses the nearest imported weight
-or fakes a bold, and gives no error. Until 2026-09-23 no font was loaded, and
+**The fonts are self-hosted.** The theme imports them from the `@fontsource/*`
+packages in `themes/ledger/styles/fonts.css`, and `pnpm build` copies the font
+files into `dist/`. The deck makes no outside requests, so it needs no network
+at the venue. Only the weights listed above are imported. **If you use a new
+weight, add its import to the theme in the same change.** If you do not, the
+browser uses the nearest imported weight or fakes a bold, and gives no error.
+
+**History.** Until 2026-09-23 the deck used Slidev's `seriph` theme, and each
+Ledger slide set its own palette and fonts. Seriph also asked Google Fonts for
+its fonts and Unsplash for a cover photo, so offline the title slide showed
+white text on a grey placeholder. Before that, no font was loaded at all, and
 every card stat rendered in Courier New.
 
 ## `TimekeeperCard.vue`

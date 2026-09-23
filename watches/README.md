@@ -4,12 +4,13 @@ A [Slidev](https://github.com/slidevjs/slidev) deck for a monthly STEM meetup:
 15–20 minutes, weekday evening, back room of a bar.
 
 ```bash
-pnpm install      # pnpm, not npm — see AGENTS.md
+pnpm install      # run at the repo root (stem/); pnpm, not npm — see AGENTS.md
 pnpm dev          # http://localhost:3030
 pnpm format       # prettier; run after editing any file
 ```
 
-Edit [slides.md](slides.md).
+Edit [slides.md](slides.md). The look comes from the house theme, Ledger, in
+[`../themes/ledger/`](../themes/ledger/), which every STEM talk shares.
 
 ## Making new slides
 
@@ -37,8 +38,8 @@ to re-open a decision, not to make a slide.**
 | [`tasks/2026-09-20-animation-style/`](tasks/2026-09-20-animation-style/) | what do the illustrations look like | **set 2, "Line, weighted"** |
 
 ```bash
-npx slidev tasks/2026-09-18-theme-colors/deck/slides.md      # 23 candidate palettes
-npx slidev tasks/2026-09-20-animation-style/deck/slides.md   # 16 drawing sets
+pnpm exec slidev tasks/2026-09-18-theme-colors/deck/slides.md      # 23 candidate palettes
+pnpm exec slidev tasks/2026-09-20-animation-style/deck/slides.md   # 16 drawing sets
 ```
 
 [`docs/README.md`](docs/README.md) explains why `docs/` and `tasks/` are separate

@@ -81,8 +81,8 @@ Each archive renders as a deck of its own, which is the fastest way to see what
 was rejected:
 
 ```bash
-npx slidev tasks/2026-09-18-theme-colors/deck/slides.md      # 23 candidate palettes
-npx slidev tasks/2026-09-20-animation-style/deck/slides.md   # 16 drawing sets
+pnpm exec slidev tasks/2026-09-18-theme-colors/deck/slides.md      # 23 candidate palettes
+pnpm exec slidev tasks/2026-09-20-animation-style/deck/slides.md   # 16 drawing sets
 ```
 
 ## What is still unknown

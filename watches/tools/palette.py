@@ -80,14 +80,14 @@ def show_palette():
 
 
 def show_css_sync():
-    """The gates above measure lib.LEDGER, but the slides render the copy in
-    styles/index.css. Fail if the two differ, or if anything else sets the palette."""
+    """The gates above measure lib.LEDGER, but the slides render the copy in the
+    ledger theme. Fail if the two differ, or if anything in the talk sets the palette."""
     P = lib.LEDGER
-    css_name = lib.THEME_CSS.relative_to(lib.ROOT)
+    css_name = lib.THEME_CSS.relative_to(lib.ROOT.parent)
     print(f"\nthe deck's copy: {css_name} must match LEDGER\n")
     css = lib.css_palette()
     if css is None:
-        print(f"  FAIL no `.tk-slide {{ ... }}` rule in {css_name}")
+        print(f"  FAIL no `{lib.THEME_SELECTOR} {{ ... }}` rule in {css_name}")
         return False
     ok = True
     for k in list(P) + [k for k in css if k not in P]:
@@ -99,7 +99,7 @@ def show_css_sync():
         print(f"  {rule(good)} --tk-{k:<11} lib {want or '-':<8} css {got or '-':<8}{why}")
     for path, n, text in lib.stray_palette_declarations():
         ok = False
-        print(f"  FAIL {path}:{n} sets {text!r} -- set the palette only in {css_name}")
+        print(f"  FAIL {path}:{n} sets {text!r} -- only the theme sets the palette ({css_name})")
     return ok
 
 

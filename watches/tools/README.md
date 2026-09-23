@@ -7,7 +7,8 @@ behind the thresholds is in `../tasks/`.
 **All of them read `lib.py` for constants.** Change a threshold, a palette entry,
 a stroke weight or the venue table there and every tool follows. Nothing is
 repeated between tools, so a number cannot drift. The one repeat is the palette:
-the slides read it from `../styles/index.css`, and `palette.py` fails if that copy
+the slides read it from the house theme
+(`../../themes/ledger/styles/ledger.css`), and `palette.py` fails if that copy
 differs from `lib.py`.
 
 | tool          | needs                    | answers                                                                        |

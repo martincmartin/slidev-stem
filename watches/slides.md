@@ -1,7 +1,12 @@
 ---
-theme: seriph
+# Ledger, the house theme for the STEM talks: ../themes/ledger/
+theme: ledger
 title: What Every Nerd Should Know About Watches
 
+# Illustrations are drawing set 2, "Line, weighted", and only that set. Fifteen
+# other sets were built and compared; they live in
+# tasks/2026-09-20-animation-style/, which renders as a deck of its own:
+#   pnpm exec slidev tasks/2026-09-20-animation-style/deck/slides.md
 # Read docs/legibility.md ("The known risk in the current choice") before
 # swapping the art for anything else -- in particular, this set tolerates about
 # half the room light the top-ranked one does (mean Fmax 0.138 vs 0.254), which
@@ -18,10 +23,10 @@ Speaker notes here
 
 ---
 layout: full
-class: tk-slide tk-timekeepers
+class: tk-timekeepers
 ---
 
-<div class="tk-title">Before clocks, time was a flow</div>
+# Before clocks, time was a flow
 
 <div class="tk-grid">
   <TimekeeperCard
@@ -52,20 +57,16 @@ class: tk-slide tk-timekeepers
 </div>
 
 <style>
-/* Colours come from `.tk-slide` in styles/index.css. Layout stays here. */
-.tk-slide.tk-timekeepers {
-  font-family: 'IBM Plex Sans', Arial, sans-serif;
+/* Colours and type come from the ledger theme. Layout stays here. */
+.tk-timekeepers {
   padding: 52px 65px 36px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   position: relative;
 }
-.tk-title {
-  font-family: 'Fraunces', Georgia, serif;
-  font-weight: 600;
-  font-size: 37px;
-  line-height: 1.1;
+.tk-timekeepers h1 {
+  margin: 0; /* the flex gap spaces it */
 }
 .tk-grid {
   display: grid;

@@ -40,9 +40,9 @@ defineProps<{
 
 <style scoped>
 /* Sizes are for Slidev's default 980×552 canvas (half the 1920-wide design).
-   Colors come from the --tk-* variables that the tk-slide class sets in
-   styles/index.css; the fallbacks are the original dark theme, so the card
-   still works on a slide that sets nothing. */
+   Colors come from the --tk-* variables and fonts from the ledger theme
+   (themes/ledger/). The colour fallbacks are the original dark theme, for a
+   deck that does not use ledger. */
 .tk-card {
   display: flex;
   align-items: center;
@@ -89,14 +89,14 @@ defineProps<{
   min-width: 0;
 }
 .tk-name {
-  font-family: "Fraunces", Georgia, serif;
+  @apply font-serif;
   font-weight: 600;
   font-size: 29px;
   line-height: 1.05;
   color: var(--tk-ink, #f0e9dc);
 }
 .tk-stat {
-  font-family: "IBM Plex Mono", "Courier New", monospace;
+  @apply font-mono;
   font-weight: 600;
   font-size: 37px;
   line-height: 1;
