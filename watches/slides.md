@@ -56,7 +56,6 @@ const cards = [
   display: flex;
   flex-direction: column;
   gap: 16px;
-  position: relative;
 }
 .tk-timekeepers h1 {
   margin: 0; /* the flex gap spaces it */

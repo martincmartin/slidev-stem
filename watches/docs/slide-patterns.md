@@ -14,36 +14,14 @@ theme: ledger # stem/themes/ledger/, shared by all the STEM talks
 
 The theme sets the seven `--palette-*` palette variables, the slide background, the
 text colour and the fonts, on every slide. A slide needs no class to get them. So
-a slide's own `<style>` holds only its layout:
+a slide's own `<style>` holds only its layout. The "Before clocks" slide in
+`slides.md` is the example: `layout: full`, `class: tk-timekeepers`, and a
+`<style>` block that lays out that class.
 
-```md
----
-layout: full
-class: tk-timekeepers
----
-
-# Before clocks, time was a flow
-
-...
-
-<style>
-.tk-timekeepers {
-  padding: 52px 65px 36px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  position: relative;
-}
-.tk-timekeepers h1 {
-  margin: 0; /* the flex gap spaces it */
-}
-</style>
-```
-
-Three notes on that block:
+Three rules for a slide:
 
 - **Use a markdown `#` heading for the title.** The theme styles `h1` as the
-  slide title: Fraunces 600, 37 px, ink.
+  slide title. Inside a flex layout, set `margin: 0` on it.
 - **Never set a colour or a font on the slide.** Use `var(--palette-accent)` and the
   other variables for colour. In a component, use `@apply font-serif` or
   `@apply font-mono` for type. If a slide needs a colour that the palette does
@@ -54,38 +32,31 @@ Three notes on that block:
   next to its content, which has been worth more than the duplication costs — the
   slide you are reading is the slide you are editing.
 
-Typefaces: **Fraunces** (serif, 600) for titles and card names, **IBM Plex Sans**
-(400, 500, 600) for body, **IBM Plex Mono** (600) for numbers and code. Each has
-a real fallback stack.
-
 **The fonts are self-hosted.** The theme imports them from the `@fontsource/*`
 packages in `themes/ledger/styles/fonts.css`, and `pnpm build` copies the font
 files into `dist/`. The deck makes no outside requests, so it needs no network
-at the venue. Only the weights listed above are imported. **If you use a new
-weight, add its import to the theme in the same change.** If you do not, the
+at the venue. `fonts.css` imports only the weights the talks use. **If you use a
+new weight, add its import to the theme in the same change.** If you do not, the
 browser uses the nearest imported weight or fakes a bold, and gives no error.
 
 ## `TimekeeperCard.vue`
 
 One card: a drawing, a date, a name, one big number, its unit, and the catch.
+The props are typed at the top of the component, and the slide's `cards` array
+is the example. Each prop has one job:
 
-```md
-<TimekeeperCard
-  name="Water clock" date="c. 1400 BCE"
-  img="/timekeepers/line-weighted/water-clock.svg"
-  stat="~15 min" unit="per day, the best ones" problem="Freezes in winter"
-/>
-```
-
-| prop      | meaning                                                                |
+| prop      | job                                                                    |
 | --------- | ---------------------------------------------------------------------- |
-| `name`    | 29 px serif, ink                                                       |
-| `date`    | 17 px muted, under the art                                             |
-| `img`     | the SVG, shown at the `width` and `height` it states (122 × 97 here)   |
-| `stat`    | **the one number**: 37 px mono, accent                                 |
-| `unit`    | 17 px muted, what the number means                                     |
-| `problem` | 20 px bold, `--palette-second`: the catch                              |
+| `name`    | the card's title                                                       |
+| `date`    | when, under the art                                                    |
+| `img`     | the SVG, shown at the `width` and `height` it states                   |
+| `stat`    | **the one number**, in the accent                                      |
+| `unit`    | what the number means                                                  |
+| `problem` | the catch, in `--palette-second`                                       |
 | `unknown` | draws `stat` in muted instead of accent — for "we could not find data" |
+
+The sizes are in the component's CSS, and the reasons for them are in
+[legibility.md](../../docs/legibility.md#text-sizes).
 
 It is purely presentational: the **slide** decides when a card appears and when it
 dims (see [Clicks](#clicks)). The card only knows how to look.
@@ -98,35 +69,18 @@ implying a measurement.
 ## Clicks
 
 The cards appear one click at a time, and the takeaway line comes last. The
-cards are an array in the slide's `<script setup>`, so the click numbers come
-from their position:
-
-```md
-<div class="tk-grid">
-  <TimekeeperCard v-for="(card, i) in cards" :key="card.name" v-bind="card" v-click="i + 1" />
-</div>
-
-<div v-click="cards.length + 1" class="tk-takeaway">
-```
-
-To add a card, add it to the array. Add a `[click]` line to the speaker notes
-too.
+cards are an array in the slide's `<script setup>`, rendered with `v-for`. Each
+card's `v-click` number comes from its position in the array, and the takeaway's
+from the array's length. To add a card, add it to the array. Add a `[click]`
+line to the speaker notes too.
 
 **Dimming is CSS in the slide, not a prop.** While a card is being discussed,
-the cards before it fade to 35%. When the takeaway appears, they come back.
-`v-click` gives the element of the current click the class
-`slidev-vclick-current`, and gives elements whose click has passed the class
-`slidev-vclick-prior`. One rule uses them:
-
-```css
-.tk-grid:has(> .slidev-vclick-current) > .slidev-vclick-prior {
-  opacity: 0.35;
-}
-```
-
-The takeaway is outside `.tk-grid`, so on its click no card in the grid is
-current and nothing is dimmed. The dim fades in 0.35 s; the reveal keeps
-Slidev's 0.1 s.
+the cards before it dim. When the takeaway appears, they come back. `v-click`
+gives the element of the current click the class `slidev-vclick-current`, and
+gives elements whose click has passed the class `slidev-vclick-prior`. One rule
+in the slide's `<style>` uses them: it dims each `slidev-vclick-prior` card while
+`.tk-grid` has a `slidev-vclick-current` card. The takeaway is outside
+`.tk-grid`, so on its click no card in the grid is current and nothing is dimmed.
 
 **Do not bind `:class` on the card's root element.** `v-click` adds its classes
 to that element. When a `:class` binding changes, Vue rewrites the element's

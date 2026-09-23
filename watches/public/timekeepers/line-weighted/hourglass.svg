@@ -1,14 +1,12 @@
 <svg width="122" height="97" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
-<!-- Line's bulbs sit at x=88/152 rather than the 86/154 the other sets use, so
-     the clips are drawn one unit tighter to stay inside the 3-wide outline. The
-     clips reach the bulb's own ends, y=18 and y=172, so the sand meets the rails
-     with no gap. They used to stop at 20 and 170 and left a pale strip at each end.
+<!-- The clips reach the bulb's ends, y=18 and y=172, so the sand meets the rails
+     with no gap. Their sides (x=90/150) are under the outline's stroke
+     (x=88/152, width 6), so the sand meets the glass with no gap either.
 
-     THE FALLING STREAM ENDS AT THE PILE'S CREST, and its y2 tracks the crest
-     (168 -> 146 -> 130) on the same 9 s clock as the pile. Painting it to the floor
-     does not work here: the sand is fill-opacity 0.85, not solid, so a stream drawn
-     underneath SHOWS THROUGH the sand it has already landed in. Depth ordering is
-     not enough when the thing on top is translucent. -->
+     The falling stream ends at the pile's crest, and its y2 tracks the crest
+     (168 -> 146 -> 130) on the pile's 9 s clock. Do not draw it to the floor
+     under the pile: the sand is translucent (fill-opacity 0.85), so the stream
+     would show through it. -->
 <defs>
   <clipPath id="t13-h-up"><path d="M90 18 L150 18 C150 62 124 80 121 94 L119 94 C116 80 90 62 90 18 Z"/></clipPath>
   <clipPath id="t13-h-lo"><path d="M119 96 C116 110 90 128 90 172 L150 172 C150 128 124 110 121 96 Z"/></clipPath>

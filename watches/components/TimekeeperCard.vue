@@ -41,17 +41,14 @@ defineProps<{
   border-radius: 12px;
 }
 
+/* No image size here: the image is shown at the width and height its SVG
+   states, which is the size the checks in stem/tools/ measure. */
 .tk-art {
   flex: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-}
-/* No size here: the image is shown at the width and height its SVG states,
-   which is the size the checks in stem/tools/ measure. */
-.tk-art img {
-  border-radius: 6px;
 }
 .tk-date {
   font-size: 17px;
