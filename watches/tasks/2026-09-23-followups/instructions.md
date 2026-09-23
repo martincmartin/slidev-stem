@@ -89,8 +89,8 @@ takeaway span ink.
 **B1. Done (2026-09-23).** The Slidev starter's leftovers are deleted
 (`components/Counter.vue`, `pages/imported-slides.md`, `snippets/external.ts`,
 `slides-default.md`). The outline is now `docs/rough-slides.md` (user's
-decision). The `torture.md` and `pages/*.md` globs stay in `.prettierrc`: the
-archive's `torture.md` needs the Slidev parser.
+decision). (The `torture.md` glob was later removed from `.prettierrc`: see
+C3.)
 
 **B2. Done (2026-09-23).** `TimekeeperCard.vue` has no `video` prop, `<video>`
 branch or `.tk-art video` CSS, and no `var(--palette-*, #dark)` fallbacks. The
@@ -112,29 +112,21 @@ are deleted. If the user deploys later: the lockfile and workspace are at
 command such as `pnpm --filter watches build`, and the publish directory
 `watches/dist`.
 
-**C2. Move `.prettierrc` to `stem/`,** with the same override globs, so a new
-talk needs no copy. Then move the rule from `AGENTS.md` (this talk's) ("add a new deck
-filename to `.prettierrc`") to `stem/AGENTS.md`, and delete `AGENTS.md` (this talk's)
-if nothing is left in it. Check: `pnpm format` at the root changes no deck file
-(`git diff` is empty afterwards).
+**C2. Done (2026-09-23).** `.prettierrc` is at `stem/`, with the globs
+`slides.md`, `slides-*.md` and `**/pages/*.md`. `watches/.prettierignore` is
+deleted, and `watches/.vscode/settings.json` finds both files at the repo root.
+The deck-file rule is in `stem/AGENTS.md`, and `watches/AGENTS.md` is deleted.
+`pnpm format` changed no deck file.
 
-**C3. `pnpm format` also rewrites the frozen archives** under `tasks/`.
-They are formatted today, but a Prettier upgrade could change files that must
-not change. Option: add `**/tasks/*/deck/` to `stem/.prettierignore`.
-**Decision:** the user's. Also: `stem/.prettierignore` still lists `/AGENTS.md`
-as hand-written; it is now kept formatted, so that entry can go.
+**C3. Done (2026-09-23).** `stem/.prettierignore` ignores `tasks/` at any
+depth. The comparison of five options is in `./PLAN.md`. The `/AGENTS.md` and
+`/review-quality-slidev.md` entries are removed.
 
-**C4. `stem/review-quality-slidev.md` is untracked.** It is the user's agent
-definition for code-quality reviews. **Decision:** where it lives (for example
-`~/.claude/agents/` for all projects, or `stem/.claude/agents/`). Do not edit it
-without asking.
+**C4. No longer applies (2026-09-23).** The user moved the file.
 
-**C5. The offline check needs a permanent home.** `~/Develop/slidev/AGENTS.md`
-says "build and load the deck with outside requests blocked; it must make none",
-but names no tool. `./tools/offline_check.py` in this directory does it (see
-"Tools" below). **Decision:** where it lives, for example
-`~/Develop/slidev/tools/` (all Slidev projects, but not under git) or
-`stem/tools/`. Then name it in the AGENTS.md line.
+**C5. Done (2026-09-23).** A copy of `./tools/offline_check.py` is in
+`stem/tools/`, and `~/Develop/slidev/AGENTS.md` names it. It is a candidate for
+a future `slidev-common` repo, when there is a second series.
 
 ## D. Docs structure
 
@@ -231,7 +223,8 @@ reads from the git root down to the working directory, so it also does not see
 `~/Develop/slidev` the git root for all series, or copy the Slidev rules into
 each series' AGENTS.md.
 
-**F2. A typo in `~/.config/agents/AGENTS.md`:** "approprite".
+**F2. Done (2026-09-23).** The user fixed the typo; no AGENTS.md has
+"approprite".
 
 ---
 

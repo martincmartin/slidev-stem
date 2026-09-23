@@ -174,10 +174,8 @@ python3 tools/artcheck.py         # every SVG: structure, grammar, legibility
 pnpm build                        # it actually builds
 ```
 
-`.prettierrc` routes deck files through `prettier-plugin-slidev` and everything else
-through the normal Markdown parser. **That split is load-bearing**: the Markdown
-parser reads per-slide frontmatter as a thematic break plus a paragraph, inserts a
-blank line after the `---` and strips indentation off nested YAML — silently breaking
-the slide. If you add a deck whose filename is not `slides.md`, `slides-*.md`,
-`torture.md` or `pages/*.md`, add it to the `files` array in `.prettierrc` **in the
-same change**.
+`stem/.prettierrc` sends deck files to `prettier-plugin-slidev` and all other
+Markdown to the normal Markdown parser. **This split is necessary**: the Markdown
+parser breaks a slide's frontmatter. If you add a deck whose filename is not
+`slides.md`, `slides-*.md` or `pages/*.md`, add it to the `files` array in
+`stem/.prettierrc` **in the same change**. `stem/AGENTS.md` has the details.

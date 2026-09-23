@@ -38,4 +38,18 @@ Never create a `package-lock.json`, or a `pnpm-lock.yaml` inside a talk.
 
 After editing any file, run `pnpm format` (`prettier --write .`) here, at the
 repo root. It formats every talk and the theme. `pnpm format:check` checks
-without writing.
+without writing. It does not format `tasks/` directories: a finished task must
+not change.
+
+### `.prettierrc` must list every deck file
+
+`.prettierrc` sends Slidev decks to `prettier-plugin-slidev` (the
+`parser: "slidev"` override). All other Markdown goes to Prettier's normal
+Markdown parser. The Markdown parser reads a slide's frontmatter as a thematic
+break and a paragraph. It adds a blank line after the `---` and removes the
+indentation from nested YAML keys, which breaks the slide with no error.
+
+The override globs are `slides.md`, `slides-*.md` and `**/pages/*.md`, in any
+talk. If a new deck file does not match them, add its name to the `files` array
+in `.prettierrc` in the same change. If you format a deck without that entry,
+Prettier corrupts it.
