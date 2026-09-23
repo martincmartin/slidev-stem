@@ -1,7 +1,6 @@
 # Illustrations — "Line, weighted"
 
-Deep blue line work on the card panel. Chosen 2026-09-21 out of sixteen drawing
-sets. Four exist: `public/timekeepers/line-weighted/{sundial,water-clock,candle,hourglass}.svg`.
+Deep blue line work on the card panel. Four exist: `public/timekeepers/line-weighted/{sundial,water-clock,candle,hourglass}.svg`.
 
 **The style is a grammar, not a look.** All of it is a box, a palette, a stroke
 ladder and a habit about what moves. Follow those four and a new drawing will read
@@ -30,7 +29,7 @@ px**. Everything below is in units; the CSS px column is what the room gets.
 | `#D3DCE3` | knockout: a pale face that must read as lit, not as bare paper       | 1.20:1   |
 
 **Which colour, and at what opacity, is decided by the job — not by taste.** The
-set has a rule, and it is the rule that was broken for a day:
+set has a rule:
 
 | the thing that MOVES |                 | the thing that CONTAINS it |                 |
 | -------------------- | --------------- | -------------------------- | --------------- |
@@ -40,11 +39,8 @@ set has a rule, and it is the rule that was broken for a day:
 | water clock water    | `0.60` → 3.38:1 | water clock vessel         | unfilled        |
 
 **The subject of the card is drawn at 0.60–1.0; the thing holding it is drawn at
-0.07–0.18.** Until 2026-09-21 the water clock drew its water — its subject, and its
-whole animation — at `0.18`, i.e. at container opacity, and from the back row the
-level change peaked at 2.34:1 with not one pixel of the card crossing 3:1. Raising
-it to 0.60 took the peak to 7.59:1 over 658 CSS px². That is the whole fix, and the
-rule above is how to avoid needing it again.
+0.07–0.18.** A subject drawn at container opacity disappears at the back row, and
+its animation with it. See the water clock example under "Washes" below.
 
 `#143C6B` is **not** the theme's accent `#1F5FA8`. It is the accent deepened along
 its own hue, because the accent is specified for a 37 px numeral and a 3 px line
@@ -98,7 +94,7 @@ in unison.
 6. **Run the three tools.** `artcheck` first (it is instant), then look at
    `contact.py`'s sheet at several times, then `barroom.py`.
 
-## Washes, and the one real defect in the shipped art
+## Washes
 
 A faint fill — `fill-opacity="0.18"` — is a **wash**. It is a legitimate device:
 it says "water" without shouting, and it is why these drawings read as volumes
@@ -119,24 +115,21 @@ animation is _for_ is the thing that must still be visible after the blur, and a
 wash is the first thing to go. `tools/motion.py` is the check — it is the only one
 that can see this, because a single frame cannot.
 
-> **Worked example, fixed 2026-09-21.** The water clock's whole eight-second level
-> change was drawn in `fill-opacity="0.18"` bodies and `0.32` surface discs — 1.37:1
-> and 1.80:1. It passed `artcheck`, and `barroom` said `hold 2.66 / p90 7.71`: the
-> outline fine, the median dragged down. What neither could see was that the
-> **animation** peaked at 2.34:1 with **zero** CSS px² crossing 3:1 between states.
-> Eight repairs were built and measured; the shipped one raises the two fills to
-> 0.60 and 0.78 and changes nothing else. `dPeak` 2.34 → 7.59, area over 3:1 → 658
-> px², and the card went from worst to best of the four. The full comparison,
-> including four options that measure better and look worse, is in
-> `tasks/2026-09-20-animation-style/water-clock-fix/`.
+> **Worked example: the water clock.** Draw its eight-second level change in
+> `fill-opacity="0.18"` bodies and `0.32` surface discs (1.37:1 and 1.80:1), and it
+> passes `artcheck`, and `barroom` gives `hold 2.66 / p90 7.71`: the outline is fine.
+> But the **animation** peaks at 2.34:1, with **zero** CSS px² crossing 3:1 between
+> states. The shipped art draws the two fills at 0.60 and 0.78 and nothing else
+> differs: `dPeak` 7.59, and 658 px² over 3:1. Four other repairs measure better and
+> look worse; the comparison is in `tasks/2026-09-20-animation-style/water-clock-fix/`.
 
 ### Depth order does not hide anything, because the substance is translucent
 
 Drawing the moving substance at `0.85` rather than solid has a consequence that is
-easy to miss: **painting something underneath it does not hide it.** The hourglass
-shipped with its falling stream drawn from the neck to the floor of the lower bulb,
-with the settled pile painted afterwards on top — correct depth order, and the
-dashes still showed straight through the sand they had supposedly landed in.
+easy to miss: **painting something underneath it does not hide it.** An hourglass
+stream drawn from the neck to the floor of the lower bulb, with the settled pile
+painted on top of it, is in correct depth order — and the dashes still show
+straight through the sand they have supposedly landed in.
 
 > **If a mark needs to be hidden, it has to end, or be clipped. Being behind
 > something is not enough unless that something is solid.** The hourglass's stream
@@ -161,7 +154,7 @@ For `#143C6B` on the panel the two constraints bracket a window:
 
 ```
   alpha   colour     vs panel   vs the outline
-   0.18   #CACECE      1.37:1       7.01x   below the floor      <- the old bug
+   0.18   #CACECE      1.37:1       7.01x   below the floor
    0.55   #788CA1      2.99:1       3.21x   at the floor
    0.60   #6D839B      3.38:1       2.84x   OK                   <- shipped
    0.85   #35577D      6.45:1       1.49x   OK, at the edge
@@ -209,8 +202,5 @@ building rather than while re-deciding.
 ## Regenerating, and where the art came from
 
 The four SVGs in `public/timekeepers/line-weighted/` are **source files: edit them
-directly.** They were originally generated by `reline.py` in the animation-style
-archive, which derived them from an earlier set by deepening the blue, replacing an
-invented grey with the theme's muted, and doubling every stroke. That generator
-still exists, still runs, and now writes into the archive's own copy of the art —
-not into the live deck. Treat it as provenance, not as a build step.
+directly.** Do not regenerate them with `reline.py` from the animation-style
+archive: it writes into the archive's own copy of the art, not into the live deck.

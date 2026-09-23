@@ -77,14 +77,6 @@ learns that the framework has moved on. `tasks/2026-09-20-animation-style/README
 | Palette            | **Ledger**                  | 2026-09-19 | [`tasks/2026-09-18-theme-colors/`](../tasks/2026-09-18-theme-colors/)       |
 | Illustration style | **Set 2, "Line, weighted"** | 2026-09-21 | [`tasks/2026-09-20-animation-style/`](../tasks/2026-09-20-animation-style/) |
 
-Each archive renders as a deck of its own, which is the fastest way to see what
-was rejected:
-
-```bash
-pnpm exec slidev tasks/2026-09-18-theme-colors/deck/slides.md      # 23 candidate palettes
-pnpm exec slidev tasks/2026-09-20-animation-style/deck/slides.md   # 16 drawing sets
-```
-
 ## What is still unknown
 
 Both decisions rest on a guess, and it is the same guess: **nobody has seen the
