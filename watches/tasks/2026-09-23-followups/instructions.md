@@ -1,4 +1,4 @@
-# Follow-ups: what is left to improve in the STEM talks repo
+# Follow-ups: what is left to improve in the watches talk
 
 **Written:** 2026-09-23, at the end of a long session that reviewed the `watches`
 deck, fixed most of the review's findings, and made `stem/` a pnpm workspace with
@@ -9,6 +9,13 @@ git history (`git log`) and is not repeated here.
 Start by writing `PLAN.md` in this directory, as the global AGENTS.md says. Ask
 the user at every **Decision** below before you build.
 
+Most items are in the `watches` talk. A few (C2–C4, D1, D5) change the repo root,
+`stem/`, and group F is outside the repo.
+
+**Paths:** a path starting with `stem/`, `~` or `./` is exactly that (`./` is
+this task directory). Any other path is inside `watches/`, the talk this task
+lives in.
+
 ## Where things are now (2026-09-23, commit `89fa08c`)
 
 ```
@@ -16,16 +23,16 @@ stem/                      git root and pnpm workspace root (one lockfile)
   AGENTS.md                series guidance, role, pnpm and format rules
   themes/ledger/           the house Slidev theme: fonts, --palette-* variables, h1, cover
   tasks/2026-09-23-house-theme/PLAN.md   why the theme exists; Part 2 design (item E1)
-  tasks/2026-09-23-followups/            this task; tools/ has the offline checker
   watches/                 the first talk: slides.md, components/, docs/, tools/, public/
     tasks/                 two frozen archives (palette choice, drawing-style choice)
+    tasks/2026-09-23-followups/          this task; ./tools/ has the offline checker
 ~/Develop/slidev/AGENTS.md rules for ALL Slidev projects (offline assets, fonts)
 ~/.config/agents/AGENTS.md global rules (also ~/.claude/AGENTS.md, a symlink)
 ```
 
 The deck has **3 slides**: a placeholder title slide, the finished "Before
 clocks, time was a flow" slide (four timekeeper cards), and a stub escapement
-slide. The outline, `watches/what-every-nerd-should-know-about-watches.md`, has
+slide. The outline, `what-every-nerd-should-know-about-watches.md`, has
 11 slides.
 
 ## Priorities
@@ -72,7 +79,7 @@ per day, the best ones" (a daily drift), in the same 37 px accent. The back row
 will compare them. Suggested fix: change the sundial unit so it clearly is not
 per day. **Decision:** the wording.
 
-**A5. "One accent per slide" and slide 2 disagree.** `watches/docs/theme.md`
+**A5. "One accent per slide" and slide 2 disagree.** `docs/theme.md`
 says one accent per slide. Slide 2 has two accent stats and an accent span in the
 takeaway. **Decision:** state an exception (card stats count as one) or make the
 takeaway span ink.
@@ -107,25 +114,25 @@ $clicks <= cards.length"`; the takeaway at `cards.length + 1`.
   correctly in both directions (tested by computed opacity, forward and back),
   but a Slidev feature that reads those classes could break. Putting `v-click`
   on a wrapper element, not on the component, avoids the clash.
-- Verify with `tools/offline_check.py <build> --clicks 2`: the output must be
+- Verify with `./tools/offline_check.py <build> --clicks 2`: the output must be
   `-----`, `V----`, `dV---`, `ddV--`, `dddV-`, `VVVVV`, and so on backwards.
 
 ## C. Repo and infrastructure
 
 **C1. Deploy configs are untested since the workspace move.**
-`watches/netlify.toml` and `watches/vercel.json` run `pnpm build` in `watches/`,
+`netlify.toml` and `vercel.json` run `pnpm build` in `watches/`,
 but the lockfile and workspace are now at `stem/`. Each host probably needs its
 base directory at the repo root, a build command such as
-`pnpm --filter watches build`, and the publish directory `watches/dist`.
+`pnpm --filter watches build`, and the publish directory `watches/dist` (from the repo root).
 **Decision:** does the user deploy these decks at all? If not, delete both files.
 
 **C2. Move `.prettierrc` to `stem/`,** with the same override globs, so a new
-talk needs no copy. Then move the rule from `watches/AGENTS.md` ("add a new deck
-filename to `.prettierrc`") to `stem/AGENTS.md`, and delete `watches/AGENTS.md`
+talk needs no copy. Then move the rule from `AGENTS.md` (this talk's) ("add a new deck
+filename to `.prettierrc`") to `stem/AGENTS.md`, and delete `AGENTS.md` (this talk's)
 if nothing is left in it. Check: `pnpm format` at the root changes no deck file
 (`git diff` is empty afterwards).
 
-**C3. `pnpm format` also rewrites the frozen archives** under `watches/tasks/`.
+**C3. `pnpm format` also rewrites the frozen archives** under `tasks/`.
 They are formatted today, but a Prettier upgrade could change files that must
 not change. Option: add `**/tasks/*/deck/` to `stem/.prettierignore`.
 **Decision:** the user's. Also: `stem/.prettierignore` still lists `/AGENTS.md`
@@ -138,7 +145,7 @@ without asking.
 
 **C5. The offline check needs a permanent home.** `~/Develop/slidev/AGENTS.md`
 says "build and load the deck with outside requests blocked; it must make none",
-but names no tool. `tools/offline_check.py` in this directory does it (see
+but names no tool. `./tools/offline_check.py` in this directory does it (see
 "Tools" below). **Decision:** where it lives, for example
 `~/Develop/slidev/tools/` (all Slidev projects, but not under git) or
 `stem/tools/`. Then name it in the AGENTS.md line.
@@ -149,7 +156,7 @@ but names no tool. `tools/offline_check.py` in this directory does it (see
 talk but sit in `watches/`:
 
 - `docs/theme.md` and the palette gates in `tools/lib.py` and `tools/palette.py`
-  (they are about the Ledger theme, so they could live in `themes/ledger/`);
+  (they are about the Ledger theme, so they could live in `stem/themes/ledger/`);
 - `docs/legibility.md` and the venue model (about the bar, so `stem/docs/`).
 
 **Decision:** is the illustration style ("Line, weighted",
@@ -157,8 +164,8 @@ talk but sit in `watches/`:
 together with, the second talk. `tools/lib.py` finds the theme CSS through
 `THEME_CSS` and `PALETTE_PREFIX`; update both if files move.
 
-**D2. The palette exists twice:** `themes/ledger/styles/ledger.css` (what renders)
-and `LEDGER` in `watches/tools/lib.py` (what `palette.py` measures).
+**D2. The palette exists twice:** `stem/themes/ledger/styles/ledger.css` (what renders)
+and `LEDGER` in `tools/lib.py` (what `palette.py` measures).
 `palette.py` fails if they differ, so they cannot drift silently. Option: have
 `lib.py` read the values from the CSS, so there is one copy. Consider with D1.
 
@@ -168,12 +175,12 @@ criteria, or move it out. If it stays, re-measure it whenever the art changes
 (`tools/barroom.py`, `tools/motion.py`).
 
 **D4. A stale line in a frozen archive.**
-`watches/tasks/2026-09-20-animation-style/README.md`, line 42, says the water
+`tasks/2026-09-20-animation-style/README.md`, line 42, says the water
 clock defect is "recorded, unfixed". It was fixed on 2026-09-21. The global
 AGENTS.md rule: add a dated line to that task's README. Do not change the old
 text.
 
-**D5. Close the house-theme task.** `tasks/2026-09-23-house-theme/PLAN.md` says
+**D5. Close the house-theme task.** `stem/tasks/2026-09-23-house-theme/PLAN.md` says
 "Part 1 done; waiting for the user to accept it". Ask the user. On acceptance,
 set the status to done. `docs/` is already up to date for it.
 
@@ -181,14 +188,14 @@ set the status to done. `docs/` is already up to date for it.
 
 **E1. Trigger:** the talk has at least one slide of each kind a palette must
 handle, the five the palette archive tested: **cards, dense text, code, a chart,
-and images or photos** (`watches/tasks/2026-09-18-theme-colors/evidence/
+and images or photos** (`tasks/2026-09-18-theme-colors/evidence/
 torture-sheet-*.png`). Until then, do nothing.
 
-The design is in `tasks/2026-09-23-house-theme/PLAN.md`. In short:
+The design is in `stem/tasks/2026-09-23-house-theme/PLAN.md`. In short:
 
 - One deck has one theme, so candidate palettes are CSS classes, for example
   `.palette-beacon`, that set the same `--palette-*` variables.
-- A comparison deck, for example `watches/slides-compare.md` (its name matches
+- A comparison deck, for example `slides-compare.md` (its name matches
   the `.prettierrc` globs), imports real slides with `src: ./slides.md#2` and
   adds a palette class with `class:`. Both parts were tested on 2026-09-23.
 - A `palette:` headmatter key, added as a class by a default layout, switches
@@ -242,8 +249,8 @@ each series' AGENTS.md.
   release satisfies (Prettier is `^3.9.8` for this reason) and regenerate the
   lockfile.
 - The sandbox may refuse to bind a local web server. Serve a build through
-  Playwright's request routing instead (`tools/offline_check.py` does).
-- `watches/.venv` has Playwright, Pillow and numpy.
+  Playwright's request routing instead (`./tools/offline_check.py` does).
+- `.venv` has Playwright, Pillow and numpy.
 - The terminal `claude` is 2.1.280 from the Homebrew cask `claude-code@latest`.
   It reads AGENTS.md files from the working directory up to `/`, unless a
   `CLAUDE.md` or `CLAUDE.local.md` exists anywhere in that chain. Do not add one
@@ -271,9 +278,9 @@ each series' AGENTS.md.
 ### How the 2026-09-23 changes were verified (reuse this)
 
 1. `pnpm exec slidev build --out <scratch dir>` in the talk's directory.
-2. `tools/offline_check.py <build> 1:0 2:0 2:5 3:0 --shots <prefix>`: zero
+2. `./tools/offline_check.py <build> 1:0 2:0 2:5 3:0 --shots <prefix>`: zero
    outside requests, and the expected fonts and colours on each slide.
-3. Screenshots before and after a refactor, then `tools/pixel_diff.py`: every
+3. Screenshots before and after a refactor, then `./tools/pixel_diff.py`: every
    changed pixel must be inside an animated drawing (the SVG animations run on
    a clock, so those always differ).
 4. `python3 tools/palette.py` and `python3 tools/artcheck.py` in `watches/`.
@@ -281,9 +288,9 @@ each series' AGENTS.md.
 
 ## Tools in this directory
 
-| file                     | what it does                                                                                                                                                                                                                                                                                                                                |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tools/offline_check.py` | Loads a built deck with every outside request blocked. Prints each slide's classes, background, text colour, body font and `h1` style, and the loaded web fonts. Saves screenshots (`--shots`), steps through clicks by opacity (`--clicks`), emulates a dark-mode laptop (`--color-scheme dark`). Exits 1 if any outside request was made. |
-| `tools/pixel_diff.py`    | Compares two screenshots and counts the differing pixels inside each art box and outside all of them.                                                                                                                                                                                                                                       |
+| file                       | what it does                                                                                                                                                                                                                                                                                                                                |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `./tools/offline_check.py` | Loads a built deck with every outside request blocked. Prints each slide's classes, background, text colour, body font and `h1` style, and the loaded web fonts. Saves screenshots (`--shots`), steps through clicks by opacity (`--clicks`), emulates a dark-mode laptop (`--color-scheme dark`). Exits 1 if any outside request was made. |
+| `./tools/pixel_diff.py`    | Compares two screenshots and counts the differing pixels inside each art box and outside all of them.                                                                                                                                                                                                                                       |
 
-Both run with `watches/.venv/bin/python3`.
+Both run with `.venv/bin/python3`.
