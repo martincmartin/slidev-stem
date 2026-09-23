@@ -6,8 +6,9 @@ a shared Slidev theme (Ledger). This file lists **only what is still open**, plu
 what the next session must know to do it well. Everything that was finished is in
 git history (`git log`) and is not repeated here.
 
-Start by writing `PLAN.md` in this directory, as the global AGENTS.md says. Ask
-the user at every **Decision** below before you build.
+Most items below already say how to do them. Write `PLAN.md` in this directory
+only for an item with a real question about the best way to do it (user,
+2026-09-23). Ask the user at every **Decision** below before you build.
 
 Most items are in the `watches` talk. A few (C2–C4, D1, D5) change the repo root,
 `stem/`, and group F is outside the repo.
@@ -32,8 +33,7 @@ stem/                      git root and pnpm workspace root (one lockfile)
 
 The deck has **3 slides**: a placeholder title slide, the finished "Before
 clocks, time was a flow" slide (four timekeeper cards), and a stub escapement
-slide. The outline, `what-every-nerd-should-know-about-watches.md`, has
-11 slides.
+slide. The outline, `docs/rough-slides.md`, has 11 slides.
 
 ## Priorities
 
@@ -86,20 +86,15 @@ takeaway span ink.
 
 ## B. Code cleanup (watches)
 
-**B1. Delete the Slidev starter's leftovers:** `components/Counter.vue`,
-`pages/imported-slides.md`, `snippets/external.ts`, `slides-default.md` (15 KB,
-seriph, a remote cover image). None is referenced. Keep the `torture.md` and
-`pages/*.md` globs in `.prettierrc`: the archive's `torture.md` needs the Slidev
-parser. **Decision:** where the content outline
-(`what-every-nerd-should-know-about-watches.md`) belongs. It is working notes
-for the talk, not a deliverable.
+**B1. Done (2026-09-23).** The Slidev starter's leftovers are deleted
+(`components/Counter.vue`, `pages/imported-slides.md`, `snippets/external.ts`,
+`slides-default.md`). The outline is now `docs/rough-slides.md` (user's
+decision). The `torture.md` and `pages/*.md` globs stay in `.prettierrc`: the
+archive's `torture.md` needs the Slidev parser.
 
-**B2. `TimekeeperCard.vue` has dead features.** The `video` prop, its
-`<video>` branch and the `.tk-art video` CSS were for a time-lapse that was
-removed. The `docs/slide-patterns.md` props table still lists `video`. The
-`var(--palette-*, #dark)` fallbacks are the old dark theme; the Ledger theme
-always sets the variables, and `tools/palette.py` fails if it does not. Remove
-both, and the matching docs row and comment.
+**B2. Done (2026-09-23).** `TimekeeperCard.vue` has no `video` prop, `<video>`
+branch or `.tk-art video` CSS, and no `var(--palette-*, #dark)` fallbacks. The
+`video` row and the fallback comment are gone too.
 
 **B3. The reveal logic uses hand-kept numbers.** Each card has
 `v-click="N" :dim="$clicks > N && $clicks < 5"`. The hourglass's
@@ -157,12 +152,42 @@ talk but sit in `watches/`:
 
 - `docs/theme.md` and the palette gates in `tools/lib.py` and `tools/palette.py`
   (they are about the Ledger theme, so they could live in `stem/themes/ledger/`);
-- `docs/legibility.md` and the venue model (about the bar, so `stem/docs/`).
+- `docs/legibility.md` and the venue model (about the bar, so `stem/docs/`);
+- the illustration style, "Line, weighted" (see below).
 
-**Decision:** is the illustration style ("Line, weighted",
-`docs/illustrations.md`) series-wide or specific to this talk? Do this before, or
-together with, the second talk. `tools/lib.py` finds the theme CSS through
-`THEME_CSS` and `PALETTE_PREFIX`; update both if files move.
+**Decided (user, 2026-09-23): the illustration style is series-wide.** It
+applies to every talk in `stem/`, not to all Slidev projects. Move its docs and
+tools up, out of `watches/`, to `stem/` (for example `stem/docs/` and
+`stem/tools/`):
+
+- `docs/illustrations.md`;
+- `tools/artcheck.py`, `tools/contact.py`, `tools/barroom.py`, `tools/motion.py`;
+- the art constants in `tools/lib.py`: `ART_BOX`, `CARD_ART`, `STROKE_LADDER`,
+  `ART_INK`, `ART_FIELD`.
+
+The drawings stay in the talk: `public/timekeepers/` is `watches` content. In
+the moved `illustrations.md`, the four timekeepers become examples, with paths
+into `watches/`.
+
+Things to handle in the move:
+
+- `barroom.py` and `motion.py` use the venue model, so the venue model and
+  `docs/legibility.md` must move with them.
+- `lib.py` sets `ROOT` to the talk directory. `art_files()` defaults to
+  `ROOT/public/timekeepers`, and `contact.py` writes to `ROOT/out/`. From
+  `stem/tools/`, the tools must take the talk directory or the SVG paths as
+  arguments.
+- `CARD_ART` (122 × 97 px) is the size that `TimekeeperCard.vue`, a `watches`
+  component, gives the art. Every stroke-width number in CSS px comes from it.
+  Ask the user whether the card is also series-wide, or whether each talk sets
+  its own art size.
+- The `.venv` with Playwright is in `watches/`. The rendering tools need one
+  at `stem/`.
+- The grammar (box, stroke ladder, colour roles, motion rules) is series-wide.
+  The colour values are not: they depend on the palette, and the opacity window
+  in `illustrations.md` depends on them. See E1 "Decision (art)".
+- `tools/lib.py` finds the theme CSS through `THEME_CSS` and
+  `PALETTE_PREFIX`; update both if files move.
 
 **D2. The palette exists twice:** `stem/themes/ledger/styles/ledger.css` (what renders)
 and `LEDGER` in `tools/lib.py` (what `palette.py` measures).

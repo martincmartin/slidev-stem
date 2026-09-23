@@ -76,17 +76,16 @@ One card: a drawing, a date, a name, one big number, its unit, and the catch.
 />
 ```
 
-| prop      | meaning                                                                 |
-| --------- | ----------------------------------------------------------------------- |
-| `name`    | 29 px serif, ink                                                        |
-| `date`    | 17 px muted, under the art                                              |
-| `img`     | the SVG, rendered at 122 × 97 — or the poster frame when `video` is set |
-| `video`   | optional looping clip; fills and crops rather than letterboxing         |
-| `stat`    | **the one number**: 37 px mono, accent                                  |
-| `unit`    | 17 px muted, what the number means                                      |
-| `problem` | 20 px bold, `--palette-second`: the catch                               |
-| `unknown` | draws `stat` in muted instead of accent — for "we could not find data"  |
-| `dim`     | fades the card to 35% while another is being discussed                  |
+| prop      | meaning                                                                |
+| --------- | ---------------------------------------------------------------------- |
+| `name`    | 29 px serif, ink                                                       |
+| `date`    | 17 px muted, under the art                                             |
+| `img`     | the SVG, rendered at 122 × 97                                          |
+| `stat`    | **the one number**: 37 px mono, accent                                 |
+| `unit`    | 17 px muted, what the number means                                     |
+| `problem` | 20 px bold, `--palette-second`: the catch                              |
+| `unknown` | draws `stat` in muted instead of accent — for "we could not find data" |
+| `dim`     | fades the card to 35% while another is being discussed                 |
 
 It is purely presentational: the **slide** decides when a card appears and when it
 dims. The card only knows how to look.

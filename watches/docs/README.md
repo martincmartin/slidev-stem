@@ -4,13 +4,14 @@
 adding content, this directory is the whole story — you should never need to open
 `tasks/`.
 
-| read this                                | when                                                                      |
-| ---------------------------------------- | ------------------------------------------------------------------------- |
-| [theme.md](theme.md)                     | choosing colours, or a slide needs one the palette does not have          |
-| [illustrations.md](illustrations.md)     | drawing anything new                                                      |
-| [legibility.md](legibility.md)           | deciding whether something is big, thick or dark enough                   |
-| [slide-patterns.md](slide-patterns.md)   | building the slide itself: layout, components, CSS, speaker notes         |
-| [../tools/README.md](../tools/README.md) | running the checks, which is how the above are settled rather than argued |
+| read this                                | when                                                                                                                |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| [theme.md](theme.md)                     | choosing colours, or a slide needs one the palette does not have                                                    |
+| [illustrations.md](illustrations.md)     | drawing anything new                                                                                                |
+| [legibility.md](legibility.md)           | deciding whether something is big, thick or dark enough                                                             |
+| [slide-patterns.md](slide-patterns.md)   | building the slide itself: layout, components, CSS, speaker notes                                                   |
+| [rough-slides.md](rough-slides.md)       | choosing what the next slide says: the talk's outline, as working notes. Check each claim before it goes on a slide |
+| [../tools/README.md](../tools/README.md) | running the checks, which is how the above are settled rather than argued                                           |
 
 **If your slide has an animation**, `tools/motion.py` is the check that the thing
 which moves is drawn in marks the back row can resolve. A drawing can pass every
