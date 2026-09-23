@@ -43,7 +43,7 @@ slide. The outline, `docs/rough-slides.md`, has 11 slides.
    slide needs it.
 2. Small code cleanups (group B), best done before the next content slide.
 3. Repo and docs structure (groups C, D): mostly worth doing when a second talk
-   starts, except C1 if the user deploys.
+   starts.
 4. Part 2 palette comparison (E1): only when its trigger fires.
 
 ---
@@ -105,12 +105,12 @@ elements keep `slidev-vclick-target` (before: down to 2 of 5 by the fourth click
 
 ## C. Repo and infrastructure
 
-**C1. Deploy configs are untested since the workspace move.**
-`netlify.toml` and `vercel.json` run `pnpm build` in `watches/`,
-but the lockfile and workspace are now at `stem/`. Each host probably needs its
-base directory at the repo root, a build command such as
-`pnpm --filter watches build`, and the publish directory `watches/dist` (from the repo root).
-**Decision:** does the user deploy these decks at all? If not, delete both files.
+**C1. Done (2026-09-23).** The user does not deploy the decks, so
+`netlify.toml`, `vercel.json` and the `.netlify` and `.vercel` ignore entries
+are deleted. If the user deploys later: the lockfile and workspace are at
+`stem/`, so a host probably needs its base directory at the repo root, a build
+command such as `pnpm --filter watches build`, and the publish directory
+`watches/dist`.
 
 **C2. Move `.prettierrc` to `stem/`,** with the same override globs, so a new
 talk needs no copy. Then move the rule from `AGENTS.md` (this talk's) ("add a new deck

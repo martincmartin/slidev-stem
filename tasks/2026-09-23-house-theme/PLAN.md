@@ -157,3 +157,5 @@ Not verified:
 - The Netlify and Vercel configs build from `watches/`. With the lockfile now at
   the repo root, their install step may need the base directory set to the root.
   Not tested on either host.
+  **2026-09-23:** no longer applies. The user does not deploy the decks, so both
+  configs were deleted (`watches/tasks/2026-09-23-followups/`, item C1).
