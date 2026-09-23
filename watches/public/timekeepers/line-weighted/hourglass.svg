@@ -1,4 +1,4 @@
-<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<svg width="122" height="97" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
 <!-- Line's bulbs sit at x=88/152 rather than the 86/154 the other sets use, so
      the clips are drawn one unit tighter to stay inside the 3-wide outline. The
      clips reach the bulb's own ends, y=18 and y=172, so the sand meets the rails

@@ -35,11 +35,6 @@ mutagen.yml.lock
 # Note: .vscode/ is intentionally NOT ignored — settings.json and
 # extensions.json are project config meant to be shared.
 
-# --- Tool scratch ---
-# tools/contact.py and tools/barroom.py write renders here. Regenerable, and
-# nothing in docs/ cites a path under it.
-/out/
-
 # --- Task-archive scratch ---
 # Each tasks/<date>-<topic>/ archive keeps two output directories, and only one of
 # them is repo content:

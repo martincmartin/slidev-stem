@@ -1,10 +1,9 @@
 /* Ledger: the palette and the house type, on every slide.
 
-   The palette is set here and nowhere else in a talk. tools/lib.py in a talk
-   holds the same seven values under the same names (LEDGER), and
-   `python3 tools/palette.py` measures them there and fails if this copy
-   differs. If you change a value here, change it there too. The reasoning
-   behind every value is in watches/docs/theme.md. */
+   The palette is set here and nowhere else. stem/tools/lib.py reads the seven
+   values from this rule, and `python3 tools/palette.py` (in stem/) measures
+   them against their gates. If you change a value, run it. The reasoning
+   behind every value is in stem/docs/theme.md. */
 .slidev-layout {
   --palette-background: #faf7f0;
   --palette-ink: #2a2520;
@@ -19,7 +18,7 @@
 }
 
 /* Titles: Fraunces 600 in ink. 37 px is the title size in
-   watches/docs/legibility.md. */
+   stem/docs/legibility.md. */
 .slidev-layout h1 {
   font-family: theme("fontFamily.serif");
   font-weight: 600;

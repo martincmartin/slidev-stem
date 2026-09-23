@@ -1,19 +1,27 @@
 # Legibility — how "is this big enough?" gets settled
 
 Every threshold in these docs comes from one question: **can the back row of a bar
-read this?** This file is the arithmetic that answers it, the numbers it produces,
-and the tools that check new work against them.
+read this?** This file is the arithmetic that answers it, and the tools that check
+new work against it. Run the commands here in `stem/`.
 
 The short version: **design for a 55-inch TV seen from 7 metres.** Marks thinner
 than **1.64 CSS px** are below the eye's resolution limit there, and marks under
 **3:1** contrast are below the floor at which they are worth drawing at all.
 
-## The canvas, and why 122 px decides everything
+## The canvas, and the size a drawing is shown at
 
-Slidev's canvas is **980 × 552 CSS px**. `TimekeeperCard.vue` renders a drawing at
-**122 × 97**, which is 12.4% of the frame width. That one number drives the rest:
-an illustration drawn in a 240-unit box is shown at 0.508 CSS px per unit, so a
-2-unit line is one CSS pixel and a 16-unit numeral is 8 CSS px tall.
+Slidev's canvas is **980 × 552 CSS px**. The floors below come from the canvas
+and the venue alone, in CSS px, and hold for every slide.
+
+A drawing is different: its lines are drawn in its own units (its `viewBox`), and
+how thick they are on the slide depends on how large the slide shows it. So **each
+SVG states the size a slide shows it at**, in its `width` and `height`, and the
+tools read it from there. One unit is `width / viewBox width` CSS px.
+
+The timekeepers in `watches` are drawn in a 240 × 190 box and shown at
+**122 × 97** (12.4% of the frame width), so one unit is 0.508 CSS px: a 2-unit line
+is one CSS pixel, and a 16-unit numeral is 8 CSS px tall. The same file shown at
+61 px wide would halve every line.
 
 ## The venue, which nobody has seen
 
@@ -32,21 +40,21 @@ projector @6m    2.00 m     6.00 m      2.04       1.17              0.86 CSS px
 is far likelier to have a telly than a projector. One arcminute is a good eye's
 resolution limit; at 7 m on a 55-inch screen one CSS px falls below it.
 
-These four rows live in `VENUES` at the top of `tools/lib.py`. **The day the venue
+These four rows live in `VENUES` in `tools/lib.py`. **The day the venue
 is known, edit that table and re-run `tools/barroom.py` — that is the entire cost
 of re-deciding anything here.**
 
 ## The two floors
 
 **1.64 CSS px — the resolution floor.** Thinner than this and the eye cannot
-resolve the mark at all, whatever its contrast. In drawing units that is **3.23**,
-which is why the stroke ladder starts at 4.
+resolve the mark at all, whatever its contrast. This is why the stroke ladder
+starts at 2 CSS px.
 
 **3:1 — the contrast floor.** WCAG's threshold for non-text graphics. Below it a
 mark costs attention and returns nothing, which is worse than not drawing it.
 
 Both floors apply to the mark as it is actually painted, which means **opacity
-counts**. A 6-unit line at `stroke-opacity="0.3"` clears the first floor and fails
+counts**. A 3 px line at `stroke-opacity="0.3"` clears the first floor and fails
 the second. See the wash table in [illustrations.md](illustrations.md).
 
 ## Ambient flare, and the ceiling it puts on everyone
@@ -79,26 +87,11 @@ way:**
 Fmax is the number to shop venues with, and the one to quote when someone asks
 whether a choice is safe.
 
-## What the deck currently measures
+## Reading the metrics
 
-`.venv/bin/python3 tools/barroom.py`, at `TV 55in @7m`, measured 2026-09-22:
-
-```
-drawing        ink%    hold    p90    Fmax     dPeak   px2 >=3:1
-candle          8.5    3.63   8.04   0.078     12.19        518
-hourglass      20.2    4.42   6.74   0.145      6.45        643
-sundial        17.0    4.18   8.74   0.127      8.47        196
-water-clock    26.6    5.39   8.13   0.201      7.59        658
-                       ----                 ---- motion, tools/motion.py
-               mean    4.40   7.91   0.138
-```
-
-All four clear the gate. The weakest is the candle: `Fmax 0.078`, so it falls
-through 3:1 at about 8% ambient flare. **If the room is bright, ask the venue to
-turn off the lights over the screen.** That costs less than any change to the art.
-Heavier or darker line work raises these numbers but stops being this drawing
-style; it was tried and rejected (`tasks/2026-09-20-animation-style/README.md`
-§14).
+`tools/barroom.py` reports `hold`, `p90` and `Fmax` for each drawing at each venue.
+The current numbers for the watches timekeepers are in
+`watches/docs/measurements.md`, as an example of a set that clears the gate.
 
 **Read `hold` with `p90`, never alone.**
 
@@ -113,6 +106,12 @@ style; it was tried and rejected (`tasks/2026-09-20-animation-style/README.md`
 **Measure per drawing, not per set.** An average over a set can clear the gate
 while one member fails it.
 
+**Treat a difference under about 0.15 in `hold` as noise.** Where a drawing's
+edges fall on the pixel grid changes the anti-aliasing, and so the numbers. The
+same candle drawn 0.2 px lower measured `hold 3.51` and `Fmax 0.066`, against
+`3.63` and `0.078` (2026-09-23). At the venue, Slidev scales the whole canvas to
+the screen, so that sub-pixel position is effectively arbitrary.
+
 ### And measure the animation, not just the drawing
 
 `barroom.py` reads one frame, so it cannot see a drawing that is legible and moves
@@ -121,7 +120,7 @@ flare and compares them per pixel:
 
 ```
 dPeak      the largest contrast between a pixel's two states
-px2 >=3:1  how much of the card changes by at least the non-text floor
+px2 >=3:1  how much of the drawing changes by at least the non-text floor
 ```
 
 **The signature to recognise is area at 1.2:1 and nothing at 3:1** — a wide, weak
@@ -153,13 +152,13 @@ frame height, which on a 552 px canvas is ≈ 18 px.
 **17 px is a floor with a history**: the cards were built at 14 px, which is 2.5% of
 frame height against that ≈18 px guideline, and it was raised. Do not go back.
 
-**Text inside an illustration does not work at card size.** A 16-unit glyph is
-8.1 CSS px with stems around 0.9 px — well under the 1.64 px floor, so it reads as a
-mark and not as a digit. This was measured, not assumed: a drawing set that added
+**Text inside a small illustration does not work.** On the timekeeper card (a
+240-unit box shown 122 px wide) a 16-unit glyph is 8.1 CSS px with stems around
+0.9 px — well under the 1.64 px floor, so it reads as a mark and not as a digit. This was measured, not assumed: a drawing set that added
 reference numerals measured _worse_ on every score, because the numerals and their
 leader lines were drawn at the very bottom of the weight hierarchy. **A diagram that
-needs labels is not a card. It is a full-slide drawing**, which changes the render
-size and therefore every number on this page.
+needs labels is not a card. It is a full-slide drawing**: it is shown larger, so
+its file states a larger size, and every number on this page changes with it.
 
 ## How to check new work
 
@@ -173,8 +172,8 @@ python3 tools/artcheck.py new.svg           # box, palette, ladder, floor, opaci
 ```
 
 The first three are stdlib-only and take a second; there is no excuse for skipping
-them. The last three need `playwright`, `Pillow` and `numpy` — there is a `.venv` in
-the project root that has them. **If the drawing animates, `motion.py` is not
+them. The last three need `playwright`, `Pillow` and `numpy`, which `stem/.venv`
+has (`requirements.txt` lists them and says how to make the venv). **If the drawing animates, `motion.py` is not
 optional**: it is the only one that can tell you the animation is invisible.
 
 **Run `barroom.py` on the first day of a new drawing, not the last.** Every failure
@@ -204,8 +203,8 @@ composites in sRGB; blur averages in **linear** light. 50% coverage of solid ink
 blurs toward **1.81:1** where `fill-opacity="0.5"` of the same ink gives **2.65:1**,
 and a _fully_ blurred hatch needs **74% coverage** to hold 3:1. A hatch only beats
 that when its pitch is coarse enough to stay partly resolved at the viewing distance
-— which is a property of the card size, not of the technique. Re-check it if the
-render size ever changes.
+— which is a property of the size the drawing is shown at, not of the technique.
+Re-check it if that size changes.
 
 ## Two things to know before you conclude a drawing has failed
 

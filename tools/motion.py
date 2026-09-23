@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Does the ANIMATION survive the room, not just the drawing?
 
-    .venv/bin/python3 tools/motion.py                       # the deck's art
+    .venv/bin/python3 tools/motion.py                       # every talk's art
     .venv/bin/python3 tools/motion.py new.svg               # one new drawing
     .venv/bin/python3 tools/motion.py new.svg --sep 3.0     # pick the pairing yourself
 
@@ -21,7 +21,8 @@ ambient flare in linear light, and compare the two frames per pixel:
 
     dPeak   the largest WCAG contrast between a pixel's two states
     dP99    the same at the 99th percentile, so one stray pixel cannot carry it
-    bands   CSS px^2 whose two states differ by at least 1.2 / 1.5 / 2.0 / 3.0 : 1
+    bands   CSS px^2 whose two states differ by at least 1.2 / 1.5 / 2.0 / 3.0 : 1,
+            with each drawing at the size its file states
 
 READ IT AS: dPeak and dP99 say how strongly the moving region changes; the bands say
 how much of the card changes by at least that much. **A drawing whose motion lives in
@@ -90,32 +91,8 @@ def plan(f, sep=None):
 
 
 def render_at(files, t):
-    """barroom's harness, pinned to an arbitrary time."""
-    import io
-    from playwright.sync_api import sync_playwright
-    from PIL import Image
-    cw, ch = lib.CARD_ART
-    h = ['<!doctype html><meta charset=utf-8>',
-         f'<style>body{{margin:0;background:{lib.ART_FIELD};padding:0}}',
-         'div{display:flex}svg{display:block}</style><div>']
-    for i, f in enumerate(files):
-        src = f.read_text()
-        for j in set(re.findall(r'id="([^"]+)"', src)):
-            src = src.replace(f'id="{j}"', f'id="{j}-{i}"').replace(f"url(#{j})", f"url(#{j}-{i})")
-        h.append(re.sub(r'<svg width="\d+" height="\d+"', f'<svg width="{cw}" height="{ch}"', src, count=1))
-    h.append('</div><script>document.querySelectorAll("svg").forEach(s=>{'
-             f's.pauseAnimations();s.setCurrentTime({t});}});</script>')
-    with sync_playwright() as p:
-        b = p.chromium.launch()
-        pg = b.new_page(viewport={"width": cw * len(files), "height": ch},
-                        device_scale_factor=barroom.DSF)
-        pg.set_content("".join(h), wait_until="load")
-        pg.wait_for_timeout(500)
-        shot = pg.screenshot(full_page=True)
-        b.close()
-    raw = Image.open(io.BytesIO(shot))
-    D = barroom.DSF
-    return [raw.crop((i * cw * D, 0, (i + 1) * cw * D, ch * D)) for i in range(len(files))]
+    """barroom's harness, pinned to time t: one crop per file."""
+    return barroom.render(files, t)[1]
 
 
 def delta(a, b, sigma, flare):
@@ -126,7 +103,7 @@ def delta(a, b, sigma, flare):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("paths", nargs="*", help="SVG files or directories (default: the deck's art)")
+    ap.add_argument("paths", nargs="*", help="SVG files or directories (default: every talk's art)")
     ap.add_argument("--sep", type=float, default=None,
                     help="seconds between the two sampled frames (default: half the longest dur)")
     ap.add_argument("--flare", type=float, default=0.0)
@@ -173,10 +150,12 @@ def main():
         if flag:
             weak.append(barroom.label_for(f))
 
-    print(f"\ncard is {lib.CARD_ART[0]}x{lib.CARD_ART[1]} = "
-          f"{lib.CARD_ART[0]*lib.CARD_ART[1]} CSS px^2 in total.\n")
+    print()
+    area = {barroom.label_for(f, files): wh for f, wh in zip(files, barroom.sizes(files))}
     for name, pairs, notes in footnotes:
-        print(f"{name}: " + ", ".join(f"({t1:g},{t2:g})" for t1, t2 in pairs))
+        w, h = area[name]
+        print(f"{name} ({w:g}x{h:g} = {w * h:.0f} CSS px^2 in total): "
+              + ", ".join(f"({t1:g},{t2:g})" for t1, t2 in pairs))
         for n in notes:
             print(f"    {n}")
     if weak:

@@ -47,8 +47,9 @@ Three notes on that block:
 - **Never set a colour or a font on the slide.** Use `var(--palette-accent)` and the
   other variables for colour. In a component, use `@apply font-serif` or
   `@apply font-mono` for type. If a slide needs a colour that the palette does
-  not have, see [theme.md](theme.md#adding-a-colour). `tools/palette.py` fails
-  if a slide, page or component declares a `--palette-*` variable.
+  not have, see [theme.md](../../docs/theme.md#adding-a-colour).
+  `tools/palette.py` fails if a slide, page or component declares a
+  `--palette-*` variable.
 - **`layout: full` plus a class, not a custom layout.** It keeps each slide's layout
   next to its content, which has been worth more than the duplication costs — the
   slide you are reading is the slide you are editing.
@@ -146,7 +147,7 @@ sundial was war loot from Sicily; Pliny says Romans followed its wrong hours for
 ## Slide sizes and what fits
 
 The canvas is 980 × 552 CSS px. Type sizes are in
-[legibility.md](legibility.md#text-sizes); the short version is that **17 px is the
+[legibility.md](../../docs/legibility.md#text-sizes); the short version is that **17 px is the
 floor for anything anyone has to read** and four cards in a 2 × 2 grid is what fits
 with a title and a takeaway line.
 
@@ -168,9 +169,11 @@ the history.
 ## Before you ship
 
 ```bash
+# in stem/
 pnpm format                       # prettier -- required, see stem/AGENTS.md
 python3 tools/palette.py          # the palette still passes its own gates
 python3 tools/artcheck.py         # every SVG: structure, grammar, legibility
+# in watches/
 pnpm build                        # it actually builds
 ```
 

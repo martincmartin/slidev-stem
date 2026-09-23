@@ -4,32 +4,47 @@ Stdlib only, deliberately: the checks that gate new content must run on a laptop
 with nothing installed. The two tools that read rendered pixels (`barroom.py`,
 `contact.py`) need more, and say so.
 
-WHAT LIVES HERE AND WHAT DOES NOT. This file holds the *current* framework: the
-Ledger palette, the Line-weighted drawing grammar, the venue model and the
-thresholds new work has to clear. It does not hold the alternatives, the losing
-candidates or the reasoning that picked these — those are in `tasks/`, and you
-should not need them to make a new slide. See `docs/README.md`.
+WHAT LIVES HERE AND WHAT DOES NOT. This file holds the *current* framework for
+every STEM talk: the gates for the Ledger palette, the Line-weighted drawing
+grammar, the venue model and the thresholds new work has to clear. It does not
+hold the alternatives, the losing candidates or the reasoning that picked these —
+those are in the talks' `tasks/`, and you should not need them to make a new
+slide. See `docs/README.md`.
 
 Everything here is a number someone can change. When you change one, change it
-here and nowhere else: `palette.py` and `artcheck.py` read these constants rather
-than repeating them, so a threshold cannot drift between tools.
+here and nowhere else: the tools read these constants rather than repeating them,
+so a threshold cannot drift between tools. The palette values are the exception:
+they are read from the theme's CSS, so they exist in one place only.
 """
 import re, math, pathlib
 
-ROOT = pathlib.Path(__file__).resolve().parents[1]
+ROOT = pathlib.Path(__file__).resolve().parents[1]          # stem/
+# A talk is a directory of stem/ with a slides.md.
+TALKS = sorted(d for d in ROOT.iterdir() if (d / "slides.md").is_file())
 
 # --------------------------------------------------------------------------
 # The theme: Ledger. Chosen 2026-09-19. docs/theme.md is the prose version.
+# The values are read from the theme's CSS, the one place they are set.
 # --------------------------------------------------------------------------
-LEDGER = {
-    "background": "#FAF7F0",   # the slide field: warm cream
-    "ink":        "#2A2520",   # body text, headings
-    "muted":      "#736A60",   # secondary text, captions, units
-    "accent":     "#1F5FA8",   # the one emphasised thing per slide
-    "second":     "#9A6238",   # the warm counterpart: warnings, "the catch"
-    "panel":      "#F2EEE4",   # card fill, sitting on the background
-    "border":     "#E0D9CA",   # card edge
-}
+THEME_CSS = ROOT / "themes/ledger/styles/ledger.css"
+THEME_SELECTOR = ".slidev-layout"   # the rule in THEME_CSS that holds the palette
+PALETTE_PREFIX = "--palette-"       # every theme fills the same roles: --palette-ink, ...
+
+
+def css_palette(path=THEME_CSS):
+    """The PALETTE_PREFIX variables that the THEME_SELECTOR rule in `path` sets, as
+    {role: value}, with values upper-cased. None if there is no such rule."""
+    src = re.sub(r"/\*.*?\*/", "", path.read_text(), flags=re.S)
+    block = re.search(r"(?m)^\s*" + re.escape(THEME_SELECTOR) + r"\s*\{([^}]*)\}", src)
+    if not block:
+        return None
+    return {k: v.strip().upper()
+            for k, v in re.findall(re.escape(PALETTE_PREFIX) + r"([\w-]+)\s*:\s*([^;]+);", block.group(1))}
+
+
+LEDGER = css_palette()
+if not LEDGER:
+    raise SystemExit(f"no `{THEME_SELECTOR} {{ {PALETTE_PREFIX}... }}` rule in {THEME_CSS}")
 
 # Contrast gates, all measured against the surface the mark actually sits on --
 # which is the PANEL for anything on a card, not the slide background. That
@@ -57,13 +72,30 @@ CONTRAST_FLOOR = 3.0       # WCAG non-text: the floor a drawn mark must hold
 # The drawing grammar: set 2, "Line, weighted". Chosen 2026-09-21.
 # docs/illustrations.md is the prose version.
 # --------------------------------------------------------------------------
-ART_BOX = (240, 190)       # every illustration is drawn in this viewBox
-CARD_ART = (122, 97)       # ... and rendered at this size by TimekeeperCard.vue
-UNIT_TO_CSSPX = CARD_ART[0] / ART_BOX[0]          # 0.5083
+# Each SVG states the size a slide shows it at: its width and height attributes,
+# in CSS px. Its viewBox is its own drawing units. So one unit is
+# width / viewBox width CSS px, and the tools render each file at its own size.
 
-# The ladder. New art picks from these; it does not invent intermediate weights,
-# because the hierarchy is the style and four steps is what makes it readable.
-STROKE_LADDER = [4.0, 5.0, 6.0, 8.0]   # units -> 2.03, 2.54, 3.05, 4.07 CSS px
+
+def shown_size(src):
+    """-> (width, height, CSS px per unit) of an SVG, from its root attributes.
+    None for a value that is missing or not a plain number."""
+    head = re.search(r"<svg\b[^>]*>", src)
+    attrs = dict(re.findall(r'(\w+)="([^"]*)"', head.group(0))) if head else {}
+    num = lambda v: float(v) if v and re.fullmatch(r"[0-9.]+", v) else None
+    w, h = num(attrs.get("width")), num(attrs.get("height"))
+    vb = attrs.get("viewBox", "").split()
+    vw = float(vb[2]) if len(vb) == 4 else None
+    return w, h, (w / vw if w and vw else None)
+
+
+# The ladder, in CSS px as shown. New art picks from these; it does not invent
+# intermediate weights, because the hierarchy is the style and four steps is what
+# makes it readable. A stroke matches a step within LADDER_TOLERANCE: the
+# timekeepers (240 units shown 122 px wide) measure 2.03, 2.54, 3.05 and 4.07.
+STROKE_LADDER = [2.0, 2.5, 3.0, 4.0]
+LADDER_TOLERANCE = 0.05
+ASPECT_TOLERANCE = 0.01    # width:height vs the viewBox's, so nothing is squashed
 
 # Every colour a Line-weighted drawing is allowed to use, and its job.
 ART_INK = {
@@ -101,7 +133,6 @@ def resolvable_csspx(venue_label=DESIGN_VENUE):
 
 
 STROKE_FLOOR_CSSPX = 1.64  # = resolvable_csspx("TV 55in @7m"), pinned for reference
-STROKE_FLOOR_UNITS = STROKE_FLOOR_CSSPX / UNIT_TO_CSSPX   # 3.23 units
 
 
 # --------------------------------------------------------------------------
@@ -235,44 +266,33 @@ def min_opacity(fg, bg=None, floor=CONTRAST_FLOOR):
 
 
 def art_files(paths=None):
-    """The SVGs to check: given paths, or everything the deck ships."""
+    """The SVGs to check: given paths, or every SVG in every talk's public/."""
     if paths:
         out = []
         for p in paths:
             p = pathlib.Path(p)
             out += sorted(p.rglob("*.svg")) if p.is_dir() else [p]
         return out
-    return sorted((ROOT / "public/timekeepers").rglob("*.svg"))
+    return [f for t in TALKS for f in sorted((t / "public").rglob("*.svg"))]
 
 
-# Where the deck gets LEDGER, as PALETTE_PREFIX variables: the house theme shared by all
-# the STEM talks, one level up (stem/themes/ledger/).
-THEME_CSS = ROOT.parent / "themes/ledger/styles/ledger.css"
-THEME_SELECTOR = ".slidev-layout"   # the rule in THEME_CSS that holds the palette
-PALETTE_PREFIX = "--palette-"       # every theme fills the same roles: --palette-ink, ...
-
-
-def css_palette(path=THEME_CSS):
-    """The PALETTE_PREFIX variables that the THEME_SELECTOR rule in `path` sets, as
-    {role: value}, with values upper-cased. None if there is no such rule."""
-    src = re.sub(r"/\*.*?\*/", "", path.read_text(), flags=re.S)
-    block = re.search(r"(?m)^\s*" + re.escape(THEME_SELECTOR) + r"\s*\{([^}]*)\}", src)
-    if not block:
-        return None
-    return {k: v.strip().upper()
-            for k, v in re.findall(re.escape(PALETTE_PREFIX) + r"([\w-]+)\s*:\s*([^;]+);", block.group(1))}
+def rel(f):
+    """A path for printing: relative to stem/ when it is inside it."""
+    f = pathlib.Path(f).resolve()
+    return f.relative_to(ROOT) if ROOT in f.parents else f
 
 
 def stray_palette_declarations():
-    """Every place in this talk that declares a PALETTE_PREFIX variable, as
+    """Every place in a talk that declares a PALETTE_PREFIX variable, as
     (path, line number, text). Only the theme sets the palette."""
-    files = sorted(ROOT.glob("slides*.md")) + sorted(ROOT.glob("pages/*.md")) \
-        + sorted((ROOT / "components").glob("*.vue")) + sorted((ROOT / "styles").glob("*.css"))
+    files = [f for t in TALKS for f in
+             sorted(t.glob("slides*.md")) + sorted(t.glob("pages/*.md"))
+             + sorted((t / "components").glob("*.vue")) + sorted((t / "styles").glob("*.css"))]
     out = []
     for f in files:
         for n, line in enumerate(f.read_text().splitlines(), 1):
             if re.search(re.escape(PALETTE_PREFIX) + r"[\w-]+\s*:", line):
-                out.append((f.relative_to(ROOT), n, line.strip()))
+                out.append((rel(f), n, line.strip()))
     return out
 
 
@@ -288,11 +308,8 @@ if __name__ == "__main__":
     print(f"Ledger, and the floor at {DESIGN_VENUE}\n")
     for k, v in LEDGER.items():
         print(f"  {PALETTE_PREFIX}{k:<11} {v}   L={luminance(v):.4f}")
-    print(f"\n  art box {ART_BOX[0]}x{ART_BOX[1]} units -> {CARD_ART[0]}x{CARD_ART[1]} CSS px"
-          f"  ({UNIT_TO_CSSPX:.4f} px/unit)")
-    print(f"  stroke ladder {STROKE_LADDER} units"
-          f" = {[round(w * UNIT_TO_CSSPX, 2) for w in STROKE_LADDER]} CSS px")
-    print(f"  stroke floor  {STROKE_FLOOR_CSSPX} CSS px = {STROKE_FLOOR_UNITS:.2f} units\n")
+    print(f"\n  stroke ladder {STROKE_LADDER} CSS px as shown (within {LADDER_TOLERANCE:.0%})")
+    print(f"  stroke floor  {STROKE_FLOOR_CSSPX} CSS px\n")
     for lbl, w, d in VENUES:
         am = arcmin_per_csspx(w, d)
         print(f"  {lbl:<13} {am:.2f} arcmin/CSSpx, thinnest resolvable mark "

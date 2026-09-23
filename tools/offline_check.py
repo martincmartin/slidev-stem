@@ -6,7 +6,7 @@
     python tools/offline_check.py /tmp/deck 2:5 --shots /tmp/png/after
     python tools/offline_check.py /tmp/deck --clicks 2 --back    # step through slide 2
 
-Needs playwright (the talk's .venv has it: watches/.venv/bin/python3).
+Needs playwright: run it with stem/.venv/bin/python3 (see requirements.txt).
 
 It serves the build straight from disk through Playwright's request routing, so
 no local web server is needed (the sandbox may refuse to let one bind). Every

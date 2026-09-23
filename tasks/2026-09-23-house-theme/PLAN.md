@@ -143,6 +143,10 @@ What moved:
   `h1`; no font or palette declarations.
 - `TimekeeperCard.vue`: fonts from `@apply font-serif` / `font-mono`.
 - `watches/tools/lib.py`: reads the palette from the theme.
+- **2026-09-23:** `watches/docs/` (except the talk's own pages) and
+  `watches/tools/` moved to `stem/docs/` and `stem/tools/`, and `lib.py` now
+  reads the palette only from the theme. See
+  `watches/tasks/2026-09-23-followups/` (items D1–D3).
 
 Corrected on the way:
 

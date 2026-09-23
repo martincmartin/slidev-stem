@@ -36,6 +36,11 @@ pnpm dev              # in a talk's directory; not `npm run dev`
 
 Never create a `package-lock.json`, or a `pnpm-lock.yaml` inside a talk.
 
+The house style for every talk (palette, illustrations, legibility) is in
+`docs/`, and the checks for it are in `tools/`. The checks that render need
+`.venv`: `requirements.txt` says how to make it. A talk's own `docs/` holds what
+is true of that talk only.
+
 After editing any file, run `pnpm format` (`prettier --write .`) here, at the
 repo root. It formats every talk and the theme. `pnpm format:check` checks
 without writing. It does not format `tasks/` directories: a finished task must

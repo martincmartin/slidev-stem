@@ -12,18 +12,17 @@ Warm cream, deep blue, warm brown. Chosen 2026-09-19 out of 23 candidates.
 --palette-border      #E0D9CA    card edge
 ```
 
-`python3 tools/palette.py` prints these with every gate measured. Run it if you
-change one.
+`python3 tools/palette.py` (in `stem/`) prints these with every gate measured.
+Run it if you change one.
 
 ## How to use it
 
 **Use the variables, not literals.** The seven values are set once, on every
-slide, by the house theme (`stem/themes/ledger/styles/ledger.css`). Components
-read `var(--palette-ink)` and so on, so everything on a slide follows the palette.
-The same seven values are in `LEDGER` in `tools/lib.py`, under the same names,
-because that is what `palette.py` measures. **If you change a colour, change it
-in both places.** `python3 tools/palette.py` fails if the two differ. It also
-fails if a slide, page or component in this talk declares a `--palette-*` variable.
+slide, by the house theme (`themes/ledger/styles/ledger.css`), and nowhere else.
+Components read `var(--palette-ink)` and so on, so everything on a slide follows
+the palette. `tools/lib.py` reads the values from the same file, so
+`python3 tools/palette.py` always measures what the slides render. It fails if a
+slide, page or component in any talk declares a `--palette-*` variable.
 
 **One accent per slide.** The accent is not "the blue one", it is _the thing you
 want them to look at_. A slide with four accented spans has none. The 37 px stat
@@ -123,7 +122,7 @@ Three traps worth knowing before you pick:
   hardest common pairing — those two actively converge for those viewers. It works
   only with a large deliberate lightness gap.
 - **A mid-lightness saturated field is the worst of both worlds.** It is neither a
-  good light nor a good dark. The deck's first field, `#1B44A6`, capped white at
+  good light nor a good dark. The watches deck's first field, `#1B44A6`, capped white at
   8.7:1 — it gave away 40% of the available contrast before any other colour was
   chosen.
 
@@ -152,8 +151,8 @@ Two practical consequences:
 ## Do not go dark without re-reading this
 
 Dark was explored properly: four candidate dark themes were built, measured and
-probed on real rendered pixels (`tasks/2026-09-20-animation-style/README.md` §7,
-§8.5). The finding that surprises people is that **ambient flare does not punish
+probed on real rendered pixels (`watches/tasks/2026-09-20-animation-style/README.md`
+§7, §8.5). The finding that surprises people is that **ambient flare does not punish
 dark themes** — measured unclipped, the dark candidate is ahead of Ledger at every
 flare level. So "keep it light because the room might be bright" is folklore and the
 arithmetic does not support it.
@@ -163,5 +162,5 @@ Ledger is light for the pasted-content reason above, and for that reason only.
 There is one standing exception, and it is recommended rather than forbidden: **one
 full-bleed dark slide at the narrative pivot.** A dark _card_ punched into a light
 slide reads as a rendering error, especially under flare, which is why the dark
-drawing sets were ranked down. A dark _slide_ just reads as a dark slide. The deck
-has no narrative pivot yet; when it does, that beat is waiting.
+drawing sets were ranked down. A dark _slide_ just reads as a dark slide. The
+watches talk has no narrative pivot yet; when it does, that beat is waiting.

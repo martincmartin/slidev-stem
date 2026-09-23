@@ -40,6 +40,11 @@ water-clock 2.66`. The water clock alone is below the 3:1 gate. Its `p90` of 7.7
 > here averages over a set because it was built to rank sets; the live copy reports
 > per drawing for exactly this reason. **An average over a set can hide a failing
 > member, and did.** The defect is recorded, unfixed, in `docs/illustrations.md`.
+>
+> **2026-09-23:** the water clock defect was fixed on 2026-09-21. The live art now
+> draws the two fills at 0.60 and 0.78 (`water-clock-fix/` has the comparison).
+> The live docs and tools have also moved up to the repo root: `stem/docs/` and
+> `stem/tools/`.
 
 **This archive is now a frozen snapshot, and self-contained.** As of 2026-09-21 the
 live deck renders one set, so `deck/` carries its own copy of the whole experiment —

@@ -1,4 +1,4 @@
-<svg width="240" height="190" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<svg width="122" height="97" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
 <!-- Water clock. The water is drawn at fill-opacity 0.60 (body) and 0.78 (surface
      disc), NOT at a faint tint, and those two numbers are load-bearing.
 
@@ -9,7 +9,7 @@
      floor between the full and half-drained states. At 0.60 / 0.78 it peaks at
      7.59:1 over 658 CSS px2.
 
-     Two constraints bracket these values, and both are in docs/illustrations.md:
+     Two constraints bracket these values, and both are in stem/docs/illustrations.md:
        >= 0.55  or the water falls below 3:1 on the panel;
        <= 0.85  because the water is the SAME HUE as the vessel outline it sits
                 inside, and needs >= 1.4x lightness separation from it or container

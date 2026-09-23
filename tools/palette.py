@@ -5,7 +5,9 @@
     python3 tools/palette.py "#C0451C"        # can I use this? measured in every role
     python3 tools/palette.py "#C0451C" accent # ... and specifically as the accent
 
-Stdlib only. The thresholds live in `lib.py`; this file only applies them.
+Stdlib only. The thresholds live in `lib.py`; this file only applies them. The
+palette values come from the theme's CSS (`lib.THEME_CSS`), the one place they
+are set.
 
 WHY YOU WOULD RUN THIS. Sooner or later a slide wants a colour the seven roles do
 not cover -- a third series in a chart, a highlight on a diagram, "just this one
@@ -15,7 +17,7 @@ surfaces it will sit on, whether a red-green deficient viewer can tell it from t
 accent and the second, and how much room light it survives.
 
 THE THREE MISTAKES THIS CATCHES, all of which were made for real (see
-tasks/2026-09-18-theme-colors/README.md, insights 3, 8 and 11):
+watches/tasks/2026-09-18-theme-colors/README.md, insights 3, 8 and 11):
 
   * measuring a mark against the slide BACKGROUND when it will sit on a card
     PANEL -- every gate here is stated against the surface the mark lands on;
@@ -34,7 +36,7 @@ def rule(ok):
 
 def show_palette():
     P = lib.LEDGER
-    print("Ledger\n")
+    print(f"Ledger, from {lib.rel(lib.THEME_CSS)}\n")
     for k, v in P.items():
         print(f"  {lib.PALETTE_PREFIX}{k:<11} {v}")
 
@@ -73,34 +75,23 @@ def show_palette():
           + "".join(f"{lib.flare_ceiling(f):>8.2f}" for f in (0.0, 0.05, 0.10, 0.15, 0.20))
           + f"{0.30:>8.3f}")
 
-    worst.append(show_css_sync())
+    worst.append(show_stray())
 
     print(f"\n{'ALL GATES PASS' if all(worst) else 'SOMETHING FAILS -- see above'}")
     return all(worst)
 
 
-def show_css_sync():
-    """The gates above measure lib.LEDGER, but the slides render the copy in the
-    ledger theme. Fail if the two differ, or if anything in the talk sets the palette."""
-    P = lib.LEDGER
-    css_name = lib.THEME_CSS.relative_to(lib.ROOT.parent)
-    print(f"\nthe deck's copy: {css_name} must match LEDGER\n")
-    css = lib.css_palette()
-    if css is None:
-        print(f"  FAIL no `{lib.THEME_SELECTOR} {{ ... }}` rule in {css_name}")
-        return False
-    ok = True
-    for k in list(P) + [k for k in css if k not in P]:
-        want, got = P.get(k), css.get(k)
-        good = want == got
-        ok &= good
-        why = ("" if good else "   missing from the CSS" if got is None
-               else "   not in LEDGER" if want is None else "   differs")
-        print(f"  {rule(good)} {lib.PALETTE_PREFIX}{k:<11} lib {want or '-':<8} css {got or '-':<8}{why}")
-    for path, n, text in lib.stray_palette_declarations():
-        ok = False
-        print(f"  FAIL {path}:{n} sets {text!r} -- only the theme sets the palette ({css_name})")
-    return ok
+def show_stray():
+    """Fail if a talk sets the palette. Only the theme may."""
+    css_name = lib.rel(lib.THEME_CSS)
+    print(f"\nonly the theme sets the palette ({css_name})\n")
+    stray = lib.stray_palette_declarations()
+    for path, n, text in stray:
+        print(f"  FAIL {path}:{n} sets {text!r}")
+    if not stray:
+        print(f"  ok   no talk declares a {lib.PALETTE_PREFIX}* variable "
+              f"({len(lib.TALKS)} talk(s) checked)")
+    return not stray
 
 
 def show_candidate(hexcol, role=None):

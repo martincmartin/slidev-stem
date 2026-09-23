@@ -32,5 +32,10 @@ components.d.ts
 __pycache__/
 *.py[cod]
 
+# --- Tool scratch ---
+# tools/contact.py writes renders here. Regenerable, and no doc cites a path
+# under it.
+/out/
+
 # --- Machine-local tool state ---
 .claude/settings.local.json

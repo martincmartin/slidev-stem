@@ -1,12 +1,16 @@
 # Illustrations — "Line, weighted"
 
-Deep blue line work on the card panel. Four exist: `public/timekeepers/line-weighted/{sundial,water-clock,candle,hourglass}.svg`.
+Deep blue line work on the card panel, for every STEM talk. The examples are the
+four timekeepers in `watches`:
+`watches/public/timekeepers/line-weighted/{sundial,water-clock,candle,hourglass}.svg`.
 
-**The style is a grammar, not a look.** All of it is a box, a palette, a stroke
-ladder and a habit about what moves. Follow those four and a new drawing will read
-as another drawing by the same hand — which is the entire job the art does.
+**The style is a grammar, not a look.** All of it is a stated size, a palette, a
+stroke ladder and a habit about what moves. Follow those four and a new drawing
+will read as another drawing by the same hand — which is the entire job the art
+does.
 
 ```bash
+# in stem/
 python3 tools/artcheck.py path/to/new.svg    # box, palette, ladder, floor, opacity
 .venv/bin/python3 tools/contact.py path/to/new.svg   # look at it, pinned per frame
 .venv/bin/python3 tools/barroom.py path/to/new.svg   # can the back row see it
@@ -15,9 +19,16 @@ python3 tools/artcheck.py path/to/new.svg    # box, palette, ladder, floor, opac
 
 ## The grammar
 
-**Box.** `240 × 190` units, `viewBox="0 0 240 190"`, and `width`/`height` matching.
-`TimekeeperCard.vue` renders it at **122 × 97 CSS px**, so one unit is **0.508 CSS
-px**. Everything below is in units; the CSS px column is what the room gets.
+**Size.** Each file states the size a slide shows it at, in CSS px: its `width`
+and `height`. Its `viewBox` is its own drawing units, with the same aspect ratio.
+One unit is `width / viewBox width` CSS px, and the tools render and measure the
+drawing at that size. The timekeepers are drawn in a 240 × 190 box and shown at
+122 × 97 (`width="122" height="97" viewBox="0 0 240 190"`), so one unit is
+**0.508 CSS px**. For a new drawing, the simplest choice is a `viewBox` of the same
+size as `width` and `height`: then one unit is one CSS px.
+
+If a slide shows the drawing at another size, change `width` and `height` to match
+and run the checks again. Everything below is in CSS px as shown.
 
 **Palette.** Four colours, each with a job. Nothing else.
 
@@ -48,17 +59,17 @@ spends that gate at a size it was never sized for: `#1F5FA8` is 5.56:1 on the pa
 and `#143C6B` is 9.60:1, a 1.7× recovery for a colour nobody reads as different.
 **An accent is not a line colour.** Do not "fix" this back to the theme accent.
 
-**Stroke ladder.** Four weights, and only these four:
+**Stroke ladder.** Four weights as shown, and only these four:
 
-| units | CSS px | typical use                                     |
-| ----- | ------ | ----------------------------------------------- |
-| 4     | 2.03   | interior detail: hour bands, graduations, ticks |
-| 5     | 2.54   | (rare — the in-between)                         |
-| 6     | 3.05   | the workhorse: primary contours                 |
-| 8     | 4.07   | the heaviest outline, used sparingly            |
+| CSS px | timekeeper units | typical use                                     |
+| ------ | ---------------- | ----------------------------------------------- |
+| 2      | 4 (2.03 px)      | interior detail: hour bands, graduations, ticks |
+| 2.5    | 5 (2.54 px)      | (rare — the in-between)                         |
+| 3      | 6 (3.05 px)      | the workhorse: primary contours                 |
+| 4      | 8 (4.07 px)      | the heaviest outline, used sparingly            |
 
-The hierarchy _is_ the style. Inventing a 4.5 or a 7 blurs the steps and the
-drawing stops reading as deliberate. `artcheck.py` enforces the ladder.
+The hierarchy _is_ the style. Inventing a 2.25 or a 3.5 blurs the steps and the
+drawing stops reading as deliberate. `artcheck.py` enforces the ladder, within 5%.
 
 **Motion.** One loop per subject, running forever, with a fixed duration per
 subject so two drawings side by side are never compared at different points in
@@ -75,23 +86,25 @@ in unison.
 
 ## Drawing a new one
 
-1. **Sketch in the 240×190 box at the weights you will ship.** Not thinner "for
-   now" — the entire point of the style is the weight hierarchy, and a whole
-   drawing set once spent an exercise ranked last because nobody checked its
-   weights against the room until the end. The fix was one number.
-2. **Pick the structural line first (6 units, `#143C6B`), then decide what earns
-   8 and what drops to 4.** Three levels is usually enough. If everything is 6, the
-   drawing is flat; if everything is 8, it reads as clip art.
-3. **Give the secondary structure to `#736A60`.** The thing the subject rests on,
+1. **Decide the size the slide shows it at, and put it in `width` and `height`.**
+   Every stroke check depends on it.
+2. **Sketch at the weights you will ship.** Not thinner "for now" — the entire
+   point of the style is the weight hierarchy, and a whole drawing set once spent
+   an exercise ranked last because nobody checked its weights against the room
+   until the end. The fix was one number.
+3. **Pick the structural line first (3 px, `#143C6B`), then decide what earns
+   4 and what drops to 2.** Three levels is usually enough. If everything is 3, the
+   drawing is flat; if everything is 4, it reads as clip art.
+4. **Give the secondary structure to `#736A60`.** The thing the subject rests on,
    or is held by, is not the subject. That separation is most of what makes these
    read as diagrams rather than icons.
-4. **Animate the thing the slide is about**, and see the warning below about what
+5. **Animate the thing the slide is about**, and see the warning below about what
    survives.
-5. **Namespace every `id`.** Contact sheets and comparison slides put many copies
+6. **Namespace every `id`.** Contact sheets and comparison slides put many copies
    of a drawing on one page, and shared ids make every copy but the first resolve
    its clips and patterns to the wrong node — the animation looks frozen and the
    cause is invisible. Prefix with the subject: `id="wc-upper-clip"`.
-6. **Run the three tools.** `artcheck` first (it is instant), then look at
+7. **Run the three tools.** `artcheck` first (it is instant), then look at
    `contact.py`'s sheet at several times, then `barroom.py`.
 
 ## Washes
@@ -121,7 +134,8 @@ that can see this, because a single frame cannot.
 > But the **animation** peaks at 2.34:1, with **zero** CSS px² crossing 3:1 between
 > states. The shipped art draws the two fills at 0.60 and 0.78 and nothing else
 > differs: `dPeak` 7.59, and 658 px² over 3:1. Four other repairs measure better and
-> look worse; the comparison is in `tasks/2026-09-20-animation-style/water-clock-fix/`.
+> look worse; the comparison is in
+> `watches/tasks/2026-09-20-animation-style/water-clock-fix/`.
 
 ### Depth order does not hide anything, because the substance is translucent
 
@@ -186,7 +200,7 @@ rather than just apply it:
   have yet.
 - **Nothing here is a path rather than an edge.** Every line is the boundary of a
   thing. A beam, a signal or a flow of control needs a mark that means direction.
-- **Nothing here carries a label.** At 122 px a glyph's stems land well under the
+- **Nothing here carries a label.** At the card's 122 px a glyph's stems land well under the
   resolution floor — see [legibility.md](legibility.md). A diagram that needs text
   is not a card; it is a full-slide drawing, and that changes the arithmetic.
 - **Nothing here has a surface.** No foil, no crinkle, no material. This style
@@ -195,12 +209,12 @@ rather than just apply it:
 
 When you extend the grammar, extend it here — add the convention to this file and
 the check to `tools/artcheck.py` — so the next person inherits it.
-`tasks/2026-09-20-animation-style/README.md` §13 works four candidate subjects
+`watches/tasks/2026-09-20-animation-style/README.md` §13 works four candidate subjects
 through this in detail, and is the one place in `tasks/` worth reading while
 building rather than while re-deciding.
 
 ## Regenerating, and where the art came from
 
-The four SVGs in `public/timekeepers/line-weighted/` are **source files: edit them
-directly.** Do not regenerate them with `reline.py` from the animation-style
+The four SVGs in `watches/public/timekeepers/line-weighted/` are **source files:
+edit them directly.** Do not regenerate them with `reline.py` from the animation-style
 archive: it writes into the archive's own copy of the art, not into the live deck.

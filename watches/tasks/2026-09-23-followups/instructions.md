@@ -130,63 +130,26 @@ a future `slidev-common` repo, when there is a second series.
 
 ## D. Docs structure
 
-**D1. Series-wide material lives in the first talk.** These apply to every STEM
-talk but sit in `watches/`:
+**D1. Done (2026-09-23).** The series-wide docs (`theme.md`, `legibility.md`,
+`illustrations.md` and the docs index) are in `stem/docs/`, and all the tools are
+in `stem/tools/`. `stem/.venv` (from `stem/requirements.txt`) replaces
+`watches/.venv`. Each SVG now states the size a slide shows it at (its `width`
+and `height`), so no tool depends on `TimekeeperCard.vue`, and the stroke ladder
+is in CSS px. `watches/docs/` keeps the talk's own pages. `./PLAN.md` has the
+design and the options.
 
-- `docs/theme.md` and the palette gates in `tools/lib.py` and `tools/palette.py`
-  (they are about the Ledger theme, so they could live in `stem/themes/ledger/`);
-- `docs/legibility.md` and the venue model (about the bar, so `stem/docs/`);
-- the illustration style, "Line, weighted" (see below).
+**D2. Done (2026-09-23).** `lib.py` reads the palette from `ledger.css`, so the
+values exist once. `palette.py` no longer compares two copies; it still fails if
+a talk declares a `--palette-*` variable.
 
-**Decided (user, 2026-09-23): the illustration style is series-wide.** It
-applies to every talk in `stem/`, not to all Slidev projects. Move its docs and
-tools up, out of `watches/`, to `stem/` (for example `stem/docs/` and
-`stem/tools/`):
+**D3. Done (2026-09-23).** The user chose to split the section. The explanation
+of the metrics stays in `stem/docs/legibility.md`, and the timekeepers' table is
+in `watches/docs/measurements.md`, with the rule to re-measure when the art
+changes.
 
-- `docs/illustrations.md`;
-- `tools/artcheck.py`, `tools/contact.py`, `tools/barroom.py`, `tools/motion.py`;
-- the art constants in `tools/lib.py`: `ART_BOX`, `CARD_ART`, `STROKE_LADDER`,
-  `ART_INK`, `ART_FIELD`.
-
-The drawings stay in the talk: `public/timekeepers/` is `watches` content. In
-the moved `illustrations.md`, the four timekeepers become examples, with paths
-into `watches/`.
-
-Things to handle in the move:
-
-- `barroom.py` and `motion.py` use the venue model, so the venue model and
-  `docs/legibility.md` must move with them.
-- `lib.py` sets `ROOT` to the talk directory. `art_files()` defaults to
-  `ROOT/public/timekeepers`, and `contact.py` writes to `ROOT/out/`. From
-  `stem/tools/`, the tools must take the talk directory or the SVG paths as
-  arguments.
-- `CARD_ART` (122 × 97 px) is the size that `TimekeeperCard.vue`, a `watches`
-  component, gives the art. Every stroke-width number in CSS px comes from it.
-  Ask the user whether the card is also series-wide, or whether each talk sets
-  its own art size.
-- The `.venv` with Playwright is in `watches/`. The rendering tools need one
-  at `stem/`.
-- The grammar (box, stroke ladder, colour roles, motion rules) is series-wide.
-  The colour values are not: they depend on the palette, and the opacity window
-  in `illustrations.md` depends on them. See E1 "Decision (art)".
-- `tools/lib.py` finds the theme CSS through `THEME_CSS` and
-  `PALETTE_PREFIX`; update both if files move.
-
-**D2. The palette exists twice:** `stem/themes/ledger/styles/ledger.css` (what renders)
-and `LEDGER` in `tools/lib.py` (what `palette.py` measures).
-`palette.py` fails if they differ, so they cannot drift silently. Option: have
-`lib.py` read the values from the CSS, so there is one copy. Consider with D1.
-
-**D3. `docs/legibility.md`, "What the deck currently measures".** It is current
-data, not a criterion. **Decision:** keep it as a worked example of the
-criteria, or move it out. If it stays, re-measure it whenever the art changes
-(`tools/barroom.py`, `tools/motion.py`).
-
-**D4. A stale line in a frozen archive.**
-`tasks/2026-09-20-animation-style/README.md`, line 42, says the water
-clock defect is "recorded, unfixed". It was fixed on 2026-09-21. The global
-AGENTS.md rule: add a dated line to that task's README. Do not change the old
-text.
+**D4. Done (2026-09-23).** A dated line under the stale sentence in
+`tasks/2026-09-20-animation-style/README.md` says the defect was fixed on
+2026-09-21, and where the live docs and tools are now.
 
 **D5. Done (2026-09-23).** The user accepted Part 1. The house-theme task's
 status says so. Part 2 is E1, below: do not start it before its trigger.
@@ -258,7 +221,7 @@ each series' AGENTS.md.
   lockfile.
 - The sandbox may refuse to bind a local web server. Serve a build through
   Playwright's request routing instead (`./tools/offline_check.py` does).
-- `.venv` has Playwright, Pillow and numpy.
+- `stem/.venv` has Playwright, Pillow and numpy (`stem/requirements.txt`).
 - The terminal `claude` is 2.1.280 from the Homebrew cask `claude-code@latest`.
   It reads AGENTS.md files from the working directory up to `/`, unless a
   `CLAUDE.md` or `CLAUDE.local.md` exists anywhere in that chain. Do not add one
@@ -291,7 +254,7 @@ each series' AGENTS.md.
 3. Screenshots before and after a refactor, then `./tools/pixel_diff.py`: every
    changed pixel must be inside an animated drawing (the SVG animations run on
    a clock, so those always differ).
-4. `python3 tools/palette.py` and `python3 tools/artcheck.py` in `watches/`.
+4. `python3 tools/palette.py` and `python3 tools/artcheck.py` in `stem/`.
 5. `pnpm format:check` at the root.
 
 ## Tools in this directory
@@ -301,4 +264,4 @@ each series' AGENTS.md.
 | `./tools/offline_check.py` | Loads a built deck with every outside request blocked. Prints each slide's classes, background, text colour, body font and `h1` style, and the loaded web fonts. Saves screenshots (`--shots`), steps through clicks by opacity and counts the elements that keep their v-click class (`--clicks`, and back with `--back`), emulates a dark-mode laptop (`--color-scheme dark`). Exits 1 if any outside request was made. |
 | `./tools/pixel_diff.py`    | Compares two screenshots and counts the differing pixels inside each art box and outside all of them.                                                                                                                                                                                                                                                                                                                     |
 
-Both run with `.venv/bin/python3`.
+Both run with `stem/.venv/bin/python3`. A copy of `offline_check.py` is in `stem/tools/`.

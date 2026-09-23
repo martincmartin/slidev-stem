@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """What the back row of a lit room actually sees, measured rather than imagined.
 
-    .venv/bin/python3 tools/barroom.py                        # the deck's art
+    .venv/bin/python3 tools/barroom.py                        # every talk's art
     .venv/bin/python3 tools/barroom.py new.svg                # one new drawing
     .venv/bin/python3 tools/barroom.py a.svg b.svg --save /tmp/
 
@@ -29,9 +29,10 @@ adds to the emitted image, the screen's white really does rise above its nominal
 white, and the eye adapts to that new maximum. Clipping invents a penalty for any
 design with large bright areas -- that is, every light one, including this deck's.
 
-WHAT IT REPORTS, all on the 122 px card the deck really shows:
+WHAT IT REPORTS, for each drawing at the size its file states (its width and
+height attributes: the size a slide shows it at):
 
-    ink%   share of the card carrying a mark at all: the density of the drawing
+    ink%   share of the drawing's box carrying a mark at all: its density
     hold   MEDIAN contrast of those marks against the field, after the blur.
            Deliberately edge-weighted: a thin line really is mostly antialiased
            edge, so half its pixels carry less than its nominal colour
@@ -44,8 +45,9 @@ WHAT IT REPORTS, all on the 122 px card the deck really shows:
 
 READING THE NUMBER. `hold >= 3.0` at the design venue is the gate -- below it the
 drawing costs attention and returns nothing. Above the gate, more headroom stops
-deciding anything and taste takes over. docs/legibility.md has the deck's
-current numbers. Read it before assuming a new drawing is fine.
+deciding anything and taste takes over. watches/docs/measurements.md has the
+timekeepers' numbers, for comparison. Read docs/legibility.md before assuming a
+new drawing is fine.
 """
 import re, sys, math, pathlib, argparse
 
@@ -140,37 +142,52 @@ def label_for(f, others=()):
     return f.stem[:21]
 
 
-def render(files, card):
-    """Screenshot every drawing at card size on the panel, pinned to t=4s."""
+def sizes(files):
+    """Each drawing's (width, height) in CSS px, from its file. Exits if one is missing."""
+    out = [lib.shown_size(f.read_text())[:2] for f in files]
+    for f, (w, h) in zip(files, out):
+        if not (w and h):
+            sys.exit(f"{lib.rel(f)}: no width/height -- the size a slide shows it at. "
+                     f"Run tools/artcheck.py")
+    return out
+
+
+def render(files, t=4.0):
+    """Screenshot every drawing at the size its file states, on the panel, with its
+    animation pinned to time t. -> (whole screenshot, one crop per file)."""
     from playwright.sync_api import sync_playwright
-    cw, ch = card
+    wh = sizes(files)
     h = ['<!doctype html><meta charset=utf-8>',
          f'<style>body{{margin:0;background:{lib.ART_FIELD};padding:0}}',
-         'div{display:flex}svg{display:block}</style><div data-t="4.0">']
-    for f in files:
+         'div{display:flex;align-items:flex-start}svg{display:block;flex:none}</style><div>']
+    for i, f in enumerate(files):
         src = f.read_text()
-        for i in set(re.findall(r'id="([^"]+)"', src)):
-            src = src.replace(f'id="{i}"', f'id="{i}-{f.stem}"').replace(f"url(#{i})", f"url(#{i}-{f.stem})")
-        h.append(re.sub(r'<svg width="\d+" height="\d+"', f'<svg width="{cw}" height="{ch}"', src, count=1))
-    h.append('</div><script>document.querySelectorAll("[data-t]").forEach(c=>{'
-             'const t=parseFloat(c.dataset.t);'
-             'c.querySelectorAll("svg").forEach(s=>{s.pauseAnimations();s.setCurrentTime(t);});});</script>')
+        for j in set(re.findall(r'id="([^"]+)"', src)):
+            src = src.replace(f'id="{j}"', f'id="{j}-{i}"').replace(f"url(#{j})", f"url(#{j}-{i})")
+        h.append(src)
+    h.append('</div><script>document.querySelectorAll("svg").forEach(s=>{'
+             f's.pauseAnimations();s.setCurrentTime({t});}});</script>')
     with sync_playwright() as p:
         b = p.chromium.launch()
-        pg = b.new_page(viewport={"width": cw * len(files), "height": ch}, device_scale_factor=DSF)
+        pg = b.new_page(viewport={"width": math.ceil(sum(w for w, _ in wh)),
+                                  "height": math.ceil(max(h for _, h in wh))},
+                        device_scale_factor=DSF)
         pg.set_content("".join(h), wait_until="load")
         pg.wait_for_timeout(600)
         shot = pg.screenshot(full_page=True)
         b.close()
     import io
     raw = Image.open(io.BytesIO(shot))
-    return raw, [raw.crop((i * cw * DSF, 0, (i + 1) * cw * DSF, ch * DSF))
-                 for i in range(len(files))]
+    crops, x = [], 0.0
+    for w, h in wh:
+        crops.append(raw.crop((round(x * DSF), 0, round((x + w) * DSF), round(h * DSF))))
+        x += w
+    return raw, crops
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("paths", nargs="*", help="SVG files or directories (default: the deck's art)")
+    ap.add_argument("paths", nargs="*", help="SVG files or directories (default: every talk's art)")
     ap.add_argument("--save", default=None, metavar="DIR",
                     help="also write what each venue looks like, clean and at 10%% flare")
     a = ap.parse_args()
@@ -178,7 +195,7 @@ def main():
     files = lib.art_files(a.paths or None)
     if not files:
         sys.exit("no SVGs found")
-    raw, cards = render(files, lib.CARD_ART)
+    raw, cards = render(files)
 
     print(f"{'drawing':<22}{'ink%':>6}", end="")
     for v, *_ in lib.VENUES:
@@ -223,7 +240,7 @@ def main():
     else:
         print("all clear the gate. Above it, headroom stops deciding and taste takes over.")
     print(f"\nRead `hold` with `p90`, never alone. Fmax is room light tolerated; 0.30 is "
-          f"the\nceiling for any design. docs/legibility.md has the deck's own numbers.")
+          f"the\nceiling for any design. watches/docs/measurements.md has the timekeepers' numbers.")
 
     if a.save:
         out = pathlib.Path(a.save)

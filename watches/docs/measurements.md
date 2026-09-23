@@ -1,0 +1,30 @@
+# Measurements — the timekeepers at the back row
+
+What the four timekeeper drawings measure at the design venue. The metrics, and
+how to read them, are in [`stem/docs/legibility.md`](../../docs/legibility.md).
+
+**Re-measure whenever the art changes**, and update this page. In `stem/`:
+
+```bash
+.venv/bin/python3 tools/barroom.py watches/public/timekeepers/
+.venv/bin/python3 tools/motion.py watches/public/timekeepers/
+```
+
+At `TV 55in @7m`, measured 2026-09-23:
+
+```
+drawing        ink%    hold    p90    Fmax     dPeak   px2 >=3:1
+candle          8.5    3.63   8.04   0.078     12.19        518
+hourglass      20.2    4.42   6.74   0.145      6.45        643
+sundial        17.0    4.18   8.74   0.127      8.47        196
+water-clock    26.6    5.39   8.13   0.201      7.59        658
+                       ----                 ---- motion, tools/motion.py
+               mean    4.40   7.91   0.138
+```
+
+All four clear the gate. The weakest is the candle: `Fmax 0.078`, so it falls
+through 3:1 at about 8% ambient flare. **If the room is bright, ask the venue to
+turn off the lights over the screen.** That costs less than any change to the art.
+Heavier or darker line work raises these numbers but stops being this drawing
+style; it was tried and rejected (`tasks/2026-09-20-animation-style/README.md`
+§14).

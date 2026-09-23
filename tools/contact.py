@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Look at an animated drawing properly: every frame that matters, side by side.
 
-    .venv/bin/python3 tools/contact.py public/timekeepers/line-weighted
+    .venv/bin/python3 tools/contact.py watches/public/timekeepers/line-weighted
     .venv/bin/python3 tools/contact.py new.svg --times 0.2 4 8 11.8
     .venv/bin/python3 tools/contact.py new.svg --out /tmp/sheet.png
 
 Needs playwright (+ `playwright install chromium`). Writes a PNG and prints its
-path. Each drawing appears once large and once at every requested time in the
-122 px card the deck actually renders.
+path. Each drawing appears once large, and once at every requested time at the
+size its file states: the size a slide shows it at.
 
 WHY THIS EXISTS RATHER THAN JUST SCREENSHOTTING THE DECK. Two traps, both of
 which cost real time:
@@ -24,8 +24,8 @@ which cost real time:
     references to the first one and the animation looks frozen in all but one.
     This file does the namespacing; a hand-rolled harness usually does not.
 
-WHAT TO LOOK FOR. Whether the drawing still reads at 122 px -- that is the size
-it ships at, and the large row is only there to show you what you are losing.
+WHAT TO LOOK FOR. Whether the drawing still reads at the size it is shown at --
+the large row is only there to show you what you are losing.
 Whether anything animates off its own feature. Whether a texture has turned to
 mud. For "can the back row see it", use `barroom.py`; this one is for your eyes.
 """
@@ -37,18 +37,19 @@ import lib
 DEFAULT_TIMES = [0.2, 3.0, 6.0, 9.0, 11.8]
 
 
-def instance(path: pathlib.Path, tag: str, w: int, h: int) -> str:
-    """One copy of a drawing, with every id namespaced so refs stay local to it."""
+def instance(path: pathlib.Path, tag: str, w=None, h=None) -> str:
+    """One copy of a drawing, with every id namespaced so refs stay local to it.
+    At (w, h) if given, otherwise at the size the file states."""
     src = path.read_text()
     for i in set(re.findall(r'id="([^"]+)"', src)):
         src = src.replace(f'id="{i}"', f'id="{i}-{tag}"').replace(f"url(#{i})", f"url(#{i}-{tag})")
-    return re.sub(r'<svg width="\d+" height="\d+"', f'<svg width="{w}" height="{h}"', src, count=1)
+    if w is None:
+        return src
+    return re.sub(r'<svg width="[0-9.]+" height="[0-9.]+"', f'<svg width="{w}" height="{h}"', src, count=1)
 
 
 def build_html(files, times):
     P = lib.LEDGER
-    bw, bh = lib.ART_BOX
-    big = (200, round(200 * bh / bw))
     h = ['<!doctype html><meta charset=utf-8><style>',
          f'body{{margin:0;background:{P["background"]};'
          'font:12px "IBM Plex Sans",Arial,sans-serif;padding:12px}',
@@ -59,14 +60,15 @@ def build_html(files, times):
          f'border:1px solid {P["border"]};border-radius:12px}}',
          '.card svg{border-radius:6px;display:block}',
          f'h2{{font:600 14px "IBM Plex Sans";color:{P["muted"]};margin:12px 0 6px}}</style>',
-         f'<h2>{len(files)} drawing(s) &mdash; {big[0]} px</h2><div class="row" data-t="4.0">']
-    h += [f'<div class="card">{instance(f, "big-" + f.stem, *big)}</div>' for f in files]
-    h.append(f'</div><h2>{lib.CARD_ART[0]} px &mdash; the size the deck really renders</h2>')
+         f'<h2>{len(files)} drawing(s) &mdash; 200 px wide</h2><div class="row" data-t="4.0">']
+    for i, f in enumerate(files):
+        w, h_ = lib.shown_size(f.read_text())[:2]
+        h.append(f'<div class="card">{instance(f, f"big-{i}", 200, round(200 * h_ / w))}</div>')
+    h.append('</div><h2>at the size each file states &mdash; what a slide shows</h2>')
     for t in times:
         tag = str(t).replace(".", "p")
         h.append(f'<div class="row" data-t="{t}"><div class="t">{t}s</div>')
-        h += [f'<div class="card">{instance(f, f"{f.stem}-{tag}", *lib.CARD_ART)}</div>'
-              for f in files]
+        h += [f'<div class="card">{instance(f, f"{i}-{tag}")}</div>' for i, f in enumerate(files)]
         h.append("</div>")
     h.append('<script>document.querySelectorAll("[data-t]").forEach(c=>{'
              'const t=parseFloat(c.dataset.t);'
@@ -76,7 +78,7 @@ def build_html(files, times):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("paths", nargs="*", help="SVG files or directories (default: the deck's art)")
+    ap.add_argument("paths", nargs="*", help="SVG files or directories (default: every talk's art)")
     ap.add_argument("--times", nargs="+", type=float, default=DEFAULT_TIMES,
                     help="animation times to pin, in seconds")
     ap.add_argument("--out", default=None, help="output PNG (default: out/contact.png)")

@@ -29,9 +29,10 @@ theme adds none yet.
 ## Rules
 
 - **The palette is set here and nowhere else.** The values and the reasoning
-  behind them are in `watches/docs/theme.md`; `watches/tools/lib.py` holds the
-  same values, and `python3 watches/tools/palette.py` fails if the two differ.
-  Moving the gates and docs up to the repo level is future work.
+  behind them are in [`docs/theme.md`](../../docs/theme.md) at the repo root.
+  `tools/lib.py` there reads the values from `styles/ledger.css`, and
+  `python3 tools/palette.py` measures them against their gates. It also fails
+  if a talk declares a `--palette-*` variable.
 - **No outside requests.** A talk must run on a laptop with no network. Fonts
   come from Fontsource packages. A font that is not on Fontsource and is not one
   of the 14 fonts every Mac and Windows laptop has: ask first.

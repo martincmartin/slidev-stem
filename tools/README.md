@@ -1,45 +1,48 @@
 # tools — the checks that settle arguments
 
-These answer "is this good enough?" with arithmetic rather than opinion. The
-thresholds they enforce are the ones in [`../docs/`](../docs/); the reasoning
-behind the thresholds is in `../tasks/`.
+These answer "is this good enough?" with arithmetic rather than opinion, for every
+STEM talk. The thresholds they enforce are the ones in [`../docs/`](../docs/); the
+reasoning behind the thresholds is in the talks' `tasks/` directories. Run them in
+`stem/`.
 
-**All of them read `lib.py` for constants.** Change a threshold, a palette entry,
-a stroke weight or the venue table there and every tool follows. Nothing is
-repeated between tools, so a number cannot drift. The one repeat is the palette:
-the slides read it from the house theme
-(`../../themes/ledger/styles/ledger.css`), and `palette.py` fails if that copy
-differs from `lib.py`.
+**All of them read `lib.py` for constants.** Change a threshold, a stroke weight or
+the venue table there and every tool follows. Nothing is repeated between tools,
+so a number cannot drift. The palette values are not in `lib.py`: it reads them
+from the house theme (`../themes/ledger/styles/ledger.css`), the one place they are
+set. Each drawing's display size comes from the drawing itself (its `width` and
+`height`).
 
-| tool          | needs                    | answers                                                                        |
-| ------------- | ------------------------ | ------------------------------------------------------------------------------ |
-| `lib.py`      | stdlib                   | the constants themselves; run it to print them                                 |
-| `palette.py`  | stdlib                   | does the palette pass its gates, and does the CSS match; can I use this colour |
-| `artcheck.py` | stdlib                   | is this SVG valid, in-style, and thick enough                                  |
-| `contact.py`  | playwright               | what does it look like, frame by frame                                         |
-| `barroom.py`  | playwright + PIL + numpy | what does the back row of a lit room get                                       |
-| `motion.py`   | playwright + PIL + numpy | can the back row see the thing that moves                                      |
+| tool               | needs                    | answers                                                                     |
+| ------------------ | ------------------------ | --------------------------------------------------------------------------- |
+| `lib.py`           | stdlib                   | the constants themselves; run it to print them                              |
+| `palette.py`       | stdlib                   | does the palette pass its gates, does a talk set it; can I use this colour  |
+| `artcheck.py`      | stdlib                   | is this SVG valid, in-style, and thick enough at the size it is shown       |
+| `contact.py`       | playwright               | what does it look like, frame by frame                                      |
+| `barroom.py`       | playwright + PIL + numpy | what does the back row of a lit room get                                    |
+| `motion.py`        | playwright + PIL + numpy | can the back row see the thing that moves                                   |
+| `offline_check.py` | playwright               | does a built deck make any outside request; its fonts and colours per slide |
 
 ```bash
 python3 tools/lib.py                          # the framework, as numbers
 python3 tools/palette.py                      # every gate, pass/fail
 python3 tools/palette.py "#C0451C" accent     # a candidate colour, measured
-python3 tools/artcheck.py                     # every SVG the deck ships
+python3 tools/artcheck.py                     # every SVG in every talk's public/
 python3 tools/artcheck.py path/to/new.svg     # ... or just the new one
-.venv/bin/python3 tools/contact.py public/timekeepers/line-weighted --times 0.2 4 8 11.8
+.venv/bin/python3 tools/contact.py watches/public/timekeepers/line-weighted --times 0.2 4 8 11.8
 .venv/bin/python3 tools/barroom.py --save out/
 .venv/bin/python3 tools/motion.py             # every animated drawing
+.venv/bin/python3 tools/offline_check.py <build dir> 1:0 2:5   # see its docstring
 ```
 
-`palette.py` and `artcheck.py` exit non-zero on failure, so they work in a
-pre-commit hook or CI. The two that render need the project-root `.venv`
-(`playwright install chromium` once).
+`palette.py`, `artcheck.py` and `offline_check.py` exit non-zero on failure, so
+they work in a pre-commit hook or CI. The ones that render need `stem/.venv`: see
+`../requirements.txt` for how to make it.
 
 ## Which tool is the authority
 
 They disagree on purpose, because they see different things.
 
-- **`artcheck.py` reads the source.** It knows the box, the palette, the stroke
+- **`artcheck.py` reads the source.** It knows the stated size, the palette, the stroke
   ladder and — through the SVG inheritance chain — what opacity each mark is
   actually painted at. It does not know about overlap, texture, or how marks
   compose.
@@ -50,7 +53,7 @@ They disagree on purpose, because they see different things.
   them per pixel. It answers the one question the other two are structurally blind
   to: whether the thing that MOVES is drawn in marks that survive. A drawing can
   pass `artcheck` and `barroom` and still animate invisibly -- the water clock did,
-  for a day (`docs/legibility.md`).
+  for a day (`../docs/legibility.md`).
 
 The division is deliberate: `artcheck` is instant and stdlib-only, so it can run
 on every save; `barroom` costs a browser launch, so it runs when the drawing is
@@ -85,7 +88,7 @@ Consequences worth knowing:
 
 - **Do not "sync" these with the archive copies.** Divergence is the design.
 - **Do not point these at archive art**, or the archive's generators at live art.
-  They read `public/timekeepers/` here and `deck/public/timekeepers/` there.
+  These read each talk's `public/`; an archive's read its own `deck/public/`.
 - **When a check here changes what we believe**, add a dated line to the relevant
   archive README saying so. The archive stays frozen; the line is a forwarding
   address for whoever lands there first.
