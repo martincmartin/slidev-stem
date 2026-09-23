@@ -81,7 +81,7 @@ One card: a drawing, a date, a name, one big number, its unit, and the catch.
 | --------- | ---------------------------------------------------------------------- |
 | `name`    | 29 px serif, ink                                                       |
 | `date`    | 17 px muted, under the art                                             |
-| `img`     | the SVG, rendered at 122 × 97                                          |
+| `img`     | the SVG, shown at the `width` and `height` it states (122 × 97 here)   |
 | `stat`    | **the one number**: 37 px mono, accent                                 |
 | `unit`    | 17 px muted, what the number means                                     |
 | `problem` | 20 px bold, `--palette-second`: the catch                              |

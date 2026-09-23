@@ -43,16 +43,14 @@ defineProps<{
 
 .tk-art {
   flex: none;
-  width: 122px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
 }
+/* No size here: the image is shown at the width and height its SVG states,
+   which is the size the checks in stem/tools/ measure. */
 .tk-art img {
-  width: 122px;
-  height: 97px;
-  object-fit: contain;
   border-radius: 6px;
 }
 .tk-date {
