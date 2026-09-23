@@ -16,12 +16,12 @@ and in the talk's `package.json`:
 
 ## What it sets
 
-| file                | what                                                                                   |
-| ------------------- | -------------------------------------------------------------------------------------- |
-| `package.json`      | the font families for Slidev, with `provider: none` (no web-font service); light only  |
-| `styles/fonts.css`  | the self-hosted font weights, from Fontsource                                          |
-| `styles/ledger.css` | the seven `--tk-*` palette variables, background and ink on every slide; `h1`; `cover` |
-| `styles/index.ts`   | Slidev's base layout styles, then the two files above                                  |
+| file                | what                                                                                        |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| `package.json`      | the font families for Slidev, with `provider: none` (no web-font service); light only       |
+| `styles/fonts.css`  | the self-hosted font weights, from Fontsource                                               |
+| `styles/ledger.css` | the seven `--palette-*` palette variables, background and ink on every slide; `h1`; `cover` |
+| `styles/index.ts`   | Slidev's base layout styles, then the two files above                                       |
 
 Layouts come from Slidev's core (`default`, `cover`, `full` and 18 others). The
 theme adds none yet.

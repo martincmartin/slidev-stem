@@ -12,7 +12,7 @@ Every slide is Ledger, because the deck uses the house theme:
 theme: ledger # stem/themes/ledger/, shared by all the STEM talks
 ```
 
-The theme sets the seven `--tk-*` palette variables, the slide background, the
+The theme sets the seven `--palette-*` palette variables, the slide background, the
 text colour and the fonts, on every slide. A slide needs no class to get them. So
 a slide's own `<style>` holds only its layout:
 
@@ -44,11 +44,11 @@ Three notes on that block:
 
 - **Use a markdown `#` heading for the title.** The theme styles `h1` as the
   slide title: Fraunces 600, 37 px, ink.
-- **Never set a colour or a font on the slide.** Use `var(--tk-accent)` and the
+- **Never set a colour or a font on the slide.** Use `var(--palette-accent)` and the
   other variables for colour. In a component, use `@apply font-serif` or
   `@apply font-mono` for type. If a slide needs a colour that the palette does
   not have, see [theme.md](theme.md#adding-a-colour). `tools/palette.py` fails
-  if a slide, page or component declares a `--tk-*` variable.
+  if a slide, page or component declares a `--palette-*` variable.
 - **`layout: full` plus a class, not a custom layout.** It keeps each slide's layout
   next to its content, which has been worth more than the duplication costs — the
   slide you are reading is the slide you are editing.
@@ -84,7 +84,7 @@ One card: a drawing, a date, a name, one big number, its unit, and the catch.
 | `video`   | optional looping clip; fills and crops rather than letterboxing         |
 | `stat`    | **the one number**: 37 px mono, accent                                  |
 | `unit`    | 17 px muted, what the number means                                      |
-| `problem` | 20 px bold, `--tk-second`: the catch                                    |
+| `problem` | 20 px bold, `--palette-second`: the catch                               |
 | `unknown` | draws `stat` in muted instead of accent — for "we could not find data"  |
 | `dim`     | fades the card to 35% while another is being discussed                  |
 

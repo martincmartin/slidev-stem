@@ -36,7 +36,7 @@ def show_palette():
     P = lib.LEDGER
     print("Ledger\n")
     for k, v in P.items():
-        print(f"  --tk-{k:<11} {v}")
+        print(f"  {lib.PALETTE_PREFIX}{k:<11} {v}")
 
     print("\ncontrast gates\n")
     worst = []
@@ -96,7 +96,7 @@ def show_css_sync():
         ok &= good
         why = ("" if good else "   missing from the CSS" if got is None
                else "   not in LEDGER" if want is None else "   differs")
-        print(f"  {rule(good)} --tk-{k:<11} lib {want or '-':<8} css {got or '-':<8}{why}")
+        print(f"  {rule(good)} {lib.PALETTE_PREFIX}{k:<11} lib {want or '-':<8} css {got or '-':<8}{why}")
     for path, n, text in lib.stray_palette_declarations():
         ok = False
         print(f"  FAIL {path}:{n} sets {text!r} -- only the theme sets the palette ({css_name})")

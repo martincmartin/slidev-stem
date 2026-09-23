@@ -6,16 +6,16 @@
    differs. If you change a value here, change it there too. The reasoning
    behind every value is in watches/docs/theme.md. */
 .slidev-layout {
-  --tk-background: #faf7f0;
-  --tk-ink: #2a2520;
-  --tk-muted: #736a60;
-  --tk-accent: #1f5fa8;
-  --tk-second: #9a6238;
-  --tk-panel: #f2eee4;
-  --tk-border: #e0d9ca;
+  --palette-background: #faf7f0;
+  --palette-ink: #2a2520;
+  --palette-muted: #736a60;
+  --palette-accent: #1f5fa8;
+  --palette-second: #9a6238;
+  --palette-panel: #f2eee4;
+  --palette-border: #e0d9ca;
 
-  background: var(--tk-background);
-  color: var(--tk-ink);
+  background: var(--palette-background);
+  color: var(--palette-ink);
 }
 
 /* Titles: Fraunces 600 in ink. 37 px is the title size in

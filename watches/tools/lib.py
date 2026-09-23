@@ -245,32 +245,33 @@ def art_files(paths=None):
     return sorted((ROOT / "public/timekeepers").rglob("*.svg"))
 
 
-# Where the deck gets LEDGER, as --tk-* variables: the house theme shared by all
+# Where the deck gets LEDGER, as PALETTE_PREFIX variables: the house theme shared by all
 # the STEM talks, one level up (stem/themes/ledger/).
 THEME_CSS = ROOT.parent / "themes/ledger/styles/ledger.css"
 THEME_SELECTOR = ".slidev-layout"   # the rule in THEME_CSS that holds the palette
+PALETTE_PREFIX = "--palette-"       # every theme fills the same roles: --palette-ink, ...
 
 
 def css_palette(path=THEME_CSS):
-    """The --tk-* variables that the THEME_SELECTOR rule in `path` sets, as
+    """The PALETTE_PREFIX variables that the THEME_SELECTOR rule in `path` sets, as
     {role: value}, with values upper-cased. None if there is no such rule."""
     src = re.sub(r"/\*.*?\*/", "", path.read_text(), flags=re.S)
     block = re.search(r"(?m)^\s*" + re.escape(THEME_SELECTOR) + r"\s*\{([^}]*)\}", src)
     if not block:
         return None
     return {k: v.strip().upper()
-            for k, v in re.findall(r"--tk-([\w-]+)\s*:\s*([^;]+);", block.group(1))}
+            for k, v in re.findall(re.escape(PALETTE_PREFIX) + r"([\w-]+)\s*:\s*([^;]+);", block.group(1))}
 
 
 def stray_palette_declarations():
-    """Every place in this talk that declares a --tk-* variable, as
+    """Every place in this talk that declares a PALETTE_PREFIX variable, as
     (path, line number, text). Only the theme sets the palette."""
     files = sorted(ROOT.glob("slides*.md")) + sorted(ROOT.glob("pages/*.md")) \
         + sorted((ROOT / "components").glob("*.vue")) + sorted((ROOT / "styles").glob("*.css"))
     out = []
     for f in files:
         for n, line in enumerate(f.read_text().splitlines(), 1):
-            if re.search(r"--tk-[\w-]+\s*:", line):
+            if re.search(re.escape(PALETTE_PREFIX) + r"[\w-]+\s*:", line):
                 out.append((f.relative_to(ROOT), n, line.strip()))
     return out
 
@@ -286,7 +287,7 @@ def strokes_in(src):
 if __name__ == "__main__":
     print(f"Ledger, and the floor at {DESIGN_VENUE}\n")
     for k, v in LEDGER.items():
-        print(f"  --tk-{k:<11} {v}   L={luminance(v):.4f}")
+        print(f"  {PALETTE_PREFIX}{k:<11} {v}   L={luminance(v):.4f}")
     print(f"\n  art box {ART_BOX[0]}x{ART_BOX[1]} units -> {CARD_ART[0]}x{CARD_ART[1]} CSS px"
           f"  ({UNIT_TO_CSSPX:.4f} px/unit)")
     print(f"  stroke ladder {STROKE_LADDER} units"

@@ -74,11 +74,30 @@ outside `watches/` cannot use `watches/node_modules` (B and C work around this).
 The archive decks under `watches/tasks/` use `theme: seriph`, and they must keep
 working. **Kept as a devDependency of `watches`, for the archives only.**
 
-## Open questions (not decided in this task)
+## Palette variable names (decided 2026-09-23)
 
-- The palette variables use the prefix `--tk-` ("timekeeper"), which is a
-  slide-specific name in a house theme. Renaming touches the theme, the
-  component, the tools and the docs. Deferred: ask the user.
+The palette variables were `--tk-*` ("timekeeper"), a slide-specific name in a
+house theme. They are now **`--palette-*`**: `--palette-ink`,
+`--palette-accent` and so on.
+
+Criteria: the name must stay correct if the house theme changes (every theme
+fills the same roles), must not collide with Slidev or its libraries, should say
+what the variables are, and should fit Part 2, where a palette class on a slide
+sets them. Prefixes checked against the installed Slidev, UnoCSS, Vue, Shiki,
+Mermaid and KaTeX sources:
+
+| prefix                                                  | uses found                   | verdict                                                        |
+| ------------------------------------------------------- | ---------------------------- | -------------------------------------------------------------- |
+| `--ledger-*`                                            | —                            | rejected: wrong after a theme change                           |
+| `--theme-*`                                             | 3 (Shiki, twoslash)          | rejected: collision                                            |
+| `--color-*`                                             | 1; also Tailwind v4's prefix | rejected: collision risk                                       |
+| `--stem-*`, `--house-*`, `--deck-*`, `--talk-*`         | 0                            | scope names: say whose, not what                               |
+| `--pal-*`                                               | 0                            | runner-up: exact, but "pal" also reads as "friend"             |
+| **`--palette-*`**                                       | 0                            | **chosen by the user**: exact, no abbreviation; 4 chars longer |
+| `--role-*`, `--c-*`, `--ui-*`, `--tone-*`, `--swatch-*` | 0                            | abstract, too short, likely future collision, or odd words     |
+
+`tools/lib.py` holds the prefix once (`PALETTE_PREFIX`). The archive decks keep
+`--tk-*`; they are frozen.
 
 ## Steps
 

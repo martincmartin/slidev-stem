@@ -3,13 +3,13 @@
 Warm cream, deep blue, warm brown. Chosen 2026-09-19 out of 23 candidates.
 
 ```
---tk-background  #FAF7F0    the slide field
---tk-ink         #2A2520    body text, headings
---tk-muted       #736A60    captions, units, dates, secondary text
---tk-accent      #1F5FA8    the one emphasised thing
---tk-second      #9A6238    the warm counterpart: the catch, the warning
---tk-panel       #F2EEE4    card fill
---tk-border      #E0D9CA    card edge
+--palette-background  #FAF7F0    the slide field
+--palette-ink         #2A2520    body text, headings
+--palette-muted       #736A60    captions, units, dates, secondary text
+--palette-accent      #1F5FA8    the one emphasised thing
+--palette-second      #9A6238    the warm counterpart: the catch, the warning
+--palette-panel       #F2EEE4    card fill
+--palette-border      #E0D9CA    card edge
 ```
 
 `python3 tools/palette.py` prints these with every gate measured. Run it if you
@@ -19,11 +19,11 @@ change one.
 
 **Use the variables, not literals.** The seven values are set once, on every
 slide, by the house theme (`stem/themes/ledger/styles/ledger.css`). Components
-read `var(--tk-ink)` and so on, so everything on a slide follows the palette.
+read `var(--palette-ink)` and so on, so everything on a slide follows the palette.
 The same seven values are in `LEDGER` in `tools/lib.py`, under the same names,
 because that is what `palette.py` measures. **If you change a colour, change it
 in both places.** `python3 tools/palette.py` fails if the two differ. It also
-fails if a slide, page or component in this talk declares a `--tk-*` variable.
+fails if a slide, page or component in this talk declares a `--palette-*` variable.
 
 **One accent per slide.** The accent is not "the blue one", it is _the thing you
 want them to look at_. A slide with four accented spans has none. The 37 px stat
@@ -36,7 +36,7 @@ because the point it makes is a warm one: here is the catch. Using it as a secon
 decorative accent wastes it.
 
 **Measure a mark against the surface it lands on.** Text on a card sits on
-`--tk-panel` (`#F2EEE4`), not on `--tk-background` (`#FAF7F0`). The two differ by
+`--palette-panel` (`#F2EEE4`), not on `--palette-background` (`#FAF7F0`). The two differ by
 enough to move a gate: `muted` is 4.96:1 on the background and 4.58:1 on the panel.
 Every gate below is stated against the panel for that reason — it is the harder of
 the two and the one that actually applies.
@@ -58,7 +58,7 @@ the two and the one that actually applies.
 **`muted` has almost no margin: 4.58 against a gate of 4.5, 1.7%.** It is the
 thinnest thing in the palette and the first text colour to fail as a room brightens
 (`Fmax 0.156` — it drops below 3:1 at about 16% ambient flare). Practical rule:
-**never shrink muted text below 17 px, and never put muted on `--tk-border` or on
+**never shrink muted text below 17 px, and never put muted on `--palette-border` or on
 another muted-adjacent surface** — muted on border is 3.78:1, which is below the
 gate for body text. If a caption needs to be smaller, make it ink, not muted.
 

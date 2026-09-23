@@ -70,7 +70,7 @@ class: tk-timekeepers
   gap: 14px 16px;
 }
 .tk-takeaway { font-size: 20px; font-weight: 500; }
-.tk-takeaway span { color: var(--tk-accent); }
+.tk-takeaway span { color: var(--palette-accent); }
 
 </style>
 

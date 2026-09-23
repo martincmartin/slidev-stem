@@ -40,7 +40,7 @@ defineProps<{
 
 <style scoped>
 /* Sizes are for Slidev's default 980×552 canvas (half the 1920-wide design).
-   Colors come from the --tk-* variables and fonts from the ledger theme
+   Colors come from the --palette-* variables and fonts from the ledger theme
    (themes/ledger/). The colour fallbacks are the original dark theme, for a
    deck that does not use ledger. */
 .tk-card {
@@ -48,8 +48,8 @@ defineProps<{
   align-items: center;
   gap: 16px;
   padding: 14px 16px;
-  background: var(--tk-panel, #1f222a);
-  border: 1px solid var(--tk-border, #2e333d);
+  background: var(--palette-panel, #1f222a);
+  border: 1px solid var(--palette-border, #2e333d);
   border-radius: 12px;
   transition: opacity 0.35s ease;
 }
@@ -79,7 +79,7 @@ defineProps<{
 }
 .tk-date {
   font-size: 17px;
-  color: var(--tk-muted, #a39c8e);
+  color: var(--palette-muted, #a39c8e);
 }
 
 .tk-text {
@@ -93,28 +93,28 @@ defineProps<{
   font-weight: 600;
   font-size: 29px;
   line-height: 1.05;
-  color: var(--tk-ink, #f0e9dc);
+  color: var(--palette-ink, #f0e9dc);
 }
 .tk-stat {
   @apply font-mono;
   font-weight: 600;
   font-size: 37px;
   line-height: 1;
-  color: var(--tk-accent, #e0b25a);
+  color: var(--palette-accent, #e0b25a);
 }
 .tk-unknown {
-  color: var(--tk-muted, #a39c8e);
+  color: var(--palette-muted, #a39c8e);
 }
 .tk-unit {
   font-size: 17px;
   line-height: 1.2;
-  color: var(--tk-muted, #a39c8e);
+  color: var(--palette-muted, #a39c8e);
 }
 .tk-problem {
   font-size: 20px;
   font-weight: 600;
   line-height: 1.15;
-  color: var(--tk-second, #ec8a6b);
+  color: var(--palette-second, #ec8a6b);
 }
 
 @media (prefers-reduced-motion: reduce) {
