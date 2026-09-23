@@ -42,10 +42,7 @@ const cards = [
 </script>
 
 <div class="tk-grid">
-  <!-- v-click is on the wrapper: on the card, the `dim` re-render drops its classes -->
-  <div v-for="(card, i) in cards" :key="card.name" v-click="i + 1">
-    <TimekeeperCard v-bind="card" :dim="$clicks > i + 1 && $clicks <= cards.length" />
-  </div>
+  <TimekeeperCard v-for="(card, i) in cards" :key="card.name" v-bind="card" v-click="i + 1" />
 </div>
 
 <div v-click="cards.length + 1" class="tk-takeaway">
@@ -69,8 +66,17 @@ const cards = [
   grid-template-columns: 1fr 1fr;
   gap: 14px 16px;
 }
-.tk-grid > div {
-  display: grid; /* the card fills its wrapper, so a row's cards match in height */
+/* While a card is being discussed, dim the cards before it. v-click marks the
+   current click's element slidev-vclick-current and earlier ones
+   slidev-vclick-prior. The takeaway is outside the grid, so it un-dims them. */
+.tk-grid:has(> .slidev-vclick-current) > .slidev-vclick-prior {
+  opacity: 0.35;
+}
+.tk-grid > .slidev-vclick-prior {
+  transition: opacity 0.35s ease; /* the reveal keeps Slidev's 0.1s */
+}
+@media (prefers-reduced-motion: reduce) {
+  .tk-grid > .slidev-vclick-prior { transition: none; }
 }
 .tk-takeaway { font-size: 20px; font-weight: 500; }
 .tk-takeaway span { color: var(--palette-accent); }

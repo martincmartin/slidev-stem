@@ -86,10 +86,9 @@ One card: a drawing, a date, a name, one big number, its unit, and the catch.
 | `unit`    | 17 px muted, what the number means                                     |
 | `problem` | 20 px bold, `--palette-second`: the catch                              |
 | `unknown` | draws `stat` in muted instead of accent — for "we could not find data" |
-| `dim`     | fades the card to 35% while another is being discussed                 |
 
 It is purely presentational: the **slide** decides when a card appears and when it
-dims. The card only knows how to look.
+dims (see [Clicks](#clicks)). The card only knows how to look.
 
 **`unknown` is worth using honestly.** Two of the four cards say `?` because no
 reliable accuracy figure was found for a candle clock or an hourglass. Drawing that
@@ -103,21 +102,35 @@ cards are an array in the slide's `<script setup>`, so the click numbers come
 from their position:
 
 ```md
-<div v-for="(card, i) in cards" :key="card.name" v-click="i + 1">
-  <TimekeeperCard v-bind="card" :dim="$clicks > i + 1 && $clicks <= cards.length" />
+<div class="tk-grid">
+  <TimekeeperCard v-for="(card, i) in cards" :key="card.name" v-bind="card" v-click="i + 1" />
 </div>
-...
+
 <div v-click="cards.length + 1" class="tk-takeaway">
 ```
 
-The `dim` expression means "dim me while a _later_ card is being discussed, then
-un-dim for the takeaway". To add a card, add it to the array. Add a `[click]`
-line to the speaker notes too.
+To add a card, add it to the array. Add a `[click]` line to the speaker notes
+too.
 
-**Put `v-click` on the wrapper `<div>`, not on the card.** When `dim` changes,
-Vue re-applies the card's `:class` binding and removes the classes that
-`v-click` added (`slidev-vclick-target` and others). The card still shows and
-hides correctly, but a Slidev feature that reads those classes can break.
+**Dimming is CSS in the slide, not a prop.** While a card is being discussed,
+the cards before it fade to 35%. When the takeaway appears, they come back.
+`v-click` gives the element of the current click the class
+`slidev-vclick-current`, and gives elements whose click has passed the class
+`slidev-vclick-prior`. One rule uses them:
+
+```css
+.tk-grid:has(> .slidev-vclick-current) > .slidev-vclick-prior {
+  opacity: 0.35;
+}
+```
+
+The takeaway is outside `.tk-grid`, so on its click no card in the grid is
+current and nothing is dimmed. The dim fades in 0.35 s; the reveal keeps
+Slidev's 0.1 s.
+
+**Do not bind `:class` on the card's root element.** `v-click` adds its classes
+to that element. When a `:class` binding changes, Vue rewrites the element's
+classes and removes the `v-click` classes, and the dim rule stops working.
 
 ## Speaker notes
 

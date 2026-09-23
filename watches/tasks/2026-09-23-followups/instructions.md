@@ -102,6 +102,9 @@ the `dim` re-render keeps Slidev's classes. `./tools/offline_check.py --clicks 2
 --back` gives the same visibility as before, forward and back. All 5 v-click
 elements keep `slidev-vclick-target` (before: down to 2 of 5 by the fourth click).
 `docs/slide-patterns.md` "Clicks" describes the new pattern.
+(2026-09-23, later: the card has no `dim` prop now. The slide's CSS dims the
+cards with Slidev's `slidev-vclick-current` and `slidev-vclick-prior` classes, so
+`v-click` is on the card and the wrapper `<div>` is gone.)
 
 ## C. Repo and infrastructure
 

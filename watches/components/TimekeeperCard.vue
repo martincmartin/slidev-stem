@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // One timekeeper card. Purely presentational: the slide decides when it
-// appears (v-click) and when it is dimmed (the `dim` prop).
+// appears and dims (v-click and the slide's CSS).
 defineProps<{
   name: string;
   date: string;
@@ -9,12 +9,11 @@ defineProps<{
   unit: string;
   problem: string;
   unknown?: boolean; // no reliable accuracy data: stat drawn in muted grey
-  dim?: boolean; // de-emphasize while another card is being discussed
 }>();
 </script>
 
 <template>
-  <div class="tk-card" :class="{ 'tk-dim': dim }">
+  <div class="tk-card">
     <div class="tk-art">
       <img :src="img" :alt="`${name} diagram`" />
       <span class="tk-date">{{ date }}</span>
@@ -40,10 +39,6 @@ defineProps<{
   background: var(--palette-panel);
   border: 1px solid var(--palette-border);
   border-radius: 12px;
-  transition: opacity 0.35s ease;
-}
-.tk-dim {
-  opacity: 0.35;
 }
 
 .tk-art {
@@ -98,11 +93,5 @@ defineProps<{
   font-weight: 600;
   line-height: 1.15;
   color: var(--palette-second);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tk-card {
-    transition: none;
-  }
 }
 </style>
