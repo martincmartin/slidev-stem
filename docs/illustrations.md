@@ -80,7 +80,7 @@ sundial 11 s     water clock 8 s     hourglass 9 s     candle 12 s
 ```
 
 Short overlaid loops are allowed for the things that flicker rather than progress —
-the candle's flame is 1.6 s, its sparks 3.1 s and 4.3 s, the water clock's drip 1 s.
+the candle's flame is 1.6 s, its two wax drips 3.1 s and 4.3 s, the water clock's drip 1 s.
 Prime-ish, unequal durations are deliberate: they stop the four cards from pulsing
 in unison.
 
@@ -103,7 +103,7 @@ in unison.
 6. **Namespace every `id`.** Contact sheets and comparison slides put many copies
    of a drawing on one page, and shared ids make every copy but the first resolve
    its clips and patterns to the wrong node — the animation looks frozen and the
-   cause is invisible. Prefix with the subject: `id="wc-upper-clip"`.
+   cause is invisible. Prefix with the subject: `id="water-clock-upper-clip"`.
 7. **Run the three tools.** `artcheck` first (it is instant), then look at
    `contact.py`'s sheet at several times, then `barroom.py`.
 

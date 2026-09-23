@@ -2,14 +2,14 @@
 <!-- The candle burns down under an animated clip, so the hour bands are eaten
      by the flame instead of each needing its own animation. -->
 <defs>
-  <clipPath id="t13-c-burn">
-    <rect x="94" y="52" width="52" height="124">
+  <clipPath id="candle-burn-clip">
+    <rect x="94" y="56" width="52" height="120">
       <animate attributeName="y" values="56;152" dur="12s" repeatCount="indefinite"/>
       <animate attributeName="height" values="120;24" dur="12s" repeatCount="indefinite"/>
     </rect>
   </clipPath>
 </defs>
-<g clip-path="url(#t13-c-burn)">
+<g clip-path="url(#candle-burn-clip)">
   <rect x="100" y="52" width="40" height="124" stroke="#143C6B" stroke-width="6" fill="#143C6B" fill-opacity="0.08"/>
   <g stroke="#143C6B" stroke-opacity="0.55" stroke-width="4">
     <line x1="100" y1="72" x2="140" y2="72"/>
@@ -27,12 +27,12 @@
   <path d="M30 70 C48 62 62 76 86 68" stroke="#736A60" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="14 10">
     <animate attributeName="stroke-dashoffset" values="48;0" dur="1.8s" repeatCount="indefinite"/>
   </path>
-  <ellipse cx="100" cy="58" rx="3.2" ry="4" fill="#143C6B" fill-opacity="0.35" stroke="#143C6B" stroke-width="4">
+  <ellipse cx="100" cy="58" rx="3.2" ry="4" opacity="0" fill="#143C6B" fill-opacity="0.35" stroke="#143C6B" stroke-width="4">
     <animate attributeName="cy" values="58;58;80" keyTimes="0;0.22;1" dur="3.1s" repeatCount="indefinite"/>
     <animate attributeName="ry" values="4;9.5;6" keyTimes="0;0.45;1" dur="3.1s" repeatCount="indefinite"/>
     <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.18;0.82;1" dur="3.1s" repeatCount="indefinite"/>
   </ellipse>
-  <ellipse cx="140" cy="58" rx="3.2" ry="4" fill="#143C6B" fill-opacity="0.35" stroke="#143C6B" stroke-width="4">
+  <ellipse cx="140" cy="58" rx="3.2" ry="4" opacity="0" fill="#143C6B" fill-opacity="0.35" stroke="#143C6B" stroke-width="4">
     <animate attributeName="cy" values="58;58;76" keyTimes="0;0.28;1" dur="4.3s" repeatCount="indefinite"/>
     <animate attributeName="ry" values="4;8.5;6" keyTimes="0;0.45;1" dur="4.3s" repeatCount="indefinite"/>
     <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.2;0.8;1" dur="4.3s" repeatCount="indefinite"/>
