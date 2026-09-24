@@ -1,0 +1,28 @@
+<!doctype html><html><body style="margin:0;background:#fff">
+<style> .cell{position:absolute;top:0;width:100px;height:100px} </style>
+<svg width="0" height="0" style="position:absolute"><filter id="m" color-interpolation-filters="sRGB">
+<feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/></filter></svg>
+<!-- 0 --><img class="cell" style="left:0" src="art-var.svg">
+<!-- 1 --><div class="cell" style="left:110px;--x:#C0451C"><svg width="100" height="100"><rect width="100" height="100" fill="var(--x)"/></svg></div>
+<!-- 2 --><svg class="cell" style="left:220px;--line:#C0451C" width="100" height="100" viewBox="0 0 100 100"><use href="art-use.svg#art"/></svg>
+<!-- 3 --><img class="cell" style="left:330px" src="art-target.svg#beacon">
+<!-- 4 --><img class="cell" style="left:440px;filter:url(#m)" src="plain.svg">
+<!-- 5 --><div class="cell" style="left:550px;background:#C0451C;mask:url(plain.svg) 0 0/100px 100px no-repeat"></div>
+<!-- 6 --><img class="cell" style="left:660px" src="art-target.svg">
+<!-- 7 --><img class="cell" style="left:770px" id="dataurl">
+<script>
+// 7: the O3 mechanism. Fetch the file's text, append one :root block (it wins
+// over the file's own), and show it as a data: URL in an <img>.
+fetch("art-var.svg").then(r => r.text()).then(t => {
+  t = t.replace("</svg>", "<style>:root{--line:#C0451C}</style></svg>");
+  document.getElementById("dataurl").src = "data:image/svg+xml," + encodeURIComponent(t);
+});
+// 8: inline SVG inserted 400 ms after load, as Vue would mount it.
+setTimeout(() => fetch("art-use.svg").then(r => r.text()).then(t => {
+  const d = document.createElement("div");
+  d.className = "cell"; d.style.cssText = "left:880px;--line:#C0451C";
+  d.innerHTML = t.replaceAll('id="c"', 'id="c-inline"').replaceAll("url(#c)", "url(#c-inline)");
+  document.body.append(d);
+}), 400);
+</script>
+</body></html>

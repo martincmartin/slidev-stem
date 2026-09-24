@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+<style>:root{--art-substance:0.5}</style>
+<rect x="0" y="0" width="100" height="50" fill="#143C6B" fill-opacity="var(--art-substance)"/>
+<line x1="0" y1="75" x2="100" y2="75" stroke="#143C6B" stroke-width="30" stroke-opacity="var(--art-substance)"/>
+</svg>

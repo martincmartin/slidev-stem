@@ -1,0 +1,16 @@
+<!doctype html><html><body style="margin:0;background:#fff">
+<style>
+  /* Each palette class names its own copy of the drawing. The generator would write these rules. */
+  .palette-a { --timekeeper-plain: url("/plain.svg"); }
+  .palette-b { --timekeeper-plain: url("/plain-b.svg"); }
+  .cell { position:absolute; top:0; width:100px; height:100px; }
+  img.by-content { content: var(--timekeeper-plain); }
+  div.by-background { background: var(--timekeeper-plain) 0 0 / 100px 100px no-repeat; }
+</style>
+<!-- 0: img, src = copy A, CSS content = copy B (palette-b) -->
+<div class="palette-b"><img class="cell by-content" style="left:0" src="plain.svg" alt=""></div>
+<!-- 1: div with background-image from the palette variable (palette-b) -->
+<div class="palette-b"><div class="cell by-background" style="left:110px"></div></div>
+<!-- 2: control, palette-a through content -->
+<div class="palette-a"><img class="cell by-content" style="left:220px" src="plain-b.svg" alt=""></div>
+</body></html>

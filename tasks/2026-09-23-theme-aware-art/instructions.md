@@ -1,0 +1,740 @@
+# Theme-aware art: the SVG drawings should take their colours from the theme
+
+**Written:** 2026-09-23, at the user's request. **Status:** not started. This file
+states the problem and every option found. The session that does the task
+writes `PLAN.md` here, asks the user at each **Decision**, and then builds.
+
+**Paths:** `stem/…` is the repo root. `./` is this task directory.
+
+This task goes further than item E1's "Decision (art)" in
+`stem/watches/tasks/2026-09-23-followups/instructions.md`. That item gives three
+options. This file has all of them, with probe data.
+
+---
+
+## 1. The problem
+
+The four timekeeper drawings (`stem/watches/public/timekeepers/*.svg`) write
+their colours as hex literals: **43 literals, 4 distinct colours**.
+
+| colour    | role (from `stem/docs/illustrations.md`) | is it a theme value?                   | uses |
+| --------- | ---------------------------------------- | -------------------------------------- | ---- |
+| `#143C6B` | primary line work                        | no: the accent `#1F5FA8`, made darker  | 29   |
+| `#736A60` | secondary structure (stand, frame)       | equal to `--palette-muted`, by value   | 9    |
+| `#2A2520` | tertiary detail (ticks, smoke, wick)     | equal to `--palette-ink`, by value     | 4    |
+| `#D3DCE3` | knockout (the sundial's lit gnomon face) | no                                     | 1    |
+
+Per file: candle 14, hourglass 9, sundial 9, water clock 11.
+
+The art palette exists in four places, and nothing links them:
+
+1. the 43 literals in the SVGs;
+2. `ART_INK` in `stem/tools/lib.py`, which `artcheck.py` checks the SVGs against;
+3. the palette table in `stem/docs/illustrations.md`;
+4. `stem/themes/ledger/styles/ledger.css`, which two of the colours equal by
+   value only.
+
+**Results:**
+
+- If the theme changes a value, the art keeps the old colours. No check fails.
+  (`palette.py` measures `ledger.css`; `artcheck.py` measures the SVGs against
+  `ART_INK`. Nothing compares the two.)
+- A second talk with a different theme cannot use the drawings.
+- Two planned uses need **different colours on one slide of the same deck**,
+  and `<img>` cannot do this today:
+  - the palette comparison deck (follow-ups item E1): real slides with a palette
+    class such as `.palette-beacon`;
+  - the "one full-bleed dark slide at the narrative pivot" that
+    `stem/docs/theme.md` recommends.
+
+## 2. What "adapt" must mean: three levels
+
+| level  | the art follows…                                   | needed for                              |
+| ------ | -------------------------------------------------- | --------------------------------------- |
+| **L1** | the house theme's values when they change          | keeping art and theme in step           |
+| **L2** | a different theme, in a different talk             | a second talk or series                 |
+| **L3** | a palette class on one slide, at runtime           | the E1 comparison deck; the dark slide  |
+
+L1 and L2 can happen at build time. L3 must happen in the browser, or needs
+one pre-built copy per palette. **Decision 1:** which levels are needed now,
+and which can wait.
+
+## 3. Constraints that every option must keep
+
+**What `<img>` gives today.** Each drawing is its own document. So:
+
+- its ids cannot collide with anything, however many copies are on the page;
+- its SMIL animations have their own timeline;
+- its `<style>` cannot leak into the page;
+- the file renders by itself, which the tools depend on.
+
+An option that gives one of these up must say how it replaces it.
+
+**Slidev puts a slide in the page more than once** (checked in
+`@slidev/client` 53):
+
+- the presenter view renders the current slide (`SlidesShow`) and the next
+  slide (`SlideWrapper`);
+- `SlidesShow` keeps slides that were already visited mounted (`loadedRoutes`),
+  and only hides them;
+- the overview (`QuickOverview`) and the print/export page render every slide;
+- the E1 comparison deck imports the same slide more than once.
+
+So **inline SVG gets duplicate ids**, and the probes show how that fails, the
+same way in both browsers (`probes/dupids.py`):
+
+- a reference uses the **first** element with that id in the document;
+- **a `<clipPath>` inside `display:none` does not clip**, even when its id is
+  unique, and even through `<use>`;
+- Slidev hides visited slides with `v-show`, which is `display:none`.
+
+So if the first copy of a drawing is on a hidden slide, **every later copy loses
+its clip, and nothing reports an error.** The drawings depend on their clips:
+the candle's burn, the hourglass's sand and the water clock's water are all
+clipped.
+
+**The tools render each SVG file by itself** (`barroom.py`, `motion.py`,
+`contact.py`), at its stated `width` and `height`. `artcheck.py` reads colour
+literals from the file with a regex and checks them against `ART_INK`. An
+option must keep the tools measuring what the audience sees, or change them.
+
+**Offline.** No request may leave the machine (`stem/tools/offline_check.py`).
+Every option below satisfies this, because none of them loads anything remote.
+
+**Browsers.** The chosen option must work in **Chromium and Firefox** (user,
+2026-09-23: the user does not use browsers that belong to one OS, so Safari and
+Edge matter less; Edge is Chromium anyway). **Every probe in this task ran in
+Chromium 153 and Firefox 155, and the two agreed on every result.** Safari was
+not tested.
+
+**Opacity is tuned to colour, and recolouring does not re-tune it.** The
+water's `fill-opacity` window is 0.55–0.85 **for `#143C6B` on `#F2EEE4`**. A new
+palette moves every contrast number in `stem/watches/docs/measurements.md`. On a
+dark panel a wash of a light line colour behaves differently again. **Decided
+(user, 2026-09-24): opacity is in scope, and it is part of the palette/theme.**
+§4b has the data and the options.
+
+**Small.** One person and AI assistants maintain this. Prefer the option with
+the fewest moving parts that covers the levels chosen in Decision 1.
+
+## 4. Decision 2: where the art colours are defined
+
+Every option except the baseline needs the art colours to exist as **named
+roles that the theme defines**. Two of the four are not palette colours, so a
+theme cannot supply them now.
+
+| source                                                                                                                     | for                                                                                                  | against                                                                                                                                                                                     |
+| -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **S1.** Explicit tokens in `ledger.css`: `--art-line`, `--art-frame`, `--art-detail`, `--art-knockout`                     | one place; `palette.py` can measure them like the other seven; each palette states its own art colours | four more values for each new palette                                                                                                                                                        |
+| **S2.** Derived in CSS from the palette, e.g. `oklch(from var(--palette-accent) calc(l - 0.15) c h)` (relative colour syntax) | a new palette gets art colours for free                                                              | the Python tools cannot evaluate CSS colour functions (they would need Chromium, or an OKLCH implementation); a fixed offset does not guarantee 9.6:1; needs Chrome 119, Safari 16.4, Firefox 128 |
+| **S3.** Derived by a generator script from the palette values                                                              | tools and generator share one Python formula; it can search for a colour that meets a contrast target  | only build-time options can use it (not L3 in plain CSS)                                                                                                                                    |
+
+`illustrations.md` explains why the line colour is the accent made darker: "an
+accent is not a line colour". S2 and S3 turn that reason into a formula. S1
+keeps it as a colour that a person chooses and `palette.py` measures.
+
+**The names need a collision check**, as the house-theme task did for
+`--palette-*` (`stem/tasks/2026-09-23-house-theme/PLAN.md`). `--art-*` is a
+proposal only.
+
+Also: `lib.py` `ART_INK` should then read the values from the theme, as `LEDGER`
+already does (`css_palette()`). The illustrations.md table should give the
+roles and point to the theme for the values.
+
+## 4b. Opacity in the theme (decided: in scope)
+
+**The user's decision (2026-09-24):** opacity is in scope, and it is part of
+the palette/theme, like the art colours.
+
+### What is there now
+
+`./probes/opacity_inventory.py` lists every static opacity in the four
+drawings (from a copy made on 2026-09-24):
+
+- **27 translucent paints, with 11 distinct alpha values:** 0.07, 0.08, 0.18,
+  0.35, 0.45, 0.5, 0.55, 0.6, 0.7, 0.78, 0.85.
+- They are on three colours: line (`#143C6B`), frame (`#736A60`) and detail
+  (`#2A2520`).
+- **They have four jobs**, which `stem/docs/illustrations.md` already names:
+  - a **wash**: the faint fill of the thing that holds the subject (0.07–0.18);
+  - a **faint line**: hour bands, ticks, the sundial's inner ring (0.45–0.55,
+    just under 3:1);
+  - the **substance** that moves (water 0.60);
+  - a **dense** substance or surface (sand 0.85, water surface 0.78, inner
+    flame 0.70).
+- The candle's drip fill (0.35) fits none of the four well.
+- **Animated `opacity`** (the drips' and the water drop's fade from 0 to 1) is
+  motion, not palette. It stays in the drawing.
+
+### The theme serves every talk, so opacity must become a few general roles
+
+The theme is shared by every STEM talk. So it cannot hold 11 values that each
+belong to one mark in one talk's drawings. It must hold a **small set of
+general roles**, as it will for the four colour roles and as
+`illustrations.md` does for the four stroke weights. A drawing then gives each
+mark one colour role and one opacity role.
+
+**Consequence: some Ledger marks change.** Eleven values do not fit into four
+roles without some moving. Keeping every mark exactly as it is needs 11 roles,
+one for each value, and that is Q1 below.
+
+### The options
+
+| option                                                                                                          | a new palette needs                   | same role gives the same contrast on every colour | works for a dark palette           | runtime CSS can use it           | Ledger marks that change (of 11) |
+| --------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------- | ---------------------------------- | -------------------------------- | -------------------------------- |
+| **Q1.** One theme token for each current value (11)                                                              | 11 numbers, each tied to one drawing  | —                                                 | a person re-chooses 11 numbers     | yes                              | 0                                |
+| **Q2.** A few roles, each **one alpha** for every colour (`--art-opacity-wash: 0.08`, …)                          | one alpha per role, chosen and measured by a person | **no:** the faint role is 2.65:1 on line and 2.97:1 on detail | a person re-chooses and re-measures | yes                         | 7                                |
+| **Q3.** A few roles, each **a contrast on the panel**; the script computes each mark's alpha from its colour (the formula of `lib.min_opacity`) | nothing (the targets can be the same for every palette); a palette can override a target | **yes**, by construction                           | **yes:** contrast is stated, not alpha | only if the script also writes the computed alphas as CSS variables | 8 (3 of them by 0.01)            |
+| **Q4.** No opacity: each role states the colour as seen (the colour already blended onto the panel)              | one colour per (colour, opacity) pair  | yes                                               | a person re-chooses                 | yes                              | 0 where a mark lies on the panel |
+
+Notes:
+
+- **Q1** puts drawing-specific values in a theme that every talk shares, which
+  couples the theme to one talk. Its only merit is that nothing changes.
+- **Q4 fails where translucent marks overlap**, because a colour blended onto
+  the panel is wrong over another mark. Overlaps are common here: the water
+  surface over the water body, the inner flame over the flame, the hour bands
+  over the wax, the ticks over the sundial plate.
+- **Q3 moves the art's legibility rules into code.** Today `illustrations.md`
+  says them in prose ("the subject is drawn at 0.60–1.0", "a wash cannot hold
+  3:1"). With Q3 a role *is* its rule. A new palette, dark ones included, gets
+  legible art with no new numbers, and the script checks the other limits:
+  - a substance of the same hue as its outline must stay at least 1.4× lighter
+    than the outline (the upper end of the water's window);
+  - an alpha must be at most 1.
+
+**Rounding, in two places:**
+
+- Round a computed alpha **up** to 0.01, so the target holds. The 3:1 target
+  needs 0.5503 on the line colour, and 0.55 gives only 2.99:1.
+- Set a target from a mark's **exact** contrast, rounded **down**. The water at
+  0.60 gives 3.3753:1. A target of 3.38 (its contrast rounded to the nearest
+  0.01) would push it to 0.61; 3.37 keeps it at 0.60.
+
+### A first candidate, for discussion (`./probes/opacity_roles.py`)
+
+Each mark's role here is a first guess, not a decision. The drip fill is the
+least certain. Q3's targets:
+
+- **faint** is the 3:1 floor;
+- each other role is the exact contrast of one anchor mark, rounded down, so
+  that mark keeps its alpha. The anchors are: wash, the candle wax at 0.08
+  (1.14:1); substance, the water at 0.60 (3.37:1); dense, the sand at 0.85
+  (6.44:1).
+
+| mark                 | role      | now          | Q2: alpha 0.08 / 0.50 / 0.60 / 0.85 | Q3: contrast 1.14 / 3.0 / 3.37 / 6.44 |
+| -------------------- | --------- | ------------ | ----------------------------------- | -------------------------------------- |
+| sundial plate fill   | wash      | 0.07, 1.12:1 | 0.08, 1.14:1                         | 0.08, 1.14:1                            |
+| candle wax fill      | wash      | 0.08, 1.14:1 | 0.08, 1.14:1                         | 0.08, 1.14:1                            |
+| sundial wall fill    | wash      | 0.18, 1.25:1 | 0.08, 1.10:1                         | 0.11, 1.15:1                            |
+| candle hour bands    | faint     | 0.55, 2.99:1 | 0.50, 2.65:1                         | 0.56, 3.07:1                            |
+| sundial inner ring   | faint     | 0.45, 2.37:1 | 0.50, 2.65:1                         | 0.56, 3.07:1                            |
+| sundial, water ticks | faint     | 0.50, 2.97:1 | 0.50, 2.97:1                         | 0.51, 3.08:1                            |
+| candle drip fill     | substance | 0.35, 1.91:1 | 0.60, 3.38:1                         | 0.60, 3.38:1                            |
+| water body           | substance | 0.60, 3.38:1 | 0.60, 3.38:1                         | 0.60, 3.38:1                            |
+| water surface        | dense     | 0.78, 5.36:1 | 0.85, 6.45:1                         | 0.85, 6.45:1                            |
+| inner flame          | dense     | 0.70, 5.29:1 | 0.85, 8.45:1                         | 0.77, 6.57:1                            |
+| hourglass sand       | dense     | 0.85, 6.45:1 | 0.85, 6.45:1                         | 0.85, 6.45:1                            |
+
+- **Q2 changes 7 marks; Q3 changes 8.**
+- Three of Q3's changes are +0.01: the hour bands, the ticks and the plate.
+  They are there because the faint lines now reach the 3:1 floor, which today
+  they miss by 0.01–0.03.
+- The large changes under Q3 are the sundial's wall (0.18 → 0.11) and inner
+  ring (0.45 → 0.56), the drip fill (0.35 → 0.60), the water surface
+  (0.78 → 0.85) and the inner flame (0.70 → 0.77).
+- A sixth role, or a different role for a mark, would keep some of these. For
+  example, the drip fill as a wash gives 0.08.
+
+**Proposal: Q3.** It is the only option where a new palette needs no new
+opacity numbers and still gets art that the back row can read. It needs
+build-time generation (O2) to compute the alphas, which the ranking in §8
+already recommends. For a runtime option (O3, O6, O7), the script also writes
+each palette's computed alphas as CSS variables. `var()` works in
+`fill-opacity` and `stroke-opacity` in both browsers (probe
+`opacity_var.py`).
+
+**Where the targets live:** the targets are a legibility policy, so a default
+set belongs to the drawing style: `illustrations.md` and the art checks, beside
+the stroke ladder. A palette may override a target in the theme, e.g.
+`--art-contrast-substance: 3.6`. The script reads it; CSS does not use it.
+**Decision 3b** (below) settles this.
+
+**Also palette-dependent, but not art:** the card dimming on slide 2
+(`opacity: 0.35` in `slides.md`) is an opacity whose legibility depends on the
+palette too. It is a slide style, not a drawing, so it is outside this task
+unless the user says otherwise.
+
+## 5. Probe results (Chromium and Firefox)
+
+Everything is in `./probes/`. Run each script with `stem/.venv/bin/python3`
+in that directory; each one runs in both browsers. The output is in
+`./probes/results.txt`. **Chromium 153 and Firefox 155 gave the same result in
+every row**, so the table has one result column.
+
+A "clip" test samples a static mark that the clip must cut in half. An
+"animation" test counts the distinct pixel states in 12 samples over 3 s: 1
+means the drawing is frozen.
+
+| probe (script)                                                                                                   | result in Chromium and in Firefox                                                                   |
+| ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `<img>` of an SVG with an internal `<style>:root{--line:…}` and marks that use `var(--line)` (`techniques.py`)      | **works:** colour, clip and animation                                                                |
+| `var()` in a **presentation attribute** (`fill="var(--line)"`), in `<img>` and inline (`techniques.py`)            | **works**                                                                                           |
+| `<img>` from a **`data:` URL**, recoloured by appending one `:root{…}` block to the text (the O3 method; `techniques.py`) | **works:** the appended block wins; colour, clip and animation                                   |
+| **inline** SVG inserted by script after load, as Vue mounts it (`techniques.py`)                                    | **works:** colour from the page, clip, animation                                                    |
+| **external** `<use href="art.svg#art">`, colour inherited from the page (`techniques.py`)                           | colour and clip work; **the animation does not run** (1 state)                                      |
+| `<img src="art.svg#beacon">`, where the SVG has a rule `#beacon:target ~ g {--line:…}` (`techniques.py`)             | **works:** the fragment selects the palette                                                         |
+| CSS `filter: url(#m)` with an `feColorMatrix` on an `<img>` (`techniques.py`)                                       | **works**, and the animation runs                                                                   |
+| CSS `mask-image: url(file.svg)` with a solid background colour (`techniques.py`)                                    | **works**, and the animation runs inside the mask                                                   |
+| **same-document** sprite: `<symbol>` in a hidden-by-size `<svg>`, then `<svg><use href="#art"/></svg>` (`sprite.py`) | **works:** each use gets its own colour through an inherited variable; clip and animation work        |
+| the same sprite inside **`display:none`** (`sprite.py`)                                                            | colour and animation work; **the clip does not**                                                    |
+| two inline drawings with the **same clip id**, both visible (`dupids.py`)                                          | the second drawing uses the **first** drawing's clip                                                |
+| the same, with the first drawing inside `display:none` (`dupids.py`)                                               | the second drawing has **no clip**                                                                  |
+| a **unique** clip id whose `<clipPath>` is inside `display:none` (`dupids.py`)                                     | **no clip**                                                                                         |
+| a palette class sets `--timekeeper-plain: url(…)`; an `<img>` uses it through `content`, a `div` through `background-image` (`css_select.py`) | **works:** each shows the palette's copy, and the animation runs                                     |
+| `var()` in `fill-opacity` and `stroke-opacity`, in `<img>` (the file's `:root` block) and inline (the page's variable) (`opacity_var.py`) | **works**                                                                                           |
+| `@media (prefers-color-scheme: dark)` inside the SVG; `color-scheme: dark` on the `<img>` or its parent (`color_scheme.py`) | **the image follows the element's `color-scheme`, not the OS setting** (the OS setting had no effect) |
+| one colour matrix from the Ledger art colours to other colours (`conditioning.py`; no browser)                      | condition number $\kappa \approx 957$; the inverse has entries up to 838                            |
+
+## 6. The options
+
+The options are in groups by **when** the colour gets into the drawing. Size
+estimates are guesses, not measurements.
+
+### O0. Baseline: keep the literals, and add a check for drift
+
+`artcheck.py` fails if an SVG colour is not the theme's value for its role
+(needs S1). `ART_INK` reads from the theme.
+
+- **Adapts:** none. It only detects drift. After a theme change, a person edits
+  43 literals, or runs a small substitution script.
+- **For:** about 10 lines. Nothing about rendering changes.
+- **Against:** it does not do what the user asked. It is the baseline that every
+  other option must beat.
+
+### O1. One palette block per SVG (an enabler, not a whole solution)
+
+Each file declares its role colours once, near the top:
+
+```xml
+<style>:root{--art-line:#143C6B;--art-frame:#736A60;--art-detail:#2A2520;--art-knockout:#D3DCE3}</style>
+```
+
+The marks then use `stroke="var(--art-line)"`. `var()` in a presentation
+attribute works in both browsers (probe).
+
+- The 43 literals become 4 values per file. The file still renders by itself
+  with Ledger's colours, so `barroom.py`, `motion.py` and `contact.py` work
+  unchanged (probe: `<img>` + internal var, both browsers).
+- **To recolour a file, append a second `:root{…}` rule after the first.**
+  The later rule wins (probe: `data:` URL + block, both browsers), so no option
+  has to parse or rewrite the file. It only
+  adds a block before `</svg>`. O2, O3, O4, O5 and the tools' per-palette mode
+  can all use this one method.
+- `artcheck.py` must read the colours from the block. It does not follow
+  `var()` now.
+- **Adapts:** none by itself. It is the base for O2–O5. About 1 hour to convert
+  4 files, and to change `artcheck.py`.
+
+### O2. Build time: a script writes each palette's colours into the SVGs
+
+This is the "build script" idea. A variant answers three questions: what the
+source file is, which copies the script writes, and how a slide gets the right
+copy. The user added two ideas on 2026-09-23: an explicit template, and one
+copy per palette that a slide selects by its path.
+
+#### The source file
+
+**O2a. Sync in place (one palette).** With O1, each SVG is its own source. A
+script (`stem/tools/artsync.py`) reads the theme and rewrites each file's
+palette block. `artcheck.py` fails if a block is out of sync. One file per
+drawing, about 40 lines of script, and the tools do not change. It gives L1 and
+L2 (run it for each talk's theme), but not L3.
+
+**O2b. An explicit template (the user's idea).** The source is a template that
+has a placeholder wherever a colour goes. The script replaces each placeholder
+with the palette's colour, as a global search and replace, and writes one
+finished SVG for each palette.
+
+**Can the placeholder be a syntax that no valid SVG contains?** No short syntax
+can be:
+
+- `[knockout]`: square brackets occur in valid SVG, in CSS attribute selectors
+  in a `<style>` block (`rect[fill]`), in `<![CDATA[ … ]]>`, in comments and in
+  text.
+- `{{knockout}}`: every `<style>` block has braces.
+- Text, comments and CDATA accept almost every character, so every other short
+  syntax fails in the same way.
+
+Also, each of these is well-formed XML in an attribute value (`fill="[knockout]"`
+parses); only the colour is not valid. So the syntax cannot make a stray
+placeholder impossible. **The script's checks make it safe:**
+
+1. a template contains no hex colour, so every colour goes through a placeholder;
+2. each placeholder names a known role, and an unknown name fails;
+3. no placeholder remains in the output;
+4. the output parses as XML.
+
+With those checks, any readable token works. **Proposal: use `var(--art-knockout)`
+as the placeholder**, and the same form for opacity (§4b):
+`<rect fill="var(--art-line)" fill-opacity="var(--art-opacity-wash)"/>`.
+
+| placeholder           | template is valid SVG | template renders by itself                                                   | same template also feeds a runtime option (O3, O6, O7) |
+| --------------------- | --------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `[knockout]`          | no (invalid colour)   | no: the attribute is ignored, so a fill becomes black and a stroke disappears | no                                                     |
+| `{{knockout}}`        | no (invalid colour)   | no, as above                                                                 | no                                                     |
+| `var(--art-knockout)` | yes                   | only with a `:root` block (O1); without one, as above                        | **yes**, unchanged                                     |
+
+The replace is still a plain search for the exact string `var(--art-knockout)`.
+
+**Where the template lives:** outside `public/`, for example `watches/art/`.
+Slidev copies everything in `public/` into the build, and the tools scan
+`public/`.
+
+**The house palette:** two ways.
+
+- **T1.** Every palette is generated from the template, Ledger included. The
+  source has no colour at all, so the art palette exists only in the theme. A
+  template does not preview by itself; look at a generated copy.
+- **T2.** The Ledger copy is the template: an O1 file with a Ledger `:root`
+  block, which previews and which the tools measure as now. Other palettes are
+  generated from it. Ledger is then a special case, and its block needs O2a's
+  sync.
+
+The user's proposal is T1.
+
+**O2c. A Vite plugin.** Import the SVGs (not from `public/`); a plugin in the
+talk's `vite.config.ts` replaces the placeholders at dev and build time. There
+are no generated files. Against: a second substitution in JS beside the tools'
+Python (or the tools must measure the build), and the tools cannot see the
+result. It gives L1 and L2 only.
+
+#### The copies: one per palette
+
+**Which palettes:** the user asked whether the script could scan the
+presentation for the palettes it uses. **Proposal: generate every palette that
+the theme defines.** A scan must understand `class:` lines, imported slides
+(`src: ./slides.md#2`) and components, and a scan that misses one gives a
+missing image. Generating all costs 4 files of about 3 KB for each palette. Add
+a check that every `/timekeepers/…` path in the talk exists.
+
+**How to name the copies:**
+
+| layout                | example                                                          | for                                                                                        | against                                                                                                     |
+| --------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| a directory per palette | `timekeepers/ledger/candle.svg`, `timekeepers/marmalade/candle.svg` | a palette's copies are generated, compared or deleted as one directory; the path is `/timekeepers/<palette>/<name>.svg` | one more directory level                                                                                    |
+| palette as a suffix   | `candle.ledger.svg`, `candle.marmalade.svg`                      | the copies of one drawing sort together                                                    | a palette's files are spread through the directory                                                           |
+| palette as a prefix   | `ledger-candle.svg`, `marmalade-candle.svg`                      | a palette's files sort together                                                            | names have hyphens too (`water-clock`), so a script must know the palette names to split `ledger-water-clock` |
+
+**Proposal: a directory per palette.**
+
+**Note on the old directory:** `line-weighted/` was named after the **drawing
+style** (the "Line, weighted" set that the animation-style task chose), not
+after a palette. The palette is Ledger. Style and palette are separate: if a
+second drawing style ever exists, it is a second level
+(`timekeepers/<style>/<palette>/`).
+
+**Commit the generated copies.** Then `pnpm dev` needs no step, and a review
+diff shows each colour change. `artcheck.py` fails if a copy is out of date with
+its template and the theme.
+
+**Tools:** each copy is a finished SVG with literal colours. So `barroom.py`,
+`motion.py`, `contact.py` and `artcheck.py` measure every palette's copies as
+they are, and `barroom.py` scans `public/` recursively: **a new palette is
+measured by the same command as the house palette.** That gives §3's
+per-palette measurement with no new tool mode. Only `ART_INK` in `lib.py` must
+become one set of art colours for each palette, read from the theme.
+
+The script can also run `barroom.py` and `motion.py` for each palette, and fail
+if a palette makes a drawing illegible.
+
+#### How a slide gets its palette's copy
+
+| method                                    | how                                                                                                                                                                                                                                          | L3                                   | runtime JS | an imported slide with a `class:` override (the E1 deck) | notes                                                                                                                                                                         |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | ---------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **O2d. The slide names the path** (the user's idea) | `img: "/timekeepers/marmalade/candle.svg"` in the slide's `cards` array                                                                                                                                             | on each slide that names a path      | no         | **no:** the imported slide's paths are fixed in `slides.md`, and `class:` cannot change them | the simplest. The palette is named twice on the slide (in its class and in its paths), and the two can disagree; a check can compare them                                  |
+| **O2e. CSS chooses the copy**             | the script also writes one rule for each palette, e.g. `.palette-marmalade { --timekeeper-candle: url("/timekeepers/marmalade/candle.svg") }`. The card's `<img>` has `content: var(--timekeeper-candle)`, and its `src` stays the Ledger copy | yes, from the palette class          | no         | **yes**                                                  | probe `css_select.py`: works in both browsers, and the animation runs (a `div` with `background-image` works too). CSS cannot build a URL from a variable (`url(var(--x))` is not valid), so the rules are generated: drawings × palettes |
+| **O2f. The card reads the palette name**  | each palette class sets `--palette-name: marmalade`. At mount the card reads it (`getComputedStyle`) and builds the path                                                                                                                      | yes, from the palette class          | ~5 lines   | yes                                                      | the Ledger copy can load first, then the palette's copy. O2e does the same with no JS                                                                                         |
+
+### O3. Runtime: recolour into a `data:` URL, and keep `<img>`
+
+The card imports each SVG's text at build time (Vite `?raw`, through
+`import.meta.glob`; the files must move out of `public/`, because Vite does not
+import from it). At mount, the card reads `--art-*` from its own element with
+`getComputedStyle`. It appends one `:root{…}` block (the O1 method) and sets
+`img.src` to `data:image/svg+xml,` plus the encoded text. Before mount, it shows
+the file as it is.
+
+- **Probe:** the method (text + appended block → `data:` URL → `<img>`) keeps
+  colour, clip and animation in both browsers.
+- **Adapts:** L1, L2 and **L3**. A palette class on a slide changes the
+  computed variables, so each card gets that slide's colours.
+- **For:** keeps everything `<img>` gives (§3). The files stay standalone, so
+  the tools do not change. No new dependency. About 20–30 lines in
+  `TimekeeperCard.vue`. `slidev export` works, because the recolour happens at
+  mount, before capture.
+- **Against:** a little runtime JS. The drawing's animation restarts when the
+  card mounts (today it starts when the image loads; nobody sees the
+  difference). If a palette changed after mount, the card would need a watcher;
+  no planned use does that.
+
+### O4. `prefers-color-scheme` inside the SVG, set by the slide's `color-scheme`
+
+Each SVG has `@media (prefers-color-scheme: dark) { :root { --art-line: … } }`.
+A dark slide sets `color-scheme: dark` on its layout.
+
+- **Probe:** in both browsers the image follows the `color-scheme` of the
+  `<img>` or its parent, **not the OS.** The OS setting had no effect.
+- **Adapts:** L3, **but only two states**: light and dark. It suits the dark
+  pivot slide exactly. It cannot do the E1 comparison of many palettes.
+- **For:** no JS, and `<img>` stays. The dark values live in the file, next to
+  the light ones, and O2a can keep them in sync.
+- **Against:** only two palettes. Slidev sets `colorSchema: light` for the deck; a slide's own `color-scheme` overrode it in
+  the probe, but check this in Slidev. `color-scheme: dark` also changes
+  scrollbars and form controls on that slide (none are used).
+
+### O5. The URL fragment selects the palette ("SVG stacks")
+
+Each SVG has one empty element per palette (`<g id="beacon"/>`) and a rule
+`#beacon:target ~ g { --art-line: … }`. The card uses `src="sundial.svg#beacon"`.
+
+- **Probe:** works in `<img>`, in both browsers.
+- **Adapts:** L3 for known palettes. The values must be generated into every file
+  (O2a).
+- **For:** keeps `<img>`; no runtime colour substitution.
+- **Against:** an unusual technique that a reader has to learn. The card must
+  know the palette name (as in O2f), or CSS must choose (as in O2e). An SVG image cannot load an external
+  stylesheet, so every file carries every palette. Safari (not tested) has had
+  bugs with `:target` in images.
+
+### O6. Inline SVG in each card, coloured by the page's variables
+
+The card puts the SVG's markup in the DOM. The marks use `var(--art-line)`,
+which inherits from the slide.
+
+| variant                                                                  | notes                                                                                                                                                                            |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **O6a.** `?raw` import + `v-html`                                          | no dependency. The card must rename every `id` and `url(#…)` for each instance (Vue 3.5 `useId()`). It must remove the file's `<style>`, because a `<style>` in inline SVG applies to the **whole page**. |
+| **O6b.** `vite-svg-loader` (SVG as a Vue component)                        | a new dependency. It runs SVGO by default; check what SVGO does to ids, `<animate>` and `<style>`, or turn SVGO off. The duplicate-id problem stays.                            |
+| **O6c.** Convert each drawing to a `.vue` file by hand                     | the tools cannot read `.vue` files. Worst for tools.                                                                                                                              |
+| **O6d.** Slidev's icon pipeline (`unplugin-icons` custom collection)       | made for one-colour icons; unknown what it does to SMIL and to four colours. Not checked.                                                                                          |
+
+- **Adapts:** L1, L2, L3.
+- **For:** the standard web method. CSS reaches every mark.
+- **Probe:** inline SVG inserted after load takes the page's colour, clips and
+  animates, in both browsers.
+- **Against:** it gives up everything `<img>` gives (§3). **Duplicate ids fail
+  silently, and the probe shows how** (`dupids.py`, both browsers): a later copy
+  uses the first copy's clip, and has **no clip at all** if the first copy is
+  on a slide that Slidev has hidden (`v-show`). Identical copies make the first
+  case harmless but not the second. So every instance must rename its ids
+  (`useId()`), which is extra code that must never be forgotten. The tools
+  measure the file, not the inlined copy.
+
+### O7. One sprite per page, and `<use href="#…">` in each card
+
+Put each drawing in the page **once**, as a `<symbol>` in an `<svg>` of zero
+size (not `display:none`).
+Each card renders `<svg width="122" height="97"><use href="#sundial"/></svg>`.
+
+- **Probe:** works in both browsers. Each `<use>` gets its own colour through
+  an inherited variable; the clip works; the animation runs. **But if the
+  sprite is inside `display:none`, the clips stop working** (`sprite.py`).
+- **Adapts:** L1, L2, L3.
+- **For:** one definition, so no duplicate ids, however many cards or slides
+  render. The source files stay standalone for the tools. It is standard SVG.
+- **Against:**
+  - The sprite must get into the page once, **outside every slide**, because
+    Slidev hides slides with `display:none`. Candidates (not tested in Slidev):
+    - a `global-top.vue` layer. `SlidesShow` renders `GlobalTop` once, beside
+      the slides, not inside them. Print/export renders it once per page; those
+      copies are identical and visible, so the duplicate ids do no harm there;
+    - a custom `index.html` in the talk (Slidev can inject into `<body>`);
+    - a script in `setup/main.ts` that builds it from `?raw` imports.
+  - All copies of a drawing share one timeline, so they animate in step. That
+    does no harm here.
+  - The ids in all drawings must be unique across the sprite. They already
+    are: each id starts with its subject (`candle-burn-clip`, …), as
+    `illustrations.md` requires.
+  - The `<symbol>` does not carry `width` and `height`, so the card must take
+    them from the file.
+
+### O8. External `<use href="sundial.svg#art">` (rejected by the probe)
+
+Colours inherit and ids stay local to the file, which would be ideal. **But the
+animation does not run, in Chromium or in Firefox** (`techniques.py`: one state
+in 3 s). The drawings exist to animate, so this option is out.
+
+### O9. `<object>` + script
+
+Load the SVG in an `<object>`. On load, the card copies `--art-*` from its own
+computed style onto `object.contentDocument.documentElement`.
+
+- **Adapts:** L1, L2, L3. Keeps a separate document (§3).
+- **Against:** it is asynchronous, so the Ledger colours show for a moment
+  before the new ones. `<object>` has its own quirks (pointer events, sizing).
+  O3 does the same job synchronously, with less code.
+
+### O10. A colour-matrix filter on the `<img>` (rejected by the numbers)
+
+An `feColorMatrix` maps colours linearly. That commutes with alpha blending, so
+anti-aliased edges and washes would also map correctly. The probe shows it works
+on an `<img>`, animation included.
+
+- **But** a 3×3 matrix from the real Ledger colours is ill-conditioned:
+  $\kappa \approx 957$. An error of one 8-bit step becomes hundreds.
+- It works only if the art is drawn in **coded colours** (pure red, green and
+  blue for three roles). Then the source files are unreadable without the
+  filter, and the tools need the filter too.
+- A fourth role (the knockout) cannot be set freely. In the Ledger basis it is
+  $0.33\,\text{line} + 4.3\,\text{frame} - 6.91\,\text{detail}$.
+
+### O11. One mask layer per role (rejected: too many layers, and drift)
+
+Split each drawing into one-colour layers. Draw each layer as a `div` with
+`background: var(--art-…)` and `mask-image: url(layer.svg)`. Masks animate
+(probe).
+
+- **But** the paint order interleaves the roles. The sundial needs 6 layers:
+  frame, line, detail, line, knockout, line.
+- Each layer is a separate image with its own SMIL timeline. The candle's
+  translate animation spans several layers, and those layers could drift out
+  of phase.
+- A drawing becomes 2–6 files.
+
+### O12. A whole-image CSS filter, only for a dark slide
+
+`filter: invert(1) hue-rotate(180deg)` on the `<img>` turns dark-on-light art
+into light-on-dark, and keeps the hues roughly the same.
+
+- **For:** one CSS line.
+- **Against:** the colours are not palette colours, and nothing measures them
+  unless the tools apply the same filter. It is a quick hack for one slide, not
+  a system.
+
+## 7. Comparison
+
+"Tools" means that `barroom.py`, `motion.py` and `contact.py` still measure the
+standalone file. `artcheck.py` must change for every option: to follow `var()`
+(O1), or to read one set of art colours for each palette (O2b).
+
+| option                        | L1  | L2  | L3             | keeps `<img>` | tools     | runtime JS | build step | new dependency | size (estimate)              |
+| ----------------------------- | --- | --- | -------------- | ------------- | --------- | ---------- | ---------- | -------------- | ---------------------------- |
+| O0 check only                 | —   | —   | —              | yes           | yes       | no         | no         | no             | ~10 lines                    |
+| O1 + O2a sync in place        | yes | yes | —              | yes           | yes       | no         | by hand, checked | no       | ~40 lines + 4 files          |
+| O1 + O3 data URL              | yes | yes | yes            | yes           | yes       | ~25 lines  | no         | no             | O1 + ~25 lines               |
+| O1 + O4 color-scheme          | yes | yes | light/dark only | yes          | yes       | no         | O2a        | no             | O2a + a dark block           |
+| O2b + O2e: template, copy per palette, CSS chooses | yes | yes | palettes the theme defines | yes | yes: every copy is a file | no | yes, checked | no | ~80 lines + generated copies and rules |
+| O2b + O2d: template, copy per palette, path in the slide | yes | yes | slides that name a path; not E1 imports | yes | yes: every copy is a file | no | yes, checked | no | ~60 lines + generated copies |
+| O2b + O2f: template, copy per palette, card reads the name | yes | yes | palettes the theme defines | yes | yes: every copy is a file | ~5 lines | yes, checked | no | ~60 lines + generated copies |
+| O1 + O5 fragments             | yes | yes | known palettes | yes           | yes       | picks src  | yes        | no             | O2a + rules                  |
+| O7 sprite + `<use>`           | yes | yes | yes            | no            | yes       | inject once | maybe     | no             | unknown: injection path      |
+| O6a inline, unique ids        | yes | yes | yes            | no            | partly    | yes        | no         | no             | ~40 lines + id rewriting     |
+| O6b vite-svg-loader           | yes | yes | yes            | no            | partly    | no         | plugin     | yes            | config + id fix              |
+| O2c Vite plugin               | yes | yes | —              | yes           | no        | no         | plugin     | maybe          | ~60 lines JS                 |
+| O9 `<object>` + script        | yes | yes | yes            | separate doc  | yes       | yes, async | no         | no             | ~30 lines                    |
+| O12 invert filter             | —   | —   | dark only      | yes           | no        | no         | no         | no             | 1 line                       |
+| O8, O10, O11                  | rejected: O8 does not animate; O10 is ill-conditioned; O11 has too many layers and drift |    |    |    |    |    |    |    |    |
+
+## 8. Preliminary ranking
+
+This ranking is for discussion. The user decides, after Decisions 1–4.
+
+1. **For L1 and L2 now: a template (O2b) with `var(--art-…)` placeholders
+   for colour and opacity, S1 for the colours, and Q3 for the opacities
+   (§4b).** It is the smallest change that makes the art follow the theme,
+   and it keeps every guarantee of `<img>` and every tool. Q3 needs the script
+   anyway, and the script computes each palette's alphas.
+   - With T1, the art palette exists only in the theme: three of its four
+     copies go, and the fourth becomes the source.
+   - With T2 (the Ledger copy is the template), it is O1 + O2a today, with one
+     file per drawing; a second palette later adds copies and changes nothing
+     else.
+   - T1 is the user's proposal. T2 is less machinery while there is one palette.
+2. **For L3: add a copy per palette, and let CSS choose it (O2e).**
+   - No runtime JS, and the card keeps `<img>`.
+   - Every copy the audience can see is a real file, which the existing tools
+     measure with the existing commands. That is the per-palette check from §3.
+   - It works for imported slides with a `class:` override, which the E1 deck
+     needs.
+   - Its cost is generated files and generated rules (drawings × palettes),
+     which the same script writes and checks.
+3. **O3 (recolour into a `data:` URL at runtime)**, if a palette may not be
+   known at build time (none is planned), or if generated copies are not wanted.
+   It is about 25 lines in the card, but the tools need a palette mode to
+   measure what it shows.
+4. **O2d (the slide names the path).** It is the simplest selection, and it is
+   good for one dark slide. It fails for the E1 deck's imported slides, and it
+   names the palette twice on a slide.
+5. **O7 sprite.** It is the only inline method with no id problem. It needs a
+   tested way to put the sprite in the page once, outside every slide
+   (`global-top.vue` is the first candidate).
+6. **O4 (`color-scheme`) for the dark slide only.** Two states, no JS. It is
+   redundant once O2e exists.
+7. **O2f.** O2e does the same with no JS.
+8. **O6a inline.** It works, but it gives up `<img>`'s isolation. Without id
+   rewriting, a drawing loses its clips once an earlier slide with the same
+   drawing is hidden (probe, both browsers).
+9. **O5 fragments.** The same idea as O2e, with the unusual `:target` technique
+   in place of ordinary CSS.
+10. **O2c Vite plugin.** More machinery for L1 and L2 only.
+11. **O9, O12.** Worse versions of O3 and O4.
+12. **O8, O10, O11.** Rejected by probe or by arithmetic (§6).
+
+## 9. Decisions for the user
+
+1. **Levels:** L1 and L2 now? L3 now, or when E1 or the dark slide starts?
+2. **Source of the art colours:** S1, S2 or S3? And their names (`--art-*` needs
+   a collision check).
+3. **Opacity per palette: decided** (user, 2026-09-24). It is in scope, and
+   it is part of the palette/theme. Three questions follow (§4b):
+   - **3a.** The model: Q2 (one alpha per role) or Q3 (a contrast target per
+     role, with the alpha computed)? The proposal is Q3.
+   - **3b.** Where the default targets live (the drawing style, the theme, or
+     both), and the roles' names.
+   - **3c.** The role of each mark, and whether the Ledger changes are
+     acceptable. Under the candidate in §4b, 8 of 11 marks change: 3 of them
+     by 0.01, and 5 noticeably (the sundial's wall and inner ring, the drip
+     fill, the water surface, the inner flame).
+4. **Browsers: decided** (user, 2026-09-23). The option must work in Chromium
+   and Firefox. Safari and Edge matter less. Every probe here passed or failed
+   the same way in both.
+
+## 10. How to verify any option
+
+Reuse the method from `stem/watches/tasks/2026-09-23-followups/instructions.md`
+("How the 2026-09-23 changes were verified"):
+
+1. **With Ledger colours, nothing may change.** Run `barroom.py`, `motion.py`
+   and `artcheck.py` before and after, and diff the output. Build the deck, run
+   `offline_check.py`, and screenshot slide 2 at clicks 1, 2 and 5. Every card
+   box must be identical, and no pixel may change outside the drawings.
+   (Inside them, 0–150 pixels differ between any two renders, because the
+   animations run on their own clock.)
+2. **With another palette, the art must change and must pass.** Put a palette
+   class on a copy of slide 2, and check that the drawings take its colours.
+   Run the tools for that palette.
+3. **Presenter view and overview.** Open both and check that every drawing's
+   clip and animation work. This is where duplicate ids fail.
+4. **Firefox too.** `stem/tools/offline_check.py` launches Chromium only. Run
+   steps 1–3 in Firefox as well; `./probes/common.py` shows how to launch both.
+5. `pnpm format:check`, `palette.py`, `artcheck.py`.
+
+## Files in this directory
+
+| file                                                                  | what it is                                                                                                   |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `instructions.md`                                                     | this file                                                                                                    |
+| `probes/common.py`                                                    | shared by the probes: serves this directory, launches Chromium and Firefox, samples pixels                    |
+| `probes/techniques.py` + `techniques.html`, `art-*.svg`, `plain.svg`  | nine techniques on one page; for each, the colour, whether the clip works, and whether it animates            |
+| `probes/sprite.py` + `sprite.html`                                    | same-document `<symbol>` sprite: colour for each use, clip, animation; and the sprite inside `display:none`    |
+| `probes/dupids.py` + `dupids.html`                                    | inline duplicate clip ids, visible and hidden; a unique clip inside `display:none`                            |
+| `probes/color_scheme.py` + `scheme.html`, `scheme.svg`                | does an `<img>` SVG follow the element's `color-scheme`, or the OS setting?                                  |
+| `probes/opacity_var.py` + `opacity_var.html`, `opacity-var.svg`       | does `var()` work in `fill-opacity` and `stroke-opacity`?                                                     |
+| `probes/opacity_inventory.py`                                         | every static opacity in the drawings: mark, colour, alpha, contrast on the panel (no browser)                 |
+| `probes/opacity_roles.py`                                             | a first candidate of 4 opacity roles, as Q2 and as Q3, and what each does to every mark (no browser)          |
+| `probes/colour.py`                                                    | a frozen copy of `lib.py`'s colour formulas, so the two opacity scripts reproduce                             |
+| `probes/timekeepers-2026-09-24/`                                      | the four drawings as they were on 2026-09-24, which `opacity_inventory.py` reads                              |
+| `probes/css_select.py` + `css_select.html`, `plain-b.svg`             | can a palette class choose a pre-built copy through CSS (`content` on `<img>`, `background-image` on a `div`)? |
+| `probes/conditioning.py`                                              | condition number of a colour matrix from the Ledger art colours (no browser)                                  |
+| `probes/results.txt`                                                  | the output of every script, 2026-09-24, Chromium 153 and Firefox 155                                             |

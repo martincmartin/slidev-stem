@@ -1,0 +1,25 @@
+<!doctype html><html><body style="margin:0;background:#fff">
+<!-- The sprite: a hidden-by-size <svg> (NOT display:none) that defines the drawing once. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><clipPath id="c"><rect x="0" y="0" width="50" height="100"/></clipPath></defs>
+  <symbol id="art" viewBox="0 0 100 100">
+    <rect x="0" y="0" width="100" height="40" style="fill:var(--line, #143C6B)" clip-path="url(#c)">
+      <animate attributeName="y" values="0;60" dur="2s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="0" y="80" width="100" height="20" fill="var(--line, #143C6B)" clip-path="url(#c)"/>
+  </symbol>
+</svg>
+<!-- The same sprite inside display:none, as on a hidden slide. -->
+<div style="display:none"><svg width="0" height="0">
+  <defs><clipPath id="c-hidden"><rect x="0" y="0" width="50" height="100"/></clipPath></defs>
+  <symbol id="art-hidden" viewBox="0 0 100 100">
+    <rect x="0" y="0" width="100" height="40" style="fill:var(--line, #143C6B)" clip-path="url(#c-hidden)">
+      <animate attributeName="y" values="0;60" dur="2s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="0" y="80" width="100" height="20" fill="var(--line, #143C6B)" clip-path="url(#c-hidden)"/>
+  </symbol>
+</svg></div>
+<svg style="position:absolute;left:0;top:0" width="100" height="100"><use href="#art"/></svg>
+<svg style="position:absolute;left:110px;top:0;--line:#C0451C" width="100" height="100"><use href="#art"/></svg>
+<svg style="position:absolute;left:220px;top:0;--line:#C0451C" width="100" height="100"><use href="#art-hidden"/></svg>
+</body></html>

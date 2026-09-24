@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+<style>:root{--line:#143C6B}</style>
+<defs><clipPath id="c"><rect x="0" y="0" width="50" height="100"/></clipPath></defs>
+<g id="art">
+<rect x="0" y="0" width="100" height="40" style="fill:var(--line)" clip-path="url(#c)">
+  <animate attributeName="y" values="0;60" dur="2s" repeatCount="indefinite"/>
+</rect>
+<rect x="0" y="80" width="100" height="20" fill="var(--line)" clip-path="url(#c)"/>
+</g>
+</svg>

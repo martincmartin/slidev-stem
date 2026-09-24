@@ -1,0 +1,16 @@
+<!doctype html><html><body style="margin:0;background:#fff">
+<style> .cell{position:absolute;top:0} </style>
+<!-- Each drawing is a full blue square, clipped to one half by its OWN clipPath.
+     A clips to the LEFT half, B to the RIGHT half. B must show its right half. -->
+<!-- 0: B alone, unique id (control) -->
+<svg class="cell" style="left:0" width="100" height="100"><clipPath id="u"><rect x="50" width="50" height="100"/></clipPath><rect width="100" height="100" fill="#143C6B" clip-path="url(#u)"/></svg>
+<!-- 1: A visible, then B visible, same id "v" -->
+<svg class="cell" style="left:110px;top:200px" width="100" height="100"><clipPath id="v"><rect x="0" width="50" height="100"/></clipPath><rect width="100" height="100" fill="#143C6B" clip-path="url(#v)"/></svg>
+<svg class="cell" style="left:110px" width="100" height="100"><clipPath id="v"><rect x="50" width="50" height="100"/></clipPath><rect width="100" height="100" fill="#143C6B" clip-path="url(#v)"/></svg>
+<!-- 2: A inside display:none (a hidden slide), then B visible, same id "h" -->
+<div style="display:none"><svg width="100" height="100"><clipPath id="h"><rect x="0" width="50" height="100"/></clipPath><rect width="100" height="100" fill="#143C6B" clip-path="url(#h)"/></svg></div>
+<svg class="cell" style="left:220px" width="100" height="100"><clipPath id="h"><rect x="50" width="50" height="100"/></clipPath><rect width="100" height="100" fill="#143C6B" clip-path="url(#h)"/></svg>
+<!-- 3: B uses a UNIQUE clipPath "z" that sits inside display:none -->
+<div style="display:none"><svg width="100" height="100"><clipPath id="z"><rect x="50" width="50" height="100"/></clipPath></svg></div>
+<svg class="cell" style="left:330px" width="100" height="100"><rect width="100" height="100" fill="#143C6B" clip-path="url(#z)"/></svg>
+</body></html>

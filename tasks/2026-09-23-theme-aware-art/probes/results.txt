@@ -1,0 +1,125 @@
+# Probe results, 2026-09-24. Playwright: chromium-1234 chromium-1243 firefox-1543 
+# Run: stem/.venv/bin/python3 <script> in this directory.
+
+## techniques.py
+
+chromium 153.0.8010.12
+  technique                  bar colour clip     animation states in 3 s
+  img, internal var          #143C6B    works    8
+  inline, var in attribute   #C0451C    -        1
+  external <use>             #C0451C    works    1
+  img #target                #FFC24E    -        1
+  img + feColorMatrix        #FF0000    -        9
+  mask-image                 #C0451C    -        9
+  img, no #target            #143C6B    -        1
+  img data: URL + block      #C0451C    works    8
+  inline, inserted later     #C0451C    works    5
+
+firefox 155.0
+  technique                  bar colour clip     animation states in 3 s
+  img, internal var          #143C6B    works    9
+  inline, var in attribute   #C0451C    -        1
+  external <use>             #C0451C    works    1
+  img #target                #FFC24E    -        1
+  img + feColorMatrix        #FF0000    -        9
+  mask-image                 #C0451C    -        9
+  img, no #target            #143C6B    -        1
+  img data: URL + block      #C0451C    works    9
+  inline, inserted later     #C0451C    works    8
+
+## sprite.py
+chromium 153.0.8010.12, default colour        : bar #143C6B, clip works, animation states in 3 s: 9
+chromium 153.0.8010.12, --line on the <svg>   : bar #C0451C, clip works, animation states in 3 s: 9
+chromium 153.0.8010.12, sprite in display:none: bar #C0451C, clip FAILS, animation states in 3 s: 9
+firefox 155.0, default colour        : bar #143C6B, clip works, animation states in 3 s: 8
+firefox 155.0, --line on the <svg>   : bar #C0451C, clip works, animation states in 3 s: 8
+firefox 155.0, sprite in display:none: bar #C0451C, clip FAILS, animation states in 3 s: 8
+
+## dupids.py
+chromium 153.0.8010.12, B alone, unique id (control)      : B shows right half (correct)
+chromium 153.0.8010.12, A visible first, same id          : B shows LEFT half (A's clip)
+chromium 153.0.8010.12, A in display:none first, same id  : B shows both halves (no clip)
+chromium 153.0.8010.12, unique clip id, clipPath in display:none: B shows both halves (no clip)
+firefox 155.0, B alone, unique id (control)      : B shows right half (correct)
+firefox 155.0, A visible first, same id          : B shows LEFT half (A's clip)
+firefox 155.0, A in display:none first, same id  : B shows both halves (no clip)
+firefox 155.0, unique clip id, clipPath in display:none: B shows both halves (no clip)
+
+## color_scheme.py
+chromium 153.0.8010.12, OS light: plain img #143C6B, img with color-scheme:dark #FFC24E, img inside color-scheme:dark #FFC24E
+chromium 153.0.8010.12, OS dark : plain img #143C6B, img with color-scheme:dark #FFC24E, img inside color-scheme:dark #FFC24E
+firefox 155.0, OS light: plain img #143C6B, img with color-scheme:dark #FFC24E, img inside color-scheme:dark #FFC24E
+firefox 155.0, OS dark : plain img #143C6B, img with color-scheme:dark #FFC24E, img inside color-scheme:dark #FFC24E
+
+## css_select.py
+chromium 153.0.8010.12, img, content: var(...), palette-b     : colour #C0451C, animation states in 3 s: 9
+chromium 153.0.8010.12, div, background: var(...), palette-b  : colour #C0451C, animation states in 3 s: 9
+chromium 153.0.8010.12, img, content: var(...), palette-a     : colour #143C6B, animation states in 3 s: 9
+firefox 155.0, img, content: var(...), palette-b     : colour #C0451C, animation states in 3 s: 10
+firefox 155.0, div, background: var(...), palette-b  : colour #C0451C, animation states in 3 s: 10
+firefox 155.0, img, content: var(...), palette-a     : colour #143C6B, animation states in 3 s: 10
+
+## opacity_var.py
+chromium 153.0.8010.12, <img>, the file's :root block : fill-opacity #899DB5, stroke-opacity #899DB5
+chromium 153.0.8010.12, inline, the page's variable   : fill-opacity #899DB5, stroke-opacity #899DB5
+firefox 155.0, <img>, the file's :root block : fill-opacity #899DB5, stroke-opacity #899DB5
+firefox 155.0, inline, the page's variable   : fill-opacity #899DB5, stroke-opacity #899DB5
+
+## conditioning.py
+Ledger art colours as matrix columns (sRGB 0-1):
+ [[0.078 0.451 0.165]
+ [0.235 0.416 0.145]
+ [0.42  0.376 0.125]]
+condition number: 956.6
+max |entry| of inverse: 838.3
+knockout #D3DCE3 in that basis: [ 0.33  4.3  -6.91]
+
+## opacity_inventory.py
+drawing      mark     paint  colour   alpha  on panel 3:1 needs
+candle       rect     fill   #143C6B   0.08    1.14:1      0.55
+candle       line     stroke #143C6B   0.55    2.99:1      0.55
+candle       line     stroke #143C6B   0.55    2.99:1      0.55
+candle       line     stroke #143C6B   0.55    2.99:1      0.55
+candle       line     stroke #143C6B   0.55    2.99:1      0.55
+candle       line     stroke #143C6B   0.55    2.99:1      0.55
+candle       ellipse  fill   #143C6B   0.35    1.91:1      0.55   (also fades in and out)
+candle       ellipse  fill   #143C6B   0.35    1.91:1      0.55   (also fades in and out)
+candle       path     fill   #2A2520   0.70    5.29:1      0.50
+hourglass    rect     fill   #143C6B   0.85    6.45:1      0.55
+hourglass    path     fill   #143C6B   0.85    6.45:1      0.55
+sundial      path     fill   #736A60   0.18    1.25:1      0.77
+sundial      ellipse  fill   #143C6B   0.07    1.12:1      0.55
+sundial      ellipse  stroke #143C6B   0.45    2.37:1      0.55
+sundial      line     stroke #2A2520   0.50    2.97:1      0.50
+sundial      line     stroke #2A2520   0.50    2.97:1      0.50
+sundial      line     stroke #2A2520   0.50    2.97:1      0.50
+sundial      line     stroke #2A2520   0.50    2.97:1      0.50
+sundial      line     stroke #2A2520   0.50    2.97:1      0.50
+sundial      line     stroke #2A2520   0.50    2.97:1      0.50
+sundial      line     stroke #2A2520   0.50    2.97:1      0.50
+water-clock  rect     fill   #143C6B   0.60    3.38:1      0.55
+water-clock  ellipse  fill   #143C6B   0.78    5.36:1      0.55
+water-clock  rect     fill   #143C6B   0.60    3.38:1      0.55
+water-clock  ellipse  fill   #143C6B   0.78    5.36:1      0.55
+water-clock  path     stroke #2A2520   0.50    2.97:1      0.50
+water-clock  path     stroke #2A2520   0.50    2.97:1      0.50
+
+27 translucent paints; 11 distinct alpha values: [0.07, 0.08, 0.18, 0.35, 0.45, 0.5, 0.55, 0.6, 0.7, 0.78, 0.85]
+
+## opacity_roles.py
+mark                   role                now   Q2 fixed alpha   Q3 contrast target
+sundial plate fill     wash       0.07  1.12:1   0.08  1.14:1     0.08  1.14:1
+candle wax fill        wash       0.08  1.14:1   0.08  1.14:1     0.08  1.14:1
+sundial wall fill      wash       0.18  1.25:1   0.08  1.10:1     0.11  1.15:1
+candle hour bands      faint      0.55  2.99:1   0.50  2.65:1     0.56  3.07:1
+sundial inner ring     faint      0.45  2.37:1   0.50  2.65:1     0.56  3.07:1
+sundial, water ticks   faint      0.50  2.97:1   0.50  2.97:1     0.51  3.08:1
+candle drip fill       substance  0.35  1.91:1   0.60  3.38:1     0.60  3.38:1
+water body             substance  0.60  3.38:1   0.60  3.38:1     0.60  3.38:1
+water surface          dense      0.78  5.36:1   0.85  6.45:1     0.85  6.45:1
+inner flame            dense      0.70  5.29:1   0.85  8.45:1     0.77  6.57:1
+hourglass sand         dense      0.85  6.45:1   0.85  6.45:1     0.85  6.45:1
+
+Q2 roles (alpha): {'wash': 0.08, 'faint': 0.5, 'substance': 0.6, 'dense': 0.85}
+Q3 roles (contrast on the panel): {'wash': 1.14, 'faint': 3.0, 'substance': 3.37, 'dense': 6.44}
+marks whose alpha changes: Q2 7 of 11, Q3 8 of 11
