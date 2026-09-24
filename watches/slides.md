@@ -2,11 +2,37 @@
 # Ledger, the house theme for the STEM talks: ../themes/ledger/
 theme: ledger
 title: What Every Nerd Should Know About Watches
+class: cover-watch
 ---
+
+<img class="cover-watch-art" src="/cover/skeleton-watch.svg" alt="" />
 
 # What Every Nerd Should Know About Watches
 
 Hello, **World!**
+
+<style>
+/* The watch fills the canvas and leaves its left half empty for the title.
+   The art is positioned, so the text must be too, to paint above it. */
+.cover-watch {
+  position: relative;
+  place-content: center start;
+  text-align: left;
+}
+.cover-watch-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.cover-watch h1,
+.cover-watch p {
+  position: relative;
+}
+.cover-watch h1 {
+  max-width: 480px; /* three lines; the widest, "What Every Nerd", is 464 px */
+}
+</style>
 
 <!--
 Speaker notes here
