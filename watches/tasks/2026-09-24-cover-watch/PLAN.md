@@ -157,3 +157,28 @@ tools/motion.py --sep 1        dPeak 9.45  px2 >=3:1  2701
 
 The watch clears the gate. Its `Fmax` is about the candle's (0.078), the
 weakest timekeeper.
+
+## Experiment: the meshes in view (user, 2026-09-24)
+
+A wheel's teeth mesh with the next pinion about 10 px from that pinion's
+arbor, inside the next wheel's hub. With the barrel at the back and the escape
+wheel in front, each wheel's hub covered the mesh that drove it. The user
+chose the reverse order: the escape wheel at the back and the barrel in front,
+with the balance, the fork and the hands above the train.
+
+- Each pinion is drawn, at the pitch of the wheel that drives it, so it can
+  mesh. Teeth / leaves: barrel 36 / 6, centre 32 / 4 (8), third 30 / 4 (7.5),
+  fourth 14 / 7 (2). The third and fourth pinions have 4 leaves, not a real
+  watch's 6 or more, so that the centre and third wheels' teeth are coarse
+  enough to read (user; with 6 leaves they had 48 and 45 teeth). At t = 0 each driving tooth sits in a pinion gap, and the
+  steps keep them in mesh.
+- The ratio of 2 keeps the fourth wheel's 6° tick, and it makes the escape
+  pinion half the fourth wheel's radius. So the fourth wheel is smaller
+  (r = 28), and the escape pinion fills the middle of the escape wheel.
+- Every rotating part except the fourth wheel accumulates one period of
+  keyframes. A 6 s escape loop (72°) repeated for the teeth and spokes, but
+  not for the 7-leaf pinion, which jumped at each restart.
+- The centre cap is now a 3.5 px pivot, and the hour and minute hands narrow
+  to 3 px within 26 px of the arbor, so the barrel's mesh with the centre
+  pinion shows. The seconds hand has a 2.5 px pivot and narrows to 2 px within 16 px of
+  its arbor, for the same reason.

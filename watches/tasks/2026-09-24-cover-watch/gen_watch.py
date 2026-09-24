@@ -26,20 +26,22 @@ BANK = 9.0            # degrees: the fork's swing each side of its centre line
 FOURTH_LOOP = 60.0    # s: the fourth wheel carries the seconds hand, one turn a minute
 
 # ---- wheels: teeth, pitch radius, spokes ---------------------------------------
-# Each wheel's teeth reach the pinion of the next arbor, so the distance
-# between two arbors is the driving wheel's pitch radius plus the pinion's.
-BARREL = dict(teeth=36, rp=74)
-CENTRE = dict(teeth=24, rp=50, spokes=5)
-THIRD = dict(teeth=20, rp=44, spokes=4)
-FOURTH = dict(teeth=20, rp=40, spokes=4)
-ESCAPE = dict(teeth=15, rp=27, spokes=5)
-PINION = dict(centre=11, third=9, fourth=9, escape=10)   # radius; escape: leaves
-ESC_LEAVES = 10
-# The rest of the train turns at a real watch's ratios: the third wheel at
-# 1/7.5 of the fourth, the centre wheel at 1/8 of the third. So the centre
-# wheel, and the minute hand on its arbor, turn once an hour, and the hour
-# hand (through the motion works, 12:1) once in 12 hours.
-THIRD_RATIO, CENTRE_RATIO, HOUR_RATIO = 7.5, 8, 12
+# Each wheel's teeth mesh with the pinion on the next arbor. A wheel and the
+# pinion it drives share one tooth pitch, so the pinion's radius follows from
+# its leaves, and the ratio of teeth to leaves is the ratio of their speeds:
+#   barrel 36 / centre pinion 6   centre 32 / third pinion 4 = 8
+#   third 30 / fourth pinion 4 = 7.5   fourth 14 / escape pinion 7 = 2
+# A real pinion rarely has fewer than 6 leaves; 4 keeps the centre and third
+# wheels' teeth coarse enough to read (user, 2026-09-24).
+# 8 and 7.5 are a real watch's ratios, so the centre wheel and the minute hand
+# on its arbor turn once an hour. 2 is not (a real one is about 10); it keeps
+# the fourth wheel's tick at a visible 6 degrees (user, 2026-09-24).
+BARREL = dict(teeth=36, rp=74, leaves=None)
+CENTRE = dict(teeth=32, rp=50, spokes=5, leaves=6)
+THIRD = dict(teeth=30, rp=44, spokes=4, leaves=4)
+FOURTH = dict(teeth=14, rp=28, spokes=4, leaves=4)
+ESCAPE = dict(teeth=15, rp=27, spokes=5, leaves=7)
+HOUR_RATIO = 12       # the motion works under the dial turn the hour hand
 BALANCE_R = 56
 
 # ---- the case, in px from the watch centre ---------------------------------------
@@ -208,22 +210,45 @@ def band(points, width, samples=12):
     return d
 
 
-def wheel(w, phase=0.0, rim=6, hub=12, spoke_w=6, outline=None, ded=4):
+def pitch(w):
+    """The arc between two teeth, on the pitch circle."""
+    return 2 * math.pi * w["rp"] / w["teeth"]
+
+
+def depth(w):
+    """Addendum and dedendum: 4 px, or less where the teeth are fine."""
+    return min(4.0, 0.32 * pitch(w))
+
+
+def wheel(w, phase=0.0, rim=6, hub=12, spoke_w=6, outline=None, ded=None):
     """A wheel with crossings: its lit face, the toothed outline, the openings."""
-    outline = outline or gear(w["teeth"], w["rp"], phase)
+    ded = depth(w) if ded is None else ded
+    outline = outline or gear(w["teeth"], w["rp"], phase, ded, ded)
     holes = openings(w["spokes"], hub, w["rp"] - ded - rim, spoke_w, phase + 90 / w["spokes"])
+    fine = pitch(w) < 9                    # fine teeth take the thinner line
     return [el("path", d=outline + holes, fill=KNOCK, fill_rule="evenodd"),
-            el("path", d=outline, fill="none", stroke=LINE, stroke_width="2.5", stroke_linejoin="round"),
+            el("path", d=outline, fill="none", stroke=LINE, stroke_width="2" if fine else "2.5",
+               stroke_linejoin="round"),
             el("path", d=holes, fill="none", stroke=LINE, stroke_width="2", stroke_linejoin="round"),
             circle((0, 0), 4, fill=KNOCK, stroke=LINE, stroke_width="2")]
 
 
-def dagger(length, w_max, at, tail, w_tail, stroke_w, turn=0.0):
+def pinion(leaves, r, phase):
+    """A pinion: few, rounded leaves, at the pitch of the wheel that drives it."""
+    p = 2 * math.pi * r / leaves
+    return [el("path", d=gear(leaves, r, phase, min(3.5, 0.3 * p), min(4.5, 0.42 * p), 0.5, 0.4),
+               fill=KNOCK, stroke=LINE, stroke_width="2", stroke_linejoin="round"),
+            circle((0, 0), 3, fill=KNOCK, stroke=LINE, stroke_width="2")]
+
+
+def dagger(length, w_max, at, tail, w_tail, stroke_w, turn=0.0, neck=None):
     """A hand pointing at 12 from 0,0, turned `turn` degrees: widest at
     `at` of its length, with a short tail. A face in the frame colour, as
-    sundial.svg's wall, with a deep-blue outline."""
-    d = (f"M0 {n(-length)}L{n(w_max / 2)} {n(-length * at)}L{n(w_tail / 2)} {n(tail)}"
-         f"L{n(-w_tail / 2)} {n(tail)}L{n(-w_max / 2)} {n(-length * at)}Z")
+    sundial.svg's wall, with a deep-blue outline. With `neck`, the hand
+    narrows to `w_tail` that far from the arbor, so it hides little there."""
+    side = [(w_max / 2, -length * at)] + ([(w_tail / 2, -neck)] if neck else []) + [(w_tail / 2, tail)]
+    pts = [(0, -length)] + side + [(-x, y) for x, y in reversed(side)]
+    d = "M" + "L".join(f"{n(x)} {n(y)}" for x, y in pts) + "Z"
     return el("path", d=d, fill=FRAME, stroke=LINE, stroke_width=stroke_w, stroke_linejoin="round",
               transform=f"rotate({n(turn)})" if turn else None)
 
@@ -293,20 +318,29 @@ def under(names, body):
 # ---- the drawing ------------------------------------------------------------------------
 def build(wx, wy):
     C = (0.0, 0.0)
-    BRL = pt(BARREL["rp"] + PINION["centre"], clock(0))
-    T = pt(CENTRE["rp"] + PINION["third"] + 4, 5)
-    F = pt(THIRD["rp"] + PINION["fourth"], 85, T)
-    E = pt(FOURTH["rp"] + PINION["escape"], 140, F)
+    # a pinion's radius: its leaves at the pitch of the wheel that drives it
+    r_pin = lambda driver, driven: driven["leaves"] * driver["rp"] / driver["teeth"]
+    BRL = pt(BARREL["rp"] + r_pin(BARREL, CENTRE), clock(0))
+    T = pt(CENTRE["rp"] + r_pin(CENTRE, THIRD), 5)
+    F = pt(THIRD["rp"] + r_pin(THIRD, FOURTH), 85, T)
+    E = pt(FOURTH["rp"] + r_pin(FOURTH, ESCAPE), 140, F)
     LEVER = 185.0                                   # from the escape wheel toward the balance
     P = pt(36, LEVER, E)                            # the fork's pivot
     BAL = pt(100, LEVER, E)
     MOUTH = math.dist(P, BAL) - 12                  # pivot to the fork's mouth
-    # A lower wheel is hidden inside the root circle of the wheel above it (the
-    # inside edge of its teeth), so the gaps between that wheel's teeth stay open.
-    root = lambda w: w["rp"] - 4
-    g = [wrap("defs", [hole("centre", C, root(CENTRE)), hole("third", T, root(THIRD)),
-                       hole("fourth", F, root(FOURTH)), hole("escape", E, 23),
-                       hole("balance", BAL, BALANCE_R)])]
+    # Back to front: escape wheel, fourth, third, centre, barrel. Each wheel's
+    # teeth lie over the pinion they drive, so every mesh is in view. A lower
+    # wheel is hidden inside the root circle of each wheel above it (the inside
+    # edge of its teeth), so the gaps between teeth stay open.
+    train = [("escape", E, ESCAPE, 23, 33), ("fourth", F, FOURTH), ("third", T, THIRD),
+             ("centre", C, CENTRE), ("barrel", BRL, BARREL), ("balance", BAL, None, BALANCE_R, BALANCE_R)]
+    radii = {k[0]: (k[1], k[3] if len(k) > 3 else k[2]["rp"] - depth(k[2]),
+                    k[4] if len(k) > 3 else k[2]["rp"] + depth(k[2])) for k in train}
+    above = {}                        # wheel -> the wheels above it that overlap it
+    for i, (lo, *_) in enumerate(train):
+        above[lo] = [hi for hi, *_ in train[i + 1:]
+                     if math.dist(radii[lo][0], radii[hi][0]) < radii[lo][2] + radii[hi][1]]
+    g = [wrap("defs", [hole(k, c, r) for k, (c, r, _) in radii.items() if k != "escape"])]
 
     # ---- strap and lugs: what holds the watch -------------------------------------
     edge = lambda x, s: s * math.sqrt(R_CASE ** 2 - x ** 2)
@@ -327,39 +361,55 @@ def build(wx, wy):
     # ---- the case band -------------------------------------------------------------
     g.append(el("path", d=ring(R_CASE, R_BEZEL), fill=FRAME, fill_opacity="0.18", fill_rule="evenodd"))
 
-    # ---- the barrel: its lid is cut away to show the mainspring ------------------
-    outline = gear(BARREL["teeth"], BARREL["rp"], 3)
-    g.append(under(["centre", "third"], [wrap("g", [
+    # ---- the train, back to front -------------------------------------------------------
+    esc_step = -360.0 / ESCAPE["teeth"] / 2                  # half a tooth a beat, anticlockwise
+    step = {"escape": esc_step}
+    step["fourth"] = -step["escape"] * ESCAPE["leaves"] / FOURTH["teeth"]     # +6: clockwise
+    step["third"] = -step["fourth"] * FOURTH["leaves"] / THIRD["teeth"]
+    step["centre"] = -step["third"] * THIRD["leaves"] / CENTRE["teeth"]      # +0.1: once an hour
+    step["barrel"] = -step["centre"] * CENTRE["leaves"] / BARREL["teeth"]
+    slow = lambda k: stepper(PERIOD, step[k]) + (True,)     # one period, accumulated
+
+    # Phases: at t = 0 each driving wheel has a tooth on the line to the pinion
+    # it drives, and that pinion has a gap facing it.
+    drives = {"barrel": ("centre", BRL, C), "centre": ("third", C, T), "third": ("fourth", T, F),
+              "fourth": ("escape", F, E)}
+    def tooth_phase(k):
+        return angle(drives[k][1], drives[k][2]) if k in drives else 0.0
+
+    wheels = {"barrel": BARREL, "centre": CENTRE, "third": THIRD, "fourth": FOURTH, "escape": ESCAPE}
+
+    def pinion_of(k, c, w):
+        """Arbor k's pinion, with a gap facing the wheel that drives it."""
+        driver = next(d for d, (dn, _, _) in drives.items() if dn == k)
+        return pinion(w["leaves"], r_pin(wheels[driver], w), angle(c, radii[driver][0]) + 180 / w["leaves"])
+
+    # the escape wheel: its teeth work the fork. It accumulates too: no loop of
+    # its own repeats for 15 teeth, 5 spokes and a 7-leaf pinion at once, and a
+    # loop that did not showed a jump at each restart.
+    g.append(under(above["escape"], [turning(E, wheel(ESCAPE, 0, rim=5, hub=8, spoke_w=5, ded=0,
+                                                      outline=escape_outline(ESCAPE["teeth"], 23, 33, 6))
+                                             + pinion_of("escape", E, ESCAPE),
+                                             PERIOD, *slow("escape"))]))
+    # the fourth wheel: 6 degrees a beat, one turn a minute; it carries the seconds hand
+    times, values = stepper(FOURTH_LOOP, step["fourth"])
+    g.append(under(above["fourth"], [turning(F, wheel(FOURTH, tooth_phase("fourth"), hub=8, rim=5)
+                                             + pinion_of("fourth", F, FOURTH),
+                                             FOURTH_LOOP, times, values)]))
+    g.append(under(above["third"], [turning(T, wheel(THIRD, tooth_phase("third"))
+                                            + pinion_of("third", T, THIRD), PERIOD, *slow("third"))]))
+    g.append(under(above["centre"], [turning(C, wheel(CENTRE, tooth_phase("centre"), hub=14, spoke_w=7)
+                                             + pinion_of("centre", C, CENTRE), PERIOD, *slow("centre"))]))
+    # the barrel, in front: its lid is cut away to show the mainspring
+    outline = gear(BARREL["teeth"], BARREL["rp"], tooth_phase("barrel"))
+    g.append(under(above["barrel"], [turning(BRL, [
         el("path", d=outline + disc(BARREL["rp"] - 12), fill=KNOCK, fill_rule="evenodd"),
         el("path", d=outline, fill="none", stroke=LINE, stroke_width="2.5", stroke_linejoin="round"),
         circle(C, BARREL["rp"] - 12, fill="none", stroke=LINE, stroke_width="2"),
         el("path", d=spiral(19, BARREL["rp"] - 16, 150, 150 + 360 * 3.5, 14), fill="none",
            stroke=LINE, stroke_width="2", stroke_linecap="round"),
         circle(C, 15, fill=KNOCK, stroke=LINE, stroke_width="3"),
-    ], transform=f"translate({xy(BRL)})")]))
-
-    # ---- the train ----------------------------------------------------------------------
-    # Each wheel is clipped inside the wheel above it, so an overlap reads as two
-    # layers, not as two sets of spokes crossing. The upper wheel's teeth have
-    # opaque faces, so they hide the lower wheel's teeth where they cross.
-    fourth_step = 360.0 / ESCAPE["teeth"] / 2 * ESC_LEAVES / FOURTH["teeth"]    # 6 degrees
-    third_step = -fourth_step / THIRD_RATIO                                      # anticlockwise
-    centre_step = -third_step / CENTRE_RATIO                                     # clockwise
-    slow = lambda step: stepper(PERIOD, step) + (True,)     # one period, accumulated
-    g.append(under(["third", "balance"],
-                   [turning(C, wheel(CENTRE, 4, hub=14, spoke_w=7), PERIOD, *slow(centre_step))]))
-    g.append(under(["fourth"], [turning(T, wheel(THIRD, 2), PERIOD, *slow(third_step))]))
-    # The fourth wheel is driven by the escape pinion, so it turns the other way:
-    # clockwise, 6 degrees a beat, one turn a minute. It carries the seconds hand.
-    esc_step = -360.0 / ESCAPE["teeth"] / 2
-    times, values = stepper(FOURTH_LOOP, -esc_step * ESC_LEAVES / FOURTH["teeth"])
-    g.append(under(["escape"], [turning(F, wheel(FOURTH, 5), FOURTH_LOOP, times, values)]))
-    # the escape wheel turns half a tooth at each beat; 3 periods = 72 degrees,
-    # which 15 teeth and 5 spokes both repeat after
-    times, values = stepper(3 * PERIOD, esc_step)
-    g.append(turning(E, wheel(ESCAPE, 0, rim=5, hub=8, spoke_w=5, ded=0,
-                              outline=escape_outline(ESCAPE["teeth"], 23, 33, 6)),
-                     3 * PERIOD, times, values))
+    ], PERIOD, *slow("barrel"))]))
 
     # ---- the balance and its hairspring ---------------------------------------------
     frames = [i / 24 * PERIOD for i in range(25)]
@@ -404,8 +454,8 @@ def build(wx, wy):
 
     # ---- the seconds hand, on the fourth wheel's arbor --------------------------------
     times, values = stepper(FOURTH_LOOP, 6.0)
-    seconds = [dagger(60, 9, 0.70, 14, 5, "2"),
-               circle(C, 5, fill=KNOCK, stroke=LINE, stroke_width="2")]
+    # a small pivot, not a cap, so the fourth pinion's mesh stays in view
+    seconds = [dagger(60, 9, 0.70, 6, 2, "2", neck=16), circle(C, 2.5, fill=LINE)]
     g.append(turning(F, seconds, FOURTH_LOOP, times, values))
 
     # ---- the chapter ring: what is left of the dial ------------------------------------
@@ -423,11 +473,11 @@ def build(wx, wy):
     g.append(circle(C, R_BEZEL, fill="none", stroke=FRAME, stroke_width="3"))
 
     # ---- the hands, at ten past ten ----------------------------------------------------
-    g.append(turning(C, [dagger(140, 17, 0.62, 20, 8, "3", (10 + 9 / 60) * 30)],
-                     PERIOD, *slow(centre_step / HOUR_RATIO)))
-    g.append(turning(C, [dagger(206, 13, 0.70, 26, 7, "3", 9 * 6)], PERIOD, *slow(centre_step)))
-    g.append(circle(C, 10, fill=KNOCK, stroke=LINE, stroke_width="3"))
-    g.append(circle(C, 3, fill=LINE))
+    g.append(turning(C, [dagger(140, 17, 0.62, 10, 3, "3", (10 + 9 / 60) * 30, neck=26)],
+                     PERIOD, *(stepper(PERIOD, step["centre"] / HOUR_RATIO) + (True,))))
+    g.append(turning(C, [dagger(206, 13, 0.70, 12, 3, "3", 9 * 6, neck=26)], PERIOD, *slow("centre")))
+    # a small pivot, not a cap, so the barrel's mesh with the centre pinion shows
+    g.append(circle(C, 3.5, fill=KNOCK, stroke=LINE, stroke_width="2"))
 
     return (f'<svg width="{W}" height="{H}" viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg">\n'
             f'<g transform="translate({n(wx)} {n(wy)})">\n' + "\n".join(g) + "\n</g>\n</svg>\n")
