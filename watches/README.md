@@ -22,8 +22,8 @@ measurements of its drawings. Building new content should never require opening
 
 ```bash
 # in stem/
-python3 tools/artcheck.py         # every illustration: structure, style, legibility
-python3 tools/palette.py          # the palette still passes its own gates
+.venv/bin/python3 tools/artcheck.py         # every illustration: structure, style, legibility
+.venv/bin/python3 tools/palette.py          # the palette still passes its own gates
 ```
 
 [`../tools/`](../tools/README.md) holds the checks that settle "is this good

@@ -4,13 +4,13 @@
 THIS SCRIPT IS THE SOURCE of watches/public/cover/skeleton-watch.svg. To
 change the drawing, edit this file and run it; do not edit the SVG.
 
-    python3 art/skeleton_watch.py                # in watches/: writes the deck's SVG
-    python3 art/skeleton_watch.py out.svg        # writes there instead
-    python3 art/skeleton_watch.py out.svg --at 490 276   # the watch centre on the canvas
+    ../.venv/bin/python3 art/skeleton_watch.py                # in watches/: writes the deck's SVG
+    ../.venv/bin/python3 art/skeleton_watch.py out.svg        # writes there instead
+    ../.venv/bin/python3 art/skeleton_watch.py out.svg --at 490 276   # the watch centre on the canvas
 
 After every change, run the validator. It type-checks this file, checks the
 layout, regenerates the SVG and runs the art checks:
-    python3 art/validate_skeleton_watch.py       # in watches/
+    ../.venv/bin/python3 art/validate_skeleton_watch.py       # in watches/
 
 Stdlib only. The file fills the slide: width 980, height 552, and a viewBox of
 the same size, so one unit is one CSS px. It uses the four art colours of
@@ -25,8 +25,6 @@ attribute also has a static value equal to its first frame, so a renderer
 without SMIL shows frame 0. Why the drawing is as it is:
 watches/tasks/2026-09-24-cover-watch/PLAN.md.
 """
-
-from __future__ import annotations
 
 import argparse
 import math

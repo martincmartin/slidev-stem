@@ -231,7 +231,7 @@ def main():
                       f"low-opacity fill -- drags it\n  down without anything being wrong. "
                       f"What this is really saying is that at the\n  back row the drawing "
                       f"reduces to its outline. Check that the outline alone still\n  reads, "
-                      f"and run `python3 tools/artcheck.py` to see which fills are the washes.")
+                      f"and run `.venv/bin/python3 tools/artcheck.py` to see which fills are the washes.")
             else:
                 print(f"  Its strong marks fail too (p90 {p90:.2f}), so this is a real "
                       f"legibility failure.\n  Read docs/legibility.md before redrawing: a "

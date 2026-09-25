@@ -23,11 +23,11 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 | `offline_check.py` | playwright               | does a built deck make any outside request; its fonts and colours per slide |
 
 ```bash
-python3 tools/lib.py                          # the framework, as numbers
-python3 tools/palette.py                      # every gate, pass/fail
-python3 tools/palette.py "#C0451C" accent     # a candidate colour, measured
-python3 tools/artcheck.py                     # every SVG in every talk's public/
-python3 tools/artcheck.py path/to/new.svg     # ... or just the new one
+.venv/bin/python3 tools/lib.py                          # the framework, as numbers
+.venv/bin/python3 tools/palette.py                      # every gate, pass/fail
+.venv/bin/python3 tools/palette.py "#C0451C" accent     # a candidate colour, measured
+.venv/bin/python3 tools/artcheck.py                     # every SVG in every talk's public/
+.venv/bin/python3 tools/artcheck.py path/to/new.svg     # ... or just the new one
 .venv/bin/python3 tools/contact.py watches/public/timekeepers --times 0.2 4 8 11.8
 .venv/bin/python3 tools/barroom.py --save out/
 .venv/bin/python3 tools/motion.py             # every animated drawing
@@ -35,8 +35,9 @@ python3 tools/artcheck.py path/to/new.svg     # ... or just the new one
 ```
 
 `palette.py`, `artcheck.py` and `offline_check.py` exit non-zero on failure, so
-they work in a pre-commit hook or CI. The ones that render need `stem/.venv`: see
-`../requirements.txt` for how to make it.
+they work in a pre-commit hook or CI. All of them need Python 3.14, so run them
+with `stem/.venv/bin/python3`: see `../requirements.txt` for how to make it. The
+"needs" column above lists the packages.
 
 ## Which tool is the authority
 

@@ -1,0 +1,11 @@
+# Settings for the Python checkers. The code is stem/tools/ and the talks'
+# art/ scripts, not a package; requirements.txt lists what they need.
+
+[tool.ruff]
+target-version = "py314"
+
+[tool.mypy]
+python_version = "3.14"
+
+[tool.pyright]
+pythonVersion = "3.14"

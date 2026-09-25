@@ -2,7 +2,7 @@
 """Validate skeleton_watch.py and the SVG it writes. Run it after every change
 to skeleton_watch.py:
 
-    python3 art/validate_skeleton_watch.py      # in watches/
+    ../.venv/bin/python3 art/validate_skeleton_watch.py      # in watches/
 
 It runs itself under stem/.venv, stops at the first failure and exits non-zero.
 The steps:

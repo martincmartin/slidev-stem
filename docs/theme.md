@@ -15,7 +15,7 @@ Warm cream, deep blue, warm brown. Chosen 2026-09-19 out of 23 candidates.
 --palette-art-knockout  #D3DCE3  drawings: a pale face that reads as lit
 ```
 
-`python3 tools/palette.py` (in `stem/`) prints these with every gate measured.
+`.venv/bin/python3 tools/palette.py` (in `stem/`) prints these with every gate measured.
 Run it if you change one.
 
 ## How to use it
@@ -24,7 +24,7 @@ Run it if you change one.
 slide, by the house theme (`themes/ledger/styles/ledger.css`), and nowhere else.
 Components read `var(--palette-ink)` and so on, so everything on a slide follows
 the palette. `tools/lib.py` reads the values from the same file, so
-`python3 tools/palette.py` always measures what the slides render. It fails if a
+`.venv/bin/python3 tools/palette.py` always measures what the slides render. It fails if a
 slide, page or component in any talk declares a `--palette-*` variable.
 
 **One accent per slide.** The accent is not "the blue one", it is _the thing you
@@ -95,7 +95,7 @@ applies to a chart with two shades of the accent, or a diagram with a highlighte
 sub-part in a tint of its parent.
 
 ```bash
-python3 tools/palette.py "#6D839B"   # reports lightness ratio against every role
+.venv/bin/python3 tools/palette.py "#6D839B"   # reports lightness ratio against every role
 ```
 
 ## Adding a colour
@@ -107,8 +107,8 @@ When you genuinely need one — a diagram with more parts than roles, a third se
 run it through the measurement before you commit:
 
 ```bash
-python3 tools/palette.py "#C0451C"           # every surface, every neighbour
-python3 tools/palette.py "#C0451C" accent    # ... and against one role's gates
+.venv/bin/python3 tools/palette.py "#C0451C"           # every surface, every neighbour
+.venv/bin/python3 tools/palette.py "#C0451C" accent    # ... and against one role's gates
 ```
 
 It reports contrast against every surface, ΔE against every existing mark, the

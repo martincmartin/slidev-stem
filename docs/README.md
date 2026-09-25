@@ -25,8 +25,8 @@ deep blue accent, warm brown second — and their illustrations are **"Line,
 weighted"**: deep blue line work on the card panel, four stroke weights, in files
 that state the size a slide shows them at. Every threshold in these docs comes
 from one question, _can the back row of a bar read this_, and `tools/` answers it
-with arithmetic instead of opinion. Run `python3 tools/artcheck.py` and
-`python3 tools/palette.py` in `stem/` before you ship; they are stdlib-only and
+with arithmetic instead of opinion. Run `.venv/bin/python3 tools/artcheck.py` and
+`.venv/bin/python3 tools/palette.py` in `stem/` before you ship; they are stdlib-only and
 take a second.
 
 ---

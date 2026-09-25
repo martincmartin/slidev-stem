@@ -138,8 +138,8 @@ the history.
 ```bash
 # in stem/
 pnpm format                       # prettier -- required, see stem/AGENTS.md
-python3 tools/palette.py          # the palette still passes its own gates
-python3 tools/artcheck.py         # every SVG: structure, grammar, legibility
+.venv/bin/python3 tools/palette.py          # the palette still passes its own gates
+.venv/bin/python3 tools/artcheck.py         # every SVG: structure, grammar, legibility
 # in watches/
 pnpm build                        # it actually builds
 ```

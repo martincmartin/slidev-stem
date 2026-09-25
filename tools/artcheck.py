@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Does this illustration belong to the series? Structure, grammar and legibility.
 
-    python3 tools/artcheck.py                          # every SVG in every talk's public/
-    python3 tools/artcheck.py path/to/new.svg          # one new drawing
-    python3 tools/artcheck.py watches/public/timekeepers/  # a directory of them
+    .venv/bin/python3 tools/artcheck.py                          # every SVG in every talk's public/
+    .venv/bin/python3 tools/artcheck.py path/to/new.svg          # one new drawing
+    .venv/bin/python3 tools/artcheck.py watches/public/timekeepers/  # a directory of them
 
-Stdlib only, so it runs anywhere and can go in a pre-commit hook. Exits non-zero
+Stdlib only, so it is fast and can go in a pre-commit hook. Exits non-zero
 on any FAIL. Thresholds come from `lib.py`; this file only applies them.
 
 THREE KINDS OF CHECK, and they fail for three different reasons.

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Is this colour allowed, and does the palette still pass its own gates?
 
-    python3 tools/palette.py                  # the palette, every gate, pass/fail
-    python3 tools/palette.py "#C0451C"        # can I use this? measured in every role
-    python3 tools/palette.py "#C0451C" accent # ... and specifically as the accent
+    .venv/bin/python3 tools/palette.py                  # the palette, every gate, pass/fail
+    .venv/bin/python3 tools/palette.py "#C0451C"        # can I use this? measured in every role
+    .venv/bin/python3 tools/palette.py "#C0451C" accent # ... and specifically as the accent
 
 Stdlib only. The thresholds live in `lib.py`; this file only applies them. The
 palette values come from the theme's CSS (`lib.THEME_CSS`), the one place they

@@ -1,10 +1,11 @@
-# Python packages for stem/tools/ and the talks' art scripts. Install into stem/.venv:
-#   python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+# Python packages for stem/tools/ and the talks' art scripts. They all need
+# Python 3.14 (.python-version), and all run from stem/.venv. To make it:
+#   python3.14 -m venv .venv && .venv/bin/pip install -r requirements.txt
 #   .venv/bin/playwright install chromium
 numpy==2.5.3
 pillow==12.3.0
 playwright==1.63.0
-# style and type checkers, for watches/art/validate-skeleton-watch.py
+# style and type checkers, for watches/art/validate_skeleton_watch.py
 mypy==2.3.1
 pyright==1.1.414
 ruff==0.16.9

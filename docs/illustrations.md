@@ -11,7 +11,7 @@ does.
 
 ```bash
 # in stem/
-python3 tools/artcheck.py path/to/new.svg    # box, palette, ladder, floor, opacity
+.venv/bin/python3 tools/artcheck.py path/to/new.svg    # box, palette, ladder, floor, opacity
 .venv/bin/python3 tools/contact.py path/to/new.svg   # look at it, pinned per frame
 .venv/bin/python3 tools/barroom.py path/to/new.svg   # can the back row see it
 .venv/bin/python3 tools/motion.py path/to/new.svg    # can it see the thing that MOVES

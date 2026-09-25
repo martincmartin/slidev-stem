@@ -163,9 +163,9 @@ its file states a larger size, and every number on this page changes with it.
 ## How to check new work
 
 ```bash
-python3 tools/palette.py                    # the palette still passes its gates
-python3 tools/palette.py "#C0451C"          # can I use this colour
-python3 tools/artcheck.py new.svg           # box, palette, ladder, floor, opacity
+.venv/bin/python3 tools/palette.py                    # the palette still passes its gates
+.venv/bin/python3 tools/palette.py "#C0451C"          # can I use this colour
+.venv/bin/python3 tools/artcheck.py new.svg           # box, palette, ladder, floor, opacity
 .venv/bin/python3 tools/contact.py new.svg  # look at it, pinned at several times
 .venv/bin/python3 tools/barroom.py new.svg  # what the back row gets
 .venv/bin/python3 tools/motion.py new.svg   # ... of the thing that MOVES

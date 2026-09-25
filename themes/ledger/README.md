@@ -31,7 +31,7 @@ theme adds none yet.
 - **The palette is set here and nowhere else.** The values and the reasoning
   behind them are in [`docs/theme.md`](../../docs/theme.md) at the repo root.
   `tools/lib.py` there reads the values from `styles/ledger.css`, and
-  `python3 tools/palette.py` measures them against their gates. It also fails
+  `.venv/bin/python3 tools/palette.py` measures them against their gates. It also fails
   if a talk declares a `--palette-*` variable.
 - **No outside requests.** A talk must run on a laptop with no network. Fonts
   come from Fontsource packages. A font that is not on Fontsource and is not one

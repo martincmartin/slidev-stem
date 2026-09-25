@@ -1,8 +1,10 @@
 """House constants and the colour/legibility maths every other tool here uses.
 
-Stdlib only, deliberately: the checks that gate new content must run on a laptop
-with nothing installed. The two tools that read rendered pixels (`barroom.py`,
-`contact.py`) need more, and say so.
+Stdlib only, deliberately, so the checks that gate new content start at once and
+need no packages. Like every tool here, it needs Python 3.14: run it with
+stem/.venv/bin/python3 (../requirements.txt says how to make the venv). The tools
+that render (`barroom.py`, `contact.py`, `motion.py`) need packages too, and say
+so.
 
 WHAT LIVES HERE AND WHAT DOES NOT. This file holds the *current* framework for
 every STEM talk: the gates for the Ledger palette, the Line-weighted drawing

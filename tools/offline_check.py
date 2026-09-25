@@ -2,9 +2,9 @@
 """Load a BUILT Slidev deck with every outside request blocked, and report.
 
     pnpm exec slidev build --out /tmp/deck                 # in the talk's directory
-    python tools/offline_check.py /tmp/deck 1:0 2:0 2:5 3:0      # slide:clicks ...
-    python tools/offline_check.py /tmp/deck 2:5 --shots /tmp/png/after
-    python tools/offline_check.py /tmp/deck --clicks 2 --back    # step through slide 2
+    .venv/bin/python3 tools/offline_check.py /tmp/deck 1:0 2:0 2:5 3:0      # slide:clicks ...
+    .venv/bin/python3 tools/offline_check.py /tmp/deck 2:5 --shots /tmp/png/after
+    .venv/bin/python3 tools/offline_check.py /tmp/deck --clicks 2 --back    # step through slide 2
 
 Needs playwright: run it with stem/.venv/bin/python3 (see requirements.txt).
 
