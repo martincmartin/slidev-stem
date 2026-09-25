@@ -10,6 +10,16 @@ This task goes further than item E1's "Decision (art)" in
 `stem/watches/tasks/2026-09-23-followups/instructions.md`. That item gives three
 options. This file has all of them, with probe data.
 
+**Already done, outside this task:** part of option S1 (§4).
+`themes/ledger/styles/ledger.css` now sets `--palette-art-line` (`#143C6B`)
+and `--palette-art-knockout` (`#D3DCE3`); the other two art colours are
+`--palette-muted` and `--palette-ink`. `tools/lib.py` builds `ART_INK` from
+these four, and the cover watch's generator,
+`stem/watches/art/skeleton-watch.py`, reads them from the theme. The four
+timekeeper SVGs still use hex literals, and the drawing is now a fifth SVG with
+the same four colours. The `--palette-art-*` names are chosen; the collision
+check in §4 was not run.
+
 ---
 
 ## 1. The problem

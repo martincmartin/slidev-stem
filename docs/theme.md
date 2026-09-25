@@ -10,6 +10,9 @@ Warm cream, deep blue, warm brown. Chosen 2026-09-19 out of 23 candidates.
 --palette-second      #9A6238    the warm counterpart: the catch, the warning
 --palette-panel       #F2EEE4    card fill
 --palette-border      #E0D9CA    card edge
+
+--palette-art-line      #143C6B  drawings: line work (illustrations.md)
+--palette-art-knockout  #D3DCE3  drawings: a pale face that reads as lit
 ```
 
 `python3 tools/palette.py` (in `stem/`) prints these with every gate measured.
@@ -17,7 +20,7 @@ Run it if you change one.
 
 ## How to use it
 
-**Use the variables, not literals.** The seven values are set once, on every
+**Use the variables, not literals.** The nine values are set once, on every
 slide, by the house theme (`themes/ledger/styles/ledger.css`), and nowhere else.
 Components read `var(--palette-ink)` and so on, so everything on a slide follows
 the palette. `tools/lib.py` reads the values from the same file, so

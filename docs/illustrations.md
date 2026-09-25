@@ -30,7 +30,10 @@ size as `width` and `height`: then one unit is one CSS px.
 If a slide shows the drawing at another size, change `width` and `height` to match
 and run the checks again. Everything below is in CSS px as shown.
 
-**Palette.** Four colours, each with a job. Nothing else.
+**Palette.** Four colours, each with a job. Nothing else. The theme sets them
+(`themes/ledger/styles/ledger.css`), and `tools/lib.py` reads them from there:
+`--palette-art-line`, `--palette-muted`, `--palette-ink` and
+`--palette-art-knockout`, in the order of this table.
 
 | colour    | job                                                                  | on panel |
 | --------- | -------------------------------------------------------------------- | -------- |

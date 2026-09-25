@@ -97,12 +97,14 @@ STROKE_LADDER = [2.0, 2.5, 3.0, 4.0]
 LADDER_TOLERANCE = 0.05
 ASPECT_TOLERANCE = 0.01    # width:height vs the viewBox's, so nothing is squashed
 
-# Every colour a Line-weighted drawing is allowed to use, and its job.
+# Every colour a Line-weighted drawing is allowed to use, and its job. The
+# values come from the theme: two are the drawings' own variables, two are
+# palette colours.
 ART_INK = {
-    "#143C6B": "primary line work: the subject's own structure. Also as a 0.07-0.08 fill.",
-    "#736A60": "secondary structure: the stand, the frame, the thing holding it up.",
-    "#2A2520": "tertiary detail: tick marks, smoke. Usually at 0.5 stroke-opacity.",
-    "#D3DCE3": "knockout: a pale face that has to read as lit, not as empty paper.",
+    LEDGER["art-line"]: "primary line work: the subject's own structure. Also as a 0.07-0.08 fill.",
+    LEDGER["muted"]: "secondary structure: the stand, the frame, the thing holding it up.",
+    LEDGER["ink"]: "tertiary detail: tick marks, smoke. Usually at 0.5 stroke-opacity.",
+    LEDGER["art-knockout"]: "knockout: a pale face that has to read as lit, not as empty paper.",
 }
 ART_FIELD = LEDGER["panel"]    # illustrations sit on a card, not on the slide
 
