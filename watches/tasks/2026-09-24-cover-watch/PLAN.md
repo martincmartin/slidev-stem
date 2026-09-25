@@ -134,10 +134,14 @@ escapement read as a tangle.
 
 ## How the drawing is made
 
-`./gen_watch.py` writes the SVG. Gear teeth, spirals and the animation
-keyframes are computed, so the drawing is generated, not hand-written. The
-script writes into `./out/`. The file is then copied to
-`stem/watches/public/cover/skeleton-watch.svg`.
+A script writes the SVG. Gear teeth, spirals and the animation keyframes are
+computed, so the drawing is generated, not hand-written.
+
+**Moved (user, 2026-09-24):** the script was `./gen_watch.py`, writing into
+`./out/`. It is now `stem/watches/art/skeleton-watch.py` and writes the deck's
+SVG directly, because anyone who changes the drawing changes the script, not
+the SVG. `./out/skeleton-watch.svg` is the last output of `gen_watch.py`
+before the move.
 
 ## Checks
 
@@ -151,8 +155,8 @@ In `stem/`, at `TV 55in @7m`:
 
 ```
 python3 tools/artcheck.py      ok (notes: the 0.18 washes and the 0.5 minute ticks)
-tools/barroom.py               ink 6.4%  hold 3.72  p90 6.79  Fmax 0.088
-tools/motion.py --sep 1        dPeak 9.45  px2 >=3:1  2701
+tools/barroom.py               ink 6.2%  hold 3.65  p90 7.00  Fmax 0.080
+tools/motion.py --sep 1        dPeak 9.11  px2 >=3:1  2138
 ```
 
 The watch clears the gate. Its `Fmax` is about the candle's (0.078), the
@@ -182,3 +186,38 @@ with the balance, the fork and the hands above the train.
   to 3 px within 26 px of the arbor, so the barrel's mesh with the centre
   pinion shows. The seconds hand has a 2.5 px pivot and narrows to 2 px within 16 px of
   its arbor, for the same reason.
+
+These are for the final drawing, with the meshes in view and the 6 px impulse
+jewel. `stem/watches/docs/measurements.md` keeps the current numbers.
+
+## The impulse jewel (user, 2026-09-24)
+
+The jewel on the balance's roller was a 3 px dot, hard to see. It is now 6 px
+in radius (the user's size, after 4.5 px was still too small), 15 px from the
+arbor so it clears the 10 px collet. It is drawn over the hairspring, turning
+with the balance, and the fork's slot is widened to hold it.
+
+## A smaller escape pinion, a bigger fourth wheel (user, 2026-09-24)
+
+The escape pinion (r = 14, 7 leaves) crowded the escape wheel, and the four
+wheels were bunched. The pinion's radius is the fourth wheel's divided by
+their ratio, and the escape wheel's step is fixed at 12°, so:
+
+| option          | escape pinion | fourth wheel | fourth-wheel tick |
+| --------------- | ------------- | ------------ | ----------------- |
+| ratio 2 (was)   | r 14          | r 28         | 6°                |
+| **ratio 4**     | r 9.3         | r 37         | 3°                |
+| ratio 3         | r 9.3         | r 28         | 4°                |
+| ratio 3         | r 12          | r 36         | 4°                |
+
+**Chosen by the user: ratio 4.** Escape pinion 6 leaves; fourth wheel 24
+teeth. The seconds hand turns once in 2 minutes (a 120 s loop).
+
+The wheel angles came from a search that kept every wheel inside the chapter
+ring and the balance at lower left, and maximised the gap between wheels that
+do not mesh: at least 11.6 px. Third wheel at 60° from the centre wheel,
+fourth at 65° from the third, escape at 100° from the fourth, balance 115 px
+from the escape wheel at 195°.
+
+After this change: `hold 3.66`, `p90 6.99`, `Fmax 0.082`; `motion.py --sep 1`
+`dPeak 9.41`, 2736 px² over 3:1.

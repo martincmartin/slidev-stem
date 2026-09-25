@@ -1,16 +1,24 @@
 #!/usr/bin/env python3
-"""Generate the cover slide's skeleton watch in the "Line, weighted" style.
+"""The cover slide's skeleton watch, in the "Line, weighted" style.
 
-    python3 gen_watch.py                       # writes ./out/skeleton-watch.svg
-    python3 gen_watch.py out.svg               # writes there
-    python3 gen_watch.py out.svg --at 490 276  # the watch centre on the canvas
+THIS SCRIPT IS THE SOURCE of watches/public/cover/skeleton-watch.svg. To
+change the drawing, edit this file and run it; do not edit the SVG.
+
+    python3 art/skeleton-watch.py                # in watches/: writes the deck's SVG
+    python3 art/skeleton-watch.py out.svg        # writes there instead
+    python3 art/skeleton-watch.py out.svg --at 490 276   # the watch centre on the canvas
+
+Then run the checks in stem/ (docs/measurements.md has the current numbers):
+    python3 tools/artcheck.py watches/public/cover/skeleton-watch.svg
+    .venv/bin/python3 tools/barroom.py watches/public/cover/skeleton-watch.svg
+    .venv/bin/python3 tools/motion.py watches/public/cover/skeleton-watch.svg --sep 1
 
 Stdlib only. The file fills the slide: width 980, height 552, and a viewBox of
 the same size, so one unit is one CSS px. It uses the four art colours of
 stem/docs/illustrations.md and the stroke ladder 2, 2.5, 3 and 4 CSS px.
 
-The escapement moves, in slow motion at one beat per second (PLAN.md,
-Decision 2). Every animated attribute also has a static value equal to its
+The escapement moves, in slow motion at one beat per second. Why the drawing
+is as it is: watches/tasks/2026-09-24-cover-watch/PLAN.md. Every animated attribute also has a static value equal to its
 first frame, so a renderer without SMIL shows frame 0.
 """
 import argparse, math, pathlib
@@ -23,24 +31,26 @@ PERIOD = 2.0          # s, one full swing of the balance: two beats
 AMPLITUDE = 150.0     # degrees each way from centre
 PIN_ARC = 25.0        # the fork moves while the balance is within this of centre
 BANK = 9.0            # degrees: the fork's swing each side of its centre line
-FOURTH_LOOP = 60.0    # s: the fourth wheel carries the seconds hand, one turn a minute
+FOURTH_LOOP = 120.0   # s: the fourth wheel carries the seconds hand, one turn in 2 minutes
 
 # ---- wheels: teeth, pitch radius, spokes ---------------------------------------
 # Each wheel's teeth mesh with the pinion on the next arbor. A wheel and the
 # pinion it drives share one tooth pitch, so the pinion's radius follows from
 # its leaves, and the ratio of teeth to leaves is the ratio of their speeds:
 #   barrel 36 / centre pinion 6   centre 32 / third pinion 4 = 8
-#   third 30 / fourth pinion 4 = 7.5   fourth 14 / escape pinion 7 = 2
+#   third 30 / fourth pinion 4 = 7.5   fourth 24 / escape pinion 6 = 4
 # A real pinion rarely has fewer than 6 leaves; 4 keeps the centre and third
-# wheels' teeth coarse enough to read (user, 2026-09-24).
+# wheels' teeth coarse enough to read.
 # 8 and 7.5 are a real watch's ratios, so the centre wheel and the minute hand
-# on its arbor turn once an hour. 2 is not (a real one is about 10); it keeps
-# the fourth wheel's tick at a visible 6 degrees (user, 2026-09-24).
+# on its arbor turn once an hour. 4 is not (a real one is about 10); it keeps
+# the fourth wheel's tick at a visible 3 degrees. The escape pinion's radius is
+# the fourth wheel's divided by this ratio, so a lower ratio would make the
+# pinion crowd the escape wheel, or the fourth wheel small.
 BARREL = dict(teeth=36, rp=74, leaves=None)
 CENTRE = dict(teeth=32, rp=50, spokes=5, leaves=6)
 THIRD = dict(teeth=30, rp=44, spokes=4, leaves=4)
-FOURTH = dict(teeth=14, rp=28, spokes=4, leaves=4)
-ESCAPE = dict(teeth=15, rp=27, spokes=5, leaves=7)
+FOURTH = dict(teeth=24, rp=37.3, spokes=4, leaves=4)
+ESCAPE = dict(teeth=15, rp=27, spokes=5, leaves=6)
 HOUR_RATIO = 12       # the motion works under the dial turn the hour hand
 BALANCE_R = 56
 
@@ -321,13 +331,17 @@ def build(wx, wy):
     # a pinion's radius: its leaves at the pitch of the wheel that drives it
     r_pin = lambda driver, driven: driven["leaves"] * driver["rp"] / driver["teeth"]
     BRL = pt(BARREL["rp"] + r_pin(BARREL, CENTRE), clock(0))
-    T = pt(CENTRE["rp"] + r_pin(CENTRE, THIRD), 5)
-    F = pt(THIRD["rp"] + r_pin(THIRD, FOURTH), 85, T)
-    E = pt(FOURTH["rp"] + r_pin(FOURTH, ESCAPE), 140, F)
-    LEVER = 185.0                                   # from the escape wheel toward the balance
+    # The angles spread the train round the lower right of the dial, with at
+    # least 11 px between wheels that do not mesh, and keep the balance at
+    # lower left, beside the title.
+    T = pt(CENTRE["rp"] + r_pin(CENTRE, THIRD), 60)
+    F = pt(THIRD["rp"] + r_pin(THIRD, FOURTH), 65, T)
+    E = pt(FOURTH["rp"] + r_pin(FOURTH, ESCAPE), 100, F)
+    LEVER = 195.0                                   # from the escape wheel toward the balance
     P = pt(36, LEVER, E)                            # the fork's pivot
-    BAL = pt(100, LEVER, E)
-    MOUTH = math.dist(P, BAL) - 12                  # pivot to the fork's mouth
+    BAL = pt(115, LEVER, E)
+    PIN_R = 15                                      # the impulse jewel's radius on the roller
+    MOUTH = math.dist(P, BAL) - PIN_R               # pivot to the fork's mouth
     # Back to front: escape wheel, fourth, third, centre, barrel. Each wheel's
     # teeth lie over the pinion they drive, so every mesh is in view. A lower
     # wheel is hidden inside the root circle of each wheel above it (the inside
@@ -364,7 +378,7 @@ def build(wx, wy):
     # ---- the train, back to front -------------------------------------------------------
     esc_step = -360.0 / ESCAPE["teeth"] / 2                  # half a tooth a beat, anticlockwise
     step = {"escape": esc_step}
-    step["fourth"] = -step["escape"] * ESCAPE["leaves"] / FOURTH["teeth"]     # +6: clockwise
+    step["fourth"] = -step["escape"] * ESCAPE["leaves"] / FOURTH["teeth"]     # +3: clockwise
     step["third"] = -step["fourth"] * FOURTH["leaves"] / THIRD["teeth"]
     step["centre"] = -step["third"] * THIRD["leaves"] / CENTRE["teeth"]      # +0.1: once an hour
     step["barrel"] = -step["centre"] * CENTRE["leaves"] / BARREL["teeth"]
@@ -391,7 +405,7 @@ def build(wx, wy):
                                                       outline=escape_outline(ESCAPE["teeth"], 23, 33, 6))
                                              + pinion_of("escape", E, ESCAPE),
                                              PERIOD, *slow("escape"))]))
-    # the fourth wheel: 6 degrees a beat, one turn a minute; it carries the seconds hand
+    # the fourth wheel: 3 degrees a beat, one turn in 2 minutes; it carries the seconds hand
     times, values = stepper(FOURTH_LOOP, step["fourth"])
     g.append(under(above["fourth"], [turning(F, wheel(FOURTH, tooth_phase("fourth"), hub=8, rim=5)
                                              + pinion_of("fourth", F, FOURTH),
@@ -425,8 +439,10 @@ def build(wx, wy):
              ((9, 1), (BALANCE_R - 8, 1), (BALANCE_R - 8, -1), (9, -1))]
         bal.append(el("path", d="M" + "L".join(xy(p) for p in q) + "Z", fill=KNOCK,
                       stroke=LINE, stroke_width="2", stroke_linejoin="round"))
-    bal += [circle(C, 10, fill=KNOCK, stroke=LINE, stroke_width="2"),
-            circle(pt(12, pin_dir), 3, fill=LINE)]
+    bal.append(circle(C, 10, fill=KNOCK, stroke=LINE, stroke_width="2"))
+    # the impulse jewel, on the roller: drawn over the hairspring, turning with
+    # the balance, so the fork's work on it stays in view
+    roller = [circle(pt(PIN_R, pin_dir), 6, fill=LINE)]
     stud = angle(BAL, C) + 150                       # where the spring's outer end is held
     springs = [spiral(8, 38, stud - 360 * 3.25 + a, stud, 13) for a in b_values]
     spring = (f'<path d="{springs[0]}" fill="none" stroke="{LINE}" stroke-width="2" '
@@ -436,14 +452,15 @@ def build(wx, wy):
                                                 dur=f"{PERIOD:g}s", repeatCount="indefinite") + "</path>")
     g.append(turning(BAL, bal, PERIOD, b_times, b_values))
     g.append(wrap("g", [spring], transform=f"translate({xy(BAL)})"))
+    g.append(turning(BAL, roller, PERIOD, b_times, b_values))
 
     # ---- the pallet fork: flips at each beat -----------------------------------------
     (u0, v0), (u1, v1) = tick_window()
     ftimes = [0, u0, v0, u1, v1, 1]
     fvalues = [-BANK, -BANK, BANK, BANK, -BANK, -BANK]
     L = MOUTH
-    shape = [(L - 9, 3), (L + 2, 7.5), (L + 3.5, 4.5), (L - 2, 2.2), (L - 2, -2.2), (L + 3.5, -4.5),
-             (L + 2, -7.5), (L - 9, -3), (6, -4.5), (1, -21), (-9, -23), (-15, -19), (-13, -15),
+    shape = [(L - 14, 4), (L + 3, 12), (L + 6.5, 8.5), (L - 7, 6.8), (L - 7, -6.8), (L + 6.5, -8.5),
+             (L + 3, -12), (L - 14, -4), (6, -4.5), (1, -21), (-9, -23), (-15, -19), (-13, -15),
              (-6, -13), (-5, 0), (-6, 13), (-13, 15), (-15, 19), (-9, 23), (1, 21), (6, 4.5)]
     a = math.radians(angle(P, BAL))
     ca, sa = math.cos(a), math.sin(a)
@@ -453,7 +470,7 @@ def build(wx, wy):
                          circle(C, 4, fill=KNOCK, stroke=LINE, stroke_width="2")], PERIOD, ftimes, fvalues))
 
     # ---- the seconds hand, on the fourth wheel's arbor --------------------------------
-    times, values = stepper(FOURTH_LOOP, 6.0)
+    times, values = stepper(FOURTH_LOOP, step["fourth"])
     # a small pivot, not a cap, so the fourth pinion's mesh stays in view
     seconds = [dagger(60, 9, 0.70, 6, 2, "2", neck=16), circle(C, 2.5, fill=LINE)]
     g.append(turning(F, seconds, FOURTH_LOOP, times, values))
@@ -480,12 +497,14 @@ def build(wx, wy):
     g.append(circle(C, 3.5, fill=KNOCK, stroke=LINE, stroke_width="2"))
 
     return (f'<svg width="{W}" height="{H}" viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg">\n'
+            '<!-- Generated by watches/art/skeleton-watch.py. Edit that and run it, not this file. -->\n'
             f'<g transform="translate({n(wx)} {n(wy)})">\n' + "\n".join(g) + "\n</g>\n</svg>\n")
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("out", nargs="?", default=str(pathlib.Path(__file__).parent / "out/skeleton-watch.svg"))
+    ap.add_argument("out", nargs="?", default=str(pathlib.Path(__file__).resolve().parents[1]
+                                                  / "public/cover/skeleton-watch.svg"))
     ap.add_argument("--at", nargs=2, type=float, default=(798, 276), metavar=("X", "Y"))
     a = ap.parse_args()
     out = pathlib.Path(a.out)

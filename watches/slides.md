@@ -39,6 +39,45 @@ Speaker notes here
 -->
 
 ---
+layout: cover
+class: cover-watch
+---
+
+<img class="cover-watch-art" src="/cover/skeleton-watch-hidden-pinions.svg" alt="" />
+
+# What Every Nerd Should Know About Watches
+
+Hello, **World!**
+
+<style>
+/* A copy of slide 1's style block: each slide's styles apply to that slide only. */
+.cover-watch {
+  position: relative;
+  place-content: center start;
+  text-align: left;
+}
+.cover-watch-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.cover-watch h1,
+.cover-watch p {
+  position: relative;
+}
+.cover-watch h1 {
+  max-width: 480px;
+}
+</style>
+
+<!--
+TEMPORARY, for comparison with slide 1: the cover watch as committed in
+8c20600, with the barrel at the back and the pinions hidden. Delete this
+slide and public/cover/skeleton-watch-hidden-pinions.svg once one is chosen.
+-->
+
+---
 layout: full
 class: tk-timekeepers
 ---

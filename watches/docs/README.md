@@ -7,4 +7,5 @@ illustrations, legibility, and the checks) is in [`stem/docs/`](../../docs/READM
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | [slide-patterns.md](slide-patterns.md) | building a slide: layout, components, clicks, speaker notes                                                         |
 | [rough-slides.md](rough-slides.md)     | choosing what the next slide says: the talk's outline, as working notes. Check each claim before it goes on a slide |
-| [measurements.md](measurements.md)     | what the timekeeper drawings measure at the back row                                                                |
+| [measurements.md](measurements.md)     | what the timekeeper drawings and the cover watch measure at the back row                                            |
+| [../art/](../art/)                     | changing the cover's skeleton watch: edit `skeleton-watch.py` and run it; the SVG is generated                      |
