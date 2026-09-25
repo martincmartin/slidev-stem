@@ -325,3 +325,31 @@ the search ran again with `--balance-distance 110`:
 
 Measured: `hold 3.65`, `Fmax 0.081`; `dPeak 9.01` (the solid wheel's openings
 no longer change as it turns).
+
+## Back to a beat a second, with ratio 2 (user, 2026-09-25)
+
+With the escape wheel solid, a large escape pinion reads on its plain face,
+so ratio 2 (option A of "Real-time hands") works after all. `PERIOD` is 2 s
+again: a tick and a tock of one second each. The fourth wheel steps 6° a beat,
+so the seconds hand keeps real time.
+
+| escape pinion | fourth wheel | leaves / teeth | face left round the pinion |
+| ------------- | ------------ | -------------- | -------------------------- |
+| r 12          | r 24         | 6 / 12         | 7.5 px                     |
+| r 14          | r 28         | 7 / 14         | 5.5 px                     |
+| **r 16**      | **r 32**     | **8 / 16**     | **3.5 px**                 |
+
+**Chosen: r 16 / r 32**, the fourth wheel closest to its size before (37 px).
+The tooth pitch is unchanged, 12.6 px. The search, with the balance distance
+held at 110 px, found more room than before:
+
+| third | fourth | escape | lever | wheels            | fork        | ring          |
+| ----- | ------ | ------ | ----- | ----------------- | ----------- | ------------- |
+| 47.5  | 97.5   | 152.5  | 207.5 | escape-third 7.2  | fourth 15.2 | balance 10.8  |
+| **50** | **102.5** | **147.5** | **212.5** | escape-third 11.6 | fourth 11.1 | balance 13.3 |
+
+The first row is the layout before, with the new wheels. Measured:
+`hold 3.64`, `Fmax 0.080`; `dPeak 9.18` (`--sep 1`).
+
+The user chose this version over the committed pinions-hidden one, and the
+temporary comparison slide was removed.

@@ -19,8 +19,8 @@ stem/docs/illustrations.md and the stroke ladder 2, 2.5, 3 and 4 CSS px.
 The colours come from the talk's theme: the `theme:` line of slides.md names
 it, and themes/<name>/styles/<name>.css sets the --palette-* variables.
 
-The escapement moves in slow motion, at two beats a second (a real watch
-beats six times a second); the hands keep real time. Every animated
+The escapement moves in slow motion, at a beat a second, tick and tock (a
+real watch beats six times a second); the hands keep real time. Every animated
 attribute also has a static value equal to its first frame, so a renderer
 without SMIL shows frame 0. Why the drawing is as it is:
 watches/tasks/2026-09-24-cover-watch/PLAN.md.
@@ -65,12 +65,13 @@ DETAIL = PALETTE["ink"]  # the minute ticks, at half opacity
 KNOCKOUT = PALETTE["art-knockout"]  # lit faces: wheels, chapter ring, fork
 
 # ---- timing -------------------------------------------------------------------
-PERIOD = 1.0  # s, one full swing of the balance: two beats
+PERIOD = 2.0  # s, one full swing of the balance: two beats, a tick and a tock
 AMPLITUDE = 150.0  # degrees each way from centre
 PIN_ARC = 25.0  # the fork moves while the balance is within this of centre
 BANK = 9.0  # degrees: the fork's swing each side of its centre line
-FOURTH_LOOP = 60.0  # s: one turn of the fourth wheel and its seconds hand, at real
-# speed: 3 degrees a beat, two beats a second
+# s: one turn of the fourth wheel and its seconds hand, at real speed:
+# 6 degrees a beat, a beat a second
+FOURTH_LOOP = 60.0
 
 
 # ---- wheels ---------------------------------------------------------------------
@@ -96,19 +97,20 @@ class Wheel:
 # pinion it drives share one tooth pitch, so the pinion's radius follows from
 # its leaves, and the ratio of teeth to leaves is the ratio of their speeds:
 #   barrel 36 / centre pinion 6   centre 32 / third pinion 4 = 8
-#   third 30 / fourth pinion 4 = 7.5   fourth 24 / escape pinion 6 = 4
+#   third 30 / fourth pinion 4 = 7.5   fourth 16 / escape pinion 8 = 2
 # A real pinion rarely has fewer than 6 leaves; 4 keeps the centre and third
 # wheels' teeth coarse enough to read.
 # 8 and 7.5 are a real watch's ratios, so the centre wheel and the minute hand
-# on its arbor turn once an hour. 4 is not (a real one is about 10); it keeps
-# the fourth wheel's tick at a visible 3 degrees. The escape pinion's radius is
-# the fourth wheel's divided by this ratio, so a lower ratio would make the
-# pinion crowd the escape wheel, or the fourth wheel small.
+# on its arbor turn once an hour. 2 is not (a real one is about 10); with the
+# escape wheel's 12 degrees a beat and a beat a second, it turns the fourth
+# wheel 6 degrees a second: the seconds hand keeps real time. The escape
+# pinion's radius is half the fourth wheel's, so it is large; the escape wheel
+# is solid, so the pinion reads on its plain face.
 BARREL = Wheel(teeth=36, pitch_radius=74)
 CENTRE = Wheel(teeth=32, pitch_radius=50, spokes=5, leaves=6)
 THIRD = Wheel(teeth=30, pitch_radius=44, spokes=4, leaves=4)
-FOURTH = Wheel(teeth=24, pitch_radius=37.3, spokes=4, leaves=4)
-ESCAPE = Wheel(teeth=15, pitch_radius=27, spokes=5, leaves=6)
+FOURTH = Wheel(teeth=16, pitch_radius=32, spokes=4, leaves=4)
+ESCAPE = Wheel(teeth=15, pitch_radius=27, spokes=5, leaves=8)
 WHEELS = {
     "barrel": BARREL,
     "centre": CENTRE,
@@ -137,10 +139,10 @@ IMPULSE_PIN_RADIUS = 15  # the impulse jewel's distance from the balance's arbor
 # validate-skeleton-watch.py checks all three.
 # search-skeleton-watch-layout.py found these; run it before changing them.
 BARREL_ANGLE = -90.0  # from the centre arbor: straight up, at 12 o'clock
-THIRD_ANGLE = 47.5  # from the centre arbor
-FOURTH_ANGLE = 97.5  # from the third arbor
-ESCAPE_ANGLE = 152.5  # from the fourth arbor
-LEVER_ANGLE = 207.5  # from the escape arbor toward the balance
+THIRD_ANGLE = 50.0  # from the centre arbor
+FOURTH_ANGLE = 102.5  # from the third arbor
+ESCAPE_ANGLE = 147.5  # from the fourth arbor
+LEVER_ANGLE = 212.5  # from the escape arbor toward the balance
 FORK_PIVOT_DISTANCE = 36.0  # from the escape arbor, along LEVER_ANGLE
 BALANCE_DISTANCE = 110.0  # from the escape arbor, along LEVER_ANGLE
 MIN_CLEARANCE = 8.0  # px between parts that do not mesh
@@ -787,7 +789,7 @@ def build(centre_x: float, centre_y: float) -> str:
     driven_by = {driven: driver for driver, driven in drives.items()}
 
     step = {"escape": -360.0 / ESCAPE.teeth / 2}  # half a tooth a beat, anticlockwise
-    step["fourth"] = -step["escape"] * ESCAPE.leaves / FOURTH.teeth  # +3: clockwise
+    step["fourth"] = -step["escape"] * ESCAPE.leaves / FOURTH.teeth  # +6: clockwise
     step["third"] = -step["fourth"] * FOURTH.leaves / THIRD.teeth
     step["centre"] = -step["third"] * THIRD.leaves / CENTRE.teeth  # +0.1: once an hour
     step["barrel"] = -step["centre"] * CENTRE.leaves / BARREL.teeth
@@ -840,7 +842,7 @@ def build(centre_x: float, centre_y: float) -> str:
             ],
         )
     )
-    # the fourth wheel: 3 degrees a beat, one turn a minute; it carries the seconds hand
+    # the fourth wheel: 6 degrees a beat, one turn a minute; it carries the seconds hand
     times, values = stepper(FOURTH_LOOP, step["fourth"])
     fourth = wheel(FOURTH, tooth_phase("fourth"), hub=8, rim=5)
     elements.append(
