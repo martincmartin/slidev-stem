@@ -1,6 +1,6 @@
 """Clearances in the skeleton watch's layout, as the viewer sees them.
 
-Used by validate-skeleton-watch.py and search-skeleton-watch-layout.py. Needs
+Used by validate_skeleton_watch.py and search_skeleton_watch_layout.py. Needs
 numpy (stem/.venv).
 
 WHAT "VISIBLE" MEANS HERE. The drawing stacks its round parts back to front
@@ -15,47 +15,33 @@ The regions are sampled on their outlines every `spacing` px, so a gap is
 exact to about half the spacing.
 """
 
-import importlib.util
 import itertools
 import math
-import sys
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from pathlib import Path
-from types import ModuleType
-from typing import Any, Protocol
 
 import numpy as np
 from numpy.typing import NDArray
+from skeleton_watch import (
+    BALANCE,
+    BANK,
+    ESCAPE,
+    RING_RADIUS,
+    STACK,
+    TRAIN,
+    Part,
+    Placement,
+    Point,
+    Round,
+    Wheel,
+)
 
-Point = tuple[float, float]
 Points = NDArray[np.float64]  # shape (n, 2)
 
 
-class Named(Protocol):
-    """What skeleton-watch.py's parts provide: a name for reports. They are
-    compared and hashed by identity, so they can be dict keys."""
-
-    @property
-    def name(self) -> str: ...
-
-
-Pair = tuple[Named, Named]
-
-
-def label(key: Named | Pair) -> str:
+def label(key: Part | tuple[Part, Part]) -> str:
     """A part's name, or a pair's names joined by a hyphen, for reports."""
     return "-".join(part.name for part in key) if isinstance(key, tuple) else key.name
-
-
-class Round(Named, Protocol):
-    """What skeleton-watch.py's round parts provide: each hides what is below
-    it inside `inner`, and reaches out to `outer`."""
-
-    @property
-    def inner(self) -> float: ...
-    @property
-    def outer(self) -> float: ...
 
 
 @dataclass(frozen=True)
@@ -68,9 +54,7 @@ class Region:
     hiders: tuple[tuple[Point, float], ...]
 
 
-def regions[Part: Round](
-    stack: Sequence[Part], arbor: Mapping[Part, Point]
-) -> dict[Part, Region]:
+def regions(stack: Sequence[Round], arbor: Mapping[Part, Point]) -> dict[Round, Region]:
     """Each part's visible region. `stack` is in back-to-front order."""
     return {
         part: Region(
@@ -167,59 +151,45 @@ def polygon_gap(
 MESH_TOLERANCE = 0.01  # px: a mesh distance must be exact, up to rounding
 
 
-class Placement(Protocol):
-    """What skeleton-watch.py's Placement provides."""
-
-    @property
-    def arbor(self) -> Mapping[Any, Point]: ...
-    def fork_polygon(self, bank: float) -> list[Point]: ...
-
-
 @dataclass(frozen=True)
 class Clearances:
     """A placement's clearances: what the validator checks and the search
     optimises."""
 
     # (driver, driven) -> what is wrong with the mesh
-    mesh_errors: dict[Pair, str]
-    # part -> px from the watch centre to its outer edge
-    reach: dict[Named, float]
+    mesh_errors: dict[tuple[Wheel, Wheel], str]
     # part -> px from its outer edge to the chapter ring's inside edge
-    ring_gaps: dict[Named, float]
+    ring_gaps: dict[Round, float]
     # (part, part) -> visible gap, for parts that do not mesh
-    wheel_gaps: dict[Pair, float]
+    part_gaps: dict[tuple[Round, Round], float]
     # part -> gap from the fork, at the worse end of its swing
-    fork_gaps: dict[Named, float]
+    fork_gaps: dict[Round, float]
 
-    def tightest_wheels(self) -> tuple[Pair, float]:
-        return min(self.wheel_gaps.items(), key=lambda item: item[1])
+    def tightest_parts(self) -> tuple[tuple[Round, Round], float]:
+        return min(self.part_gaps.items(), key=lambda item: item[1])
 
-    def tightest_fork(self) -> tuple[Named, float]:
+    def tightest_fork(self) -> tuple[Round, float]:
         return min(self.fork_gaps.items(), key=lambda item: item[1])
 
-    def tightest_ring(self) -> tuple[Named, float]:
+    def tightest_ring(self) -> tuple[Round, float]:
         return min(self.ring_gaps.items(), key=lambda item: item[1])
 
 
-def load_watch(path: Path) -> ModuleType:
-    """skeleton-watch.py as a module (its name has a hyphen, so no import)."""
-    spec = importlib.util.spec_from_file_location("skeleton_watch", path)
-    if spec is None or spec.loader is None:
-        raise SystemExit(f"cannot load {path}")
-    module = importlib.util.module_from_spec(spec)
-    # registered first, as importlib's docs do: dataclass looks it up there
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module
+def ring_gaps(placement: Placement) -> dict[Round, float]:
+    """Each round part's gap to the chapter ring's inside edge: negative if
+    it reaches past it. Cheap, so the search uses it to reject a layout
+    before it measures the rest."""
+    return {
+        part: RING_RADIUS - (math.hypot(*placement.arbor[part]) + part.outer)
+        for part in STACK
+    }
 
 
-def measure(
-    watch: ModuleType, placement: Placement, spacing: float = 1.0
-) -> Clearances:
-    """The clearances of `placement`, one of `watch`'s placements."""
-    mesh_errors: dict[Pair, str] = {}
+def measure(placement: Placement, spacing: float = 1.0) -> Clearances:
+    """The clearances of `placement`."""
+    mesh_errors: dict[tuple[Wheel, Wheel], str] = {}
     meshing = set()
-    for driver in watch.TRAIN:
+    for driver in TRAIN:
         if driver.driven is None:
             continue
         meshing.add(frozenset((driver, driver.driven)))
@@ -230,21 +200,17 @@ def measure(
                 f"arbors {have:.2f} px apart, the mesh needs {want:.2f}"
             )
 
-    reach: dict[Named, float] = {
-        part: math.hypot(*placement.arbor[part]) + part.outer for part in watch.STACK
-    }
-    ring_gaps = {part: watch.RING_RADIUS - distance for part, distance in reach.items()}
-    visible = regions(watch.STACK, placement.arbor)
-    wheel_gaps: dict[Pair, float] = {
+    visible = regions(STACK, placement.arbor)
+    part_gaps: dict[tuple[Round, Round], float] = {
         (first, second): region_gap(visible[first], visible[second], spacing)
         for first, second in itertools.combinations(visible, 2)
         if frozenset((first, second)) not in meshing
     }
     # the fork works on the escape wheel and the balance, and clears the rest
-    forks = [placement.fork_polygon(bank) for bank in (-watch.BANK, watch.BANK)]
-    fork_gaps: dict[Named, float] = {
+    forks = [placement.fork_polygon(bank) for bank in (-BANK, BANK)]
+    fork_gaps: dict[Round, float] = {
         part: min(polygon_gap(fork, visible[part], spacing) for fork in forks)
         for part in visible
-        if part not in (watch.ESCAPE, watch.BALANCE)
+        if part not in (ESCAPE, BALANCE)
     }
-    return Clearances(mesh_errors, reach, ring_gaps, wheel_gaps, fork_gaps)
+    return Clearances(mesh_errors, ring_gaps(placement), part_gaps, fork_gaps)

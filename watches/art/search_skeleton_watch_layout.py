@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Search the skeleton watch's layout for the most clearance.
 
-    ../.venv/bin/python3 art/search-skeleton-watch-layout.py      # in watches/
-    ../.venv/bin/python3 art/search-skeleton-watch-layout.py --balance-distance 110
+    ../.venv/bin/python3 art/search_skeleton_watch_layout.py      # in watches/
+    ../.venv/bin/python3 art/search_skeleton_watch_layout.py --balance-distance 110
 
 It changes nothing: it prints the best layouts, for a person to copy into
-LAYOUT in skeleton-watch.py and then run validate-skeleton-watch.py. It takes
+LAYOUT in skeleton_watch.py and then run validate_skeleton_watch.py. It takes
 a few minutes.
 
 The free numbers are four of LAYOUT's angles (third, fourth, escape and lever)
@@ -28,15 +28,10 @@ import argparse
 import dataclasses
 import itertools
 import math
-import pathlib
-import sys
 from dataclasses import dataclass
-from types import ModuleType
-from typing import Any, ClassVar, Protocol
 
-ART = pathlib.Path(__file__).resolve().parent
-sys.path.insert(0, str(ART))
 import watch_geometry as geometry
+from skeleton_watch import BALANCE, LAYOUT, Layout, Placement
 
 Angles = tuple[float, float, float, float]  # third, fourth, escape, lever
 # (first, last, step) in degrees, for each of the Angles
@@ -53,24 +48,6 @@ BALANCE_SIDE = (100.0, 200.0)
 COARSE_SPACING, FINE_SPACING = 2.0, 1.0  # px between samples of an outline
 REFINE = 10  # how many of the best coarse layouts to refine
 SHOW = 8
-
-
-class Layout(Protocol):
-    """What skeleton-watch.py's Layout provides. It is a dataclass, so
-    dataclasses.replace() makes a changed copy."""
-
-    __dataclass_fields__: ClassVar[dict[str, Any]]
-
-    @property
-    def third_angle(self) -> float: ...
-    @property
-    def fourth_angle(self) -> float: ...
-    @property
-    def escape_angle(self) -> float: ...
-    @property
-    def lever_angle(self) -> float: ...
-    @property
-    def balance_distance(self) -> float: ...
 
 
 def angles_of(layout: Layout) -> Angles:
@@ -98,34 +75,28 @@ def changed(layout: Layout, angles: Angles, balance_distance: float) -> Layout:
 @dataclass(frozen=True)
 class Candidate:
     layout: Layout
-    score: float
-    wheels: tuple[str, float]
-    fork: tuple[str, float]
-    ring: tuple[str, float]
+    clearances: geometry.Clearances
+
+    @property
+    def score(self) -> float:
+        """The tightest of the three gaps."""
+        return min(
+            self.clearances.tightest_parts()[1],
+            self.clearances.tightest_fork()[1],
+            self.clearances.tightest_ring()[1],
+        )
 
 
-def evaluate(watch: ModuleType, layout: Layout, spacing: float) -> Candidate | None:
-    """`layout`, scored; None if it is not allowed."""
-    placement = watch.Placement(layout)
-    balance = placement.arbor[watch.BALANCE]
+def evaluate(layout: Layout, spacing: float) -> Candidate | None:
+    """`layout`, measured; None if it is not allowed."""
+    placement = Placement(layout)
+    balance = placement.arbor[BALANCE]
     balance_angle = math.degrees(math.atan2(balance[1], balance[0])) % 360
     if not BALANCE_SIDE[0] <= balance_angle <= BALANCE_SIDE[1]:
         return None
-    if any(
-        math.hypot(*placement.arbor[part]) + part.outer > watch.RING_RADIUS
-        for part in watch.STACK
-    ):
+    if min(geometry.ring_gaps(placement).values()) < 0:
         return None
-    clearances = geometry.measure(watch, placement, spacing)
-    wheels, fork, ring = (
-        (geometry.label(key), gap)
-        for key, gap in (
-            clearances.tightest_wheels(),
-            clearances.tightest_fork(),
-            clearances.tightest_ring(),
-        )
-    )
-    return Candidate(layout, min(wheels[1], fork[1], ring[1]), wheels, fork, ring)
+    return Candidate(layout, geometry.measure(placement, spacing))
 
 
 def grid(first: float, last: float, step: float) -> list[float]:
@@ -140,8 +111,7 @@ def main() -> None:
         help="hold the balance distance at this, in px",
     )
     args = parser.parse_args()
-    watch = geometry.load_watch(ART / "skeleton-watch.py")
-    current: Layout = watch.LAYOUT
+    current = LAYOUT
     distances: tuple[float, ...] = REFINE_BALANCE_DISTANCES
     coarse_distance = current.balance_distance
     if args.balance_distance is not None:
@@ -149,10 +119,11 @@ def main() -> None:
         coarse_distance = args.balance_distance
 
     coarse = []
-    for angles in itertools.product(*(grid(*axis) for axis in COARSE)):
-        third, fourth, escape, lever = angles
+    for third, fourth, escape, lever in itertools.product(
+        *(grid(*axis) for axis in COARSE)
+    ):
         layout = changed(current, (third, fourth, escape, lever), coarse_distance)
-        candidate = evaluate(watch, layout, COARSE_SPACING)
+        candidate = evaluate(layout, COARSE_SPACING)
         if candidate is not None:
             coarse.append(candidate)
     coarse.sort(key=lambda candidate: -candidate.score)
@@ -176,12 +147,12 @@ def main() -> None:
                 distance,
             )
             if layout not in fine:
-                candidate = evaluate(watch, layout, FINE_SPACING)
+                candidate = evaluate(layout, FINE_SPACING)
                 if candidate is not None:
                     fine[layout] = candidate
     best = sorted(fine.values(), key=lambda candidate: -candidate.score)
 
-    now = evaluate(watch, current, FINE_SPACING)
+    now = evaluate(current, FINE_SPACING)
     print(
         f"\n{'third':>6} {'fourth':>6} {'escape':>6} {'lever':>6} {'bal':>5}  {'score':>5}  tightest"
     )
@@ -192,13 +163,14 @@ def main() -> None:
             " ".join(f"{angle:6g}" for angle in angles_of(candidate.layout))
             + f" {candidate.layout.balance_distance:5g}"
         )
-        gaps = ", ".join(
-            f"{kind} {name} {gap:.1f}"
-            for kind, (name, gap) in (
-                ("wheels", candidate.wheels),
-                ("fork", candidate.fork),
-                ("ring", candidate.ring),
-            )
+        clearances = candidate.clearances
+        parts, part_gap = clearances.tightest_parts()
+        fork, fork_gap = clearances.tightest_fork()
+        ring, ring_gap = clearances.tightest_ring()
+        gaps = (
+            f"parts {geometry.label(parts)} {part_gap:.1f}, "
+            f"fork {geometry.label(fork)} {fork_gap:.1f}, "
+            f"ring {geometry.label(ring)} {ring_gap:.1f}"
         )
         print(f"{shown}  {candidate.score:5.1f}  {gaps}{label}")
 

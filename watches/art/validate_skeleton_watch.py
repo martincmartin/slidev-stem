@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Validate skeleton-watch.py and the SVG it writes. Run it after every change
-to skeleton-watch.py:
+"""Validate skeleton_watch.py and the SVG it writes. Run it after every change
+to skeleton_watch.py:
 
-    python3 art/validate-skeleton-watch.py      # in watches/
+    python3 art/validate_skeleton_watch.py      # in watches/
 
 It runs itself under stem/.venv, stops at the first failure and exits non-zero.
 The steps:
@@ -15,7 +15,7 @@ The steps:
    - the visible parts of two parts that do not mesh are at least
      MIN_CLEARANCE apart;
    - the pallet fork, at both ends of its swing, is at least FORK_CLEARANCE
-     from the visible parts of the wheels it does not work on;
+     from the visible parts of the parts it does not work on;
 4. regenerate public/cover/skeleton-watch.svg;
 5. art: stem/tools/artcheck.py (palette, stroke ladder, structure),
    barroom.py (the 3.0 gate at the design venue) and motion.py (some area
@@ -29,29 +29,21 @@ import pathlib
 import re
 import subprocess
 import sys
-from types import ModuleType
 from typing import NoReturn
 
 ART = pathlib.Path(__file__).resolve().parent  # watches/art/
 TALK = ART.parent  # watches/
 STEM = TALK.parent  # stem/
 VENV = STEM / ".venv"
-GENERATOR = ART / "skeleton-watch.py"
+GENERATOR = ART / "skeleton_watch.py"
 SCRIPTS = [
     GENERATOR,
     ART / "watch_geometry.py",
-    ART / "search-skeleton-watch-layout.py",
+    ART / "search_skeleton_watch_layout.py",
     pathlib.Path(__file__),
 ]
 SVG = TALK / "public" / "cover" / "skeleton-watch.svg"
-
-sys.path.insert(0, str(ART))
-import watch_geometry as geometry
-
-
-def load_generator() -> ModuleType:
-    """skeleton-watch.py as a module (its name has a hyphen, so no import)."""
-    return geometry.load_watch(GENERATOR)
+PYTHON = str(VENV / "bin" / "python3")
 
 
 def run(label: str, command: list[str]) -> str:
@@ -90,8 +82,16 @@ def check_types() -> None:
     ok("pyright")
 
 
-def check_layout(watch: ModuleType) -> None:
-    clearances = geometry.measure(watch, watch.Placement(watch.LAYOUT))
+# The checks below import the generator, so they run it. They import it
+# here, not at the top, so a broken generator fails the style and type checks
+# with a report, before it can fail with a traceback.
+
+
+def check_layout() -> None:
+    import skeleton_watch as watch
+    import watch_geometry as geometry
+
+    clearances = geometry.measure(watch.Placement(watch.LAYOUT))
     label = geometry.label
     problems = [
         f"{label(pair)}: {error}" for pair, error in clearances.mesh_errors.items()
@@ -102,7 +102,7 @@ def check_layout(watch: ModuleType) -> None:
                 f"{label(part)}: {gap:.1f} px from the chapter ring, "
                 f"under RING_CLEARANCE {watch.RING_CLEARANCE:g}"
             )
-    for pair, gap in clearances.wheel_gaps.items():
+    for pair, gap in clearances.part_gaps.items():
         if gap < watch.MIN_CLEARANCE:
             problems.append(
                 f"{label(pair)}: visible parts {gap:.1f} px apart, under MIN_CLEARANCE {watch.MIN_CLEARANCE:g}"
@@ -114,24 +114,25 @@ def check_layout(watch: ModuleType) -> None:
             )
     if problems:
         fail("layout", "\n".join(f"      {problem}" for problem in problems))
-    wheel_pair, wheel_gap = clearances.tightest_wheels()
+    part_pair, part_gap = clearances.tightest_parts()
     fork_wheel, fork_gap = clearances.tightest_fork()
     ring_part, ring_gap = clearances.tightest_ring()
     ok(
         "layout",
-        f"meshes exact; tightest visible gap {wheel_gap:.1f} px, {label(wheel_pair)}; "
+        f"meshes exact; tightest visible gap {part_gap:.1f} px, {label(part_pair)}; "
         f"fork {fork_gap:.1f} px from the {label(fork_wheel)} wheel; "
         f"{label(ring_part)} {ring_gap:.1f} px from the chapter ring",
     )
 
 
-def check_art(watch: ModuleType) -> None:
+def check_art() -> None:
+    from skeleton_watch import PERIOD
+
     relative = str(SVG.relative_to(STEM))
-    run("artcheck", ["python3", "tools/artcheck.py", relative])
+    run("artcheck", [PYTHON, "tools/artcheck.py", relative])
     ok("artcheck")
 
-    python = str(VENV / "bin" / "python3")
-    barroom = run("barroom", [python, "tools/barroom.py", relative])
+    barroom = run("barroom", [PYTHON, "tools/barroom.py", relative])
     row = next(
         (line for line in barroom.splitlines() if line.startswith(SVG.stem)), None
     )
@@ -150,8 +151,8 @@ def check_art(watch: ModuleType) -> None:
     # Half a balance period apart, so the balance, fork and escape wheel are at
     # opposite ends of their motion. motion.py's default (half the longest
     # loop, the seconds hand's) is a whole number of periods: they would cancel.
-    separation = f"{watch.PERIOD / 2:g}"
-    motion = run("motion", [python, "tools/motion.py", relative, "--sep", separation])
+    separation = f"{PERIOD / 2:g}"
+    motion = run("motion", [PYTHON, "tools/motion.py", relative, "--sep", separation])
     row = next(
         (
             line
@@ -171,15 +172,13 @@ def check_art(watch: ModuleType) -> None:
 def main() -> None:
     # numpy and the checkers are in stem/.venv: rerun there if this is not it
     if pathlib.Path(sys.prefix).resolve() != VENV.resolve():
-        python = VENV / "bin" / "python3"
-        os.execv(python, [str(python), __file__, *sys.argv[1:]])
+        os.execv(PYTHON, [PYTHON, __file__, *sys.argv[1:]])
     check_style()
     check_types()
-    watch = load_generator()
-    check_layout(watch)
+    check_layout()
     run("generate", [sys.executable, str(GENERATOR)])
     ok("generate", str(SVG.relative_to(TALK)))
-    check_art(watch)
+    check_art()
     print("\nall passed")
 
 
