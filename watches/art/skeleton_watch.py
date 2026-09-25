@@ -23,7 +23,8 @@ The escapement moves in slow motion, at a beat a second, tick and tock (a
 real watch beats six times a second); the hands keep real time. Every animated
 attribute also has a static value equal to its first frame, so a renderer
 without SMIL shows frame 0. Why the drawing is as it is:
-watches/tasks/2026-09-24-cover-watch/PLAN.md.
+watches/tasks/2026-09-24-cover-watch/PLAN.md; why the movement is turned as it
+is, and why the hands show 2:35: watches/tasks/2026-09-25-eta-6497-orientation/.
 """
 
 import argparse
@@ -233,17 +234,21 @@ class Layout:
     balance_distance: float  # from the escape arbor, along lever_angle
 
 
-# The drawing's layout. It keeps the balance at lower left, beside the title,
-# and leaves at least MIN_CLEARANCE between the visible parts of parts that do
-# not mesh, FORK_CLEARANCE round the fork and RING_CLEARANCE inside the
-# chapter ring: validate_skeleton_watch.py checks all three.
-# search_skeleton_watch_layout.py found it; run it before changing it.
+# The drawing's layout. As in an ETA 6497, the barrel is at 5 o'clock and the
+# balance is across the dial from it, near the top. It leaves at least
+# MIN_CLEARANCE between the visible parts of parts that do not mesh,
+# FORK_CLEARANCE round the fork and RING_CLEARANCE inside the chapter ring:
+# validate_skeleton_watch.py checks all three.
+# search_skeleton_watch_layout.py found it. Then the third wheel, and the
+# arbors after it, turned 9 degrees about the centre arbor toward the barrel:
+# as far as they can go before the third-barrel gap is the tightest. The
+# search does not prefer this, so a new search moves the third wheel back.
 LAYOUT = Layout(
-    barrel_angle=-90.0,  # straight up, at 12 o'clock
-    third_angle=50.0,
-    fourth_angle=102.5,
-    escape_angle=147.5,
-    lever_angle=212.5,
+    barrel_angle=60.0,  # at 5 o'clock
+    third_angle=191.0,
+    fourth_angle=243.5,
+    escape_angle=288.5,
+    lever_angle=353.5,
     fork_pivot_distance=36.0,
     balance_distance=110.0,
 )
@@ -860,7 +865,8 @@ def build(layout: Layout, centre_x: float, centre_y: float) -> str:
         hub=8,
         spoke_width=5,
         dedendum=ESCAPE.pitch_radius - ESCAPE.inner,
-        outline=escape_outline(ESCAPE.teeth, ESCAPE.inner, ESCAPE.outer, 6),
+        # the teeth's phase against the pallets: when the arbors turn, turn this
+        outline=escape_outline(ESCAPE.teeth, ESCAPE.inner, ESCAPE.outer, 147),
         solid=ESCAPE_SOLID,
     )
     elements.append(
@@ -954,7 +960,7 @@ def build(layout: Layout, centre_x: float, centre_y: float) -> str:
                         element(
                             "path",
                             d=spiral(
-                                19, BARREL.pitch_radius - 16, 150, 150 + 360 * 3.5, 14
+                                19, BARREL.pitch_radius - 16, 300, 300 + 360 * 3.5, 14
                             ),
                             fill="none",
                             stroke=LINE,
@@ -1134,8 +1140,11 @@ def build(layout: Layout, centre_x: float, centre_y: float) -> str:
         circle(ORIGIN, BEZEL_RADIUS, fill="none", stroke=FRAME, stroke_width="3")
     )
 
-    # ---- the hands, at ten past ten ----------------------------------------------------
-    hour_hand = dagger(140, 17, 0.62, 10, 3, "3", (10 + 9 / 60) * 30, neck=26)
+    # ---- the hands, at 2:35 ---------------------------------------------------------------
+    # Not the usual 10:10 of a watch advert: that hides the balance and the
+    # escapement, and 3:34 hides the mainspring.
+    hour, minute = 2, 35
+    hour_hand = dagger(140, 17, 0.62, 10, 3, "3", (hour + minute / 60) * 30, neck=26)
     elements.append(
         turning(
             arbor[CENTRE],
@@ -1144,7 +1153,7 @@ def build(layout: Layout, centre_x: float, centre_y: float) -> str:
             *(stepper(PERIOD, CENTRE.step / HOUR_RATIO) + (True,)),
         )
     )
-    minute_hand = dagger(206, 13, 0.70, 12, 3, "3", 9 * 6, neck=26)
+    minute_hand = dagger(206, 13, 0.70, 12, 3, "3", minute * 6, neck=26)
     elements.append(turning(arbor[CENTRE], [minute_hand], PERIOD, *accumulated(CENTRE)))
     # a small pivot, not a cap, so the barrel's mesh with the centre pinion shows
     elements.append(circle(ORIGIN, 3.5, fill=KNOCKOUT, stroke=LINE, stroke_width="2"))

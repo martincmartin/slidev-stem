@@ -36,7 +36,7 @@ style; it was tried and rejected (`tasks/2026-09-20-animation-style/README.md`
 
 ```
 drawing          ink%    hold    p90    Fmax     dPeak   px2 >=3:1
-skeleton-watch    6.2    3.64   6.93   0.080      9.18        2238
+skeleton-watch    6.3    3.64   6.90   0.080      9.26        2173
 ```
 
 It clears the gate, with about the candle's `Fmax`. **Run `motion.py` on it

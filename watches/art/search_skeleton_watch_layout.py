@@ -12,7 +12,7 @@ The free numbers are four of LAYOUT's angles (third, fourth, escape and lever)
 and its balance distance; the distances between the train's arbors are fixed
 by the meshes. Each candidate is a new Layout, made from LAYOUT with those
 numbers changed. A layout is allowed if every part is inside the chapter ring
-and the balance is on the left of the dial, beside the title. Its score is the
+and the balance is at the top of the dial, opposite the barrel at 5 o'clock. Its score is the
 smallest of three gaps (watch_geometry.py says how they are measured):
 
 - the tightest visible gap between two parts that do not mesh;
@@ -36,15 +36,15 @@ from skeleton_watch import BALANCE, LAYOUT, Layout, Placement
 Angles = tuple[float, float, float, float]  # third, fourth, escape, lever
 # (first, last, step) in degrees, for each of the Angles
 COARSE: tuple[tuple[float, float, float], ...] = (
-    (0.0, 100.0, 10.0),
-    (20.0, 180.0, 10.0),
-    (40.0, 240.0, 10.0),
-    (140.0, 260.0, 10.0),
+    (150.0, 250.0, 10.0),
+    (170.0, 330.0, 10.0),
+    (190.0, 390.0, 10.0),
+    (290.0, 410.0, 10.0),
 )
 REFINE_ANGLE_STEPS = (-2.5, 0.0, 2.5)  # degrees, round each of the best coarse layouts
 REFINE_BALANCE_DISTANCES = (105.0, 110.0, 115.0)  # px from the escape arbor
-# screen angles from the watch centre: the left of the dial
-BALANCE_SIDE = (100.0, 200.0)
+# screen angles from the watch centre: the top of the dial
+BALANCE_SIDE = (250.0, 350.0)
 COARSE_SPACING, FINE_SPACING = 2.0, 1.0  # px between samples of an outline
 REFINE = 10  # how many of the best coarse layouts to refine
 SHOW = 8
