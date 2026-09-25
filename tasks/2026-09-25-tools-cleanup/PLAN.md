@@ -225,3 +225,13 @@ CSS with its own `theme_palette()`, which repeats `lib.css_palette()`. To use
 the tools' one, a talk's script would need to import from `stem/tools/`
 across directories, which `stem/tools/` is not set up for (it is not a
 package).
+
+## Finished (2026-09-25)
+
+The task is complete. For readers working within the decision:
+
+- `capture.sh` was copied into the project as `tools/capture_outputs.sh`. The
+  copy here stays as it was used.
+- `tools/README.md` names the new tools and says, under "Not oversights", why
+  Python is 3.14, why palette roles are strings, why other programs use
+  `--json`, and why the stroke floor is computed. It points back here.

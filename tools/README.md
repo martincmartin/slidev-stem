@@ -12,16 +12,17 @@ from the house theme (`../themes/ledger/styles/ledger.css`), the one place they 
 set. Each drawing's display size comes from the drawing itself (its `width` and
 `height`).
 
-| tool               | needs                    | answers                                                                     |
-| ------------------ | ------------------------ | --------------------------------------------------------------------------- |
-| `lib.py`           | stdlib                   | the constants themselves; run it to print them                              |
-| `palette.py`       | stdlib                   | does the palette pass its gates, does a talk set it; can I use this colour  |
-| `artcheck.py`      | stdlib                   | is this SVG valid, in-style, and thick enough at the size it is shown       |
-| `contact.py`       | playwright               | what does it look like, frame by frame                                      |
-| `barroom.py`       | playwright + PIL + numpy | what does the back row of a lit room get                                    |
-| `motion.py`        | playwright + PIL + numpy | can the back row see the thing that moves                                   |
-| `offline_check.py` | playwright               | does a built deck make any outside request; its fonts and colours per slide |
-| `check_python.py`  | ruff, mypy, pyright      | do these Python files pass the house's checks (default: every tool here)    |
+| tool                 | needs                    | answers                                                                     |
+| -------------------- | ------------------------ | --------------------------------------------------------------------------- |
+| `lib.py`             | stdlib                   | the constants themselves; run it to print them                              |
+| `palette.py`         | stdlib                   | does the palette pass its gates, does a talk set it; can I use this colour  |
+| `artcheck.py`        | stdlib                   | is this SVG valid, in-style, and thick enough at the size it is shown       |
+| `contact.py`         | playwright               | what does it look like, frame by frame                                      |
+| `barroom.py`         | playwright + PIL + numpy | what does the back row of a lit room get                                    |
+| `motion.py`          | playwright + PIL + numpy | can the back row see the thing that moves                                   |
+| `offline_check.py`   | playwright               | does a built deck make any outside request; its fonts and colours per slide |
+| `check_python.py`    | ruff, mypy, pyright      | do these Python files pass the house's checks (default: every tool here)    |
+| `capture_outputs.sh` | playwright               | every tool's output, saved, to compare before and after a change to a tool  |
 
 ```bash
 .venv/bin/python3 tools/lib.py                          # the framework, as numbers
@@ -34,6 +35,8 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 .venv/bin/python3 tools/motion.py             # every animated drawing
 .venv/bin/python3 tools/offline_check.py <build dir> 1:0 2:5   # see its docstring
 .venv/bin/python3 tools/check_python.py      # after you change a tool
+tools/capture_outputs.sh /tmp/before          # before you change a tool; again after,
+diff -r /tmp/before /tmp/after                # ... then compare: a refactor changes nothing
 ```
 
 `palette.py`, `artcheck.py` and `offline_check.py` exit non-zero on failure, so
@@ -98,9 +101,29 @@ Consequences worth knowing:
   archive README saying so. The archive stays frozen; the line is a forwarding
   address for whoever lands there first.
 
+## Not oversights
+
+These look like things to improve. Each was considered and chosen; the options
+and the evidence are in
+[`../tasks/2026-09-25-tools-cleanup/PLAN.md`](../tasks/2026-09-25-tools-cleanup/PLAN.md).
+
+- **Every tool needs Python 3.14, even the three that use no packages.** They used
+  to run on macOS's own Python 3.9, but nothing depended on that, and one version
+  lets all the code use the same features and checks.
+- **Palette roles are strings (`"ink"`, `"panel"`), not fields of a class.** They
+  are the theme's CSS names: external data. A new role in the CSS needs no code.
+  `lib.py` stops at once if a gate names a role that the CSS does not set.
+- **A program reads `barroom.py` and `motion.py` through `--json`, not by
+  importing them.** `tools/` is not a package, so an import from a talk would need
+  a `sys.path` change. Both tools start a browser, so a subprocess costs nothing.
+- **The stroke floor is computed from `DESIGN_VENUE` (1.6357 CSS px), not pinned
+  at 1.64.** Change the design venue and the floor follows.
+
 ## Adding a tool
 
-Put the thresholds in `lib.py`, never in the tool. Write the docstring for someone
+Put the thresholds in `lib.py`, never in the tool. Before you change a tool,
+save its output with `capture_outputs.sh`; after, run `check_python.py` and
+compare. Write the docstring for someone
 who has not read the archives: say what the tool measures, what the number means,
 what it cannot see, and what a bad result should make you do. Then add a row to the
 table above and a line to the relevant file in `../docs/`.
