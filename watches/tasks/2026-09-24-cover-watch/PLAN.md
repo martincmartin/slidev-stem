@@ -308,3 +308,20 @@ the search ran again with `--balance-distance 110`:
 
 **Chosen: the second row.** Measured: `hold 3.66`, `Fmax 0.082`;
 `dPeak 9.29`.
+
+## The fork's slot and a solid escape wheel (user, 2026-09-25)
+
+- **The slot.** Each horn of the fork was about 0.5 px thick where the slot
+  meets the lever: the horn's outer edge ran almost on top of the slot's
+  edge. The outer edges moved out, so each horn is about 4 px thick all along.
+  The slot is the same width (for the 6 px impulse jewel), and the fork's
+  clearances did not change.
+- **The escape wheel.** Its teeth looked unattached. The cause was a bug: the
+  rim's inside edge came from the 27 px pitch radius, not the 23 px root
+  circle of the club teeth, so the rim was 1 px wide. With a real 5 px rim, the
+  large pinion covered most of the spokes and the centre was busy. A solid
+  wheel, with only the pinion's outline inside, read better, and the user
+  chose it (`ESCAPE_SOLID`; `wheel(..., solid=True)`).
+
+Measured: `hold 3.65`, `Fmax 0.081`; `dPeak 9.01` (the solid wheel's openings
+no longer change as it turns).

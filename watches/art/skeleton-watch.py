@@ -384,19 +384,25 @@ def wheel(
     spoke_width: float = 6,
     outline: str | None = None,
     dedendum: float | None = None,
+    solid: bool = False,
 ) -> list[str]:
-    """A wheel with crossings: its lit face, the toothed outline, the openings."""
+    """A wheel with crossings: its lit face, the toothed outline, the openings.
+    A `solid` wheel has no openings: its face is filled out to its teeth."""
     dedendum = spec.depth if dedendum is None else dedendum
     outline = outline or gear(spec.teeth, spec.pitch_radius, phase, dedendum, dedendum)
-    holes = openings(
-        spec.spokes,
-        hub,
-        spec.pitch_radius - dedendum - rim,
-        spoke_width,
-        phase + 90 / spec.spokes,
+    holes = (
+        ""
+        if solid
+        else openings(
+            spec.spokes,
+            hub,
+            spec.pitch_radius - dedendum - rim,
+            spoke_width,
+            phase + 90 / spec.spokes,
+        )
     )
     fine = spec.pitch < 9  # fine teeth take the thinner line
-    return [
+    parts = [
         element("path", d=outline + holes, fill=KNOCKOUT, fill_rule="evenodd"),
         element(
             "path",
@@ -406,16 +412,20 @@ def wheel(
             stroke_width="2" if fine else "2.5",
             stroke_linejoin="round",
         ),
-        element(
-            "path",
-            d=holes,
-            fill="none",
-            stroke=LINE,
-            stroke_width="2",
-            stroke_linejoin="round",
-        ),
-        circle(ORIGIN, 4, fill=KNOCKOUT, stroke=LINE, stroke_width="2"),
     ]
+    if holes:
+        parts.append(
+            element(
+                "path",
+                d=holes,
+                fill="none",
+                stroke=LINE,
+                stroke_width="2",
+                stroke_linejoin="round",
+            )
+        )
+    parts.append(circle(ORIGIN, 4, fill=KNOCKOUT, stroke=LINE, stroke_width="2"))
+    return parts
 
 
 def pinion(leaves: int, radius: float, phase: float) -> list[str]:
@@ -603,6 +613,7 @@ def arbors() -> dict[str, Point]:
 
 
 ESCAPE_ROOT, ESCAPE_TIP = 23, 33  # the escape wheel's club teeth
+ESCAPE_SOLID = True  # small, with a large pinion: filled, not crossed out
 
 
 def part_footprints(positions: dict[str, Point]) -> dict[str, Footprint]:
@@ -630,14 +641,16 @@ def fork_outline(mouth: float) -> list[Point]:
     the lever pointing at the balance: the fork's mouth at `mouth`, its two
     pallets on the far side of the pivot, at the escape wheel."""
     return [
-        (mouth - 14, 4),
-        (mouth + 3, 12),
+        (mouth - 17, 4.5),
+        (mouth - 10, 11),
+        (mouth + 3, 12.5),
         (mouth + 6.5, 8.5),
         (mouth - 7, 6.8),
         (mouth - 7, -6.8),
         (mouth + 6.5, -8.5),
-        (mouth + 3, -12),
-        (mouth - 14, -4),
+        (mouth + 3, -12.5),
+        (mouth - 10, -11),
+        (mouth - 17, -4.5),
         (6, -4.5),
         (1, -21),
         (-9, -23),
@@ -810,8 +823,9 @@ def build(centre_x: float, centre_y: float) -> str:
         rim=5,
         hub=8,
         spoke_width=5,
-        dedendum=0,
+        dedendum=ESCAPE.pitch_radius - ESCAPE_ROOT,
         outline=escape_outline(ESCAPE.teeth, ESCAPE_ROOT, ESCAPE_TIP, 6),
+        solid=ESCAPE_SOLID,
     )
     elements.append(
         under(
