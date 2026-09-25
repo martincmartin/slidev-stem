@@ -18,6 +18,7 @@ exact to about half the spacing.
 import importlib.util
 import itertools
 import math
+import sys
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -29,6 +30,22 @@ from numpy.typing import NDArray
 
 Point = tuple[float, float]
 Points = NDArray[np.float64]  # shape (n, 2)
+
+
+class Named(Protocol):
+    """What skeleton-watch.py's parts provide: a name for reports. They are
+    compared and hashed by identity, so they can be dict keys."""
+
+    @property
+    def name(self) -> str: ...
+
+
+Pair = tuple[Named, Named]
+
+
+def label(key: Named | Pair) -> str:
+    """A part's name, or a pair's names joined by a hyphen, for reports."""
+    return "-".join(part.name for part in key) if isinstance(key, tuple) else key.name
 
 
 class Footprint(Protocol):
@@ -52,19 +69,19 @@ class Region:
     hiders: tuple[tuple[Point, float], ...]
 
 
-def regions(footprints: dict[str, Footprint]) -> dict[str, Region]:
+def regions[Part](footprints: dict[Part, Footprint]) -> dict[Part, Region]:
     """Each part's visible region. `footprints` is in back-to-front order."""
-    names = list(footprints)
+    parts = list(footprints)
     return {
-        name: Region(
-            footprints[name].centre,
-            footprints[name].outer,
+        part: Region(
+            footprints[part].centre,
+            footprints[part].outer,
             tuple(
                 (footprints[upper].centre, footprints[upper].inner)
-                for upper in names[index + 1 :]
+                for upper in parts[index + 1 :]
             ),
         )
-        for index, name in enumerate(names)
+        for index, part in enumerate(parts)
     }
 
 
@@ -151,36 +168,30 @@ def polygon_gap(
 
 # ---- the layout as a whole ------------------------------------------------------------
 MESH_TOLERANCE = 0.01  # px: a mesh distance must be exact, up to rounding
-FORK_WHEELS = (
-    "fourth",
-    "third",
-    "centre",
-    "barrel",
-)  # the fork works on the escape wheel and balance
 
 
 @dataclass(frozen=True)
 class Layout:
     """What the validator checks and the search optimises."""
 
-    # "driver-driven" -> what is wrong with the mesh
-    mesh_errors: dict[str, str]
+    # (driver, driven) -> what is wrong with the mesh
+    mesh_errors: dict[Pair, str]
     # part -> px from the watch centre to its outer edge
-    reach: dict[str, float]
+    reach: dict[Named, float]
     # part -> px from its outer edge to the chapter ring's inside edge
-    ring_gaps: dict[str, float]
-    # "part-part" -> visible gap, for parts that do not mesh
-    wheel_gaps: dict[str, float]
-    # wheel -> gap from the fork, at the worse end of its swing
-    fork_gaps: dict[str, float]
+    ring_gaps: dict[Named, float]
+    # (part, part) -> visible gap, for parts that do not mesh
+    wheel_gaps: dict[Pair, float]
+    # part -> gap from the fork, at the worse end of its swing
+    fork_gaps: dict[Named, float]
 
-    def tightest_wheels(self) -> tuple[str, float]:
+    def tightest_wheels(self) -> tuple[Pair, float]:
         return min(self.wheel_gaps.items(), key=lambda item: item[1])
 
-    def tightest_fork(self) -> tuple[str, float]:
+    def tightest_fork(self) -> tuple[Named, float]:
         return min(self.fork_gaps.items(), key=lambda item: item[1])
 
-    def tightest_ring(self) -> tuple[str, float]:
+    def tightest_ring(self) -> tuple[Named, float]:
         return min(self.ring_gaps.items(), key=lambda item: item[1])
 
 
@@ -190,38 +201,45 @@ def load_watch(path: Path) -> ModuleType:
     if spec is None or spec.loader is None:
         raise SystemExit(f"cannot load {path}")
     module = importlib.util.module_from_spec(spec)
+    # registered first, as importlib's docs do: dataclass looks it up there
+    sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
 
 
 def measure(watch: ModuleType, spacing: float = 1.0) -> Layout:
     """The layout that `watch`'s constants give, measured."""
-    positions = watch.arbors()
-    mesh_errors = {}
-    for driver, driven in watch.MESHES:
-        spec = watch.WHEELS[driver]
-        want = spec.pitch_radius + watch.pinion_radius(spec, watch.WHEELS[driven])
-        have = math.dist(positions[driver], positions[driven])
+    placement = watch.place()
+    mesh_errors: dict[Pair, str] = {}
+    meshing = set()
+    for driver in watch.TRAIN:
+        if driver.driven is None:
+            continue
+        meshing.add(frozenset((driver, driver.driven)))
+        want = driver.mesh_distance
+        have = math.dist(placement.arbor[driver], placement.arbor[driver.driven])
         if abs(have - want) > MESH_TOLERANCE:
-            mesh_errors[f"{driver}-{driven}"] = (
+            mesh_errors[(driver, driver.driven)] = (
                 f"arbors {have:.2f} px apart, the mesh needs {want:.2f}"
             )
 
-    footprints = watch.part_footprints(positions)
-    reach = {
-        name: math.hypot(*part.centre) + part.outer for name, part in footprints.items()
+    footprints = placement.footprints()
+    reach: dict[Named, float] = {
+        part: math.hypot(*footprint.centre) + footprint.outer
+        for part, footprint in footprints.items()
     }
-    ring_gaps = {name: watch.RING_RADIUS - distance for name, distance in reach.items()}
+    ring_gaps = {part: watch.RING_RADIUS - distance for part, distance in reach.items()}
     visible = regions(footprints)
-    meshing = {frozenset(pair) for pair in watch.MESHES}
-    wheel_gaps = {
-        f"{first}-{second}": region_gap(visible[first], visible[second], spacing)
+    wheel_gaps: dict[Pair, float] = {
+        (first, second): region_gap(visible[first], visible[second], spacing)
         for first, second in itertools.combinations(visible, 2)
         if frozenset((first, second)) not in meshing
     }
-    forks = [watch.fork_polygon(positions, bank) for bank in (-watch.BANK, watch.BANK)]
-    fork_gaps = {
-        wheel: min(polygon_gap(fork, visible[wheel], spacing) for fork in forks)
-        for wheel in FORK_WHEELS
+    # the fork works on the escape wheel and the balance, and clears the rest
+    forks = [placement.fork_polygon(bank) for bank in (-watch.BANK, watch.BANK)]
+    fork_gaps: dict[Named, float] = {
+        part: min(polygon_gap(fork, visible[part], spacing) for fork in forks)
+        for part in visible
+        if part not in (watch.ESCAPE, watch.BALANCE)
     }
     return Layout(mesh_errors, reach, ring_gaps, wheel_gaps, fork_gaps)

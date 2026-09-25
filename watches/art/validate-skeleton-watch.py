@@ -92,22 +92,23 @@ def check_types() -> None:
 
 def check_layout(watch: ModuleType) -> None:
     layout = geometry.measure(watch)
-    problems = [f"{pair}: {error}" for pair, error in layout.mesh_errors.items()]
-    for name, gap in layout.ring_gaps.items():
+    label = geometry.label
+    problems = [f"{label(pair)}: {error}" for pair, error in layout.mesh_errors.items()]
+    for part, gap in layout.ring_gaps.items():
         if gap < watch.RING_CLEARANCE:
             problems.append(
-                f"{name}: {gap:.1f} px from the chapter ring, "
+                f"{label(part)}: {gap:.1f} px from the chapter ring, "
                 f"under RING_CLEARANCE {watch.RING_CLEARANCE:g}"
             )
     for pair, gap in layout.wheel_gaps.items():
         if gap < watch.MIN_CLEARANCE:
             problems.append(
-                f"{pair}: visible parts {gap:.1f} px apart, under MIN_CLEARANCE {watch.MIN_CLEARANCE:g}"
+                f"{label(pair)}: visible parts {gap:.1f} px apart, under MIN_CLEARANCE {watch.MIN_CLEARANCE:g}"
             )
-    for wheel, gap in layout.fork_gaps.items():
+    for part, gap in layout.fork_gaps.items():
         if gap < watch.FORK_CLEARANCE:
             problems.append(
-                f"fork-{wheel}: {gap:.1f} px apart, under FORK_CLEARANCE {watch.FORK_CLEARANCE:g}"
+                f"fork-{label(part)}: {gap:.1f} px apart, under FORK_CLEARANCE {watch.FORK_CLEARANCE:g}"
             )
     if problems:
         fail("layout", "\n".join(f"      {problem}" for problem in problems))
@@ -116,9 +117,9 @@ def check_layout(watch: ModuleType) -> None:
     ring_part, ring_gap = layout.tightest_ring()
     ok(
         "layout",
-        f"meshes exact; tightest visible gap {wheel_gap:.1f} px, {wheel_pair}; "
-        f"fork {fork_gap:.1f} px from the {fork_wheel} wheel; "
-        f"{ring_part} {ring_gap:.1f} px from the chapter ring",
+        f"meshes exact; tightest visible gap {wheel_gap:.1f} px, {label(wheel_pair)}; "
+        f"fork {fork_gap:.1f} px from the {label(fork_wheel)} wheel; "
+        f"{label(ring_part)} {ring_gap:.1f} px from the chapter ring",
     )
 
 

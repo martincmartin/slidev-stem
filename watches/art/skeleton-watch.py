@@ -26,11 +26,13 @@ without SMIL shows frame 0. Why the drawing is as it is:
 watches/tasks/2026-09-24-cover-watch/PLAN.md.
 """
 
+from __future__ import annotations
+
 import argparse
 import math
 import pathlib
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 Point = tuple[float, float]  # x, y in CSS px; y points down
 Keyframes = tuple[list[float], list[float]]  # keyTimes, values
@@ -74,13 +76,32 @@ BANK = 9.0  # degrees: the fork's swing each side of its centre line
 FOURTH_LOOP = 60.0
 
 
-# ---- wheels ---------------------------------------------------------------------
-@dataclass(frozen=True)
+# ---- the parts ------------------------------------------------------------------
+# A part holds only what never changes. Where its arbor is depends on the
+# layout, so that is in a Placement, a side table made fresh for each layout.
+# Parts compare and hash by identity (eq=False), so they can be dict keys.
+# A Wheel has slots, so a misspelt attribute raises an error; it is the one
+# part that changes after it is made (its `driver`).
+@dataclass(eq=False, slots=True)
 class Wheel:
+    """A wheel and the pinion on its arbor. The train is a doubly linked list:
+    `driven` is the wheel whose pinion this one's teeth turn, and `driver` the
+    wheel that turns this one's pinion. A wheel's constructor sets its driven
+    wheel's `driver`, so a wheel is made after the wheel it drives."""
+
+    name: str  # for the SVG's ids and for reports
     teeth: int
     pitch_radius: float  # the circle on which it rolls against the pinion it drives
     spokes: int = 0
     leaves: int = 0  # the leaves of the pinion on its own arbor
+    driven: Wheel | None = field(default=None, repr=False)
+    root_radius: float | None = None  # if not pitch_radius - depth
+    tip_radius: float | None = None  # if not pitch_radius + depth
+    driver: Wheel | None = field(default=None, init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        if self.driven is not None:
+            self.driven.driver = self
 
     @property
     def pitch(self) -> float:
@@ -91,6 +112,68 @@ class Wheel:
     def depth(self) -> float:
         """Addendum and dedendum: 4 px, or less where the teeth are fine."""
         return min(4.0, 0.32 * self.pitch)
+
+    @property
+    def inner(self) -> float:
+        """The root circle: the wheel hides what is below it inside this."""
+        return (
+            self.pitch_radius - self.depth
+            if self.root_radius is None
+            else self.root_radius
+        )
+
+    @property
+    def outer(self) -> float:
+        """The tip circle."""
+        return (
+            self.pitch_radius + self.depth
+            if self.tip_radius is None
+            else self.tip_radius
+        )
+
+    @property
+    def pinion_radius(self) -> float:
+        """The pinion on this arbor: its leaves at the pitch of its driver."""
+        if self.driver is None:
+            raise ValueError(f"nothing drives the {self.name} pinion")
+        return self.leaves * self.driver.pitch_radius / self.driver.teeth
+
+    @property
+    def mesh_distance(self) -> float:
+        """px from this arbor to the arbor of the wheel it drives."""
+        if self.driven is None:
+            raise ValueError(f"the {self.name} wheel drives no pinion")
+        return self.pitch_radius + self.driven.pinion_radius
+
+    @property
+    def step(self) -> float:
+        """Degrees a beat, clockwise. The escape wheel, which drives no
+        pinion, turns half a tooth a beat, anticlockwise; each wheel before
+        it turns its driven pinion that far."""
+        if self.driven is None:
+            return -360.0 / self.teeth / 2
+        return -self.driven.step * self.driven.leaves / self.teeth
+
+
+@dataclass(eq=False)
+class Balance:
+    name: str
+    radius: float
+
+    @property
+    def inner(self) -> float:
+        return self.radius
+
+    @property
+    def outer(self) -> float:
+        return self.radius
+
+
+@dataclass(eq=False)
+class Fork:
+    """The pallet fork. Its arbor is its pivot."""
+
+    name: str
 
 
 # Each wheel's teeth mesh with the pinion on the next arbor. A wheel and the
@@ -106,28 +189,30 @@ class Wheel:
 # wheel 6 degrees a second: the seconds hand keeps real time. The escape
 # pinion's radius is half the fourth wheel's, so it is large; the escape wheel
 # is solid, so the pinion reads on its plain face.
-BARREL = Wheel(teeth=36, pitch_radius=74)
-CENTRE = Wheel(teeth=32, pitch_radius=50, spokes=5, leaves=6)
-THIRD = Wheel(teeth=30, pitch_radius=44, spokes=4, leaves=4)
-FOURTH = Wheel(teeth=16, pitch_radius=32, spokes=4, leaves=4)
-ESCAPE = Wheel(teeth=15, pitch_radius=27, spokes=5, leaves=8)
-WHEELS = {
-    "barrel": BARREL,
-    "centre": CENTRE,
-    "third": THIRD,
-    "fourth": FOURTH,
-    "escape": ESCAPE,
-}
-# (driver, driven): each wheel's teeth turn the pinion on the next arbor
-MESHES = [
-    ("barrel", "centre"),
-    ("centre", "third"),
-    ("third", "fourth"),
-    ("fourth", "escape"),
-]
+# Made from the escape wheel back, since a wheel is made after the one it drives.
+ESCAPE = Wheel(
+    "escape",
+    teeth=15,
+    pitch_radius=27,
+    spokes=5,
+    leaves=8,
+    root_radius=23,  # club teeth, not the usual depth
+    tip_radius=33,
+)
+FOURTH = Wheel("fourth", teeth=16, pitch_radius=32, spokes=4, leaves=4, driven=ESCAPE)
+THIRD = Wheel("third", teeth=30, pitch_radius=44, spokes=4, leaves=4, driven=FOURTH)
+CENTRE = Wheel("centre", teeth=32, pitch_radius=50, spokes=5, leaves=6, driven=THIRD)
+BARREL = Wheel("barrel", teeth=36, pitch_radius=74, driven=CENTRE)
+TRAIN = [BARREL, CENTRE, THIRD, FOURTH, ESCAPE]
+ESCAPE_SOLID = True  # small, with a large pinion: filled, not crossed out
 HOUR_RATIO = 12  # the motion works under the dial turn the hour hand
-BALANCE_RADIUS = 56
+BALANCE = Balance("balance", radius=56)
 IMPULSE_PIN_RADIUS = 15  # the impulse jewel's distance from the balance's arbor
+FORK = Fork("fork")
+Part = Wheel | Balance | Fork
+Round = Wheel | Balance  # the parts with a footprint
+# the round parts, back to front
+STACK: list[Round] = [ESCAPE, FOURTH, THIRD, CENTRE, BARREL, BALANCE]
 
 # ---- the layout -------------------------------------------------------------------
 # Screen angles in degrees (0 = 3 o'clock, increasing clockwise), each from the
@@ -561,81 +646,81 @@ class Footprint:
     outer: float
 
 
-def hole(name: str, centre: Point, radius: float) -> str:
-    """A clipPath that keeps everything except the disc (centre, radius): the
-    part of a lower wheel that the wheel above it covers. Ids carry the
-    drawing's name, so copies of it on one page do not collide."""
-    centre_x, centre_y = centre
+def hole(part: Round, footprint: Footprint) -> str:
+    """A clipPath that keeps everything except the part's inner disc: the
+    part of a lower wheel that `part` covers. Ids carry the drawing's name, so
+    copies of it on one page do not collide."""
+    centre_x, centre_y = footprint.centre
+    radius = footprint.inner
     path = (
         f"M-400 -400H400V400H-400ZM{num(centre_x + radius)} {num(centre_y)}"
         f"A{num(radius)} {num(radius)} 0 1 1 {num(centre_x - radius)} {num(centre_y)}"
         f"A{num(radius)} {num(radius)} 0 1 1 {num(centre_x + radius)} {num(centre_y)}Z"
     )
     return (
-        f'<clipPath id="skeleton-watch-under-{name}">'
+        f'<clipPath id="skeleton-watch-under-{part.name}">'
         + element("path", d=path, clip_rule="evenodd")
         + "</clipPath>"
     )
 
 
-def under(names: list[str], body: list[str]) -> str:
-    """`body`, clipped by each named hole in turn."""
-    for name in names:
-        body = [wrap("g", body, clip_path=f"url(#skeleton-watch-under-{name})")]
+def under(parts: list[Round], body: list[str]) -> str:
+    """`body`, clipped by the hole of each of `parts` in turn."""
+    for part in parts:
+        body = [wrap("g", body, clip_path=f"url(#skeleton-watch-under-{part.name})")]
     return body[0]
 
 
-def pinion_radius(driver: Wheel, driven: Wheel) -> float:
-    """A pinion's radius: its leaves at the pitch of the wheel that drives it."""
-    return driven.leaves * driver.pitch_radius / driver.teeth
+@dataclass(frozen=True)
+class Placement:
+    """Where each arbor is, from the watch centre, for one set of layout
+    constants. place() makes a new one each time, so nothing in it is left
+    over from another layout. The footprints and the fork's outline follow
+    from the arbors."""
+
+    arbor: dict[Part, Point]
+
+    def footprint(self, part: Round) -> Footprint:
+        """The disc `part` covers."""
+        return Footprint(self.arbor[part], part.inner, part.outer)
+
+    def footprints(self) -> dict[Round, Footprint]:
+        """The disc each round part covers, back to front."""
+        return {part: self.footprint(part) for part in STACK}
+
+    def fork_polygon(self, bank: float) -> list[Point]:
+        """The fork's outline in watch coordinates, turned `bank` degrees from
+        its centre line (it swings between -BANK and +BANK)."""
+        pivot, balance = self.arbor[FORK], self.arbor[BALANCE]
+        mouth = math.dist(pivot, balance) - IMPULSE_PIN_RADIUS
+        heading = math.radians(direction(pivot, balance) + bank)
+        cos_heading, sin_heading = math.cos(heading), math.sin(heading)
+        return [
+            (
+                pivot[0] + along * cos_heading - across * sin_heading,
+                pivot[1] + along * sin_heading + across * cos_heading,
+            )
+            for along, across in fork_outline(mouth)
+        ]
 
 
-def arbors() -> dict[str, Point]:
-    """Where each arbor is, from the watch centre: the barrel, the train, the
-    fork's pivot and the balance."""
-    centre = ORIGIN
-    third = polar(CENTRE.pitch_radius + pinion_radius(CENTRE, THIRD), THIRD_ANGLE)
-    fourth = polar(
-        THIRD.pitch_radius + pinion_radius(THIRD, FOURTH), FOURTH_ANGLE, third
+def place() -> Placement:
+    """The arbors for the layout constants as they are now: the barrel, the
+    train, the fork's pivot and the balance."""
+    third = polar(CENTRE.mesh_distance, THIRD_ANGLE)
+    fourth = polar(THIRD.mesh_distance, FOURTH_ANGLE, third)
+    escape = polar(FOURTH.mesh_distance, ESCAPE_ANGLE, fourth)
+    return Placement(
+        {
+            BARREL: polar(BARREL.mesh_distance, BARREL_ANGLE),
+            CENTRE: ORIGIN,
+            THIRD: third,
+            FOURTH: fourth,
+            ESCAPE: escape,
+            FORK: polar(FORK_PIVOT_DISTANCE, LEVER_ANGLE, escape),
+            BALANCE: polar(BALANCE_DISTANCE, LEVER_ANGLE, escape),
+        }
     )
-    escape = polar(
-        FOURTH.pitch_radius + pinion_radius(FOURTH, ESCAPE), ESCAPE_ANGLE, fourth
-    )
-    return {
-        "barrel": polar(
-            BARREL.pitch_radius + pinion_radius(BARREL, CENTRE), BARREL_ANGLE
-        ),
-        "centre": centre,
-        "third": third,
-        "fourth": fourth,
-        "escape": escape,
-        "fork": polar(FORK_PIVOT_DISTANCE, LEVER_ANGLE, escape),
-        "balance": polar(BALANCE_DISTANCE, LEVER_ANGLE, escape),
-    }
-
-
-ESCAPE_ROOT, ESCAPE_TIP = 23, 33  # the escape wheel's club teeth
-ESCAPE_SOLID = True  # small, with a large pinion: filled, not crossed out
-
-
-def part_footprints(positions: dict[str, Point]) -> dict[str, Footprint]:
-    """The disc each round part covers, back to front."""
-
-    def wheel_footprint(name: str, spec: Wheel) -> Footprint:
-        return Footprint(
-            positions[name],
-            spec.pitch_radius - spec.depth,
-            spec.pitch_radius + spec.depth,
-        )
-
-    return {
-        "escape": Footprint(positions["escape"], ESCAPE_ROOT, ESCAPE_TIP),
-        "fourth": wheel_footprint("fourth", FOURTH),
-        "third": wheel_footprint("third", THIRD),
-        "centre": wheel_footprint("centre", CENTRE),
-        "barrel": wheel_footprint("barrel", BARREL),
-        "balance": Footprint(positions["balance"], BALANCE_RADIUS, BALANCE_RADIUS),
-    }
 
 
 def fork_outline(mouth: float) -> list[Point]:
@@ -669,45 +754,22 @@ def fork_outline(mouth: float) -> list[Point]:
     ]
 
 
-def fork_polygon(positions: dict[str, Point], bank: float) -> list[Point]:
-    """The fork's outline in watch coordinates, turned `bank` degrees from its
-    centre line (it swings between -BANK and +BANK)."""
-    pivot, balance = positions["fork"], positions["balance"]
-    mouth = math.dist(pivot, balance) - IMPULSE_PIN_RADIUS
-    heading = math.radians(direction(pivot, balance) + bank)
-    cos_heading, sin_heading = math.cos(heading), math.sin(heading)
-    return [
-        (
-            pivot[0] + along * cos_heading - across * sin_heading,
-            pivot[1] + along * sin_heading + across * cos_heading,
-        )
-        for along, across in fork_outline(mouth)
-    ]
-
-
 # ---- the drawing ------------------------------------------------------------------------
 def build(centre_x: float, centre_y: float) -> str:
-    positions = arbors()
-    centre_arbor, barrel_arbor = positions["centre"], positions["barrel"]
-    third_arbor, fourth_arbor, escape_arbor = (
-        positions["third"],
-        positions["fourth"],
-        positions["escape"],
-    )
-    fork_pivot, balance_arbor = positions["fork"], positions["balance"]
-    mouth_distance = math.dist(fork_pivot, balance_arbor) - IMPULSE_PIN_RADIUS
+    placement = place()
+    arbor = placement.arbor
+    mouth_distance = math.dist(arbor[FORK], arbor[BALANCE]) - IMPULSE_PIN_RADIUS
 
     # Back to front: escape wheel, fourth, third, centre, barrel. Each wheel's
     # teeth lie over the pinion they drive, so every mesh is in view. A lower
     # wheel is hidden inside the root circle of each wheel above it (the inside
     # edge of its teeth), so the gaps between teeth stay open.
-    footprints = part_footprints(positions)
-    names = list(footprints)
-    above = {}  # part -> the parts above it that overlap it
-    for index, lower in enumerate(names):
+    footprints = placement.footprints()
+    above: dict[Round, list[Round]] = {}  # the parts above each that overlap it
+    for index, lower in enumerate(STACK):
         above[lower] = [
             upper
-            for upper in names[index + 1 :]
+            for upper in STACK[index + 1 :]
             if math.dist(footprints[lower].centre, footprints[upper].centre)
             < footprints[lower].outer + footprints[upper].inner
         ]
@@ -715,9 +777,9 @@ def build(centre_x: float, centre_y: float) -> str:
         wrap(
             "defs",
             [
-                hole(name, part.centre, part.inner)
-                for name, part in footprints.items()
-                if name != "escape"
+                hole(part, footprint)
+                for part, footprint in footprints.items()
+                if part is not ESCAPE
             ],
         )
     ]
@@ -784,36 +846,27 @@ def build(centre_x: float, centre_y: float) -> str:
     )
 
     # ---- the train, back to front -------------------------------------------------------
-    wheels = WHEELS
-    drives = dict(MESHES)
-    driven_by = {driven: driver for driver, driven in drives.items()}
-
-    step = {"escape": -360.0 / ESCAPE.teeth / 2}  # half a tooth a beat, anticlockwise
-    step["fourth"] = -step["escape"] * ESCAPE.leaves / FOURTH.teeth  # +6: clockwise
-    step["third"] = -step["fourth"] * FOURTH.leaves / THIRD.teeth
-    step["centre"] = -step["third"] * THIRD.leaves / CENTRE.teeth  # +0.1: once an hour
-    step["barrel"] = -step["centre"] * CENTRE.leaves / BARREL.teeth
-
-    def accumulated(name: str) -> tuple[list[float], list[float], bool]:
-        """One period of `name`'s steps, repeated with accumulate."""
-        return stepper(PERIOD, step[name]) + (True,)
+    # Steps: the escape wheel -12 degrees a beat, the fourth +6 (a turn a
+    # minute), the centre +0.1 (a turn an hour).
+    def accumulated(wheel: Wheel) -> tuple[list[float], list[float], bool]:
+        """One period of the wheel's steps, repeated with accumulate."""
+        return stepper(PERIOD, wheel.step) + (True,)
 
     # Phases: at time 0 each driving wheel has a tooth on the line to the
     # pinion it drives, and that pinion has a gap facing it.
-    def tooth_phase(name: str) -> float:
-        return (
-            direction(positions[name], positions[drives[name]])
-            if name in drives
-            else 0.0
-        )
+    def tooth_phase(wheel: Wheel) -> float:
+        if wheel.driven is None:
+            return 0.0
+        return direction(arbor[wheel], arbor[wheel.driven])
 
-    def pinion_of(name: str) -> list[str]:
-        """Arbor `name`'s pinion, with a gap facing the wheel that drives it."""
-        spec, driver = wheels[name], driven_by[name]
+    def pinion_of(wheel: Wheel) -> list[str]:
+        """The pinion on the wheel's arbor, with a gap facing its driver."""
+        if wheel.driver is None:
+            raise ValueError(f"nothing drives the {wheel.name} pinion")
         return pinion(
-            spec.leaves,
-            pinion_radius(wheels[driver], spec),
-            direction(positions[name], positions[driver]) + 180 / spec.leaves,
+            wheel.leaves,
+            wheel.pinion_radius,
+            direction(arbor[wheel], arbor[wheel.driver]) + 180 / wheel.leaves,
         )
 
     # The escape wheel: its teeth work the fork. It accumulates too: no loop of
@@ -825,33 +878,33 @@ def build(centre_x: float, centre_y: float) -> str:
         rim=5,
         hub=8,
         spoke_width=5,
-        dedendum=ESCAPE.pitch_radius - ESCAPE_ROOT,
-        outline=escape_outline(ESCAPE.teeth, ESCAPE_ROOT, ESCAPE_TIP, 6),
+        dedendum=ESCAPE.pitch_radius - ESCAPE.inner,
+        outline=escape_outline(ESCAPE.teeth, ESCAPE.inner, ESCAPE.outer, 6),
         solid=ESCAPE_SOLID,
     )
     elements.append(
         under(
-            above["escape"],
+            above[ESCAPE],
             [
                 turning(
-                    escape_arbor,
-                    escape + pinion_of("escape"),
+                    arbor[ESCAPE],
+                    escape + pinion_of(ESCAPE),
                     PERIOD,
-                    *accumulated("escape"),
+                    *accumulated(ESCAPE),
                 )
             ],
         )
     )
     # the fourth wheel: 6 degrees a beat, one turn a minute; it carries the seconds hand
-    times, values = stepper(FOURTH_LOOP, step["fourth"])
-    fourth = wheel(FOURTH, tooth_phase("fourth"), hub=8, rim=5)
+    times, values = stepper(FOURTH_LOOP, FOURTH.step)
+    fourth = wheel(FOURTH, tooth_phase(FOURTH), hub=8, rim=5)
     elements.append(
         under(
-            above["fourth"],
+            above[FOURTH],
             [
                 turning(
-                    fourth_arbor,
-                    fourth + pinion_of("fourth"),
+                    arbor[FOURTH],
+                    fourth + pinion_of(FOURTH),
                     FOURTH_LOOP,
                     times,
                     values,
@@ -859,42 +912,42 @@ def build(centre_x: float, centre_y: float) -> str:
             ],
         )
     )
-    third = wheel(THIRD, tooth_phase("third"))
+    third = wheel(THIRD, tooth_phase(THIRD))
     elements.append(
         under(
-            above["third"],
+            above[THIRD],
             [
                 turning(
-                    third_arbor,
-                    third + pinion_of("third"),
+                    arbor[THIRD],
+                    third + pinion_of(THIRD),
                     PERIOD,
-                    *accumulated("third"),
+                    *accumulated(THIRD),
                 )
             ],
         )
     )
-    centre = wheel(CENTRE, tooth_phase("centre"), hub=14, spoke_width=7)
+    centre = wheel(CENTRE, tooth_phase(CENTRE), hub=14, spoke_width=7)
     elements.append(
         under(
-            above["centre"],
+            above[CENTRE],
             [
                 turning(
-                    centre_arbor,
-                    centre + pinion_of("centre"),
+                    arbor[CENTRE],
+                    centre + pinion_of(CENTRE),
                     PERIOD,
-                    *accumulated("centre"),
+                    *accumulated(CENTRE),
                 )
             ],
         )
     )
     # the barrel, in front: its lid is cut away to show the mainspring
-    outline = gear(BARREL.teeth, BARREL.pitch_radius, tooth_phase("barrel"))
+    outline = gear(BARREL.teeth, BARREL.pitch_radius, tooth_phase(BARREL))
     elements.append(
         under(
-            above["barrel"],
+            above[BARREL],
             [
                 turning(
-                    barrel_arbor,
+                    arbor[BARREL],
                     [
                         element(
                             "path",
@@ -932,7 +985,7 @@ def build(centre_x: float, centre_y: float) -> str:
                         ),
                     ],
                     PERIOD,
-                    *accumulated("barrel"),
+                    *accumulated(BARREL),
                 )
             ],
         )
@@ -942,12 +995,12 @@ def build(centre_x: float, centre_y: float) -> str:
     swing_times = [index / 24 for index in range(25)]
     swing_values = [balance_angle(index / 24 * PERIOD) for index in range(25)]
     pin_direction = direction(
-        balance_arbor, fork_pivot
+        arbor[BALANCE], arbor[FORK]
     )  # the impulse pin faces the fork at rest
     balance = [
         element(
             "path",
-            d=ring(BALANCE_RADIUS, BALANCE_RADIUS - 8),
+            d=ring(BALANCE.radius, BALANCE.radius - 8),
             fill=KNOCKOUT,
             fill_rule="evenodd",
             stroke=LINE,
@@ -967,8 +1020,8 @@ def build(centre_x: float, centre_y: float) -> str:
             )
             for radius, side in (
                 (9, 1),
-                (BALANCE_RADIUS - 8, 1),
-                (BALANCE_RADIUS - 8, -1),
+                (BALANCE.radius - 8, 1),
+                (BALANCE.radius - 8, -1),
                 (9, -1),
             )
         ]
@@ -987,7 +1040,7 @@ def build(centre_x: float, centre_y: float) -> str:
     # the balance, so the fork's work on it stays in view
     roller = [circle(polar(IMPULSE_PIN_RADIUS, pin_direction), 6, fill=LINE)]
     stud = (
-        direction(balance_arbor, centre_arbor) + 150
+        direction(arbor[BALANCE], arbor[CENTRE]) + 150
     )  # where the spring's outer end is held
     springs = [
         spiral(8, 38, stud - 360 * 3.25 + swing, stud, 13) for swing in swing_values
@@ -1004,11 +1057,11 @@ def build(centre_x: float, centre_y: float) -> str:
         )
         + "</path>"
     )
-    elements.append(turning(balance_arbor, balance, PERIOD, swing_times, swing_values))
+    elements.append(turning(arbor[BALANCE], balance, PERIOD, swing_times, swing_values))
     elements.append(
-        wrap("g", [spring], transform=f"translate({coords(balance_arbor)})")
+        wrap("g", [spring], transform=f"translate({coords(arbor[BALANCE])})")
     )
-    elements.append(turning(balance_arbor, roller, PERIOD, swing_times, swing_values))
+    elements.append(turning(arbor[BALANCE], roller, PERIOD, swing_times, swing_values))
 
     # ---- the pallet fork: flips at each beat -----------------------------------------
     (first_start, first_end), (second_start, second_end) = tick_window()
@@ -1016,7 +1069,7 @@ def build(centre_x: float, centre_y: float) -> str:
     fork_values = [-BANK, -BANK, BANK, BANK, -BANK, -BANK]
     mouth = mouth_distance
     shape = fork_outline(mouth)
-    heading = math.radians(direction(fork_pivot, balance_arbor))
+    heading = math.radians(direction(arbor[FORK], arbor[BALANCE]))
     cos_heading, sin_heading = math.cos(heading), math.sin(heading)
     fork = (
         "M"
@@ -1033,7 +1086,7 @@ def build(centre_x: float, centre_y: float) -> str:
     )
     elements.append(
         turning(
-            fork_pivot,
+            arbor[FORK],
             [
                 element(
                     "path",
@@ -1052,10 +1105,10 @@ def build(centre_x: float, centre_y: float) -> str:
     )
 
     # ---- the seconds hand, on the fourth wheel's arbor --------------------------------
-    times, values = stepper(FOURTH_LOOP, step["fourth"])
+    times, values = stepper(FOURTH_LOOP, FOURTH.step)
     # a small pivot, not a cap, so the fourth pinion's mesh stays in view
     seconds = [dagger(60, 9, 0.70, 6, 2, "2", neck=16), circle(ORIGIN, 2.5, fill=LINE)]
-    elements.append(turning(fourth_arbor, seconds, FOURTH_LOOP, times, values))
+    elements.append(turning(arbor[FOURTH], seconds, FOURTH_LOOP, times, values))
 
     # ---- the chapter ring: what is left of the dial ------------------------------------
     elements.append(
@@ -1104,16 +1157,14 @@ def build(centre_x: float, centre_y: float) -> str:
     hour_hand = dagger(140, 17, 0.62, 10, 3, "3", (10 + 9 / 60) * 30, neck=26)
     elements.append(
         turning(
-            centre_arbor,
+            arbor[CENTRE],
             [hour_hand],
             PERIOD,
-            *(stepper(PERIOD, step["centre"] / HOUR_RATIO) + (True,)),
+            *(stepper(PERIOD, CENTRE.step / HOUR_RATIO) + (True,)),
         )
     )
     minute_hand = dagger(206, 13, 0.70, 12, 3, "3", 9 * 6, neck=26)
-    elements.append(
-        turning(centre_arbor, [minute_hand], PERIOD, *accumulated("centre"))
-    )
+    elements.append(turning(arbor[CENTRE], [minute_hand], PERIOD, *accumulated(CENTRE)))
     # a small pivot, not a cap, so the barrel's mesh with the centre pinion shows
     elements.append(circle(ORIGIN, 3.5, fill=KNOCKOUT, stroke=LINE, stroke_width="2"))
 

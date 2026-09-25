@@ -72,22 +72,24 @@ def evaluate(
     """The layout with these values, scored; None if it is not allowed."""
     for name, value in zip(PARAMETERS, values, strict=True):
         setattr(watch, name, value)
-    positions = watch.arbors()
-    balance = positions["balance"]
+    placement = watch.place()
+    balance = placement.arbor[watch.BALANCE]
     balance_angle = math.degrees(math.atan2(balance[1], balance[0])) % 360
     if not BALANCE_SIDE[0] <= balance_angle <= BALANCE_SIDE[1]:
         return None
-    footprints = watch.part_footprints(positions)
     if any(
-        math.hypot(*part.centre) + part.outer > watch.RING_RADIUS
-        for part in footprints.values()
+        math.hypot(*footprint.centre) + footprint.outer > watch.RING_RADIUS
+        for footprint in placement.footprints().values()
     ):
         return None
     layout = geometry.measure(watch, spacing)
     wheels, fork, ring = (
-        layout.tightest_wheels(),
-        layout.tightest_fork(),
-        layout.tightest_ring(),
+        (geometry.label(key), gap)
+        for key, gap in (
+            layout.tightest_wheels(),
+            layout.tightest_fork(),
+            layout.tightest_ring(),
+        )
     )
     return Candidate(values, min(wheels[1], fork[1], ring[1]), wheels, fork, ring)
 
