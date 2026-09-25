@@ -7,8 +7,8 @@ to skeleton_watch.py:
 It runs itself under stem/.venv, stops at the first failure and exits non-zero.
 The steps:
 
-1. style: ruff format (it rewrites the art scripts in place), then ruff check;
-2. types: mypy --strict and pyright on the art scripts;
+1-2. style and types: stem/tools/check_python.py on the art scripts (ruff
+   format, which rewrites them in place, ruff check, mypy --strict, pyright);
 3. layout, as the viewer sees it (watch_geometry.py says how):
    - each wheel sits exactly one mesh distance from the pinion it drives;
    - every part is at least RING_CLEARANCE inside the chapter ring;
@@ -66,20 +66,13 @@ def ok(label: str, detail: str = "") -> None:
     print(f"ok    {label}" + (f"  ({detail})" if detail else ""))
 
 
-def check_style() -> None:
-    files = [str(script) for script in SCRIPTS]
-    changed = run("ruff format", [str(VENV / "bin" / "ruff"), "format", *files])
-    ok("ruff format", changed.strip().splitlines()[-1] if changed.strip() else "")
-    run("ruff check", [str(VENV / "bin" / "ruff"), "check", *files])
-    ok("ruff check")
-
-
-def check_types() -> None:
-    files = [str(script) for script in SCRIPTS]
-    run("mypy --strict", [str(VENV / "bin" / "mypy"), "--strict", *files])
-    ok("mypy --strict")
-    run("pyright", [str(VENV / "bin" / "pyright"), *files])
-    ok("pyright")
+def check_python() -> None:
+    """The house's checks for Python, from stem/tools/check_python.py."""
+    output = run(
+        "python checks",
+        [PYTHON, "tools/check_python.py", *(str(script) for script in SCRIPTS)],
+    )
+    print(output.rstrip())
 
 
 # The checks below import the generator, so they run it. They import it
@@ -173,8 +166,7 @@ def main() -> None:
     # numpy and the checkers are in stem/.venv: rerun there if this is not it
     if pathlib.Path(sys.prefix).resolve() != VENV.resolve():
         os.execv(PYTHON, [PYTHON, __file__, *sys.argv[1:]])
-    check_style()
-    check_types()
+    check_python()
     check_layout()
     run("generate", [sys.executable, str(GENERATOR)])
     ok("generate", str(SVG.relative_to(TALK)))

@@ -29,78 +29,123 @@ the large row is only there to show you what you are losing.
 Whether anything animates off its own feature. Whether a texture has turned to
 mud. For "can the back row see it", use `barroom.py`; this one is for your eyes.
 """
-import re, sys, pathlib, argparse
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import argparse
+import pathlib
+import re
+import sys
+
 import lib
 
 DEFAULT_TIMES = [0.2, 3.0, 6.0, 9.0, 11.8]
 
 
-def instance(path: pathlib.Path, tag: str, w=None, h=None) -> str:
+def instance(
+    path: pathlib.Path, tag: str, width: int | None = None, height: int | None = None
+) -> str:
     """One copy of a drawing, with every id namespaced so refs stay local to it.
-    At (w, h) if given, otherwise at the size the file states."""
-    src = path.read_text()
-    for i in set(re.findall(r'id="([^"]+)"', src)):
-        src = src.replace(f'id="{i}"', f'id="{i}-{tag}"').replace(f"url(#{i})", f"url(#{i}-{tag})")
-    if w is None:
-        return src
-    return re.sub(r'<svg width="[0-9.]+" height="[0-9.]+"', f'<svg width="{w}" height="{h}"', src, count=1)
+    At (width, height) if given, otherwise at the size the file states."""
+    source = path.read_text()
+    for name in set(re.findall(r'id="([^"]+)"', source)):
+        source = source.replace(f'id="{name}"', f'id="{name}-{tag}"').replace(
+            f"url(#{name})", f"url(#{name}-{tag})"
+        )
+    if width is None:
+        return source
+    return re.sub(
+        r'<svg width="[0-9.]+" height="[0-9.]+"',
+        f'<svg width="{width}" height="{height}"',
+        source,
+        count=1,
+    )
 
 
-def build_html(files, times):
-    P = lib.LEDGER
-    h = ['<!doctype html><meta charset=utf-8><style>',
-         f'body{{margin:0;background:{P["background"]};'
-         'font:12px "IBM Plex Sans",Arial,sans-serif;padding:12px}',
-         '.row{display:flex;gap:14px;align-items:center;margin-bottom:8px}',
-         f'.t{{width:44px;font:600 14px monospace;color:{P["accent"]}}}',
-         # the card chrome the deck actually puts around these drawings
-         f'.card{{display:flex;padding:9px 11px;background:{P["panel"]};'
-         f'border:1px solid {P["border"]};border-radius:12px}}',
-         '.card svg{border-radius:6px;display:block}',
-         f'h2{{font:600 14px "IBM Plex Sans";color:{P["muted"]};margin:12px 0 6px}}</style>',
-         f'<h2>{len(files)} drawing(s) &mdash; 200 px wide</h2><div class="row" data-t="4.0">']
-    for i, f in enumerate(files):
-        w, h_ = lib.shown_size(f.read_text())[:2]
-        h.append(f'<div class="card">{instance(f, f"big-{i}", 200, round(200 * h_ / w))}</div>')
-    h.append('</div><h2>at the size each file states &mdash; what a slide shows</h2>')
-    for t in times:
-        tag = str(t).replace(".", "p")
-        h.append(f'<div class="row" data-t="{t}"><div class="t">{t}s</div>')
-        h += [f'<div class="card">{instance(f, f"{i}-{tag}")}</div>' for i, f in enumerate(files)]
-        h.append("</div>")
-    h.append('<script>document.querySelectorAll("[data-t]").forEach(c=>{'
-             'const t=parseFloat(c.dataset.t);'
-             'c.querySelectorAll("svg").forEach(s=>{s.pauseAnimations();s.setCurrentTime(t);});});</script>')
-    return "\n".join(h)
+def build_html(files: list[pathlib.Path], times: list[float]) -> str:
+    palette = lib.LEDGER
+    page_parts = [
+        "<!doctype html><meta charset=utf-8><style>",
+        (
+            f"body{{margin:0;background:{palette['background']};"
+            'font:12px "IBM Plex Sans",Arial,sans-serif;padding:12px}'
+        ),
+        ".row{display:flex;gap:14px;align-items:center;margin-bottom:8px}",
+        f".t{{width:44px;font:600 14px monospace;color:{palette['accent']}}}",
+        # the card chrome the deck actually puts around these drawings
+        (
+            f".card{{display:flex;padding:9px 11px;background:{palette['panel']};"
+            f"border:1px solid {palette['border']};border-radius:12px}}"
+        ),
+        ".card svg{border-radius:6px;display:block}",
+        f'h2{{font:600 14px "IBM Plex Sans";color:{palette["muted"]};margin:12px 0 6px}}</style>',
+        f'<h2>{len(files)} drawing(s) &mdash; 200 px wide</h2><div class="row" data-t="4.0">',
+    ]
+    for index, file in enumerate(files):
+        width, height, _scale = lib.shown_size(file.read_text())
+        if not (width and height):
+            sys.exit(f"{lib.rel(file)}: no width/height. Run tools/artcheck.py")
+        page_parts.append(
+            f'<div class="card">{instance(file, f"big-{index}", 200, round(200 * height / width))}</div>'
+        )
+    page_parts.append(
+        "</div><h2>at the size each file states &mdash; what a slide shows</h2>"
+    )
+    for time in times:
+        tag = str(time).replace(".", "p")
+        page_parts.append(
+            f'<div class="row" data-t="{time}"><div class="t">{time}s</div>'
+        )
+        page_parts += [
+            f'<div class="card">{instance(file, f"{index}-{tag}")}</div>'
+            for index, file in enumerate(files)
+        ]
+        page_parts.append("</div>")
+    page_parts.append(
+        '<script>document.querySelectorAll("[data-t]").forEach(c=>{'
+        "const t=parseFloat(c.dataset.t);"
+        'c.querySelectorAll("svg").forEach(s=>{s.pauseAnimations();s.setCurrentTime(t);});});</script>'
+    )
+    return "\n".join(page_parts)
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("paths", nargs="*", help="SVG files or directories (default: every talk's art)")
-    ap.add_argument("--times", nargs="+", type=float, default=DEFAULT_TIMES,
-                    help="animation times to pin, in seconds")
-    ap.add_argument("--out", default=None, help="output PNG (default: out/contact.png)")
-    a = ap.parse_args()
+def main() -> None:
+    parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
+    parser.add_argument(
+        "paths", nargs="*", help="SVG files or directories (default: every talk's art)"
+    )
+    parser.add_argument(
+        "--times",
+        nargs="+",
+        type=float,
+        default=DEFAULT_TIMES,
+        help="animation times to pin, in seconds",
+    )
+    parser.add_argument(
+        "--out", default=None, help="output PNG (default: out/contact.png)"
+    )
+    arguments = parser.parse_args()
 
-    files = lib.art_files(a.paths or None)
+    files = lib.art_files(arguments.paths or None)
     if not files:
         sys.exit("no SVGs found")
-    out = pathlib.Path(a.out) if a.out else lib.ROOT / "out/contact.png"
+    out = pathlib.Path(arguments.out) if arguments.out else lib.ROOT / "out/contact.png"
     out.parent.mkdir(parents=True, exist_ok=True)
-    page = out.with_suffix(".html")
-    page.write_text(build_html(files, a.times))
+    page_file = out.with_suffix(".html")
+    page_file.write_text(build_html(files, arguments.times))
 
     from playwright.sync_api import sync_playwright
-    with sync_playwright() as p:
-        b = p.chromium.launch()
-        pg = b.new_page(viewport={"width": 260 + 150 * len(files), "height": 800})
-        pg.goto(page.as_uri())
-        pg.wait_for_timeout(300)
-        pg.screenshot(path=str(out), full_page=True)
-        b.close()
-    print(f"{out}   ({len(files)} drawing(s) at {', '.join(str(t) for t in a.times)} s)")
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={"width": 260 + 150 * len(files), "height": 800}
+        )
+        page.goto(page_file.as_uri())
+        page.wait_for_timeout(300)
+        page.screenshot(path=str(out), full_page=True)
+        browser.close()
+    print(
+        f"{out}   ({len(files)} drawing(s) at {', '.join(str(time) for time in arguments.times)} s)"
+    )
 
 
 if __name__ == "__main__":

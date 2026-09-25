@@ -45,124 +45,175 @@ is not known here, and a moving edge is probably detectable somewhat below it. T
 comparison between drawings is unaffected: everything is scored identically, so the
 ORDER is trustworthy even where the absolute cut is a convention.
 """
-import re, sys, pathlib, argparse
-import numpy as np
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import lib, barroom
+import argparse
+import pathlib
+import re
+import sys
+
+import barroom
+import lib
+import numpy as np
+from PIL import Image
 
 BANDS = [1.2, 1.5, 2.0, 3.0]
 N_PAIRS = 4
 
-
-def durations(src):
-    return sorted({float(d) for d in re.findall(r'dur="([0-9.]+)s"', src)})
+Plan = tuple[float | None, list[tuple[float, float]], list[str]]
 
 
-def plan(f, sep=None):
+def durations(source: str) -> list[float]:
+    return sorted(
+        {float(duration) for duration in re.findall(r'dur="([0-9.]+)s"', source)}
+    )
+
+
+def plan(file: pathlib.Path, separation: float | None = None) -> Plan:
     """-> (separation, [(t1,t2) x N_PAIRS], notes) from ONE drawing's own durations.
 
     Per file, not pooled: the four timekeepers run at 11 / 8 / 12 / 9 s, and a
     separation that cancels one drawing's flicker says nothing about another's.
     """
-    durs = durations(f.read_text())
+    found = durations(file.read_text())
     notes = []
-    if not durs:
+    if not found:
         return None, [], ["no <animate dur> found: nothing to measure"]
-    longest = max(durs)
-    if sep is None:
-        sep = longest / 2
-        notes.append(f"longest animation {longest:g}s -> sampling {sep:g}s apart "
-                     f"(opposite extremes of it)")
+    longest = max(found)
+    if separation is None:
+        separation = longest / 2
+        notes.append(
+            f"longest animation {longest:g}s -> sampling {separation:g}s apart "
+            f"(opposite extremes of it)"
+        )
     else:
-        notes.append(f"separation {sep:g}s given on the command line")
-    for d in durs:
-        if d == longest:
+        notes.append(f"separation {separation:g}s given on the command line")
+    for duration in found:
+        if duration == longest:
             continue
-        k = sep / d
-        if abs(k - round(k)) < 1e-6:
-            notes.append(f"  {d:g}s animation cancels exactly ({k:.0f} whole periods), "
-                         f"so it is excluded")
+        periods = separation / duration
+        if abs(periods - round(periods)) < 1e-6:
+            notes.append(
+                f"  {duration:g}s animation cancels exactly ({periods:.0f} whole periods), "
+                f"so it is excluded"
+            )
         else:
-            notes.append(f"  {d:g}s animation does NOT cancel ({k:.2f} periods) "
-                         f"and is included in this row's numbers")
+            notes.append(
+                f"  {duration:g}s animation does NOT cancel ({periods:.2f} periods) "
+                f"and is included in this row's numbers"
+            )
     step = longest / (2 * N_PAIRS) if longest else 1.0
-    return sep, [(i * step, i * step + sep) for i in range(N_PAIRS)], notes
+    return (
+        separation,
+        [(index * step, index * step + separation) for index in range(N_PAIRS)],
+        notes,
+    )
 
 
-def render_at(files, t):
-    """barroom's harness, pinned to time t: one crop per file."""
-    return barroom.render(files, t)[1]
+def render_at(files: list[pathlib.Path], time: float) -> list[Image.Image]:
+    """barroom's harness, pinned to `time`: one crop per file."""
+    return barroom.render(files, time)[1]
 
 
-def delta(a, b, sigma, flare):
-    La = barroom.luminance(barroom.gauss(barroom.to_linear(a), sigma) + flare)
-    Lb = barroom.luminance(barroom.gauss(barroom.to_linear(b), sigma) + flare)
-    return barroom.wcag(La, Lb)
+def delta(
+    first: Image.Image, second: Image.Image, sigma: float, flare: float
+) -> barroom.Plane:
+    first_luminance = barroom.luminance(
+        barroom.gauss(barroom.to_linear(first), sigma) + flare
+    )
+    second_luminance = barroom.luminance(
+        barroom.gauss(barroom.to_linear(second), sigma) + flare
+    )
+    return barroom.wcag(first_luminance, second_luminance)
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("paths", nargs="*", help="SVG files or directories (default: every talk's art)")
-    ap.add_argument("--sep", type=float, default=None,
-                    help="seconds between the two sampled frames (default: half the longest dur)")
-    ap.add_argument("--flare", type=float, default=0.0)
-    ap.add_argument("--venue", default=lib.DESIGN_VENUE)
-    a = ap.parse_args()
+def main() -> None:
+    parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
+    parser.add_argument(
+        "paths", nargs="*", help="SVG files or directories (default: every talk's art)"
+    )
+    parser.add_argument(
+        "--sep",
+        type=float,
+        default=None,
+        help="seconds between the two sampled frames (default: half the longest dur)",
+    )
+    parser.add_argument("--flare", type=float, default=0.0)
+    parser.add_argument("--venue", default=lib.DESIGN_VENUE)
+    arguments = parser.parse_args()
 
-    files = lib.art_files(a.paths or None)
+    files = lib.art_files(arguments.paths or None)
     if not files:
         sys.exit("no SVGs found")
-    plans = {f: plan(f, a.sep) for f in files}
-    if not any(pl[1] for pl in plans.values()):
+    plans = {file: plan(file, arguments.sep) for file in files}
+    if not any(pairs for _, pairs, _ in plans.values()):
         sys.exit("no <animate dur> found in any file: nothing to measure")
 
     # Render each needed time once for every file, then let each file use its own.
-    all_times = sorted({t for _, pairs, _ in plans.values() for p in pairs for t in p})
-    frames = {t: render_at(files, t) for t in all_times}
-    w, d = next((w, d) for lbl, w, d in lib.VENUES if lbl == a.venue)
-    sigma = (1.0 / lib.arcmin_per_csspx(w, d)) / 2.355 * barroom.DSF
-    per_csspx = barroom.DSF ** 2
+    all_times = sorted(
+        {time for _, pairs, _ in plans.values() for pair in pairs for time in pair}
+    )
+    frames = {time: render_at(files, time) for time in all_times}
+    screen_width, distance = next(
+        (screen_width, distance)
+        for label, screen_width, distance in lib.VENUES
+        if label == arguments.venue
+    )
+    sigma = (1.0 / lib.arcmin_per_csspx(screen_width, distance)) / 2.355 * barroom.DSF
+    per_csspx = barroom.DSF**2
 
-    print(f"MOTION at {a.venue}, flare {a.flare:.2f}\n")
-    hdr = "".join(f"{'>=' + format(b, '.1f'):>9}" for b in BANDS)
-    print(f"{'drawing':<22}{'dPeak':>8}{'dP99':>8}   area CSS px^2 changing by{hdr}")
+    print(f"MOTION at {arguments.venue}, flare {arguments.flare:.2f}\n")
+    header = "".join(f"{'>=' + format(band, '.1f'):>9}" for band in BANDS)
+    print(f"{'drawing':<22}{'dPeak':>8}{'dP99':>8}   area CSS px^2 changing by{header}")
     weak, footnotes = [], []
-    for i, f in enumerate(files):
-        sep, pairs, notes = plans[f]
+    for index, file in enumerate(files):
+        _separation, pairs, notes = plans[file]
         if not pairs:
-            print(f"{barroom.label_for(f, files):<22}{'  (no animation)':>8}")
+            print(f"{barroom.label_for(file, files):<22}{'  (no animation)':>8}")
             continue
-        footnotes.append((barroom.label_for(f, files), pairs, notes))
+        footnotes.append((barroom.label_for(file, files), pairs, notes))
         peaks, p99s = [], []
-        bands = {b: [] for b in BANDS}
-        for t1, t2 in pairs:
-            dd = delta(frames[t1][i], frames[t2][i], sigma, a.flare)
-            peaks.append(float(dd.max()))
-            p99s.append(float(np.percentile(dd, 99)))
-            for b in BANDS:
-                bands[b].append(float((dd >= b).sum()) / per_csspx)
-        pk, p99 = np.mean(peaks), np.mean(p99s)
-        ar = {b: np.mean(v) for b, v in bands.items()}
-        cells = "".join(f"{ar[b]:>9.0f}" for b in BANDS)
-        flag = " !" if ar[lib.CONTRAST_FLOOR] < 1 and ar[1.2] > 50 else ""
-        print(f"{barroom.label_for(f):<22}{pk:>8.2f}{p99:>8.2f}{'':>26}{cells}{flag}")
+        band_areas: dict[float, list[float]] = {band: [] for band in BANDS}
+        for first_time, second_time in pairs:
+            difference = delta(
+                frames[first_time][index],
+                frames[second_time][index],
+                sigma,
+                arguments.flare,
+            )
+            peaks.append(float(difference.max()))
+            p99s.append(float(np.percentile(difference, 99)))
+            for band in BANDS:
+                band_areas[band].append(float((difference >= band).sum()) / per_csspx)
+        peak, p99 = np.mean(peaks), np.mean(p99s)
+        area = {band: np.mean(values) for band, values in band_areas.items()}
+        cells = "".join(f"{area[band]:>9.0f}" for band in BANDS)
+        flag = " !" if area[lib.CONTRAST_FLOOR] < 1 and area[1.2] > 50 else ""
+        print(
+            f"{barroom.label_for(file):<22}{peak:>8.2f}{p99:>8.2f}{'':>26}{cells}{flag}"
+        )
         if flag:
-            weak.append(barroom.label_for(f))
+            weak.append(barroom.label_for(file))
 
     print()
-    area = {barroom.label_for(f, files): wh for f, wh in zip(files, barroom.sizes(files))}
+    shown_sizes = {
+        barroom.label_for(file, files): size
+        for file, size in zip(files, barroom.sizes(files), strict=True)
+    }
     for name, pairs, notes in footnotes:
-        w, h = area[name]
-        print(f"{name} ({w:g}x{h:g} = {w * h:.0f} CSS px^2 in total): "
-              + ", ".join(f"({t1:g},{t2:g})" for t1, t2 in pairs))
-        for n in notes:
-            print(f"    {n}")
+        width, height = shown_sizes[name]
+        print(
+            f"{name} ({width:g}x{height:g} = {width * height:.0f} CSS px^2 in total): "
+            + ", ".join(f"({first:g},{second:g})" for first, second in pairs)
+        )
+        for note in notes:
+            print(f"    {note}")
     if weak:
         print(f"\nMOTION IN A WASH: {', '.join(weak)}")
-        print("  These change over a wide area and nowhere by 3:1. The animation is\n"
-              "  drawn in marks the back row cannot resolve -- see docs/legibility.md,\n"
-              "  'put the motion in the marks that survive'.")
+        print(
+            "  These change over a wide area and nowhere by 3:1. The animation is\n"
+            "  drawn in marks the back row cannot resolve -- see docs/legibility.md,\n"
+            "  'put the motion in the marks that survive'."
+        )
     else:
         print("no drawing animates only in marks below the floor.")
 

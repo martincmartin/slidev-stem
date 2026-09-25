@@ -22,8 +22,15 @@ character per v-click element, judged by its opacity: '-' hidden, 'd' dimmed,
 string, 'classes k/n' says how many of the n v-click elements still have
 Slidev's slidev-vclick-target class.
 """
-import argparse, asyncio, json, mimetypes, pathlib, urllib.parse
-from playwright.async_api import async_playwright
+
+import argparse
+import asyncio
+import json
+import mimetypes
+import pathlib
+import urllib.parse
+
+from playwright.async_api import Route, async_playwright
 
 HOST = "deck.test"
 INFO_JS = """() => {
@@ -57,58 +64,85 @@ CLASSES_JS = """() => { const m = [...document.querySelectorAll('[data-vc]')];
   return m.filter(e => e.classList.contains('slidev-vclick-target')).length + '/' + m.length }"""
 
 
-async def main(a):
-    root = pathlib.Path(a.build)
+async def main(arguments: argparse.Namespace) -> int:
+    root = pathlib.Path(arguments.build)
     blocked = []
 
-    async def route(r):
-        u = urllib.parse.urlparse(r.request.url)
-        if u.netloc != HOST:
-            blocked.append(r.request.url)
-            return await r.abort()
-        f = root / u.path.lstrip("/")
-        if not f.is_file():
-            f = root / "index.html"          # Slidev uses history routing
-        ct = "font/woff2" if f.suffix == ".woff2" else (mimetypes.guess_type(str(f))[0] or "application/octet-stream")
-        await r.fulfill(body=f.read_bytes(), content_type=ct)
+    async def route(request_route: Route) -> None:
+        url = urllib.parse.urlparse(request_route.request.url)
+        if url.netloc != HOST:
+            blocked.append(request_route.request.url)
+            return await request_route.abort()
+        file = root / url.path.lstrip("/")
+        if not file.is_file():
+            file = root / "index.html"  # Slidev uses history routing
+        content_type = (
+            "font/woff2"
+            if file.suffix == ".woff2"
+            else (mimetypes.guess_type(str(file))[0] or "application/octet-stream")
+        )
+        await request_route.fulfill(body=file.read_bytes(), content_type=content_type)
+        return None
 
-    async with async_playwright() as p:
-        b = await p.chromium.launch()
-        pg = await b.new_page(viewport={"width": 1960, "height": 1104}, color_scheme=a.color_scheme)
-        await pg.route("**/*", route)
-        for s in a.shots_at:
-            n, c = s.split(":")
-            await pg.goto(f"http://{HOST}/{n}?clicks={c}")
-            await pg.wait_for_timeout(1800)
-            await pg.evaluate("document.fonts.ready")
-            print(s, json.dumps(await pg.evaluate(INFO_JS)))
-            if a.shots:
-                await pg.screenshot(path=f"{a.shots}-{n}-{c}.png")
-        if a.clicks:
-            await pg.goto(f"http://{HOST}/{a.clicks}")
-            await pg.wait_for_timeout(1500)
-            await pg.evaluate(MARK_JS)
-            keys = ["ArrowRight"] * a.presses + (["ArrowLeft"] * a.presses if a.back else [])
-            for i, key in enumerate(keys):
-                state = f"{await pg.evaluate(CLICKS_JS):<12} classes {await pg.evaluate(CLASSES_JS)}"
-                print(f"after {i} presses: {state}  url={pg.url.split(HOST)[1]}")
-                await pg.keyboard.press(key)
-                await pg.wait_for_timeout(500)
-        await b.close()
+    async with async_playwright() as playwright:
+        browser = await playwright.chromium.launch()
+        page = await browser.new_page(
+            viewport={"width": 1960, "height": 1104},
+            color_scheme=arguments.color_scheme,
+        )
+        await page.route("**/*", route)
+        for slide_and_clicks in arguments.shots_at:
+            slide, clicks = slide_and_clicks.split(":")
+            await page.goto(f"http://{HOST}/{slide}?clicks={clicks}")
+            await page.wait_for_timeout(1800)
+            await page.evaluate("document.fonts.ready")
+            print(slide_and_clicks, json.dumps(await page.evaluate(INFO_JS)))
+            if arguments.shots:
+                await page.screenshot(path=f"{arguments.shots}-{slide}-{clicks}.png")
+        if arguments.clicks:
+            await page.goto(f"http://{HOST}/{arguments.clicks}")
+            await page.wait_for_timeout(1500)
+            await page.evaluate(MARK_JS)
+            keys = ["ArrowRight"] * arguments.presses + (
+                ["ArrowLeft"] * arguments.presses if arguments.back else []
+            )
+            for presses, key in enumerate(keys):
+                state = (
+                    f"{await page.evaluate(CLICKS_JS):<12} "
+                    f"classes {await page.evaluate(CLASSES_JS)}"
+                )
+                print(
+                    f"after {presses} presses: {state}  url={page.url.split(HOST)[1]}"
+                )
+                await page.keyboard.press(key)
+                await page.wait_for_timeout(500)
+        await browser.close()
     print("outside requests:", len(blocked))
-    for u in blocked:
-        print("  ", u)
+    for url_text in blocked:
+        print("  ", url_text)
     return 1 if blocked else 0
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("build", help="the directory `slidev build --out` wrote")
-    ap.add_argument("shots_at", nargs="*", help="slide:clicks, e.g. 2:5")
-    ap.add_argument("--shots", metavar="PREFIX", help="save screenshots as PREFIX-<slide>-<clicks>.png")
-    ap.add_argument("--clicks", type=int, metavar="SLIDE", help="step through this slide's clicks")
-    ap.add_argument("--presses", type=int, default=7)
-    ap.add_argument("--back", action="store_true", help="then press the left arrow as many times")
-    ap.add_argument("--color-scheme", default="light", choices=["light", "dark"],
-                    help="emulate the OS setting; a light-only theme must stay light")
-    raise SystemExit(asyncio.run(main(ap.parse_args())))
+    parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
+    parser.add_argument("build", help="the directory `slidev build --out` wrote")
+    parser.add_argument("shots_at", nargs="*", help="slide:clicks, e.g. 2:5")
+    parser.add_argument(
+        "--shots",
+        metavar="PREFIX",
+        help="save screenshots as PREFIX-<slide>-<clicks>.png",
+    )
+    parser.add_argument(
+        "--clicks", type=int, metavar="SLIDE", help="step through this slide's clicks"
+    )
+    parser.add_argument("--presses", type=int, default=7)
+    parser.add_argument(
+        "--back", action="store_true", help="then press the left arrow as many times"
+    )
+    parser.add_argument(
+        "--color-scheme",
+        default="light",
+        choices=["light", "dark"],
+        help="emulate the OS setting; a light-only theme must stay light",
+    )
+    raise SystemExit(asyncio.run(main(parser.parse_args())))

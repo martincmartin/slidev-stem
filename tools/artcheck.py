@@ -45,98 +45,149 @@ WHAT THIS STILL CANNOT SEE: overlap, texture that dissolves at distance, and
 anything about how the marks compose. `tools/barroom.py` renders and measures,
 and is the authority when the two disagree.
 """
-import re, sys, pathlib, xml.etree.ElementTree as ET
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import pathlib
+import re
+import sys
+from collections.abc import Iterator
+from xml.etree import ElementTree
+
 import lib
 
 HEX = re.compile(r"^#[0-9A-Fa-f]{6}$")
 INHERIT = ("fill", "stroke", "fill-opacity", "stroke-opacity", "opacity")
 
 
-def marks(el, inherited=None):
+def marks(
+    element: ElementTree.Element, inherited: dict[str, str] | None = None
+) -> Iterator[tuple[str, str, float]]:
     """Every (kind, colour, effective alpha) this tree paints.
 
     SVG presentation attributes inherit, so a <g stroke-opacity="0.5"> makes
     every line under it half strength. This walks the tree carrying them down,
     which is the only way to see what a mark is actually drawn at.
     """
-    st = dict(inherited or {})
-    st.update({k: v for k, v in el.attrib.items() if k in INHERIT})
-    tag = el.tag.split("}")[-1]
+    style = dict(inherited or {})
+    style.update(
+        {key: value for key, value in element.attrib.items() if key in INHERIT}
+    )
+    tag = element.tag.split("}")[-1]
     # An attribute that is ANIMATED is not the attribute the viewer sees. A contour
     # that starts at opacity="0" and animates to 1 is fully opaque for most of the
     # cycle; reading the static value called it a wash. Drop any attribute an
     # <animate> child targets, and let tools/motion.py judge what moves.
-    animated = {k.attrib.get("attributeName") for k in el
-                if k.tag.split("}")[-1] in ("animate", "set")}
-    for k in animated & set(INHERIT):
-        st.pop(k, None)
-        el.attrib.pop(k, None)
+    animated = {
+        child.attrib.get("attributeName", "")
+        for child in element
+        if child.tag.split("}")[-1] in ("animate", "set")
+    }
+    for key in animated & set(INHERIT):
+        style.pop(key, None)
+        element.attrib.pop(key, None)
     if tag not in ("defs", "clipPath", "mask", "pattern", "marker"):
-        group = float(st.get("opacity", 1))
+        group = float(style.get("opacity", 1))
         for kind in ("fill", "stroke"):
-            c = st.get(kind)
-            if c and c != "none" and HEX.match(c) and tag not in ("g", "svg", "title"):
-                yield kind, c.upper(), float(st.get(f"{kind}-opacity", 1)) * group
-        for kid in el:
-            yield from marks(kid, st)
+            colour = style.get(kind)
+            if (
+                colour
+                and colour != "none"
+                and HEX.match(colour)
+                and tag not in ("g", "svg", "title")
+            ):
+                yield (
+                    kind,
+                    colour.upper(),
+                    float(style.get(f"{kind}-opacity", 1)) * group,
+                )
+        for child in element:
+            yield from marks(child, style)
 
 
-def check_file(f: pathlib.Path):
+def check_file(file: pathlib.Path) -> tuple[list[str], list[str]]:
     """-> (fails, notes) for one SVG."""
-    fails, notes = [], []
-    raw = f.read_text()
+    fails: list[str] = []
+    notes: list[str] = []
+    raw = file.read_text()
 
     # ---- 1. structure ----------------------------------------------------
     try:
-        root = ET.fromstring(raw)
-    except ET.ParseError as e:
-        return [f"not well-formed XML: {e}"
-                + ("  (XML forbids '--' inside a comment -- an em dash typed as "
-                   "two hyphens does this)" if "--" in raw else "")], notes
+        root = ElementTree.fromstring(raw)
+    except ElementTree.ParseError as error:
+        return [
+            f"not well-formed XML: {error}"
+            + (
+                "  (XML forbids '--' inside a comment -- an em dash typed as "
+                "two hyphens does this)"
+                if "--" in raw
+                else ""
+            )
+        ], notes
 
-    ids = [e.attrib["id"] for e in root.iter() if "id" in e.attrib]
-    for i in sorted({i for i in ids if ids.count(i) > 1}):
-        fails.append(f"duplicate id {i!r}: the second definition wins")
-    for i in sorted(set(re.findall(r"url\(#([^)]+)\)", raw)) - set(ids)):
-        fails.append(f"dangling ref url(#{i}): that clip/pattern does nothing")
-    for el in root.iter():
-        for attr in ("fill", "stroke", "stop-color"):
-            v = el.attrib.get(attr)
-            if v and v != "none" and not v.startswith("url(") and not HEX.match(v):
-                fails.append(f"bad {attr}={v!r}: use a 6-digit hex from the palette")
+    ids = [element.attrib["id"] for element in root.iter() if "id" in element.attrib]
+    for duplicate in sorted({name for name in ids if ids.count(name) > 1}):
+        fails.append(f"duplicate id {duplicate!r}: the second definition wins")
+    for missing in sorted(set(re.findall(r"url\(#([^)]+)\)", raw)) - set(ids)):
+        fails.append(f"dangling ref url(#{missing}): that clip/pattern does nothing")
+    for element in root.iter():
+        for attribute in ("fill", "stroke", "stop-color"):
+            value = element.attrib.get(attribute)
+            if (
+                value
+                and value != "none"
+                and not value.startswith("url(")
+                and not HEX.match(value)
+            ):
+                fails.append(
+                    f"bad {attribute}={value!r}: use a 6-digit hex from the palette"
+                )
 
     # ---- 2. grammar ------------------------------------------------------
     # The file states the size a slide shows it at, so its strokes can be read in
     # CSS px. Without that, no stroke check below means anything.
-    w, h, scale = lib.shown_size(raw)
-    vb = root.attrib.get("viewBox", "").split()
-    if not (w and h and scale and len(vb) == 4):
-        return fails + [f'needs width and height (the CSS px a slide shows it at) and a '
-                        f'viewBox; has width={root.attrib.get("width")!r} '
-                        f'height={root.attrib.get("height")!r} viewBox={root.attrib.get("viewBox")!r}'
-                        ], notes
-    if abs((w / h) / (float(vb[2]) / float(vb[3])) - 1) > lib.ASPECT_TOLERANCE:
-        fails.append(f"width:height {w:g}:{h:g} is not the viewBox's {vb[2]}:{vb[3]}, "
-                     f"so the drawing is letterboxed or squashed")
+    width, height, scale = lib.shown_size(raw)
+    view_box = root.attrib.get("viewBox", "").split()
+    if not (width and height and scale and len(view_box) == 4):
+        missing_size = (
+            f"needs width and height (the CSS px a slide shows it at) and a "
+            f"viewBox; has width={root.attrib.get('width')!r} "
+            f"height={root.attrib.get('height')!r} viewBox={root.attrib.get('viewBox')!r}"
+        )
+        return [*fails, missing_size], notes
+    if (
+        abs((width / height) / (float(view_box[2]) / float(view_box[3])) - 1)
+        > lib.ASPECT_TOLERANCE
+    ):
+        fails.append(
+            f"width:height {width:g}:{height:g} is not the viewBox's "
+            f"{view_box[2]}:{view_box[3]}, so the drawing is letterboxed or squashed"
+        )
 
-    for c in sorted(lib.colours_in(raw) - set(lib.ART_INK) - {lib.ART_FIELD.upper()}):
-        fails.append(f"colour {c} is not in the drawing palette "
-                     f"({', '.join(sorted(lib.ART_INK))}) -- see docs/illustrations.md")
+    for colour in sorted(
+        lib.colours_in(raw) - set(lib.ART_INK) - {lib.ART_FIELD.upper()}
+    ):
+        fails.append(
+            f"colour {colour} is not in the drawing palette "
+            f"({', '.join(sorted(lib.ART_INK))}) -- see docs/illustrations.md"
+        )
 
-    for sw in sorted(set(lib.strokes_in(raw))):
-        px = sw * scale
-        if not any(abs(px / step - 1) <= lib.LADDER_TOLERANCE for step in lib.STROKE_LADDER):
-            fails.append(f"stroke-width {sw:g} units = {px:.2f} CSS px as shown, off the "
-                         f"ladder {lib.STROKE_LADDER} CSS px (within {lib.LADDER_TOLERANCE:.0%})")
+    for stroke in sorted(set(lib.strokes_in(raw))):
+        shown = stroke * scale
+        if not any(
+            abs(shown / step - 1) <= lib.LADDER_TOLERANCE for step in lib.STROKE_LADDER
+        ):
+            fails.append(
+                f"stroke-width {stroke:g} units = {shown:.2f} CSS px as shown, off the "
+                f"ladder {lib.STROKE_LADDER} CSS px (within {lib.LADDER_TOLERANCE:.0%})"
+            )
 
     # ---- 3. legibility ---------------------------------------------------
-    for sw in sorted(set(lib.strokes_in(raw))):
-        px = sw * scale
-        if px < lib.STROKE_FLOOR_CSSPX:
-            fails.append(f"stroke-width {sw:g} units = {px:.2f} CSS px as shown, under the "
-                         f"{lib.STROKE_FLOOR_CSSPX} px floor at {lib.DESIGN_VENUE}")
+    for stroke in sorted(set(lib.strokes_in(raw))):
+        shown = stroke * scale
+        if shown < lib.STROKE_FLOOR_CSSPX:
+            fails.append(
+                f"stroke-width {stroke:g} units = {shown:.2f} CSS px as shown, under the "
+                f"{lib.STROKE_FLOOR_CSSPX} px floor at {lib.DESIGN_VENUE}"
+            )
 
     # ---- opacity: a wide line drawn too faint is still invisible ---------
     seen = set()
@@ -147,46 +198,52 @@ def check_file(f: pathlib.Path):
         need = lib.min_opacity(colour)
         if alpha >= 0.999 or need is None:
             continue
-        eff = lib.contrast(lib.blend(colour, lib.ART_FIELD, alpha), lib.ART_FIELD)
+        effective = lib.contrast(lib.blend(colour, lib.ART_FIELD, alpha), lib.ART_FIELD)
         # A hair under the floor is rounding, not a wash: 0.55 of the deep blue
         # lands at 2.99:1. Only complain when it is actually faint.
-        if eff < lib.CONTRAST_FLOOR * 0.99:
-            notes.append(f"{kind} {colour} at {alpha:g} reads {eff:.2f}:1 on the panel, "
-                         f"under {lib.CONTRAST_FLOOR:.0f}:1 (needs {need:.2f}). "
-                         f"A wash: the drawing must read without it")
+        if effective < lib.CONTRAST_FLOOR * 0.99:
+            notes.append(
+                f"{kind} {colour} at {alpha:g} reads {effective:.2f}:1 on the panel, "
+                f"under {lib.CONTRAST_FLOOR:.0f}:1 (needs {need:.2f}). "
+                f"A wash: the drawing must read without it"
+            )
 
     # ---- notes: true but not disqualifying -------------------------------
-    if "<text" in re.sub(r"<!--.*?-->", "", raw, flags=re.S):
-        notes.append("contains <text>: at this size a glyph's stems land well under "
-                     "the floor. See docs/legibility.md on why labels do not fit on a card")
+    if "<text" in re.sub(r"<!--.*?-->", "", raw, flags=re.DOTALL):
+        notes.append(
+            "contains <text>: at this size a glyph's stems land well under "
+            "the floor. See docs/legibility.md on why labels do not fit on a card"
+        )
     if "repeatCount" in raw and 'repeatCount="indefinite"' not in raw:
         notes.append("an animation does not repeat indefinitely; it will stop mid-talk")
     return fails, notes
 
 
-def main(argv):
-    files = lib.art_files(argv or None)
+def main(arguments: list[str]) -> int:
+    files = lib.art_files(arguments or None)
     if not files:
         print("no SVGs found")
         return 1
-    bad = 0
-    for f in files:
-        rel = lib.rel(f)
-        fails, notes = check_file(f)
+    failing = 0
+    for file in files:
+        shown_path = lib.rel(file)
+        fails, notes = check_file(file)
         if fails:
-            bad += 1
-            print(f"FAIL  {rel}")
-            for m in fails:
-                print(f"        {m}")
+            failing += 1
+            print(f"FAIL  {shown_path}")
+            for message in fails:
+                print(f"        {message}")
         else:
-            print(f"ok    {rel}")
-        for m in notes:
-            print(f"      note: {m}")
-    print(f"\n{len(files)} file(s), {bad} failing.")
-    if not bad:
-        print(f"Grammar: strokes {lib.STROKE_LADDER} CSS px as shown, "
-              f"floor {lib.STROKE_FLOOR_CSSPX} CSS px at {lib.DESIGN_VENUE}.")
-    return 1 if bad else 0
+            print(f"ok    {shown_path}")
+        for message in notes:
+            print(f"      note: {message}")
+    print(f"\n{len(files)} file(s), {failing} failing.")
+    if not failing:
+        print(
+            f"Grammar: strokes {lib.STROKE_LADDER} CSS px as shown, "
+            f"floor {lib.STROKE_FLOOR_CSSPX} CSS px at {lib.DESIGN_VENUE}."
+        )
+    return 1 if failing else 0
 
 
 if __name__ == "__main__":

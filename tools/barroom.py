@@ -49,208 +49,284 @@ deciding anything and taste takes over. watches/docs/measurements.md has the
 timekeepers' numbers, for comparison. Read docs/legibility.md before assuming a
 new drawing is fine.
 """
-import re, sys, math, pathlib, argparse
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import argparse
+import io
+import math
+import pathlib
+import re
+import sys
+from collections.abc import Sequence
+
 import lib
 import numpy as np
+from numpy.typing import NDArray
 from PIL import Image
 
-DSF = 2                    # device scale factor we render at
-_LIN = np.array([lib.srgb_to_lin(v) for v in range(256)], dtype=np.float64)
+Linear = NDArray[np.float64]  # an H x W x 3 image in linear light
+Plane = NDArray[np.float64]  # an H x W array: luminance or contrast
+Mask = NDArray[np.bool_]
+
+DSF = 2  # device scale factor we render at
+_LIN = np.array([lib.srgb_to_lin(value) for value in range(256)], dtype=np.float64)
 
 
-def to_linear(img):
-    return _LIN[np.asarray(img.convert("RGB"), dtype=np.uint8)]
+def to_linear(image: Image.Image) -> Linear:
+    return _LIN[np.asarray(image.convert("RGB"), dtype=np.uint8)]
 
 
-def to_srgb(l):
-    l = np.clip(l, 0.0, 1.0)
-    s = np.where(l <= 0.0031308, 12.92 * l, 1.055 * l ** (1 / 2.4) - 0.055)
-    return Image.fromarray(np.round(s * 255).astype(np.uint8), mode="RGB")
+def to_srgb(linear: Linear) -> Image.Image:
+    linear = np.clip(linear, 0.0, 1.0)
+    encoded = np.where(
+        linear <= 0.0031308, 12.92 * linear, 1.055 * linear ** (1 / 2.4) - 0.055
+    )
+    return Image.fromarray(np.round(encoded * 255).astype(np.uint8), mode="RGB")
 
 
-def gauss(l, sigma):
+def gauss(linear: Linear, sigma: float) -> Linear:
     """Separable Gaussian on a linear-light HxWx3 array, edges held (reflect)."""
     if sigma < 0.05:
-        return l
-    r = max(1, int(math.ceil(3 * sigma)))
-    x = np.arange(-r, r + 1, dtype=np.float64)
-    k = np.exp(-(x ** 2) / (2 * sigma ** 2))
-    k /= k.sum()
-    out = l
+        return linear
+    radius = max(1, math.ceil(3 * sigma))
+    offsets = np.arange(-radius, radius + 1, dtype=np.float64)
+    kernel = np.exp(-(offsets**2) / (2 * sigma**2))
+    kernel /= kernel.sum()
+    out = linear
     for axis in (0, 1):
         pad = [(0, 0)] * 3
-        pad[axis] = (r, r)
-        p = np.pad(out, pad, mode="reflect")
-        acc = np.zeros_like(out)
-        for i, w in enumerate(k):
-            sl = [slice(None)] * 3
-            sl[axis] = slice(i, i + out.shape[axis])
-            acc += w * p[tuple(sl)]
-        out = acc
+        pad[axis] = (radius, radius)
+        padded = np.pad(out, pad, mode="reflect")
+        total = np.zeros_like(out)
+        for index, weight in enumerate(kernel):
+            window = [slice(None)] * 3
+            window[axis] = slice(index, index + out.shape[axis])
+            total += weight * padded[tuple(window)]
+        out = total
     return out
 
 
-def luminance(l):
-    return 0.2126 * l[..., 0] + 0.7152 * l[..., 1] + 0.0722 * l[..., 2]
+def luminance(linear: Linear) -> Plane:
+    return 0.2126 * linear[..., 0] + 0.7152 * linear[..., 1] + 0.0722 * linear[..., 2]
 
 
-def wcag(a, b):
-    return (np.maximum(a, b) + 0.05) / (np.minimum(a, b) + 0.05)
+def wcag(first: Plane | float, second: Plane | float) -> Plane:
+    return np.asarray(
+        (np.maximum(first, second) + 0.05) / (np.minimum(first, second) + 0.05)
+    )
 
 
-def field_of(L):
+def field_of(plane: Plane) -> float:
     """The card's background luminance: modal value over a 256-bin histogram."""
-    h, e = np.histogram(L, bins=256, range=(float(L.min()), float(L.max()) + 1e-9))
-    i = int(h.argmax())
-    return float((e[i] + e[i + 1]) / 2)
+    counts, edges = np.histogram(
+        plane, bins=256, range=(float(plane.min()), float(plane.max()) + 1e-9)
+    )
+    index = int(counts.argmax())
+    return float((edges[index] + edges[index + 1]) / 2)
 
 
-def prep(img, sigma):
+def prep(image: Image.Image, sigma: float) -> tuple[Mask, Linear]:
     """-> (ink mask from the CLEAN art, blurred linear image). Blur is venue-only."""
-    l = to_linear(img)
-    Lc = luminance(l)
-    return wcag(Lc, field_of(Lc)) >= 1.5, gauss(l, sigma)
+    linear = to_linear(image)
+    clean = luminance(linear)
+    return wcag(clean, field_of(clean)) >= 1.5, gauss(linear, sigma)
 
 
-def hold(ink, blurred, flare, pct=50):
-    L = luminance(blurred + flare)     # NOT clipped -- see the module docstring
-    return 0.0 if ink.sum() < 20 else float(np.percentile(wcag(L[ink], field_of(L)), pct))
+def hold(ink: Mask, blurred: Linear, flare: float, percentile: float = 50) -> float:
+    lit = luminance(blurred + flare)  # NOT clipped -- see the module docstring
+    return (
+        0.0
+        if ink.sum() < 20
+        else float(np.percentile(wcag(lit[ink], field_of(lit)), percentile))
+    )
 
 
-def fmax(ink, blurred, floor=lib.CONTRAST_FLOOR):
+def fmax(ink: Mask, blurred: Linear, floor: float = lib.CONTRAST_FLOOR) -> float:
     if hold(ink, blurred, 0.0) < floor:
         return 0.0
-    lo, hi = 0.0, 0.30
+    low, high = 0.0, 0.30
     for _ in range(24):
-        m = (lo + hi) / 2
-        lo, hi = (m, hi) if hold(ink, blurred, m) >= floor else (lo, m)
-    return lo
+        middle = (low + high) / 2
+        low, high = (
+            (middle, high) if hold(ink, blurred, middle) >= floor else (low, middle)
+        )
+    return low
 
 
-def label_for(f, others=()):
+def label_for(file: pathlib.Path, others: Sequence[pathlib.Path] = ()) -> str:
     """A row label that stays unique when comparing variants of one subject.
 
     Comparing eight versions of `water-clock.svg` used to print "water-clock"
     eight times, which made the table useless for exactly the job it was most
     needed for. Fall back to the containing directory when the stem repeats.
     """
-    stems = [o.stem for o in others]
-    if others and stems.count(f.stem) > 1:
-        return f"{f.parent.name}/{f.stem}"[:21]
-    return f.stem[:21]
+    stems = [other.stem for other in others]
+    if others and stems.count(file.stem) > 1:
+        return f"{file.parent.name}/{file.stem}"[:21]
+    return file.stem[:21]
 
 
-def sizes(files):
+def sizes(files: Sequence[pathlib.Path]) -> list[tuple[float, float]]:
     """Each drawing's (width, height) in CSS px, from its file. Exits if one is missing."""
-    out = [lib.shown_size(f.read_text())[:2] for f in files]
-    for f, (w, h) in zip(files, out):
-        if not (w and h):
-            sys.exit(f"{lib.rel(f)}: no width/height -- the size a slide shows it at. "
-                     f"Run tools/artcheck.py")
+    out = []
+    for file in files:
+        width, height, _scale = lib.shown_size(file.read_text())
+        if not (width and height):
+            sys.exit(
+                f"{lib.rel(file)}: no width/height -- the size a slide shows it at. "
+                f"Run tools/artcheck.py"
+            )
+        out.append((width, height))
     return out
 
 
-def render(files, t=4.0):
+def render(
+    files: Sequence[pathlib.Path], time: float = 4.0
+) -> tuple[Image.Image, list[Image.Image]]:
     """Screenshot every drawing at the size its file states, on the panel, with its
-    animation pinned to time t. -> (whole screenshot, one crop per file)."""
+    animation pinned to `time`. -> (whole screenshot, one crop per file)."""
     from playwright.sync_api import sync_playwright
-    wh = sizes(files)
-    h = ['<!doctype html><meta charset=utf-8>',
-         f'<style>body{{margin:0;background:{lib.ART_FIELD};padding:0}}',
-         'div{display:flex;align-items:flex-start}svg{display:block;flex:none}</style><div>']
-    for i, f in enumerate(files):
-        src = f.read_text()
-        for j in set(re.findall(r'id="([^"]+)"', src)):
-            src = src.replace(f'id="{j}"', f'id="{j}-{i}"').replace(f"url(#{j})", f"url(#{j}-{i})")
-        h.append(src)
-    h.append('</div><script>document.querySelectorAll("svg").forEach(s=>{'
-             f's.pauseAnimations();s.setCurrentTime({t});}});</script>')
-    with sync_playwright() as p:
-        b = p.chromium.launch()
-        pg = b.new_page(viewport={"width": math.ceil(sum(w for w, _ in wh)),
-                                  "height": math.ceil(max(h for _, h in wh))},
-                        device_scale_factor=DSF)
-        pg.set_content("".join(h), wait_until="load")
-        pg.wait_for_timeout(600)
-        shot = pg.screenshot(full_page=True)
-        b.close()
-    import io
+
+    shown = sizes(files)
+    page_parts = [
+        "<!doctype html><meta charset=utf-8>",
+        f"<style>body{{margin:0;background:{lib.ART_FIELD};padding:0}}",
+        "div{display:flex;align-items:flex-start}svg{display:block;flex:none}</style><div>",
+    ]
+    for index, file in enumerate(files):
+        source = file.read_text()
+        for name in set(re.findall(r'id="([^"]+)"', source)):
+            source = source.replace(f'id="{name}"', f'id="{name}-{index}"').replace(
+                f"url(#{name})", f"url(#{name}-{index})"
+            )
+        page_parts.append(source)
+    page_parts.append(
+        '</div><script>document.querySelectorAll("svg").forEach(s=>{'
+        f"s.pauseAnimations();s.setCurrentTime({time});}});</script>"
+    )
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(
+            viewport={
+                "width": math.ceil(sum(width for width, _ in shown)),
+                "height": math.ceil(max(height for _, height in shown)),
+            },
+            device_scale_factor=DSF,
+        )
+        page.set_content("".join(page_parts), wait_until="load")
+        page.wait_for_timeout(600)
+        shot = page.screenshot(full_page=True)
+        browser.close()
     raw = Image.open(io.BytesIO(shot))
-    crops, x = [], 0.0
-    for w, h in wh:
-        crops.append(raw.crop((round(x * DSF), 0, round((x + w) * DSF), round(h * DSF))))
-        x += w
+    crops, left = [], 0.0
+    for width, height in shown:
+        crops.append(
+            raw.crop(
+                (
+                    round(left * DSF),
+                    0,
+                    round((left + width) * DSF),
+                    round(height * DSF),
+                )
+            )
+        )
+        left += width
     return raw, crops
 
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("paths", nargs="*", help="SVG files or directories (default: every talk's art)")
-    ap.add_argument("--save", default=None, metavar="DIR",
-                    help="also write what each venue looks like, clean and at 10%% flare")
-    a = ap.parse_args()
+def main() -> None:
+    parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
+    parser.add_argument(
+        "paths", nargs="*", help="SVG files or directories (default: every talk's art)"
+    )
+    parser.add_argument(
+        "--save",
+        default=None,
+        metavar="DIR",
+        help="also write what each venue looks like, clean and at 10%% flare",
+    )
+    arguments = parser.parse_args()
 
-    files = lib.art_files(a.paths or None)
+    files = lib.art_files(arguments.paths or None)
     if not files:
         sys.exit("no SVGs found")
     raw, cards = render(files)
 
     print(f"{'drawing':<22}{'ink%':>6}", end="")
-    for v, *_ in lib.VENUES:
-        print(f"{v:>26}", end="")
+    for venue_label, *_ in lib.VENUES:
+        print(f"{venue_label:>26}", end="")
     print(f"\n{'':<22}{'':>6}", end="")
     for _ in lib.VENUES:
         print(f"{'hold':>9}{'p90':>8}{'Fmax':>9}", end="")
     print()
 
-    worst = {}
-    for f, card in zip(files, cards):
-        ink0, _ = prep(card, 0.0)
-        print(f"{label_for(f, files):<22}{100 * ink0.mean():>6.1f}", end="")
-        for v, w, d in lib.VENUES:
-            sigma = (1.0 / lib.arcmin_per_csspx(w, d)) / 2.355 * DSF
-            ink, bl = prep(card, sigma)
-            hs, ps, fs = hold(ink, bl, 0.0), hold(ink, bl, 0.0, 90), fmax(ink, bl)
-            flag = "!" if v == lib.DESIGN_VENUE and hs < lib.CONTRAST_FLOOR else " "
-            print(f"{hs:>9.2f}{ps:>8.2f}{fs:>8.3f}{flag}", end="")
-            if v == lib.DESIGN_VENUE:
-                worst[label_for(f, files)] = (hs, ps, fs)
+    at_design_venue = {}
+    for file, card in zip(files, cards, strict=True):
+        clean_ink, _ = prep(card, 0.0)
+        print(f"{label_for(file, files):<22}{100 * clean_ink.mean():>6.1f}", end="")
+        for venue_label, screen_width, distance in lib.VENUES:
+            sigma = (1.0 / lib.arcmin_per_csspx(screen_width, distance)) / 2.355 * DSF
+            ink, blurred = prep(card, sigma)
+            median, p90, flare_limit = (
+                hold(ink, blurred, 0.0),
+                hold(ink, blurred, 0.0, 90),
+                fmax(ink, blurred),
+            )
+            flag = (
+                "!"
+                if venue_label == lib.DESIGN_VENUE and median < lib.CONTRAST_FLOOR
+                else " "
+            )
+            print(f"{median:>9.2f}{p90:>8.2f}{flare_limit:>8.3f}{flag}", end="")
+            if venue_label == lib.DESIGN_VENUE:
+                at_design_venue[label_for(file, files)] = (median, p90, flare_limit)
         print()
 
-    print(f"\ngate: hold >= {lib.CONTRAST_FLOOR:.1f} at {lib.DESIGN_VENUE}"
-          f"   (marked ! if it fails)")
-    failing = {n: (h, p90) for n, (h, p90, _) in worst.items() if h < lib.CONTRAST_FLOOR}
+    print(
+        f"\ngate: hold >= {lib.CONTRAST_FLOOR:.1f} at {lib.DESIGN_VENUE}"
+        f"   (marked ! if it fails)"
+    )
+    failing = {
+        name: (median, p90)
+        for name, (median, p90, _) in at_design_venue.items()
+        if median < lib.CONTRAST_FLOOR
+    }
     if failing:
-        for n, (h, p90) in failing.items():
-            print(f"\nBELOW THE GATE: {n}  hold {h:.2f}, p90 {p90:.2f}")
+        for name, (median, p90) in failing.items():
+            print(f"\nBELOW THE GATE: {name}  hold {median:.2f}, p90 {p90:.2f}")
             if p90 >= 2 * lib.CONTRAST_FLOOR:
-                print(f"  BUT ITS STRONG MARKS ARE FINE (p90 {p90:.2f}). `hold` is a median "
-                      f"over every\n  non-background pixel, so a large deliberate WASH -- a "
-                      f"low-opacity fill -- drags it\n  down without anything being wrong. "
-                      f"What this is really saying is that at the\n  back row the drawing "
-                      f"reduces to its outline. Check that the outline alone still\n  reads, "
-                      f"and run `.venv/bin/python3 tools/artcheck.py` to see which fills are the washes.")
+                print(
+                    f"  BUT ITS STRONG MARKS ARE FINE (p90 {p90:.2f}). `hold` is a median "
+                    f"over every\n  non-background pixel, so a large deliberate WASH -- a "
+                    f"low-opacity fill -- drags it\n  down without anything being wrong. "
+                    f"What this is really saying is that at the\n  back row the drawing "
+                    f"reduces to its outline. Check that the outline alone still\n  reads, "
+                    f"and run `.venv/bin/python3 tools/artcheck.py` to see which fills are the washes."
+                )
             else:
-                print(f"  Its strong marks fail too (p90 {p90:.2f}), so this is a real "
-                      f"legibility failure.\n  Read docs/legibility.md before redrawing: a "
-                      f"drawing that fails on stroke WEIGHT is\n  one remap from fixed, and "
-                      f"one that fails on PALETTE cannot be fixed with ink.")
+                print(
+                    f"  Its strong marks fail too (p90 {p90:.2f}), so this is a real "
+                    f"legibility failure.\n  Read docs/legibility.md before redrawing: a "
+                    f"drawing that fails on stroke WEIGHT is\n  one remap from fixed, and "
+                    f"one that fails on PALETTE cannot be fixed with ink."
+                )
     else:
-        print("all clear the gate. Above it, headroom stops deciding and taste takes over.")
-    print(f"\nRead `hold` with `p90`, never alone. Fmax is room light tolerated; 0.30 is "
-          f"the\nceiling for any design. watches/docs/measurements.md has the timekeepers' numbers.")
+        print(
+            "all clear the gate. Above it, headroom stops deciding and taste takes over."
+        )
+    print(
+        "\nRead `hold` with `p90`, never alone. Fmax is room light tolerated; 0.30 is "
+        "the\nceiling for any design. watches/docs/measurements.md has the timekeepers' numbers."
+    )
 
-    if a.save:
-        out = pathlib.Path(a.save)
+    if arguments.save:
+        out = pathlib.Path(arguments.save)
         out.mkdir(parents=True, exist_ok=True)
-        for v, w, d in lib.VENUES:
-            am = lib.arcmin_per_csspx(w, d)
-            l = gauss(to_linear(raw), (1.0 / am) / 2.355 * DSF)
-            tag = v.replace(" ", "").replace("@", "at")
-            to_srgb(l).save(out / f"barroom-{tag}-clean.png")
-            to_srgb(l + 0.10).save(out / f"barroom-{tag}-flare10.png")
+        for venue_label, screen_width, distance in lib.VENUES:
+            arcmin = lib.arcmin_per_csspx(screen_width, distance)
+            blurred = gauss(to_linear(raw), (1.0 / arcmin) / 2.355 * DSF)
+            tag = venue_label.replace(" ", "").replace("@", "at")
+            to_srgb(blurred).save(out / f"barroom-{tag}-clean.png")
+            to_srgb(blurred + 0.10).save(out / f"barroom-{tag}-flare10.png")
         print(f"\nwrote {2 * len(lib.VENUES)} images to {out}")
 
 

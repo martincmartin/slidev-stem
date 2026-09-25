@@ -9,3 +9,5 @@ python_version = "3.14"
 
 [tool.pyright]
 pythonVersion = "3.14"
+venvPath = "."
+venv = ".venv"

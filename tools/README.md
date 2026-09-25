@@ -21,6 +21,7 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 | `barroom.py`       | playwright + PIL + numpy | what does the back row of a lit room get                                    |
 | `motion.py`        | playwright + PIL + numpy | can the back row see the thing that moves                                   |
 | `offline_check.py` | playwright               | does a built deck make any outside request; its fonts and colours per slide |
+| `check_python.py`  | ruff, mypy, pyright      | do these Python files pass the house's checks (default: every tool here)    |
 
 ```bash
 .venv/bin/python3 tools/lib.py                          # the framework, as numbers
@@ -32,6 +33,7 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 .venv/bin/python3 tools/barroom.py --save out/
 .venv/bin/python3 tools/motion.py             # every animated drawing
 .venv/bin/python3 tools/offline_check.py <build dir> 1:0 2:5   # see its docstring
+.venv/bin/python3 tools/check_python.py      # after you change a tool
 ```
 
 `palette.py`, `artcheck.py` and `offline_check.py` exit non-zero on failure, so
