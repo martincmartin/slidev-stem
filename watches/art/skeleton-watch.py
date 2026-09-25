@@ -19,7 +19,8 @@ stem/docs/illustrations.md and the stroke ladder 2, 2.5, 3 and 4 CSS px.
 The colours come from the talk's theme: the `theme:` line of slides.md names
 it, and themes/<name>/styles/<name>.css sets the --palette-* variables.
 
-The escapement moves, in slow motion at one beat per second. Every animated
+The escapement moves in slow motion, at two beats a second (a real watch
+beats six times a second); the hands keep real time. Every animated
 attribute also has a static value equal to its first frame, so a renderer
 without SMIL shows frame 0. Why the drawing is as it is:
 watches/tasks/2026-09-24-cover-watch/PLAN.md.
@@ -56,12 +57,12 @@ DETAIL = PALETTE["ink"]              # the minute ticks, at half opacity
 KNOCKOUT = PALETTE["art-knockout"]   # lit faces: wheels, chapter ring, fork
 
 # ---- timing -------------------------------------------------------------------
-PERIOD = 2.0          # s, one full swing of the balance: two beats
+PERIOD = 1.0          # s, one full swing of the balance: two beats
 AMPLITUDE = 150.0     # degrees each way from centre
 PIN_ARC = 25.0        # the fork moves while the balance is within this of centre
 BANK = 9.0            # degrees: the fork's swing each side of its centre line
-FOURTH_LOOP = 120.0   # s: one turn of the fourth wheel and its seconds hand, which
-                      # so runs at half real speed (3 degrees a beat, a beat a second)
+FOURTH_LOOP = 60.0    # s: one turn of the fourth wheel and its seconds hand, at real
+                      # speed: 3 degrees a beat, two beats a second
 
 
 # ---- wheels ---------------------------------------------------------------------
@@ -505,7 +506,7 @@ def build(centre_x: float, centre_y: float) -> str:
                    outline=escape_outline(ESCAPE.teeth, ESCAPE_ROOT, ESCAPE_TIP, 6))
     elements.append(under(above["escape"], [turning(escape_arbor, escape + pinion_of("escape"),
                                                     PERIOD, *accumulated("escape"))]))
-    # the fourth wheel: 3 degrees a beat, one turn in 2 minutes; it carries the seconds hand
+    # the fourth wheel: 3 degrees a beat, one turn a minute; it carries the seconds hand
     times, values = stepper(FOURTH_LOOP, step["fourth"])
     fourth = wheel(FOURTH, tooth_phase("fourth"), hub=8, rim=5)
     elements.append(under(above["fourth"], [turning(fourth_arbor, fourth + pinion_of("fourth"),

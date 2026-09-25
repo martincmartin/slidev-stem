@@ -12,8 +12,8 @@ It stops at the first failure and exits non-zero. The steps:
    is inside the chapter ring;
 3. regenerate public/cover/skeleton-watch.svg;
 4. art: stem/tools/artcheck.py (palette, stroke ladder, structure),
-   barroom.py (the 3.0 gate at the design venue) and motion.py --sep 1 (some
-   area changes by at least 3:1).
+   barroom.py (the 3.0 gate at the design venue) and motion.py (some area
+   changes by at least 3:1), with its two frames half a balance period apart.
 
 Needs stem/.venv with requirements.txt installed (mypy, pyright, playwright,
 Pillow, numpy). Steps 1 and 4 run tools from there.
@@ -104,7 +104,7 @@ def check_layout(watch: ModuleType) -> None:
     ok("layout", f"meshes exact; tightest gap {tightest:.1f} px, {pair}; all inside the chapter ring")
 
 
-def check_art() -> None:
+def check_art(watch: ModuleType) -> None:
     relative = str(SVG.relative_to(STEM))
     run("artcheck", ["python3", "tools/artcheck.py", relative])
     ok("artcheck")
@@ -123,19 +123,24 @@ def check_art() -> None:
     hold, p90, fmax = row.split()[column:column + 3]
     ok("barroom", f"at {design}: hold {hold}, p90 {p90}, Fmax {fmax}")
 
-    motion = run("motion", [str(VENV / "python3"), "tools/motion.py", relative, "--sep", "1"])
+    # Half a balance period apart, so the balance, fork and escape wheel are at
+    # opposite ends of their motion. motion.py's default (half the longest
+    # loop, the seconds hand's) is a whole number of periods: they would cancel.
+    separation = f"{watch.PERIOD / 2:g}"
+    motion = run("motion", [str(VENV / "python3"), "tools/motion.py", relative, "--sep", separation])
     row = next((line for line in motion.splitlines() if re.match(rf"{SVG.stem}\s+[\d.]", line)), None)
     if row is None or float(row.split()[-1]) <= 0:
         fail("motion: no area changes by 3:1", motion)
-    ok("motion --sep 1", f"dPeak {row.split()[1]}, {row.split()[-1]} px2 >= 3:1")
+    ok(f"motion --sep {separation}", f"dPeak {row.split()[1]}, {row.split()[-1]} px2 >= 3:1")
 
 
 def main() -> None:
     check_types()
-    check_layout(load_generator())
+    watch = load_generator()
+    check_layout(watch)
     run("generate", ["python3", str(GENERATOR)])
     ok("generate", str(SVG.relative_to(TALK)))
-    check_art()
+    check_art(watch)
     print("\nall passed")
 
 

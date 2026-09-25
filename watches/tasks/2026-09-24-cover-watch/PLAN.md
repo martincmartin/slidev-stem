@@ -221,3 +221,23 @@ from the escape wheel at 195°.
 
 After this change: `hold 3.66`, `p90 6.99`, `Fmax 0.082`; `motion.py --sep 1`
 `dPeak 9.41`, 2736 px² over 3:1.
+
+## Real-time hands: two beats a second (user, 2026-09-25)
+
+With ratio 4, one beat a second gave the seconds hand 3° a second: half real
+speed, and the minute and hour hands with it. Real time needs the fourth wheel
+to turn 6° a second.
+
+| option                         | how                                  | cost                                                   |
+| ------------------------------ | ------------------------------------ | ------------------------------------------------------ |
+| A. ratio 2                     | 12° / 2 a beat, a beat a second      | the escape pinion crowds the escape wheel again, or the fourth wheel shrinks |
+| **B. two beats a second**      | 3° a beat, two beats a second        | the balance and fork move twice as fast                |
+| C. a 10-tooth escape wheel     | 18° a beat, ratio 3                  | a smaller fourth wheel; unrealistic                    |
+| D. hands driven on their own   | hands at real time, train as before  | the seconds hand turns faster than the wheel it sits on |
+
+**Chosen by the user: B.** `PERIOD` is 1 s. The seconds hand turns once a
+minute, the minute hand once an hour and the hour hand once in 12 hours.
+The balance still beats three times slower than a real 3 Hz watch.
+`motion.py` now needs `--sep 0.5` (half a period); the validator takes it from
+`PERIOD`. Measured: `hold 3.66`, `p90 7.03`, `Fmax 0.082`; `dPeak 9.41`,
+2736 px² over 3:1.
