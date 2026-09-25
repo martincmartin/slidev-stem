@@ -78,8 +78,8 @@ def evaluate(
     if not BALANCE_SIDE[0] <= balance_angle <= BALANCE_SIDE[1]:
         return None
     if any(
-        math.hypot(*footprint.centre) + footprint.outer > watch.RING_RADIUS
-        for footprint in placement.footprints().values()
+        math.hypot(*placement.arbor[part]) + part.outer > watch.RING_RADIUS
+        for part in watch.STACK
     ):
         return None
     layout = geometry.measure(watch, spacing)

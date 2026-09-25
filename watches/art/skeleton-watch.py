@@ -210,7 +210,9 @@ BALANCE = Balance("balance", radius=56)
 IMPULSE_PIN_RADIUS = 15  # the impulse jewel's distance from the balance's arbor
 FORK = Fork("fork")
 Part = Wheel | Balance | Fork
-Round = Wheel | Balance  # the parts with a footprint
+# The round parts. Each hides what is below it inside `inner`, and reaches
+# out to `outer`.
+Round = Wheel | Balance
 # the round parts, back to front
 STACK: list[Round] = [ESCAPE, FOURTH, THIRD, CENTRE, BARREL, BALANCE]
 
@@ -636,34 +638,6 @@ def turning(
     return wrap("g", [inner], transform=f"translate({coords(centre)})")
 
 
-@dataclass(frozen=True)
-class Footprint:
-    """The disc a part covers: it hides what is below it inside `inner`, and
-    reaches out to `outer`."""
-
-    centre: Point
-    inner: float
-    outer: float
-
-
-def hole(part: Round, footprint: Footprint) -> str:
-    """A clipPath that keeps everything except the part's inner disc: the
-    part of a lower wheel that `part` covers. Ids carry the drawing's name, so
-    copies of it on one page do not collide."""
-    centre_x, centre_y = footprint.centre
-    radius = footprint.inner
-    path = (
-        f"M-400 -400H400V400H-400ZM{num(centre_x + radius)} {num(centre_y)}"
-        f"A{num(radius)} {num(radius)} 0 1 1 {num(centre_x - radius)} {num(centre_y)}"
-        f"A{num(radius)} {num(radius)} 0 1 1 {num(centre_x + radius)} {num(centre_y)}Z"
-    )
-    return (
-        f'<clipPath id="skeleton-watch-under-{part.name}">'
-        + element("path", d=path, clip_rule="evenodd")
-        + "</clipPath>"
-    )
-
-
 def under(parts: list[Round], body: list[str]) -> str:
     """`body`, clipped by the hole of each of `parts` in turn."""
     for part in parts:
@@ -675,18 +649,27 @@ def under(parts: list[Round], body: list[str]) -> str:
 class Placement:
     """Where each arbor is, from the watch centre, for one set of layout
     constants. place() makes a new one each time, so nothing in it is left
-    over from another layout. The footprints and the fork's outline follow
-    from the arbors."""
+    over from another layout. The holes and the fork's outline follow from
+    the arbors."""
 
     arbor: dict[Part, Point]
 
-    def footprint(self, part: Round) -> Footprint:
-        """The disc `part` covers."""
-        return Footprint(self.arbor[part], part.inner, part.outer)
-
-    def footprints(self) -> dict[Round, Footprint]:
-        """The disc each round part covers, back to front."""
-        return {part: self.footprint(part) for part in STACK}
+    def hole(self, part: Round) -> str:
+        """A clipPath that keeps everything except the part's inner disc: the
+        part of a lower wheel that `part` covers. Ids carry the drawing's name,
+        so copies of it on one page do not collide."""
+        centre_x, centre_y = self.arbor[part]
+        radius = part.inner
+        path = (
+            f"M-400 -400H400V400H-400ZM{num(centre_x + radius)} {num(centre_y)}"
+            f"A{num(radius)} {num(radius)} 0 1 1 {num(centre_x - radius)} {num(centre_y)}"
+            f"A{num(radius)} {num(radius)} 0 1 1 {num(centre_x + radius)} {num(centre_y)}Z"
+        )
+        return (
+            f'<clipPath id="skeleton-watch-under-{part.name}">'
+            + element("path", d=path, clip_rule="evenodd")
+            + "</clipPath>"
+        )
 
     def fork_polygon(self, bank: float) -> list[Point]:
         """The fork's outline in watch coordinates, turned `bank` degrees from
@@ -764,24 +747,15 @@ def build(centre_x: float, centre_y: float) -> str:
     # teeth lie over the pinion they drive, so every mesh is in view. A lower
     # wheel is hidden inside the root circle of each wheel above it (the inside
     # edge of its teeth), so the gaps between teeth stay open.
-    footprints = placement.footprints()
     above: dict[Round, list[Round]] = {}  # the parts above each that overlap it
     for index, lower in enumerate(STACK):
         above[lower] = [
             upper
             for upper in STACK[index + 1 :]
-            if math.dist(footprints[lower].centre, footprints[upper].centre)
-            < footprints[lower].outer + footprints[upper].inner
+            if math.dist(arbor[lower], arbor[upper]) < lower.outer + upper.inner
         ]
     elements = [
-        wrap(
-            "defs",
-            [
-                hole(part, footprint)
-                for part, footprint in footprints.items()
-                if part is not ESCAPE
-            ],
-        )
+        wrap("defs", [placement.hole(part) for part in STACK if part is not ESCAPE])
     ]
 
     # ---- strap and lugs: what holds the watch -------------------------------------

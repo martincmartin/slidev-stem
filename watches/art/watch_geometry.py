@@ -19,7 +19,7 @@ import importlib.util
 import itertools
 import math
 import sys
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from types import ModuleType
@@ -48,11 +48,10 @@ def label(key: Named | Pair) -> str:
     return "-".join(part.name for part in key) if isinstance(key, tuple) else key.name
 
 
-class Footprint(Protocol):
-    """What skeleton-watch.py's Footprint provides."""
+class Round(Named, Protocol):
+    """What skeleton-watch.py's round parts provide: each hides what is below
+    it inside `inner`, and reaches out to `outer`."""
 
-    @property
-    def centre(self) -> Point: ...
     @property
     def inner(self) -> float: ...
     @property
@@ -69,19 +68,17 @@ class Region:
     hiders: tuple[tuple[Point, float], ...]
 
 
-def regions[Part](footprints: dict[Part, Footprint]) -> dict[Part, Region]:
-    """Each part's visible region. `footprints` is in back-to-front order."""
-    parts = list(footprints)
+def regions[Part: Round](
+    stack: Sequence[Part], arbor: Mapping[Part, Point]
+) -> dict[Part, Region]:
+    """Each part's visible region. `stack` is in back-to-front order."""
     return {
         part: Region(
-            footprints[part].centre,
-            footprints[part].outer,
-            tuple(
-                (footprints[upper].centre, footprints[upper].inner)
-                for upper in parts[index + 1 :]
-            ),
+            arbor[part],
+            part.outer,
+            tuple((arbor[upper], upper.inner) for upper in stack[index + 1 :]),
         )
-        for index, part in enumerate(parts)
+        for index, part in enumerate(stack)
     }
 
 
@@ -223,13 +220,11 @@ def measure(watch: ModuleType, spacing: float = 1.0) -> Layout:
                 f"arbors {have:.2f} px apart, the mesh needs {want:.2f}"
             )
 
-    footprints = placement.footprints()
     reach: dict[Named, float] = {
-        part: math.hypot(*footprint.centre) + footprint.outer
-        for part, footprint in footprints.items()
+        part: math.hypot(*placement.arbor[part]) + part.outer for part in watch.STACK
     }
     ring_gaps = {part: watch.RING_RADIUS - distance for part, distance in reach.items()}
-    visible = regions(footprints)
+    visible = regions(watch.STACK, placement.arbor)
     wheel_gaps: dict[Pair, float] = {
         (first, second): region_gap(visible[first], visible[second], spacing)
         for first, second in itertools.combinations(visible, 2)

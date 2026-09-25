@@ -146,13 +146,13 @@ BALANCE, FORK = Balance("balance", radius=56), Fork("fork")
 STACK = [ESCAPE, FOURTH, THIRD, CENTRE, BARREL, BALANCE]  # back to front
 
 Part = Wheel | Balance | Fork
-Round = Wheel | Balance  # the parts with a footprint
+Round = Wheel | Balance  # hides what is below it inside inner
 
 @dataclass(frozen=True)
 class Placement:
     """Where the parts are, for one set of layout constants."""
     arbor: dict[Part, Point]
-    def footprint(self, part: Round) -> Footprint: ...
+    def hole(self, part: Round) -> str: ...  # the clip path under it
 
 def place() -> Placement: ...  # was arbors(); reads the layout constants
 ```
@@ -160,7 +160,7 @@ def place() -> Placement: ...  # was arbors(); reads the layout constants
 `build()` starts with `placement = place()` and reads `placement.arbor[THIRD]`.
 `watch_geometry.measure()` and the search's `evaluate()` do the same. The
 search still sets the layout constants with `setattr`, and then calls `place()`.
-`hole()` uses `part.name` only for the clip path's id.
+`Placement.hole()` uses `part.name` only for the clip path's id.
 
 ## Other design choices
 
@@ -182,16 +182,39 @@ prints the whole train, in both directions.
 
 ### One side-table class, not one per part
 
-Each layout changes only the arbors. The footprints and the fork's outline
+Each layout changes only the arbors. The holes and the fork's outline
 follow from the arbors. So one `Placement` holds `arbor: dict[Part, Point]`,
 and its methods compute the rest. A record for each part, such as
 `WheelGeometry`, would hold only one field. The record becomes worth it if a
 second value per part appears that cannot be computed from the arbor.
 
-### The footprint is a method of `Placement`
+### No `Footprint` class
 
-A footprint comes from an arbor and from fixed radii. So `Placement` computes
-it from its own `arbor` table, and nothing stores it. Nothing can go stale.
+A first version kept `Footprint(centre, inner, outer)`, computed by a
+`Placement` method. But each footprint was `(placement.arbor[part],
+part.inner, part.outer)`: two copies of fixed data and one copy from the side
+table. So `Footprint` was removed (your suggestion), and code reads the arbor
+from the placement and the radii from the part:
+
+```python
+# with Footprint
+math.dist(footprints[lower].centre, footprints[upper].centre)
+< footprints[lower].outer + footprints[upper].inner
+# without
+math.dist(arbor[lower], arbor[upper]) < lower.outer + upper.inner
+```
+
+- **For keeping it:** `watch_geometry.py` needed to know only "a disc: a centre
+  and two radii" (one protocol).
+- **Against keeping it:** about 25 lines across two files, and a reader had to
+  check that a footprint's `outer` could not differ from the part's.
+- **The cost of removing it:** `watch_geometry.regions()` takes the stack and
+  the arbor table, and it needs a `Round` protocol (`name`, `inner`,
+  `outer`). That protocol describes the parts themselves, not a copy of them.
+
+`hole()` became a `Placement` method, because it needs a part and that part's
+arbor. `watch_geometry.Region` stays: it is not a copy. It adds the hiders,
+the inner discs of the parts above, which are computed from the whole stack.
 
 ### The name is written twice
 
@@ -203,7 +226,7 @@ I accept the repetition.
 
 ### The escape wheel
 
-Its footprint comes from its club teeth, not from `depth`. So `Wheel` takes an
+Its `inner` and `outer` radii come from its club teeth, not from `depth`. So `Wheel` takes an
 optional `root_radius` and `tip_radius`, which replace `ESCAPE_ROOT` and
 `ESCAPE_TIP`. An `EscapeWheel` subclass would differ from `Wheel` only in
 those two numbers.
