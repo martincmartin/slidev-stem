@@ -224,4 +224,5 @@ archive: it writes into the archive's own copy of the art, not into the live dec
 
 The cover's skeleton watch, `watches/public/cover/skeleton-watch.svg`, is the
 exception. Its gear teeth, spirals and keyframes are computed, so its source is
-the script `watches/art/skeleton-watch.py`: edit that and run it, not the SVG.
+the script `watches/art/skeleton-watch.py`: edit that, not the SVG, then run
+`watches/art/validate-skeleton-watch.py`, which regenerates the SVG and checks it.

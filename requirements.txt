@@ -1,6 +1,9 @@
-# Python packages for stem/tools/. Install into stem/.venv:
+# Python packages for stem/tools/ and the talks' art scripts. Install into stem/.venv:
 #   python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 #   .venv/bin/playwright install chromium
 numpy==2.5.3
 pillow==12.3.0
 playwright==1.63.0
+# type checkers, for watches/art/validate-skeleton-watch.py
+mypy==2.3.1
+pyright==1.1.414

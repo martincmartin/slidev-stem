@@ -8,10 +8,9 @@ change the drawing, edit this file and run it; do not edit the SVG.
     python3 art/skeleton-watch.py out.svg        # writes there instead
     python3 art/skeleton-watch.py out.svg --at 490 276   # the watch centre on the canvas
 
-Then run the checks in stem/ (docs/measurements.md has the current numbers):
-    python3 tools/artcheck.py watches/public/cover/skeleton-watch.svg
-    .venv/bin/python3 tools/barroom.py watches/public/cover/skeleton-watch.svg
-    .venv/bin/python3 tools/motion.py watches/public/cover/skeleton-watch.svg --sep 1
+After every change, run the validator. It type-checks this file, checks the
+layout, regenerates the SVG and runs the art checks:
+    python3 art/validate-skeleton-watch.py       # in watches/
 
 Stdlib only. The file fills the slide: width 980, height 552, and a viewBox of
 the same size, so one unit is one CSS px. It uses the four art colours of
@@ -26,25 +25,35 @@ without SMIL shows frame 0. Why the drawing is as it is:
 watches/tasks/2026-09-24-cover-watch/PLAN.md.
 """
 import argparse, math, pathlib, re
+from dataclasses import dataclass
+
+Point = tuple[float, float]           # x, y in CSS px; y points down
+Keyframes = tuple[list[float], list[float]]   # keyTimes, values
 
 WIDTH, HEIGHT = 980, 552    # the slide canvas, in CSS px
 TALK = pathlib.Path(__file__).resolve().parents[1]      # watches/
+ORIGIN: Point = (0.0, 0.0)         # a part is drawn about its own origin, then moved
 
 
-def theme_palette(talk=TALK):
+def theme_palette(talk: pathlib.Path = TALK) -> dict[str, str]:
     """The --palette-* variables of the talk's theme, as {role: "#RRGGBB"}.
     The theme is the `theme:` line in the headmatter of the talk's slides.md."""
-    head = re.match(r"---\n(.*?)\n---", (talk / "slides.md").read_text(), re.S)
-    name = re.search(r"(?m)^theme:\s*(\S+)", head.group(1)).group(1)
+    slides = talk / "slides.md"
+    headmatter = re.match(r"---\n(.*?)\n---", slides.read_text(), re.S)
+    theme = re.search(r"(?m)^theme:\s*(\S+)", headmatter.group(1)) if headmatter else None
+    if theme is None:
+        raise SystemExit(f"no `theme:` line in the headmatter of {slides}")
+    name = theme.group(1)
     css = (talk.parent / "themes" / name / "styles" / f"{name}.css").read_text()
-    return {k: v.strip().upper() for k, v in re.findall(r"--palette-([\w-]+)\s*:\s*([^;]+);", css)}
+    return {role: value.strip().upper()
+            for role, value in re.findall(r"--palette-([\w-]+)\s*:\s*([^;]+);", css)}
 
 
 PALETTE = theme_palette()
 LINE = PALETTE["art-line"]           # the movement and the hands' outlines
 FRAME = PALETTE["muted"]             # the case, lugs, strap; the hands' faces
 DETAIL = PALETTE["ink"]              # the minute ticks, at half opacity
-KNOCK = PALETTE["art-knockout"]      # lit faces: wheels, chapter ring, fork
+KNOCKOUT = PALETTE["art-knockout"]   # lit faces: wheels, chapter ring, fork
 
 # ---- timing -------------------------------------------------------------------
 PERIOD = 2.0          # s, one full swing of the balance: two beats
@@ -54,7 +63,26 @@ BANK = 9.0            # degrees: the fork's swing each side of its centre line
 FOURTH_LOOP = 120.0   # s: one turn of the fourth wheel and its seconds hand, which
                       # so runs at half real speed (3 degrees a beat, a beat a second)
 
-# ---- wheels: teeth, pitch radius, spokes ---------------------------------------
+
+# ---- wheels ---------------------------------------------------------------------
+@dataclass(frozen=True)
+class Wheel:
+    teeth: int
+    pitch_radius: float   # the circle on which it rolls against the pinion it drives
+    spokes: int = 0
+    leaves: int = 0       # the leaves of the pinion on its own arbor
+
+    @property
+    def pitch(self) -> float:
+        """The arc between two teeth, on the pitch circle."""
+        return 2 * math.pi * self.pitch_radius / self.teeth
+
+    @property
+    def depth(self) -> float:
+        """Addendum and dedendum: 4 px, or less where the teeth are fine."""
+        return min(4.0, 0.32 * self.pitch)
+
+
 # Each wheel's teeth mesh with the pinion on the next arbor. A wheel and the
 # pinion it drives share one tooth pitch, so the pinion's radius follows from
 # its leaves, and the ratio of teeth to leaves is the ratio of their speeds:
@@ -67,470 +95,531 @@ FOURTH_LOOP = 120.0   # s: one turn of the fourth wheel and its seconds hand, wh
 # the fourth wheel's tick at a visible 3 degrees. The escape pinion's radius is
 # the fourth wheel's divided by this ratio, so a lower ratio would make the
 # pinion crowd the escape wheel, or the fourth wheel small.
-BARREL = dict(teeth=36, rp=74, leaves=None)
-CENTRE = dict(teeth=32, rp=50, spokes=5, leaves=6)
-THIRD = dict(teeth=30, rp=44, spokes=4, leaves=4)
-FOURTH = dict(teeth=24, rp=37.3, spokes=4, leaves=4)
-ESCAPE = dict(teeth=15, rp=27, spokes=5, leaves=6)
+BARREL = Wheel(teeth=36, pitch_radius=74)
+CENTRE = Wheel(teeth=32, pitch_radius=50, spokes=5, leaves=6)
+THIRD = Wheel(teeth=30, pitch_radius=44, spokes=4, leaves=4)
+FOURTH = Wheel(teeth=24, pitch_radius=37.3, spokes=4, leaves=4)
+ESCAPE = Wheel(teeth=15, pitch_radius=27, spokes=5, leaves=6)
 HOUR_RATIO = 12       # the motion works under the dial turn the hour hand
-BALANCE_R = 56
+BALANCE_RADIUS = 56
+IMPULSE_PIN_RADIUS = 15   # the impulse jewel's distance from the balance's arbor
+
+# ---- the layout -------------------------------------------------------------------
+# Screen angles in degrees (0 = 3 o'clock, increasing clockwise), each from the
+# arbor before it in the train. A wheel's distance from the arbor before it is
+# fixed by the mesh (pitch radius plus pinion radius), so only these are free.
+# They spread the train round the lower right of the dial, keep the balance at
+# lower left beside the title, and leave at least MIN_CLEARANCE between parts
+# that do not mesh: validate-skeleton-watch.py checks that.
+BARREL_ANGLE = -90.0          # from the centre arbor: straight up, at 12 o'clock
+THIRD_ANGLE = 60.0            # from the centre arbor
+FOURTH_ANGLE = 65.0           # from the third arbor
+ESCAPE_ANGLE = 100.0          # from the fourth arbor
+LEVER_ANGLE = 195.0           # from the escape arbor toward the balance
+FORK_PIVOT_DISTANCE = 36.0    # from the escape arbor, along LEVER_ANGLE
+BALANCE_DISTANCE = 115.0      # from the escape arbor, along LEVER_ANGLE
+MIN_CLEARANCE = 8.0           # px between parts that do not mesh
 
 # ---- the case, in px from the watch centre ---------------------------------------
-R_CASE, R_BEZEL = 250, 228          # case edge; the bezel is the chapter ring's outside
-R_RING = 192                        # chapter ring inside
+CASE_RADIUS, BEZEL_RADIUS = 250, 228   # case edge; the bezel is the chapter ring's outside
+RING_RADIUS = 192                      # chapter ring inside
 
 
-def n(x):
+def num(value: float) -> str:
     """A coordinate for the file: one decimal, no '-0', no trailing zeros."""
-    s = f"{x:.1f}".rstrip("0").rstrip(".")
-    return "0" if s in ("-0", "") else s
+    text = f"{value:.1f}".rstrip("0").rstrip(".")
+    return "0" if text in ("-0", "") else text
 
 
-def pt(r, a, o=(0.0, 0.0)):
-    """Polar to xy, from origin `o`. `a` is in degrees on screen: 0 = 3 o'clock,
-    increasing clockwise, because the y axis points down."""
-    t = math.radians(a)
-    return o[0] + r * math.cos(t), o[1] + r * math.sin(t)
+def decimal(value: float) -> str:
+    """A keyTime or an angle in a keyframe list: up to four decimals."""
+    return f"{value:.4f}".rstrip("0").rstrip(".") if value else "0"
 
 
-def xy(p):
-    return f"{n(p[0])} {n(p[1])}"
+def polar(radius: float, angle_deg: float, origin: Point = ORIGIN) -> Point:
+    """Polar to xy, from `origin`. The angle is in degrees on screen: 0 is
+    3 o'clock, increasing clockwise, because the y axis points down."""
+    theta = math.radians(angle_deg)
+    return origin[0] + radius * math.cos(theta), origin[1] + radius * math.sin(theta)
 
 
-def clock(c):
+def coords(point: Point) -> str:
+    return f"{num(point[0])} {num(point[1])}"
+
+
+def clock(clock_angle: float) -> float:
     """A clock-face angle (0 = 12 o'clock, clockwise) as a screen angle."""
-    return c - 90
+    return clock_angle - 90
 
 
-def angle(a, b):
-    return math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
+def direction(start: Point, end: Point) -> float:
+    """The screen angle, in degrees, from `start` toward `end`."""
+    return math.degrees(math.atan2(end[1] - start[1], end[0] - start[0]))
 
 
-def attrs(a):
-    return " ".join(f'{k.replace("_", "-")}="{v}"' for k, v in a.items() if v is not None)
+def attrs(attributes: dict[str, object]) -> str:
+    return " ".join(f'{key.replace("_", "-")}="{value}"'
+                    for key, value in attributes.items() if value is not None)
 
 
-def el(tag, **a):
-    return f"<{tag} {attrs(a)}/>"
+def element(tag: str, **attributes: object) -> str:
+    return f"<{tag} {attrs(attributes)}/>"
 
 
-def wrap(tag, body, **a):
-    return f"<{tag} {attrs(a)}>\n" + "\n".join(body) + f"\n</{tag}>"
+def wrap(tag: str, body: list[str], **attributes: object) -> str:
+    return f"<{tag} {attrs(attributes)}>\n" + "\n".join(body) + f"\n</{tag}>"
 
 
-def circle(c, r, **a):
-    return el("circle", cx=n(c[0]), cy=n(c[1]), r=n(r), **a)
+def circle(centre: Point, radius: float, **attributes: object) -> str:
+    return element("circle", cx=num(centre[0]), cy=num(centre[1]), r=num(radius), **attributes)
 
 
 # ---- shapes ---------------------------------------------------------------------
-def gear(teeth, rp, phase=0.0, add=4, ded=4, w_root=0.56, w_tip=0.30):
-    """The closed outline of a toothed wheel, centred on 0,0."""
-    p = 360.0 / teeth
-    rr, rt = rp - ded, rp + add
-    d = []
-    for i in range(teeth):
-        c = phase + i * p
-        if i == 0:
-            d.append("M" + xy(pt(rr, c - w_root * p / 2)))
-        d.append("L" + xy(pt(rt, c - w_tip * p / 2)))
-        d.append(f"A{n(rt)} {n(rt)} 0 0 1 " + xy(pt(rt, c + w_tip * p / 2)))
-        d.append("L" + xy(pt(rr, c + w_root * p / 2)))
-        d.append(f"A{n(rr)} {n(rr)} 0 0 1 " + xy(pt(rr, c + p - w_root * p / 2)))
-    return "".join(d) + "Z"
+def gear(teeth: int, pitch_radius: float, phase: float = 0.0, addendum: float = 4, dedendum: float = 4,
+         root_width: float = 0.56, tip_width: float = 0.30) -> str:
+    """The closed outline of a toothed wheel, centred on the origin. The widths
+    are fractions of the angle between two teeth."""
+    tooth_angle = 360.0 / teeth
+    root_radius, tip_radius = pitch_radius - dedendum, pitch_radius + addendum
+    path = []
+    for index in range(teeth):
+        middle = phase + index * tooth_angle
+        if index == 0:
+            path.append("M" + coords(polar(root_radius, middle - root_width * tooth_angle / 2)))
+        path.append("L" + coords(polar(tip_radius, middle - tip_width * tooth_angle / 2)))
+        path.append(f"A{num(tip_radius)} {num(tip_radius)} 0 0 1 "
+                    + coords(polar(tip_radius, middle + tip_width * tooth_angle / 2)))
+        path.append("L" + coords(polar(root_radius, middle + root_width * tooth_angle / 2)))
+        path.append(f"A{num(root_radius)} {num(root_radius)} 0 0 1 "
+                    + coords(polar(root_radius, middle + tooth_angle - root_width * tooth_angle / 2)))
+    return "".join(path) + "Z"
 
 
-def escape_outline(teeth, rr, rt, phase=0.0):
+def escape_outline(teeth: int, root_radius: float, tip_radius: float, phase: float = 0.0) -> str:
     """A lever escape wheel: club teeth whose locking face leads anticlockwise,
     the way this one turns."""
-    p = -360.0 / teeth
-    d = []
-    for i in range(teeth):
-        c = phase + i * p
-        if i == 0:
-            d.append("M" + xy(pt(rr, c - 0.9 * p)))
+    tooth_angle = -360.0 / teeth
+    path = []
+    for index in range(teeth):
+        tip = phase + index * tooth_angle
+        if index == 0:
+            path.append("M" + coords(polar(root_radius, tip - 0.9 * tooth_angle)))
         # the back of the tooth curves up to the club; the club's flat top is
         # the impulse face; the locking face drops almost radially
-        d.append("Q" + xy(pt(rr + 2, c - 0.55 * p)) + " " + xy(pt(rt - 2, c - 0.22 * p)))
-        d.append("L" + xy(pt(rt, c)))
-        d.append("L" + xy(pt(rr, c + 0.04 * p)))
-        d.append(f"A{n(rr)} {n(rr)} 0 0 0 " + xy(pt(rr, c + 0.1 * p)))
-    return "".join(d) + "Z"
+        path.append("Q" + coords(polar(root_radius + 2, tip - 0.55 * tooth_angle)) + " "
+                    + coords(polar(tip_radius - 2, tip - 0.22 * tooth_angle)))
+        path.append("L" + coords(polar(tip_radius, tip)))
+        path.append("L" + coords(polar(root_radius, tip + 0.04 * tooth_angle)))
+        path.append(f"A{num(root_radius)} {num(root_radius)} 0 0 0 "
+                    + coords(polar(root_radius, tip + 0.1 * tooth_angle)))
+    return "".join(path) + "Z"
 
 
-def openings(spokes, r_hub, r_rim, spoke_w, phase=0.0):
+def openings(spokes: int, hub_radius: float, rim_radius: float, spoke_width: float,
+             phase: float = 0.0) -> str:
     """The gaps between straight spokes of constant width, one subpath each."""
-    h = spoke_w / 2
+    half_width = spoke_width / 2
 
-    def edge(s, side, r):
-        along = math.sqrt(r * r - h * h)
-        t = math.radians(s)
-        return (along * math.cos(t) - side * h * math.sin(t),
-                along * math.sin(t) + side * h * math.cos(t))
+    def edge(spoke_angle: float, side: int, radius: float) -> Point:
+        along = math.sqrt(radius * radius - half_width * half_width)
+        theta = math.radians(spoke_angle)
+        return (along * math.cos(theta) - side * half_width * math.sin(theta),
+                along * math.sin(theta) + side * half_width * math.cos(theta))
 
-    d = []
-    for k in range(spokes):
-        s0 = phase + k * 360.0 / spokes
-        s1 = s0 + 360.0 / spokes
-        d.append("M" + xy(edge(s0, +1, r_rim))
-                 + f"A{n(r_rim)} {n(r_rim)} 0 0 1 " + xy(edge(s1, -1, r_rim))
-                 + "L" + xy(edge(s1, -1, r_hub))
-                 + f"A{n(r_hub)} {n(r_hub)} 0 0 0 " + xy(edge(s0, +1, r_hub)) + "Z")
-    return "".join(d)
-
-
-def disc(r):
-    return f"M{n(r)} 0A{n(r)} {n(r)} 0 1 1 {n(-r)} 0A{n(r)} {n(r)} 0 1 1 {n(r)} 0Z"
+    path = []
+    for index in range(spokes):
+        spoke = phase + index * 360.0 / spokes
+        next_spoke = spoke + 360.0 / spokes
+        path.append("M" + coords(edge(spoke, +1, rim_radius))
+                    + f"A{num(rim_radius)} {num(rim_radius)} 0 0 1 " + coords(edge(next_spoke, -1, rim_radius))
+                    + "L" + coords(edge(next_spoke, -1, hub_radius))
+                    + f"A{num(hub_radius)} {num(hub_radius)} 0 0 0 " + coords(edge(spoke, +1, hub_radius)) + "Z")
+    return "".join(path)
 
 
-def ring(r_out, r_in):
+def disc(radius: float) -> str:
+    return (f"M{num(radius)} 0A{num(radius)} {num(radius)} 0 1 1 {num(-radius)} 0"
+            f"A{num(radius)} {num(radius)} 0 1 1 {num(radius)} 0Z")
+
+
+def ring(outer: float, inner: float) -> str:
     """An annulus as one path, for fill-rule evenodd."""
-    return disc(r_out) + disc(r_in)
+    return disc(outer) + disc(inner)
 
 
-def spiral(r_in, r_out, a_in, a_out, segments):
-    """An Archimedean spiral from (r_in, a_in) to (r_out, a_out), angles in
-    degrees, as cubic Beziers. The same `segments` always gives the same
-    commands, so two spirals can be frames of one <animate>."""
-    a_in, a_out = math.radians(a_in), math.radians(a_out)
-    sweep, dr = a_out - a_in, r_out - r_in
+def spiral(inner_radius: float, outer_radius: float, inner_angle: float, outer_angle: float,
+           segments: int) -> str:
+    """An Archimedean spiral from (inner_radius, inner_angle) to (outer_radius,
+    outer_angle), angles in degrees, as cubic Beziers. The same `segments`
+    always gives the same commands, so two spirals can be frames of one
+    <animate>."""
+    inner_angle, outer_angle = math.radians(inner_angle), math.radians(outer_angle)
+    sweep, radial_span = outer_angle - inner_angle, outer_radius - inner_radius
 
-    def point(s):
-        r, a = r_in + s * dr, a_in + s * sweep
-        return ((r * math.cos(a), r * math.sin(a)),
-                (dr * math.cos(a) - r * sweep * math.sin(a),
-                 dr * math.sin(a) + r * sweep * math.cos(a)))
+    def point(fraction: float) -> tuple[Point, Point]:
+        radius, theta = inner_radius + fraction * radial_span, inner_angle + fraction * sweep
+        return ((radius * math.cos(theta), radius * math.sin(theta)),
+                (radial_span * math.cos(theta) - radius * sweep * math.sin(theta),
+                 radial_span * math.sin(theta) + radius * sweep * math.cos(theta)))
 
-    p0, d0 = point(0.0)
-    out = ["M" + xy(p0)]
-    k = 1.0 / segments / 3
-    for i in range(1, segments + 1):
-        p1, d1 = point(i / segments)
-        out.append("C" + xy((p0[0] + d0[0] * k, p0[1] + d0[1] * k)) + " "
-                   + xy((p1[0] - d1[0] * k, p1[1] - d1[1] * k)) + " " + xy(p1))
-        p0, d0 = p1, d1
-    return "".join(out)
-
-
-def band(points, width, samples=12):
-    """A bridge: a closed outline `width` wide around a smooth centre line
-    through `points` (Catmull-Rom), with round ends."""
-    pts = [points[0]] + list(points) + [points[-1]]
-    line = []
-    for i in range(1, len(pts) - 2):
-        p0, p1, p2, p3 = pts[i - 1], pts[i], pts[i + 1], pts[i + 2]
-        for j in range(samples):
-            t = j / samples
-            line.append(tuple(
-                0.5 * (2 * p1[k] + (-p0[k] + p2[k]) * t
-                       + (2 * p0[k] - 5 * p1[k] + 4 * p2[k] - p3[k]) * t * t
-                       + (-p0[k] + 3 * p1[k] - 3 * p2[k] + p3[k]) * t ** 3)
-                for k in (0, 1)))
-    line.append(points[-1])
-    h = width / 2
-    left, right = [], []
-    for i, p in enumerate(line):
-        a, b = line[max(i - 1, 0)], line[min(i + 1, len(line) - 1)]
-        dx, dy = b[0] - a[0], b[1] - a[1]
-        L = math.hypot(dx, dy) or 1
-        left.append((p[0] - dy / L * h, p[1] + dx / L * h))
-        right.append((p[0] + dy / L * h, p[1] - dx / L * h))
-    d = "M" + xy(left[0]) + "".join("L" + xy(q) for q in left[1:])
-    d += f"A{n(h)} {n(h)} 0 0 0 " + xy(right[-1])
-    d += "".join("L" + xy(q) for q in reversed(right[:-1]))
-    d += f"A{n(h)} {n(h)} 0 0 0 " + xy(left[0]) + "Z"
-    return d
+    start, start_tangent = point(0.0)
+    path = ["M" + coords(start)]
+    handle = 1.0 / segments / 3
+    for index in range(1, segments + 1):
+        end, end_tangent = point(index / segments)
+        path.append("C" + coords((start[0] + start_tangent[0] * handle, start[1] + start_tangent[1] * handle))
+                    + " " + coords((end[0] - end_tangent[0] * handle, end[1] - end_tangent[1] * handle))
+                    + " " + coords(end))
+        start, start_tangent = end, end_tangent
+    return "".join(path)
 
 
-def pitch(w):
-    """The arc between two teeth, on the pitch circle."""
-    return 2 * math.pi * w["rp"] / w["teeth"]
-
-
-def depth(w):
-    """Addendum and dedendum: 4 px, or less where the teeth are fine."""
-    return min(4.0, 0.32 * pitch(w))
-
-
-def wheel(w, phase=0.0, rim=6, hub=12, spoke_w=6, outline=None, ded=None):
+def wheel(spec: Wheel, phase: float = 0.0, rim: float = 6, hub: float = 12, spoke_width: float = 6,
+          outline: str | None = None, dedendum: float | None = None) -> list[str]:
     """A wheel with crossings: its lit face, the toothed outline, the openings."""
-    ded = depth(w) if ded is None else ded
-    outline = outline or gear(w["teeth"], w["rp"], phase, ded, ded)
-    holes = openings(w["spokes"], hub, w["rp"] - ded - rim, spoke_w, phase + 90 / w["spokes"])
-    fine = pitch(w) < 9                    # fine teeth take the thinner line
-    return [el("path", d=outline + holes, fill=KNOCK, fill_rule="evenodd"),
-            el("path", d=outline, fill="none", stroke=LINE, stroke_width="2" if fine else "2.5",
-               stroke_linejoin="round"),
-            el("path", d=holes, fill="none", stroke=LINE, stroke_width="2", stroke_linejoin="round"),
-            circle((0, 0), 4, fill=KNOCK, stroke=LINE, stroke_width="2")]
+    dedendum = spec.depth if dedendum is None else dedendum
+    outline = outline or gear(spec.teeth, spec.pitch_radius, phase, dedendum, dedendum)
+    holes = openings(spec.spokes, hub, spec.pitch_radius - dedendum - rim, spoke_width,
+                     phase + 90 / spec.spokes)
+    fine = spec.pitch < 9                  # fine teeth take the thinner line
+    return [element("path", d=outline + holes, fill=KNOCKOUT, fill_rule="evenodd"),
+            element("path", d=outline, fill="none", stroke=LINE, stroke_width="2" if fine else "2.5",
+                    stroke_linejoin="round"),
+            element("path", d=holes, fill="none", stroke=LINE, stroke_width="2", stroke_linejoin="round"),
+            circle(ORIGIN, 4, fill=KNOCKOUT, stroke=LINE, stroke_width="2")]
 
 
-def pinion(leaves, r, phase):
+def pinion(leaves: int, radius: float, phase: float) -> list[str]:
     """A pinion: few, rounded leaves, at the pitch of the wheel that drives it."""
-    p = 2 * math.pi * r / leaves
-    return [el("path", d=gear(leaves, r, phase, min(3.5, 0.3 * p), min(4.5, 0.42 * p), 0.5, 0.4),
-               fill=KNOCK, stroke=LINE, stroke_width="2", stroke_linejoin="round"),
-            circle((0, 0), 3, fill=KNOCK, stroke=LINE, stroke_width="2")]
+    leaf_pitch = 2 * math.pi * radius / leaves
+    outline = gear(leaves, radius, phase, min(3.5, 0.3 * leaf_pitch), min(4.5, 0.42 * leaf_pitch), 0.5, 0.4)
+    return [element("path", d=outline, fill=KNOCKOUT, stroke=LINE, stroke_width="2", stroke_linejoin="round"),
+            circle(ORIGIN, 3, fill=KNOCKOUT, stroke=LINE, stroke_width="2")]
 
 
-def dagger(length, w_max, at, tail, w_tail, stroke_w, turn=0.0, neck=None):
-    """A hand pointing at 12 from 0,0, turned `turn` degrees: widest at
-    `at` of its length, with a short tail. A face in the frame colour, as
-    sundial.svg's wall, with a deep-blue outline. With `neck`, the hand
-    narrows to `w_tail` that far from the arbor, so it hides little there."""
-    side = [(w_max / 2, -length * at)] + ([(w_tail / 2, -neck)] if neck else []) + [(w_tail / 2, tail)]
-    pts = [(0, -length)] + side + [(-x, y) for x, y in reversed(side)]
-    d = "M" + "L".join(f"{n(x)} {n(y)}" for x, y in pts) + "Z"
-    return el("path", d=d, fill=FRAME, stroke=LINE, stroke_width=stroke_w, stroke_linejoin="round",
-              transform=f"rotate({n(turn)})" if turn else None)
+def dagger(length: float, max_width: float, widest_at: float, tail: float, tail_width: float,
+           stroke_width: str, turn: float = 0.0, neck: float | None = None) -> str:
+    """A hand pointing at 12 from the origin, turned `turn` degrees: widest at
+    `widest_at` of its length, with a short tail. A face in the frame colour,
+    as sundial.svg's wall, with a deep-blue outline. With `neck`, the hand
+    narrows to `tail_width` that far from the arbor, so it hides little there."""
+    side = ([(max_width / 2, -length * widest_at)]
+            + ([(tail_width / 2, -neck)] if neck else []) + [(tail_width / 2, tail)])
+    outline = [(0, -length)] + side + [(-across, along) for across, along in reversed(side)]
+    path = "M" + "L".join(coords(corner) for corner in outline) + "Z"
+    return element("path", d=path, fill=FRAME, stroke=LINE, stroke_width=stroke_width,
+                   stroke_linejoin="round", transform=f"rotate({num(turn)})" if turn else None)
 
 
 # ---- motion -------------------------------------------------------------------------
-def balance_angle(t):
-    """Degrees, clockwise, at time t. At the end of its swing at t = 0."""
-    return AMPLITUDE * math.cos(2 * math.pi * t / PERIOD)
+def balance_angle(time: float) -> float:
+    """Degrees, clockwise, at `time` s. At the end of its swing at time 0."""
+    return AMPLITUDE * math.cos(2 * math.pi * time / PERIOD)
 
 
-def tick_window():
+def tick_window() -> list[tuple[float, float]]:
     """The two parts of a period, as fractions, when the impulse pin drives
     the fork: the balance is within PIN_ARC of centre."""
-    u = math.acos(PIN_ARC / AMPLITUDE) / (2 * math.pi)
-    v = math.acos(-PIN_ARC / AMPLITUDE) / (2 * math.pi)
-    return [(u, v), (1 - v, 1 - u)]
+    start = math.acos(PIN_ARC / AMPLITUDE) / (2 * math.pi)
+    end = math.acos(-PIN_ARC / AMPLITUDE) / (2 * math.pi)
+    return [(start, end), (1 - end, 1 - start)]
 
 
-def stepper(dur, step):
+def stepper(duration: float, step: float) -> Keyframes:
     """keyTimes and values for a part that turns `step` degrees at each beat
-    and holds still between beats, over `dur` seconds."""
-    periods = dur / PERIOD
-    times, values, a = [0.0], [0.0], 0.0
-    for k in range(round(periods)):
-        for (u, v) in tick_window():
-            times += [(k + u) / periods, (k + v) / periods]
-            values += [a, a + step]
-            a += step
-    return times + [1.0], values + [a]
+    and holds still between beats, over `duration` seconds."""
+    periods = duration / PERIOD
+    times, values, angle_deg = [0.0], [0.0], 0.0
+    for period in range(round(periods)):
+        for (start, end) in tick_window():
+            times += [(period + start) / periods, (period + end) / periods]
+            values += [angle_deg, angle_deg + step]
+            angle_deg += step
+    return times + [1.0], values + [angle_deg]
 
 
-def rotor(dur, times, values, accumulate=False):
+def rotor(duration: float, times: list[float], values: list[float], accumulate: bool = False) -> str:
     """With `accumulate`, each repeat starts where the last one ended, so one
     period of keyframes turns a slow wheel for ever (Chromium and Firefox)."""
-    kt = ";".join(f"{t:.4f}".rstrip("0").rstrip(".") if t else "0" for t in times)
-    fine = lambda v: f"{v:.4f}".rstrip("0").rstrip(".") if v else "0"
-    return el("animateTransform", attributeName="transform", type="rotate",
-              values=";".join(fine(v) for v in values), keyTimes=kt,
-              dur=f"{dur:g}s", repeatCount="indefinite",
-              accumulate="sum" if accumulate else None)
+    return element("animateTransform", attributeName="transform", type="rotate",
+                   values=";".join(decimal(value) for value in values),
+                   keyTimes=";".join(decimal(time) for time in times),
+                   dur=f"{duration:g}s", repeatCount="indefinite",
+                   accumulate="sum" if accumulate else None)
 
 
-def turning(centre, body, dur, times, values, accumulate=False):
-    """`body` drawn about 0,0, moved to `centre`, turning as `values` say.
-    The static transform is the first frame."""
-    inner = wrap("g", [rotor(dur, times, values, accumulate)] + body,
-                 transform=f"rotate({n(values[0])})" if values[0] else None)
-    return wrap("g", [inner], transform=f"translate({xy(centre)})")
+def turning(centre: Point, body: list[str], duration: float, times: list[float], values: list[float],
+            accumulate: bool = False) -> str:
+    """`body` drawn about the origin, moved to `centre`, turning as `values`
+    say. The static transform is the first frame."""
+    inner = wrap("g", [rotor(duration, times, values, accumulate)] + body,
+                 transform=f"rotate({num(values[0])})" if values[0] else None)
+    return wrap("g", [inner], transform=f"translate({coords(centre)})")
 
 
-def hole(name, c, r):
-    """A clipPath that keeps everything except the disc (c, r): the part of a
-    lower wheel that the wheel above it covers. Ids carry the drawing's name,
-    so copies of it on one page do not collide."""
-    d = (f"M-400 -400H400V400H-400ZM{n(c[0] + r)} {n(c[1])}"
-         f"A{n(r)} {n(r)} 0 1 1 {n(c[0] - r)} {n(c[1])}A{n(r)} {n(r)} 0 1 1 {n(c[0] + r)} {n(c[1])}Z")
-    return f'<clipPath id="skeleton-watch-under-{name}">' + el("path", d=d, clip_rule="evenodd") + "</clipPath>"
+@dataclass(frozen=True)
+class Footprint:
+    """The disc a part covers: it hides what is below it inside `inner`, and
+    reaches out to `outer`."""
+    centre: Point
+    inner: float
+    outer: float
 
 
-def under(names, body):
+def hole(name: str, centre: Point, radius: float) -> str:
+    """A clipPath that keeps everything except the disc (centre, radius): the
+    part of a lower wheel that the wheel above it covers. Ids carry the
+    drawing's name, so copies of it on one page do not collide."""
+    centre_x, centre_y = centre
+    path = (f"M-400 -400H400V400H-400ZM{num(centre_x + radius)} {num(centre_y)}"
+            f"A{num(radius)} {num(radius)} 0 1 1 {num(centre_x - radius)} {num(centre_y)}"
+            f"A{num(radius)} {num(radius)} 0 1 1 {num(centre_x + radius)} {num(centre_y)}Z")
+    return (f'<clipPath id="skeleton-watch-under-{name}">'
+            + element("path", d=path, clip_rule="evenodd") + "</clipPath>")
+
+
+def under(names: list[str], body: list[str]) -> str:
     """`body`, clipped by each named hole in turn."""
     for name in names:
         body = [wrap("g", body, clip_path=f"url(#skeleton-watch-under-{name})")]
     return body[0]
 
 
+def pinion_radius(driver: Wheel, driven: Wheel) -> float:
+    """A pinion's radius: its leaves at the pitch of the wheel that drives it."""
+    return driven.leaves * driver.pitch_radius / driver.teeth
+
+
+def arbors() -> dict[str, Point]:
+    """Where each arbor is, from the watch centre: the barrel, the train, the
+    fork's pivot and the balance."""
+    centre = ORIGIN
+    third = polar(CENTRE.pitch_radius + pinion_radius(CENTRE, THIRD), THIRD_ANGLE)
+    fourth = polar(THIRD.pitch_radius + pinion_radius(THIRD, FOURTH), FOURTH_ANGLE, third)
+    escape = polar(FOURTH.pitch_radius + pinion_radius(FOURTH, ESCAPE), ESCAPE_ANGLE, fourth)
+    return {
+        "barrel": polar(BARREL.pitch_radius + pinion_radius(BARREL, CENTRE), BARREL_ANGLE),
+        "centre": centre, "third": third, "fourth": fourth, "escape": escape,
+        "fork": polar(FORK_PIVOT_DISTANCE, LEVER_ANGLE, escape),
+        "balance": polar(BALANCE_DISTANCE, LEVER_ANGLE, escape),
+    }
+
+
+ESCAPE_ROOT, ESCAPE_TIP = 23, 33     # the escape wheel's club teeth
+
+
+def part_footprints(positions: dict[str, Point]) -> dict[str, Footprint]:
+    """The disc each round part covers, back to front."""
+    def wheel_footprint(name: str, spec: Wheel) -> Footprint:
+        return Footprint(positions[name], spec.pitch_radius - spec.depth, spec.pitch_radius + spec.depth)
+
+    return {
+        "escape": Footprint(positions["escape"], ESCAPE_ROOT, ESCAPE_TIP),
+        "fourth": wheel_footprint("fourth", FOURTH),
+        "third": wheel_footprint("third", THIRD),
+        "centre": wheel_footprint("centre", CENTRE),
+        "barrel": wheel_footprint("barrel", BARREL),
+        "balance": Footprint(positions["balance"], BALANCE_RADIUS, BALANCE_RADIUS),
+    }
+
+
 # ---- the drawing ------------------------------------------------------------------------
-def build(wx, wy):
-    C = (0.0, 0.0)
-    # a pinion's radius: its leaves at the pitch of the wheel that drives it
-    r_pin = lambda driver, driven: driven["leaves"] * driver["rp"] / driver["teeth"]
-    BRL = pt(BARREL["rp"] + r_pin(BARREL, CENTRE), clock(0))
-    # The angles spread the train round the lower right of the dial, with at
-    # least 11 px between wheels that do not mesh, and keep the balance at
-    # lower left, beside the title.
-    T = pt(CENTRE["rp"] + r_pin(CENTRE, THIRD), 60)
-    F = pt(THIRD["rp"] + r_pin(THIRD, FOURTH), 65, T)
-    E = pt(FOURTH["rp"] + r_pin(FOURTH, ESCAPE), 100, F)
-    LEVER = 195.0                                   # from the escape wheel toward the balance
-    P = pt(36, LEVER, E)                            # the fork's pivot
-    BAL = pt(115, LEVER, E)
-    PIN_R = 15                                      # the impulse jewel's radius on the roller
-    MOUTH = math.dist(P, BAL) - PIN_R               # pivot to the fork's mouth
+def build(centre_x: float, centre_y: float) -> str:
+    positions = arbors()
+    centre_arbor, barrel_arbor = positions["centre"], positions["barrel"]
+    third_arbor, fourth_arbor, escape_arbor = positions["third"], positions["fourth"], positions["escape"]
+    fork_pivot, balance_arbor = positions["fork"], positions["balance"]
+    mouth_distance = math.dist(fork_pivot, balance_arbor) - IMPULSE_PIN_RADIUS
+
     # Back to front: escape wheel, fourth, third, centre, barrel. Each wheel's
     # teeth lie over the pinion they drive, so every mesh is in view. A lower
     # wheel is hidden inside the root circle of each wheel above it (the inside
     # edge of its teeth), so the gaps between teeth stay open.
-    train = [("escape", E, ESCAPE, 23, 33), ("fourth", F, FOURTH), ("third", T, THIRD),
-             ("centre", C, CENTRE), ("barrel", BRL, BARREL), ("balance", BAL, None, BALANCE_R, BALANCE_R)]
-    radii = {k[0]: (k[1], k[3] if len(k) > 3 else k[2]["rp"] - depth(k[2]),
-                    k[4] if len(k) > 3 else k[2]["rp"] + depth(k[2])) for k in train}
-    above = {}                        # wheel -> the wheels above it that overlap it
-    for i, (lo, *_) in enumerate(train):
-        above[lo] = [hi for hi, *_ in train[i + 1:]
-                     if math.dist(radii[lo][0], radii[hi][0]) < radii[lo][2] + radii[hi][1]]
-    g = [wrap("defs", [hole(k, c, r) for k, (c, r, _) in radii.items() if k != "escape"])]
+    footprints = part_footprints(positions)
+    names = list(footprints)
+    above = {}                        # part -> the parts above it that overlap it
+    for index, lower in enumerate(names):
+        above[lower] = [upper for upper in names[index + 1:]
+                        if math.dist(footprints[lower].centre, footprints[upper].centre)
+                        < footprints[lower].outer + footprints[upper].inner]
+    elements = [wrap("defs", [hole(name, part.centre, part.inner)
+                              for name, part in footprints.items() if name != "escape"])]
 
     # ---- strap and lugs: what holds the watch -------------------------------------
-    edge = lambda x, s: s * math.sqrt(R_CASE ** 2 - x ** 2)
-    for s in (-1, 1):
-        far = s * 300
-        sweep = lambda x1, x2: 1 if (x2 - x1) * s < 0 else 0   # along the case, outside
-        g.append(el("path", d=f"M-84 {n(far)}L-84 {n(edge(84, s))}A{R_CASE} {R_CASE} 0 0 {sweep(-84, 84)} "
-                    f"84 {n(edge(84, s))}L84 {n(far)}Z",
-                    fill=FRAME, fill_opacity="0.18", stroke=FRAME, stroke_width="3"))
-        for x1, x2 in ((-112, -84), (84, 112)):
-            g.append(el("path", d=f"M{x1} {n(far)}L{x1} {n(edge(x1, s))}A{R_CASE} {R_CASE} 0 0 "
-                        f"{sweep(x1, x2)} {x2} {n(edge(x2, s))}L{x2} {n(far)}Z",
-                        fill=FRAME, fill_opacity="0.18", stroke=FRAME, stroke_width="3",
-                        stroke_linejoin="round"))
-    g.append(el("rect", x=n(R_CASE - 2), y="-17", width="22", height="34", rx="4",
-                fill=FRAME, fill_opacity="0.18", stroke=FRAME, stroke_width="3"))   # the crown
+    def case_y(x: float, side: int) -> float:
+        """Where the case edge is at `x`: on top (side -1) or at the bottom (1)."""
+        return side * math.sqrt(CASE_RADIUS ** 2 - x ** 2)
+
+    def sweep(left: float, right: float, side: int) -> int:
+        """The arc flag that follows the case edge on its outside."""
+        return 1 if (right - left) * side < 0 else 0
+
+    for side in (-1, 1):                              # the top, then the bottom
+        far = side * 300
+        elements.append(element(
+            "path", d=f"M-84 {num(far)}L-84 {num(case_y(84, side))}A{CASE_RADIUS} {CASE_RADIUS} 0 0 {sweep(-84, 84, side)} "
+                      f"84 {num(case_y(84, side))}L84 {num(far)}Z",
+            fill=FRAME, fill_opacity="0.18", stroke=FRAME, stroke_width="3"))
+        for left, right in ((-112, -84), (84, 112)):
+            elements.append(element(
+                "path", d=f"M{left} {num(far)}L{left} {num(case_y(left, side))}A{CASE_RADIUS} {CASE_RADIUS} 0 0 "
+                          f"{sweep(left, right, side)} {right} {num(case_y(right, side))}L{right} {num(far)}Z",
+                fill=FRAME, fill_opacity="0.18", stroke=FRAME, stroke_width="3", stroke_linejoin="round"))
+    elements.append(element("rect", x=num(CASE_RADIUS - 2), y="-17", width="22", height="34", rx="4",
+                            fill=FRAME, fill_opacity="0.18", stroke=FRAME, stroke_width="3"))  # the crown
 
     # ---- the case band -------------------------------------------------------------
-    g.append(el("path", d=ring(R_CASE, R_BEZEL), fill=FRAME, fill_opacity="0.18", fill_rule="evenodd"))
+    elements.append(element("path", d=ring(CASE_RADIUS, BEZEL_RADIUS), fill=FRAME, fill_opacity="0.18",
+                            fill_rule="evenodd"))
 
     # ---- the train, back to front -------------------------------------------------------
-    esc_step = -360.0 / ESCAPE["teeth"] / 2                  # half a tooth a beat, anticlockwise
-    step = {"escape": esc_step}
-    step["fourth"] = -step["escape"] * ESCAPE["leaves"] / FOURTH["teeth"]     # +3: clockwise
-    step["third"] = -step["fourth"] * FOURTH["leaves"] / THIRD["teeth"]
-    step["centre"] = -step["third"] * THIRD["leaves"] / CENTRE["teeth"]      # +0.1: once an hour
-    step["barrel"] = -step["centre"] * CENTRE["leaves"] / BARREL["teeth"]
-    slow = lambda k: stepper(PERIOD, step[k]) + (True,)     # one period, accumulated
-
-    # Phases: at t = 0 each driving wheel has a tooth on the line to the pinion
-    # it drives, and that pinion has a gap facing it.
-    drives = {"barrel": ("centre", BRL, C), "centre": ("third", C, T), "third": ("fourth", T, F),
-              "fourth": ("escape", F, E)}
-    def tooth_phase(k):
-        return angle(drives[k][1], drives[k][2]) if k in drives else 0.0
-
     wheels = {"barrel": BARREL, "centre": CENTRE, "third": THIRD, "fourth": FOURTH, "escape": ESCAPE}
+    drives = {"barrel": "centre", "centre": "third", "third": "fourth", "fourth": "escape"}
+    driven_by = {driven: driver for driver, driven in drives.items()}
 
-    def pinion_of(k, c, w):
-        """Arbor k's pinion, with a gap facing the wheel that drives it."""
-        driver = next(d for d, (dn, _, _) in drives.items() if dn == k)
-        return pinion(w["leaves"], r_pin(wheels[driver], w), angle(c, radii[driver][0]) + 180 / w["leaves"])
+    step = {"escape": -360.0 / ESCAPE.teeth / 2}            # half a tooth a beat, anticlockwise
+    step["fourth"] = -step["escape"] * ESCAPE.leaves / FOURTH.teeth      # +3: clockwise
+    step["third"] = -step["fourth"] * FOURTH.leaves / THIRD.teeth
+    step["centre"] = -step["third"] * THIRD.leaves / CENTRE.teeth       # +0.1: once an hour
+    step["barrel"] = -step["centre"] * CENTRE.leaves / BARREL.teeth
 
-    # the escape wheel: its teeth work the fork. It accumulates too: no loop of
-    # its own repeats for 15 teeth, 5 spokes and a 7-leaf pinion at once, and a
+    def accumulated(name: str) -> tuple[list[float], list[float], bool]:
+        """One period of `name`'s steps, repeated with accumulate."""
+        return stepper(PERIOD, step[name]) + (True,)
+
+    # Phases: at time 0 each driving wheel has a tooth on the line to the
+    # pinion it drives, and that pinion has a gap facing it.
+    def tooth_phase(name: str) -> float:
+        return direction(positions[name], positions[drives[name]]) if name in drives else 0.0
+
+    def pinion_of(name: str) -> list[str]:
+        """Arbor `name`'s pinion, with a gap facing the wheel that drives it."""
+        spec, driver = wheels[name], driven_by[name]
+        return pinion(spec.leaves, pinion_radius(wheels[driver], spec),
+                      direction(positions[name], positions[driver]) + 180 / spec.leaves)
+
+    # The escape wheel: its teeth work the fork. It accumulates too: no loop of
+    # its own repeats for 15 teeth, 5 spokes and a 6-leaf pinion at once, and a
     # loop that did not showed a jump at each restart.
-    g.append(under(above["escape"], [turning(E, wheel(ESCAPE, 0, rim=5, hub=8, spoke_w=5, ded=0,
-                                                      outline=escape_outline(ESCAPE["teeth"], 23, 33, 6))
-                                             + pinion_of("escape", E, ESCAPE),
-                                             PERIOD, *slow("escape"))]))
+    escape = wheel(ESCAPE, 0, rim=5, hub=8, spoke_width=5, dedendum=0,
+                   outline=escape_outline(ESCAPE.teeth, ESCAPE_ROOT, ESCAPE_TIP, 6))
+    elements.append(under(above["escape"], [turning(escape_arbor, escape + pinion_of("escape"),
+                                                    PERIOD, *accumulated("escape"))]))
     # the fourth wheel: 3 degrees a beat, one turn in 2 minutes; it carries the seconds hand
     times, values = stepper(FOURTH_LOOP, step["fourth"])
-    g.append(under(above["fourth"], [turning(F, wheel(FOURTH, tooth_phase("fourth"), hub=8, rim=5)
-                                             + pinion_of("fourth", F, FOURTH),
-                                             FOURTH_LOOP, times, values)]))
-    g.append(under(above["third"], [turning(T, wheel(THIRD, tooth_phase("third"))
-                                            + pinion_of("third", T, THIRD), PERIOD, *slow("third"))]))
-    g.append(under(above["centre"], [turning(C, wheel(CENTRE, tooth_phase("centre"), hub=14, spoke_w=7)
-                                             + pinion_of("centre", C, CENTRE), PERIOD, *slow("centre"))]))
+    fourth = wheel(FOURTH, tooth_phase("fourth"), hub=8, rim=5)
+    elements.append(under(above["fourth"], [turning(fourth_arbor, fourth + pinion_of("fourth"),
+                                                    FOURTH_LOOP, times, values)]))
+    third = wheel(THIRD, tooth_phase("third"))
+    elements.append(under(above["third"], [turning(third_arbor, third + pinion_of("third"),
+                                                   PERIOD, *accumulated("third"))]))
+    centre = wheel(CENTRE, tooth_phase("centre"), hub=14, spoke_width=7)
+    elements.append(under(above["centre"], [turning(centre_arbor, centre + pinion_of("centre"),
+                                                    PERIOD, *accumulated("centre"))]))
     # the barrel, in front: its lid is cut away to show the mainspring
-    outline = gear(BARREL["teeth"], BARREL["rp"], tooth_phase("barrel"))
-    g.append(under(above["barrel"], [turning(BRL, [
-        el("path", d=outline + disc(BARREL["rp"] - 12), fill=KNOCK, fill_rule="evenodd"),
-        el("path", d=outline, fill="none", stroke=LINE, stroke_width="2.5", stroke_linejoin="round"),
-        circle(C, BARREL["rp"] - 12, fill="none", stroke=LINE, stroke_width="2"),
-        el("path", d=spiral(19, BARREL["rp"] - 16, 150, 150 + 360 * 3.5, 14), fill="none",
-           stroke=LINE, stroke_width="2", stroke_linecap="round"),
-        circle(C, 15, fill=KNOCK, stroke=LINE, stroke_width="3"),
-    ], PERIOD, *slow("barrel"))]))
+    outline = gear(BARREL.teeth, BARREL.pitch_radius, tooth_phase("barrel"))
+    elements.append(under(above["barrel"], [turning(barrel_arbor, [
+        element("path", d=outline + disc(BARREL.pitch_radius - 12), fill=KNOCKOUT, fill_rule="evenodd"),
+        element("path", d=outline, fill="none", stroke=LINE, stroke_width="2.5", stroke_linejoin="round"),
+        circle(ORIGIN, BARREL.pitch_radius - 12, fill="none", stroke=LINE, stroke_width="2"),
+        element("path", d=spiral(19, BARREL.pitch_radius - 16, 150, 150 + 360 * 3.5, 14), fill="none",
+                stroke=LINE, stroke_width="2", stroke_linecap="round"),
+        circle(ORIGIN, 15, fill=KNOCKOUT, stroke=LINE, stroke_width="3"),
+    ], PERIOD, *accumulated("barrel"))]))
 
     # ---- the balance and its hairspring ---------------------------------------------
-    frames = [i / 24 * PERIOD for i in range(25)]
-    b_times = [i / 24 for i in range(25)]
-    b_values = [balance_angle(t) for t in frames]
-    pin_dir = angle(BAL, P)                         # the impulse pin faces the fork at rest
-    bal = [el("path", d=ring(BALANCE_R, BALANCE_R - 8), fill=KNOCK, fill_rule="evenodd",
-              stroke=LINE, stroke_width="3")]
-    for k in range(3):
-        a = pin_dir + 60 + 120 * k
-        s, c = math.sin(math.radians(a)), math.cos(math.radians(a))
-        q = [(r * c + side * 3 * s, r * s - side * 3 * c) for r, side in
-             ((9, 1), (BALANCE_R - 8, 1), (BALANCE_R - 8, -1), (9, -1))]
-        bal.append(el("path", d="M" + "L".join(xy(p) for p in q) + "Z", fill=KNOCK,
-                      stroke=LINE, stroke_width="2", stroke_linejoin="round"))
-    bal.append(circle(C, 10, fill=KNOCK, stroke=LINE, stroke_width="2"))
+    swing_times = [index / 24 for index in range(25)]
+    swing_values = [balance_angle(index / 24 * PERIOD) for index in range(25)]
+    pin_direction = direction(balance_arbor, fork_pivot)    # the impulse pin faces the fork at rest
+    balance = [element("path", d=ring(BALANCE_RADIUS, BALANCE_RADIUS - 8), fill=KNOCKOUT,
+                       fill_rule="evenodd", stroke=LINE, stroke_width="3")]
+    for index in range(3):
+        arm_angle = pin_direction + 60 + 120 * index
+        sin_arm, cos_arm = math.sin(math.radians(arm_angle)), math.cos(math.radians(arm_angle))
+        corners = [(radius * cos_arm + side * 3 * sin_arm, radius * sin_arm - side * 3 * cos_arm)
+                   for radius, side in ((9, 1), (BALANCE_RADIUS - 8, 1), (BALANCE_RADIUS - 8, -1), (9, -1))]
+        balance.append(element("path", d="M" + "L".join(coords(corner) for corner in corners) + "Z",
+                               fill=KNOCKOUT, stroke=LINE, stroke_width="2", stroke_linejoin="round"))
+    balance.append(circle(ORIGIN, 10, fill=KNOCKOUT, stroke=LINE, stroke_width="2"))
     # the impulse jewel, on the roller: drawn over the hairspring, turning with
     # the balance, so the fork's work on it stays in view
-    roller = [circle(pt(PIN_R, pin_dir), 6, fill=LINE)]
-    stud = angle(BAL, C) + 150                       # where the spring's outer end is held
-    springs = [spiral(8, 38, stud - 360 * 3.25 + a, stud, 13) for a in b_values]
-    spring = (f'<path d="{springs[0]}" fill="none" stroke="{LINE}" stroke-width="2" '
-              f'stroke-linecap="round">' + el("animate", attributeName="d", values=";".join(springs),
-                                                keyTimes=";".join(f"{t:.4f}".rstrip("0").rstrip(".") or "0"
-                                                                  for t in b_times),
-                                                dur=f"{PERIOD:g}s", repeatCount="indefinite") + "</path>")
-    g.append(turning(BAL, bal, PERIOD, b_times, b_values))
-    g.append(wrap("g", [spring], transform=f"translate({xy(BAL)})"))
-    g.append(turning(BAL, roller, PERIOD, b_times, b_values))
+    roller = [circle(polar(IMPULSE_PIN_RADIUS, pin_direction), 6, fill=LINE)]
+    stud = direction(balance_arbor, centre_arbor) + 150    # where the spring's outer end is held
+    springs = [spiral(8, 38, stud - 360 * 3.25 + swing, stud, 13) for swing in swing_values]
+    spring = (f'<path d="{springs[0]}" fill="none" stroke="{LINE}" stroke-width="2" stroke-linecap="round">'
+              + element("animate", attributeName="d", values=";".join(springs),
+                        keyTimes=";".join(decimal(time) for time in swing_times),
+                        dur=f"{PERIOD:g}s", repeatCount="indefinite")
+              + "</path>")
+    elements.append(turning(balance_arbor, balance, PERIOD, swing_times, swing_values))
+    elements.append(wrap("g", [spring], transform=f"translate({coords(balance_arbor)})"))
+    elements.append(turning(balance_arbor, roller, PERIOD, swing_times, swing_values))
 
     # ---- the pallet fork: flips at each beat -----------------------------------------
-    (u0, v0), (u1, v1) = tick_window()
-    ftimes = [0, u0, v0, u1, v1, 1]
-    fvalues = [-BANK, -BANK, BANK, BANK, -BANK, -BANK]
-    L = MOUTH
-    shape = [(L - 14, 4), (L + 3, 12), (L + 6.5, 8.5), (L - 7, 6.8), (L - 7, -6.8), (L + 6.5, -8.5),
-             (L + 3, -12), (L - 14, -4), (6, -4.5), (1, -21), (-9, -23), (-15, -19), (-13, -15),
-             (-6, -13), (-5, 0), (-6, 13), (-13, 15), (-15, 19), (-9, 23), (1, 21), (6, 4.5)]
-    a = math.radians(angle(P, BAL))
-    ca, sa = math.cos(a), math.sin(a)
-    fork = "M" + "L".join(xy((u * ca - v * sa, u * sa + v * ca)) for u, v in shape) + "Z"
-    g.append(turning(P, [el("path", d=fork, fill=KNOCK, stroke=LINE, stroke_width="2.5",
-                            stroke_linejoin="round"),
-                         circle(C, 4, fill=KNOCK, stroke=LINE, stroke_width="2")], PERIOD, ftimes, fvalues))
+    (first_start, first_end), (second_start, second_end) = tick_window()
+    fork_times = [0, first_start, first_end, second_start, second_end, 1]
+    fork_values = [-BANK, -BANK, BANK, BANK, -BANK, -BANK]
+    mouth = mouth_distance
+    # (along the lever, across it), with the lever pointing at the balance
+    shape = [(mouth - 14, 4), (mouth + 3, 12), (mouth + 6.5, 8.5), (mouth - 7, 6.8), (mouth - 7, -6.8),
+             (mouth + 6.5, -8.5), (mouth + 3, -12), (mouth - 14, -4), (6, -4.5), (1, -21), (-9, -23),
+             (-15, -19), (-13, -15), (-6, -13), (-5, 0), (-6, 13), (-13, 15), (-15, 19), (-9, 23),
+             (1, 21), (6, 4.5)]
+    heading = math.radians(direction(fork_pivot, balance_arbor))
+    cos_heading, sin_heading = math.cos(heading), math.sin(heading)
+    fork = "M" + "L".join(coords((along * cos_heading - across * sin_heading,
+                                  along * sin_heading + across * cos_heading))
+                          for along, across in shape) + "Z"
+    elements.append(turning(fork_pivot, [element("path", d=fork, fill=KNOCKOUT, stroke=LINE,
+                                                 stroke_width="2.5", stroke_linejoin="round"),
+                                         circle(ORIGIN, 4, fill=KNOCKOUT, stroke=LINE, stroke_width="2")],
+                            PERIOD, fork_times, fork_values))
 
     # ---- the seconds hand, on the fourth wheel's arbor --------------------------------
     times, values = stepper(FOURTH_LOOP, step["fourth"])
     # a small pivot, not a cap, so the fourth pinion's mesh stays in view
-    seconds = [dagger(60, 9, 0.70, 6, 2, "2", neck=16), circle(C, 2.5, fill=LINE)]
-    g.append(turning(F, seconds, FOURTH_LOOP, times, values))
+    seconds = [dagger(60, 9, 0.70, 6, 2, "2", neck=16), circle(ORIGIN, 2.5, fill=LINE)]
+    elements.append(turning(fourth_arbor, seconds, FOURTH_LOOP, times, values))
 
     # ---- the chapter ring: what is left of the dial ------------------------------------
-    g.append(el("path", d=ring(R_BEZEL, R_RING), fill=KNOCK, fill_rule="evenodd"))
-    g.append(circle(C, R_RING, fill="none", stroke=FRAME, stroke_width="2"))
-    ticks = "".join(f"M{xy(pt(214, clock(m * 6)))}L{xy(pt(221, clock(m * 6)))}"
-                    for m in range(60) if m % 5)
-    g.append(el("path", d=ticks, stroke=DETAIL, stroke_opacity="0.5", stroke_width="2",
-                stroke_linecap="round"))
-    hours = "".join(f"M{xy(pt(200, clock(h * 30)))}L{xy(pt(220, clock(h * 30)))}" for h in range(12))
-    g.append(el("path", d=hours, stroke=LINE, stroke_width="4", stroke_linecap="round"))
+    elements.append(element("path", d=ring(BEZEL_RADIUS, RING_RADIUS), fill=KNOCKOUT, fill_rule="evenodd"))
+    elements.append(circle(ORIGIN, RING_RADIUS, fill="none", stroke=FRAME, stroke_width="2"))
+    ticks = "".join(f"M{coords(polar(214, clock(minute * 6)))}L{coords(polar(221, clock(minute * 6)))}"
+                    for minute in range(60) if minute % 5)
+    elements.append(element("path", d=ticks, stroke=DETAIL, stroke_opacity="0.5", stroke_width="2",
+                            stroke_linecap="round"))
+    hours = "".join(f"M{coords(polar(200, clock(hour * 30)))}L{coords(polar(220, clock(hour * 30)))}"
+                    for hour in range(12))
+    elements.append(element("path", d=hours, stroke=LINE, stroke_width="4", stroke_linecap="round"))
 
     # ---- the case edge and the bezel ----------------------------------------------------
-    g.append(circle(C, R_CASE, fill="none", stroke=FRAME, stroke_width="4"))
-    g.append(circle(C, R_BEZEL, fill="none", stroke=FRAME, stroke_width="3"))
+    elements.append(circle(ORIGIN, CASE_RADIUS, fill="none", stroke=FRAME, stroke_width="4"))
+    elements.append(circle(ORIGIN, BEZEL_RADIUS, fill="none", stroke=FRAME, stroke_width="3"))
 
     # ---- the hands, at ten past ten ----------------------------------------------------
-    g.append(turning(C, [dagger(140, 17, 0.62, 10, 3, "3", (10 + 9 / 60) * 30, neck=26)],
-                     PERIOD, *(stepper(PERIOD, step["centre"] / HOUR_RATIO) + (True,))))
-    g.append(turning(C, [dagger(206, 13, 0.70, 12, 3, "3", 9 * 6, neck=26)], PERIOD, *slow("centre")))
+    hour_hand = dagger(140, 17, 0.62, 10, 3, "3", (10 + 9 / 60) * 30, neck=26)
+    elements.append(turning(centre_arbor, [hour_hand], PERIOD,
+                            *(stepper(PERIOD, step["centre"] / HOUR_RATIO) + (True,))))
+    minute_hand = dagger(206, 13, 0.70, 12, 3, "3", 9 * 6, neck=26)
+    elements.append(turning(centre_arbor, [minute_hand], PERIOD, *accumulated("centre")))
     # a small pivot, not a cap, so the barrel's mesh with the centre pinion shows
-    g.append(circle(C, 3.5, fill=KNOCK, stroke=LINE, stroke_width="2"))
+    elements.append(circle(ORIGIN, 3.5, fill=KNOCKOUT, stroke=LINE, stroke_width="2"))
 
-    return (f'<svg width="{WIDTH}" height="{HEIGHT}" viewBox="0 0 {WIDTH} {HEIGHT}" xmlns="http://www.w3.org/2000/svg">\n'
+    return (f'<svg width="{WIDTH}" height="{HEIGHT}" viewBox="0 0 {WIDTH} {HEIGHT}" '
+            'xmlns="http://www.w3.org/2000/svg">\n'
             '<!-- Generated by watches/art/skeleton-watch.py. Edit that and run it, not this file. -->\n'
-            f'<g transform="translate({n(wx)} {n(wy)})">\n' + "\n".join(g) + "\n</g>\n</svg>\n")
+            f'<g transform="translate({num(centre_x)} {num(centre_y)})">\n' + "\n".join(elements)
+            + "\n</g>\n</svg>\n")
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("out", nargs="?", default=str(pathlib.Path(__file__).resolve().parents[1]
-                                                  / "public/cover/skeleton-watch.svg"))
-    ap.add_argument("--at", nargs=2, type=float, default=(798, 276), metavar=("X", "Y"))
-    a = ap.parse_args()
-    out = pathlib.Path(a.out)
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("out", nargs="?", default=str(TALK / "public/cover/skeleton-watch.svg"))
+    parser.add_argument("--at", nargs=2, type=float, default=(798, 276), metavar=("X", "Y"))
+    args = parser.parse_args()
+    out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(build(*a.at))
+    out.write_text(build(*args.at))
     print(f"wrote {out} ({out.stat().st_size / 1024:.1f} KiB)")
 
 
