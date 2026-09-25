@@ -45,11 +45,7 @@ def instance(
 ) -> str:
     """One copy of a drawing, with every id namespaced so refs stay local to it.
     At (width, height) if given, otherwise at the size the file states."""
-    source = path.read_text()
-    for name in set(re.findall(r'id="([^"]+)"', source)):
-        source = source.replace(f'id="{name}"', f'id="{name}-{tag}"').replace(
-            f"url(#{name})", f"url(#{name}-{tag})"
-        )
+    source = lib.namespace_ids(path.read_text(), tag)
     if width is None:
         return source
     return re.sub(
@@ -80,11 +76,14 @@ def build_html(files: list[pathlib.Path], times: list[float]) -> str:
         f'<h2>{len(files)} drawing(s) &mdash; 200 px wide</h2><div class="row" data-t="4.0">',
     ]
     for index, file in enumerate(files):
-        width, height, _scale = lib.shown_size(file.read_text())
-        if not (width and height):
-            sys.exit(f"{lib.rel(file)}: no width/height. Run tools/artcheck.py")
+        size = lib.shown_size(file.read_text())
+        if size is None:
+            sys.exit(
+                f"{lib.display_path(file)}: no width/height. Run tools/artcheck.py"
+            )
+        tall = round(200 * size.height / size.width)
         page_parts.append(
-            f'<div class="card">{instance(file, f"big-{index}", 200, round(200 * height / width))}</div>'
+            f'<div class="card">{instance(file, f"big-{index}", 200, tall)}</div>'
         )
     page_parts.append(
         "</div><h2>at the size each file states &mdash; what a slide shows</h2>"

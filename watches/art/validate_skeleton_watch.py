@@ -24,9 +24,9 @@ The steps:
 Needs stem/.venv with requirements.txt installed.
 """
 
+import json
 import os
 import pathlib
-import re
 import subprocess
 import sys
 from typing import NoReturn
@@ -125,40 +125,48 @@ def check_art() -> None:
     run("artcheck", [PYTHON, "tools/artcheck.py", relative])
     ok("artcheck")
 
-    barroom = run("barroom", [PYTHON, "tools/barroom.py", relative])
-    row = next(
-        (line for line in barroom.splitlines() if line.startswith(SVG.stem)), None
+    barroom = json.loads(
+        run("barroom", [PYTHON, "tools/barroom.py", relative, "--json"])
     )
-    if row is None or "!" in row:
-        fail("barroom: the 3.0 gate", barroom)
-    # The header names the venues in order; each has hold, p90 and Fmax in the
-    # row, after the name and ink%. The "gate:" line names the design venue.
-    header = next(line for line in barroom.splitlines() if line.startswith("drawing"))
-    venues = re.split(r"\s{2,}", header.strip())[2:]
-    gate = re.search(r"gate: .* at (.+?)\s+\(", barroom)
-    design = gate.group(1) if gate else venues[0]
-    column = 2 + 3 * venues.index(design)
-    hold, p90, fmax = row.split()[column : column + 3]
-    ok("barroom", f"at {design}: hold {hold}, p90 {p90}, Fmax {fmax}")
+    drawing = next(
+        drawing for drawing in barroom["drawings"] if drawing["path"] == relative
+    )
+    design = barroom["design_venue"]
+    scores = drawing["venues"][design]
+    if not drawing["passes_gate"]:
+        fail(
+            f"barroom: the {barroom['floor']:g} gate",
+            f"hold {scores['hold']:.2f} at {design}",
+        )
+    ok(
+        "barroom",
+        f"at {design}: hold {scores['hold']:.2f}, p90 {scores['p90']:.2f}, "
+        f"Fmax {scores['fmax']:.3f}",
+    )
 
     # Half a balance period apart, so the balance, fork and escape wheel are at
     # opposite ends of their motion. motion.py's default (half the longest
     # loop, the seconds hand's) is a whole number of periods: they would cancel.
     separation = f"{PERIOD / 2:g}"
-    motion = run("motion", [PYTHON, "tools/motion.py", relative, "--sep", separation])
-    row = next(
-        (
-            line
-            for line in motion.splitlines()
-            if re.match(rf"{SVG.stem}\s+[\d.]", line)
-        ),
-        None,
+    motion = json.loads(
+        run(
+            "motion",
+            [PYTHON, "tools/motion.py", relative, "--sep", separation, "--json"],
+        )
     )
-    if row is None or float(row.split()[-1]) <= 0:
-        fail("motion: no area changes by 3:1", motion)
+    drawing = next(
+        drawing for drawing in motion["drawings"] if drawing["path"] == relative
+    )
+    floor_band = f"{motion['floor']:.1f}"
+    area = drawing["bands"][floor_band]
+    if area < 1:
+        fail(
+            f"motion: no area changes by {motion['floor']:g}:1",
+            f"{area:.1f} CSS px^2 does",
+        )
     ok(
         f"motion --sep {separation}",
-        f"dPeak {row.split()[1]}, {row.split()[-1]} px2 >= 3:1",
+        f"dPeak {drawing['peak']:.2f}, {area:.0f} px2 >= 3:1",
     )
 
 

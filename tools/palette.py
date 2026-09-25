@@ -40,19 +40,19 @@ def rule(passed: bool) -> str:
 
 def show_palette() -> bool:
     palette = lib.LEDGER
-    print(f"Ledger, from {lib.rel(lib.THEME_CSS)}\n")
+    print(f"Ledger, from {lib.display_path(lib.THEME_CSS)}\n")
     for role, value in palette.items():
         print(f"  {lib.PALETTE_PREFIX}{role:<11} {value}")
 
     print("\ncontrast gates\n")
     passes = []
-    for role, against, minimum, why in lib.GATES:
-        ratio = lib.contrast(palette[role], palette[against])
-        passed = ratio >= minimum
+    for gate in lib.GATES:
+        ratio = lib.contrast(palette[gate.role], palette[gate.against])
+        passed = ratio >= gate.minimum
         passes.append(passed)
         print(
-            f"  {rule(passed)} {role:<7} vs {against:<11} {ratio:>6.2f}:1  "
-            f"(>= {minimum})   {why}"
+            f"  {rule(passed)} {gate.role:<7} vs {gate.against:<11} {ratio:>6.2f}:1  "
+            f"(>= {gate.minimum})   {gate.why}"
         )
 
     difference = lib.de76(palette["accent"], palette["ink"])
@@ -69,7 +69,8 @@ def show_palette() -> bool:
         f"(>= {lib.CVD_DE})   worst of deuter/protan"
     )
 
-    lightness = lib.lightness_ratio(palette["accent"], palette["second"])
+    # the lightness ratio is WCAG contrast, read as lightness alone
+    lightness = lib.contrast(palette["accent"], palette["second"])
     print(
         f"  {'ok  ' if lightness >= 1.4 else 'note'} accent  vs second      "
         f"{lightness:>5.2f}x   (>= 1.4 preferred)   hue fails before lightness does"
@@ -110,7 +111,7 @@ def show_palette() -> bool:
 
 def show_stray() -> bool:
     """Fail if a talk sets the palette. Only the theme may."""
-    css_name = lib.rel(lib.THEME_CSS)
+    css_name = lib.display_path(lib.THEME_CSS)
     print(f"\nonly the theme sets the palette ({css_name})\n")
     stray = lib.stray_palette_declarations()
     for path, number, text in stray:
@@ -123,12 +124,9 @@ def show_stray() -> bool:
     return not stray
 
 
-def show_candidate(candidate: str, role: str | None = None) -> None:
+def show_candidate(candidate: lib.Colour, role: str | None = None) -> None:
     palette = lib.LEDGER
-    candidate = candidate.upper()
-    if not candidate.startswith("#"):
-        candidate = "#" + candidate
-    print(f"{candidate}  L={lib.luminance(candidate):.4f}\n")
+    print(f"{candidate}  L={candidate.luminance:.4f}\n")
 
     print("  against every surface it might sit on")
     for surface in ("background", "panel", "border"):
@@ -143,23 +141,23 @@ def show_candidate(candidate: str, role: str | None = None) -> None:
         print(
             f"    vs {other:<11} {palette[other]}  dE76 {lib.de76(candidate, palette[other]):>5.0f}"
             f"   colour-blind dE {lib.cvd(candidate, palette[other]):>5.0f}"
-            f"   lightness {lib.lightness_ratio(candidate, palette[other]):.2f}x"
+            f"   lightness {lib.contrast(candidate, palette[other]):.2f}x"
         )
 
-    roles = [role] if role else [gate_role for gate_role, *_ in lib.GATES]
+    roles = [role] if role else [gate.role for gate in lib.GATES]
     print("\n  as a replacement for each role")
     seen = set()
     for replaced in roles:
         if replaced in seen:
             continue
         seen.add(replaced)
-        for gate_role, against, minimum, _why in lib.GATES:
-            if gate_role != replaced:
+        for gate in lib.GATES:
+            if gate.role != replaced:
                 continue
-            ratio = lib.contrast(candidate, palette[against])
+            ratio = lib.contrast(candidate, palette[gate.against])
             print(
-                f"    {rule(ratio >= minimum)} as {replaced:<7} vs {against:<11} "
-                f"{ratio:>6.2f}:1 (>= {minimum})"
+                f"    {rule(ratio >= gate.minimum)} as {replaced:<7} vs {gate.against:<11} "
+                f"{ratio:>6.2f}:1 (>= {gate.minimum})"
             )
         if replaced == "accent":
             difference = lib.de76(candidate, palette["ink"])
@@ -187,6 +185,10 @@ def show_candidate(candidate: str, role: str | None = None) -> None:
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        show_candidate(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)
+        try:
+            candidate = lib.Colour.from_hex(sys.argv[1])
+        except ValueError as error:
+            sys.exit(str(error))
+        show_candidate(candidate, sys.argv[2] if len(sys.argv) > 2 else None)
     else:
         sys.exit(0 if show_palette() else 1)

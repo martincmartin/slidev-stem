@@ -60,7 +60,7 @@ INHERIT = ("fill", "stroke", "fill-opacity", "stroke-opacity", "opacity")
 
 def marks(
     element: ElementTree.Element, inherited: dict[str, str] | None = None
-) -> Iterator[tuple[str, str, float]]:
+) -> Iterator[tuple[str, lib.Colour, float]]:
     """Every (kind, colour, effective alpha) this tree paints.
 
     SVG presentation attributes inherit, so a <g stroke-opacity="0.5"> makes
@@ -96,7 +96,7 @@ def marks(
             ):
                 yield (
                     kind,
-                    colour.upper(),
+                    lib.Colour.from_hex(colour),
                     float(style.get(f"{kind}-opacity", 1)) * group,
                 )
         for child in element:
@@ -144,9 +144,9 @@ def check_file(file: pathlib.Path) -> tuple[list[str], list[str]]:
     # ---- 2. grammar ------------------------------------------------------
     # The file states the size a slide shows it at, so its strokes can be read in
     # CSS px. Without that, no stroke check below means anything.
-    width, height, scale = lib.shown_size(raw)
+    size = lib.shown_size(raw)
     view_box = root.attrib.get("viewBox", "").split()
-    if not (width and height and scale and len(view_box) == 4):
+    if size is None or len(view_box) != 4:
         missing_size = (
             f"needs width and height (the CSS px a slide shows it at) and a "
             f"viewBox; has width={root.attrib.get('width')!r} "
@@ -154,24 +154,22 @@ def check_file(file: pathlib.Path) -> tuple[list[str], list[str]]:
         )
         return [*fails, missing_size], notes
     if (
-        abs((width / height) / (float(view_box[2]) / float(view_box[3])) - 1)
+        abs((size.width / size.height) / (float(view_box[2]) / float(view_box[3])) - 1)
         > lib.ASPECT_TOLERANCE
     ):
         fails.append(
-            f"width:height {width:g}:{height:g} is not the viewBox's "
+            f"width:height {size.width:g}:{size.height:g} is not the viewBox's "
             f"{view_box[2]}:{view_box[3]}, so the drawing is letterboxed or squashed"
         )
 
-    for colour in sorted(
-        lib.colours_in(raw) - set(lib.ART_INK) - {lib.ART_FIELD.upper()}
-    ):
+    for colour in sorted(lib.colours_in(raw) - set(lib.ART_INK) - {lib.ART_FIELD}):
         fails.append(
             f"colour {colour} is not in the drawing palette "
-            f"({', '.join(sorted(lib.ART_INK))}) -- see docs/illustrations.md"
+            f"({', '.join(str(ink) for ink in sorted(lib.ART_INK))}) -- see docs/illustrations.md"
         )
 
     for stroke in sorted(set(lib.strokes_in(raw))):
-        shown = stroke * scale
+        shown = stroke * size.css_px_per_unit
         if not any(
             abs(shown / step - 1) <= lib.LADDER_TOLERANCE for step in lib.STROKE_LADDER
         ):
@@ -182,11 +180,11 @@ def check_file(file: pathlib.Path) -> tuple[list[str], list[str]]:
 
     # ---- 3. legibility ---------------------------------------------------
     for stroke in sorted(set(lib.strokes_in(raw))):
-        shown = stroke * scale
+        shown = stroke * size.css_px_per_unit
         if shown < lib.STROKE_FLOOR_CSSPX:
             fails.append(
                 f"stroke-width {stroke:g} units = {shown:.2f} CSS px as shown, under the "
-                f"{lib.STROKE_FLOOR_CSSPX} px floor at {lib.DESIGN_VENUE}"
+                f"{lib.STROKE_FLOOR_CSSPX:.2f} px floor at {lib.DESIGN_VENUE.label}"
             )
 
     # ---- opacity: a wide line drawn too faint is still invisible ---------
@@ -198,7 +196,7 @@ def check_file(file: pathlib.Path) -> tuple[list[str], list[str]]:
         need = lib.min_opacity(colour)
         if alpha >= 0.999 or need is None:
             continue
-        effective = lib.contrast(lib.blend(colour, lib.ART_FIELD, alpha), lib.ART_FIELD)
+        effective = lib.contrast(colour.blend(lib.ART_FIELD, alpha), lib.ART_FIELD)
         # A hair under the floor is rounding, not a wash: 0.55 of the deep blue
         # lands at 2.99:1. Only complain when it is actually faint.
         if effective < lib.CONTRAST_FLOOR * 0.99:
@@ -226,7 +224,7 @@ def main(arguments: list[str]) -> int:
         return 1
     failing = 0
     for file in files:
-        shown_path = lib.rel(file)
+        shown_path = lib.display_path(file)
         fails, notes = check_file(file)
         if fails:
             failing += 1
@@ -241,7 +239,7 @@ def main(arguments: list[str]) -> int:
     if not failing:
         print(
             f"Grammar: strokes {lib.STROKE_LADDER} CSS px as shown, "
-            f"floor {lib.STROKE_FLOOR_CSSPX} CSS px at {lib.DESIGN_VENUE}."
+            f"floor {lib.STROKE_FLOOR_CSSPX:.2f} CSS px at {lib.DESIGN_VENUE.label}."
         )
     return 1 if failing else 0
 

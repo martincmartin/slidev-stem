@@ -37,7 +37,9 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 ```
 
 `palette.py`, `artcheck.py` and `offline_check.py` exit non-zero on failure, so
-they work in a pre-commit hook or CI. All of them need Python 3.14, so run them
+they work in a pre-commit hook or CI. `barroom.py` and `motion.py` print their
+scores as JSON with `--json`: a program that reads them (such as a talk's
+validator) must use that, not their tables. All of them need Python 3.14, so run them
 with `stem/.venv/bin/python3`: see `../requirements.txt` for how to make it. The
 "needs" column above lists the packages.
 

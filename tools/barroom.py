@@ -4,6 +4,7 @@
     .venv/bin/python3 tools/barroom.py                        # every talk's art
     .venv/bin/python3 tools/barroom.py new.svg                # one new drawing
     .venv/bin/python3 tools/barroom.py a.svg b.svg --save /tmp/
+    .venv/bin/python3 tools/barroom.py new.svg --json         # for another program
 
 Needs playwright (+ `playwright install chromium`), Pillow and numpy.
 
@@ -52,11 +53,12 @@ new drawing is fine.
 
 import argparse
 import io
+import json
 import math
 import pathlib
-import re
 import sys
 from collections.abc import Sequence
+from dataclasses import dataclass
 
 import lib
 import numpy as np
@@ -67,12 +69,14 @@ Linear = NDArray[np.float64]  # an H x W x 3 image in linear light
 Plane = NDArray[np.float64]  # an H x W array: luminance or contrast
 Mask = NDArray[np.bool_]
 
-DSF = 2  # device scale factor we render at
-_LIN = np.array([lib.srgb_to_lin(value) for value in range(256)], dtype=np.float64)
+DEVICE_SCALE = 2  # the device scale factor we render at
+LINEAR_OF_CHANNEL = np.array(
+    [lib.srgb_to_linear(value) for value in range(256)], dtype=np.float64
+)
 
 
 def to_linear(image: Image.Image) -> Linear:
-    return _LIN[np.asarray(image.convert("RGB"), dtype=np.uint8)]
+    return LINEAR_OF_CHANNEL[np.asarray(image.convert("RGB"), dtype=np.uint8)]
 
 
 def to_srgb(linear: Linear) -> Image.Image:
@@ -143,13 +147,12 @@ def hold(ink: Mask, blurred: Linear, flare: float, percentile: float = 50) -> fl
 def fmax(ink: Mask, blurred: Linear, floor: float = lib.CONTRAST_FLOOR) -> float:
     if hold(ink, blurred, 0.0) < floor:
         return 0.0
-    low, high = 0.0, 0.30
-    for _ in range(24):
-        middle = (low + high) / 2
-        low, high = (
-            (middle, high) if hold(ink, blurred, middle) >= floor else (low, middle)
-        )
-    return low
+    return lib.bisect(
+        lambda flare: hold(ink, blurred, flare) >= floor,
+        passing=0.0,
+        failing=0.30,
+        steps=24,
+    )
 
 
 def label_for(file: pathlib.Path, others: Sequence[pathlib.Path] = ()) -> str:
@@ -165,17 +168,17 @@ def label_for(file: pathlib.Path, others: Sequence[pathlib.Path] = ()) -> str:
     return file.stem[:21]
 
 
-def sizes(files: Sequence[pathlib.Path]) -> list[tuple[float, float]]:
-    """Each drawing's (width, height) in CSS px, from its file. Exits if one is missing."""
+def sizes(files: Sequence[pathlib.Path]) -> list[lib.ShownSize]:
+    """The size each file states a slide shows it at. Exits if one has none."""
     out = []
     for file in files:
-        width, height, _scale = lib.shown_size(file.read_text())
-        if not (width and height):
+        size = lib.shown_size(file.read_text())
+        if size is None:
             sys.exit(
-                f"{lib.rel(file)}: no width/height -- the size a slide shows it at. "
-                f"Run tools/artcheck.py"
+                f"{lib.display_path(file)}: no width/height -- the size a slide shows "
+                f"it at. Run tools/artcheck.py"
             )
-        out.append((width, height))
+        out.append(size)
     return out
 
 
@@ -192,13 +195,10 @@ def render(
         f"<style>body{{margin:0;background:{lib.ART_FIELD};padding:0}}",
         "div{display:flex;align-items:flex-start}svg{display:block;flex:none}</style><div>",
     ]
-    for index, file in enumerate(files):
-        source = file.read_text()
-        for name in set(re.findall(r'id="([^"]+)"', source)):
-            source = source.replace(f'id="{name}"', f'id="{name}-{index}"').replace(
-                f"url(#{name})", f"url(#{name}-{index})"
-            )
-        page_parts.append(source)
+    page_parts += [
+        lib.namespace_ids(file.read_text(), str(index))
+        for index, file in enumerate(files)
+    ]
     page_parts.append(
         '</div><script>document.querySelectorAll("svg").forEach(s=>{'
         f"s.pauseAnimations();s.setCurrentTime({time});}});</script>"
@@ -207,10 +207,10 @@ def render(
         browser = playwright.chromium.launch()
         page = browser.new_page(
             viewport={
-                "width": math.ceil(sum(width for width, _ in shown)),
-                "height": math.ceil(max(height for _, height in shown)),
+                "width": math.ceil(sum(size.width for size in shown)),
+                "height": math.ceil(max(size.height for size in shown)),
             },
-            device_scale_factor=DSF,
+            device_scale_factor=DEVICE_SCALE,
         )
         page.set_content("".join(page_parts), wait_until="load")
         page.wait_for_timeout(600)
@@ -218,19 +218,154 @@ def render(
         browser.close()
     raw = Image.open(io.BytesIO(shot))
     crops, left = [], 0.0
-    for width, height in shown:
+    for size in shown:
         crops.append(
             raw.crop(
                 (
-                    round(left * DSF),
+                    round(left * DEVICE_SCALE),
                     0,
-                    round((left + width) * DSF),
-                    round(height * DSF),
+                    round((left + size.width) * DEVICE_SCALE),
+                    round(size.height * DEVICE_SCALE),
                 )
             )
         )
-        left += width
+        left += size.width
     return raw, crops
+
+
+@dataclass(frozen=True)
+class VenueScore:
+    """What the back row at one venue gets from one drawing."""
+
+    hold: float  # median contrast of the marks, after the blur
+    p90: float  # the same at the 90th percentile
+    fmax: float  # the ambient flare at which `hold` falls through the floor
+
+
+@dataclass(frozen=True)
+class DrawingScore:
+    file: pathlib.Path
+    ink_percent: float  # the share of the drawing's box that carries a mark
+    venues: dict[lib.Venue, VenueScore]
+
+    @property
+    def passes_gate(self) -> bool:
+        return self.venues[lib.DESIGN_VENUE].hold >= lib.CONTRAST_FLOOR
+
+
+def score(file: pathlib.Path, card: Image.Image) -> DrawingScore:
+    """One drawing, rendered on its card, at every venue."""
+    clean_ink, _ = prep(card, 0.0)
+    venues = {}
+    for venue in lib.VENUES:
+        ink, blurred = prep(card, venue.blur_sigma(DEVICE_SCALE))
+        venues[venue] = VenueScore(
+            hold(ink, blurred, 0.0), hold(ink, blurred, 0.0, 90), fmax(ink, blurred)
+        )
+    return DrawingScore(file, 100 * float(clean_ink.mean()), venues)
+
+
+def print_table(scores: list[DrawingScore]) -> None:
+    files = [drawing.file for drawing in scores]
+    print(f"{'drawing':<22}{'ink%':>6}", end="")
+    for venue in lib.VENUES:
+        print(f"{venue.label:>26}", end="")
+    print(f"\n{'':<22}{'':>6}", end="")
+    for _ in lib.VENUES:
+        print(f"{'hold':>9}{'p90':>8}{'Fmax':>9}", end="")
+    print()
+    for drawing in scores:
+        print(
+            f"{label_for(drawing.file, files):<22}{drawing.ink_percent:>6.1f}", end=""
+        )
+        for venue in lib.VENUES:
+            venue_score = drawing.venues[venue]
+            flag = (
+                "!"
+                if venue is lib.DESIGN_VENUE and venue_score.hold < lib.CONTRAST_FLOOR
+                else " "
+            )
+            print(
+                f"{venue_score.hold:>9.2f}{venue_score.p90:>8.2f}"
+                f"{venue_score.fmax:>8.3f}{flag}",
+                end="",
+            )
+        print()
+
+    print(
+        f"\ngate: hold >= {lib.CONTRAST_FLOOR:.1f} at {lib.DESIGN_VENUE.label}"
+        f"   (marked ! if it fails)"
+    )
+    failing = [drawing for drawing in scores if not drawing.passes_gate]
+    for drawing in failing:
+        design = drawing.venues[lib.DESIGN_VENUE]
+        print(
+            f"\nBELOW THE GATE: {label_for(drawing.file, files)}  "
+            f"hold {design.hold:.2f}, p90 {design.p90:.2f}"
+        )
+        if design.p90 >= 2 * lib.CONTRAST_FLOOR:
+            print(
+                f"  BUT ITS STRONG MARKS ARE FINE (p90 {design.p90:.2f}). `hold` is a median "
+                f"over every\n  non-background pixel, so a large deliberate WASH -- a "
+                f"low-opacity fill -- drags it\n  down without anything being wrong. "
+                f"What this is really saying is that at the\n  back row the drawing "
+                f"reduces to its outline. Check that the outline alone still\n  reads, "
+                f"and run `.venv/bin/python3 tools/artcheck.py` to see which fills are the washes."
+            )
+        else:
+            print(
+                f"  Its strong marks fail too (p90 {design.p90:.2f}), so this is a real "
+                f"legibility failure.\n  Read docs/legibility.md before redrawing: a "
+                f"drawing that fails on stroke WEIGHT is\n  one remap from fixed, and "
+                f"one that fails on PALETTE cannot be fixed with ink."
+            )
+    if not failing:
+        print(
+            "all clear the gate. Above it, headroom stops deciding and taste takes over."
+        )
+    print(
+        "\nRead `hold` with `p90`, never alone. Fmax is room light tolerated; 0.30 is "
+        "the\nceiling for any design. watches/docs/measurements.md has the timekeepers' numbers."
+    )
+
+
+def as_json(scores: list[DrawingScore]) -> str:
+    files = [drawing.file for drawing in scores]
+    return json.dumps(
+        {
+            "design_venue": lib.DESIGN_VENUE.label,
+            "floor": lib.CONTRAST_FLOOR,
+            "drawings": [
+                {
+                    "path": str(lib.display_path(drawing.file)),
+                    "label": label_for(drawing.file, files),
+                    "ink_percent": drawing.ink_percent,
+                    "passes_gate": drawing.passes_gate,
+                    "venues": {
+                        venue.label: {
+                            "hold": venue_score.hold,
+                            "p90": venue_score.p90,
+                            "fmax": venue_score.fmax,
+                        }
+                        for venue, venue_score in drawing.venues.items()
+                    },
+                }
+                for drawing in scores
+            ],
+        },
+        indent=2,
+    )
+
+
+def save_views(raw: Image.Image, out: pathlib.Path) -> None:
+    """What each venue's back row sees of the whole screenshot, clean and at
+    10% flare."""
+    out.mkdir(parents=True, exist_ok=True)
+    for venue in lib.VENUES:
+        blurred = gauss(to_linear(raw), venue.blur_sigma(DEVICE_SCALE))
+        tag = venue.label.replace(" ", "").replace("@", "at")
+        to_srgb(blurred).save(out / f"barroom-{tag}-clean.png")
+        to_srgb(blurred + 0.10).save(out / f"barroom-{tag}-flare10.png")
 
 
 def main() -> None:
@@ -244,90 +379,27 @@ def main() -> None:
         metavar="DIR",
         help="also write what each venue looks like, clean and at 10%% flare",
     )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="print the scores as JSON, for another program, not as a table",
+    )
     arguments = parser.parse_args()
 
     files = lib.art_files(arguments.paths or None)
     if not files:
         sys.exit("no SVGs found")
     raw, cards = render(files)
-
-    print(f"{'drawing':<22}{'ink%':>6}", end="")
-    for venue_label, *_ in lib.VENUES:
-        print(f"{venue_label:>26}", end="")
-    print(f"\n{'':<22}{'':>6}", end="")
-    for _ in lib.VENUES:
-        print(f"{'hold':>9}{'p90':>8}{'Fmax':>9}", end="")
-    print()
-
-    at_design_venue = {}
-    for file, card in zip(files, cards, strict=True):
-        clean_ink, _ = prep(card, 0.0)
-        print(f"{label_for(file, files):<22}{100 * clean_ink.mean():>6.1f}", end="")
-        for venue_label, screen_width, distance in lib.VENUES:
-            sigma = (1.0 / lib.arcmin_per_csspx(screen_width, distance)) / 2.355 * DSF
-            ink, blurred = prep(card, sigma)
-            median, p90, flare_limit = (
-                hold(ink, blurred, 0.0),
-                hold(ink, blurred, 0.0, 90),
-                fmax(ink, blurred),
-            )
-            flag = (
-                "!"
-                if venue_label == lib.DESIGN_VENUE and median < lib.CONTRAST_FLOOR
-                else " "
-            )
-            print(f"{median:>9.2f}{p90:>8.2f}{flare_limit:>8.3f}{flag}", end="")
-            if venue_label == lib.DESIGN_VENUE:
-                at_design_venue[label_for(file, files)] = (median, p90, flare_limit)
-        print()
-
-    print(
-        f"\ngate: hold >= {lib.CONTRAST_FLOOR:.1f} at {lib.DESIGN_VENUE}"
-        f"   (marked ! if it fails)"
-    )
-    failing = {
-        name: (median, p90)
-        for name, (median, p90, _) in at_design_venue.items()
-        if median < lib.CONTRAST_FLOOR
-    }
-    if failing:
-        for name, (median, p90) in failing.items():
-            print(f"\nBELOW THE GATE: {name}  hold {median:.2f}, p90 {p90:.2f}")
-            if p90 >= 2 * lib.CONTRAST_FLOOR:
-                print(
-                    f"  BUT ITS STRONG MARKS ARE FINE (p90 {p90:.2f}). `hold` is a median "
-                    f"over every\n  non-background pixel, so a large deliberate WASH -- a "
-                    f"low-opacity fill -- drags it\n  down without anything being wrong. "
-                    f"What this is really saying is that at the\n  back row the drawing "
-                    f"reduces to its outline. Check that the outline alone still\n  reads, "
-                    f"and run `.venv/bin/python3 tools/artcheck.py` to see which fills are the washes."
-                )
-            else:
-                print(
-                    f"  Its strong marks fail too (p90 {p90:.2f}), so this is a real "
-                    f"legibility failure.\n  Read docs/legibility.md before redrawing: a "
-                    f"drawing that fails on stroke WEIGHT is\n  one remap from fixed, and "
-                    f"one that fails on PALETTE cannot be fixed with ink."
-                )
+    scores = [score(file, card) for file, card in zip(files, cards, strict=True)]
+    if arguments.json:
+        print(as_json(scores))
     else:
-        print(
-            "all clear the gate. Above it, headroom stops deciding and taste takes over."
-        )
-    print(
-        "\nRead `hold` with `p90`, never alone. Fmax is room light tolerated; 0.30 is "
-        "the\nceiling for any design. watches/docs/measurements.md has the timekeepers' numbers."
-    )
-
+        print_table(scores)
     if arguments.save:
         out = pathlib.Path(arguments.save)
-        out.mkdir(parents=True, exist_ok=True)
-        for venue_label, screen_width, distance in lib.VENUES:
-            arcmin = lib.arcmin_per_csspx(screen_width, distance)
-            blurred = gauss(to_linear(raw), (1.0 / arcmin) / 2.355 * DSF)
-            tag = venue_label.replace(" ", "").replace("@", "at")
-            to_srgb(blurred).save(out / f"barroom-{tag}-clean.png")
-            to_srgb(blurred + 0.10).save(out / f"barroom-{tag}-flare10.png")
-        print(f"\nwrote {2 * len(lib.VENUES)} images to {out}")
+        save_views(raw, out)
+        if not arguments.json:
+            print(f"\nwrote {2 * len(lib.VENUES)} images to {out}")
 
 
 if __name__ == "__main__":

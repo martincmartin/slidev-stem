@@ -40,9 +40,11 @@ projector @6m    2.00 m     6.00 m      2.04       1.17              0.86 CSS px
 is far likelier to have a telly than a projector. One arcminute is a good eye's
 resolution limit; at 7 m on a 55-inch screen one CSS px falls below it.
 
-These four rows live in `VENUES` in `tools/lib.py`. **The day the venue
-is known, edit that table and re-run `tools/barroom.py` — that is the entire cost
-of re-deciding anything here.**
+These four rows are the `Venue`s in `VENUES` in `tools/lib.py`, and
+`DESIGN_VENUE` names the one to design for. The stroke floor is computed from it.
+**The day the venue is known, add it as a `Venue`, make it `DESIGN_VENUE`, and
+re-run `tools/barroom.py` — that is the entire cost of re-deciding anything
+here.**
 
 ## The two floors
 

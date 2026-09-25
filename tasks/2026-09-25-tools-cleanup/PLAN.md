@@ -189,3 +189,39 @@ stroke from 1.636 to 1.64 CSS px would pass where it fails today, and the
 printed floor needs a format (`:.2f`) to still read "1.64". Such a stroke
 fails the ladder anyway: its lowest step is 2.0 within 5%, so 1.9 CSS px. So
 no verdict can change, and the before-and-after diff will confirm it.
+
+## Outcome (2026-09-25)
+
+Choices: 1 B (Python 3.14 everywhere), 2 A (`--json`), 3 A (roles stay CSS
+names, checked when `lib.py` loads), 4 (two stages). Each step was committed
+separately:
+
+1. **Python 3.14** (`166d973`). The output was byte-identical.
+2. **Stage 1** (`f072f32`): names, type signatures and `tools/check_python.py`.
+   Every tool passes ruff (0.16.9's default rules), mypy `--strict` and pyright.
+   The watch validator runs `check_python.py` rather than its own copy of the
+   steps. The output was byte-identical.
+3. **Stage 2**: `Colour`, `Gate`, `ShownSize`, `Venue` and `Deficiency` in
+   `lib.py`; one `bisect()` and one `namespace_ids()`; `lightness_ratio()`
+   removed (it was `contrast()`). `DrawingScore`/`VenueScore` in `barroom.py`,
+   and `SamplingPlan`/`MotionScore` in `motion.py`. Both print their tables
+   from these, and print `--json` for programs. The watch validator reads the
+   JSON. `capture.sh` found every output byte-identical, images included.
+
+Differences outside `capture.sh`'s cases, all deliberate:
+
+- `STROKE_FLOOR_CSSPX` is computed (1.6357), not pinned (1.64). It is printed
+  as `1.64`. No verdict can change: a stroke under 1.64 CSS px is off the
+  ladder anyway.
+- An invalid colour (`palette.py red`) and an unknown venue
+  (`motion.py --venue x`) exit with a message, not a traceback. So does
+  `contact.py` on a drawing with no width or height.
+- The watch validator's motion check fails when less than 1 CSS px^2 changes
+  by 3:1. Before, it failed when the rounded table cell was 0 (under 0.5 CSS
+  px^2). 1 is the threshold that `motion.py` itself uses.
+
+Not done: `watches/art/skeleton_watch.py` still reads the palette from the
+CSS with its own `theme_palette()`, which repeats `lib.css_palette()`. To use
+the tools' one, a talk's script would need to import from `stem/tools/`
+across directories, which `stem/tools/` is not set up for (it is not a
+package).

@@ -88,6 +88,6 @@ learns that the framework has moved on.
 The palette and the illustration style rest on the same guess: **nobody has seen the
 venue.** Everything in [legibility.md](legibility.md) is designed for the row you
 cannot rule out — a 55-inch TV seen from 7 m, which is the hostile case and likelier
-in a bar than a projector. The day the venue is known, edit `VENUES` in
-`tools/lib.py` and re-run `tools/barroom.py`. That is the entire cost of
-re-deciding.
+in a bar than a projector. The day the venue is known, add it to `VENUES` in
+`tools/lib.py`, make it `DESIGN_VENUE`, and re-run `tools/barroom.py`. That is
+the entire cost of re-deciding.
