@@ -23,7 +23,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from types import ModuleType
-from typing import Protocol
+from typing import Any, Protocol
 
 import numpy as np
 from numpy.typing import NDArray
@@ -163,13 +163,22 @@ def polygon_gap(
     return nearest(edge, outline(region, spacing))
 
 
-# ---- the layout as a whole ------------------------------------------------------------
+# ---- the whole watch ------------------------------------------------------------------
 MESH_TOLERANCE = 0.01  # px: a mesh distance must be exact, up to rounding
 
 
+class Placement(Protocol):
+    """What skeleton-watch.py's Placement provides."""
+
+    @property
+    def arbor(self) -> Mapping[Any, Point]: ...
+    def fork_polygon(self, bank: float) -> list[Point]: ...
+
+
 @dataclass(frozen=True)
-class Layout:
-    """What the validator checks and the search optimises."""
+class Clearances:
+    """A placement's clearances: what the validator checks and the search
+    optimises."""
 
     # (driver, driven) -> what is wrong with the mesh
     mesh_errors: dict[Pair, str]
@@ -204,9 +213,10 @@ def load_watch(path: Path) -> ModuleType:
     return module
 
 
-def measure(watch: ModuleType, spacing: float = 1.0) -> Layout:
-    """The layout that `watch`'s constants give, measured."""
-    placement = watch.place()
+def measure(
+    watch: ModuleType, placement: Placement, spacing: float = 1.0
+) -> Clearances:
+    """The clearances of `placement`, one of `watch`'s placements."""
     mesh_errors: dict[Pair, str] = {}
     meshing = set()
     for driver in watch.TRAIN:
@@ -237,4 +247,4 @@ def measure(watch: ModuleType, spacing: float = 1.0) -> Layout:
         for part in visible
         if part not in (watch.ESCAPE, watch.BALANCE)
     }
-    return Layout(mesh_errors, reach, ring_gaps, wheel_gaps, fork_gaps)
+    return Clearances(mesh_errors, reach, ring_gaps, wheel_gaps, fork_gaps)

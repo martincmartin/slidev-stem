@@ -149,18 +149,27 @@ Part = Wheel | Balance | Fork
 Round = Wheel | Balance  # hides what is below it inside inner
 
 @dataclass(frozen=True)
-class Placement:
-    """Where the parts are, for one set of layout constants."""
-    arbor: dict[Part, Point]
-    def hole(self, part: Round) -> str: ...  # the clip path under it
+class Layout:  # a value: the numbers that place the arbors
+    barrel_angle: float
+    third_angle: float
+    ...
+    balance_distance: float
 
-def place() -> Placement: ...  # was arbors(); reads the layout constants
+LAYOUT = Layout(barrel_angle=-90.0, third_angle=50.0, ...)  # the drawing's
+
+class Placement:  # a regular class: its state is computed
+    """Where each arbor is, for one layout."""
+    def __init__(self, layout: Layout) -> None:
+        self.layout = layout
+        self.arbor: dict[Part, Point] = {...}
+    def hole(self, part: Round) -> str: ...  # the clip path under it
 ```
 
-`build()` starts with `placement = place()` and reads `placement.arbor[THIRD]`.
-`watch_geometry.measure()` and the search's `evaluate()` do the same. The
-search still sets the layout constants with `setattr`, and then calls `place()`.
-`Placement.hole()` uses `part.name` only for the clip path's id.
+`build(LAYOUT, …)` starts with `placement = Placement(layout)` and reads
+`placement.arbor[THIRD]`. The validator measures `Placement(LAYOUT)`. The
+search makes each candidate with `dataclasses.replace(LAYOUT, third_angle=…,
+…)` and measures `Placement(candidate)`. `Placement.hole()` uses `part.name`
+only for the clip path's id.
 
 ## Other design choices
 
@@ -233,12 +242,38 @@ those two numbers.
 
 ### `watch_geometry.py` and the search
 
-- `Layout`'s dicts use parts as keys: `(Part, Part)` for pairs and `Part` for
-  one part. The reports make names from `part.name`.
+- `Clearances` (first called `Layout`; renamed when `Layout` became the input)
+  uses parts as keys: `(Part, Part)` for pairs and `Part` for one part. The
+  reports make names from `part.name`.
 - `FORK_WHEELS` goes. The fork works on the escape wheel and the balance, so it
   must clear `STACK` without `ESCAPE` and `BALANCE`. That list is derived.
-- The search's `PARAMETERS` stay strings. They name layout constants for
-  `setattr`, not parts.
+- The search no longer uses `setattr`. See "The layout as a value".
+
+### The layout as a value
+
+A first version kept the layout as seven module constants. `place()` read
+them, and the search tried each candidate by setting the constants with
+`setattr`, named by the strings in its `PARAMETERS`. So the search mutated the
+module it measured, and it referred to the constants by strings.
+
+Options for making a placement:
+
+- **A.** Keep `place()`, a free function that reads the constants.
+- **B.** Make `Placement()` compute the arbors from the constants. This hides
+  an input that changes behind a constructor with no arguments.
+- **C.** Add a classmethod, `Placement.from_layout()`, that reads the
+  constants. It is tidier than A, but the search still needs `setattr`.
+- **D (chosen).** Make `Layout` a frozen dataclass of the seven numbers, and
+  make `Placement` a regular class whose constructor takes a `Layout`.
+
+D states the input, and every placement matches the layout that made it. The
+search makes new values rather than changing the module, and a misspelt field
+in `replace()` raises a `TypeError`. `Layout` compares and hashes by value
+(the opposite of the parts), so the search's `fine` dict uses layouts as keys.
+
+`Placement` is a regular class, not a dataclass. Its one field is computed,
+not passed in. As a dataclass it would need `field(init=False)`, an `InitVar`
+and `__post_init__`, and its repr would print the whole arbor table.
 
 ### `MESHES` and `WHEELS` go
 

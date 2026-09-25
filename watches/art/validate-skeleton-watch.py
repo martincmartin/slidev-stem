@@ -91,30 +91,32 @@ def check_types() -> None:
 
 
 def check_layout(watch: ModuleType) -> None:
-    layout = geometry.measure(watch)
+    clearances = geometry.measure(watch, watch.Placement(watch.LAYOUT))
     label = geometry.label
-    problems = [f"{label(pair)}: {error}" for pair, error in layout.mesh_errors.items()]
-    for part, gap in layout.ring_gaps.items():
+    problems = [
+        f"{label(pair)}: {error}" for pair, error in clearances.mesh_errors.items()
+    ]
+    for part, gap in clearances.ring_gaps.items():
         if gap < watch.RING_CLEARANCE:
             problems.append(
                 f"{label(part)}: {gap:.1f} px from the chapter ring, "
                 f"under RING_CLEARANCE {watch.RING_CLEARANCE:g}"
             )
-    for pair, gap in layout.wheel_gaps.items():
+    for pair, gap in clearances.wheel_gaps.items():
         if gap < watch.MIN_CLEARANCE:
             problems.append(
                 f"{label(pair)}: visible parts {gap:.1f} px apart, under MIN_CLEARANCE {watch.MIN_CLEARANCE:g}"
             )
-    for part, gap in layout.fork_gaps.items():
+    for part, gap in clearances.fork_gaps.items():
         if gap < watch.FORK_CLEARANCE:
             problems.append(
                 f"fork-{label(part)}: {gap:.1f} px apart, under FORK_CLEARANCE {watch.FORK_CLEARANCE:g}"
             )
     if problems:
         fail("layout", "\n".join(f"      {problem}" for problem in problems))
-    wheel_pair, wheel_gap = layout.tightest_wheels()
-    fork_wheel, fork_gap = layout.tightest_fork()
-    ring_part, ring_gap = layout.tightest_ring()
+    wheel_pair, wheel_gap = clearances.tightest_wheels()
+    fork_wheel, fork_gap = clearances.tightest_fork()
+    ring_part, ring_gap = clearances.tightest_ring()
     ok(
         "layout",
         f"meshes exact; tightest visible gap {wheel_gap:.1f} px, {label(wheel_pair)}; "

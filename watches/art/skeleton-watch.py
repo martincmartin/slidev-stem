@@ -216,22 +216,39 @@ Round = Wheel | Balance
 # the round parts, back to front
 STACK: list[Round] = [ESCAPE, FOURTH, THIRD, CENTRE, BARREL, BALANCE]
 
+
 # ---- the layout -------------------------------------------------------------------
-# Screen angles in degrees (0 = 3 o'clock, increasing clockwise), each from the
-# arbor before it in the train. A wheel's distance from the arbor before it is
-# fixed by the mesh (pitch radius plus pinion radius), so only these are free.
-# They keep the balance at lower left, beside the title, and leave at least
-# MIN_CLEARANCE between the visible parts of parts that do not mesh,
-# FORK_CLEARANCE round the fork and RING_CLEARANCE inside the chapter ring:
-# validate-skeleton-watch.py checks all three.
-# search-skeleton-watch-layout.py found these; run it before changing them.
-BARREL_ANGLE = -90.0  # from the centre arbor: straight up, at 12 o'clock
-THIRD_ANGLE = 50.0  # from the centre arbor
-FOURTH_ANGLE = 102.5  # from the third arbor
-ESCAPE_ANGLE = 147.5  # from the fourth arbor
-LEVER_ANGLE = 212.5  # from the escape arbor toward the balance
-FORK_PIVOT_DISTANCE = 36.0  # from the escape arbor, along LEVER_ANGLE
-BALANCE_DISTANCE = 110.0  # from the escape arbor, along LEVER_ANGLE
+@dataclass(frozen=True)
+class Layout:
+    """The numbers that place the arbors. Angles are screen angles in degrees
+    (0 = 3 o'clock, increasing clockwise), each from the arbor before it in the
+    train. A wheel's distance from the arbor before it is fixed by the mesh
+    (pitch radius plus pinion radius), so only these are free. A value: two
+    layouts with the same numbers are equal."""
+
+    barrel_angle: float  # from the centre arbor
+    third_angle: float  # from the centre arbor
+    fourth_angle: float  # from the third arbor
+    escape_angle: float  # from the fourth arbor
+    lever_angle: float  # from the escape arbor toward the balance
+    fork_pivot_distance: float  # from the escape arbor, along lever_angle
+    balance_distance: float  # from the escape arbor, along lever_angle
+
+
+# The drawing's layout. It keeps the balance at lower left, beside the title,
+# and leaves at least MIN_CLEARANCE between the visible parts of parts that do
+# not mesh, FORK_CLEARANCE round the fork and RING_CLEARANCE inside the
+# chapter ring: validate-skeleton-watch.py checks all three.
+# search-skeleton-watch-layout.py found it; run it before changing it.
+LAYOUT = Layout(
+    barrel_angle=-90.0,  # straight up, at 12 o'clock
+    third_angle=50.0,
+    fourth_angle=102.5,
+    escape_angle=147.5,
+    lever_angle=212.5,
+    fork_pivot_distance=36.0,
+    balance_distance=110.0,
+)
 MIN_CLEARANCE = 8.0  # px between parts that do not mesh
 FORK_CLEARANCE = 8.0  # px from the fork to the wheels it does not work on
 RING_CLEARANCE = 8.0  # px from each part to the chapter ring's inside edge
@@ -645,14 +662,25 @@ def under(parts: list[Round], body: list[str]) -> str:
     return body[0]
 
 
-@dataclass(frozen=True)
 class Placement:
-    """Where each arbor is, from the watch centre, for one set of layout
-    constants. place() makes a new one each time, so nothing in it is left
-    over from another layout. The holes and the fork's outline follow from
-    the arbors."""
+    """Where each arbor is, from the watch centre, for one layout: a side
+    table, so the parts hold only what never changes. The holes and the fork's
+    outline follow from the arbors."""
 
-    arbor: dict[Part, Point]
+    def __init__(self, layout: Layout) -> None:
+        self.layout = layout
+        third = polar(CENTRE.mesh_distance, layout.third_angle)
+        fourth = polar(THIRD.mesh_distance, layout.fourth_angle, third)
+        escape = polar(FOURTH.mesh_distance, layout.escape_angle, fourth)
+        self.arbor: dict[Part, Point] = {
+            BARREL: polar(BARREL.mesh_distance, layout.barrel_angle),
+            CENTRE: ORIGIN,
+            THIRD: third,
+            FOURTH: fourth,
+            ESCAPE: escape,
+            FORK: polar(layout.fork_pivot_distance, layout.lever_angle, escape),
+            BALANCE: polar(layout.balance_distance, layout.lever_angle, escape),
+        }
 
     def hole(self, part: Round) -> str:
         """A clipPath that keeps everything except the part's inner disc: the
@@ -687,25 +715,6 @@ class Placement:
         ]
 
 
-def place() -> Placement:
-    """The arbors for the layout constants as they are now: the barrel, the
-    train, the fork's pivot and the balance."""
-    third = polar(CENTRE.mesh_distance, THIRD_ANGLE)
-    fourth = polar(THIRD.mesh_distance, FOURTH_ANGLE, third)
-    escape = polar(FOURTH.mesh_distance, ESCAPE_ANGLE, fourth)
-    return Placement(
-        {
-            BARREL: polar(BARREL.mesh_distance, BARREL_ANGLE),
-            CENTRE: ORIGIN,
-            THIRD: third,
-            FOURTH: fourth,
-            ESCAPE: escape,
-            FORK: polar(FORK_PIVOT_DISTANCE, LEVER_ANGLE, escape),
-            BALANCE: polar(BALANCE_DISTANCE, LEVER_ANGLE, escape),
-        }
-    )
-
-
 def fork_outline(mouth: float) -> list[Point]:
     """The pallet fork, as (along the lever, across it) from its pivot, with
     the lever pointing at the balance: the fork's mouth at `mouth`, its two
@@ -738,8 +747,8 @@ def fork_outline(mouth: float) -> list[Point]:
 
 
 # ---- the drawing ------------------------------------------------------------------------
-def build(centre_x: float, centre_y: float) -> str:
-    placement = place()
+def build(layout: Layout, centre_x: float, centre_y: float) -> str:
+    placement = Placement(layout)
     arbor = placement.arbor
     mouth_distance = math.dist(arbor[FORK], arbor[BALANCE]) - IMPULSE_PIN_RADIUS
 
@@ -1163,7 +1172,7 @@ def main() -> None:
     args = parser.parse_args()
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(build(*args.at))
+    out.write_text(build(LAYOUT, *args.at))
     print(f"wrote {out} ({out.stat().st_size / 1024:.1f} KiB)")
 
 

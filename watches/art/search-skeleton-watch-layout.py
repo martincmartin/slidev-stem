@@ -5,13 +5,14 @@
     ../.venv/bin/python3 art/search-skeleton-watch-layout.py --balance-distance 110
 
 It changes nothing: it prints the best layouts, for a person to copy into
-skeleton-watch.py and then run validate-skeleton-watch.py. It takes a few
-minutes.
+LAYOUT in skeleton-watch.py and then run validate-skeleton-watch.py. It takes
+a few minutes.
 
-The free numbers are THIRD_ANGLE, FOURTH_ANGLE, ESCAPE_ANGLE, LEVER_ANGLE and
-BALANCE_DISTANCE (the distances between the train's arbors are fixed by the
-meshes). A layout is allowed if every part is inside the chapter ring and the
-balance is on the left of the dial, beside the title. Its score is the
+The free numbers are four of LAYOUT's angles (third, fourth, escape and lever)
+and its balance distance; the distances between the train's arbors are fixed
+by the meshes. Each candidate is a new Layout, made from LAYOUT with those
+numbers changed. A layout is allowed if every part is inside the chapter ring
+and the balance is on the left of the dial, beside the title. Its score is the
 smallest of three gaps (watch_geometry.py says how they are measured):
 
 - the tightest visible gap between two parts that do not mesh;
@@ -24,30 +25,27 @@ layouts, where it also tries other balance distances, unless
 """
 
 import argparse
+import dataclasses
 import itertools
 import math
 import pathlib
 import sys
 from dataclasses import dataclass
 from types import ModuleType
+from typing import Any, ClassVar, Protocol
 
 ART = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(ART))
 import watch_geometry as geometry
 
-PARAMETERS = (
-    "THIRD_ANGLE",
-    "FOURTH_ANGLE",
-    "ESCAPE_ANGLE",
-    "LEVER_ANGLE",
-    "BALANCE_DISTANCE",
+Angles = tuple[float, float, float, float]  # third, fourth, escape, lever
+# (first, last, step) in degrees, for each of the Angles
+COARSE: tuple[tuple[float, float, float], ...] = (
+    (0.0, 100.0, 10.0),
+    (20.0, 180.0, 10.0),
+    (40.0, 240.0, 10.0),
+    (140.0, 260.0, 10.0),
 )
-COARSE = {  # (first, last, step), in degrees
-    "THIRD_ANGLE": (0.0, 100.0, 10.0),
-    "FOURTH_ANGLE": (20.0, 180.0, 10.0),
-    "ESCAPE_ANGLE": (40.0, 240.0, 10.0),
-    "LEVER_ANGLE": (140.0, 260.0, 10.0),
-}
 REFINE_ANGLE_STEPS = (-2.5, 0.0, 2.5)  # degrees, round each of the best coarse layouts
 REFINE_BALANCE_DISTANCES = (105.0, 110.0, 115.0)  # px from the escape arbor
 # screen angles from the watch centre: the left of the dial
@@ -57,22 +55,58 @@ REFINE = 10  # how many of the best coarse layouts to refine
 SHOW = 8
 
 
+class Layout(Protocol):
+    """What skeleton-watch.py's Layout provides. It is a dataclass, so
+    dataclasses.replace() makes a changed copy."""
+
+    __dataclass_fields__: ClassVar[dict[str, Any]]
+
+    @property
+    def third_angle(self) -> float: ...
+    @property
+    def fourth_angle(self) -> float: ...
+    @property
+    def escape_angle(self) -> float: ...
+    @property
+    def lever_angle(self) -> float: ...
+    @property
+    def balance_distance(self) -> float: ...
+
+
+def angles_of(layout: Layout) -> Angles:
+    return (
+        layout.third_angle,
+        layout.fourth_angle,
+        layout.escape_angle,
+        layout.lever_angle,
+    )
+
+
+def changed(layout: Layout, angles: Angles, balance_distance: float) -> Layout:
+    """A copy of `layout` with the free numbers changed."""
+    third, fourth, escape, lever = angles
+    return dataclasses.replace(
+        layout,
+        third_angle=third,
+        fourth_angle=fourth,
+        escape_angle=escape,
+        lever_angle=lever,
+        balance_distance=balance_distance,
+    )
+
+
 @dataclass(frozen=True)
 class Candidate:
-    values: tuple[float, ...]  # in the order of PARAMETERS
+    layout: Layout
     score: float
     wheels: tuple[str, float]
     fork: tuple[str, float]
     ring: tuple[str, float]
 
 
-def evaluate(
-    watch: ModuleType, values: tuple[float, ...], spacing: float
-) -> Candidate | None:
-    """The layout with these values, scored; None if it is not allowed."""
-    for name, value in zip(PARAMETERS, values, strict=True):
-        setattr(watch, name, value)
-    placement = watch.place()
+def evaluate(watch: ModuleType, layout: Layout, spacing: float) -> Candidate | None:
+    """`layout`, scored; None if it is not allowed."""
+    placement = watch.Placement(layout)
     balance = placement.arbor[watch.BALANCE]
     balance_angle = math.degrees(math.atan2(balance[1], balance[0])) % 360
     if not BALANCE_SIDE[0] <= balance_angle <= BALANCE_SIDE[1]:
@@ -82,16 +116,16 @@ def evaluate(
         for part in watch.STACK
     ):
         return None
-    layout = geometry.measure(watch, spacing)
+    clearances = geometry.measure(watch, placement, spacing)
     wheels, fork, ring = (
         (geometry.label(key), gap)
         for key, gap in (
-            layout.tightest_wheels(),
-            layout.tightest_fork(),
-            layout.tightest_ring(),
+            clearances.tightest_wheels(),
+            clearances.tightest_fork(),
+            clearances.tightest_ring(),
         )
     )
-    return Candidate(values, min(wheels[1], fork[1], ring[1]), wheels, fork, ring)
+    return Candidate(layout, min(wheels[1], fork[1], ring[1]), wheels, fork, ring)
 
 
 def grid(first: float, last: float, step: float) -> list[float]:
@@ -101,38 +135,50 @@ def grid(first: float, last: float, step: float) -> list[float]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--balance-distance", type=float, help="hold BALANCE_DISTANCE at this, in px"
+        "--balance-distance",
+        type=float,
+        help="hold the balance distance at this, in px",
     )
     args = parser.parse_args()
     watch = geometry.load_watch(ART / "skeleton-watch.py")
-    current = tuple(float(getattr(watch, name)) for name in PARAMETERS)
+    current: Layout = watch.LAYOUT
     distances: tuple[float, ...] = REFINE_BALANCE_DISTANCES
-    coarse_distance = current[4]
+    coarse_distance = current.balance_distance
     if args.balance_distance is not None:
         distances = (args.balance_distance,)
         coarse_distance = args.balance_distance
 
     coarse = []
-    for angles in itertools.product(*(grid(*COARSE[name]) for name in PARAMETERS[:4])):
-        candidate = evaluate(watch, (*angles, coarse_distance), COARSE_SPACING)
+    for angles in itertools.product(*(grid(*axis) for axis in COARSE)):
+        third, fourth, escape, lever = angles
+        layout = changed(current, (third, fourth, escape, lever), coarse_distance)
+        candidate = evaluate(watch, layout, COARSE_SPACING)
         if candidate is not None:
             coarse.append(candidate)
     coarse.sort(key=lambda candidate: -candidate.score)
     print(f"{len(coarse)} allowed layouts on the coarse grid")
 
-    fine: dict[tuple[float, ...], Candidate] = {}
+    fine: dict[Layout, Candidate] = {}
     for seed in coarse[:REFINE]:
+        seed_third, seed_fourth, seed_escape, seed_lever = angles_of(seed.layout)
         steps = itertools.product(REFINE_ANGLE_STEPS, repeat=4)
-        for offsets, distance in itertools.product(steps, distances):
-            angles = tuple(
-                angle + offset
-                for angle, offset in zip(seed.values[:4], offsets, strict=True)
+        for (third, fourth, escape, lever), distance in itertools.product(
+            steps, distances
+        ):
+            layout = changed(
+                current,
+                (
+                    seed_third + third,
+                    seed_fourth + fourth,
+                    seed_escape + escape,
+                    seed_lever + lever,
+                ),
+                distance,
             )
-            values = (*angles, distance)
-            if values not in fine:
-                candidate = evaluate(watch, values, FINE_SPACING)
+            if layout not in fine:
+                candidate = evaluate(watch, layout, FINE_SPACING)
                 if candidate is not None:
-                    fine[values] = candidate
+                    fine[layout] = candidate
     best = sorted(fine.values(), key=lambda candidate: -candidate.score)
 
     now = evaluate(watch, current, FINE_SPACING)
@@ -143,8 +189,8 @@ def main() -> None:
     for index, candidate in enumerate(rows):
         label = "  <- now" if now and index == 0 else ""
         shown = (
-            " ".join(f"{value:6g}" for value in candidate.values[:4])
-            + f" {candidate.values[4]:5g}"
+            " ".join(f"{angle:6g}" for angle in angles_of(candidate.layout))
+            + f" {candidate.layout.balance_distance:5g}"
         )
         gaps = ", ".join(
             f"{kind} {name} {gap:.1f}"
