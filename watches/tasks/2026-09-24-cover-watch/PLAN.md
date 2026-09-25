@@ -241,3 +241,70 @@ The balance still beats three times slower than a real 3 Hz watch.
 `motion.py` now needs `--sep 0.5` (half a period); the validator takes it from
 `PERIOD`. Measured: `hold 3.66`, `p90 7.03`, `Fmax 0.082`; `dPeak 9.41`,
 2736 px² over 3:1.
+
+## Clearance as the viewer sees it; the fork's clearance (user, 2026-09-25)
+
+The user moved the wheels (third 40°, fourth 95°, escape 160°, lever 205°),
+and the validator failed. Part of that was the validator: it measured tip
+circle to tip circle, so it reported the fourth and centre wheels 0.6 px apart
+where the third wheel hides the overlap. It now measures between the visible
+regions: each part's disc to its tips, minus the discs that the parts drawn
+above it hide (`watches/art/watch_geometry.py`). By that measure the user's
+layout had fourth-centre 6.3 px and escape-third 3.0 px.
+
+The user also asked that the fork's arms stay clear of the fourth and centre
+wheels. The validator now checks the fork's outline, at both ends of its swing,
+against the visible barrel, centre, third and fourth wheels (`FORK_CLEARANCE`).
+
+`watches/art/search-skeleton-watch-layout.py` searched the four angles (19,127
+allowed layouts on a 10° grid, then refined round the best ten), maximising
+the smaller of the tightest wheel gap and the tightest fork gap:
+
+| third | fourth | escape | lever | tightest wheels   | fork       |
+| ----- | ------ | ------ | ----- | ----------------- | ---------- |
+| 40    | 95     | 160    | 205   | escape-third 3.0  | fourth 13.4 |
+| **42.5** | **92.5** | **145** | **197.5** | fourth-centre 9.7 | fourth 10.5 |
+| 60    | 110    | 162.5  | 215   | fourth-centre 9.6 | fourth 10.5 |
+
+Every one of the best layouts has the fork 10.5 px from the fourth wheel: the
+fourth wheel meshes with the escape pinion, beside the fork, so this looks
+like a limit of the train's geometry. **Chosen: the first**, the closest to the
+user's layout. `MIN_CLEARANCE` and `FORK_CLEARANCE` stay at 8 px. Measured:
+`hold 3.67`, `Fmax 0.082`; `dPeak 9.44`.
+
+## The chapter ring as a third gap (user, 2026-09-25)
+
+In that layout the balance was 1.1 px from the chapter ring, so the two read
+as joined. Each part's gap to the ring's inside edge is now a third measured
+gap (`RING_CLEARANCE`, 8 px), and the search maximises the smallest of the
+three. It also tries a shorter `BALANCE_DISTANCE` (105, 110, 115 px):
+
+| third | fourth | escape | lever | balance | wheels             | fork       | ring          |
+| ----- | ------ | ------ | ----- | ------- | ------------------ | ---------- | ------------- |
+| 42.5  | 92.5   | 145    | 197.5 | 115     | fourth-centre 9.7  | fourth 10.5 | balance 1.1  |
+| 40    | 90     | 142.5  | 197.5 | 105     | fourth-centre 9.6  | fourth 9.5 | balance 10.7  |
+| 50    | 100    | 152.5  | 207.5 | 105     | fourth-centre 9.6  | fourth 9.5 | balance 10.7  |
+| 60    | 110    | 162.5  | 217.5 | 105     | fourth-centre 9.6  | fourth 9.5 | balance 10.7  |
+
+The best five are one chain turned in 10° steps, with the same gaps: adding
+one angle to all four turns the chain about the centre, and the ring is a
+circle (the user expected this). The barrel is fixed at 12 o'clock, so the
+turn could matter near it, but it does not for these. **Chosen: the second
+row**, the turn closest to the layout before. Measured: `hold 3.66`,
+`Fmax 0.082`; `dPeak 9.11`.
+
+The balance's gaps to the other wheels were already in the wheel gaps: the
+balance is one of the six parts, and every pair that does not mesh is
+measured.
+
+**Revised (user, 2026-09-25): a balance distance of 105 px is too short**, so
+the search ran again with `--balance-distance 110`:
+
+| third | fourth | escape | lever | wheels            | fork       | ring          | smallest |
+| ----- | ------ | ------ | ----- | ----------------- | ---------- | ------------- | -------- |
+| 40    | 90     | 142.5  | 197.5 | fourth-centre 9.6 | fourth 9.5 | balance 8.0   | 8.0      |
+| **47.5** | **97.5** | **152.5** | **207.5** | escape-third 8.8 | fourth 9.5 | balance 12.1 | **8.8** |
+| 57.5  | 107.5  | 162.5  | 217.5 | escape-third 8.7  | fourth 9.5 | balance 12.1  | 8.7      |
+
+**Chosen: the second row.** Measured: `hold 3.66`, `Fmax 0.082`;
+`dPeak 9.29`.
