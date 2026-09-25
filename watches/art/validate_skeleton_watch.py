@@ -40,6 +40,7 @@ SCRIPTS = [
     GENERATOR,
     ART / "watch_geometry.py",
     ART / "search_skeleton_watch_layout.py",
+    ART / "favicon.py",
     pathlib.Path(__file__),
 ]
 SVG = TALK / "public" / "cover" / "skeleton-watch.svg"

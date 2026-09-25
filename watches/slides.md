@@ -2,6 +2,8 @@
 # Ledger, the house theme for the STEM talks: ../themes/ledger/
 theme: ledger
 title: What Every Nerd Should Know About Watches
+# art/favicon.py writes it; without this line Slidev links its own icon on a CDN
+favicon: /favicon.ico
 class: cover-watch
 ---
 
@@ -41,6 +43,7 @@ Speaker notes here
 ---
 layout: full
 class: tk-timekeepers
+hide: true
 ---
 
 # Before clocks, time was a flow
