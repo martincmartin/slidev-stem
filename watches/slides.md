@@ -41,6 +41,11 @@ Speaker notes here
 -->
 
 ---
+
+# Hairspring and Balance Wheel
+
+
+---
 layout: full
 class: tk-timekeepers
 hide: true
@@ -127,8 +132,3 @@ Before clocks, people told time by watching something flow.
 IF ASKED: Rome's first public sundial was war loot from Sicily; Pliny says Romans followed its wrong hours for 99 years (the latitude explanation is debated). Roman hours were 1/12 of daylight, about 45 min in winter to 75 in summer. Sailors shook the glass to end a watch early: "flogging the glass."
 -->
 
----
-
-# Escapment - Fall Becomes Tick
-
-Escapement was key innovation. Mostly weight driven.
