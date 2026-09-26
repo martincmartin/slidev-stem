@@ -11,7 +11,7 @@ class: cover-watch
 
 # What Every Nerd Should Know About Watches
 
-Hello, **World!**
+Martin C. Martin
 
 <style>
 /* The watch fills the canvas and leaves its left half empty for the title.
