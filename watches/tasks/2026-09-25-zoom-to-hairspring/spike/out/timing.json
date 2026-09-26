@@ -1,0 +1,54 @@
+{
+  "chromium 153.0.8010.12": {
+    "continuity": {
+      "frames": 411,
+      "clock_minus_wall_largest_step_s": 4.0359497077702144e-07,
+      "clock_ever_went_back": 0.0,
+      "balance_angle_largest_error_deg": 0.031040097699332136
+    },
+    "zoom curve, svg, linear": {
+      "fastest_at_fraction": 0.3333055555555555,
+      "rate_quarter_over_three_quarters": 2.631153925100561,
+      "frame_gap_ms_median": 16.699999999999992,
+      "frame_gap_ms_max": 33.40000000000032
+    },
+    "zoom curve, svg, exp": {
+      "fastest_at_fraction": 0.5093333333399561,
+      "rate_quarter_over_three_quarters": 0.9625861805839915,
+      "frame_gap_ms_median": 16.699999999999992,
+      "frame_gap_ms_max": 33.500000000000085
+    },
+    "zoom curve, js, exp": {
+      "fastest_at_fraction": 0.500194444431199,
+      "rate_quarter_over_three_quarters": 0.9929094148873369,
+      "frame_gap_ms_median": 16.69999999999994,
+      "frame_gap_ms_max": 33.40000000000032
+    }
+  },
+  "firefox 155.0": {
+    "continuity": {
+      "frames": 425,
+      "clock_minus_wall_largest_step_s": 0.0008201258850109028,
+      "clock_ever_went_back": 0.0,
+      "balance_angle_largest_error_deg": 0.029040893365959164
+    },
+    "zoom curve, svg, linear": {
+      "fastest_at_fraction": 0.32823888888888886,
+      "rate_quarter_over_three_quarters": 2.691320874404447,
+      "frame_gap_ms_median": 16.660000000000117,
+      "frame_gap_ms_max": 50.00000000000004
+    },
+    "zoom curve, svg, exp": {
+      "fastest_at_fraction": 0.5137444444444444,
+      "rate_quarter_over_three_quarters": 0.8925267819521898,
+      "frame_gap_ms_median": 16.660000000000117,
+      "frame_gap_ms_max": 50.41999999999969
+    },
+    "zoom curve, js, exp": {
+      "fastest_at_fraction": 0.4926722222222223,
+      "rate_quarter_over_three_quarters": 0.9976503509433031,
+      "frame_gap_ms_median": 16.660000000000117,
+      "frame_gap_ms_max": 50.42000000000013
+    }
+  }
+}

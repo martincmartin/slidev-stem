@@ -1,0 +1,22 @@
+firefox 155.0, window [1728.0, 1000.0, 2.0]
+  idle
+    frames  240  median  8.34  >12.5ms   0  >25ms   0  worst   window   draw 
+  &host=1.7
+    frames  170  median  8.34  >12.5ms  24  >25ms  12  worst [(66.7, 1.29), (58.4, 1.86), (58.3, 2.03)]  window [1728, 1000, 2]  draw None
+    frames  172  median  8.34  >12.5ms  27  >25ms  11  worst [(58.3, 1.28), (50.0, 1.55), (50.0, 1.67)]  window [1728, 1000, 2]  draw None
+    frames  171  median  8.34  >12.5ms  27  >25ms  11  worst [(50.9, 1.35), (50.1, 1.76), (50.0, 1.9)]  window [1728, 1000, 2]  draw None
+  &renderer=canvas&host=1.7
+    frames  223  median  8.34  >12.5ms  16  >25ms   1  worst [(32.9, 1.19), (25.0, 4.3), (17.0, 1.6)]  window [1728, 1000, 2]  draw [8.0, 32.0]
+    frames  231  median  8.34  >12.5ms  11  >25ms   0  worst [(17.1, 2.26), (16.9, 1.79), (16.7, 4.11)]  window [1728, 1000, 2]  draw [8.0, 24.0]
+    frames  226  median  8.34  >12.5ms  13  >25ms   1  worst [(33.8, 3.81), (17.3, 4.46), (16.7, 1.81)]  window [1728, 1000, 2]  draw [7.0, 27.0]
+chromium 153.0.8010.12, window [1728.0, 997.0, 2.0]
+  idle
+    frames  240  median   8.3  >12.5ms   0  >25ms   0  worst   window   draw 
+  &host=1.7
+    frames  242  median   8.3  >12.5ms   0  >25ms   0  worst [(9.4, 3.75), (9.4, 4.46), (9.4, 2.38)]  window [1728, 997, 2]  draw None
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(9.3, 2.52), (9.2, 2.8), (9.2, 1.51)]  window [1728, 997, 2]  draw None
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(9.4, 3.18), (9.4, 4.43), (9.3, 2.39)]  window [1728, 997, 2]  draw None
+  &renderer=canvas&host=1.7
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(9.4, 3.93), (9.4, 4.43), (9.4, 4.42)]  window [1728, 997, 2]  draw [0.1, 0.7]
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(9.4, 2.45), (9.4, 4.03), (9.4, 4.25)]  window [1728, 997, 2]  draw [0.1, 0.4]
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(9.4, 3.67), (9.3, 1.81), (9.3, 1.36)]  window [1728, 997, 2]  draw [0.1, 0.3]

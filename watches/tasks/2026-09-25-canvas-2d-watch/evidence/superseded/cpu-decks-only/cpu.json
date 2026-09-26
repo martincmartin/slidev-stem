@@ -1,0 +1,26 @@
+{
+ "firefox 155.0, window [1728.0, 1000.0, 2.0], canvas": {
+  "cores": 1.05,
+  "last_240_frames": "frames  240  median  8.34  >12.5ms   0  >25ms   0  max   10.1"
+ },
+ "firefox 155.0, window [1728.0, 1000.0, 2.0], canvas, erase": {
+  "cores": 1.04,
+  "last_240_frames": "frames  240  median  8.34  >12.5ms   0  >25ms   0  max    9.6"
+ },
+ "firefox 155.0, window [1728.0, 1000.0, 2.0], SVG (zoom task)": {
+  "cores": 1.29,
+  "last_240_frames": "frames  240  median  8.34  >12.5ms   0  >25ms   0  max   10.3"
+ },
+ "chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], canvas": {
+  "cores": 0.4,
+  "last_240_frames": "frames  240  median   8.3  >12.5ms   0  >25ms   0  max   10.3"
+ },
+ "chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], canvas, erase": {
+  "cores": 0.42,
+  "last_240_frames": "frames  240  median   8.3  >12.5ms   0  >25ms   0  max   10.4"
+ },
+ "chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], SVG (zoom task)": {
+  "cores": 0.64,
+  "last_240_frames": "frames  240  median   8.3  >12.5ms   0  >25ms   0  max   10.4"
+ }
+}

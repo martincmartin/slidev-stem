@@ -1,0 +1,134 @@
+{
+  "chromium 153.0.8010.12, 1280x720": {
+    "slide 1": {
+      "svg_loaded": true,
+      "layer_background": "rgb(250, 247, 240)",
+      "layer_visibility": "visible",
+      "slide_background": "rgba(0, 0, 0, 0)",
+      "scale": 1.3043476961096938,
+      "left": 0.86956787109375,
+      "top": 0
+    },
+    "slide 2": {
+      "svg_loaded": true,
+      "layer_background": "rgb(250, 247, 240)",
+      "layer_visibility": "visible",
+      "slide_background": "rgba(0, 0, 0, 0)",
+      "scale": 1.3043476961096938,
+      "left": 0.86956787109375,
+      "top": 0
+    },
+    "spring_width_px": 2.6372039554106,
+    "expected_px": 2.6086953922193876,
+    "slide 3": {
+      "svg_loaded": true,
+      "layer_background": "rgb(250, 247, 240)",
+      "layer_visibility": "hidden",
+      "slide_background": "rgb(250, 247, 240)",
+      "scale": 1.3043476961096938,
+      "left": 0.86956787109375,
+      "top": 0
+    },
+    "page_errors": [
+      "Wake Lock permission request denied"
+    ]
+  },
+  "chromium 153.0.8010.12, 1920x1080": {
+    "slide 1": {
+      "svg_loaded": true,
+      "layer_background": "rgb(250, 247, 240)",
+      "layer_visibility": "visible",
+      "slide_background": "rgba(0, 0, 0, 0)",
+      "scale": 1.9565217932876275,
+      "left": 1.3043212890625,
+      "top": 0
+    },
+    "slide 2": {
+      "svg_loaded": true,
+      "layer_background": "rgb(250, 247, 240)",
+      "layer_visibility": "visible",
+      "slide_background": "rgba(0, 0, 0, 0)",
+      "scale": 1.9565217932876275,
+      "left": 1.3043212890625,
+      "top": 0
+    },
+    "spring_width_px": 3.9339065661688593,
+    "expected_px": 3.913043586575255,
+    "slide 3": {
+      "svg_loaded": true,
+      "layer_background": "rgb(250, 247, 240)",
+      "layer_visibility": "hidden",
+      "slide_background": "rgb(250, 247, 240)",
+      "scale": 1.9565217932876275,
+      "left": 1.3043212890625,
+      "top": 0
+    },
+    "page_errors": [
+      "Wake Lock permission request denied"
+    ]
+  },
+  "firefox 155.0, 1280x720": {
+    "slide 1": {
+      "svg_loaded": true,
+      "layer_background": "rgb(250, 247, 240)",
+      "layer_visibility": "visible",
+      "slide_background": "rgba(0, 0, 0, 0)",
+      "scale": 1.3043536750637754,
+      "left": 0.866668701171875,
+      "top": 0
+    },
+    "slide 2": {
+      "svg_loaded": true,
+      "layer_background": "rgb(250, 247, 240)",
+      "layer_visibility": "visible",
+      "slide_background": "rgba(0, 0, 0, 0)",
+      "scale": 1.3043536750637754,
+      "left": 0.866668701171875,
+      "top": 0
+    },
+    "spring_width_px": 2.5930234130761587,
+    "expected_px": 2.608707350127551,
+    "slide 3": {
+      "svg_loaded": true,
+      "layer_background": "rgb(250, 247, 240)",
+      "layer_visibility": "hidden",
+      "slide_background": "rgb(250, 247, 240)",
+      "scale": 1.3043536750637754,
+      "left": 0.866668701171875,
+      "top": 0
+    },
+    "page_errors": []
+  },
+  "firefox 155.0, 1920x1080": {
+    "slide 1": {
+      "svg_loaded": true,
+      "layer_background": "rgb(250, 247, 240)",
+      "layer_visibility": "visible",
+      "slide_background": "rgba(0, 0, 0, 0)",
+      "scale": 1.9565135722257654,
+      "left": 1.3000030517578125,
+      "top": 0
+    },
+    "slide 2": {
+      "svg_loaded": true,
+      "layer_background": "rgb(250, 247, 240)",
+      "layer_visibility": "visible",
+      "slide_background": "rgba(0, 0, 0, 0)",
+      "scale": 1.9565135722257654,
+      "left": 1.3000030517578125,
+      "top": 0
+    },
+    "spring_width_px": 3.9220153659691124,
+    "expected_px": 3.9130271444515308,
+    "slide 3": {
+      "svg_loaded": true,
+      "layer_background": "rgb(250, 247, 240)",
+      "layer_visibility": "hidden",
+      "slide_background": "rgb(250, 247, 240)",
+      "scale": 1.9565135722257654,
+      "left": 1.3000030517578125,
+      "top": 0
+    },
+    "page_errors": []
+  }
+}

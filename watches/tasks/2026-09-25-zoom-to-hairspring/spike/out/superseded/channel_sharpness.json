@@ -1,0 +1,18 @@
+{
+  "chromium: chromium 153.0.8010.12": {
+    "svg, linear, smil paused": 0.9333866484708414,
+    "svg, linear, smil running": 0.833867002041575,
+    "svg, exp, smil paused": 0.8049325237654019,
+    "svg, exp, smil running": 0.8292860690018969,
+    "js, exp, smil paused": 0.926569963157028,
+    "js, exp, smil running": 0.8775257699788948
+  },
+  "chrome: chromium 153.0.8010.53": {
+    "svg, linear, smil paused": 0.86821788238346,
+    "svg, linear, smil running": 0.8361806530742926,
+    "svg, exp, smil paused": 0.8067582633791599,
+    "svg, exp, smil running": 0.8254960541783939,
+    "js, exp, smil paused": 0.9272499125568052,
+    "js, exp, smil running": 0.876866270378859
+  }
+}

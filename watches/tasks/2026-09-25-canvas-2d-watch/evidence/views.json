@@ -1,0 +1,16 @@
+{
+  "chromium-presenter-1": [
+    "Wake Lock permission request denied"
+  ],
+  "chromium-presenter-2": [
+    "Wake Lock permission request denied"
+  ],
+  "chromium-overview": [],
+  "chromium-print": [
+    "Wake Lock permission request denied"
+  ],
+  "firefox-presenter-1": [],
+  "firefox-presenter-2": [],
+  "firefox-overview": [],
+  "firefox-print": []
+}

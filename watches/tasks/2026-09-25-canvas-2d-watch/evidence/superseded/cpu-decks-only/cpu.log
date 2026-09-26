@@ -1,0 +1,6 @@
+firefox 155.0, window [1728.0, 1000.0, 2.0], canvas: 1.05 cores; last 240 frames: frames  240  median  8.34  >12.5ms   0  >25ms   0  max   10.1
+firefox 155.0, window [1728.0, 1000.0, 2.0], canvas, erase: 1.04 cores; last 240 frames: frames  240  median  8.34  >12.5ms   0  >25ms   0  max    9.6
+firefox 155.0, window [1728.0, 1000.0, 2.0], SVG (zoom task): 1.29 cores; last 240 frames: frames  240  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], canvas: 0.40 cores; last 240 frames: frames  240  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], canvas, erase: 0.42 cores; last 240 frames: frames  240  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], SVG (zoom task): 0.64 cores; last 240 frames: frames  240  median   8.3  >12.5ms   0  >25ms   0  max   10.4

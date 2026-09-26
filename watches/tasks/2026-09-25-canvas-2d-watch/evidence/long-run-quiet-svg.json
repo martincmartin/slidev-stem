@@ -1,0 +1,47 @@
+{
+ "firefox 155.0, window [1728.0, 1000.0, 2.0]": {
+  "minutes": [
+   {
+    "frames": 7199,
+    "median_ms": 8.34,
+    "over_12ms": 2,
+    "over_25ms": 0,
+    "largest_ms": 18.1,
+    "heap": null
+   },
+   {
+    "frames": 7198,
+    "median_ms": 8.34,
+    "over_12ms": 2,
+    "over_25ms": 0,
+    "largest_ms": 17.7,
+    "heap": null
+   },
+   {
+    "frames": 7200,
+    "median_ms": 8.34,
+    "over_12ms": 1,
+    "over_25ms": 0,
+    "largest_ms": 16.7,
+    "heap": null
+   },
+   {
+    "frames": 7197,
+    "median_ms": 8.34,
+    "over_12ms": 4,
+    "over_25ms": 0,
+    "largest_ms": 17.8,
+    "heap": null
+   },
+   {
+    "frames": 7199,
+    "median_ms": 8.34,
+    "over_12ms": 2,
+    "over_25ms": 0,
+    "largest_ms": 17.7,
+    "heap": null
+   }
+  ],
+  "changes": []
+ }
+}

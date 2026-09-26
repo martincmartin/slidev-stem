@@ -1,0 +1,542 @@
+{
+ "firefox 155.0, window [1728.0, 1000.0, 2.0], presenter and audience": [
+  {
+   "in": {
+    "audience": {
+     "frames": 353,
+     "median_ms": 8.34,
+     "over_12ms": 8,
+     "over_25ms": 0,
+     "largest_ms": 18.0
+    },
+    "presenter": {
+     "frames": 353,
+     "median_ms": 8.34,
+     "over_12ms": 8,
+     "over_25ms": 0,
+     "largest_ms": 18.0
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 354,
+     "median_ms": 8.34,
+     "over_12ms": 6,
+     "over_25ms": 1,
+     "largest_ms": 26.0
+    },
+    "presenter": {
+     "frames": 354,
+     "median_ms": 8.34,
+     "over_12ms": 6,
+     "over_25ms": 1,
+     "largest_ms": 26.0
+    }
+   }
+  },
+  {
+   "in": {
+    "audience": {
+     "frames": 355,
+     "median_ms": 8.34,
+     "over_12ms": 6,
+     "over_25ms": 0,
+     "largest_ms": 16.7
+    },
+    "presenter": {
+     "frames": 355,
+     "median_ms": 8.34,
+     "over_12ms": 6,
+     "over_25ms": 0,
+     "largest_ms": 16.7
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 359,
+     "median_ms": 8.34,
+     "over_12ms": 2,
+     "over_25ms": 0,
+     "largest_ms": 17.0
+    },
+    "presenter": {
+     "frames": 359,
+     "median_ms": 8.34,
+     "over_12ms": 2,
+     "over_25ms": 0,
+     "largest_ms": 17.0
+    }
+   }
+  },
+  {
+   "in": {
+    "audience": {
+     "frames": 358,
+     "median_ms": 8.34,
+     "over_12ms": 4,
+     "over_25ms": 0,
+     "largest_ms": 16.7
+    },
+    "presenter": {
+     "frames": 357,
+     "median_ms": 8.34,
+     "over_12ms": 4,
+     "over_25ms": 0,
+     "largest_ms": 16.7
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 358,
+     "median_ms": 8.34,
+     "over_12ms": 3,
+     "over_25ms": 0,
+     "largest_ms": 18.2
+    },
+    "presenter": {
+     "frames": 358,
+     "median_ms": 8.34,
+     "over_12ms": 3,
+     "over_25ms": 0,
+     "largest_ms": 16.8
+    }
+   }
+  }
+ ],
+ "firefox 155.0, window [1728.0, 1000.0, 2.0], audience alone": [
+  {
+   "in": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.34,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.2
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.34,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    }
+   }
+  },
+  {
+   "in": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.34,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.34,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    }
+   }
+  },
+  {
+   "in": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.34,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.34,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    }
+   }
+  }
+ ],
+ "firefox 155.0, window [1728.0, 1000.0, 2.0], presenter and audience, erase": [
+  {
+   "in": {
+    "audience": {
+     "frames": 360,
+     "median_ms": 8.34,
+     "over_12ms": 1,
+     "over_25ms": 0,
+     "largest_ms": 17.3
+    },
+    "presenter": {
+     "frames": 360,
+     "median_ms": 8.34,
+     "over_12ms": 1,
+     "over_25ms": 0,
+     "largest_ms": 17.3
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 360,
+     "median_ms": 8.34,
+     "over_12ms": 1,
+     "over_25ms": 0,
+     "largest_ms": 16.7
+    },
+    "presenter": {
+     "frames": 360,
+     "median_ms": 8.34,
+     "over_12ms": 1,
+     "over_25ms": 0,
+     "largest_ms": 16.7
+    }
+   }
+  },
+  {
+   "in": {
+    "audience": {
+     "frames": 358,
+     "median_ms": 8.34,
+     "over_12ms": 3,
+     "over_25ms": 0,
+     "largest_ms": 17.2
+    },
+    "presenter": {
+     "frames": 358,
+     "median_ms": 8.34,
+     "over_12ms": 3,
+     "over_25ms": 0,
+     "largest_ms": 17.2
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 360,
+     "median_ms": 8.34,
+     "over_12ms": 1,
+     "over_25ms": 0,
+     "largest_ms": 17.1
+    },
+    "presenter": {
+     "frames": 360,
+     "median_ms": 8.34,
+     "over_12ms": 1,
+     "over_25ms": 0,
+     "largest_ms": 17.1
+    }
+   }
+  },
+  {
+   "in": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.34,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.34,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 360,
+     "median_ms": 8.34,
+     "over_12ms": 1,
+     "over_25ms": 0,
+     "largest_ms": 16.6
+    },
+    "presenter": {
+     "frames": 360,
+     "median_ms": 8.34,
+     "over_12ms": 1,
+     "over_25ms": 0,
+     "largest_ms": 16.6
+    }
+   }
+  }
+ ],
+ "chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], presenter and audience": [
+  {
+   "in": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    }
+   }
+  },
+  {
+   "in": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   }
+  },
+  {
+   "in": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 362,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   }
+  }
+ ],
+ "chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], audience alone": [
+  {
+   "in": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.2
+    }
+   }
+  },
+  {
+   "in": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   }
+  },
+  {
+   "in": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   }
+  }
+ ],
+ "chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], presenter and audience, erase": [
+  {
+   "in": {
+    "audience": {
+     "frames": 362,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   }
+  },
+  {
+   "in": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 362,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   }
+  },
+  {
+   "in": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    }
+   },
+   "out": {
+    "audience": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.4
+    },
+    "presenter": {
+     "frames": 361,
+     "median_ms": 8.3,
+     "over_12ms": 0,
+     "over_25ms": 0,
+     "largest_ms": 10.3
+    }
+   }
+  }
+ ]
+}

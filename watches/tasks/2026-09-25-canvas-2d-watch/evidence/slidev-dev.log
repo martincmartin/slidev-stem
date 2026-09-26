@@ -1,0 +1,19 @@
+(node:45951) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+  ●■▲
+  Slidev  v53.0.0 (global)
+
+  theme       slidev-theme-ledger
+  css engine  unocss
+  entry       /Users/martin/Develop/slidev/stem/watches/tasks/2026-09-25-canvas-2d-watch/spike/deck/slides.md
+
+  public slide show   > http://localhost:3132/
+  presenter mode      > http://localhost:3132/presenter/
+  slides overview     > http://localhost:3132/overview/
+  export slides       > http://localhost:3132/export/
+  mcp server         > http://localhost:3132/__mcp
+  remote control      > pass --remote to enable
+
+  shortcuts           > restart | open | edit | quit

@@ -1,0 +1,14 @@
+{
+  "chromium 153.0.8010.12": {
+    "svg, mechanism paused": 0.9108026592409517,
+    "svg, mechanism running": 0.8325872561436245,
+    "canvas, mechanism paused": 0.9990155739188917,
+    "canvas, mechanism running": 0.9979334786415989
+  },
+  "firefox 155.0": {
+    "svg, mechanism paused": 0.9985552717062689,
+    "svg, mechanism running": 0.9966401565752024,
+    "canvas, mechanism paused": 0.9991738400300672,
+    "canvas, mechanism running": 1.000153860526594
+  }
+}

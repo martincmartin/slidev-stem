@@ -1,0 +1,64 @@
+firefox-deck-c17a [1728, 1000, 2] ; rv:156.0) Gecko/20100101 Firefox/156.0
+  idle     frames  242  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  358  median  8.34  >12.5ms   3  >25ms   0  max   16.7
+  zoom out frames  353  median  8.34  >12.5ms   8  >25ms   0  max   18.0
+  zoom in  frames  356  median  8.34  >12.5ms   5  >25ms   0  max   17.6
+  zoom out frames  354  median  8.34  >12.5ms   7  >25ms   0  max   16.9
+  zoom in  frames  353  median  8.34  >12.5ms   8  >25ms   0  max   16.7
+  zoom out frames  354  median  8.34  >12.5ms   7  >25ms   0  max   16.9
+firefox-deck-erase-c17a [1728, 1000, 2] ; rv:156.0) Gecko/20100101 Firefox/156.0
+  idle     frames  241  median  8.34  >12.5ms   0  >25ms   0  max   10.2
+  zoom in  frames  361  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  360  median  8.34  >12.5ms   1  >25ms   0  max   16.7
+  zoom in  frames  361  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  360  median  8.34  >12.5ms   1  >25ms   0  max   16.7
+  zoom in  frames  360  median  8.34  >12.5ms   1  >25ms   0  max   16.2
+  zoom out frames  360  median  8.34  >12.5ms   1  >25ms   0  max   15.6
+chrome-deck-c17a [1728, 1084, 2] ke Gecko) Chrome/153.0.0.0 Safari/537.36
+  idle     frames  241  median   8.3  >12.5ms   0  >25ms   0  max   10.2
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.5
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+chrome-deck-erase-c17a [1728, 1084, 2] ke Gecko) Chrome/153.0.0.0 Safari/537.36
+  idle     frames  241  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.2
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  362  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+firefox-deck-c17b [1728, 1000, 2] ; rv:156.0) Gecko/20100101 Firefox/156.0
+  idle     frames  242  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  359  median  8.34  >12.5ms   3  >25ms   0  max   16.7
+  zoom out frames  354  median  8.34  >12.5ms   7  >25ms   0  max   17.0
+  zoom in  frames  357  median  8.34  >12.5ms   4  >25ms   0  max   16.7
+  zoom out frames  353  median  8.34  >12.5ms   8  >25ms   0  max   18.2
+  zoom in  frames  354  median  8.34  >12.5ms   7  >25ms   0  max   17.2
+  zoom out frames  355  median  8.34  >12.5ms   6  >25ms   0  max   16.7
+firefox-deck-erase-c17b [1728, 1000, 2] ; rv:156.0) Gecko/20100101 Firefox/156.0
+  idle     frames  240  median  8.34  >12.5ms   1  >25ms   0  max   16.7
+  zoom in  frames  362  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  360  median  8.34  >12.5ms   1  >25ms   0  max   16.7
+  zoom in  frames  361  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  360  median  8.34  >12.5ms   1  >25ms   0  max   16.7
+  zoom in  frames  361  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  359  median  8.34  >12.5ms   2  >25ms   0  max   16.7
+chrome-deck-c17b [1728, 1084, 2] ke Gecko) Chrome/153.0.0.0 Safari/537.36
+  idle     frames  241  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.5
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+chrome-deck-erase-c17b [1728, 1084, 2] ke Gecko) Chrome/153.0.0.0 Safari/537.36
+  idle     frames  241  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3

@@ -1,0 +1,10 @@
+firefox 155.0, window [1728.0, 1000.0, 2.0], canvas deck: 1.04 cores; last 240 frames: frames  240  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+firefox 155.0, window [1728.0, 1000.0, 2.0], canvas deck, erase: 1.04 cores; last 240 frames: frames  240  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+firefox 155.0, window [1728.0, 1000.0, 2.0], SVG deck (zoom task): 1.29 cores; last 240 frames: frames  240  median  8.34  >12.5ms   1  >25ms   0  max   16.9
+firefox 155.0, window [1728.0, 1000.0, 2.0], test page, SVG: 0.97 cores; last 240 frames: frames  240  median  8.32  >12.5ms   0  >25ms   0  max   10.4
+firefox 155.0, window [1728.0, 1000.0, 2.0], test page, canvas: 0.77 cores; last 240 frames: frames  240  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], canvas deck: 0.42 cores; last 240 frames: frames  240  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], canvas deck, erase: 0.42 cores; last 240 frames: frames  240  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], SVG deck (zoom task): 0.67 cores; last 240 frames: frames  240  median   8.3  >12.5ms   0  >25ms   0  max   10.1
+chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], test page, SVG: 0.41 cores; last 240 frames: frames  240  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+chromium 153.0.8010.12, window [1728.0, 997.0, 2.0], test page, canvas: 0.53 cores; last 240 frames: frames  240  median   8.3  >12.5ms   0  >25ms   0  max   10.4

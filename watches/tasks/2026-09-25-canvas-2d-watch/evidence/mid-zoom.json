@@ -1,0 +1,38 @@
+{
+  "chromium 153.0.8010.12": {
+    "svg, mechanism paused": 1.0013191334051517,
+    "svg, mechanism running": 0.9979503958331549,
+    "svg, mechanism paused, at the end": 1.0,
+    "svg, mechanism running, at the end": 0.9913927311770222,
+    "canvas, mechanism paused": 0.9993678516239953,
+    "canvas, mechanism running": 0.9969380181934542,
+    "canvas, mechanism paused, at the end": 1.0,
+    "canvas, mechanism running, at the end": 0.997378979877674,
+    "svg-css, mechanism paused": 0.7948637629409652,
+    "svg-css, mechanism running": 0.7513024110539449,
+    "svg-css, mechanism paused, at the end": 0.7983148099324967,
+    "svg-css, mechanism running, at the end": 0.8034465310163265,
+    "svg-css-no-will-change, mechanism paused": 1.002557750063416,
+    "svg-css-no-will-change, mechanism running": 0.9997400393168728,
+    "svg-css-no-will-change, mechanism paused, at the end": 1.0005601247445315,
+    "svg-css-no-will-change, mechanism running, at the end": 0.9923873042842338
+  },
+  "firefox 155.0": {
+    "svg, mechanism paused": 0.9992214202709303,
+    "svg, mechanism running": 0.9980633132676991,
+    "svg, mechanism paused, at the end": 1.0,
+    "svg, mechanism running, at the end": 0.9975791228691586,
+    "canvas, mechanism paused": 0.9989503592044693,
+    "canvas, mechanism running": 0.9997355328497959,
+    "canvas, mechanism paused, at the end": 1.0,
+    "canvas, mechanism running, at the end": 0.9996517542510089,
+    "svg-css, mechanism paused": 0.9991212606076725,
+    "svg-css, mechanism running": 0.9985431177041298,
+    "svg-css, mechanism paused, at the end": 1.0,
+    "svg-css, mechanism running, at the end": 1.0030137158523813,
+    "svg-css-no-will-change, mechanism paused": 0.9988536656615008,
+    "svg-css-no-will-change, mechanism running": 0.999068884985706,
+    "svg-css-no-will-change, mechanism paused, at the end": 1.0,
+    "svg-css-no-will-change, mechanism running, at the end": 0.995196631179817
+  }
+}

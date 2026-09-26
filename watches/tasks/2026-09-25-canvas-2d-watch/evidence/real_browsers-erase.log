@@ -1,0 +1,64 @@
+firefox-canvas-c16a [1728, 1000, 2] ; rv:156.0) Gecko/20100101 Firefox/156.0
+  idle     frames  233  median  8.34  >12.5ms   7  >25ms   1  max   33.3
+  zoom in  frames  309  median  8.34  >12.5ms   5  >25ms   0  max   16.7
+  zoom out frames  309  median  8.34  >12.5ms   4  >25ms   0  max   16.7
+  zoom in  frames  311  median  8.34  >12.5ms   2  >25ms   0  max   16.7
+  zoom out frames  311  median  8.34  >12.5ms   2  >25ms   0  max   16.7
+  zoom in  frames  310  median  8.34  >12.5ms   3  >25ms   0  max   16.7
+  zoom out frames  310  median  8.34  >12.5ms   3  >25ms   0  max   16.7
+firefox-canvas-erase-c16a [1728, 1000, 2] ; rv:156.0) Gecko/20100101 Firefox/156.0
+  idle     frames  234  median  8.33  >12.5ms   2  >25ms   1  max   74.1
+  zoom in  frames  312  median  8.34  >12.5ms   1  >25ms   0  max   16.7
+  zoom out frames  313  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  313  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  314  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  314  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  313  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+chrome-canvas-c16a [1728, 1084, 2] ke Gecko) Chrome/153.0.0.0 Safari/537.36
+  idle     frames  241  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.2
+  zoom out frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+chrome-canvas-erase-c16a [1728, 1084, 2] ke Gecko) Chrome/153.0.0.0 Safari/537.36
+  idle     frames  213  median   8.3  >12.5ms   1  >25ms   1  max  250.0
+  zoom in  frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  314  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+firefox-canvas-c16b [1728, 1000, 2] ; rv:156.0) Gecko/20100101 Firefox/156.0
+  idle     frames  238  median  8.34  >12.5ms   3  >25ms   1  max   34.6
+  zoom in  frames  289  median  8.34  >12.5ms  24  >25ms   0  max   18.2
+  zoom out frames  310  median  8.34  >12.5ms   3  >25ms   0  max   16.7
+  zoom in  frames  311  median  8.34  >12.5ms   3  >25ms   0  max   16.7
+  zoom out frames  308  median  8.34  >12.5ms   5  >25ms   0  max   16.7
+  zoom in  frames  309  median  8.34  >12.5ms   4  >25ms   0  max   16.7
+  zoom out frames  308  median  8.34  >12.5ms   5  >25ms   0  max   16.8
+firefox-canvas-erase-c16b [1728, 1000, 2] ; rv:156.0) Gecko/20100101 Firefox/156.0
+  idle     frames  240  median  8.34  >12.5ms   1  >25ms   0  max   25.0
+  zoom in  frames  313  median  8.34  >12.5ms   0  >25ms   0  max   10.2
+  zoom out frames  313  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  313  median  8.34  >12.5ms   0  >25ms   0  max   10.2
+  zoom out frames  313  median  8.34  >12.5ms   0  >25ms   0  max   10.1
+  zoom in  frames  313  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  313  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+chrome-canvas-c16b [1728, 1084, 2] ke Gecko) Chrome/153.0.0.0 Safari/537.36
+  idle     frames  240  median   8.3  >12.5ms   1  >25ms   0  max   15.0
+  zoom in  frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+chrome-canvas-erase-c16b [1728, 1084, 2] ke Gecko) Chrome/153.0.0.0 Safari/537.36
+  idle     frames  241  median   8.3  >12.5ms   0  >25ms   0  max   10.5
+  zoom in  frames  312  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom out frames  313  median   8.3  >12.5ms   0  >25ms   0  max   10.4

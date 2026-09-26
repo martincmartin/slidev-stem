@@ -1,0 +1,16 @@
+firefox-deck [1728, 1000, 2] ; rv:156.0) Gecko/20100101 Firefox/156.0
+  idle     frames  241  median  8.34  >12.5ms   0  >25ms   0  max    9.6
+  zoom in  frames  357  median  8.34  >12.5ms   4  >25ms   0  max   18.1
+  zoom out frames  355  median  8.34  >12.5ms   6  >25ms   0  max   17.6
+  zoom in  frames  358  median  8.34  >12.5ms   3  >25ms   0  max   16.7
+  zoom out frames  356  median  8.34  >12.5ms   5  >25ms   0  max   16.8
+  zoom in  frames  357  median  8.34  >12.5ms   4  >25ms   0  max   17.0
+  zoom out frames  356  median  8.34  >12.5ms   5  >25ms   0  max   16.7
+chrome-deck [1728, 1084, 2] ke Gecko) Chrome/153.0.0.0 Safari/537.36
+  idle     frames  241  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom out frames  362  median   8.3  >12.5ms   0  >25ms   0  max   10.4
+  zoom in  frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.2
+  zoom out frames  361  median   8.3  >12.5ms   0  >25ms   0  max   10.2

@@ -1,0 +1,24 @@
+firefox-beta-svg-c21 [1728, 999, 2] ; rv:157.0) Gecko/20100101 Firefox/157.0
+  idle     frames  240  median  8.34  >12.5ms   1  >25ms   0  max   16.7
+  zoom in  frames  266  median  8.34  >12.5ms  34  >25ms   5  max   41.6
+  zoom out frames  270  median  8.34  >12.5ms  35  >25ms   3  max   66.4
+  zoom in  frames  268  median  8.34  >12.5ms  40  >25ms   1  max   41.5
+  zoom out frames  265  median  8.34  >12.5ms  36  >25ms   2  max   66.3
+  zoom in  frames  276  median  8.34  >12.5ms  27  >25ms   4  max   41.6
+  zoom out frames  271  median  8.34  >12.5ms  26  >25ms   4  max   58.1
+firefox-beta-canvas-c21 [1728, 999, 2] ; rv:157.0) Gecko/20100101 Firefox/157.0
+  idle     frames  238  median  8.34  >12.5ms   2  >25ms   1  max   33.3
+  zoom in  frames  309  median  8.34  >12.5ms   5  >25ms   0  max   16.7
+  zoom out frames  313  median  8.34  >12.5ms   7  >25ms   0  max   16.7
+  zoom in  frames  316  median  8.34  >12.5ms   2  >25ms   0  max   16.7
+  zoom out frames  312  median  8.34  >12.5ms   2  >25ms   0  max   16.7
+  zoom in  frames  314  median  8.34  >12.5ms   2  >25ms   0  max   16.7
+  zoom out frames  307  median  8.34  >12.5ms   8  >25ms   0  max   16.7
+firefox-beta-canvas-erase-c21 [1728, 999, 2] ; rv:157.0) Gecko/20100101 Firefox/157.0
+  idle     frames  241  median  8.34  >12.5ms   1  >25ms   0  max   16.8
+  zoom in  frames  311  median  8.34  >12.5ms   2  >25ms   0  max   16.7
+  zoom out frames  312  median  8.34  >12.5ms   1  >25ms   0  max   14.3
+  zoom in  frames  313  median  8.34  >12.5ms   0  >25ms   0  max    9.2
+  zoom out frames  312  median  8.34  >12.5ms   2  >25ms   0  max   16.7
+  zoom in  frames  313  median  8.34  >12.5ms   0  >25ms   0  max    9.2
+  zoom out frames  313  median  8.34  >12.5ms   0  >25ms   0  max    9.0

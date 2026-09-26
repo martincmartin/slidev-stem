@@ -1,0 +1,80 @@
+{
+  "chromium 153.0.8010.12": {
+    "stroke_width_px": {
+      "svg, host 1.0, fixed": 2.0100279333967945,
+      "svg, host 1.0, scaled": 8.972155032953085,
+      "svg, host 1.5, fixed": 3.0349099837185225,
+      "svg, host 1.5, scaled": 13.487924137679915,
+      "html, host 1.0, fixed": 8.963232991578368,
+      "html, host 1.0, scaled": 8.972155032953085,
+      "html, host 1.5, fixed": 13.495740287032557,
+      "html, host 1.5, scaled": 13.491644429185978
+    },
+    "rounding": {
+      "t=0.1": {
+        "max_diff": 160.0,
+        "pixels_over_32": 511,
+        "ink_pixels": 5346
+      },
+      "t=0.35": {
+        "max_diff": 112.0,
+        "pixels_over_32": 585,
+        "ink_pixels": 5731
+      },
+      "t=0.6": {
+        "max_diff": 115.0,
+        "pixels_over_32": 445,
+        "ink_pixels": 6259
+      },
+      "t=0.85": {
+        "max_diff": 131.0,
+        "pixels_over_32": 689,
+        "ink_pixels": 6770
+      },
+      "t=1.3": {
+        "max_diff": 154.0,
+        "pixels_over_32": 425,
+        "ink_pixels": 6449
+      }
+    }
+  },
+  "firefox 155.0": {
+    "stroke_width_px": {
+      "svg, host 1.0, fixed": 1.9832888583719563,
+      "svg, host 1.0, scaled": 8.94280155844426,
+      "svg, host 1.5, fixed": 2.988490608240612,
+      "svg, host 1.5, scaled": 13.492395561867013,
+      "html, host 1.0, fixed": 8.914226265715786,
+      "html, host 1.0, scaled": 8.967704415765462,
+      "html, host 1.5, fixed": 13.455252987104862,
+      "html, host 1.5, scaled": 13.480510603767108
+    },
+    "rounding": {
+      "t=0.1": {
+        "max_diff": 160.0,
+        "pixels_over_32": 548,
+        "ink_pixels": 5355
+      },
+      "t=0.35": {
+        "max_diff": 108.0,
+        "pixels_over_32": 577,
+        "ink_pixels": 5722
+      },
+      "t=0.6": {
+        "max_diff": 116.0,
+        "pixels_over_32": 411,
+        "ink_pixels": 6258
+      },
+      "t=0.85": {
+        "max_diff": 132.0,
+        "pixels_over_32": 681,
+        "ink_pixels": 6756
+      },
+      "t=1.3": {
+        "max_diff": 154.0,
+        "pixels_over_32": 442,
+        "ink_pixels": 6465
+      }
+    }
+  }
+}

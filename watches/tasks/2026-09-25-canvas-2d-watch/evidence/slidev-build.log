@@ -1,0 +1,112 @@
+
+
+  ●■▲
+  Slidev  v53.0.0 (global)
+
+  theme       slidev-theme-ledger
+  css engine  unocss
+  entry       /Users/martin/Develop/slidev/stem/watches/tasks/2026-09-25-canvas-2d-watch/spike/deck/slides.md
+vite v8.3.0 building client environment for production...
+(node:25428) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+transforming...
+✓ 467 modules transformed.
+
+(!) outDir /private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build is not inside project root and will not be emptied.
+Use --emptyOutDir to override.
+
+rendering chunks...
+computing gzip size...
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/index.html                                                     1.02 kB │ gzip:  0.49 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-mono-vietnamese-600-normal-iLQfcSjf.woff       5.71 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-mono-cyrillic-ext-600-normal-9HEixskS.woff     5.79 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/fraunces-vietnamese-600-normal-BjlAJixd.woff2           6.28 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-vietnamese-400-normal-fK1oJ5dG.woff       6.39 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-vietnamese-600-normal-DgdngZtN.woff       6.58 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-vietnamese-500-normal-BEb3_waV.woff       6.58 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-mono-vietnamese-600-normal-D2EvbN8M.woff2      6.93 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-mono-cyrillic-600-normal-fLZuRloM.woff         7.26 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-mono-cyrillic-ext-600-normal-V-xxqcpd.woff2    7.69 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/fraunces-vietnamese-600-normal-DlAl5EAR.woff            7.93 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-vietnamese-400-normal-DG4YqDda.woff2      8.20 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-vietnamese-500-normal-e4dixQRQ.woff2      8.41 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-vietnamese-600-normal-DpPYBSTl.woff2      8.46 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-greek-400-normal-D9ESIMu3.woff            8.76 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-greek-500-normal-CuWXN6rf.woff            9.14 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-greek-600-normal-D-CqTdkO.woff            9.22 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-mono-cyrillic-600-normal-CTOM6hUh.woff2        9.35 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-greek-400-normal-_efipK4i.woff2           9.94 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-cyrillic-ext-400-normal-Dsrv2Tcn.woff    10.28 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-greek-600-normal-DzTrcv_p.woff2          10.36 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-greek-500-normal-JMMifIXV.woff2          10.37 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-cyrillic-ext-500-normal-DB5PtV2g.woff    10.59 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-cyrillic-ext-600-normal-Bz0x94Yp.woff    10.61 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-mono-latin-ext-600-normal-DmB0ttJJ.woff       11.83 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-cyrillic-ext-400-normal-g30qAdWV.woff2   12.14 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-cyrillic-ext-600-normal-DUMzJB7m.woff2   12.30 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-cyrillic-ext-500-normal-Cs5J6C77.woff2   12.30 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-mono-latin-600-normal-DWFSQ4vo.woff           13.20 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-cyrillic-400-normal-BTotfTJu.woff        13.51 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-cyrillic-500-normal-ByOcLdNv.woff        13.85 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-cyrillic-600-normal-BGq0mW3O.woff        13.88 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-mono-latin-ext-600-normal-D38SheWl.woff2      14.32 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-latin-ext-400-normal-RBey6euL.woff       14.36 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-latin-ext-500-normal-D0aIdm-b.woff       14.73 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-latin-ext-600-normal-DIrixKbi.woff       14.77 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-cyrillic-400-normal-DZqxrq2p.woff2       14.80 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-cyrillic-500-normal-CocWQlwt.woff2       15.00 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-cyrillic-600-normal-71GNu3SW.woff2       15.04 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-mono-latin-600-normal-BgSNZQsw.woff2          15.62 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-latin-ext-400-normal-C5H60-Va.woff2      15.98 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-latin-ext-600-normal-DOrvGEcy.woff2      16.44 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-latin-ext-500-normal-DakdToA3.woff2      16.45 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/fraunces-latin-ext-600-normal-BtzmzP0X.woff2           17.33 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/fraunces-latin-600-normal-BFCDtZfi.woff2               18.09 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-latin-400-normal-CYLoc0-x.woff           22.10 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/fraunces-latin-ext-600-normal-B0Dy4lqi.woff            22.36 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/fraunces-latin-600-normal-DL5QCzvS.woff                22.51 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-latin-400-normal-CDDApCn2.woff2          22.58 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-latin-600-normal-Cu4Hd6ag.woff           23.87 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-latin-500-normal-BgVn5rGT.woff           23.91 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-latin-500-normal-6ng42L7E.woff2          24.18 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/ibm-plex-sans-latin-600-normal-CuJfVYMP.woff2          24.25 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/logo-BYkHSa_O.png                                      94.32 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/play-D_7yfuao.css                                       0.06 kB │ gzip:  0.08 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/DrawingControls-Dhbx0szf.css                            0.07 kB │ gzip:  0.08 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/NoteDisplay-DCBzjb4F.css                                0.09 kB │ gzip:  0.10 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/overview-CkWcydhN.css                                   0.13 kB │ gzip:  0.09 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/404-CfnUgOEm.css                                        0.15 kB │ gzip:  0.12 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/entry-BTBgavfE.css                                      0.32 kB │ gzip:  0.21 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/SlideWrapper-DVVaElGQ.css                               1.18 kB │ gzip:  0.43 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/shortcuts-DmiNstTI.css                                  1.56 kB │ gzip:  0.66 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/presenter-DPRpZC_q.css                                  3.38 kB │ gzip:  0.72 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/modules/shiki-BrmBd2_v.css                             15.67 kB │ gzip:  2.92 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/index-E-NQYGB4.css                                     66.30 kB │ gzip: 13.11 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/default-ClK6zF4m.js                              0.25 kB │ gzip:  0.21 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/md-BB3ZocAQ.js                                          0.50 kB │ gzip:  0.35 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/md-D7QzzKKR.js                                          0.50 kB │ gzip:  0.35 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/IconButton-D-tO3ekx.js                           0.58 kB │ gzip:  0.38 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/DrawingLayer-DFslCMVJ.js                         0.60 kB │ gzip:  0.42 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/md-KD2PS0rA.js                                   0.63 kB │ gzip:  0.43 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/Modal-DXSlFzeE.js                                0.71 kB │ gzip:  0.47 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/rolldown-runtime-hePW80VL.js                            0.71 kB │ gzip:  0.42 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/entry-E28AHtHC.js                                0.91 kB │ gzip:  0.44 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/404-bea4UX5j.js                                  1.11 kB │ gzip:  0.66 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/modules/unplugin-icons-BzvrTs-2.js                      1.65 kB │ gzip:  0.79 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/notes-edit-D3XU6am6.js                           2.10 kB │ gzip:  1.13 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/NoteEditable-CBmlIUlQ.js                         2.23 kB │ gzip:  1.17 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/modules/file-saver-BpWusTEB.js                          2.69 kB │ gzip:  1.29 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/TimerBar-CrnuddU0.js                             2.73 kB │ gzip:  1.20 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/notes-JBJXt5vG.js                                3.26 kB │ gzip:  1.50 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/play-BOLfmotQ.js                                 4.99 kB │ gzip:  2.25 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/DrawingControls-Bg-UXJ4_.js                      5.41 kB │ gzip:  2.11 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/NoteDisplay-BRbeHr3n.js                          6.02 kB │ gzip:  2.63 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/overview-mmihEQAi.js                             9.27 kB │ gzip:  4.02 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/presenter-quUOnVHN.js                           10.31 kB │ gzip:  3.96 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/slidev/shortcuts-BdEy8RCC.js                           65.38 kB │ gzip: 23.24 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/modules/vue-B5ubykNR.js                                83.42 kB │ gzip: 31.03 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/SlideWrapper-DWXkQOzU.js                               83.88 kB │ gzip: 23.66 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/index-COj-nYaQ.js                                     112.85 kB │ gzip: 41.19 kB
+../../../../../../../../../../private/tmp/claude-501/-Users-martin-Develop-slidev-stem-watches/f632e9cd-08d0-4f6d-b632-1f95ce13067c/scratchpad/deck-build/assets/modules/shiki-X41ZfBfC.js                             222.37 kB │ gzip: 79.00 kB
+
+✓ built in 636ms

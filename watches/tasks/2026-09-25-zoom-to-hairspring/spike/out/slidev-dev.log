@@ -1,0 +1,182 @@
+(node:46326) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+  ●■▲
+  Slidev  v53.0.0 (global)
+
+  theme       slidev-theme-ledger
+  css engine  unocss
+  entry       /Users/martin/Develop/slidev/stem/watches/tasks/2026-09-25-zoom-to-hairspring/spike/deck/slides.md
+
+  public slide show   > http://localhost:3131/
+  presenter mode      > http://localhost:3131/presenter/
+  slides overview     > http://localhost:3131/overview/
+  export slides       > http://localhost:3131/export/
+  mcp server         > http://localhost:3131/__mcp
+  remote control      > pass --remote to enable
+
+  shortcuts           > restart | open | edit | quit
+5:17:19 PM [vite] (client) [console.error] Failed to patch FloatingVue TypeError: Cannot read properties of undefined (reading 'Popper')
+    at app.component (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:42)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at setupMain (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?v=9b5b05f6:30:6)
+    at main (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8)
+    at http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+5:17:19 PM [vite] (client) Pre-transform error: Failed to load url /Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/constants (resolved id: /Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/constants) in /Users/martin/Develop/slidev/stem/watches/tasks/2026-09-25-zoom-to-hairspring/spike/deck/global-bottom.vue. Does the file exist?
+Assets in public directory cannot be imported from JavaScript.
+If you intend to import that asset, put the file in the src directory, and use /src/cover/skeleton-watch.svg?raw instead of /public/cover/skeleton-watch.svg?raw.
+If you intend to use the URL of that asset, use /cover/skeleton-watch.svg?url&raw.
+5:17:19 PM [vite] (client) [console.warn] [VUE_ROUTER_R0010] Uncaught error during route navigation
+╰▶ fix: Register an error handler with `router.onError()` to handle navigation errors.
+5:17:19 PM [vite] (client) [console.error] TypeError: Failed to fetch dynamically imported module: http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/pages/play.vue
+5:17:19 PM [vite] (client) [console.warn] [VUE_ROUTER_R0011] Unexpected error when starting the router:
+╰▶ fix: Inspect the actual cause; a navigation guard or async component likely threw during the initial navigation.
+5:17:55 PM [vite] (client) [console.error] Failed to patch FloatingVue TypeError: Cannot read properties of undefined (reading 'Popper')
+    at app.component (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:42)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at setupMain (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?v=9b5b05f6:30:6)
+    at main (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8)
+    at http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+Assets in public directory cannot be imported from JavaScript.
+If you intend to import that asset, put the file in the src directory, and use /src/cover/skeleton-watch.svg?raw instead of /public/cover/skeleton-watch.svg?raw.
+If you intend to use the URL of that asset, use /cover/skeleton-watch.svg?url&raw.
+5:17:55 PM [vite] (client) [console.warn] [VUE_ROUTER_R0010] Uncaught error during route navigation
+╰▶ fix: Register an error handler with `router.onError()` to handle navigation errors.
+5:17:55 PM [vite] (client) [console.error] TypeError: Failed to fetch dynamically imported module: http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/pages/play.vue
+5:17:55 PM [vite] (client) [console.warn] [VUE_ROUTER_R0011] Unexpected error when starting the router:
+╰▶ fix: Inspect the actual cause; a navigation guard or async component likely threw during the initial navigation.
+5:18:34 PM [vite] (client) [console.error] Failed to patch FloatingVue TypeError: Cannot read properties of undefined (reading 'Popper')
+    at app.component (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:42)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at setupMain (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?t=1790371108391&v=9b5b05f6:30:6)
+    at main (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8)
+    at http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+5:18:35 PM [vite] (client) [Unhandled rejection] NotAllowedError: Wake Lock permission request denied
+
+5:18:48 PM [vite] (client) [console.error] Failed to patch FloatingVue TypeError: Cannot read properties of undefined (reading 'Popper')
+    at app.component (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:42)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at setupMain (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?t=1790371108391&v=9b5b05f6:30:6)
+    at main (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8)
+    at http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+5:18:48 PM [vite] (client) [Unhandled rejection] NotAllowedError: Wake Lock permission request denied
+
+5:18:55 PM [vite] (client) [console.error] Failed to patch FloatingVue TypeError: Cannot read properties of undefined (reading 'Popper')
+    at app.component (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:42)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at setupMain (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?t=1790371108391&v=9b5b05f6:30:6)
+    at main (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8)
+    at http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+5:18:55 PM [vite] (client) [Unhandled rejection] NotAllowedError: Wake Lock permission request denied
+
+5:19:03 PM [vite] (client) [console.error] Failed to patch FloatingVue install/app.component@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:23
+install@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9
+use@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13
+install@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6
+use@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13
+setupMain@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?t=1790371108391&v=9b5b05f6:30:6
+main@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8
+@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+setTimeout handler*@http://localhost:3131/@id/__x00__/__uno.css:19:42
+@http://localhost:3131/@id/__x00__/__uno.css:19:9
+
+5:19:10 PM [vite] (client) [console.error] Failed to patch FloatingVue install/app.component@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:23
+install@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9
+use@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13
+install@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6
+use@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13
+setupMain@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?t=1790371108391&v=9b5b05f6:30:6
+main@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8
+@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+setTimeout handler*@http://localhost:3131/@id/__x00__/__uno.css:19:42
+@http://localhost:3131/@id/__x00__/__uno.css:19:9
+
+10:04:56 PM [vite] (client) [console.error] Failed to patch FloatingVue TypeError: Cannot read properties of undefined (reading 'Popper')
+    at app.component (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:42)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at setupMain (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?t=1790371108391&v=9b5b05f6:30:6)
+    at main (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8)
+    at http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+10:04:56 PM [vite] (client) [Unhandled rejection] NotAllowedError: Wake Lock permission request denied
+
+10:40:58 PM [vite] (client) [console.error] Failed to patch FloatingVue install/app.component@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:23
+install@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9
+use@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13
+install@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6
+use@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13
+setupMain@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?t=1790371108391&v=9b5b05f6:30:6
+main@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8
+@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+setTimeout handler*@http://localhost:3131/@id/__x00__/__uno.css:19:42
+@http://localhost:3131/@id/__x00__/__uno.css:19:9
+
+11:23:22 PM [vite] (client) [console.error] Failed to patch FloatingVue install/app.component@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:23
+install@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9
+use@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13
+install@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6
+use@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13
+setupMain@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?t=1790371108391&v=9b5b05f6:30:6
+main@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8
+@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+setTimeout handler*@http://localhost:3131/@id/__x00__/__uno.css:19:42
+@http://localhost:3131/@id/__x00__/__uno.css:19:9
+
+11:25:17 PM [vite] (client) [console.error] Failed to patch FloatingVue TypeError: Cannot read properties of undefined (reading 'Popper')
+    at app.component (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:42)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at setupMain (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?t=1790371108391&v=9b5b05f6:30:6)
+    at main (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8)
+    at http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+11:27:37 PM [vite] (client) [console.error] Failed to patch FloatingVue install/app.component@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:23
+install@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9
+use@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13
+install@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6
+use@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13
+setupMain@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?t=1790371108391&v=9b5b05f6:30:6
+main@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8
+@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+setTimeout handler*@http://localhost:3131/@id/__x00__/__uno.css:19:42
+@http://localhost:3131/@id/__x00__/__uno.css:19:9
+
+11:29:37 PM [vite] (client) [console.error] Failed to patch FloatingVue install/app.component@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:23
+install@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9
+use@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13
+install@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6
+use@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13
+setupMain@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?t=1790371108391&v=9b5b05f6:30:6
+main@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8
+@http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1
+setTimeout handler*@http://localhost:3131/@id/__x00__/__uno.css:19:42
+@http://localhost:3131/@id/__x00__/__uno.css:19:9
+
+11:32:48 PM [vite] (client) [console.error] Failed to patch FloatingVue TypeError: Cannot read properties of undefined (reading 'Popper')
+    at app.component (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:27:42)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=9b5b05f6:1683:9)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at Object.install (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=9b5b05f6:43:6)
+    at Object.use (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=9b5b05f6:3706:13)
+    at setupMain (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/setup/main.ts?t=1790371108391&v=9b5b05f6:30:6)
+    at main (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:7:8)
+    at http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client/main.ts:10:1

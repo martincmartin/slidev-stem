@@ -1,0 +1,19 @@
+firefox 155.0, window [1728.0, 1000.0, 2.0]
+  idle
+    frames  240  median  8.34  >12.5ms   0  >25ms   0  worst   window   draw 
+  &renderer=canvas&host=1.7&clips=off
+    frames  242  median  8.34  >12.5ms   0  >25ms   0  worst [(9.3, 1.01), (9.2, 1.09), (9.1, 3.52)]  window [1728, 1000, 2]  draw [6.0, 16.0]
+    frames  241  median  8.34  >12.5ms   1  >25ms   0  worst [(16.7, 1.06), (9.3, 4.38), (9.3, 1.94)]  window [1728, 1000, 2]  draw [6.0, 12.0]
+    frames  242  median  8.34  >12.5ms   0  >25ms   0  worst [(9.4, 4.44), (9.3, 4.43), (9.3, 1.53)]  window [1728, 1000, 2]  draw [6.0, 17.0]
+  &renderer=canvas&host=1.7&smil=paused
+    frames  208  median  8.34  >12.5ms  33  >25ms   0  worst [(17.2, 1.75), (17.1, 2.55), (16.8, 2.41)]  window [1728, 1000, 2]  draw [1.0, 11.0]
+    frames  205  median  8.34  >12.5ms  36  >25ms   0  worst [(17.6, 2.14), (17.5, 1.38), (16.8, 1.21)]  window [1728, 1000, 2]  draw [1.0, 13.0]
+    frames  212  median  8.34  >12.5ms  29  >25ms   0  worst [(16.8, 1.52), (16.7, 1.14), (16.7, 1.57)]  window [1728, 1000, 2]  draw [1.0, 13.0]
+  &renderer=canvas&host=1.7&only=hairspring
+    frames  241  median  8.34  >12.5ms   0  >25ms   0  worst [(9.3, 1.07), (9.3, 1.12), (9.3, 4.08)]  window [1728, 1000, 2]  draw [0.0, 1.0]
+    frames  242  median  8.32  >12.5ms   0  >25ms   0  worst [(9.4, 1.12), (9.3, 4.46), (9.3, 1.24)]  window [1728, 1000, 2]  draw [0.0, 1.0]
+    frames  241  median  8.34  >12.5ms   0  >25ms   0  worst [(9.3, 3.39), (9.2, 4.45), (9.2, 2.32)]  window [1728, 1000, 2]  draw [0.0, 1.0]
+  &renderer=canvas&host=1
+    frames  241  median  8.34  >12.5ms   0  >25ms   0  worst [(9.3, 3.46), (9.2, 4.46), (9.2, 4.1)]  window [1728, 1000, 2]  draw [3.0, 12.0]
+    frames  241  median  8.34  >12.5ms   0  >25ms   0  worst [(9.3, 1.38), (9.2, 4.22), (9.2, 3.6)]  window [1728, 1000, 2]  draw [4.0, 7.0]
+    frames  241  median  8.34  >12.5ms   0  >25ms   0  worst [(9.3, 1.0), (9.3, 3.96), (9.2, 3.72)]  window [1728, 1000, 2]  draw [4.0, 7.0]

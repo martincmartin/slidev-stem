@@ -1,0 +1,4 @@
+1:0 {"classes": "slidev-layout watch-layer", "background": "rgb(250, 247, 240)", "color": "rgb(42, 37, 32)", "font": "\"IBM Plex Sans\"", "h1": null, "webfonts": ["Fraunces 600", "IBM Plex Sans 400", "IBM Plex Sans 600"]}
+2:0 {"classes": "slidev-layout watch-layer", "background": "rgb(250, 247, 240)", "color": "rgb(42, 37, 32)", "font": "\"IBM Plex Sans\"", "h1": null, "webfonts": ["Fraunces 600", "IBM Plex Sans 400"]}
+3:0 {"classes": "slidev-layout watch-layer watch-off", "background": "rgb(250, 247, 240)", "color": "rgb(42, 37, 32)", "font": "\"IBM Plex Sans\"", "h1": null, "webfonts": ["Fraunces 600", "IBM Plex Sans 400"]}
+outside requests: 0

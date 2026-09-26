@@ -1,0 +1,7 @@
+firefox 155.0, window [1728.0, 1000.0, 2.0]
+  idle
+    frames  240  median  8.32  >12.5ms   0  >25ms   0  worst   window   draw 
+  &renderer=canvas&host=1.7
+    frames  231  median  8.34  >12.5ms  11  >25ms   0  worst [(17.1, 1.81), (16.7, 1.02), (16.7, 1.04)]  window [1728, 1000, 2]  draw [6.0, 14.0]
+    frames  234  median  8.34  >12.5ms   8  >25ms   0  worst [(17.3, 2.75), (16.7, 2.31), (16.7, 3.61)]  window [1728, 1000, 2]  draw [7.0, 14.0]
+    frames  236  median  8.34  >12.5ms   8  >25ms   0  worst [(16.7, 1.08), (16.7, 1.89), (16.7, 2.38)]  window [1728, 1000, 2]  draw [6.0, 13.0]

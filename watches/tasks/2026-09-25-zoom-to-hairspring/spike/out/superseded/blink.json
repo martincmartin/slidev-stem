@@ -1,0 +1,36 @@
+{
+  "mode=svg&ease=linear": {
+    "frames": 102,
+    "blink_frames": [
+      94,
+      97,
+      98
+    ]
+  },
+  "mode=js": {
+    "frames": 104,
+    "blink_frames": [
+      96,
+      99,
+      100
+    ]
+  },
+  "mode=svg&ease=linear&fadelater=1": {
+    "frames": 138,
+    "blink_frames": [
+      131,
+      134,
+      135,
+      136
+    ]
+  },
+  "mode=js&fadelater=1": {
+    "frames": 137,
+    "blink_frames": [
+      130,
+      133,
+      134,
+      135
+    ]
+  }
+}

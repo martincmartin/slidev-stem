@@ -1,0 +1,162 @@
+{
+  "chromium 153.0.8010.12": {
+    "svg, linear": {
+      "sharpness_ratio": {
+        "paused": 0.9441872848818674,
+        "running": 0.8183879073420116
+      },
+      "spring_lines_px": [
+        {
+          "scale": 1.4519,
+          "width": 2.003720291506063,
+          "extent": 3.6666666666666665,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 2.73936,
+          "width": 2.0215373251561823,
+          "extent": 4.0,
+          "extent_at_rest": 3.0
+        },
+        {
+          "scale": 4.02126,
+          "width": 1.9717794666125685,
+          "extent": 3.6666666666666665,
+          "extent_at_rest": 3.0
+        }
+      ]
+    },
+    "svg, exp": {
+      "sharpness_ratio": {
+        "paused": 0.7844637281083262,
+        "running": 0.8176866652173952
+      },
+      "spring_lines_px": [
+        {
+          "scale": 1.21551,
+          "width": 1.9851458830750666,
+          "extent": 3.0,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 2.11948,
+          "width": 2.0052017498686556,
+          "extent": 3.0,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 3.68688,
+          "width": 2.0215373251561823,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        }
+      ]
+    },
+    "js, exp": {
+      "sharpness_ratio": {
+        "paused": 0.7871878262522015,
+        "running": 0.8179693152733121
+      },
+      "spring_lines_px": [
+        {
+          "scale": 1.2155451774597168,
+          "width": 1.9851458830750666,
+          "extent": 3.0,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 2.119591474533081,
+          "width": 2.0014814583625933,
+          "extent": 3.0,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 3.686983108520508,
+          "width": 2.0163355752875267,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        }
+      ]
+    }
+  },
+  "firefox 155.0": {
+    "svg, linear": {
+      "sharpness_ratio": {
+        "paused": 0.9973986809009817,
+        "running": 0.9950367008722941
+      },
+      "spring_lines_px": [
+        {
+          "scale": 1.45205,
+          "width": 2.0063076418907317,
+          "extent": 2.6666666666666665,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 2.73936,
+          "width": 2.0204314331341067,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        },
+        {
+          "scale": 4.02126,
+          "width": 2.0215373251561823,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        }
+      ]
+    },
+    "svg, exp": {
+      "sharpness_ratio": {
+        "paused": 1.001078220559448,
+        "running": 0.9968367150844571
+      },
+      "spring_lines_px": [
+        {
+          "scale": 1.21551,
+          "width": 1.9803196995469277,
+          "extent": 3.0,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 2.11948,
+          "width": 2.01781703365012,
+          "extent": 3.0,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 3.68714,
+          "width": 2.0204314331341062,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        }
+      ]
+    },
+    "js, exp": {
+      "sharpness_ratio": {
+        "paused": 1.0013606633201508,
+        "running": 0.9994407787516175
+      },
+      "spring_lines_px": [
+        {
+          "scale": 1.2155410051345825,
+          "width": 1.9803196995469277,
+          "extent": 3.0,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 2.1196088790893555,
+          "width": 2.0137211758035405,
+          "extent": 3.0,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 3.686957597732544,
+          "width": 2.0156052496059673,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        }
+      ]
+    }
+  }
+}

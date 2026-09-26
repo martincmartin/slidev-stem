@@ -1,0 +1,33 @@
+firefox-svg [1728, 1000, 2] ; rv:156.0) Gecko/20100101 Firefox/156.0
+  idle     frames  240 >12.5ms   2 >25ms   0 max   16.7
+  zoomIn   frames  237 >12.5ms  28 >25ms  14 max   58.3
+  zoomOut  frames  243 >12.5ms  35 >25ms  12 max   66.7
+  zoomIn   frames  236 >12.5ms  32 >25ms  13 max   58.3
+  zoomOut  frames  247 >12.5ms  29 >25ms  12 max   66.7
+  zoomIn   frames  243 >12.5ms  28 >25ms  12 max   58.3
+  zoomOut  frames  238 >12.5ms  32 >25ms  13 max   66.7
+firefox-canvas [1728, 1000, 2] ; rv:156.0) Gecko/20100101 Firefox/156.0
+  idle     frames  219 >12.5ms   6 >25ms   2 max  116.7
+  zoomIn   frames  307 >12.5ms   7 >25ms   0 max   16.7
+  zoomOut  frames  309 >12.5ms   4 >25ms   0 max   16.7
+  zoomIn   frames  310 >12.5ms   4 >25ms   0 max   16.7
+  zoomOut  frames  310 >12.5ms   3 >25ms   0 max   16.7
+  zoomIn   frames  307 >12.5ms   7 >25ms   0 max   16.9
+  zoomOut  frames  307 >12.5ms   6 >25ms   0 max   17.4
+chrome-svg [1728, 1084, 2] ke Gecko) Chrome/153.0.0.0 Safari/537.36
+  idle     frames   75 >12.5ms   5 >25ms   5 max  475.0
+  zoomIn   frames  285 >12.5ms   3 >25ms   2 max  151.0
+  zoomOut  frames  313 >12.5ms   0 >25ms   0 max    9.4
+  zoomIn   frames  311 >12.5ms   1 >25ms   0 max   24.9
+  zoomOut  frames  285 >12.5ms   2 >25ms   2 max  133.4
+  zoomIn   frames  313 >12.5ms   0 >25ms   0 max    9.5
+  zoomOut  frames  313 >12.5ms   0 >25ms   0 max   10.4
+chrome-canvas [1728, 1084, 2] ke Gecko) Chrome/153.0.0.0 Safari/537.36
+  idle     frames  236 >12.5ms   1 >25ms   1 max   58.2
+  zoomIn   frames  313 >12.5ms   0 >25ms   0 max   10.4
+  zoomOut  frames  313 >12.5ms   0 >25ms   0 max   10.4
+  zoomIn   frames  313 >12.5ms   0 >25ms   0 max   10.5
+  zoomOut  frames  313 >12.5ms   0 >25ms   0 max   10.3
+  zoomIn   frames  313 >12.5ms   0 >25ms   0 max   10.3
+  zoomOut  frames  313 >12.5ms   0 >25ms   0 max   10.3
+EXIT 0

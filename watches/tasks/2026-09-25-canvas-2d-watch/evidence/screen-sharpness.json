@@ -1,0 +1,38 @@
+{
+  "chromium 153.0.8010.12, window [1728.0, 997.0, 2.0]": {
+    "svg, mechanism paused": 1.0000765269116652,
+    "svg, mechanism running": 1.0018207192970046,
+    "svg, mechanism paused, at the end": 1.000007919045598,
+    "svg, mechanism running, at the end": 1.0050989714077496,
+    "canvas, mechanism paused": 1.0000185605215075,
+    "canvas, mechanism running": 1.00121721603475,
+    "canvas, mechanism paused, at the end": 1.0,
+    "canvas, mechanism running, at the end": 1.0028886046157022,
+    "svg-css, mechanism paused": 0.3405184843893972,
+    "svg-css, mechanism running": 0.33983343340058647,
+    "svg-css, mechanism paused, at the end": 0.23067996428141282,
+    "svg-css, mechanism running, at the end": 0.23084701555692316,
+    "svg-css-no-will-change, mechanism paused": 1.0000692169157814,
+    "svg-css-no-will-change, mechanism running": 1.0016711259894808,
+    "svg-css-no-will-change, mechanism paused, at the end": 1.0000136330700977,
+    "svg-css-no-will-change, mechanism running, at the end": 1.0041438452271372
+  },
+  "firefox 155.0, window [1728.0, 1000.0, 2.0]": {
+    "svg, mechanism paused": 0.7010834833666666,
+    "svg, mechanism running": 0.7030842011667577,
+    "svg, mechanism paused, at the end": 1.0000084303929908,
+    "svg, mechanism running, at the end": 0.9017082839306313,
+    "canvas, mechanism paused": 0.9996602250250937,
+    "canvas, mechanism running": 1.027118251931252,
+    "canvas, mechanism paused, at the end": 1.0,
+    "canvas, mechanism running, at the end": 0.9999402508277606,
+    "svg-css, mechanism paused": 0.7010793092055351,
+    "svg-css, mechanism running": 0.7029966026809913,
+    "svg-css, mechanism paused, at the end": 0.9990470388999898,
+    "svg-css, mechanism running, at the end": 0.9039572798746182,
+    "svg-css-no-will-change, mechanism paused": 0.7010265772614819,
+    "svg-css-no-will-change, mechanism running": 0.7033914210040978,
+    "svg-css-no-will-change, mechanism paused, at the end": 0.9990470388999898,
+    "svg-css-no-will-change, mechanism running, at the end": 0.8991012273472856
+  }
+}

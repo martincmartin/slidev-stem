@@ -1,0 +1,35 @@
+firefox 155.0, window [1728.0, 1000.0, 2.0]
+  minute  1  {'frames': 7171, 'median_ms': 8.34, 'over_12ms': 23, 'over_25ms': 3, 'largest_ms': 33.3, 'heap': None}
+  minute  2  {'frames': 7135, 'median_ms': 8.34, 'over_12ms': 50, 'over_25ms': 6, 'largest_ms': 33.4, 'heap': None}
+  minute  3  {'frames': 7114, 'median_ms': 8.34, 'over_12ms': 62, 'over_25ms': 11, 'largest_ms': 41.7, 'heap': None}
+  minute  4  {'frames': 7160, 'median_ms': 8.34, 'over_12ms': 29, 'over_25ms': 6, 'largest_ms': 33.9, 'heap': None}
+  minute  5  {'frames': 7147, 'median_ms': 8.34, 'over_12ms': 35, 'over_25ms': 10, 'largest_ms': 34.6, 'heap': None}
+  minute  6  {'frames': 7153, 'median_ms': 8.34, 'over_12ms': 30, 'over_25ms': 7, 'largest_ms': 33.4, 'heap': None}
+  minute  7  {'frames': 7178, 'median_ms': 8.34, 'over_12ms': 17, 'over_25ms': 2, 'largest_ms': 41.4, 'heap': None}
+  minute  8  {'frames': 7200, 'median_ms': 8.34, 'over_12ms': 1, 'over_25ms': 0, 'largest_ms': 16.6, 'heap': None}
+  minute  9  {'frames': 7200, 'median_ms': 8.34, 'over_12ms': 1, 'over_25ms': 0, 'largest_ms': 16.7, 'heap': None}
+  minute 10  {'frames': 7200, 'median_ms': 8.34, 'over_12ms': 1, 'over_25ms': 0, 'largest_ms': 15.8, 'heap': None}
+  zoom in   >12.5ms  14  >25ms   0
+  zoom out  >12.5ms  21  >25ms   0
+  zoom in   >12.5ms  11  >25ms   0
+  zoom out  >12.5ms  20  >25ms   0
+  zoom in   >12.5ms  10  >25ms   0
+  zoom out  >12.5ms  19  >25ms   0
+chromium 153.0.8010.12, window [1728.0, 997.0, 2.0]
+  minute  1  {'frames': 7201, 'median_ms': 8.3, 'over_12ms': 0, 'over_25ms': 0, 'largest_ms': 10.5, 'heap': 28992893}
+  minute  2  {'frames': 7201, 'median_ms': 8.3, 'over_12ms': 0, 'over_25ms': 0, 'largest_ms': 10.4, 'heap': 29122225}
+  minute  3  {'frames': 7201, 'median_ms': 8.3, 'over_12ms': 0, 'over_25ms': 0, 'largest_ms': 10.5, 'heap': 29214561}
+  minute  4  {'frames': 7201, 'median_ms': 8.3, 'over_12ms': 0, 'over_25ms': 0, 'largest_ms': 10.4, 'heap': 28963187}
+  minute  5  {'frames': 7200, 'median_ms': 8.3, 'over_12ms': 0, 'over_25ms': 0, 'largest_ms': 10.4, 'heap': 28867135}
+  minute  6  {'frames': 7201, 'median_ms': 8.3, 'over_12ms': 0, 'over_25ms': 0, 'largest_ms': 10.4, 'heap': 28877323}
+  minute  7  {'frames': 7200, 'median_ms': 8.3, 'over_12ms': 0, 'over_25ms': 0, 'largest_ms': 10.5, 'heap': 28816195}
+  minute  8  {'frames': 7201, 'median_ms': 8.3, 'over_12ms': 0, 'over_25ms': 0, 'largest_ms': 10.5, 'heap': 28805159}
+  minute  9  {'frames': 7200, 'median_ms': 8.3, 'over_12ms': 0, 'over_25ms': 0, 'largest_ms': 10.5, 'heap': 28648467}
+  minute 10  {'frames': 7201, 'median_ms': 8.3, 'over_12ms': 0, 'over_25ms': 0, 'largest_ms': 10.4, 'heap': 28748775}
+  zoom in   >12.5ms   0  >25ms   0
+  zoom out  >12.5ms   0  >25ms   0
+  zoom in   >12.5ms   0  >25ms   0
+  zoom out  >12.5ms   0  >25ms   0
+  zoom in   >12.5ms   0  >25ms   0
+  zoom out  >12.5ms   0  >25ms   0
+EXIT 0

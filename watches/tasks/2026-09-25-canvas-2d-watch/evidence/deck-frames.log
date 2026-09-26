@@ -1,0 +1,16 @@
+firefox 155.0, window [1728.0, 1000.0, 2.0]
+  idle     frames  240  median  8.34  >12.5ms   0  >25ms   0  max   10.3
+  zoom in   >12.5ms   7  >25ms   0  frames  355  worst [(17.8, 1.0), (16.7, 2.8), (16.7, 2.31)]
+  zoom out  >12.5ms  17  >25ms   0  frames  345  worst [(17.9, 1.78), (17.5, 4.46), (17.2, 4.46)]
+  zoom in   >12.5ms   8  >25ms   0  frames  354  worst [(17.4, 2.46), (16.8, 1.74), (16.7, 1.95)]
+  zoom out  >12.5ms  16  >25ms   0  frames  346  worst [(16.8, 4.46), (16.7, 1.45), (16.7, 4.46)]
+  zoom in   >12.5ms   8  >25ms   0  frames  354  worst [(16.7, 2.45), (16.7, 3.05), (16.7, 1.51)]
+  zoom out  >12.5ms  18  >25ms   0  frames  344  worst [(17.0, 4.46), (16.7, 4.46), (16.7, 4.46)]
+chromium 153.0.8010.12, window [1728.0, 997.0, 2.0]
+  idle     frames  240  median   8.3  >12.5ms   0  >25ms   0  max   10.3
+  zoom in   >12.5ms   0  >25ms   0  frames  362  worst [(10.4, 1.16), (10.4, 2.63), (10.4, 2.68)]
+  zoom out  >12.5ms   0  >25ms   0  frames  362  worst [(10.4, 4.46), (10.3, 4.35), (10.3, 1.8)]
+  zoom in   >12.5ms   0  >25ms   0  frames  362  worst [(10.4, 4.46), (10.2, 4.46), (10, 2.17)]
+  zoom out  >12.5ms   0  >25ms   0  frames  361  worst [(10.4, 2.7), (10.4, 1.21), (10.4, 1)]
+  zoom in   >12.5ms   0  >25ms   0  frames  362  worst [(10.4, 1.21), (10.3, 2.64), (10.2, 1.15)]
+  zoom out  >12.5ms   0  >25ms   0  frames  361  worst [(10.2, 3.82), (10.2, 3.6), (10.2, 3.23)]

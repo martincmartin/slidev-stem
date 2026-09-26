@@ -1,0 +1,162 @@
+{
+  "chromium 153.0.8010.12": {
+    "svg, linear": {
+      "sharpness_ratio": {
+        "paused": 0.9435941950310475,
+        "running": 0.8182715116263845
+      },
+      "spring_lines_px": [
+        {
+          "scale": 1.4519,
+          "width": 2.003720291506063,
+          "extent": 3.6666666666666665,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 2.73936,
+          "width": 2.0215373251561823,
+          "extent": 4.0,
+          "extent_at_rest": 3.0
+        },
+        {
+          "scale": 4.02126,
+          "width": 1.9717794666125685,
+          "extent": 3.6666666666666665,
+          "extent_at_rest": 3.0
+        }
+      ]
+    },
+    "svg, exp": {
+      "sharpness_ratio": {
+        "paused": 0.78643763717354,
+        "running": 0.8180864358837534
+      },
+      "spring_lines_px": [
+        {
+          "scale": 1.21551,
+          "width": 1.9851458830750666,
+          "extent": 3.0,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 2.11948,
+          "width": 2.0052017498686556,
+          "extent": 3.0,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 3.68688,
+          "width": 2.0215373251561823,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        }
+      ]
+    },
+    "js, exp": {
+      "sharpness_ratio": {
+        "paused": 0.9409758300033084,
+        "running": 0.8776616513114922
+      },
+      "spring_lines_px": [
+        {
+          "scale": 1.0995405912399292,
+          "width": 1.9836644247124733,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        },
+        {
+          "scale": 2.124540090560913,
+          "width": 2.016711141628044,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        },
+        {
+          "scale": 4.071352958679199,
+          "width": 2.0141237912433745,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        }
+      ]
+    }
+  },
+  "firefox 155.0": {
+    "svg, linear": {
+      "sharpness_ratio": {
+        "paused": 0.9969165530213183,
+        "running": 0.9956061299230773
+      },
+      "spring_lines_px": [
+        {
+          "scale": 1.4519,
+          "width": 2.0063076418907317,
+          "extent": 2.6666666666666665,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 2.73961,
+          "width": 2.016711141628044,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        },
+        {
+          "scale": 4.02141,
+          "width": 2.021537325156183,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        }
+      ]
+    },
+    "svg, exp": {
+      "sharpness_ratio": {
+        "paused": 1.00083504482469,
+        "running": 0.9989673716247603
+      },
+      "spring_lines_px": [
+        {
+          "scale": 1.21551,
+          "width": 1.9803196995469277,
+          "extent": 3.0,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 2.11948,
+          "width": 2.01781703365012,
+          "extent": 3.0,
+          "extent_at_rest": 2.6666666666666665
+        },
+        {
+          "scale": 3.68714,
+          "width": 2.0204314331341062,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        }
+      ]
+    },
+    "js, exp": {
+      "sharpness_ratio": {
+        "paused": 1.0028888543260044,
+        "running": 1.0027018297787769
+      },
+      "spring_lines_px": [
+        {
+          "scale": 1.099528431892395,
+          "width": 1.9884906082406122,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        },
+        {
+          "scale": 2.1245880126953125,
+          "width": 2.031565258552977,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        },
+        {
+          "scale": 4.0713372230529785,
+          "width": 2.021537325156183,
+          "extent": 3.0,
+          "extent_at_rest": 3.0
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,38 @@
+firefox 155.0, window [2000, 1150, 1]
+  idle
+    frames  240  median  8.34  >12.5ms   0  >25ms   0  worst   draw 
+  (baseline)
+    frames  210  median  8.34  >12.5ms  20  >25ms   4  worst [(33.3, 2.33), (33.3, 2.13), (33.3, 2.23)]  draw None
+    frames  208  median  8.34  >12.5ms  21  >25ms   5  worst [(33.3, 2.35), (33.3, 2.24), (33.3, 2.46)]  draw None
+    frames  210  median  8.34  >12.5ms  18  >25ms   5  worst [(41.7, 2.16), (33.3, 2.37), (33.3, 2.26)]  draw None
+  &renderer=canvas
+    frames  228  median  8.34  >12.5ms   1  >25ms   1  worst [(116.7, 1.24), (10.1, 2.14), (10.1, 1.71)]  draw [3.0, 5.0]
+    frames  241  median  8.34  >12.5ms   0  >25ms   0  worst [(10.3, 4.27), (10.2, 4.46), (10.0, 1.18)]  draw [3.0, 5.0]
+    frames  240  median  8.34  >12.5ms   0  >25ms   0  worst [(10.3, 3.48), (10.3, 1.0), (10.2, 2.62)]  draw [3.0, 5.0]
+  &host=2
+    frames  141  median  8.34  >12.5ms  37  >25ms  19  worst [(73.6, 1.02), (68.1, 1.06), (50.0, 1.22)]  draw None
+    frames  143  median  8.34  >12.5ms  36  >25ms  16  worst [(75.0, 1.03), (58.4, 1.06), (50.0, 1.29)]  draw None
+    frames  144  median  8.34  >12.5ms  37  >25ms  17  worst [(83.3, 1.02), (58.3, 1.06), (50.0, 1.14)]  draw None
+  &renderer=canvas&host=2
+    frames  241  median  8.34  >12.5ms   0  >25ms   0  worst [(10.3, 4.46), (10.3, 4.46), (10.3, 1.0)]  draw [4.0, 7.0]
+    frames  241  median  8.34  >12.5ms   0  >25ms   0  worst [(10.2, 2.43), (10.1, 2.76), (9.7, 4.2)]  draw [4.0, 7.0]
+    frames  241  median  8.34  >12.5ms   0  >25ms   0  worst [(10.2, 1.71), (10.1, 4.46), (10.0, 4.45)]  draw [4.0, 7.0]
+chromium 153.0.8010.12, window [2000, 1150, 1]
+  idle
+    frames  240  median   8.3  >12.5ms   0  >25ms   0  worst   draw 
+  (baseline)
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(10.5, 3.08), (10.4, 1.32), (10.4, 2.01)]  draw None
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(10.4, 1.0), (10.4, 1.36), (10.4, 1.61)]  draw None
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(10.4, 1.03), (10.3, 1.65), (10.3, 3.5)]  draw None
+  &renderer=canvas
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(10.4, 1.22), (10.4, 1.61), (10.4, 2.67)]  draw [0.2, 2.1]
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(10.4, 1.84), (10.4, 3.21), (10.4, 3.29)]  draw [0.2, 0.5]
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(10.4, 1.03), (10.4, 1.53), (10.4, 2.05)]  draw [0.2, 0.6]
+  &host=2
+    frames  241  median   8.3  >12.5ms   1  >25ms   0  worst [(17.3, 4.46), (10.4, 4.13), (10.4, 4.37)]  draw None
+    frames  239  median   8.3  >12.5ms   1  >25ms   0  worst [(23.3, 4.46), (10.4, 4.15), (10.4, 4.34)]  draw None
+    frames  239  median   8.3  >12.5ms   1  >25ms   1  worst [(26.6, 4.46), (10.4, 1.0), (10.3, 3.77)]  draw None
+  &renderer=canvas&host=2
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(10.4, 4.19), (10.4, 1.04), (10.3, 1.09)]  draw [0.2, 0.5]
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(10.4, 1.0), (10.4, 2.85), (10.4, 2.94)]  draw [0.3, 0.6]
+    frames  241  median   8.3  >12.5ms   0  >25ms   0  worst [(10.4, 2.28), (10.4, 3.51), (10.4, 4.24)]  draw [0.2, 0.5]

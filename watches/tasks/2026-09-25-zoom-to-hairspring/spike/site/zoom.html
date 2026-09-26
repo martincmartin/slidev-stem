@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Zoom spike</title>
+<!--
+The spike for step 1 of ../../PLAN.md. Serve this directory and open
+zoom.html; the query string picks the variant:
+
+  svg=watch-1dp.svg | watch-2dp.svg   which drawing (make_svgs.py writes them)
+  mode=svg | html | js                the camera: a CSS transition on the
+                                      SVG's <g class="camera">, or on an HTML
+                                      <div> around the <svg>; or a JS loop that
+                                      writes the camera's transform attribute
+                                      at each frame
+  ease=linear | exp                   the scale moves linearly, or its log does
+                                      (both eased in and out)
+  stroke=fixed | scaled | compensated vector-effect: non-scaling-stroke; or
+                                      nothing (lines grow with the zoom); or
+                                      (mode=js only) each stroke-width divided
+                                      by the scale, which the JS camera sets as
+                                      --s at each frame
+  host=1.5                            scale the whole stage, as Slidev scales a
+                                      slide to fit the window
+  dur=1.8  fade=0.8                   seconds
+  smil=paused&t=0.5                   stop the mechanism at t seconds
+  only=hairspring                     hide the rest from the start (to measure
+                                      the hairspring's width during the zoom)
+  fadelater=1                         on zoom in, start the fade only when the
+                                      camera stops, instead of a CSS
+                                      transition-delay pending during the move
+  clips=off                           remove every clip-path (to measure their
+                                      cost)
+  drop=spring,balance,fork,train,seconds
+                                      remove those SMIL animations (to find
+                                      which moving part makes Firefox stall)
+-->
+<style>
+@property --z {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+body { margin: 16px; background: #555; font: 14px sans-serif; color: #eee; }
+#host { width: 980px; height: 552px; transform-origin: 0 0; }
+#stage {
+  width: 980px; height: 552px; overflow: hidden; position: relative;
+  background: #faf7f0; /* --palette-background in ledger.css */
+  --move-delay: var(--fade);
+}
+#stage.zoomed { --move-delay: 0s; }
+#lens, #lens > svg { position: absolute; inset: 0; transform-origin: 0 0; }
+
+/* the camera: linear in scale */
+.cam { transition: transform var(--dur) ease-in-out var(--move-delay); }
+.zoomed .cam {
+  transform: translate(calc(var(--X) * 1px), calc(var(--Y) * 1px)) scale(var(--S));
+}
+/* the camera: linear in log scale. The translation follows the scale, so one
+   point of the canvas stays still: a dolly, not a pan plus a zoom. */
+.exp .cam {
+  --z: 0;
+  transition: --z var(--dur) ease-in-out var(--move-delay);
+  transform:
+    translate(calc(var(--X) / (var(--S) - 1) * (exp(var(--z)) - 1) * 1px),
+              calc(var(--Y) / (var(--S) - 1) * (exp(var(--z)) - 1) * 1px))
+    scale(exp(var(--z)));
+}
+.exp.zoomed .cam { --z: var(--Z); }
+
+/* the fade: parts that appear fade in at once; parts that go fade out after
+   the camera has moved. The opacity itself comes from the SVG's own <style>. */
+#stage svg [data-part] { transition: opacity var(--fade) ease 0s; }
+#stage.zoomed svg [data-part] { transition-delay: var(--dur); }
+#stage.fade-later.zoomed svg [data-part] { transition-delay: 0s; }
+
+.fixed-stroke svg * { vector-effect: non-scaling-stroke; }
+/* the drawing's four stroke widths, the house ladder */
+.compensated svg [stroke-width="2"] { stroke-width: calc(2px / var(--s, 1)); }
+.compensated svg [stroke-width="2.5"] { stroke-width: calc(2.5px / var(--s, 1)); }
+.compensated svg [stroke-width="3"] { stroke-width: calc(3px / var(--s, 1)); }
+.compensated svg [stroke-width="4"] { stroke-width: calc(4px / var(--s, 1)); }
+.only-spring svg [data-part="rest"] { opacity: 0 !important; transition: none !important; }
+#controls { margin-top: 12px; }
+button { font-size: 16px; padding: 6px 14px; }
+</style>
+</head>
+<body>
+<div id="host"><div id="stage"><div id="lens"></div></div></div>
+<div id="controls">
+  <button id="toggle">Zoom in</button>
+  <span id="status"></span>
+</div>
+<script>
+const params = new URLSearchParams(location.search);
+const option = (name, fallback) => params.get(name) ?? fallback;
+const stage = document.getElementById("stage");
+const lens = document.getElementById("lens");
+
+async function setup() {
+  const source = await (await fetch(option("svg", "watch-1dp.svg"))).text();
+  lens.innerHTML = source;
+  const svg = lens.querySelector("svg");
+  const host = Number(option("host", "1"));
+  document.getElementById("host").style.transform = host === 1 ? "" : `scale(${host})`;
+  stage.style.setProperty("--dur", `${option("dur", "1.8")}s`);
+  stage.style.setProperty("--fade", `${option("fade", "0.8")}s`);
+  // Read the view's camera numbers from the SVG's own <style>, on a throwaway
+  // <svg>: setting data-view on the real one would start its fade transitions.
+  const probe = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  probe.setAttribute("data-view", "hairspring");
+  document.body.append(probe);
+  const computed = getComputedStyle(probe);
+  for (const [name, variable] of [["X", "--cam-x"], ["Y", "--cam-y"], ["S", "--cam-s"], ["Z", "--cam-z"]])
+    stage.style.setProperty(`--${name}`, computed.getPropertyValue(variable).trim());
+  probe.remove();
+  const mode = option("mode", "svg");
+  const camera = mode === "html" ? lens : svg.querySelector(".camera");
+  if (mode !== "js") camera.classList.add("cam");
+  if (option("ease", "linear") === "exp") stage.classList.add("exp");
+  if (option("stroke", "fixed") === "fixed") stage.classList.add("fixed-stroke");
+  if (option("only", "") === "hairspring") stage.classList.add("only-spring");
+  const fadeLater = option("fadelater", "") === "1";
+  if (fadeLater) stage.classList.add("fade-later");
+  if (option("clips", "on") === "off")
+    svg.querySelectorAll("[clip-path]").forEach(element => element.removeAttribute("clip-path"));
+  const animations = {
+    spring: a => a.getAttribute("attributeName") === "d",
+    balance: a => (a.getAttribute("values") ?? "").startsWith("150;"),
+    fork: a => (a.getAttribute("values") ?? "").startsWith("-9;"),
+    train: a => a.getAttribute("accumulate") === "sum",
+    seconds: a => a.getAttribute("dur") === "60s",
+  };
+  for (const name of option("drop", "").split(",").filter(Boolean))
+    svg.querySelectorAll("animate, animateTransform").forEach(animation => {
+      if (animations[name](animation)) animation.remove();
+    });
+  window.devicePixels = window.devicePixelRatio;
+  let fadeTimer = null;
+  if (option("smil", "running") === "paused") {
+    svg.pauseAnimations();
+    svg.setCurrentTime(Number(option("t", "0")));
+  }
+  const button = document.getElementById("toggle");
+  button.onclick = () => {
+    zoom(!stage.classList.contains("zoomed"));
+  };
+  // The JS camera. X and Y grow with the scale, so one point of the canvas
+  // stays still. ease=linear moves the scale linearly, ease=exp its log; both
+  // eased with CSS's ease-in-out, cubic-bezier(0.42, 0, 0.58, 1).
+  const [X, Y, S] = ["X", "Y", "S"].map(
+    name => Number(stage.style.getPropertyValue(`--${name}`)));
+  const duration = Number(option("dur", "1.8")) * 1000;
+  const fade = Number(option("fade", "0.8")) * 1000;
+  const logarithmic = option("ease", "linear") === "exp";
+  const compensated = option("stroke", "fixed") === "compensated";
+  if (compensated) stage.classList.add("compensated");
+  let scale = 1, tween = null;
+  function easeInOut(time) {
+    // solve x(t) = time for the Bezier parameter t, then return y(t)
+    const x = t => 3 * 0.42 * t * (1 - t) ** 2 + 3 * 0.58 * t ** 2 * (1 - t) + t ** 3;
+    let low = 0, high = 1;
+    for (let step = 0; step < 30; step++) {
+      const middle = (low + high) / 2;
+      if (x(middle) < time) low = middle; else high = middle;
+    }
+    const t = (low + high) / 2;
+    return 3 * t ** 2 * (1 - t) + t ** 3;
+  }
+  function place() {
+    const along = (scale - 1) / (S - 1);
+    camera.setAttribute("transform", `translate(${X * along} ${Y * along}) scale(${scale})`);
+    if (compensated) svg.style.setProperty("--s", scale);
+  }
+  function frame(now) {
+    if (tween) {
+      const time = Math.min(Math.max((now - tween.start) / duration, 0), 1);
+      const eased = easeInOut(time);
+      scale = logarithmic
+        ? Math.exp(Math.log(tween.from) + (Math.log(tween.to) - Math.log(tween.from)) * eased)
+        : tween.from + (tween.to - tween.from) * eased;
+      place();
+      if (time === 1) tween = null;
+    }
+    requestAnimationFrame(frame);
+  }
+  if (mode === "js") requestAnimationFrame(frame);
+  function zoom(on) {
+    if (mode === "js")
+      tween = { from: scale, to: on ? S : 1, start: performance.now() + (on ? 0 : fade) };
+    stage.classList.toggle("zoomed", on);
+    clearTimeout(fadeTimer);
+    if (!on) svg.removeAttribute("data-view");
+    else if (fadeLater)
+      fadeTimer = setTimeout(() => svg.setAttribute("data-view", "hairspring"), duration);
+    else svg.setAttribute("data-view", "hairspring");
+    button.textContent = on ? "Zoom out" : "Zoom in";
+  }
+  document.getElementById("status").textContent =
+    [...params].map(([key, value]) => `${key}=${value}`).join(" ") || "defaults";
+  function matrix() {
+    if (mode !== "js") return getComputedStyle(camera).transform;
+    const { a, b, c, d, e, f } = camera.transform.baseVal.consolidate()?.matrix ?? new DOMMatrix();
+    return `matrix(${a}, ${b}, ${c}, ${d}, ${e}, ${f})`;
+  }
+  // seek(0.5): move the JS tween to its middle (the CSS modes use getAnimations)
+  function seek(fraction) {
+    if (tween) tween.start = performance.now() - fraction * duration;
+  }
+  window.spike = { svg, zoom, camera: () => camera, matrix, seek };
+}
+window.ready = setup();
+</script>
+</body>
+</html>

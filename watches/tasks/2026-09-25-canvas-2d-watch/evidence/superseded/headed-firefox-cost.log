@@ -1,0 +1,19 @@
+firefox 155.0, window [1728.0, 1000.0, 2.0]
+  idle
+    frames  240  median  8.34  >12.5ms   0  >25ms   0  worst   window   draw 
+  &renderer=canvas&host=1.7&clips=off
+    frames  237  median  8.34  >12.5ms   5  >25ms   0  worst [(16.7, 1.0), (16.6, 1.07), (16.2, 1.11)]  window [1728, 1000, 2]  draw [5.0, 11.0]
+    frames  237  median  8.34  >12.5ms   5  >25ms   0  worst [(16.7, 1.0), (16.7, 1.24), (16.6, 1.18)]  window [1728, 1000, 2]  draw [5.0, 16.0]
+    frames  241  median  8.34  >12.5ms   1  >25ms   0  worst [(16.7, 2.72), (9.3, 4.44), (9.3, 3.33)]  window [1728, 1000, 2]  draw [6.0, 14.0]
+  &renderer=canvas&host=1.7&smil=paused
+    frames  220  median  8.34  >12.5ms  28  >25ms   0  worst [(16.8, 1.7), (16.8, 1.02), (16.7, 1.32)]  window [1728, 1000, 2]  draw [1.0, 10.0]
+    frames  210  median  8.34  >12.5ms  34  >25ms   0  worst [(21.6, 2.05), (21.1, 2.26), (20.7, 1.78)]  window [1728, 1000, 2]  draw [0.0, 13.0]
+    frames  216  median  8.34  >12.5ms  25  >25ms   0  worst [(18.7, 1.62), (18.7, 1.77), (17.1, 1.06)]  window [1728, 1000, 2]  draw [1.0, 10.0]
+  &renderer=canvas&host=1.7&only=hairspring
+    frames  241  median  8.32  >12.5ms   0  >25ms   0  worst [(9.3, 1.62), (9.3, 4.04), (9.3, 1.3)]  window [1728, 1000, 2]  draw [0.0, 2.0]
+    frames  241  median  8.34  >12.5ms   0  >25ms   0  worst [(9.3, 4.1), (9.3, 3.08), (9.3, 3.83)]  window [1728, 1000, 2]  draw [0.0, 3.0]
+    frames  241  median  8.34  >12.5ms   0  >25ms   0  worst [(9.4, 4.46), (9.4, 4.46), (9.3, 4.46)]  window [1728, 1000, 2]  draw [0.0, 2.0]
+  &renderer=canvas&host=1.7&host=1
+    frames  231  median  8.34  >12.5ms  11  >25ms   0  worst [(16.7, 1.01), (16.7, 1.06), (16.7, 1.9)]  window [1728, 1000, 2]  draw [6.0, 15.0]
+    frames  233  median  8.34  >12.5ms  12  >25ms   0  worst [(16.7, 1.01), (16.7, 1.84), (16.7, 2.68)]  window [1728, 1000, 2]  draw [6.0, 13.0]
+    frames  230  median  8.34  >12.5ms  13  >25ms   0  worst [(16.9, 1.94), (16.7, 1.06), (16.7, 1.01)]  window [1728, 1000, 2]  draw [6.0, 14.0]
