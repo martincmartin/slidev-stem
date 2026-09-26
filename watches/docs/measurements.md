@@ -44,3 +44,18 @@ with `--sep 1`,** half the balance's 2 s period, or run
 `art/validate_skeleton_watch.py`, which does. By default the tool samples half
 the longest loop apart (30 s, the seconds hand's half-turn), which is a whole
 number of balance periods, so the escapement looks still.
+
+### Line widths when the view zooms
+
+When the camera zooms into the watch (to the hairspring, $s = 250/56 \approx
+4.46$), each line keeps its width on the screen: the width in the drawing is
+divided by the scale. So parts must not meet only through their ink. Where two
+parts touch, one is painted over the other (the pallet fork over the escape
+wheel, each wheel's teeth over the pinion it drives), or their outlines meet
+on their centre lines (tooth tips on the root circle). Keep it so when you
+change `art/skeleton_watch.py`.
+
+Scaling the lines with the zoom instead is not an oversight. At 4.46× the
+lines are 9–18 px, and no contact in the hairspring view needed it. To check
+the art again, run the contact check in
+[`tasks/2026-09-26-zoom-line-contacts/`](../tasks/2026-09-26-zoom-line-contacts/README.md).
