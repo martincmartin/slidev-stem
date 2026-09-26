@@ -12,7 +12,8 @@ The free numbers are four of LAYOUT's angles (third, fourth, escape and lever)
 and its balance distance; the distances between the train's arbors are fixed
 by the meshes. Each candidate is a new Layout, made from LAYOUT with those
 numbers changed. A layout is allowed if every part is inside the chapter ring
-and the balance is at the top of the dial, opposite the barrel at 5 o'clock. Its score is the
+and the balance is at the top of the dial, opposite the barrel fixed at 5 o'clock
+(+60 degrees). The visible third-barrel gap must be 12 +/- 1 px. Its score is the
 smallest of three gaps (watch_geometry.py says how they are measured):
 
 - the tightest visible gap between two parts that do not mesh;
@@ -31,12 +32,12 @@ import math
 from dataclasses import dataclass
 
 import watch_geometry as geometry
-from skeleton_watch import BALANCE, LAYOUT, Layout, Placement
+from skeleton_watch import BALANCE, BARREL_ANGLE, LAYOUT, Layout, Placement
 
 Angles = tuple[float, float, float, float]  # third, fourth, escape, lever
 # (first, last, step) in degrees, for each of the Angles
 COARSE: tuple[tuple[float, float, float], ...] = (
-    (150.0, 250.0, 10.0),
+    (150.0, 250.0, 2.0),  # fine enough to find the 12 +/- 1 px barrel gap
     (170.0, 330.0, 10.0),
     (190.0, 390.0, 10.0),
     (290.0, 410.0, 10.0),
@@ -64,6 +65,7 @@ def changed(layout: Layout, angles: Angles, balance_distance: float) -> Layout:
     third, fourth, escape, lever = angles
     return dataclasses.replace(
         layout,
+        barrel_angle=BARREL_ANGLE,
         third_angle=third,
         fourth_angle=fourth,
         escape_angle=escape,
@@ -95,6 +97,10 @@ def evaluate(layout: Layout, spacing: float) -> Candidate | None:
     if not BALANCE_SIDE[0] <= balance_angle <= BALANCE_SIDE[1]:
         return None
     if min(geometry.ring_gaps(placement).values()) < 0:
+        return None
+    # Use the same sampling as the validator even during the coarse search:
+    # this gap's allowed band is narrower than the coarse outline spacing.
+    if geometry.layout_constraints(placement):
         return None
     return Candidate(layout, geometry.measure(placement, spacing))
 

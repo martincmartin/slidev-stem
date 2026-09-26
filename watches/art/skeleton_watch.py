@@ -239,12 +239,13 @@ class Layout:
 # MIN_CLEARANCE between the visible parts of parts that do not mesh,
 # FORK_CLEARANCE round the fork and RING_CLEARANCE inside the chapter ring:
 # validate_skeleton_watch.py checks all three.
-# search_skeleton_watch_layout.py found it. Then the third wheel, and the
-# arbors after it, turned 9 degrees about the centre arbor toward the barrel:
-# as far as they can go before the third-barrel gap is the tightest. The
-# search does not prefer this, so a new search moves the third wheel back.
+# The search also holds the barrel at 5 o'clock and keeps the visible
+# third-barrel gap within 1 px of 12 px.
+BARREL_ANGLE = 60.0
+THIRD_BARREL_CLEARANCE = 12.0
+THIRD_BARREL_TOLERANCE = 1.0
 LAYOUT = Layout(
-    barrel_angle=60.0,  # at 5 o'clock
+    barrel_angle=BARREL_ANGLE,
     third_angle=191.0,
     fourth_angle=243.5,
     escape_angle=288.5,
@@ -255,6 +256,9 @@ LAYOUT = Layout(
 MIN_CLEARANCE = 8.0  # px between parts that do not mesh
 FORK_CLEARANCE = 8.0  # px from the fork to the wheels it does not work on
 RING_CLEARANCE = 8.0  # px from each part to the chapter ring's inside edge
+
+# Tooth phase relative to the lever, so moving the arbors preserves both locks.
+ESCAPE_PHASE = 9.5
 
 # ---- the case, in px from the watch centre ---------------------------------------
 CASE_RADIUS, BEZEL_RADIUS = (
@@ -734,11 +738,13 @@ def fork_outline(mouth: float) -> list[Point]:
         (mouth - 10, -11),
         (mouth - 17, -4.5),
         (6, -4.5),
-        (1, -21),
-        (-9, -23),
-        (-15, -19),
-        (-13, -15),
-        (-6, -13),
+        # The entry pallet locks on its inside face. It cannot be a mirror
+        # of the exit pallet below: that puts its body over the stopped tooth.
+        (0, -26),
+        (-11, -28),
+        (-17, -23),
+        (-16, -19),
+        (-7, -24),
         (-5, 0),
         (-6, 13),
         (-13, 15),
@@ -865,8 +871,9 @@ def build(layout: Layout, centre_x: float, centre_y: float) -> str:
         hub=8,
         spoke_width=5,
         dedendum=ESCAPE.pitch_radius - ESCAPE.inner,
-        # the teeth's phase against the pallets: when the arbors turn, turn this
-        outline=escape_outline(ESCAPE.teeth, ESCAPE.inner, ESCAPE.outer, 147),
+        outline=escape_outline(
+            ESCAPE.teeth, ESCAPE.inner, ESCAPE.outer, layout.lever_angle + ESCAPE_PHASE
+        ),
         solid=ESCAPE_SOLID,
     )
     elements.append(

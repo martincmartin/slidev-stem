@@ -10,6 +10,8 @@ The steps:
 1-2. style and types: stem/tools/check_python.py on the art scripts (ruff
    format, which rewrites them in place, ruff check, mypy --strict, pyright);
 3. layout, as the viewer sees it (watch_geometry.py says how):
+   - the barrel is fixed at +60 degrees and the visible third-barrel gap
+     is 12 +/- 1 px;
    - each wheel sits exactly one mesh distance from the pinion it drives;
    - every part is at least RING_CLEARANCE inside the chapter ring;
    - the visible parts of two parts that do not mesh are at least
@@ -85,11 +87,13 @@ def check_layout() -> None:
     import skeleton_watch as watch
     import watch_geometry as geometry
 
-    clearances = geometry.measure(watch.Placement(watch.LAYOUT))
+    placement = watch.Placement(watch.LAYOUT)
+    clearances = geometry.measure(placement)
     label = geometry.label
     problems = [
         f"{label(pair)}: {error}" for pair, error in clearances.mesh_errors.items()
     ]
+    problems.extend(geometry.layout_constraints(placement))
     for part, gap in clearances.ring_gaps.items():
         if gap < watch.RING_CLEARANCE:
             problems.append(

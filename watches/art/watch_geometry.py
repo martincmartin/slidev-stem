@@ -25,9 +25,14 @@ from numpy.typing import NDArray
 from skeleton_watch import (
     BALANCE,
     BANK,
+    BARREL,
+    BARREL_ANGLE,
     ESCAPE,
     RING_RADIUS,
     STACK,
+    THIRD,
+    THIRD_BARREL_CLEARANCE,
+    THIRD_BARREL_TOLERANCE,
     TRAIN,
     Part,
     Placement,
@@ -183,6 +188,21 @@ def ring_gaps(placement: Placement) -> dict[Round, float]:
         part: RING_RADIUS - (math.hypot(*placement.arbor[part]) + part.outer)
         for part in STACK
     }
+
+
+def layout_constraints(placement: Placement, spacing: float = 1.0) -> list[str]:
+    """Fixed barrel position and the visible third-barrel clearance target."""
+    problems = []
+    if not math.isclose(placement.layout.barrel_angle, BARREL_ANGLE, abs_tol=1e-6):
+        problems.append(f"barrel: must be at {BARREL_ANGLE:g} degrees (5 o'clock)")
+    visible = regions(STACK, placement.arbor)
+    gap = region_gap(visible[THIRD], visible[BARREL], spacing)
+    if abs(gap - THIRD_BARREL_CLEARANCE) > THIRD_BARREL_TOLERANCE:
+        problems.append(
+            f"third-barrel: visible gap {gap:.1f} px, expected "
+            f"{THIRD_BARREL_CLEARANCE:g} +/- {THIRD_BARREL_TOLERANCE:g} px"
+        )
+    return problems
 
 
 def measure(placement: Placement, spacing: float = 1.0) -> Clearances:
