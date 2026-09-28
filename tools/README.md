@@ -12,18 +12,20 @@ from the house theme (`../themes/ledger/styles/ledger.css`), the one place they 
 set. Each drawing's display size comes from the drawing itself (its `width` and
 `height`).
 
-| tool                 | needs                    | answers                                                                     |
-| -------------------- | ------------------------ | --------------------------------------------------------------------------- |
-| `lib.py`             | stdlib                   | the constants themselves; run it to print them                              |
-| `palette.py`         | stdlib                   | does the palette pass its gates, does a talk set it; can I use this colour  |
-| `artcheck.py`        | stdlib                   | is this SVG valid, in-style, and thick enough at the size it is shown       |
-| `contact.py`         | playwright               | what does it look like, frame by frame                                      |
-| `barroom.py`         | playwright + PIL + numpy | what does the back row of a lit room get                                    |
-| `motion.py`          | playwright + PIL + numpy | can the back row see the thing that moves                                   |
-| `offline_check.py`   | playwright               | does a built deck make any outside request; its fonts and colours per slide |
-| `check_python.py`    | ruff, mypy, pyright      | do these Python files pass the house's checks (default: every tool here)    |
-| `validate.py`        | all of the above         | does this project (stem/ or a talk) pass every check: run before a commit   |
-| `capture_outputs.sh` | playwright               | every tool's output, saved, to compare before and after a change to a tool  |
+| tool                   | needs                    | answers                                                                                |
+| ---------------------- | ------------------------ | -------------------------------------------------------------------------------------- |
+| `lib.py`               | stdlib                   | the constants themselves; run it to print them                                         |
+| `palette.py`           | stdlib                   | does the palette pass its gates, does a talk set it; can I use this colour             |
+| `artcheck.py`          | stdlib                   | is this SVG valid, in-style, and thick enough at the size it is shown                  |
+| `contact.py`           | playwright               | what does it look like, frame by frame                                                 |
+| `barroom.py`           | playwright + PIL + numpy | what does the back row of a lit room get                                               |
+| `motion.py`            | playwright + PIL + numpy | can the back row see the thing that moves                                              |
+| `offline_check.py`     | playwright               | does a built deck make any outside request; its fonts and colours per slide            |
+| `check_python.py`      | ruff, mypy, pyright      | do these Python files pass the house's checks (default: every tool here)               |
+| `validate.py`          | all of the above         | does this project (stem/ or a talk) pass every check: run before a commit              |
+| `flatten_pnpm_list.py` | stdlib                   | every resolved JS package, one `name@version` a line: diff before and after an upgrade |
+| `compare_dist.py`      | stdlib                   | are two deck builds the same, apart from Vue scope ids and content hashes              |
+| `capture_outputs.sh`   | playwright               | every tool's output, saved, to compare before and after a change to a tool             |
 
 ```bash
 uv run tools/validate.py                                # every check of the shared files

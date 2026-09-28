@@ -89,10 +89,8 @@ def run(check: Check) -> subprocess.CompletedProcess[str]:
     environment = {
         name: value for name, value in os.environ.items() if name != "VIRTUAL_ENV"
     }
-    # Through a shell, which runs a file that has no shebang as a shell script.
-    # Homebrew's pnpm is one: macOS refuses to start it directly (ENOEXEC).
     return subprocess.run(
-        ["/bin/sh", "-c", 'exec "$@"', "sh", *check.command],
+        check.command,
         cwd=check.directory,
         env=environment,
         capture_output=True,

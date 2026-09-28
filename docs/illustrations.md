@@ -17,6 +17,10 @@ does.
 .venv/bin/python3 tools/motion.py path/to/new.svg    # can it see the thing that MOVES
 ```
 
+`uv run ../tools/validate.py`, in the talk's directory, runs `artcheck`,
+`barroom` and `motion` on every drawing in the talk, with the talk's other
+checks. See [talks.md](talks.md).
+
 ## The grammar
 
 **Size.** Each file states the size a slide shows it at, in CSS px: its `width`

@@ -66,7 +66,8 @@ not change it on `main`.
   directories to check. Do not check "every talk": given talks are not checked
   again.
 
-The options and the evidence for these conventions are in
+How to work in this setup, including how to upgrade a talk, is in
+`docs/talks.md`. The options and the evidence are in
 `tasks/2026-09-28-per-talk-dependencies/`.
 
 ## Working in this repo

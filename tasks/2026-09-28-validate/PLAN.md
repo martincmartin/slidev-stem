@@ -183,3 +183,14 @@ native binary runs the same way through the shell.
 
 Note on the machine: Homebrew's pnpm runs through Node.js, because its native
 binary was not installed. It works, but it starts more slowly.
+
+## Closed (2026-09-28)
+
+`AGENTS.md` ("Validate before you commit"), `tools/README.md` and
+`docs/talks.md` describe the command. `docs/README.md` lists this decision.
+`survey.sh` stays here: rerun it to revisit the ranking of the other checks.
+
+2026-09-28, after closing: D11 is reverted. The user replaced the pnpm from npm
+with Homebrew's `pnpm` formula (12.6.0, a native arm64 binary, the version both
+projects pin). `subprocess` starts it directly, so `check_python.run` no longer
+goes through `/bin/sh`. Both scopes pass (6 and 11 checks).

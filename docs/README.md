@@ -9,6 +9,7 @@ story — you should never need to open `tasks/`.
 | [theme.md](theme.md)                     | choosing colours, or a slide needs one the palette does not have          |
 | [illustrations.md](illustrations.md)     | drawing anything new                                                      |
 | [legibility.md](legibility.md)           | deciding whether something is big, thick or dark enough                   |
+| [talks.md](talks.md)                     | checking or upgrading a talk; why each talk keeps its own versions        |
 | [../tools/README.md](../tools/README.md) | running the checks, which is how the above are settled rather than argued |
 
 A talk's own `docs/` holds what is true of that talk only. For `watches`:
@@ -25,9 +26,10 @@ deep blue accent, warm brown second — and their illustrations are **"Line,
 weighted"**: deep blue line work on the card panel, four stroke weights, in files
 that state the size a slide shows them at. Every threshold in these docs comes
 from one question, _can the back row of a bar read this_, and `tools/` answers it
-with arithmetic instead of opinion. Run `.venv/bin/python3 tools/artcheck.py` and
-`.venv/bin/python3 tools/palette.py` in `stem/` before you ship; they are stdlib-only and
-take a second.
+with arithmetic instead of opinion. Before you commit, run
+`uv run ../tools/validate.py` in the talk's directory: it runs every check on the
+talk ([talks.md](talks.md)). For a quick look at one drawing,
+`.venv/bin/python3 tools/artcheck.py` in `stem/` is stdlib-only and takes a second.
 
 ---
 
@@ -77,11 +79,13 @@ learns that the framework has moved on.
 
 ## The decisions these docs encode
 
-| what                                                              | choice                          | when       | archive                                                                                       |
-| ----------------------------------------------------------------- | ------------------------------- | ---------- | --------------------------------------------------------------------------------------------- |
-| Palette                                                           | **Ledger**                      | 2026-09-19 | [`watches/tasks/2026-09-18-theme-colors/`](../watches/tasks/2026-09-18-theme-colors/)         |
-| Illustration style                                                | **Set 2, "Line, weighted"**     | 2026-09-21 | [`watches/tasks/2026-09-20-animation-style/`](../watches/tasks/2026-09-20-animation-style/)   |
-| Where these docs and tools live; each SVG states its display size | **`stem/docs/`, `stem/tools/`** | 2026-09-23 | [`watches/tasks/2026-09-23-followups/PLAN.md`](../watches/tasks/2026-09-23-followups/PLAN.md) |
+| what                                                                | choice                                       | when       | archive                                                                                               |
+| ------------------------------------------------------------------- | -------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------- |
+| Palette                                                             | **Ledger**                                   | 2026-09-19 | [`watches/tasks/2026-09-18-theme-colors/`](../watches/tasks/2026-09-18-theme-colors/)                 |
+| Illustration style                                                  | **Set 2, "Line, weighted"**                  | 2026-09-21 | [`watches/tasks/2026-09-20-animation-style/`](../watches/tasks/2026-09-20-animation-style/)           |
+| Where these docs and tools live; each SVG states its display size   | **`stem/docs/`, `stem/tools/`**              | 2026-09-23 | [`watches/tasks/2026-09-23-followups/PLAN.md`](../watches/tasks/2026-09-23-followups/PLAN.md)         |
+| Each talk keeps its own versions; a given talk is tagged and frozen | **a uv and a pnpm project per talk**         | 2026-09-28 | [`tasks/2026-09-28-per-talk-dependencies/PLAN.md`](../tasks/2026-09-28-per-talk-dependencies/PLAN.md) |
+| How to check the shared files, and a talk                           | **`tools/validate.py`, scoped by directory** | 2026-09-28 | [`tasks/2026-09-28-validate/PLAN.md`](../tasks/2026-09-28-validate/PLAN.md)                           |
 
 ## What is still unknown
 

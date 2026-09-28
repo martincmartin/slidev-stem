@@ -295,7 +295,7 @@ byte-identical, so the build is deterministic and this check is strict.
 - `watches/.vscode/settings.json` points Prettier at the talk's own
   `.prettierignore`.
 
-**Still open:** step 8, when the user says the task is complete.
+**Step 8** was done when the task closed (below).
 
 ## Upgrade to the latest versions (2026-09-28)
 
@@ -324,3 +324,16 @@ Checks after the upgrade:
   animation phase (`slide3-before-after.png`).
 - The validator's output is identical, and so are all 15 tool captures.
 - `pnpm format:check` passes at the root and in `watches`.
+
+## Closed (2026-09-28)
+
+Step 8 is done. The project now describes the setup:
+
+- `AGENTS.md`: "Given talks and versions" (the rules) and "Working in this
+  repo" (the commands, and the files a new talk needs).
+- `docs/talks.md`: why each talk is its own project, and how to upgrade and
+  check a talk. `docs/README.md` lists this decision.
+- `flatten_pnpm_list.py` and `compare_dist.py` are copied into `tools/`, for
+  the next upgrade. The copies here stay as they are.
+
+The validation command is a separate task: `tasks/2026-09-28-validate/`.
