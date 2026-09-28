@@ -350,6 +350,8 @@ def main() -> None:
         print(as_json(files, scores, arguments.venue, arguments.flare))
     else:
         print_table(files, scores, arguments.venue, arguments.flare)
+    if any(motion.in_wash for motion in scores.values()):
+        sys.exit(1)  # a drawing moves only in marks the back row cannot resolve
 
 
 if __name__ == "__main__":

@@ -624,7 +624,7 @@ def stepper(duration: float, step: float) -> Keyframes:
             times += [(period + start) / periods, (period + end) / periods]
             values += [angle_deg, angle_deg + step]
             angle_deg += step
-    return times + [1.0], values + [angle_deg]
+    return [*times, 1.0], [*values, angle_deg]
 
 
 def rotor(
@@ -656,7 +656,7 @@ def turning(
     say. The static transform is the first frame."""
     inner = wrap(
         "g",
-        [rotor(duration, times, values, accumulate)] + body,
+        [rotor(duration, times, values, accumulate), *body],
         transform=f"rotate({num(values[0])})" if values[0] else None,
     )
     return wrap("g", [inner], transform=f"translate({coords(centre)})")
@@ -842,7 +842,7 @@ def build(layout: Layout, centre_x: float, centre_y: float) -> str:
     # minute), the centre +0.1 (a turn an hour).
     def accumulated(wheel: Wheel) -> tuple[list[float], list[float], bool]:
         """One period of the wheel's steps, repeated with accumulate."""
-        return stepper(PERIOD, wheel.step) + (True,)
+        return (*stepper(PERIOD, wheel.step), True)
 
     # Phases: at time 0 each driving wheel has a tooth on the line to the
     # pinion it drives, and that pinion has a gap facing it.
@@ -1157,7 +1157,8 @@ def build(layout: Layout, centre_x: float, centre_y: float) -> str:
             arbor[CENTRE],
             [hour_hand],
             PERIOD,
-            *(stepper(PERIOD, CENTRE.step / HOUR_RATIO) + (True,)),
+            *stepper(PERIOD, CENTRE.step / HOUR_RATIO),
+            True,
         )
     )
     minute_hand = dagger(206, 13, 0.70, 12, 3, "3", minute * 6, neck=26)

@@ -124,10 +124,14 @@ def check_file(file: pathlib.Path) -> tuple[list[str], list[str]]:
         ], notes
 
     ids = [element.attrib["id"] for element in root.iter() if "id" in element.attrib]
-    for duplicate in sorted({name for name in ids if ids.count(name) > 1}):
-        fails.append(f"duplicate id {duplicate!r}: the second definition wins")
-    for missing in sorted(set(re.findall(r"url\(#([^)]+)\)", raw)) - set(ids)):
-        fails.append(f"dangling ref url(#{missing}): that clip/pattern does nothing")
+    fails.extend(
+        f"duplicate id {duplicate!r}: the second definition wins"
+        for duplicate in sorted({name for name in ids if ids.count(name) > 1})
+    )
+    fails.extend(
+        f"dangling ref url(#{missing}): that clip/pattern does nothing"
+        for missing in sorted(set(re.findall(r"url\(#([^)]+)\)", raw)) - set(ids))
+    )
     for element in root.iter():
         for attribute in ("fill", "stroke", "stop-color"):
             value = element.attrib.get(attribute)
@@ -162,11 +166,11 @@ def check_file(file: pathlib.Path) -> tuple[list[str], list[str]]:
             f"{view_box[2]}:{view_box[3]}, so the drawing is letterboxed or squashed"
         )
 
-    for colour in sorted(lib.colours_in(raw) - set(lib.ART_INK) - {lib.ART_FIELD}):
-        fails.append(
-            f"colour {colour} is not in the drawing palette "
-            f"({', '.join(str(ink) for ink in sorted(lib.ART_INK))}) -- see docs/illustrations.md"
-        )
+    fails.extend(
+        f"colour {colour} is not in the drawing palette "
+        f"({', '.join(str(ink) for ink in sorted(lib.ART_INK))}) -- see docs/illustrations.md"
+        for colour in sorted(lib.colours_in(raw) - set(lib.ART_INK) - {lib.ART_FIELD})
+    )
 
     for stroke in sorted(set(lib.strokes_in(raw))):
         shown = stroke * size.css_px_per_unit

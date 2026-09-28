@@ -1,0 +1,82 @@
+date: 2026-09-28
+=== ruff rule families beyond the defaults (tools/ and watches/art/)
+  I: 0
+  UP: 0
+  B: 1
+  SIM: 0
+  C4: 0
+  PTH: 0
+  RUF: 6
+  N: 0
+  PERF: 3
+  PL: 27
+  S: 5
+  D: 210
+12	PLR2004	magic-value-comparison
+ 6	RUF005 	collection-literal-concatenation
+ 5	PLC0415	import-outside-top-level
+ 4	PLR0913	too-many-arguments
+ 4	PLR0917	too-many-positional-arguments
+ 3	PERF401	manual-list-comprehension
+ 2	S603   	subprocess-without-shell-equals-true
+ 1	S606   	start-process-with-no-shell
+ 1	S607   	start-process-with-partial-path
+ 1	S314   	suspicious-xml-element-tree-usage
+ 1	PLR0912	too-many-branches
+ 1	PLR0915	too-many-statements
+ 1	B905   	zip-without-explicit-strict
+Found 42 errors.
+No fixes available (7 hidden fixes can be enabled with the `--unsafe-fixes` option).
+=== pyright, typeCheckingMode strict (config in the project, then removed)
+  ./tools: 26 errors, 0 warnings, 0 informations
+         12 (reportUnknownMemberType)
+          7 (reportUnknownVariableType)
+          7 (reportUnknownArgumentType)
+  watches/art: 33 errors, 0 warnings, 0 informations
+         21 (reportUnknownMemberType)
+          7 (reportUnknownArgumentType)
+          3 (reportUnknownVariableType)
+          2 (reportUnknownLambdaType)
+=== ty, on the code only
+  tools: All checks passed!
+  watches/art: All checks passed!
+=== ty through uv check (whole project, frozen tasks included)
+  stem: Found 21 diagnostics
+  watches: Found 20 diagnostics
+=== vulture, confidence >= 60%
+  (end)
+=== deptry (watches, tasks excluded)
+  art/favicon.py:24:1: DEP001 'PIL' imported but missing from the dependency definitions
+  art/favicon.py:25:1: DEP001 'skeleton_watch' imported but missing from the dependency definitions
+  art/search_skeleton_watch_layout.py:34:8: DEP001 'watch_geometry' imported but missing from the dependency definitions
+  art/search_skeleton_watch_layout.py:35:1: DEP001 'skeleton_watch' imported but missing from the dependency definitions
+  art/validate_skeleton_watch.py:95:12: DEP001 'skeleton_watch' imported but missing from the dependency definitions
+  art/validate_skeleton_watch.py:96:12: DEP001 'watch_geometry' imported but missing from the dependency definitions
+  art/validate_skeleton_watch.py:135:5: DEP001 'skeleton_watch' imported but missing from the dependency definitions
+  art/watch_geometry.py:25:1: DEP001 'skeleton_watch' imported but missing from the dependency definitions
+  pyproject.toml: DEP002 'pillow' defined as a dependency but not used in the codebase
+  pyproject.toml: DEP002 'playwright' defined as a dependency but not used in the codebase
+  pyproject.toml: DEP002 'scipy' defined as a dependency but not used in the codebase
+  Found 11 dependency issues.
+=== uv audit
+  stem: Found no known vulnerabilities and no adverse project statuses in 14 packages
+  watches: Found no known vulnerabilities and no adverse project statuses in 18 packages
+=== pnpm audit
+  stem: No known vulnerabilities found
+  watches:
+    high     lodash-es >=4.0.0 <=4.17.23, via @slidev/types
+    moderate lodash-es <=4.17.23, via @slidev/types
+    low      dompurify <=3.4.11, via @slidev/types
+    moderate dompurify <=3.4.10, via @slidev/types
+    low      dompurify <3.4.9, via @slidev/types
+    moderate dompurify <=3.4.12, via @slidev/types
+    high     image-size >=1.2.0 <=2.0.2, via pptxgenjs
+    high     image-size >=0.6.3 <=2.0.2, via pptxgenjs
+=== codespell
+  (end)
+=== shellcheck
+  exit 0
+=== deck build and offline_check, seconds
+  build 3, offline_check 6, exit 0
+=== validate.py itself, seconds
+  40 s: all 12 checks passed

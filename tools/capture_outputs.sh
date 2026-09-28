@@ -20,7 +20,8 @@ run() {  # run NAME COMMAND...
 }
 
 run lib "$python" tools/lib.py
-run palette "$python" tools/palette.py --talk watches
+run palette "$python" tools/palette.py
+run palette-talk "$python" tools/palette.py --talk watches
 run palette-candidate-accent "$python" tools/palette.py "#C0451C" accent
 run palette-candidate "$python" tools/palette.py "6d839b"
 run artcheck "$python" tools/artcheck.py watches/public

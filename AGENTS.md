@@ -111,6 +111,37 @@ files: if you add a shared top-level directory, add it to the `format` scripts
 in `package.json`. `pnpm format:check` checks without writing. Neither formats
 `tasks/` directories: a finished task must not change.
 
+### Validate before you commit
+
+Before you commit, validate each project that you changed:
+
+```bash
+uv run tools/validate.py          # at the root: the shared files only
+uv run ../tools/validate.py       # in a talk's directory: that talk only
+uv run ../tools/validate.py --fix # let ruff and Prettier rewrite first
+```
+
+Each run checks only its own project, and it takes its scope from the current
+directory.
+
+- **The root run** checks `tools/` with ruff (format and lint), mypy (strict)
+  and pyright. It checks the shared files with Prettier, and the palette's
+  gates.
+- **A talk's run** checks the talk's Python with the same four tools, in the
+  talk's own venv. It checks the talk with Prettier, and every SVG in its
+  `public/` with `artcheck`, `barroom` and `motion`. It checks that the talk
+  does not set the palette. It builds the deck, and then walks every slide and
+  click with `offline_check --walk`, with every outside request blocked.
+
+It runs every check, prints a summary, and exits non-zero if any failed. Do not
+run it in a given talk.
+
+The command is `uv run tools/validate.py`, not `uv run validate`. This is not
+an oversight. A `[project.scripts]` entry needs the root to be an installable
+package, and each talk to depend on it. Then every talk's `uv.lock` records the
+house's dependency groups, and each house upgrade would force a re-lock of
+every talk. See `tasks/2026-09-28-validate/PLAN.md`.
+
 ### `.prettierrc` must list every deck file
 
 `.prettierrc` sends Slidev decks to `prettier-plugin-slidev` (the

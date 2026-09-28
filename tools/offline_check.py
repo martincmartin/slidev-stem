@@ -5,6 +5,7 @@
     .venv/bin/python3 tools/offline_check.py /tmp/deck 1:0 2:0 2:5 3:0      # slide:clicks ...
     .venv/bin/python3 tools/offline_check.py /tmp/deck 2:5 --shots /tmp/png/after
     .venv/bin/python3 tools/offline_check.py /tmp/deck --clicks 2 --back    # step through slide 2
+    .venv/bin/python3 tools/offline_check.py /tmp/deck --walk      # every slide and click
 
 Needs playwright: run it with stem/.venv/bin/python3 (`uv sync` in stem/ makes it).
 
@@ -20,7 +21,10 @@ web font. --shots PREFIX also saves PREFIX-<slide>-<clicks>.png (1960x1104).
 character per v-click element, judged by its opacity: '-' hidden, 'd' dimmed,
 'V' visible. --back then presses the left arrow as many times. After each
 string, 'classes k/n' says how many of the n v-click elements still have
-Slidev's slidev-vclick-target class.
+Slidev's slidev-vclick-target class. --walk presses the right arrow from slide 1
+until the URL stops changing, at the end of the deck. So every slide and every
+click loads, and a request from any of them is caught. It prints how many steps
+it took and where it stopped. tools/validate.py uses it.
 """
 
 import argparse
@@ -62,6 +66,8 @@ CLICKS_JS = """() => [...document.querySelectorAll('[data-vc]')].map(e => {
   return o < 0.05 ? '-' : (o < 0.9 ? 'd' : 'V') }).join('')"""
 CLASSES_JS = """() => { const m = [...document.querySelectorAll('[data-vc]')];
   return m.filter(e => e.classList.contains('slidev-vclick-target')).length + '/' + m.length }"""
+# --walk stops here if the URL still changes: no talk has this many steps.
+WALK_LIMIT = 1000
 
 
 async def main(arguments: argparse.Namespace) -> int:
@@ -116,6 +122,17 @@ async def main(arguments: argparse.Namespace) -> int:
                 )
                 await page.keyboard.press(key)
                 await page.wait_for_timeout(500)
+        if arguments.walk:
+            await page.goto(f"http://{HOST}/1")
+            await page.wait_for_timeout(1500)
+            steps = [page.url]
+            while len(steps) < WALK_LIMIT:
+                await page.keyboard.press("ArrowRight")
+                await page.wait_for_timeout(500)
+                if page.url == steps[-1]:
+                    break
+                steps.append(page.url)
+            print(f"walked {len(steps)} steps, to {steps[-1].split(HOST)[1]}")
         await browser.close()
     print("outside requests:", len(blocked))
     for url_text in blocked:
@@ -136,6 +153,11 @@ if __name__ == "__main__":
         "--clicks", type=int, metavar="SLIDE", help="step through this slide's clicks"
     )
     parser.add_argument("--presses", type=int, default=7)
+    parser.add_argument(
+        "--walk",
+        action="store_true",
+        help="press the right arrow from slide 1 to the end of the deck",
+    )
     parser.add_argument(
         "--back", action="store_true", help="then press the left arrow as many times"
     )

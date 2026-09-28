@@ -398,6 +398,8 @@ def main() -> None:
         save_views(raw, out)
         if not arguments.json:
             print(f"\nwrote {2 * len(lib.VENUES)} images to {out}")
+    if not all(drawing.passes_gate for drawing in scores):
+        sys.exit(1)  # a drawing is below the gate
 
 
 if __name__ == "__main__":

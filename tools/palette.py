@@ -2,7 +2,7 @@
 """Is this colour allowed, and does the palette still pass its own gates?
 
     .venv/bin/python3 tools/palette.py                  # the palette, every gate, pass/fail
-    .venv/bin/python3 tools/palette.py --talk watches   # ... and the talk does not set it
+    .venv/bin/python3 tools/palette.py --talk watches   # only: does this talk set it?
     .venv/bin/python3 tools/palette.py "#C0451C"        # can I use this? measured in every role
     .venv/bin/python3 tools/palette.py "#C0451C" accent # ... and specifically as the accent
 
@@ -41,7 +41,7 @@ def rule(passed: bool) -> str:
     return "ok  " if passed else "FAIL"
 
 
-def show_palette(talks: list[pathlib.Path]) -> bool:
+def show_palette() -> bool:
     palette = lib.LEDGER
     print(f"Ledger, from {lib.display_path(lib.THEME_CSS)}\n")
     for role, value in palette.items():
@@ -105,9 +105,6 @@ def show_palette(talks: list[pathlib.Path]) -> bool:
         + "".join(f"{lib.flare_ceiling(flare):>8.2f}" for flare in FLARES)
         + f"{0.30:>8.3f}"
     )
-
-    if talks:
-        passes.append(show_stray(talks))
 
     print(f"\n{'ALL GATES PASS' if all(passes) else 'SOMETHING FAILS -- see above'}")
     return all(passes)
@@ -201,11 +198,13 @@ def main() -> int:
         default=[],
         type=pathlib.Path,
         metavar="DIR",
-        help="without a colour: also check that this talk does not set the palette",
+        help="without a colour: check only that this talk does not set the palette",
     )
     arguments = parser.parse_args()
+    if arguments.colour is None and arguments.talk:
+        return 0 if show_stray(arguments.talk) else 1
     if arguments.colour is None:
-        return 0 if show_palette(arguments.talk) else 1
+        return 0 if show_palette() else 1
     try:
         candidate = lib.Colour.from_hex(arguments.colour)
     except ValueError as error:

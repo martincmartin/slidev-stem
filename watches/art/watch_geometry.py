@@ -132,7 +132,7 @@ def region_gap(first: Region, second: Region, spacing: float = 1.0) -> float:
 def polygon_points(corners: Sequence[Point], spacing: float) -> Points:
     """Samples along a closed polygon's edges."""
     samples = []
-    for start, end in zip(corners, list(corners[1:]) + [corners[0]]):
+    for start, end in zip(corners, [*corners[1:], corners[0]], strict=True):
         count = max(
             1, int(np.ceil(np.hypot(end[0] - start[0], end[1] - start[1]) / spacing))
         )
