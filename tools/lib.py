@@ -2,7 +2,7 @@
 
 Stdlib only, deliberately, so the checks that gate new content start at once and
 need no packages. Like every tool here, it needs Python 3.14: run it with
-stem/.venv/bin/python3 (../requirements.txt says how to make the venv). The tools
+`uv run` in stem/, or with stem/.venv/bin/python3 (`uv sync` makes it). The tools
 that render (`barroom.py`, `contact.py`, `motion.py`) need packages too, and say
 so.
 
@@ -27,10 +27,6 @@ from dataclasses import dataclass
 from enum import Enum
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]  # stem/
-# A talk is a directory of stem/ with a slides.md.
-TALKS = sorted(
-    directory for directory in ROOT.iterdir() if (directory / "slides.md").is_file()
-)
 
 
 # --------------------------------------------------------------------------
@@ -439,15 +435,15 @@ def min_opacity(
 # --------------------------------------------------------------------------
 # Files.
 # --------------------------------------------------------------------------
-def art_files(paths: Iterable[str] | None = None) -> list[pathlib.Path]:
-    """The SVGs to check: given paths, or every SVG in every talk's public/."""
-    if paths:
-        out: list[pathlib.Path] = []
-        for given in paths:
-            path = pathlib.Path(given)
-            out += sorted(path.rglob("*.svg")) if path.is_dir() else [path]
-        return out
-    return [file for talk in TALKS for file in sorted((talk / "public").rglob("*.svg"))]
+def art_files(paths: Iterable[str]) -> list[pathlib.Path]:
+    """The SVGs to check: each given file, and every SVG in each given
+    directory. There is no default of "every talk": a given talk is not
+    checked again (AGENTS.md, "Given talks and versions")."""
+    out: list[pathlib.Path] = []
+    for given in paths:
+        path = pathlib.Path(given)
+        out += sorted(path.rglob("*.svg")) if path.is_dir() else [path]
+    return out
 
 
 def display_path(file: str | pathlib.Path) -> pathlib.Path:
@@ -468,12 +464,14 @@ def namespace_ids(source: str, tag: str) -> str:
     return source
 
 
-def stray_palette_declarations() -> list[tuple[pathlib.Path, int, str]]:
-    """Every place in a talk that declares a PALETTE_PREFIX variable, as
-    (path, line number, text). Only the theme sets the palette."""
+def stray_palette_declarations(
+    talks: Iterable[pathlib.Path],
+) -> list[tuple[pathlib.Path, int, str]]:
+    """Every place in `talks` (talk directories) that declares a PALETTE_PREFIX
+    variable, as (path, line number, text). Only the theme sets the palette."""
     files = [
         file
-        for talk in TALKS
+        for talk in talks
         for file in sorted(talk.glob("slides*.md"))
         + sorted(talk.glob("pages/*.md"))
         + sorted((talk / "components").glob("*.vue"))

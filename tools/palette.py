@@ -2,6 +2,7 @@
 """Is this colour allowed, and does the palette still pass its own gates?
 
     .venv/bin/python3 tools/palette.py                  # the palette, every gate, pass/fail
+    .venv/bin/python3 tools/palette.py --talk watches   # ... and the talk does not set it
     .venv/bin/python3 tools/palette.py "#C0451C"        # can I use this? measured in every role
     .venv/bin/python3 tools/palette.py "#C0451C" accent # ... and specifically as the accent
 
@@ -27,6 +28,8 @@ watches/tasks/2026-09-18-theme-colors/README.md, insights 3, 8 and 11):
   * eyeballing colour-blind risk. Hand estimates were wrong in both directions.
 """
 
+import argparse
+import pathlib
 import sys
 
 import lib
@@ -38,7 +41,7 @@ def rule(passed: bool) -> str:
     return "ok  " if passed else "FAIL"
 
 
-def show_palette() -> bool:
+def show_palette(talks: list[pathlib.Path]) -> bool:
     palette = lib.LEDGER
     print(f"Ledger, from {lib.display_path(lib.THEME_CSS)}\n")
     for role, value in palette.items():
@@ -103,23 +106,24 @@ def show_palette() -> bool:
         + f"{0.30:>8.3f}"
     )
 
-    passes.append(show_stray())
+    if talks:
+        passes.append(show_stray(talks))
 
     print(f"\n{'ALL GATES PASS' if all(passes) else 'SOMETHING FAILS -- see above'}")
     return all(passes)
 
 
-def show_stray() -> bool:
-    """Fail if a talk sets the palette. Only the theme may."""
+def show_stray(talks: list[pathlib.Path]) -> bool:
+    """Fail if one of `talks` sets the palette. Only the theme may."""
     css_name = lib.display_path(lib.THEME_CSS)
     print(f"\nonly the theme sets the palette ({css_name})\n")
-    stray = lib.stray_palette_declarations()
+    stray = lib.stray_palette_declarations(talks)
     for path, number, text in stray:
         print(f"  FAIL {path}:{number} sets {text!r}")
     if not stray:
         print(
             f"  ok   no talk declares a {lib.PALETTE_PREFIX}* variable "
-            f"({len(lib.TALKS)} talk(s) checked)"
+            f"({len(talks)} talk(s) checked)"
         )
     return not stray
 
@@ -183,12 +187,32 @@ def show_candidate(candidate: lib.Colour, role: str | None = None) -> None:
     )
 
 
+def main() -> int:
+    parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
+    parser.add_argument(
+        "colour", nargs="?", help="a candidate colour, in hex: measure it in every role"
+    )
+    parser.add_argument(
+        "role", nargs="?", help="with a colour: measure it against this role's gates"
+    )
+    parser.add_argument(
+        "--talk",
+        action="append",
+        default=[],
+        type=pathlib.Path,
+        metavar="DIR",
+        help="without a colour: also check that this talk does not set the palette",
+    )
+    arguments = parser.parse_args()
+    if arguments.colour is None:
+        return 0 if show_palette(arguments.talk) else 1
+    try:
+        candidate = lib.Colour.from_hex(arguments.colour)
+    except ValueError as error:
+        sys.exit(str(error))
+    show_candidate(candidate, arguments.role)
+    return 0
+
+
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        try:
-            candidate = lib.Colour.from_hex(sys.argv[1])
-        except ValueError as error:
-            sys.exit(str(error))
-        show_candidate(candidate, sys.argv[2] if len(sys.argv) > 2 else None)
-    else:
-        sys.exit(0 if show_palette() else 1)
+    sys.exit(main())

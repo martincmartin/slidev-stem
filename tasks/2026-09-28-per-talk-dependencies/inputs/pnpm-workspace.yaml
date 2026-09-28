@@ -1,0 +1,16 @@
+# The STEM talks monorepo. Each talk is a top-level directory with its own
+# package.json; shared Slidev themes live under themes/. Run `pnpm install`
+# here, at the repo root: there is one lockfile for every talk and theme.
+packages:
+  - "*"
+  - "themes/*"
+
+# Slidev's starter sets this; some Slidev dependencies expect a flat
+# node_modules.
+shamefullyHoist: true
+
+# `playwright-chromium` is needed for `slidev export` (PDF/PNG/PPTX) and has a
+# postinstall script that downloads the browser. pnpm errors on unapproved
+# build scripts by default (`strictDepBuilds: true`), so allowlist it up-front.
+allowBuilds:
+  playwright-chromium: true

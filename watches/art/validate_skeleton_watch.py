@@ -2,9 +2,10 @@
 """Validate skeleton_watch.py and the SVG it writes. Run it after every change
 to skeleton_watch.py:
 
-    ../.venv/bin/python3 art/validate_skeleton_watch.py      # in watches/
+    uv run art/validate_skeleton_watch.py      # in watches/
 
-It runs itself under stem/.venv, stops at the first failure and exits non-zero.
+It runs itself under watches/.venv, stops at the first failure and exits
+non-zero. It runs the house tools in stem/ under stem/.venv.
 The steps:
 
 1-2. style and types: stem/tools/check_python.py on the art scripts (ruff
@@ -23,12 +24,13 @@ The steps:
    barroom.py (the 3.0 gate at the design venue) and motion.py (some area
    changes by at least 3:1), with its two frames half a balance period apart.
 
-Needs stem/.venv with requirements.txt installed.
+Needs uv. `uv run` makes both venvs from their uv.lock if they are missing.
 """
 
 import json
 import os
 import pathlib
+import shutil
 import subprocess
 import sys
 from typing import NoReturn
@@ -36,7 +38,7 @@ from typing import NoReturn
 ART = pathlib.Path(__file__).resolve().parent  # watches/art/
 TALK = ART.parent  # watches/
 STEM = TALK.parent  # stem/
-VENV = STEM / ".venv"
+VENV = TALK / ".venv"
 GENERATOR = ART / "skeleton_watch.py"
 SCRIPTS = [
     GENERATOR,
@@ -46,13 +48,19 @@ SCRIPTS = [
     pathlib.Path(__file__),
 ]
 SVG = TALK / "public" / "cover" / "skeleton-watch.svg"
-PYTHON = str(VENV / "bin" / "python3")
+UV = shutil.which("uv") or "uv"
+# Runs a house tool under stem/.venv, the project of the working directory.
+TOOL = [UV, "run", "--quiet"]
 
 
 def run(label: str, command: list[str]) -> str:
     """Run `command` in stem/; fail with its output if it exits non-zero."""
+    # uv warns if VIRTUAL_ENV names another project's venv: this talk's.
+    environment = {
+        name: value for name, value in os.environ.items() if name != "VIRTUAL_ENV"
+    }
     result = subprocess.run(
-        command, cwd=STEM, capture_output=True, text=True, check=False
+        command, cwd=STEM, env=environment, capture_output=True, text=True, check=False
     )
     output = result.stdout + result.stderr
     if result.returncode != 0:
@@ -73,7 +81,7 @@ def check_python() -> None:
     """The house's checks for Python, from stem/tools/check_python.py."""
     output = run(
         "python checks",
-        [PYTHON, "tools/check_python.py", *(str(script) for script in SCRIPTS)],
+        [*TOOL, "tools/check_python.py", *(str(script) for script in SCRIPTS)],
     )
     print(output.rstrip())
 
@@ -127,11 +135,11 @@ def check_art() -> None:
     from skeleton_watch import PERIOD
 
     relative = str(SVG.relative_to(STEM))
-    run("artcheck", [PYTHON, "tools/artcheck.py", relative])
+    run("artcheck", [*TOOL, "tools/artcheck.py", relative])
     ok("artcheck")
 
     barroom = json.loads(
-        run("barroom", [PYTHON, "tools/barroom.py", relative, "--json"])
+        run("barroom", [*TOOL, "tools/barroom.py", relative, "--json"])
     )
     drawing = next(
         drawing for drawing in barroom["drawings"] if drawing["path"] == relative
@@ -156,7 +164,7 @@ def check_art() -> None:
     motion = json.loads(
         run(
             "motion",
-            [PYTHON, "tools/motion.py", relative, "--sep", separation, "--json"],
+            [*TOOL, "tools/motion.py", relative, "--sep", separation, "--json"],
         )
     )
     drawing = next(
@@ -176,9 +184,10 @@ def check_art() -> None:
 
 
 def main() -> None:
-    # numpy and the checkers are in stem/.venv: rerun there if this is not it
+    # numpy is in watches/.venv: rerun there if this is not it
     if pathlib.Path(sys.prefix).resolve() != VENV.resolve():
-        os.execv(PYTHON, [PYTHON, __file__, *sys.argv[1:]])
+        command = [UV, "run", "--project", str(TALK), "python", __file__]
+        os.execv(UV, [*command, *sys.argv[1:]])
     check_python()
     check_layout()
     run("generate", [sys.executable, str(GENERATOR)])

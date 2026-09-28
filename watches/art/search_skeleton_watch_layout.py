@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Search the skeleton watch's layout for the most clearance.
 
-    ../.venv/bin/python3 art/search_skeleton_watch_layout.py      # in watches/
-    ../.venv/bin/python3 art/search_skeleton_watch_layout.py --balance-distance 110
+    uv run art/search_skeleton_watch_layout.py      # in watches/
+    uv run art/search_skeleton_watch_layout.py --balance-distance 110
 
 It changes nothing: it prints the best layouts, for a person to copy into
 LAYOUT in skeleton_watch.py and then run validate_skeleton_watch.py. It takes

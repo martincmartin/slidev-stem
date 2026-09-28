@@ -27,12 +27,13 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 ```bash
 .venv/bin/python3 tools/lib.py                          # the framework, as numbers
 .venv/bin/python3 tools/palette.py                      # every gate, pass/fail
+.venv/bin/python3 tools/palette.py --talk watches       # ... and the talk does not set it
 .venv/bin/python3 tools/palette.py "#C0451C" accent     # a candidate colour, measured
-.venv/bin/python3 tools/artcheck.py                     # every SVG in every talk's public/
+.venv/bin/python3 tools/artcheck.py watches/public/     # every SVG in a talk's public/
 .venv/bin/python3 tools/artcheck.py path/to/new.svg     # ... or just the new one
 .venv/bin/python3 tools/contact.py watches/public/timekeepers --times 0.2 4 8 11.8
-.venv/bin/python3 tools/barroom.py --save out/
-.venv/bin/python3 tools/motion.py             # every animated drawing
+.venv/bin/python3 tools/barroom.py watches/public/ --save out/
+.venv/bin/python3 tools/motion.py watches/public/   # every animated drawing in a talk
 .venv/bin/python3 tools/offline_check.py <build dir> 1:0 2:5   # see its docstring
 .venv/bin/python3 tools/check_python.py      # after you change a tool
 tools/capture_outputs.sh /tmp/before          # before you change a tool; again after,
@@ -43,8 +44,10 @@ diff -r /tmp/before /tmp/after                # ... then compare: a refactor cha
 they work in a pre-commit hook or CI. `barroom.py` and `motion.py` print their
 scores as JSON with `--json`: a program that reads them (such as a talk's
 validator) must use that, not their tables. All of them need Python 3.14, so run them
-with `stem/.venv/bin/python3`: see `../requirements.txt` for how to make it. The
-"needs" column above lists the packages.
+with `stem/.venv/bin/python3` or `uv run`: `uv sync` in `stem/` makes the venv. The
+"needs" column above lists the packages. Each tool that checks art needs the paths
+to check: there is no default of "every talk", because a given talk is not checked
+again (`../AGENTS.md`, "Given talks and versions").
 
 ## Which tool is the authority
 

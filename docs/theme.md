@@ -24,8 +24,9 @@ Run it if you change one.
 slide, by the house theme (`themes/ledger/styles/ledger.css`), and nowhere else.
 Components read `var(--palette-ink)` and so on, so everything on a slide follows
 the palette. `tools/lib.py` reads the values from the same file, so
-`.venv/bin/python3 tools/palette.py` always measures what the slides render. It fails if a
-slide, page or component in any talk declares a `--palette-*` variable.
+`.venv/bin/python3 tools/palette.py` always measures what the slides render. With
+`--talk <talk>`, it fails if a slide, page or component in that talk declares a
+`--palette-*` variable.
 
 **One accent per slide.** The accent is not "the blue one", it is _the thing you
 want them to look at_. A slide with four accented spans has none. The 37 px stat

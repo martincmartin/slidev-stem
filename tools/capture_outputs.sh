@@ -20,17 +20,17 @@ run() {  # run NAME COMMAND...
 }
 
 run lib "$python" tools/lib.py
-run palette "$python" tools/palette.py
+run palette "$python" tools/palette.py --talk watches
 run palette-candidate-accent "$python" tools/palette.py "#C0451C" accent
 run palette-candidate "$python" tools/palette.py "6d839b"
-run artcheck "$python" tools/artcheck.py
+run artcheck "$python" tools/artcheck.py watches/public
 run artcheck-cover "$python" tools/artcheck.py watches/public/cover/skeleton-watch.svg
-run barroom "$python" tools/barroom.py --save "$out/barroom-images"
+run barroom "$python" tools/barroom.py watches/public --save "$out/barroom-images"
 run barroom-cover "$python" tools/barroom.py watches/public/cover/skeleton-watch.svg
-run motion "$python" tools/motion.py
+run motion "$python" tools/motion.py watches/public
 run motion-cover "$python" tools/motion.py watches/public/cover/skeleton-watch.svg --sep 1
 run motion-venue "$python" tools/motion.py watches/public/timekeepers --venue laptop --flare 0.1
-run contact "$python" tools/contact.py --out "$out/contact.png"
+run contact "$python" tools/contact.py watches/public --out "$out/contact.png"
 
 if [ -n "$build" ]; then
     run offline "$python" tools/offline_check.py "$build" 1:0 2:0 2:3

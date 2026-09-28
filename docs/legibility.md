@@ -175,7 +175,7 @@ its file states a larger size, and every number on this page changes with it.
 
 The first three are stdlib-only and take a second; there is no excuse for skipping
 them. The last three need `playwright`, `Pillow` and `numpy`, which `stem/.venv`
-has (`requirements.txt` lists them and says how to make the venv). **If the drawing animates, `motion.py` is not
+has (`pyproject.toml` lists them, and `uv sync` makes the venv). **If the drawing animates, `motion.py` is not
 optional**: it is the only one that can tell you the animation is invisible.
 
 **Run `barroom.py` on the first day of a new drawing, not the last.** Every failure

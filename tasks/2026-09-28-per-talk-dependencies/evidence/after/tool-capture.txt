@@ -1,0 +1,50 @@
+tools/capture_outputs.sh, before the tools change (every-talk defaults) and after (explicit watches paths).
+diff -r result: no differences
+
+before:
+e483e7a212986889d671402c1792feda7c5e72692b5c4eb33290541c0530abfd  ./artcheck-cover.txt
+b5ccd64e92787a340ce5f6997fc19dda1613522e1525ad3a655fd17a9a0d22c2  ./artcheck.txt
+d26a1e4ddb67abc410b1104103a54dcdf50798e05346d342a28eda60d8bd9e52  ./barroom-cover.txt
+037725474833dc4dbccb73ca7aae68f99f24b5d254137e5dc4e38a163a907cca  ./barroom-images/barroom-laptop-clean.png
+d3468631678c15f834f9fd16dd629f7446ade224c001bb7bebcf6d1c8bc7f4aa  ./barroom-images/barroom-laptop-flare10.png
+15e69d52704d111a3d9b765f41fde2cf8397096ff64d02de6c38a9e9a1cafdd6  ./barroom-images/barroom-proj2mat6m-clean.png
+756504ca50979ae3c943a123fa9376c0b5e6db1dac3ec5c1a6eecd74032aa732  ./barroom-images/barroom-proj2mat6m-flare10.png
+3f34fd6eb0919b6aaddeee537ee38f4ab57aeb152dbbb0f74f0aa5ab0d5ce77a  ./barroom-images/barroom-TV55inat5m-clean.png
+62f944d9cbb2b43f5c735fa7a5e1a116998db782912eb1507ca72613d86c5bde  ./barroom-images/barroom-TV55inat5m-flare10.png
+550e64588519d7596dab7b8d8357f4b6aeeeda1ce39af460d926ef956373f0b9  ./barroom-images/barroom-TV55inat7m-clean.png
+80a691c8c47f1be0e23395a3b707403f69fc179b507f27b318a8ec4fb05fc1c7  ./barroom-images/barroom-TV55inat7m-flare10.png
+ca947d552241d77a903df1011a0da5658c87f3c7c0be0cc4b5bdc0e53e65cbb9  ./barroom.txt
+b638a821e951a3fa150877e06e9a243d1e88a2fe2a6a8872be8141585f6f7d82  ./contact.html
+e9014641cbeecb4b475df32116ed04b2cf1b7816453c6e85066ca747742e3872  ./contact.png
+cbc4cf119d59908f53b7ba6c908c018ac8b71a461fcb7a35615a5efee6232fdd  ./contact.txt
+a90b1c1b9d346d2fc08fa2294b09cbd1a2eae3072baa9379f2e2ede254adf4d8  ./lib.txt
+b1a6d9d753614c826693fa44c1758deac623f81745758525e58dbc05474852ec  ./motion-cover.txt
+36fcd486e436ac658438c16c8628a3d56f7aa7d93df7ecde5783974093f1097b  ./motion-venue.txt
+a79bcdcff69b38aaf17bcfa031d0cb21f188d73ff5158120b2811d011d3957a0  ./motion.txt
+ff6c1a23de331dd522b19a60a13a51ba93b5d62f0f9cbc8ed19a5378c7116e8d  ./palette-candidate-accent.txt
+9494082fd2169c76f6d60cf0c173ba6d07e5b98a444326acef66c7af87c6b055  ./palette-candidate.txt
+222c790a2338f81f4c64a0d8acae480f20a51a54908fd71bebedddbb6b2c94da  ./palette.txt
+
+after:
+e483e7a212986889d671402c1792feda7c5e72692b5c4eb33290541c0530abfd  ./artcheck-cover.txt
+b5ccd64e92787a340ce5f6997fc19dda1613522e1525ad3a655fd17a9a0d22c2  ./artcheck.txt
+d26a1e4ddb67abc410b1104103a54dcdf50798e05346d342a28eda60d8bd9e52  ./barroom-cover.txt
+037725474833dc4dbccb73ca7aae68f99f24b5d254137e5dc4e38a163a907cca  ./barroom-images/barroom-laptop-clean.png
+d3468631678c15f834f9fd16dd629f7446ade224c001bb7bebcf6d1c8bc7f4aa  ./barroom-images/barroom-laptop-flare10.png
+15e69d52704d111a3d9b765f41fde2cf8397096ff64d02de6c38a9e9a1cafdd6  ./barroom-images/barroom-proj2mat6m-clean.png
+756504ca50979ae3c943a123fa9376c0b5e6db1dac3ec5c1a6eecd74032aa732  ./barroom-images/barroom-proj2mat6m-flare10.png
+3f34fd6eb0919b6aaddeee537ee38f4ab57aeb152dbbb0f74f0aa5ab0d5ce77a  ./barroom-images/barroom-TV55inat5m-clean.png
+62f944d9cbb2b43f5c735fa7a5e1a116998db782912eb1507ca72613d86c5bde  ./barroom-images/barroom-TV55inat5m-flare10.png
+550e64588519d7596dab7b8d8357f4b6aeeeda1ce39af460d926ef956373f0b9  ./barroom-images/barroom-TV55inat7m-clean.png
+80a691c8c47f1be0e23395a3b707403f69fc179b507f27b318a8ec4fb05fc1c7  ./barroom-images/barroom-TV55inat7m-flare10.png
+ca947d552241d77a903df1011a0da5658c87f3c7c0be0cc4b5bdc0e53e65cbb9  ./barroom.txt
+b638a821e951a3fa150877e06e9a243d1e88a2fe2a6a8872be8141585f6f7d82  ./contact.html
+e9014641cbeecb4b475df32116ed04b2cf1b7816453c6e85066ca747742e3872  ./contact.png
+cbc4cf119d59908f53b7ba6c908c018ac8b71a461fcb7a35615a5efee6232fdd  ./contact.txt
+a90b1c1b9d346d2fc08fa2294b09cbd1a2eae3072baa9379f2e2ede254adf4d8  ./lib.txt
+b1a6d9d753614c826693fa44c1758deac623f81745758525e58dbc05474852ec  ./motion-cover.txt
+36fcd486e436ac658438c16c8628a3d56f7aa7d93df7ecde5783974093f1097b  ./motion-venue.txt
+a79bcdcff69b38aaf17bcfa031d0cb21f188d73ff5158120b2811d011d3957a0  ./motion.txt
+ff6c1a23de331dd522b19a60a13a51ba93b5d62f0f9cbc8ed19a5378c7116e8d  ./palette-candidate-accent.txt
+9494082fd2169c76f6d60cf0c173ba6d07e5b98a444326acef66c7af87c6b055  ./palette-candidate.txt
+222c790a2338f81f4c64a0d8acae480f20a51a54908fd71bebedddbb6b2c94da  ./palette.txt

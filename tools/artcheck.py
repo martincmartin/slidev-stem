@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Does this illustration belong to the series? Structure, grammar and legibility.
 
-    .venv/bin/python3 tools/artcheck.py                          # every SVG in every talk's public/
+    .venv/bin/python3 tools/artcheck.py watches/public/          # every SVG in a talk
     .venv/bin/python3 tools/artcheck.py path/to/new.svg          # one new drawing
     .venv/bin/python3 tools/artcheck.py watches/public/timekeepers/  # a directory of them
 
@@ -218,7 +218,10 @@ def check_file(file: pathlib.Path) -> tuple[list[str], list[str]]:
 
 
 def main(arguments: list[str]) -> int:
-    files = lib.art_files(arguments or None)
+    if not arguments:
+        print("usage: artcheck.py SVG_OR_DIRECTORY...")
+        return 2
+    files = lib.art_files(arguments)
     if not files:
         print("no SVGs found")
         return 1

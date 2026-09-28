@@ -1,0 +1,45 @@
+[
+  {
+    "name": "slidev-theme-ledger",
+    "version": "0.1.0",
+    "path": "/Users/martin/Develop/slidev/stem/themes/ledger",
+    "private": true,
+    "dependencies": {
+      "@fontsource/fraunces": {
+        "from": "@fontsource/fraunces",
+        "version": "5.3.0",
+        "resolved": "https://registry.npmjs.org/@fontsource/fraunces/-/fraunces-5.3.0.tgz",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@fontsource+fraunces@5.3.0/node_modules/@fontsource/fraunces"
+      },
+      "@fontsource/ibm-plex-mono": {
+        "from": "@fontsource/ibm-plex-mono",
+        "version": "5.3.0",
+        "resolved": "https://registry.npmjs.org/@fontsource/ibm-plex-mono/-/ibm-plex-mono-5.3.0.tgz",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@fontsource+ibm-plex-mono@5.3.0/node_modules/@fontsource/ibm-plex-mono"
+      },
+      "@fontsource/ibm-plex-sans": {
+        "from": "@fontsource/ibm-plex-sans",
+        "version": "5.3.0",
+        "resolved": "https://registry.npmjs.org/@fontsource/ibm-plex-sans/-/ibm-plex-sans-5.3.0.tgz",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@fontsource+ibm-plex-sans@5.3.0/node_modules/@fontsource/ibm-plex-sans"
+      }
+    },
+    "unsavedDependencies": {
+      "node": {
+        "from": "node",
+        "version": "link:../../node_modules/.pnpm/node@runtime+26.10.0/node_modules/node",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/node@runtime+26.10.0/node_modules/node"
+      },
+      "prettier": {
+        "from": "prettier",
+        "version": "link:../../node_modules/.pnpm/prettier@3.9.8/node_modules/prettier",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/prettier@3.9.8/node_modules/prettier"
+      },
+      "prettier-plugin-slidev": {
+        "from": "prettier-plugin-slidev",
+        "version": "link:../../node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.8/node_modules/prettier-plugin-slidev",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.8/node_modules/prettier-plugin-slidev"
+      }
+    }
+  }
+]

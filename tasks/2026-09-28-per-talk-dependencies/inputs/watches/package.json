@@ -1,0 +1,22 @@
+{
+  "name": "watches",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "slidev build",
+    "dev": "slidev --open",
+    "export": "slidev export",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@slidev/cli": "^53.0.0",
+    "slidev-theme-ledger": "workspace:*",
+    "vue": "^3.5.43"
+  },
+  "devDependencies": {
+    "@slidev/theme-seriph": "^0.25.0",
+    "prettier": "^3.9.8",
+    "prettier-plugin-slidev": "^1.0.5"
+  }
+}

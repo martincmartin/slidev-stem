@@ -1,0 +1,11 @@
+ok    ruff format  (5 files left unchanged)
+ok    ruff check
+ok    mypy --strict
+ok    pyright
+ok    layout  (meshes exact; tightest visible gap 11.2 px, third-barrel; fork 11.1 px from the fourth wheel; balance 13.3 px from the chapter ring)
+ok    generate  (public/cover/skeleton-watch.svg)
+ok    artcheck
+ok    barroom  (at TV 55in @7m: hold 3.65, p90 6.92, Fmax 0.080)
+ok    motion --sep 1  (dPeak 9.26, 2199 px2 >= 3:1)
+
+all passed

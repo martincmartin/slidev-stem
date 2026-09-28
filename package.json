@@ -2,9 +2,21 @@
   "name": "stem-talks",
   "private": true,
   "type": "module",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "26.10.0",
+      "onFail": "download"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.3.4",
+      "onFail": "download"
+    }
+  },
   "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format": "prettier --write docs themes tools \"*.{md,json,yaml}\"",
+    "format:check": "prettier --check docs themes tools \"*.{md,json,yaml}\""
   },
   "devDependencies": {
     "prettier": "^3.9.8",

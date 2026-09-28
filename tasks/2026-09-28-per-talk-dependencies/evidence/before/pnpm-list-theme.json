@@ -1,0 +1,3025 @@
+[
+  {
+    "name": "slidev-theme-ledger",
+    "version": "0.1.0",
+    "path": "/Users/martin/Develop/slidev/stem/themes/ledger",
+    "private": true,
+    "dependencies": {
+      "@fontsource/fraunces": {
+        "from": "@fontsource/fraunces",
+        "version": "5.3.0",
+        "resolved": "https://registry.npmjs.org/@fontsource/fraunces/-/fraunces-5.3.0.tgz",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@fontsource+fraunces@5.3.0/node_modules/@fontsource/fraunces"
+      },
+      "@fontsource/ibm-plex-mono": {
+        "from": "@fontsource/ibm-plex-mono",
+        "version": "5.3.0",
+        "resolved": "https://registry.npmjs.org/@fontsource/ibm-plex-mono/-/ibm-plex-mono-5.3.0.tgz",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@fontsource+ibm-plex-mono@5.3.0/node_modules/@fontsource/ibm-plex-mono"
+      },
+      "@fontsource/ibm-plex-sans": {
+        "from": "@fontsource/ibm-plex-sans",
+        "version": "5.3.0",
+        "resolved": "https://registry.npmjs.org/@fontsource/ibm-plex-sans/-/ibm-plex-sans-5.3.0.tgz",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@fontsource+ibm-plex-sans@5.3.0/node_modules/@fontsource/ibm-plex-sans"
+      }
+    },
+    "unsavedDependencies": {
+      "@antfu/install-pkg": {
+        "from": "@antfu/install-pkg",
+        "version": "link:../../node_modules/.pnpm/@antfu+install-pkg@1.1.0/node_modules/@antfu/install-pkg",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@antfu+install-pkg@1.1.0/node_modules/@antfu/install-pkg"
+      },
+      "@antfu/ni": {
+        "from": "@antfu/ni",
+        "version": "link:../../node_modules/.pnpm/@antfu+ni@30.6.0/node_modules/@antfu/ni",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@antfu+ni@30.6.0/node_modules/@antfu/ni"
+      },
+      "@antfu/utils": {
+        "from": "@antfu/utils",
+        "version": "link:../../node_modules/.pnpm/@antfu+utils@9.3.0/node_modules/@antfu/utils",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@antfu+utils@9.3.0/node_modules/@antfu/utils"
+      },
+      "@babel/code-frame": {
+        "from": "@babel/code-frame",
+        "version": "link:../../node_modules/.pnpm/@babel+code-frame@7.29.7/node_modules/@babel/code-frame",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+code-frame@7.29.7/node_modules/@babel/code-frame"
+      },
+      "@babel/compat-data": {
+        "from": "@babel/compat-data",
+        "version": "link:../../node_modules/.pnpm/@babel+compat-data@7.29.7/node_modules/@babel/compat-data",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+compat-data@7.29.7/node_modules/@babel/compat-data"
+      },
+      "@babel/core": {
+        "from": "@babel/core",
+        "version": "link:../../node_modules/.pnpm/@babel+core@7.29.7/node_modules/@babel/core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+core@7.29.7/node_modules/@babel/core"
+      },
+      "@babel/generator": {
+        "from": "@babel/generator",
+        "version": "link:../../node_modules/.pnpm/@babel+generator@7.29.8/node_modules/@babel/generator",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+generator@7.29.8/node_modules/@babel/generator"
+      },
+      "@babel/helper-annotate-as-pure": {
+        "from": "@babel/helper-annotate-as-pure",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-annotate-as-pure@7.29.7/node_modules/@babel/helper-annotate-as-pure",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-annotate-as-pure@7.29.7/node_modules/@babel/helper-annotate-as-pure"
+      },
+      "@babel/helper-compilation-targets": {
+        "from": "@babel/helper-compilation-targets",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-compilation-targets@7.29.7/node_modules/@babel/helper-compilation-targets",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-compilation-targets@7.29.7/node_modules/@babel/helper-compilation-targets"
+      },
+      "@babel/helper-create-class-features-plugin": {
+        "from": "@babel/helper-create-class-features-plugin",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-create-class-features-plugin@7.29.7_@babel+core@7.29.7/node_modules/@babel/helper-create-class-features-plugin",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-create-class-features-plugin@7.29.7_@babel+core@7.29.7/node_modules/@babel/helper-create-class-features-plugin"
+      },
+      "@babel/helper-globals": {
+        "from": "@babel/helper-globals",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-globals@7.29.7/node_modules/@babel/helper-globals",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-globals@7.29.7/node_modules/@babel/helper-globals"
+      },
+      "@babel/helper-member-expression-to-functions": {
+        "from": "@babel/helper-member-expression-to-functions",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-member-expression-to-functions@7.29.7/node_modules/@babel/helper-member-expression-to-functions",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-member-expression-to-functions@7.29.7/node_modules/@babel/helper-member-expression-to-functions"
+      },
+      "@babel/helper-module-imports": {
+        "from": "@babel/helper-module-imports",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-module-imports@7.29.7/node_modules/@babel/helper-module-imports",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-module-imports@7.29.7/node_modules/@babel/helper-module-imports"
+      },
+      "@babel/helper-module-transforms": {
+        "from": "@babel/helper-module-transforms",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-module-transforms@7.29.7_@babel+core@7.29.7/node_modules/@babel/helper-module-transforms",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-module-transforms@7.29.7_@babel+core@7.29.7/node_modules/@babel/helper-module-transforms"
+      },
+      "@babel/helper-optimise-call-expression": {
+        "from": "@babel/helper-optimise-call-expression",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-optimise-call-expression@7.29.7/node_modules/@babel/helper-optimise-call-expression",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-optimise-call-expression@7.29.7/node_modules/@babel/helper-optimise-call-expression"
+      },
+      "@babel/helper-plugin-utils": {
+        "from": "@babel/helper-plugin-utils",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-plugin-utils@7.29.7/node_modules/@babel/helper-plugin-utils",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-plugin-utils@7.29.7/node_modules/@babel/helper-plugin-utils"
+      },
+      "@babel/helper-replace-supers": {
+        "from": "@babel/helper-replace-supers",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-replace-supers@7.29.7_@babel+core@7.29.7/node_modules/@babel/helper-replace-supers",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-replace-supers@7.29.7_@babel+core@7.29.7/node_modules/@babel/helper-replace-supers"
+      },
+      "@babel/helper-skip-transparent-expression-wrappers": {
+        "from": "@babel/helper-skip-transparent-expression-wrappers",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-skip-transparent-expression-wrappers@7.29.7/node_modules/@babel/helper-skip-transparent-expression-wrappers",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-skip-transparent-expression-wrappers@7.29.7/node_modules/@babel/helper-skip-transparent-expression-wrappers"
+      },
+      "@babel/helper-string-parser": {
+        "from": "@babel/helper-string-parser",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-string-parser@7.29.7/node_modules/@babel/helper-string-parser",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-string-parser@7.29.7/node_modules/@babel/helper-string-parser"
+      },
+      "@babel/helper-validator-identifier": {
+        "from": "@babel/helper-validator-identifier",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-validator-identifier@7.29.7/node_modules/@babel/helper-validator-identifier",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-validator-identifier@7.29.7/node_modules/@babel/helper-validator-identifier"
+      },
+      "@babel/helper-validator-option": {
+        "from": "@babel/helper-validator-option",
+        "version": "link:../../node_modules/.pnpm/@babel+helper-validator-option@7.29.7/node_modules/@babel/helper-validator-option",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helper-validator-option@7.29.7/node_modules/@babel/helper-validator-option"
+      },
+      "@babel/helpers": {
+        "from": "@babel/helpers",
+        "version": "link:../../node_modules/.pnpm/@babel+helpers@7.29.7/node_modules/@babel/helpers",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+helpers@7.29.7/node_modules/@babel/helpers"
+      },
+      "@babel/parser": {
+        "from": "@babel/parser",
+        "version": "link:../../node_modules/.pnpm/@babel+parser@7.29.9/node_modules/@babel/parser",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+parser@7.29.9/node_modules/@babel/parser"
+      },
+      "@babel/plugin-syntax-jsx": {
+        "from": "@babel/plugin-syntax-jsx",
+        "version": "link:../../node_modules/.pnpm/@babel+plugin-syntax-jsx@7.29.7_@babel+core@7.29.7/node_modules/@babel/plugin-syntax-jsx",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+plugin-syntax-jsx@7.29.7_@babel+core@7.29.7/node_modules/@babel/plugin-syntax-jsx"
+      },
+      "@babel/plugin-syntax-typescript": {
+        "from": "@babel/plugin-syntax-typescript",
+        "version": "link:../../node_modules/.pnpm/@babel+plugin-syntax-typescript@7.29.7_@babel+core@7.29.7/node_modules/@babel/plugin-syntax-typescript",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+plugin-syntax-typescript@7.29.7_@babel+core@7.29.7/node_modules/@babel/plugin-syntax-typescript"
+      },
+      "@babel/plugin-transform-typescript": {
+        "from": "@babel/plugin-transform-typescript",
+        "version": "link:../../node_modules/.pnpm/@babel+plugin-transform-typescript@7.29.9_@babel+core@7.29.7/node_modules/@babel/plugin-transform-typescript",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+plugin-transform-typescript@7.29.9_@babel+core@7.29.7/node_modules/@babel/plugin-transform-typescript"
+      },
+      "@babel/template": {
+        "from": "@babel/template",
+        "version": "link:../../node_modules/.pnpm/@babel+template@7.29.7/node_modules/@babel/template",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+template@7.29.7/node_modules/@babel/template"
+      },
+      "@babel/traverse": {
+        "from": "@babel/traverse",
+        "version": "link:../../node_modules/.pnpm/@babel+traverse@7.29.8/node_modules/@babel/traverse",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+traverse@7.29.8/node_modules/@babel/traverse"
+      },
+      "@babel/types": {
+        "from": "@babel/types",
+        "version": "link:../../node_modules/.pnpm/@babel+types@7.29.8/node_modules/@babel/types",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@babel+types@7.29.8/node_modules/@babel/types"
+      },
+      "@braintree/sanitize-url": {
+        "from": "@braintree/sanitize-url",
+        "version": "link:../../node_modules/.pnpm/@braintree+sanitize-url@7.1.2/node_modules/@braintree/sanitize-url",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@braintree+sanitize-url@7.1.2/node_modules/@braintree/sanitize-url"
+      },
+      "@chevrotain/cst-dts-gen": {
+        "from": "@chevrotain/cst-dts-gen",
+        "version": "link:../../node_modules/.pnpm/@chevrotain+cst-dts-gen@11.1.2/node_modules/@chevrotain/cst-dts-gen",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@chevrotain+cst-dts-gen@11.1.2/node_modules/@chevrotain/cst-dts-gen"
+      },
+      "@chevrotain/gast": {
+        "from": "@chevrotain/gast",
+        "version": "link:../../node_modules/.pnpm/@chevrotain+gast@11.1.2/node_modules/@chevrotain/gast",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@chevrotain+gast@11.1.2/node_modules/@chevrotain/gast"
+      },
+      "@chevrotain/regexp-to-ast": {
+        "from": "@chevrotain/regexp-to-ast",
+        "version": "link:../../node_modules/.pnpm/@chevrotain+regexp-to-ast@11.1.2/node_modules/@chevrotain/regexp-to-ast",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@chevrotain+regexp-to-ast@11.1.2/node_modules/@chevrotain/regexp-to-ast"
+      },
+      "@chevrotain/types": {
+        "from": "@chevrotain/types",
+        "version": "link:../../node_modules/.pnpm/@chevrotain+types@11.1.2/node_modules/@chevrotain/types",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@chevrotain+types@11.1.2/node_modules/@chevrotain/types"
+      },
+      "@chevrotain/utils": {
+        "from": "@chevrotain/utils",
+        "version": "link:../../node_modules/.pnpm/@chevrotain+utils@11.1.2/node_modules/@chevrotain/utils",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@chevrotain+utils@11.1.2/node_modules/@chevrotain/utils"
+      },
+      "@comark/markdown-it": {
+        "from": "@comark/markdown-it",
+        "version": "link:../../node_modules/.pnpm/@comark+markdown-it@0.3.4_@types+markdown-it@14.2.0_markdown-it@14.3.2/node_modules/@comark/markdown-it",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@comark+markdown-it@0.3.4_@types+markdown-it@14.2.0_markdown-it@14.3.2/node_modules/@comark/markdown-it"
+      },
+      "@devframes/hub": {
+        "from": "@devframes/hub",
+        "version": "link:../../node_modules/.pnpm/@devframes+hub@0.8.2_devframe@0.8.2_@modelcontextprotocol+server@2.0.0_cac@7.0.0_srvx@1.0.5_/node_modules/@devframes/hub",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@devframes+hub@0.8.2_devframe@0.8.2_@modelcontextprotocol+server@2.0.0_cac@7.0.0_srvx@1.0.5_/node_modules/@devframes/hub"
+      },
+      "@devframes/json-render": {
+        "from": "@devframes/json-render",
+        "version": "link:../../node_modules/.pnpm/@devframes+json-render@0.8.2_@devframes+hub@0.8.2_devframe@0.8.2_@modelcontextprotocol+_89926d6c416362a7f73ef8f50296000d/node_modules/@devframes/json-render",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@devframes+json-render@0.8.2_@devframes+hub@0.8.2_devframe@0.8.2_@modelcontextprotocol+_89926d6c416362a7f73ef8f50296000d/node_modules/@devframes/json-render"
+      },
+      "@drauu/core": {
+        "from": "@drauu/core",
+        "version": "link:../../node_modules/.pnpm/@drauu+core@1.0.0/node_modules/@drauu/core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@drauu+core@1.0.0/node_modules/@drauu/core"
+      },
+      "@fix-webm-duration/fix": {
+        "from": "@fix-webm-duration/fix",
+        "version": "link:../../node_modules/.pnpm/@fix-webm-duration+fix@1.0.1/node_modules/@fix-webm-duration/fix",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@fix-webm-duration+fix@1.0.1/node_modules/@fix-webm-duration/fix"
+      },
+      "@fix-webm-duration/parser": {
+        "from": "@fix-webm-duration/parser",
+        "version": "link:../../node_modules/.pnpm/@fix-webm-duration+parser@1.0.1/node_modules/@fix-webm-duration/parser",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@fix-webm-duration+parser@1.0.1/node_modules/@fix-webm-duration/parser"
+      },
+      "@floating-ui/core": {
+        "from": "@floating-ui/core",
+        "version": "link:../../node_modules/.pnpm/@floating-ui+core@1.8.0/node_modules/@floating-ui/core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@floating-ui+core@1.8.0/node_modules/@floating-ui/core"
+      },
+      "@floating-ui/dom": {
+        "from": "@floating-ui/dom",
+        "version": "link:../../node_modules/.pnpm/@floating-ui+dom@1.8.0/node_modules/@floating-ui/dom",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@floating-ui+dom@1.8.0/node_modules/@floating-ui/dom"
+      },
+      "@floating-ui/utils": {
+        "from": "@floating-ui/utils",
+        "version": "link:../../node_modules/.pnpm/@floating-ui+utils@0.2.12/node_modules/@floating-ui/utils",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@floating-ui+utils@0.2.12/node_modules/@floating-ui/utils"
+      },
+      "@hono/node-server": {
+        "from": "@hono/node-server",
+        "version": "link:../../node_modules/.pnpm/@hono+node-server@1.19.17_hono@4.13.8/node_modules/@hono/node-server",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@hono+node-server@1.19.17_hono@4.13.8/node_modules/@hono/node-server"
+      },
+      "@iconify-json/carbon": {
+        "from": "@iconify-json/carbon",
+        "version": "link:../../node_modules/.pnpm/@iconify-json+carbon@1.2.27/node_modules/@iconify-json/carbon",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@iconify-json+carbon@1.2.27/node_modules/@iconify-json/carbon"
+      },
+      "@iconify-json/ph": {
+        "from": "@iconify-json/ph",
+        "version": "link:../../node_modules/.pnpm/@iconify-json+ph@1.2.2/node_modules/@iconify-json/ph",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@iconify-json+ph@1.2.2/node_modules/@iconify-json/ph"
+      },
+      "@iconify-json/svg-spinners": {
+        "from": "@iconify-json/svg-spinners",
+        "version": "link:../../node_modules/.pnpm/@iconify-json+svg-spinners@1.2.4/node_modules/@iconify-json/svg-spinners",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@iconify-json+svg-spinners@1.2.4/node_modules/@iconify-json/svg-spinners"
+      },
+      "@iconify/types": {
+        "from": "@iconify/types",
+        "version": "link:../../node_modules/.pnpm/@iconify+types@2.0.0/node_modules/@iconify/types",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@iconify+types@2.0.0/node_modules/@iconify/types"
+      },
+      "@iconify/utils": {
+        "from": "@iconify/utils",
+        "version": "link:../../node_modules/.pnpm/@iconify+utils@3.1.7/node_modules/@iconify/utils",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@iconify+utils@3.1.7/node_modules/@iconify/utils"
+      },
+      "@jridgewell/gen-mapping": {
+        "from": "@jridgewell/gen-mapping",
+        "version": "link:../../node_modules/.pnpm/@jridgewell+gen-mapping@0.3.13/node_modules/@jridgewell/gen-mapping",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@jridgewell+gen-mapping@0.3.13/node_modules/@jridgewell/gen-mapping"
+      },
+      "@jridgewell/remapping": {
+        "from": "@jridgewell/remapping",
+        "version": "link:../../node_modules/.pnpm/@jridgewell+remapping@2.3.5/node_modules/@jridgewell/remapping",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@jridgewell+remapping@2.3.5/node_modules/@jridgewell/remapping"
+      },
+      "@jridgewell/resolve-uri": {
+        "from": "@jridgewell/resolve-uri",
+        "version": "link:../../node_modules/.pnpm/@jridgewell+resolve-uri@3.1.2/node_modules/@jridgewell/resolve-uri",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@jridgewell+resolve-uri@3.1.2/node_modules/@jridgewell/resolve-uri"
+      },
+      "@jridgewell/sourcemap-codec": {
+        "from": "@jridgewell/sourcemap-codec",
+        "version": "link:../../node_modules/.pnpm/@jridgewell+sourcemap-codec@1.6.0/node_modules/@jridgewell/sourcemap-codec",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@jridgewell+sourcemap-codec@1.6.0/node_modules/@jridgewell/sourcemap-codec"
+      },
+      "@jridgewell/trace-mapping": {
+        "from": "@jridgewell/trace-mapping",
+        "version": "link:../../node_modules/.pnpm/@jridgewell+trace-mapping@0.3.31/node_modules/@jridgewell/trace-mapping",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@jridgewell+trace-mapping@0.3.31/node_modules/@jridgewell/trace-mapping"
+      },
+      "@json-render/core": {
+        "from": "@json-render/core",
+        "version": "link:../../node_modules/.pnpm/@json-render+core@0.19.0_zod@4.6.5/node_modules/@json-render/core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@json-render+core@0.19.0_zod@4.6.5/node_modules/@json-render/core"
+      },
+      "@leichtgewicht/ip-codec": {
+        "from": "@leichtgewicht/ip-codec",
+        "version": "link:../../node_modules/.pnpm/@leichtgewicht+ip-codec@2.0.5/node_modules/@leichtgewicht/ip-codec",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@leichtgewicht+ip-codec@2.0.5/node_modules/@leichtgewicht/ip-codec"
+      },
+      "@lillallol/outline-pdf": {
+        "from": "@lillallol/outline-pdf",
+        "version": "link:../../node_modules/.pnpm/@lillallol+outline-pdf@4.0.0/node_modules/@lillallol/outline-pdf",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@lillallol+outline-pdf@4.0.0/node_modules/@lillallol/outline-pdf"
+      },
+      "@lillallol/outline-pdf-data-structure": {
+        "from": "@lillallol/outline-pdf-data-structure",
+        "version": "link:../../node_modules/.pnpm/@lillallol+outline-pdf-data-structure@1.0.3/node_modules/@lillallol/outline-pdf-data-structure",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@lillallol+outline-pdf-data-structure@1.0.3/node_modules/@lillallol/outline-pdf-data-structure"
+      },
+      "@mdit-vue/plugin-component": {
+        "from": "@mdit-vue/plugin-component",
+        "version": "link:../../node_modules/.pnpm/@mdit-vue+plugin-component@3.0.2/node_modules/@mdit-vue/plugin-component",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@mdit-vue+plugin-component@3.0.2/node_modules/@mdit-vue/plugin-component"
+      },
+      "@mdit-vue/plugin-frontmatter": {
+        "from": "@mdit-vue/plugin-frontmatter",
+        "version": "link:../../node_modules/.pnpm/@mdit-vue+plugin-frontmatter@3.0.2/node_modules/@mdit-vue/plugin-frontmatter",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@mdit-vue+plugin-frontmatter@3.0.2/node_modules/@mdit-vue/plugin-frontmatter"
+      },
+      "@mdit-vue/types": {
+        "from": "@mdit-vue/types",
+        "version": "link:../../node_modules/.pnpm/@mdit-vue+types@3.0.2/node_modules/@mdit-vue/types",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@mdit-vue+types@3.0.2/node_modules/@mdit-vue/types"
+      },
+      "@mermaid-js/parser": {
+        "from": "@mermaid-js/parser",
+        "version": "link:../../node_modules/.pnpm/@mermaid-js+parser@2.0.0/node_modules/@mermaid-js/parser",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@mermaid-js+parser@2.0.0/node_modules/@mermaid-js/parser"
+      },
+      "@modelcontextprotocol/core": {
+        "from": "@modelcontextprotocol/core",
+        "version": "link:../../node_modules/.pnpm/@modelcontextprotocol+core@2.0.0/node_modules/@modelcontextprotocol/core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@modelcontextprotocol+core@2.0.0/node_modules/@modelcontextprotocol/core"
+      },
+      "@modelcontextprotocol/node": {
+        "from": "@modelcontextprotocol/node",
+        "version": "link:../../node_modules/.pnpm/@modelcontextprotocol+node@2.0.0_@modelcontextprotocol+server@2.0.0_hono@4.13.8/node_modules/@modelcontextprotocol/node",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@modelcontextprotocol+node@2.0.0_@modelcontextprotocol+server@2.0.0_hono@4.13.8/node_modules/@modelcontextprotocol/node"
+      },
+      "@modelcontextprotocol/server": {
+        "from": "@modelcontextprotocol/server",
+        "version": "link:../../node_modules/.pnpm/@modelcontextprotocol+server@2.0.0/node_modules/@modelcontextprotocol/server",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@modelcontextprotocol+server@2.0.0/node_modules/@modelcontextprotocol/server"
+      },
+      "@nodelib/fs.scandir": {
+        "from": "@nodelib/fs.scandir",
+        "version": "link:../../node_modules/.pnpm/@nodelib+fs.scandir@2.1.5/node_modules/@nodelib/fs.scandir",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@nodelib+fs.scandir@2.1.5/node_modules/@nodelib/fs.scandir"
+      },
+      "@nodelib/fs.stat": {
+        "from": "@nodelib/fs.stat",
+        "version": "link:../../node_modules/.pnpm/@nodelib+fs.stat@2.0.5/node_modules/@nodelib/fs.stat",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@nodelib+fs.stat@2.0.5/node_modules/@nodelib/fs.stat"
+      },
+      "@nodelib/fs.walk": {
+        "from": "@nodelib/fs.walk",
+        "version": "link:../../node_modules/.pnpm/@nodelib+fs.walk@1.2.8/node_modules/@nodelib/fs.walk",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@nodelib+fs.walk@1.2.8/node_modules/@nodelib/fs.walk"
+      },
+      "@nuxt/kit": {
+        "from": "@nuxt/kit",
+        "version": "link:../../node_modules/.pnpm/@nuxt+kit@3.21.11/node_modules/@nuxt/kit",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@nuxt+kit@3.21.11/node_modules/@nuxt/kit"
+      },
+      "@oxc-parser/binding-darwin-arm64": {
+        "from": "@oxc-parser/binding-darwin-arm64",
+        "version": "link:../../node_modules/.pnpm/@oxc-parser+binding-darwin-arm64@0.150.0/node_modules/@oxc-parser/binding-darwin-arm64",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@oxc-parser+binding-darwin-arm64@0.150.0/node_modules/@oxc-parser/binding-darwin-arm64"
+      },
+      "@oxc-project/types": {
+        "from": "@oxc-project/types",
+        "version": "link:../../node_modules/.pnpm/@oxc-project+types@0.150.0/node_modules/@oxc-project/types",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@oxc-project+types@0.150.0/node_modules/@oxc-project/types"
+      },
+      "@pdf-lib/standard-fonts": {
+        "from": "@pdf-lib/standard-fonts",
+        "version": "link:../../node_modules/.pnpm/@pdf-lib+standard-fonts@1.0.0/node_modules/@pdf-lib/standard-fonts",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@pdf-lib+standard-fonts@1.0.0/node_modules/@pdf-lib/standard-fonts"
+      },
+      "@pdf-lib/upng": {
+        "from": "@pdf-lib/upng",
+        "version": "link:../../node_modules/.pnpm/@pdf-lib+upng@1.0.1/node_modules/@pdf-lib/upng",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@pdf-lib+upng@1.0.1/node_modules/@pdf-lib/upng"
+      },
+      "@polka/url": {
+        "from": "@polka/url",
+        "version": "link:../../node_modules/.pnpm/@polka+url@1.0.0-next.29/node_modules/@polka/url",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@polka+url@1.0.0-next.29/node_modules/@polka/url"
+      },
+      "@quansync/fs": {
+        "from": "@quansync/fs",
+        "version": "link:../../node_modules/.pnpm/@quansync+fs@1.1.0/node_modules/@quansync/fs",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@quansync+fs@1.1.0/node_modules/@quansync/fs"
+      },
+      "@rolldown/binding-darwin-arm64": {
+        "from": "@rolldown/binding-darwin-arm64",
+        "version": "link:../../node_modules/.pnpm/@rolldown+binding-darwin-arm64@1.2.9/node_modules/@rolldown/binding-darwin-arm64",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@rolldown+binding-darwin-arm64@1.2.9/node_modules/@rolldown/binding-darwin-arm64"
+      },
+      "@rolldown/pluginutils": {
+        "from": "@rolldown/pluginutils",
+        "version": "link:../../node_modules/.pnpm/@rolldown+pluginutils@1.0.1/node_modules/@rolldown/pluginutils",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@rolldown+pluginutils@1.0.1/node_modules/@rolldown/pluginutils"
+      },
+      "@shikijs/core": {
+        "from": "@shikijs/core",
+        "version": "link:../../node_modules/.pnpm/@shikijs+core@4.4.3/node_modules/@shikijs/core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+core@4.4.3/node_modules/@shikijs/core"
+      },
+      "@shikijs/engine-javascript": {
+        "from": "@shikijs/engine-javascript",
+        "version": "link:../../node_modules/.pnpm/@shikijs+engine-javascript@4.4.3/node_modules/@shikijs/engine-javascript",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+engine-javascript@4.4.3/node_modules/@shikijs/engine-javascript"
+      },
+      "@shikijs/engine-oniguruma": {
+        "from": "@shikijs/engine-oniguruma",
+        "version": "link:../../node_modules/.pnpm/@shikijs+engine-oniguruma@4.4.3/node_modules/@shikijs/engine-oniguruma",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+engine-oniguruma@4.4.3/node_modules/@shikijs/engine-oniguruma"
+      },
+      "@shikijs/langs": {
+        "from": "@shikijs/langs",
+        "version": "link:../../node_modules/.pnpm/@shikijs+langs@4.4.3/node_modules/@shikijs/langs",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+langs@4.4.3/node_modules/@shikijs/langs"
+      },
+      "@shikijs/magic-move": {
+        "from": "@shikijs/magic-move",
+        "version": "link:../../node_modules/.pnpm/@shikijs+magic-move@4.4.3_shiki@4.4.3_vue@3.5.43_typescript@6.0.3_/node_modules/@shikijs/magic-move",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+magic-move@4.4.3_shiki@4.4.3_vue@3.5.43_typescript@6.0.3_/node_modules/@shikijs/magic-move"
+      },
+      "@shikijs/markdown-it": {
+        "from": "@shikijs/markdown-it",
+        "version": "link:../../node_modules/.pnpm/@shikijs+markdown-it@4.4.3/node_modules/@shikijs/markdown-it",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+markdown-it@4.4.3/node_modules/@shikijs/markdown-it"
+      },
+      "@shikijs/monaco": {
+        "from": "@shikijs/monaco",
+        "version": "link:../../node_modules/.pnpm/@shikijs+monaco@4.4.3/node_modules/@shikijs/monaco",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+monaco@4.4.3/node_modules/@shikijs/monaco"
+      },
+      "@shikijs/primitive": {
+        "from": "@shikijs/primitive",
+        "version": "link:../../node_modules/.pnpm/@shikijs+primitive@4.4.3/node_modules/@shikijs/primitive",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+primitive@4.4.3/node_modules/@shikijs/primitive"
+      },
+      "@shikijs/themes": {
+        "from": "@shikijs/themes",
+        "version": "link:../../node_modules/.pnpm/@shikijs+themes@4.4.3/node_modules/@shikijs/themes",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+themes@4.4.3/node_modules/@shikijs/themes"
+      },
+      "@shikijs/twoslash": {
+        "from": "@shikijs/twoslash",
+        "version": "link:../../node_modules/.pnpm/@shikijs+twoslash@4.4.3_typescript@6.0.3/node_modules/@shikijs/twoslash",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+twoslash@4.4.3_typescript@6.0.3/node_modules/@shikijs/twoslash"
+      },
+      "@shikijs/types": {
+        "from": "@shikijs/types",
+        "version": "link:../../node_modules/.pnpm/@shikijs+types@4.4.3/node_modules/@shikijs/types",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+types@4.4.3/node_modules/@shikijs/types"
+      },
+      "@shikijs/vitepress-twoslash": {
+        "from": "@shikijs/vitepress-twoslash",
+        "version": "link:../../node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash"
+      },
+      "@shikijs/vscode-textmate": {
+        "from": "@shikijs/vscode-textmate",
+        "version": "link:../../node_modules/.pnpm/@shikijs+vscode-textmate@10.0.2/node_modules/@shikijs/vscode-textmate",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@shikijs+vscode-textmate@10.0.2/node_modules/@shikijs/vscode-textmate"
+      },
+      "@slidev/cli": {
+        "from": "@slidev/cli",
+        "version": "link:../../node_modules/.pnpm/@slidev+cli@53.0.0_@nuxt+kit@3.21.11_@oxc-project+types@0.150.0_@types+markdown-it@14.2_20385991c9479ff50fff906222377500/node_modules/@slidev/cli",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+cli@53.0.0_@nuxt+kit@3.21.11_@oxc-project+types@0.150.0_@types+markdown-it@14.2_20385991c9479ff50fff906222377500/node_modules/@slidev/cli"
+      },
+      "@slidev/client": {
+        "from": "@slidev/client",
+        "version": "link:../../node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@oxc-project_3db8665cd7acab8b553ab9cc4bb5b6c8/node_modules/@slidev/client"
+      },
+      "@slidev/parser": {
+        "from": "@slidev/parser",
+        "version": "link:../../node_modules/.pnpm/@slidev+parser@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@vue+compile_69df8b0bd4e3dc80f81b1da1eaeacbf7/node_modules/@slidev/parser",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+parser@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@vue+compile_69df8b0bd4e3dc80f81b1da1eaeacbf7/node_modules/@slidev/parser"
+      },
+      "@slidev/rough-notation": {
+        "from": "@slidev/rough-notation",
+        "version": "link:../../node_modules/.pnpm/@slidev+rough-notation@0.1.0/node_modules/@slidev/rough-notation",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+rough-notation@0.1.0/node_modules/@slidev/rough-notation"
+      },
+      "@slidev/theme-seriph": {
+        "from": "@slidev/theme-seriph",
+        "version": "link:../../node_modules/.pnpm/@slidev+theme-seriph@0.25.0/node_modules/@slidev/theme-seriph",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+theme-seriph@0.25.0/node_modules/@slidev/theme-seriph"
+      },
+      "@slidev/types": {
+        "from": "@slidev/types",
+        "version": "link:../../node_modules/.pnpm/@slidev+types@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@vue+compiler_f5be72c39968b37375da8b6ca2f45f41/node_modules/@slidev/types",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@slidev+types@53.0.0_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_@vue+compiler_f5be72c39968b37375da8b6ca2f45f41/node_modules/@slidev/types"
+      },
+      "@standard-schema/spec": {
+        "from": "@standard-schema/spec",
+        "version": "link:../../node_modules/.pnpm/@standard-schema+spec@1.1.0/node_modules/@standard-schema/spec",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@standard-schema+spec@1.1.0/node_modules/@standard-schema/spec"
+      },
+      "@types/d3": {
+        "from": "@types/d3",
+        "version": "link:../../node_modules/.pnpm/@types+d3@7.4.3/node_modules/@types/d3",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3@7.4.3/node_modules/@types/d3"
+      },
+      "@types/d3-array": {
+        "from": "@types/d3-array",
+        "version": "link:../../node_modules/.pnpm/@types+d3-array@3.2.2/node_modules/@types/d3-array",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-array@3.2.2/node_modules/@types/d3-array"
+      },
+      "@types/d3-axis": {
+        "from": "@types/d3-axis",
+        "version": "link:../../node_modules/.pnpm/@types+d3-axis@3.0.6/node_modules/@types/d3-axis",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-axis@3.0.6/node_modules/@types/d3-axis"
+      },
+      "@types/d3-brush": {
+        "from": "@types/d3-brush",
+        "version": "link:../../node_modules/.pnpm/@types+d3-brush@3.0.6/node_modules/@types/d3-brush",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-brush@3.0.6/node_modules/@types/d3-brush"
+      },
+      "@types/d3-chord": {
+        "from": "@types/d3-chord",
+        "version": "link:../../node_modules/.pnpm/@types+d3-chord@3.0.6/node_modules/@types/d3-chord",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-chord@3.0.6/node_modules/@types/d3-chord"
+      },
+      "@types/d3-color": {
+        "from": "@types/d3-color",
+        "version": "link:../../node_modules/.pnpm/@types+d3-color@3.1.3/node_modules/@types/d3-color",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-color@3.1.3/node_modules/@types/d3-color"
+      },
+      "@types/d3-contour": {
+        "from": "@types/d3-contour",
+        "version": "link:../../node_modules/.pnpm/@types+d3-contour@3.0.6/node_modules/@types/d3-contour",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-contour@3.0.6/node_modules/@types/d3-contour"
+      },
+      "@types/d3-delaunay": {
+        "from": "@types/d3-delaunay",
+        "version": "link:../../node_modules/.pnpm/@types+d3-delaunay@6.0.4/node_modules/@types/d3-delaunay",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-delaunay@6.0.4/node_modules/@types/d3-delaunay"
+      },
+      "@types/d3-dispatch": {
+        "from": "@types/d3-dispatch",
+        "version": "link:../../node_modules/.pnpm/@types+d3-dispatch@3.0.7/node_modules/@types/d3-dispatch",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-dispatch@3.0.7/node_modules/@types/d3-dispatch"
+      },
+      "@types/d3-drag": {
+        "from": "@types/d3-drag",
+        "version": "link:../../node_modules/.pnpm/@types+d3-drag@3.0.7/node_modules/@types/d3-drag",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-drag@3.0.7/node_modules/@types/d3-drag"
+      },
+      "@types/d3-dsv": {
+        "from": "@types/d3-dsv",
+        "version": "link:../../node_modules/.pnpm/@types+d3-dsv@3.0.7/node_modules/@types/d3-dsv",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-dsv@3.0.7/node_modules/@types/d3-dsv"
+      },
+      "@types/d3-ease": {
+        "from": "@types/d3-ease",
+        "version": "link:../../node_modules/.pnpm/@types+d3-ease@3.0.2/node_modules/@types/d3-ease",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-ease@3.0.2/node_modules/@types/d3-ease"
+      },
+      "@types/d3-fetch": {
+        "from": "@types/d3-fetch",
+        "version": "link:../../node_modules/.pnpm/@types+d3-fetch@3.0.7/node_modules/@types/d3-fetch",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-fetch@3.0.7/node_modules/@types/d3-fetch"
+      },
+      "@types/d3-force": {
+        "from": "@types/d3-force",
+        "version": "link:../../node_modules/.pnpm/@types+d3-force@3.0.10/node_modules/@types/d3-force",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-force@3.0.10/node_modules/@types/d3-force"
+      },
+      "@types/d3-format": {
+        "from": "@types/d3-format",
+        "version": "link:../../node_modules/.pnpm/@types+d3-format@3.0.4/node_modules/@types/d3-format",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-format@3.0.4/node_modules/@types/d3-format"
+      },
+      "@types/d3-geo": {
+        "from": "@types/d3-geo",
+        "version": "link:../../node_modules/.pnpm/@types+d3-geo@3.1.1/node_modules/@types/d3-geo",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-geo@3.1.1/node_modules/@types/d3-geo"
+      },
+      "@types/d3-hierarchy": {
+        "from": "@types/d3-hierarchy",
+        "version": "link:../../node_modules/.pnpm/@types+d3-hierarchy@3.1.7/node_modules/@types/d3-hierarchy",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-hierarchy@3.1.7/node_modules/@types/d3-hierarchy"
+      },
+      "@types/d3-interpolate": {
+        "from": "@types/d3-interpolate",
+        "version": "link:../../node_modules/.pnpm/@types+d3-interpolate@3.0.4/node_modules/@types/d3-interpolate",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-interpolate@3.0.4/node_modules/@types/d3-interpolate"
+      },
+      "@types/d3-path": {
+        "from": "@types/d3-path",
+        "version": "link:../../node_modules/.pnpm/@types+d3-path@3.1.1/node_modules/@types/d3-path",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-path@3.1.1/node_modules/@types/d3-path"
+      },
+      "@types/d3-polygon": {
+        "from": "@types/d3-polygon",
+        "version": "link:../../node_modules/.pnpm/@types+d3-polygon@3.0.2/node_modules/@types/d3-polygon",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-polygon@3.0.2/node_modules/@types/d3-polygon"
+      },
+      "@types/d3-quadtree": {
+        "from": "@types/d3-quadtree",
+        "version": "link:../../node_modules/.pnpm/@types+d3-quadtree@3.0.6/node_modules/@types/d3-quadtree",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-quadtree@3.0.6/node_modules/@types/d3-quadtree"
+      },
+      "@types/d3-random": {
+        "from": "@types/d3-random",
+        "version": "link:../../node_modules/.pnpm/@types+d3-random@3.0.4/node_modules/@types/d3-random",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-random@3.0.4/node_modules/@types/d3-random"
+      },
+      "@types/d3-scale": {
+        "from": "@types/d3-scale",
+        "version": "link:../../node_modules/.pnpm/@types+d3-scale@4.0.9/node_modules/@types/d3-scale",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-scale@4.0.9/node_modules/@types/d3-scale"
+      },
+      "@types/d3-scale-chromatic": {
+        "from": "@types/d3-scale-chromatic",
+        "version": "link:../../node_modules/.pnpm/@types+d3-scale-chromatic@3.1.0/node_modules/@types/d3-scale-chromatic",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-scale-chromatic@3.1.0/node_modules/@types/d3-scale-chromatic"
+      },
+      "@types/d3-selection": {
+        "from": "@types/d3-selection",
+        "version": "link:../../node_modules/.pnpm/@types+d3-selection@3.0.12/node_modules/@types/d3-selection",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-selection@3.0.12/node_modules/@types/d3-selection"
+      },
+      "@types/d3-shape": {
+        "from": "@types/d3-shape",
+        "version": "link:../../node_modules/.pnpm/@types+d3-shape@3.2.0/node_modules/@types/d3-shape",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-shape@3.2.0/node_modules/@types/d3-shape"
+      },
+      "@types/d3-time": {
+        "from": "@types/d3-time",
+        "version": "link:../../node_modules/.pnpm/@types+d3-time@3.0.4/node_modules/@types/d3-time",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-time@3.0.4/node_modules/@types/d3-time"
+      },
+      "@types/d3-time-format": {
+        "from": "@types/d3-time-format",
+        "version": "link:../../node_modules/.pnpm/@types+d3-time-format@4.0.3/node_modules/@types/d3-time-format",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-time-format@4.0.3/node_modules/@types/d3-time-format"
+      },
+      "@types/d3-timer": {
+        "from": "@types/d3-timer",
+        "version": "link:../../node_modules/.pnpm/@types+d3-timer@3.0.2/node_modules/@types/d3-timer",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-timer@3.0.2/node_modules/@types/d3-timer"
+      },
+      "@types/d3-transition": {
+        "from": "@types/d3-transition",
+        "version": "link:../../node_modules/.pnpm/@types+d3-transition@3.0.9/node_modules/@types/d3-transition",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-transition@3.0.9/node_modules/@types/d3-transition"
+      },
+      "@types/d3-zoom": {
+        "from": "@types/d3-zoom",
+        "version": "link:../../node_modules/.pnpm/@types+d3-zoom@3.0.8/node_modules/@types/d3-zoom",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+d3-zoom@3.0.8/node_modules/@types/d3-zoom"
+      },
+      "@types/debug": {
+        "from": "@types/debug",
+        "version": "link:../../node_modules/.pnpm/@types+debug@4.1.13/node_modules/@types/debug",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+debug@4.1.13/node_modules/@types/debug"
+      },
+      "@types/estree": {
+        "from": "@types/estree",
+        "version": "link:../../node_modules/.pnpm/@types+estree@1.0.9/node_modules/@types/estree",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+estree@1.0.9/node_modules/@types/estree"
+      },
+      "@types/geojson": {
+        "from": "@types/geojson",
+        "version": "link:../../node_modules/.pnpm/@types+geojson@7946.0.16/node_modules/@types/geojson",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+geojson@7946.0.16/node_modules/@types/geojson"
+      },
+      "@types/hast": {
+        "from": "@types/hast",
+        "version": "link:../../node_modules/.pnpm/@types+hast@3.0.5/node_modules/@types/hast",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+hast@3.0.5/node_modules/@types/hast"
+      },
+      "@types/linkify-it": {
+        "from": "@types/linkify-it",
+        "version": "link:../../node_modules/.pnpm/@types+linkify-it@5.0.0/node_modules/@types/linkify-it",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+linkify-it@5.0.0/node_modules/@types/linkify-it"
+      },
+      "@types/markdown-it": {
+        "from": "@types/markdown-it",
+        "version": "link:../../node_modules/.pnpm/@types+markdown-it@14.2.0/node_modules/@types/markdown-it",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+markdown-it@14.2.0/node_modules/@types/markdown-it"
+      },
+      "@types/mdast": {
+        "from": "@types/mdast",
+        "version": "link:../../node_modules/.pnpm/@types+mdast@4.0.4/node_modules/@types/mdast",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+mdast@4.0.4/node_modules/@types/mdast"
+      },
+      "@types/mdurl": {
+        "from": "@types/mdurl",
+        "version": "link:../../node_modules/.pnpm/@types+mdurl@2.0.0/node_modules/@types/mdurl",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+mdurl@2.0.0/node_modules/@types/mdurl"
+      },
+      "@types/ms": {
+        "from": "@types/ms",
+        "version": "link:../../node_modules/.pnpm/@types+ms@2.1.0/node_modules/@types/ms",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+ms@2.1.0/node_modules/@types/ms"
+      },
+      "@types/node": {
+        "from": "@types/node",
+        "version": "link:../../node_modules/.pnpm/@types+node@22.20.4/node_modules/@types/node",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+node@22.20.4/node_modules/@types/node"
+      },
+      "@types/trusted-types": {
+        "from": "@types/trusted-types",
+        "version": "link:../../node_modules/.pnpm/@types+trusted-types@2.0.7/node_modules/@types/trusted-types",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+trusted-types@2.0.7/node_modules/@types/trusted-types"
+      },
+      "@types/unist": {
+        "from": "@types/unist",
+        "version": "link:../../node_modules/.pnpm/@types+unist@3.0.3/node_modules/@types/unist",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+unist@3.0.3/node_modules/@types/unist"
+      },
+      "@types/web-bluetooth": {
+        "from": "@types/web-bluetooth",
+        "version": "link:../../node_modules/.pnpm/@types+web-bluetooth@0.0.21/node_modules/@types/web-bluetooth",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@types+web-bluetooth@0.0.21/node_modules/@types/web-bluetooth"
+      },
+      "@typescript/ata": {
+        "from": "@typescript/ata",
+        "version": "link:../../node_modules/.pnpm/@typescript+ata@0.9.8_typescript@6.0.3/node_modules/@typescript/ata",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@typescript+ata@0.9.8_typescript@6.0.3/node_modules/@typescript/ata"
+      },
+      "@typescript/vfs": {
+        "from": "@typescript/vfs",
+        "version": "link:../../node_modules/.pnpm/@typescript+vfs@1.6.4_typescript@6.0.3/node_modules/@typescript/vfs",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@typescript+vfs@1.6.4_typescript@6.0.3/node_modules/@typescript/vfs"
+      },
+      "@ungap/structured-clone": {
+        "from": "@ungap/structured-clone",
+        "version": "link:../../node_modules/.pnpm/@ungap+structured-clone@1.4.0/node_modules/@ungap/structured-clone",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@ungap+structured-clone@1.4.0/node_modules/@ungap/structured-clone"
+      },
+      "@unhead/bundler": {
+        "from": "@unhead/bundler",
+        "version": "link:../../node_modules/.pnpm/@unhead+bundler@3.4.1_@oxc-project+types@0.150.0_@vitejs+devtools-kit@0.4.12_@modelcont_fe3385d4a0efdd5bb7a8cb98f7079aac/node_modules/@unhead/bundler",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unhead+bundler@3.4.1_@oxc-project+types@0.150.0_@vitejs+devtools-kit@0.4.12_@modelcont_fe3385d4a0efdd5bb7a8cb98f7079aac/node_modules/@unhead/bundler"
+      },
+      "@unhead/vue": {
+        "from": "@unhead/vue",
+        "version": "link:../../node_modules/.pnpm/@unhead+vue@3.4.1_@oxc-project+types@0.150.0_@vitejs+devtools-kit@0.4.12_@modelcontextp_c5a3c730765e55399a31cbb0d5ebbd58/node_modules/@unhead/vue",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unhead+vue@3.4.1_@oxc-project+types@0.150.0_@vitejs+devtools-kit@0.4.12_@modelcontextp_c5a3c730765e55399a31cbb0d5ebbd58/node_modules/@unhead/vue"
+      },
+      "@unocss/cli": {
+        "from": "@unocss/cli",
+        "version": "link:../../node_modules/.pnpm/@unocss+cli@66.10.5/node_modules/@unocss/cli",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+cli@66.10.5/node_modules/@unocss/cli"
+      },
+      "@unocss/config": {
+        "from": "@unocss/config",
+        "version": "link:../../node_modules/.pnpm/@unocss+config@66.10.5/node_modules/@unocss/config",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+config@66.10.5/node_modules/@unocss/config"
+      },
+      "@unocss/core": {
+        "from": "@unocss/core",
+        "version": "link:../../node_modules/.pnpm/@unocss+core@66.10.5/node_modules/@unocss/core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+core@66.10.5/node_modules/@unocss/core"
+      },
+      "@unocss/extractor-arbitrary-variants": {
+        "from": "@unocss/extractor-arbitrary-variants",
+        "version": "link:../../node_modules/.pnpm/@unocss+extractor-arbitrary-variants@66.10.5/node_modules/@unocss/extractor-arbitrary-variants",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+extractor-arbitrary-variants@66.10.5/node_modules/@unocss/extractor-arbitrary-variants"
+      },
+      "@unocss/extractor-mdc": {
+        "from": "@unocss/extractor-mdc",
+        "version": "link:../../node_modules/.pnpm/@unocss+extractor-mdc@66.10.5/node_modules/@unocss/extractor-mdc",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+extractor-mdc@66.10.5/node_modules/@unocss/extractor-mdc"
+      },
+      "@unocss/inspector": {
+        "from": "@unocss/inspector",
+        "version": "link:../../node_modules/.pnpm/@unocss+inspector@66.10.5_cac@7.0.0_srvx@1.0.5/node_modules/@unocss/inspector",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+inspector@66.10.5_cac@7.0.0_srvx@1.0.5/node_modules/@unocss/inspector"
+      },
+      "@unocss/preset-attributify": {
+        "from": "@unocss/preset-attributify",
+        "version": "link:../../node_modules/.pnpm/@unocss+preset-attributify@66.10.5/node_modules/@unocss/preset-attributify",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+preset-attributify@66.10.5/node_modules/@unocss/preset-attributify"
+      },
+      "@unocss/preset-icons": {
+        "from": "@unocss/preset-icons",
+        "version": "link:../../node_modules/.pnpm/@unocss+preset-icons@66.10.5/node_modules/@unocss/preset-icons",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+preset-icons@66.10.5/node_modules/@unocss/preset-icons"
+      },
+      "@unocss/preset-mini": {
+        "from": "@unocss/preset-mini",
+        "version": "link:../../node_modules/.pnpm/@unocss+preset-mini@66.10.5/node_modules/@unocss/preset-mini",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+preset-mini@66.10.5/node_modules/@unocss/preset-mini"
+      },
+      "@unocss/preset-tagify": {
+        "from": "@unocss/preset-tagify",
+        "version": "link:../../node_modules/.pnpm/@unocss+preset-tagify@66.10.5/node_modules/@unocss/preset-tagify",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+preset-tagify@66.10.5/node_modules/@unocss/preset-tagify"
+      },
+      "@unocss/preset-typography": {
+        "from": "@unocss/preset-typography",
+        "version": "link:../../node_modules/.pnpm/@unocss+preset-typography@66.10.5/node_modules/@unocss/preset-typography",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+preset-typography@66.10.5/node_modules/@unocss/preset-typography"
+      },
+      "@unocss/preset-uno": {
+        "from": "@unocss/preset-uno",
+        "version": "link:../../node_modules/.pnpm/@unocss+preset-uno@66.10.5/node_modules/@unocss/preset-uno",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+preset-uno@66.10.5/node_modules/@unocss/preset-uno"
+      },
+      "@unocss/preset-web-fonts": {
+        "from": "@unocss/preset-web-fonts",
+        "version": "link:../../node_modules/.pnpm/@unocss+preset-web-fonts@66.10.5/node_modules/@unocss/preset-web-fonts",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+preset-web-fonts@66.10.5/node_modules/@unocss/preset-web-fonts"
+      },
+      "@unocss/preset-wind": {
+        "from": "@unocss/preset-wind",
+        "version": "link:../../node_modules/.pnpm/@unocss+preset-wind@66.10.5/node_modules/@unocss/preset-wind",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+preset-wind@66.10.5/node_modules/@unocss/preset-wind"
+      },
+      "@unocss/preset-wind3": {
+        "from": "@unocss/preset-wind3",
+        "version": "link:../../node_modules/.pnpm/@unocss+preset-wind3@66.10.5/node_modules/@unocss/preset-wind3",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+preset-wind3@66.10.5/node_modules/@unocss/preset-wind3"
+      },
+      "@unocss/preset-wind4": {
+        "from": "@unocss/preset-wind4",
+        "version": "link:../../node_modules/.pnpm/@unocss+preset-wind4@66.10.5/node_modules/@unocss/preset-wind4",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+preset-wind4@66.10.5/node_modules/@unocss/preset-wind4"
+      },
+      "@unocss/reset": {
+        "from": "@unocss/reset",
+        "version": "link:../../node_modules/.pnpm/@unocss+reset@66.10.5/node_modules/@unocss/reset",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+reset@66.10.5/node_modules/@unocss/reset"
+      },
+      "@unocss/rollup": {
+        "from": "@unocss/rollup",
+        "version": "link:../../node_modules/.pnpm/@unocss+rollup@66.10.5_rolldown@1.2.9/node_modules/@unocss/rollup",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+rollup@66.10.5_rolldown@1.2.9/node_modules/@unocss/rollup"
+      },
+      "@unocss/rule-utils": {
+        "from": "@unocss/rule-utils",
+        "version": "link:../../node_modules/.pnpm/@unocss+rule-utils@66.10.5/node_modules/@unocss/rule-utils",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+rule-utils@66.10.5/node_modules/@unocss/rule-utils"
+      },
+      "@unocss/transformer-attributify-jsx": {
+        "from": "@unocss/transformer-attributify-jsx",
+        "version": "link:../../node_modules/.pnpm/@unocss+transformer-attributify-jsx@66.10.5/node_modules/@unocss/transformer-attributify-jsx",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+transformer-attributify-jsx@66.10.5/node_modules/@unocss/transformer-attributify-jsx"
+      },
+      "@unocss/transformer-compile-class": {
+        "from": "@unocss/transformer-compile-class",
+        "version": "link:../../node_modules/.pnpm/@unocss+transformer-compile-class@66.10.5/node_modules/@unocss/transformer-compile-class",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+transformer-compile-class@66.10.5/node_modules/@unocss/transformer-compile-class"
+      },
+      "@unocss/transformer-directives": {
+        "from": "@unocss/transformer-directives",
+        "version": "link:../../node_modules/.pnpm/@unocss+transformer-directives@66.10.5/node_modules/@unocss/transformer-directives",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+transformer-directives@66.10.5/node_modules/@unocss/transformer-directives"
+      },
+      "@unocss/transformer-variant-group": {
+        "from": "@unocss/transformer-variant-group",
+        "version": "link:../../node_modules/.pnpm/@unocss+transformer-variant-group@66.10.5/node_modules/@unocss/transformer-variant-group",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+transformer-variant-group@66.10.5/node_modules/@unocss/transformer-variant-group"
+      },
+      "@unocss/vite": {
+        "from": "@unocss/vite",
+        "version": "link:../../node_modules/.pnpm/@unocss+vite@66.10.5_cac@7.0.0_srvx@1.0.5_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/@unocss/vite",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@unocss+vite@66.10.5_cac@7.0.0_srvx@1.0.5_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/@unocss/vite"
+      },
+      "@upsetjs/venn.js": {
+        "from": "@upsetjs/venn.js",
+        "version": "link:../../node_modules/.pnpm/@upsetjs+venn.js@2.0.0/node_modules/@upsetjs/venn.js",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@upsetjs+venn.js@2.0.0/node_modules/@upsetjs/venn.js"
+      },
+      "@vitejs/devtools-kit": {
+        "from": "@vitejs/devtools-kit",
+        "version": "link:../../node_modules/.pnpm/@vitejs+devtools-kit@0.4.12_@modelcontextprotocol+server@2.0.0_cac@7.0.0_srvx@1.0.5_vit_c1894c94532a543c5d7f93466cb88d08/node_modules/@vitejs/devtools-kit",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vitejs+devtools-kit@0.4.12_@modelcontextprotocol+server@2.0.0_cac@7.0.0_srvx@1.0.5_vit_c1894c94532a543c5d7f93466cb88d08/node_modules/@vitejs/devtools-kit"
+      },
+      "@vitejs/plugin-vue": {
+        "from": "@vitejs/plugin-vue",
+        "version": "link:../../node_modules/.pnpm/@vitejs+plugin-vue@6.0.9_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1__vue@3.5.43_typescript@6.0.3_/node_modules/@vitejs/plugin-vue",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vitejs+plugin-vue@6.0.9_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1__vue@3.5.43_typescript@6.0.3_/node_modules/@vitejs/plugin-vue"
+      },
+      "@vitejs/plugin-vue-jsx": {
+        "from": "@vitejs/plugin-vue-jsx",
+        "version": "link:../../node_modules/.pnpm/@vitejs+plugin-vue-jsx@5.1.6_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1__vue@3.5.43_typescript@6.0.3_/node_modules/@vitejs/plugin-vue-jsx",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vitejs+plugin-vue-jsx@5.1.6_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1__vue@3.5.43_typescript@6.0.3_/node_modules/@vitejs/plugin-vue-jsx"
+      },
+      "@volar/language-core": {
+        "from": "@volar/language-core",
+        "version": "link:../../node_modules/.pnpm/@volar+language-core@2.4.28/node_modules/@volar/language-core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@volar+language-core@2.4.28/node_modules/@volar/language-core"
+      },
+      "@volar/source-map": {
+        "from": "@volar/source-map",
+        "version": "link:../../node_modules/.pnpm/@volar+source-map@2.4.28/node_modules/@volar/source-map",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@volar+source-map@2.4.28/node_modules/@volar/source-map"
+      },
+      "@vue-macros/common": {
+        "from": "@vue-macros/common",
+        "version": "link:../../node_modules/.pnpm/@vue-macros+common@3.1.4_vue@3.5.43_typescript@6.0.3_/node_modules/@vue-macros/common",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue-macros+common@3.1.4_vue@3.5.43_typescript@6.0.3_/node_modules/@vue-macros/common"
+      },
+      "@vue/babel-helper-vue-transform-on": {
+        "from": "@vue/babel-helper-vue-transform-on",
+        "version": "link:../../node_modules/.pnpm/@vue+babel-helper-vue-transform-on@2.0.1/node_modules/@vue/babel-helper-vue-transform-on",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+babel-helper-vue-transform-on@2.0.1/node_modules/@vue/babel-helper-vue-transform-on"
+      },
+      "@vue/babel-plugin-jsx": {
+        "from": "@vue/babel-plugin-jsx",
+        "version": "link:../../node_modules/.pnpm/@vue+babel-plugin-jsx@2.0.1_@babel+core@7.29.7/node_modules/@vue/babel-plugin-jsx",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+babel-plugin-jsx@2.0.1_@babel+core@7.29.7/node_modules/@vue/babel-plugin-jsx"
+      },
+      "@vue/babel-plugin-resolve-type": {
+        "from": "@vue/babel-plugin-resolve-type",
+        "version": "link:../../node_modules/.pnpm/@vue+babel-plugin-resolve-type@2.0.1_@babel+core@7.29.7/node_modules/@vue/babel-plugin-resolve-type",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+babel-plugin-resolve-type@2.0.1_@babel+core@7.29.7/node_modules/@vue/babel-plugin-resolve-type"
+      },
+      "@vue/compiler-core": {
+        "from": "@vue/compiler-core",
+        "version": "link:../../node_modules/.pnpm/@vue+compiler-core@3.5.43/node_modules/@vue/compiler-core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+compiler-core@3.5.43/node_modules/@vue/compiler-core"
+      },
+      "@vue/compiler-dom": {
+        "from": "@vue/compiler-dom",
+        "version": "link:../../node_modules/.pnpm/@vue+compiler-dom@3.5.43/node_modules/@vue/compiler-dom",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+compiler-dom@3.5.43/node_modules/@vue/compiler-dom"
+      },
+      "@vue/compiler-sfc": {
+        "from": "@vue/compiler-sfc",
+        "version": "link:../../node_modules/.pnpm/@vue+compiler-sfc@3.5.43/node_modules/@vue/compiler-sfc",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+compiler-sfc@3.5.43/node_modules/@vue/compiler-sfc"
+      },
+      "@vue/compiler-ssr": {
+        "from": "@vue/compiler-ssr",
+        "version": "link:../../node_modules/.pnpm/@vue+compiler-ssr@3.5.43/node_modules/@vue/compiler-ssr",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+compiler-ssr@3.5.43/node_modules/@vue/compiler-ssr"
+      },
+      "@vue/devtools-api": {
+        "from": "@vue/devtools-api",
+        "version": "link:../../node_modules/.pnpm/@vue+devtools-api@8.2.1/node_modules/@vue/devtools-api",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+devtools-api@8.2.1/node_modules/@vue/devtools-api"
+      },
+      "@vue/devtools-kit": {
+        "from": "@vue/devtools-kit",
+        "version": "link:../../node_modules/.pnpm/@vue+devtools-kit@8.2.1/node_modules/@vue/devtools-kit",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+devtools-kit@8.2.1/node_modules/@vue/devtools-kit"
+      },
+      "@vue/devtools-shared": {
+        "from": "@vue/devtools-shared",
+        "version": "link:../../node_modules/.pnpm/@vue+devtools-shared@8.2.1/node_modules/@vue/devtools-shared",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+devtools-shared@8.2.1/node_modules/@vue/devtools-shared"
+      },
+      "@vue/language-core": {
+        "from": "@vue/language-core",
+        "version": "link:../../node_modules/.pnpm/@vue+language-core@3.3.11/node_modules/@vue/language-core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+language-core@3.3.11/node_modules/@vue/language-core"
+      },
+      "@vue/reactivity": {
+        "from": "@vue/reactivity",
+        "version": "link:../../node_modules/.pnpm/@vue+reactivity@3.5.43/node_modules/@vue/reactivity",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+reactivity@3.5.43/node_modules/@vue/reactivity"
+      },
+      "@vue/runtime-core": {
+        "from": "@vue/runtime-core",
+        "version": "link:../../node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core"
+      },
+      "@vue/runtime-dom": {
+        "from": "@vue/runtime-dom",
+        "version": "link:../../node_modules/.pnpm/@vue+runtime-dom@3.5.43/node_modules/@vue/runtime-dom",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+runtime-dom@3.5.43/node_modules/@vue/runtime-dom"
+      },
+      "@vue/server-renderer": {
+        "from": "@vue/server-renderer",
+        "version": "link:../../node_modules/.pnpm/@vue+server-renderer@3.5.43/node_modules/@vue/server-renderer",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+server-renderer@3.5.43/node_modules/@vue/server-renderer"
+      },
+      "@vue/shared": {
+        "from": "@vue/shared",
+        "version": "link:../../node_modules/.pnpm/@vue+shared@3.5.43/node_modules/@vue/shared",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vue+shared@3.5.43/node_modules/@vue/shared"
+      },
+      "@vueuse/core": {
+        "from": "@vueuse/core",
+        "version": "link:../../node_modules/.pnpm/@vueuse+core@14.4.0_vue@3.5.43_typescript@6.0.3_/node_modules/@vueuse/core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vueuse+core@14.4.0_vue@3.5.43_typescript@6.0.3_/node_modules/@vueuse/core"
+      },
+      "@vueuse/math": {
+        "from": "@vueuse/math",
+        "version": "link:../../node_modules/.pnpm/@vueuse+math@14.4.0_vue@3.5.43_typescript@6.0.3_/node_modules/@vueuse/math",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vueuse+math@14.4.0_vue@3.5.43_typescript@6.0.3_/node_modules/@vueuse/math"
+      },
+      "@vueuse/metadata": {
+        "from": "@vueuse/metadata",
+        "version": "link:../../node_modules/.pnpm/@vueuse+metadata@14.4.0/node_modules/@vueuse/metadata",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vueuse+metadata@14.4.0/node_modules/@vueuse/metadata"
+      },
+      "@vueuse/motion": {
+        "from": "@vueuse/motion",
+        "version": "link:../../node_modules/.pnpm/@vueuse+motion@3.0.3_vue@3.5.43_typescript@6.0.3_/node_modules/@vueuse/motion",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vueuse+motion@3.0.3_vue@3.5.43_typescript@6.0.3_/node_modules/@vueuse/motion"
+      },
+      "@vueuse/shared": {
+        "from": "@vueuse/shared",
+        "version": "link:../../node_modules/.pnpm/@vueuse+shared@14.4.0_vue@3.5.43_typescript@6.0.3_/node_modules/@vueuse/shared",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/@vueuse+shared@14.4.0_vue@3.5.43_typescript@6.0.3_/node_modules/@vueuse/shared"
+      },
+      "acorn": {
+        "from": "acorn",
+        "version": "link:../../node_modules/.pnpm/acorn@8.18.0/node_modules/acorn",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/acorn@8.18.0/node_modules/acorn"
+      },
+      "alien-signals": {
+        "from": "alien-signals",
+        "version": "link:../../node_modules/.pnpm/alien-signals@3.2.1/node_modules/alien-signals",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/alien-signals@3.2.1/node_modules/alien-signals"
+      },
+      "ansi-regex": {
+        "from": "ansi-regex",
+        "version": "link:../../node_modules/.pnpm/ansi-regex@5.0.1/node_modules/ansi-regex",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ansi-regex@5.0.1/node_modules/ansi-regex"
+      },
+      "ansi-styles": {
+        "from": "ansi-styles",
+        "version": "link:../../node_modules/.pnpm/ansi-styles@6.2.3/node_modules/ansi-styles",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ansi-styles@6.2.3/node_modules/ansi-styles"
+      },
+      "ansis": {
+        "from": "ansis",
+        "version": "link:../../node_modules/.pnpm/ansis@4.4.0/node_modules/ansis",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ansis@4.4.0/node_modules/ansis"
+      },
+      "anymatch": {
+        "from": "anymatch",
+        "version": "link:../../node_modules/.pnpm/anymatch@3.1.3/node_modules/anymatch",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/anymatch@3.1.3/node_modules/anymatch"
+      },
+      "argparse": {
+        "from": "argparse",
+        "version": "link:../../node_modules/.pnpm/argparse@2.0.1/node_modules/argparse",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/argparse@2.0.1/node_modules/argparse"
+      },
+      "ast-kit": {
+        "from": "ast-kit",
+        "version": "link:../../node_modules/.pnpm/ast-kit@2.2.0/node_modules/ast-kit",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ast-kit@2.2.0/node_modules/ast-kit"
+      },
+      "ast-walker-scope": {
+        "from": "ast-walker-scope",
+        "version": "link:../../node_modules/.pnpm/ast-walker-scope@0.9.0/node_modules/ast-walker-scope",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ast-walker-scope@0.9.0/node_modules/ast-walker-scope"
+      },
+      "baseline-browser-mapping": {
+        "from": "baseline-browser-mapping",
+        "version": "link:../../node_modules/.pnpm/baseline-browser-mapping@2.11.25/node_modules/baseline-browser-mapping",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/baseline-browser-mapping@2.11.25/node_modules/baseline-browser-mapping"
+      },
+      "binary-extensions": {
+        "from": "binary-extensions",
+        "version": "link:../../node_modules/.pnpm/binary-extensions@2.3.0/node_modules/binary-extensions",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/binary-extensions@2.3.0/node_modules/binary-extensions"
+      },
+      "birpc": {
+        "from": "birpc",
+        "version": "link:../../node_modules/.pnpm/birpc@4.2.0/node_modules/birpc",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/birpc@4.2.0/node_modules/birpc"
+      },
+      "braces": {
+        "from": "braces",
+        "version": "link:../../node_modules/.pnpm/braces@3.0.3/node_modules/braces",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/braces@3.0.3/node_modules/braces"
+      },
+      "browserslist": {
+        "from": "browserslist",
+        "version": "link:../../node_modules/.pnpm/browserslist@4.29.0/node_modules/browserslist",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/browserslist@4.29.0/node_modules/browserslist"
+      },
+      "bundle-name": {
+        "from": "bundle-name",
+        "version": "link:../../node_modules/.pnpm/bundle-name@4.1.0/node_modules/bundle-name",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/bundle-name@4.1.0/node_modules/bundle-name"
+      },
+      "c12": {
+        "from": "c12",
+        "version": "link:../../node_modules/.pnpm/c12@3.3.4/node_modules/c12",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/c12@3.3.4/node_modules/c12"
+      },
+      "cac": {
+        "from": "cac",
+        "version": "link:../../node_modules/.pnpm/cac@7.0.0/node_modules/cac",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/cac@7.0.0/node_modules/cac"
+      },
+      "caniuse-lite": {
+        "from": "caniuse-lite",
+        "version": "link:../../node_modules/.pnpm/caniuse-lite@1.0.30001810/node_modules/caniuse-lite",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/caniuse-lite@1.0.30001810/node_modules/caniuse-lite"
+      },
+      "ccount": {
+        "from": "ccount",
+        "version": "link:../../node_modules/.pnpm/ccount@2.0.1/node_modules/ccount",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ccount@2.0.1/node_modules/ccount"
+      },
+      "character-entities": {
+        "from": "character-entities",
+        "version": "link:../../node_modules/.pnpm/character-entities@2.0.2/node_modules/character-entities",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/character-entities@2.0.2/node_modules/character-entities"
+      },
+      "character-entities-html4": {
+        "from": "character-entities-html4",
+        "version": "link:../../node_modules/.pnpm/character-entities-html4@2.1.0/node_modules/character-entities-html4",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/character-entities-html4@2.1.0/node_modules/character-entities-html4"
+      },
+      "character-entities-legacy": {
+        "from": "character-entities-legacy",
+        "version": "link:../../node_modules/.pnpm/character-entities-legacy@3.0.0/node_modules/character-entities-legacy",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/character-entities-legacy@3.0.0/node_modules/character-entities-legacy"
+      },
+      "chevrotain": {
+        "from": "chevrotain",
+        "version": "link:../../node_modules/.pnpm/chevrotain@11.1.2/node_modules/chevrotain",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/chevrotain@11.1.2/node_modules/chevrotain"
+      },
+      "chokidar": {
+        "from": "chokidar",
+        "version": "link:../../node_modules/.pnpm/chokidar@5.0.0/node_modules/chokidar",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/chokidar@5.0.0/node_modules/chokidar"
+      },
+      "citty": {
+        "from": "citty",
+        "version": "link:../../node_modules/.pnpm/citty@0.2.2/node_modules/citty",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/citty@0.2.2/node_modules/citty"
+      },
+      "cli-progress": {
+        "from": "cli-progress",
+        "version": "link:../../node_modules/.pnpm/cli-progress@3.12.0/node_modules/cli-progress",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/cli-progress@3.12.0/node_modules/cli-progress"
+      },
+      "cliui": {
+        "from": "cliui",
+        "version": "link:../../node_modules/.pnpm/cliui@9.0.1/node_modules/cliui",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/cliui@9.0.1/node_modules/cliui"
+      },
+      "clone-regexp": {
+        "from": "clone-regexp",
+        "version": "link:../../node_modules/.pnpm/clone-regexp@3.0.0/node_modules/clone-regexp",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/clone-regexp@3.0.0/node_modules/clone-regexp"
+      },
+      "codemirror-theme-vars": {
+        "from": "codemirror-theme-vars",
+        "version": "link:../../node_modules/.pnpm/codemirror-theme-vars@0.1.2/node_modules/codemirror-theme-vars",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/codemirror-theme-vars@0.1.2/node_modules/codemirror-theme-vars"
+      },
+      "colorette": {
+        "from": "colorette",
+        "version": "link:../../node_modules/.pnpm/colorette@2.0.20/node_modules/colorette",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/colorette@2.0.20/node_modules/colorette"
+      },
+      "comma-separated-tokens": {
+        "from": "comma-separated-tokens",
+        "version": "link:../../node_modules/.pnpm/comma-separated-tokens@2.0.3/node_modules/comma-separated-tokens",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/comma-separated-tokens@2.0.3/node_modules/comma-separated-tokens"
+      },
+      "commander": {
+        "from": "commander",
+        "version": "link:../../node_modules/.pnpm/commander@15.0.0/node_modules/commander",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/commander@15.0.0/node_modules/commander"
+      },
+      "confbox": {
+        "from": "confbox",
+        "version": "link:../../node_modules/.pnpm/confbox@0.1.8/node_modules/confbox",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/confbox@0.1.8/node_modules/confbox"
+      },
+      "connect": {
+        "from": "connect",
+        "version": "link:../../node_modules/.pnpm/connect@3.7.0/node_modules/connect",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/connect@3.7.0/node_modules/connect"
+      },
+      "consola": {
+        "from": "consola",
+        "version": "link:../../node_modules/.pnpm/consola@3.4.2/node_modules/consola",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/consola@3.4.2/node_modules/consola"
+      },
+      "convert-hrtime": {
+        "from": "convert-hrtime",
+        "version": "link:../../node_modules/.pnpm/convert-hrtime@5.0.0/node_modules/convert-hrtime",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/convert-hrtime@5.0.0/node_modules/convert-hrtime"
+      },
+      "convert-source-map": {
+        "from": "convert-source-map",
+        "version": "link:../../node_modules/.pnpm/convert-source-map@2.0.0/node_modules/convert-source-map",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/convert-source-map@2.0.0/node_modules/convert-source-map"
+      },
+      "core-util-is": {
+        "from": "core-util-is",
+        "version": "link:../../node_modules/.pnpm/core-util-is@1.0.3/node_modules/core-util-is",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/core-util-is@1.0.3/node_modules/core-util-is"
+      },
+      "cose-base": {
+        "from": "cose-base",
+        "version": "link:../../node_modules/.pnpm/cose-base@1.0.3/node_modules/cose-base",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/cose-base@1.0.3/node_modules/cose-base"
+      },
+      "crossws": {
+        "from": "crossws",
+        "version": "link:../../node_modules/.pnpm/crossws@0.4.12_srvx@1.0.5/node_modules/crossws",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/crossws@0.4.12_srvx@1.0.5/node_modules/crossws"
+      },
+      "css-tree": {
+        "from": "css-tree",
+        "version": "link:../../node_modules/.pnpm/css-tree@3.2.1/node_modules/css-tree",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/css-tree@3.2.1/node_modules/css-tree"
+      },
+      "cssesc": {
+        "from": "cssesc",
+        "version": "link:../../node_modules/.pnpm/cssesc@3.0.0/node_modules/cssesc",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/cssesc@3.0.0/node_modules/cssesc"
+      },
+      "csstype": {
+        "from": "csstype",
+        "version": "link:../../node_modules/.pnpm/csstype@3.2.3/node_modules/csstype",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/csstype@3.2.3/node_modules/csstype"
+      },
+      "cytoscape": {
+        "from": "cytoscape",
+        "version": "link:../../node_modules/.pnpm/cytoscape@3.34.3/node_modules/cytoscape",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/cytoscape@3.34.3/node_modules/cytoscape"
+      },
+      "cytoscape-cose-bilkent": {
+        "from": "cytoscape-cose-bilkent",
+        "version": "link:../../node_modules/.pnpm/cytoscape-cose-bilkent@4.1.0_cytoscape@3.34.3/node_modules/cytoscape-cose-bilkent",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/cytoscape-cose-bilkent@4.1.0_cytoscape@3.34.3/node_modules/cytoscape-cose-bilkent"
+      },
+      "cytoscape-fcose": {
+        "from": "cytoscape-fcose",
+        "version": "link:../../node_modules/.pnpm/cytoscape-fcose@2.2.0_cytoscape@3.34.3/node_modules/cytoscape-fcose",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/cytoscape-fcose@2.2.0_cytoscape@3.34.3/node_modules/cytoscape-fcose"
+      },
+      "d3": {
+        "from": "d3",
+        "version": "link:../../node_modules/.pnpm/d3@7.9.0/node_modules/d3",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3@7.9.0/node_modules/d3"
+      },
+      "d3-array": {
+        "from": "d3-array",
+        "version": "link:../../node_modules/.pnpm/d3-array@2.12.1/node_modules/d3-array",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-array@2.12.1/node_modules/d3-array"
+      },
+      "d3-axis": {
+        "from": "d3-axis",
+        "version": "link:../../node_modules/.pnpm/d3-axis@3.0.0/node_modules/d3-axis",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-axis@3.0.0/node_modules/d3-axis"
+      },
+      "d3-brush": {
+        "from": "d3-brush",
+        "version": "link:../../node_modules/.pnpm/d3-brush@3.0.0/node_modules/d3-brush",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-brush@3.0.0/node_modules/d3-brush"
+      },
+      "d3-chord": {
+        "from": "d3-chord",
+        "version": "link:../../node_modules/.pnpm/d3-chord@3.0.1/node_modules/d3-chord",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-chord@3.0.1/node_modules/d3-chord"
+      },
+      "d3-color": {
+        "from": "d3-color",
+        "version": "link:../../node_modules/.pnpm/d3-color@3.1.0/node_modules/d3-color",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-color@3.1.0/node_modules/d3-color"
+      },
+      "d3-contour": {
+        "from": "d3-contour",
+        "version": "link:../../node_modules/.pnpm/d3-contour@4.0.2/node_modules/d3-contour",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-contour@4.0.2/node_modules/d3-contour"
+      },
+      "d3-delaunay": {
+        "from": "d3-delaunay",
+        "version": "link:../../node_modules/.pnpm/d3-delaunay@6.0.4/node_modules/d3-delaunay",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-delaunay@6.0.4/node_modules/d3-delaunay"
+      },
+      "d3-dispatch": {
+        "from": "d3-dispatch",
+        "version": "link:../../node_modules/.pnpm/d3-dispatch@3.0.1/node_modules/d3-dispatch",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-dispatch@3.0.1/node_modules/d3-dispatch"
+      },
+      "d3-drag": {
+        "from": "d3-drag",
+        "version": "link:../../node_modules/.pnpm/d3-drag@3.0.0/node_modules/d3-drag",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-drag@3.0.0/node_modules/d3-drag"
+      },
+      "d3-dsv": {
+        "from": "d3-dsv",
+        "version": "link:../../node_modules/.pnpm/d3-dsv@3.0.1/node_modules/d3-dsv",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-dsv@3.0.1/node_modules/d3-dsv"
+      },
+      "d3-ease": {
+        "from": "d3-ease",
+        "version": "link:../../node_modules/.pnpm/d3-ease@3.0.1/node_modules/d3-ease",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-ease@3.0.1/node_modules/d3-ease"
+      },
+      "d3-fetch": {
+        "from": "d3-fetch",
+        "version": "link:../../node_modules/.pnpm/d3-fetch@3.0.1/node_modules/d3-fetch",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-fetch@3.0.1/node_modules/d3-fetch"
+      },
+      "d3-force": {
+        "from": "d3-force",
+        "version": "link:../../node_modules/.pnpm/d3-force@3.0.0/node_modules/d3-force",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-force@3.0.0/node_modules/d3-force"
+      },
+      "d3-format": {
+        "from": "d3-format",
+        "version": "link:../../node_modules/.pnpm/d3-format@3.1.2/node_modules/d3-format",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-format@3.1.2/node_modules/d3-format"
+      },
+      "d3-geo": {
+        "from": "d3-geo",
+        "version": "link:../../node_modules/.pnpm/d3-geo@3.1.1/node_modules/d3-geo",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-geo@3.1.1/node_modules/d3-geo"
+      },
+      "d3-hierarchy": {
+        "from": "d3-hierarchy",
+        "version": "link:../../node_modules/.pnpm/d3-hierarchy@3.1.2/node_modules/d3-hierarchy",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-hierarchy@3.1.2/node_modules/d3-hierarchy"
+      },
+      "d3-interpolate": {
+        "from": "d3-interpolate",
+        "version": "link:../../node_modules/.pnpm/d3-interpolate@3.0.1/node_modules/d3-interpolate",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-interpolate@3.0.1/node_modules/d3-interpolate"
+      },
+      "d3-path": {
+        "from": "d3-path",
+        "version": "link:../../node_modules/.pnpm/d3-path@3.1.0/node_modules/d3-path",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-path@3.1.0/node_modules/d3-path"
+      },
+      "d3-polygon": {
+        "from": "d3-polygon",
+        "version": "link:../../node_modules/.pnpm/d3-polygon@3.0.1/node_modules/d3-polygon",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-polygon@3.0.1/node_modules/d3-polygon"
+      },
+      "d3-quadtree": {
+        "from": "d3-quadtree",
+        "version": "link:../../node_modules/.pnpm/d3-quadtree@3.0.1/node_modules/d3-quadtree",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-quadtree@3.0.1/node_modules/d3-quadtree"
+      },
+      "d3-random": {
+        "from": "d3-random",
+        "version": "link:../../node_modules/.pnpm/d3-random@3.0.1/node_modules/d3-random",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-random@3.0.1/node_modules/d3-random"
+      },
+      "d3-sankey": {
+        "from": "d3-sankey",
+        "version": "link:../../node_modules/.pnpm/d3-sankey@0.12.3/node_modules/d3-sankey",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-sankey@0.12.3/node_modules/d3-sankey"
+      },
+      "d3-scale": {
+        "from": "d3-scale",
+        "version": "link:../../node_modules/.pnpm/d3-scale@4.0.2/node_modules/d3-scale",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-scale@4.0.2/node_modules/d3-scale"
+      },
+      "d3-scale-chromatic": {
+        "from": "d3-scale-chromatic",
+        "version": "link:../../node_modules/.pnpm/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-scale-chromatic@3.1.0/node_modules/d3-scale-chromatic"
+      },
+      "d3-selection": {
+        "from": "d3-selection",
+        "version": "link:../../node_modules/.pnpm/d3-selection@3.0.0/node_modules/d3-selection",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-selection@3.0.0/node_modules/d3-selection"
+      },
+      "d3-shape": {
+        "from": "d3-shape",
+        "version": "link:../../node_modules/.pnpm/d3-shape@1.3.7/node_modules/d3-shape",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-shape@1.3.7/node_modules/d3-shape"
+      },
+      "d3-time": {
+        "from": "d3-time",
+        "version": "link:../../node_modules/.pnpm/d3-time@3.1.0/node_modules/d3-time",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-time@3.1.0/node_modules/d3-time"
+      },
+      "d3-time-format": {
+        "from": "d3-time-format",
+        "version": "link:../../node_modules/.pnpm/d3-time-format@4.1.0/node_modules/d3-time-format",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-time-format@4.1.0/node_modules/d3-time-format"
+      },
+      "d3-timer": {
+        "from": "d3-timer",
+        "version": "link:../../node_modules/.pnpm/d3-timer@3.0.1/node_modules/d3-timer",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-timer@3.0.1/node_modules/d3-timer"
+      },
+      "d3-transition": {
+        "from": "d3-transition",
+        "version": "link:../../node_modules/.pnpm/d3-transition@3.0.1_d3-selection@3.0.0/node_modules/d3-transition",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-transition@3.0.1_d3-selection@3.0.0/node_modules/d3-transition"
+      },
+      "d3-zoom": {
+        "from": "d3-zoom",
+        "version": "link:../../node_modules/.pnpm/d3-zoom@3.0.0/node_modules/d3-zoom",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/d3-zoom@3.0.0/node_modules/d3-zoom"
+      },
+      "dagre-d3-es": {
+        "from": "dagre-d3-es",
+        "version": "link:../../node_modules/.pnpm/dagre-d3-es@7.0.14/node_modules/dagre-d3-es",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/dagre-d3-es@7.0.14/node_modules/dagre-d3-es"
+      },
+      "dayjs": {
+        "from": "dayjs",
+        "version": "link:../../node_modules/.pnpm/dayjs@1.11.23/node_modules/dayjs",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/dayjs@1.11.23/node_modules/dayjs"
+      },
+      "debug": {
+        "from": "debug",
+        "version": "link:../../node_modules/.pnpm/debug@2.6.9/node_modules/debug",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/debug@2.6.9/node_modules/debug"
+      },
+      "decode-named-character-reference": {
+        "from": "decode-named-character-reference",
+        "version": "link:../../node_modules/.pnpm/decode-named-character-reference@1.3.0/node_modules/decode-named-character-reference",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/decode-named-character-reference@1.3.0/node_modules/decode-named-character-reference"
+      },
+      "default-browser": {
+        "from": "default-browser",
+        "version": "link:../../node_modules/.pnpm/default-browser@5.5.1/node_modules/default-browser",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/default-browser@5.5.1/node_modules/default-browser"
+      },
+      "default-browser-id": {
+        "from": "default-browser-id",
+        "version": "link:../../node_modules/.pnpm/default-browser-id@5.0.1/node_modules/default-browser-id",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/default-browser-id@5.0.1/node_modules/default-browser-id"
+      },
+      "define-lazy-prop": {
+        "from": "define-lazy-prop",
+        "version": "link:../../node_modules/.pnpm/define-lazy-prop@3.0.0/node_modules/define-lazy-prop",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/define-lazy-prop@3.0.0/node_modules/define-lazy-prop"
+      },
+      "defu": {
+        "from": "defu",
+        "version": "link:../../node_modules/.pnpm/defu@6.1.7/node_modules/defu",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/defu@6.1.7/node_modules/defu"
+      },
+      "delaunator": {
+        "from": "delaunator",
+        "version": "link:../../node_modules/.pnpm/delaunator@5.1.0/node_modules/delaunator",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/delaunator@5.1.0/node_modules/delaunator"
+      },
+      "dequal": {
+        "from": "dequal",
+        "version": "link:../../node_modules/.pnpm/dequal@2.0.3/node_modules/dequal",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/dequal@2.0.3/node_modules/dequal"
+      },
+      "destr": {
+        "from": "destr",
+        "version": "link:../../node_modules/.pnpm/destr@2.0.5/node_modules/destr",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/destr@2.0.5/node_modules/destr"
+      },
+      "detect-libc": {
+        "from": "detect-libc",
+        "version": "link:../../node_modules/.pnpm/detect-libc@2.1.2/node_modules/detect-libc",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/detect-libc@2.1.2/node_modules/detect-libc"
+      },
+      "devframe": {
+        "from": "devframe",
+        "version": "link:../../node_modules/.pnpm/devframe@0.8.2_@modelcontextprotocol+server@2.0.0_cac@7.0.0_srvx@1.0.5/node_modules/devframe",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/devframe@0.8.2_@modelcontextprotocol+server@2.0.0_cac@7.0.0_srvx@1.0.5/node_modules/devframe"
+      },
+      "devlop": {
+        "from": "devlop",
+        "version": "link:../../node_modules/.pnpm/devlop@1.1.0/node_modules/devlop",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/devlop@1.1.0/node_modules/devlop"
+      },
+      "diff-match-patch-es": {
+        "from": "diff-match-patch-es",
+        "version": "link:../../node_modules/.pnpm/diff-match-patch-es@2.0.1/node_modules/diff-match-patch-es",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/diff-match-patch-es@2.0.1/node_modules/diff-match-patch-es"
+      },
+      "dns-packet": {
+        "from": "dns-packet",
+        "version": "link:../../node_modules/.pnpm/dns-packet@5.6.1/node_modules/dns-packet",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/dns-packet@5.6.1/node_modules/dns-packet"
+      },
+      "dns-socket": {
+        "from": "dns-socket",
+        "version": "link:../../node_modules/.pnpm/dns-socket@4.2.2/node_modules/dns-socket",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/dns-socket@4.2.2/node_modules/dns-socket"
+      },
+      "dom-serializer": {
+        "from": "dom-serializer",
+        "version": "link:../../node_modules/.pnpm/dom-serializer@3.1.1/node_modules/dom-serializer",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/dom-serializer@3.1.1/node_modules/dom-serializer"
+      },
+      "domelementtype": {
+        "from": "domelementtype",
+        "version": "link:../../node_modules/.pnpm/domelementtype@3.0.0/node_modules/domelementtype",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/domelementtype@3.0.0/node_modules/domelementtype"
+      },
+      "domhandler": {
+        "from": "domhandler",
+        "version": "link:../../node_modules/.pnpm/domhandler@6.0.1/node_modules/domhandler",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/domhandler@6.0.1/node_modules/domhandler"
+      },
+      "dompurify": {
+        "from": "dompurify",
+        "version": "link:../../node_modules/.pnpm/dompurify@3.4.8/node_modules/dompurify",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/dompurify@3.4.8/node_modules/dompurify"
+      },
+      "domutils": {
+        "from": "domutils",
+        "version": "link:../../node_modules/.pnpm/domutils@4.0.2/node_modules/domutils",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/domutils@4.0.2/node_modules/domutils"
+      },
+      "dotenv": {
+        "from": "dotenv",
+        "version": "link:../../node_modules/.pnpm/dotenv@17.4.2/node_modules/dotenv",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/dotenv@17.4.2/node_modules/dotenv"
+      },
+      "drauu": {
+        "from": "drauu",
+        "version": "link:../../node_modules/.pnpm/drauu@1.0.0/node_modules/drauu",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/drauu@1.0.0/node_modules/drauu"
+      },
+      "ee-first": {
+        "from": "ee-first",
+        "version": "link:../../node_modules/.pnpm/ee-first@1.1.1/node_modules/ee-first",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ee-first@1.1.1/node_modules/ee-first"
+      },
+      "electron-to-chromium": {
+        "from": "electron-to-chromium",
+        "version": "link:../../node_modules/.pnpm/electron-to-chromium@1.5.434/node_modules/electron-to-chromium",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/electron-to-chromium@1.5.434/node_modules/electron-to-chromium"
+      },
+      "elkjs": {
+        "from": "elkjs",
+        "version": "link:../../node_modules/.pnpm/elkjs@0.9.3/node_modules/elkjs",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/elkjs@0.9.3/node_modules/elkjs"
+      },
+      "emoji-regex": {
+        "from": "emoji-regex",
+        "version": "link:../../node_modules/.pnpm/emoji-regex@8.0.0/node_modules/emoji-regex",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/emoji-regex@8.0.0/node_modules/emoji-regex"
+      },
+      "encodeurl": {
+        "from": "encodeurl",
+        "version": "link:../../node_modules/.pnpm/encodeurl@1.0.2/node_modules/encodeurl",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/encodeurl@1.0.2/node_modules/encodeurl"
+      },
+      "entities": {
+        "from": "entities",
+        "version": "link:../../node_modules/.pnpm/entities@8.1.0/node_modules/entities",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/entities@8.1.0/node_modules/entities"
+      },
+      "error-stack-parser-es": {
+        "from": "error-stack-parser-es",
+        "version": "link:../../node_modules/.pnpm/error-stack-parser-es@2.0.1/node_modules/error-stack-parser-es",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/error-stack-parser-es@2.0.1/node_modules/error-stack-parser-es"
+      },
+      "errx": {
+        "from": "errx",
+        "version": "link:../../node_modules/.pnpm/errx@0.1.2/node_modules/errx",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/errx@0.1.2/node_modules/errx"
+      },
+      "es-toolkit": {
+        "from": "es-toolkit",
+        "version": "link:../../node_modules/.pnpm/es-toolkit@1.52.0/node_modules/es-toolkit",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/es-toolkit@1.52.0/node_modules/es-toolkit"
+      },
+      "escalade": {
+        "from": "escalade",
+        "version": "link:../../node_modules/.pnpm/escalade@3.2.0/node_modules/escalade",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/escalade@3.2.0/node_modules/escalade"
+      },
+      "escape-html": {
+        "from": "escape-html",
+        "version": "link:../../node_modules/.pnpm/escape-html@1.0.3/node_modules/escape-html",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/escape-html@1.0.3/node_modules/escape-html"
+      },
+      "escape-string-regexp": {
+        "from": "escape-string-regexp",
+        "version": "link:../../node_modules/.pnpm/escape-string-regexp@5.0.0/node_modules/escape-string-regexp",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/escape-string-regexp@5.0.0/node_modules/escape-string-regexp"
+      },
+      "esprima": {
+        "from": "esprima",
+        "version": "link:../../node_modules/.pnpm/esprima@4.0.1/node_modules/esprima",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/esprima@4.0.1/node_modules/esprima"
+      },
+      "estree-walker": {
+        "from": "estree-walker",
+        "version": "link:../../node_modules/.pnpm/estree-walker@2.0.2/node_modules/estree-walker",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/estree-walker@2.0.2/node_modules/estree-walker"
+      },
+      "exsolve": {
+        "from": "exsolve",
+        "version": "link:../../node_modules/.pnpm/exsolve@1.1.1/node_modules/exsolve",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/exsolve@1.1.1/node_modules/exsolve"
+      },
+      "extend-shallow": {
+        "from": "extend-shallow",
+        "version": "link:../../node_modules/.pnpm/extend-shallow@2.0.1/node_modules/extend-shallow",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/extend-shallow@2.0.1/node_modules/extend-shallow"
+      },
+      "fast-deep-equal": {
+        "from": "fast-deep-equal",
+        "version": "link:../../node_modules/.pnpm/fast-deep-equal@3.1.3/node_modules/fast-deep-equal",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/fast-deep-equal@3.1.3/node_modules/fast-deep-equal"
+      },
+      "fast-glob": {
+        "from": "fast-glob",
+        "version": "link:../../node_modules/.pnpm/fast-glob@3.3.3/node_modules/fast-glob",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/fast-glob@3.3.3/node_modules/fast-glob"
+      },
+      "fastq": {
+        "from": "fastq",
+        "version": "link:../../node_modules/.pnpm/fastq@1.20.3/node_modules/fastq",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/fastq@1.20.3/node_modules/fastq"
+      },
+      "fdir": {
+        "from": "fdir",
+        "version": "link:../../node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.7/node_modules/fdir",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/fdir@6.5.0_picomatch@4.0.7/node_modules/fdir"
+      },
+      "file-saver": {
+        "from": "file-saver",
+        "version": "link:../../node_modules/.pnpm/file-saver@2.0.5/node_modules/file-saver",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/file-saver@2.0.5/node_modules/file-saver"
+      },
+      "fill-range": {
+        "from": "fill-range",
+        "version": "link:../../node_modules/.pnpm/fill-range@7.1.1/node_modules/fill-range",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/fill-range@7.1.1/node_modules/fill-range"
+      },
+      "finalhandler": {
+        "from": "finalhandler",
+        "version": "link:../../node_modules/.pnpm/finalhandler@1.1.2/node_modules/finalhandler",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/finalhandler@1.1.2/node_modules/finalhandler"
+      },
+      "fitty": {
+        "from": "fitty",
+        "version": "link:../../node_modules/.pnpm/fitty@2.4.2/node_modules/fitty",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/fitty@2.4.2/node_modules/fitty"
+      },
+      "floating-vue": {
+        "from": "floating-vue",
+        "version": "link:../../node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue"
+      },
+      "framesync": {
+        "from": "framesync",
+        "version": "link:../../node_modules/.pnpm/framesync@6.1.2/node_modules/framesync",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/framesync@6.1.2/node_modules/framesync"
+      },
+      "fsevents": {
+        "from": "fsevents",
+        "version": "link:../../node_modules/.pnpm/fsevents@2.3.3/node_modules/fsevents",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/fsevents@2.3.3/node_modules/fsevents"
+      },
+      "function-timeout": {
+        "from": "function-timeout",
+        "version": "link:../../node_modules/.pnpm/function-timeout@0.1.1/node_modules/function-timeout",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/function-timeout@0.1.1/node_modules/function-timeout"
+      },
+      "fuse.js": {
+        "from": "fuse.js",
+        "version": "link:../../node_modules/.pnpm/fuse.js@7.5.0/node_modules/fuse.js",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/fuse.js@7.5.0/node_modules/fuse.js"
+      },
+      "fzf": {
+        "from": "fzf",
+        "version": "link:../../node_modules/.pnpm/fzf@0.5.2/node_modules/fzf",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/fzf@0.5.2/node_modules/fzf"
+      },
+      "gensync": {
+        "from": "gensync",
+        "version": "link:../../node_modules/.pnpm/gensync@1.0.0-beta.2/node_modules/gensync",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/gensync@1.0.0-beta.2/node_modules/gensync"
+      },
+      "get-caller-file": {
+        "from": "get-caller-file",
+        "version": "link:../../node_modules/.pnpm/get-caller-file@2.0.5/node_modules/get-caller-file",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/get-caller-file@2.0.5/node_modules/get-caller-file"
+      },
+      "get-east-asian-width": {
+        "from": "get-east-asian-width",
+        "version": "link:../../node_modules/.pnpm/get-east-asian-width@1.7.0/node_modules/get-east-asian-width",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/get-east-asian-width@1.7.0/node_modules/get-east-asian-width"
+      },
+      "get-port-please": {
+        "from": "get-port-please",
+        "version": "link:../../node_modules/.pnpm/get-port-please@3.2.0/node_modules/get-port-please",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/get-port-please@3.2.0/node_modules/get-port-please"
+      },
+      "giget": {
+        "from": "giget",
+        "version": "link:../../node_modules/.pnpm/giget@3.3.1/node_modules/giget",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/giget@3.3.1/node_modules/giget"
+      },
+      "glob-parent": {
+        "from": "glob-parent",
+        "version": "link:../../node_modules/.pnpm/glob-parent@5.1.2/node_modules/glob-parent",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/glob-parent@5.1.2/node_modules/glob-parent"
+      },
+      "global-directory": {
+        "from": "global-directory",
+        "version": "link:../../node_modules/.pnpm/global-directory@5.0.0/node_modules/global-directory",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/global-directory@5.0.0/node_modules/global-directory"
+      },
+      "gray-matter": {
+        "from": "gray-matter",
+        "version": "link:../../node_modules/.pnpm/gray-matter@4.0.3/node_modules/gray-matter",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/gray-matter@4.0.3/node_modules/gray-matter"
+      },
+      "h3": {
+        "from": "h3",
+        "version": "link:../../node_modules/.pnpm/h3@2.0.1-rc.32_crossws@0.4.12_srvx@1.0.5_/node_modules/h3",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/h3@2.0.1-rc.32_crossws@0.4.12_srvx@1.0.5_/node_modules/h3"
+      },
+      "hachure-fill": {
+        "from": "hachure-fill",
+        "version": "link:../../node_modules/.pnpm/hachure-fill@0.5.2/node_modules/hachure-fill",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/hachure-fill@0.5.2/node_modules/hachure-fill"
+      },
+      "hast-util-to-html": {
+        "from": "hast-util-to-html",
+        "version": "link:../../node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/hast-util-to-html@9.0.5/node_modules/hast-util-to-html"
+      },
+      "hast-util-whitespace": {
+        "from": "hast-util-whitespace",
+        "version": "link:../../node_modules/.pnpm/hast-util-whitespace@3.0.0/node_modules/hast-util-whitespace",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/hast-util-whitespace@3.0.0/node_modules/hast-util-whitespace"
+      },
+      "hey-listen": {
+        "from": "hey-listen",
+        "version": "link:../../node_modules/.pnpm/hey-listen@1.0.8/node_modules/hey-listen",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/hey-listen@1.0.8/node_modules/hey-listen"
+      },
+      "hono": {
+        "from": "hono",
+        "version": "link:../../node_modules/.pnpm/hono@4.13.8/node_modules/hono",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/hono@4.13.8/node_modules/hono"
+      },
+      "hookable": {
+        "from": "hookable",
+        "version": "link:../../node_modules/.pnpm/hookable@6.1.2/node_modules/hookable",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/hookable@6.1.2/node_modules/hookable"
+      },
+      "html-void-elements": {
+        "from": "html-void-elements",
+        "version": "link:../../node_modules/.pnpm/html-void-elements@3.0.0/node_modules/html-void-elements",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/html-void-elements@3.0.0/node_modules/html-void-elements"
+      },
+      "htmlparser2": {
+        "from": "htmlparser2",
+        "version": "link:../../node_modules/.pnpm/htmlparser2@12.0.0/node_modules/htmlparser2",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/htmlparser2@12.0.0/node_modules/htmlparser2"
+      },
+      "https": {
+        "from": "https",
+        "version": "link:../../node_modules/.pnpm/https@1.0.0/node_modules/https",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/https@1.0.0/node_modules/https"
+      },
+      "iconv-lite": {
+        "from": "iconv-lite",
+        "version": "link:../../node_modules/.pnpm/iconv-lite@0.6.3/node_modules/iconv-lite",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/iconv-lite@0.6.3/node_modules/iconv-lite"
+      },
+      "ignore": {
+        "from": "ignore",
+        "version": "link:../../node_modules/.pnpm/ignore@7.0.10/node_modules/ignore",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ignore@7.0.10/node_modules/ignore"
+      },
+      "image-size": {
+        "from": "image-size",
+        "version": "link:../../node_modules/.pnpm/image-size@1.2.1/node_modules/image-size",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/image-size@1.2.1/node_modules/image-size"
+      },
+      "immediate": {
+        "from": "immediate",
+        "version": "link:../../node_modules/.pnpm/immediate@3.0.6/node_modules/immediate",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/immediate@3.0.6/node_modules/immediate"
+      },
+      "import-meta-resolve": {
+        "from": "import-meta-resolve",
+        "version": "link:../../node_modules/.pnpm/import-meta-resolve@4.2.0/node_modules/import-meta-resolve",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/import-meta-resolve@4.2.0/node_modules/import-meta-resolve"
+      },
+      "inherits": {
+        "from": "inherits",
+        "version": "link:../../node_modules/.pnpm/inherits@2.0.4/node_modules/inherits",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/inherits@2.0.4/node_modules/inherits"
+      },
+      "ini": {
+        "from": "ini",
+        "version": "link:../../node_modules/.pnpm/ini@6.0.0/node_modules/ini",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ini@6.0.0/node_modules/ini"
+      },
+      "internmap": {
+        "from": "internmap",
+        "version": "link:../../node_modules/.pnpm/internmap@1.0.1/node_modules/internmap",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/internmap@1.0.1/node_modules/internmap"
+      },
+      "ip-regex": {
+        "from": "ip-regex",
+        "version": "link:../../node_modules/.pnpm/ip-regex@5.0.0/node_modules/ip-regex",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ip-regex@5.0.0/node_modules/ip-regex"
+      },
+      "is-binary-path": {
+        "from": "is-binary-path",
+        "version": "link:../../node_modules/.pnpm/is-binary-path@2.1.0/node_modules/is-binary-path",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-binary-path@2.1.0/node_modules/is-binary-path"
+      },
+      "is-docker": {
+        "from": "is-docker",
+        "version": "link:../../node_modules/.pnpm/is-docker@3.0.0/node_modules/is-docker",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-docker@3.0.0/node_modules/is-docker"
+      },
+      "is-extendable": {
+        "from": "is-extendable",
+        "version": "link:../../node_modules/.pnpm/is-extendable@0.1.1/node_modules/is-extendable",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-extendable@0.1.1/node_modules/is-extendable"
+      },
+      "is-extglob": {
+        "from": "is-extglob",
+        "version": "link:../../node_modules/.pnpm/is-extglob@2.1.1/node_modules/is-extglob",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-extglob@2.1.1/node_modules/is-extglob"
+      },
+      "is-fullwidth-code-point": {
+        "from": "is-fullwidth-code-point",
+        "version": "link:../../node_modules/.pnpm/is-fullwidth-code-point@3.0.0/node_modules/is-fullwidth-code-point",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-fullwidth-code-point@3.0.0/node_modules/is-fullwidth-code-point"
+      },
+      "is-glob": {
+        "from": "is-glob",
+        "version": "link:../../node_modules/.pnpm/is-glob@4.0.3/node_modules/is-glob",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-glob@4.0.3/node_modules/is-glob"
+      },
+      "is-in-ssh": {
+        "from": "is-in-ssh",
+        "version": "link:../../node_modules/.pnpm/is-in-ssh@1.0.0/node_modules/is-in-ssh",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-in-ssh@1.0.0/node_modules/is-in-ssh"
+      },
+      "is-inside-container": {
+        "from": "is-inside-container",
+        "version": "link:../../node_modules/.pnpm/is-inside-container@1.0.0/node_modules/is-inside-container",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-inside-container@1.0.0/node_modules/is-inside-container"
+      },
+      "is-installed-globally": {
+        "from": "is-installed-globally",
+        "version": "link:../../node_modules/.pnpm/is-installed-globally@1.0.1/node_modules/is-installed-globally",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-installed-globally@1.0.1/node_modules/is-installed-globally"
+      },
+      "is-ip": {
+        "from": "is-ip",
+        "version": "link:../../node_modules/.pnpm/is-ip@5.0.1/node_modules/is-ip",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-ip@5.0.1/node_modules/is-ip"
+      },
+      "is-number": {
+        "from": "is-number",
+        "version": "link:../../node_modules/.pnpm/is-number@7.0.0/node_modules/is-number",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-number@7.0.0/node_modules/is-number"
+      },
+      "is-path-inside": {
+        "from": "is-path-inside",
+        "version": "link:../../node_modules/.pnpm/is-path-inside@4.0.0/node_modules/is-path-inside",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-path-inside@4.0.0/node_modules/is-path-inside"
+      },
+      "is-regexp": {
+        "from": "is-regexp",
+        "version": "link:../../node_modules/.pnpm/is-regexp@3.1.0/node_modules/is-regexp",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-regexp@3.1.0/node_modules/is-regexp"
+      },
+      "is-wsl": {
+        "from": "is-wsl",
+        "version": "link:../../node_modules/.pnpm/is-wsl@3.1.1/node_modules/is-wsl",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/is-wsl@3.1.1/node_modules/is-wsl"
+      },
+      "isarray": {
+        "from": "isarray",
+        "version": "link:../../node_modules/.pnpm/isarray@1.0.0/node_modules/isarray",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/isarray@1.0.0/node_modules/isarray"
+      },
+      "jiti": {
+        "from": "jiti",
+        "version": "link:../../node_modules/.pnpm/jiti@2.7.0/node_modules/jiti",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/jiti@2.7.0/node_modules/jiti"
+      },
+      "js-tokens": {
+        "from": "js-tokens",
+        "version": "link:../../node_modules/.pnpm/js-tokens@4.0.0/node_modules/js-tokens",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/js-tokens@4.0.0/node_modules/js-tokens"
+      },
+      "js-yaml": {
+        "from": "js-yaml",
+        "version": "link:../../node_modules/.pnpm/js-yaml@4.3.2/node_modules/js-yaml",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/js-yaml@4.3.2/node_modules/js-yaml"
+      },
+      "jsesc": {
+        "from": "jsesc",
+        "version": "link:../../node_modules/.pnpm/jsesc@3.1.0/node_modules/jsesc",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/jsesc@3.1.0/node_modules/jsesc"
+      },
+      "json5": {
+        "from": "json5",
+        "version": "link:../../node_modules/.pnpm/json5@2.2.3/node_modules/json5",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/json5@2.2.3/node_modules/json5"
+      },
+      "jszip": {
+        "from": "jszip",
+        "version": "link:../../node_modules/.pnpm/jszip@3.10.2/node_modules/jszip",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/jszip@3.10.2/node_modules/jszip"
+      },
+      "katex": {
+        "from": "katex",
+        "version": "link:../../node_modules/.pnpm/katex@0.18.7/node_modules/katex",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/katex@0.18.7/node_modules/katex"
+      },
+      "khroma": {
+        "from": "khroma",
+        "version": "link:../../node_modules/.pnpm/khroma@2.1.0/node_modules/khroma",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/khroma@2.1.0/node_modules/khroma"
+      },
+      "kind-of": {
+        "from": "kind-of",
+        "version": "link:../../node_modules/.pnpm/kind-of@6.0.3/node_modules/kind-of",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/kind-of@6.0.3/node_modules/kind-of"
+      },
+      "kleur": {
+        "from": "kleur",
+        "version": "link:../../node_modules/.pnpm/kleur@3.0.3/node_modules/kleur",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/kleur@3.0.3/node_modules/kleur"
+      },
+      "klona": {
+        "from": "klona",
+        "version": "link:../../node_modules/.pnpm/klona@2.0.6/node_modules/klona",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/klona@2.0.6/node_modules/klona"
+      },
+      "knitwork": {
+        "from": "knitwork",
+        "version": "link:../../node_modules/.pnpm/knitwork@1.3.0/node_modules/knitwork",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/knitwork@1.3.0/node_modules/knitwork"
+      },
+      "layout-base": {
+        "from": "layout-base",
+        "version": "link:../../node_modules/.pnpm/layout-base@1.0.2/node_modules/layout-base",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/layout-base@1.0.2/node_modules/layout-base"
+      },
+      "lie": {
+        "from": "lie",
+        "version": "link:../../node_modules/.pnpm/lie@3.3.0/node_modules/lie",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/lie@3.3.0/node_modules/lie"
+      },
+      "lightningcss": {
+        "from": "lightningcss",
+        "version": "link:../../node_modules/.pnpm/lightningcss@1.33.0/node_modules/lightningcss",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/lightningcss@1.33.0/node_modules/lightningcss"
+      },
+      "lightningcss-darwin-arm64": {
+        "from": "lightningcss-darwin-arm64",
+        "version": "link:../../node_modules/.pnpm/lightningcss-darwin-arm64@1.33.0/node_modules/lightningcss-darwin-arm64",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/lightningcss-darwin-arm64@1.33.0/node_modules/lightningcss-darwin-arm64"
+      },
+      "linkify-it": {
+        "from": "linkify-it",
+        "version": "link:../../node_modules/.pnpm/linkify-it@5.0.2/node_modules/linkify-it",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/linkify-it@5.0.2/node_modules/linkify-it"
+      },
+      "local-pkg": {
+        "from": "local-pkg",
+        "version": "link:../../node_modules/.pnpm/local-pkg@1.2.1/node_modules/local-pkg",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/local-pkg@1.2.1/node_modules/local-pkg"
+      },
+      "lodash-es": {
+        "from": "lodash-es",
+        "version": "link:../../node_modules/.pnpm/lodash-es@4.17.23/node_modules/lodash-es",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/lodash-es@4.17.23/node_modules/lodash-es"
+      },
+      "longest-streak": {
+        "from": "longest-streak",
+        "version": "link:../../node_modules/.pnpm/longest-streak@3.1.0/node_modules/longest-streak",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/longest-streak@3.1.0/node_modules/longest-streak"
+      },
+      "lru-cache": {
+        "from": "lru-cache",
+        "version": "link:../../node_modules/.pnpm/lru-cache@5.1.1/node_modules/lru-cache",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/lru-cache@5.1.1/node_modules/lru-cache"
+      },
+      "lz-string": {
+        "from": "lz-string",
+        "version": "link:../../node_modules/.pnpm/lz-string@1.5.0/node_modules/lz-string",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/lz-string@1.5.0/node_modules/lz-string"
+      },
+      "magic-regexp": {
+        "from": "magic-regexp",
+        "version": "link:../../node_modules/.pnpm/magic-regexp@0.10.0/node_modules/magic-regexp",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/magic-regexp@0.10.0/node_modules/magic-regexp"
+      },
+      "magic-string": {
+        "from": "magic-string",
+        "version": "link:../../node_modules/.pnpm/magic-string@1.4.1/node_modules/magic-string",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/magic-string@1.4.1/node_modules/magic-string"
+      },
+      "magic-string-ast": {
+        "from": "magic-string-ast",
+        "version": "link:../../node_modules/.pnpm/magic-string-ast@1.0.3/node_modules/magic-string-ast",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/magic-string-ast@1.0.3/node_modules/magic-string-ast"
+      },
+      "magic-string-stack": {
+        "from": "magic-string-stack",
+        "version": "link:../../node_modules/.pnpm/magic-string-stack@2.0.0/node_modules/magic-string-stack",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/magic-string-stack@2.0.0/node_modules/magic-string-stack"
+      },
+      "markdown-exit": {
+        "from": "markdown-exit",
+        "version": "link:../../node_modules/.pnpm/markdown-exit@1.3.0/node_modules/markdown-exit",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/markdown-exit@1.3.0/node_modules/markdown-exit"
+      },
+      "markdown-it": {
+        "from": "markdown-it",
+        "version": "link:../../node_modules/.pnpm/markdown-it@14.3.2/node_modules/markdown-it",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/markdown-it@14.3.2/node_modules/markdown-it"
+      },
+      "markdown-it-footnote": {
+        "from": "markdown-it-footnote",
+        "version": "link:../../node_modules/.pnpm/markdown-it-footnote@4.0.0/node_modules/markdown-it-footnote",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/markdown-it-footnote@4.0.0/node_modules/markdown-it-footnote"
+      },
+      "markdown-it-github-alerts": {
+        "from": "markdown-it-github-alerts",
+        "version": "link:../../node_modules/.pnpm/markdown-it-github-alerts@1.0.1_markdown-it@14.3.2/node_modules/markdown-it-github-alerts",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/markdown-it-github-alerts@1.0.1_markdown-it@14.3.2/node_modules/markdown-it-github-alerts"
+      },
+      "markdown-table": {
+        "from": "markdown-table",
+        "version": "link:../../node_modules/.pnpm/markdown-table@3.0.4/node_modules/markdown-table",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/markdown-table@3.0.4/node_modules/markdown-table"
+      },
+      "marked": {
+        "from": "marked",
+        "version": "link:../../node_modules/.pnpm/marked@14.0.0/node_modules/marked",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/marked@14.0.0/node_modules/marked"
+      },
+      "mdast-util-find-and-replace": {
+        "from": "mdast-util-find-and-replace",
+        "version": "link:../../node_modules/.pnpm/mdast-util-find-and-replace@3.0.2/node_modules/mdast-util-find-and-replace",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdast-util-find-and-replace@3.0.2/node_modules/mdast-util-find-and-replace"
+      },
+      "mdast-util-from-markdown": {
+        "from": "mdast-util-from-markdown",
+        "version": "link:../../node_modules/.pnpm/mdast-util-from-markdown@2.0.3/node_modules/mdast-util-from-markdown",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdast-util-from-markdown@2.0.3/node_modules/mdast-util-from-markdown"
+      },
+      "mdast-util-gfm": {
+        "from": "mdast-util-gfm",
+        "version": "link:../../node_modules/.pnpm/mdast-util-gfm@3.1.0/node_modules/mdast-util-gfm",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdast-util-gfm@3.1.0/node_modules/mdast-util-gfm"
+      },
+      "mdast-util-gfm-autolink-literal": {
+        "from": "mdast-util-gfm-autolink-literal",
+        "version": "link:../../node_modules/.pnpm/mdast-util-gfm-autolink-literal@2.0.1/node_modules/mdast-util-gfm-autolink-literal",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdast-util-gfm-autolink-literal@2.0.1/node_modules/mdast-util-gfm-autolink-literal"
+      },
+      "mdast-util-gfm-footnote": {
+        "from": "mdast-util-gfm-footnote",
+        "version": "link:../../node_modules/.pnpm/mdast-util-gfm-footnote@2.1.0/node_modules/mdast-util-gfm-footnote",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdast-util-gfm-footnote@2.1.0/node_modules/mdast-util-gfm-footnote"
+      },
+      "mdast-util-gfm-strikethrough": {
+        "from": "mdast-util-gfm-strikethrough",
+        "version": "link:../../node_modules/.pnpm/mdast-util-gfm-strikethrough@2.0.0/node_modules/mdast-util-gfm-strikethrough",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdast-util-gfm-strikethrough@2.0.0/node_modules/mdast-util-gfm-strikethrough"
+      },
+      "mdast-util-gfm-table": {
+        "from": "mdast-util-gfm-table",
+        "version": "link:../../node_modules/.pnpm/mdast-util-gfm-table@2.0.0/node_modules/mdast-util-gfm-table",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdast-util-gfm-table@2.0.0/node_modules/mdast-util-gfm-table"
+      },
+      "mdast-util-gfm-task-list-item": {
+        "from": "mdast-util-gfm-task-list-item",
+        "version": "link:../../node_modules/.pnpm/mdast-util-gfm-task-list-item@2.0.0/node_modules/mdast-util-gfm-task-list-item",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdast-util-gfm-task-list-item@2.0.0/node_modules/mdast-util-gfm-task-list-item"
+      },
+      "mdast-util-phrasing": {
+        "from": "mdast-util-phrasing",
+        "version": "link:../../node_modules/.pnpm/mdast-util-phrasing@4.1.0/node_modules/mdast-util-phrasing",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdast-util-phrasing@4.1.0/node_modules/mdast-util-phrasing"
+      },
+      "mdast-util-to-hast": {
+        "from": "mdast-util-to-hast",
+        "version": "link:../../node_modules/.pnpm/mdast-util-to-hast@13.2.1/node_modules/mdast-util-to-hast",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdast-util-to-hast@13.2.1/node_modules/mdast-util-to-hast"
+      },
+      "mdast-util-to-markdown": {
+        "from": "mdast-util-to-markdown",
+        "version": "link:../../node_modules/.pnpm/mdast-util-to-markdown@2.1.2/node_modules/mdast-util-to-markdown",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdast-util-to-markdown@2.1.2/node_modules/mdast-util-to-markdown"
+      },
+      "mdast-util-to-string": {
+        "from": "mdast-util-to-string",
+        "version": "link:../../node_modules/.pnpm/mdast-util-to-string@4.0.0/node_modules/mdast-util-to-string",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdast-util-to-string@4.0.0/node_modules/mdast-util-to-string"
+      },
+      "mdn-data": {
+        "from": "mdn-data",
+        "version": "link:../../node_modules/.pnpm/mdn-data@2.27.1/node_modules/mdn-data",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdn-data@2.27.1/node_modules/mdn-data"
+      },
+      "mdurl": {
+        "from": "mdurl",
+        "version": "link:../../node_modules/.pnpm/mdurl@2.1.0/node_modules/mdurl",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mdurl@2.1.0/node_modules/mdurl"
+      },
+      "merge2": {
+        "from": "merge2",
+        "version": "link:../../node_modules/.pnpm/merge2@1.4.1/node_modules/merge2",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/merge2@1.4.1/node_modules/merge2"
+      },
+      "mermaid": {
+        "from": "mermaid",
+        "version": "link:../../node_modules/.pnpm/mermaid@12.0.0/node_modules/mermaid",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mermaid@12.0.0/node_modules/mermaid"
+      },
+      "micromark": {
+        "from": "micromark",
+        "version": "link:../../node_modules/.pnpm/micromark@4.0.2/node_modules/micromark",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark@4.0.2/node_modules/micromark"
+      },
+      "micromark-core-commonmark": {
+        "from": "micromark-core-commonmark",
+        "version": "link:../../node_modules/.pnpm/micromark-core-commonmark@2.0.3/node_modules/micromark-core-commonmark",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-core-commonmark@2.0.3/node_modules/micromark-core-commonmark"
+      },
+      "micromark-factory-destination": {
+        "from": "micromark-factory-destination",
+        "version": "link:../../node_modules/.pnpm/micromark-factory-destination@2.0.1/node_modules/micromark-factory-destination",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-factory-destination@2.0.1/node_modules/micromark-factory-destination"
+      },
+      "micromark-factory-label": {
+        "from": "micromark-factory-label",
+        "version": "link:../../node_modules/.pnpm/micromark-factory-label@2.0.1/node_modules/micromark-factory-label",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-factory-label@2.0.1/node_modules/micromark-factory-label"
+      },
+      "micromark-factory-space": {
+        "from": "micromark-factory-space",
+        "version": "link:../../node_modules/.pnpm/micromark-factory-space@2.0.1/node_modules/micromark-factory-space",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-factory-space@2.0.1/node_modules/micromark-factory-space"
+      },
+      "micromark-factory-title": {
+        "from": "micromark-factory-title",
+        "version": "link:../../node_modules/.pnpm/micromark-factory-title@2.0.1/node_modules/micromark-factory-title",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-factory-title@2.0.1/node_modules/micromark-factory-title"
+      },
+      "micromark-factory-whitespace": {
+        "from": "micromark-factory-whitespace",
+        "version": "link:../../node_modules/.pnpm/micromark-factory-whitespace@2.0.1/node_modules/micromark-factory-whitespace",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-factory-whitespace@2.0.1/node_modules/micromark-factory-whitespace"
+      },
+      "micromark-util-character": {
+        "from": "micromark-util-character",
+        "version": "link:../../node_modules/.pnpm/micromark-util-character@2.1.1/node_modules/micromark-util-character",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-character@2.1.1/node_modules/micromark-util-character"
+      },
+      "micromark-util-chunked": {
+        "from": "micromark-util-chunked",
+        "version": "link:../../node_modules/.pnpm/micromark-util-chunked@2.0.1/node_modules/micromark-util-chunked",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-chunked@2.0.1/node_modules/micromark-util-chunked"
+      },
+      "micromark-util-classify-character": {
+        "from": "micromark-util-classify-character",
+        "version": "link:../../node_modules/.pnpm/micromark-util-classify-character@2.0.1/node_modules/micromark-util-classify-character",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-classify-character@2.0.1/node_modules/micromark-util-classify-character"
+      },
+      "micromark-util-combine-extensions": {
+        "from": "micromark-util-combine-extensions",
+        "version": "link:../../node_modules/.pnpm/micromark-util-combine-extensions@2.0.1/node_modules/micromark-util-combine-extensions",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-combine-extensions@2.0.1/node_modules/micromark-util-combine-extensions"
+      },
+      "micromark-util-decode-numeric-character-reference": {
+        "from": "micromark-util-decode-numeric-character-reference",
+        "version": "link:../../node_modules/.pnpm/micromark-util-decode-numeric-character-reference@2.0.2/node_modules/micromark-util-decode-numeric-character-reference",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-decode-numeric-character-reference@2.0.2/node_modules/micromark-util-decode-numeric-character-reference"
+      },
+      "micromark-util-decode-string": {
+        "from": "micromark-util-decode-string",
+        "version": "link:../../node_modules/.pnpm/micromark-util-decode-string@2.0.1/node_modules/micromark-util-decode-string",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-decode-string@2.0.1/node_modules/micromark-util-decode-string"
+      },
+      "micromark-util-encode": {
+        "from": "micromark-util-encode",
+        "version": "link:../../node_modules/.pnpm/micromark-util-encode@2.0.1/node_modules/micromark-util-encode",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-encode@2.0.1/node_modules/micromark-util-encode"
+      },
+      "micromark-util-html-tag-name": {
+        "from": "micromark-util-html-tag-name",
+        "version": "link:../../node_modules/.pnpm/micromark-util-html-tag-name@2.0.1/node_modules/micromark-util-html-tag-name",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-html-tag-name@2.0.1/node_modules/micromark-util-html-tag-name"
+      },
+      "micromark-util-normalize-identifier": {
+        "from": "micromark-util-normalize-identifier",
+        "version": "link:../../node_modules/.pnpm/micromark-util-normalize-identifier@2.0.1/node_modules/micromark-util-normalize-identifier",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-normalize-identifier@2.0.1/node_modules/micromark-util-normalize-identifier"
+      },
+      "micromark-util-resolve-all": {
+        "from": "micromark-util-resolve-all",
+        "version": "link:../../node_modules/.pnpm/micromark-util-resolve-all@2.0.1/node_modules/micromark-util-resolve-all",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-resolve-all@2.0.1/node_modules/micromark-util-resolve-all"
+      },
+      "micromark-util-sanitize-uri": {
+        "from": "micromark-util-sanitize-uri",
+        "version": "link:../../node_modules/.pnpm/micromark-util-sanitize-uri@2.0.1/node_modules/micromark-util-sanitize-uri",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-sanitize-uri@2.0.1/node_modules/micromark-util-sanitize-uri"
+      },
+      "micromark-util-subtokenize": {
+        "from": "micromark-util-subtokenize",
+        "version": "link:../../node_modules/.pnpm/micromark-util-subtokenize@2.1.0/node_modules/micromark-util-subtokenize",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-subtokenize@2.1.0/node_modules/micromark-util-subtokenize"
+      },
+      "micromark-util-symbol": {
+        "from": "micromark-util-symbol",
+        "version": "link:../../node_modules/.pnpm/micromark-util-symbol@2.0.1/node_modules/micromark-util-symbol",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-symbol@2.0.1/node_modules/micromark-util-symbol"
+      },
+      "micromark-util-types": {
+        "from": "micromark-util-types",
+        "version": "link:../../node_modules/.pnpm/micromark-util-types@2.0.2/node_modules/micromark-util-types",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromark-util-types@2.0.2/node_modules/micromark-util-types"
+      },
+      "micromatch": {
+        "from": "micromatch",
+        "version": "link:../../node_modules/.pnpm/micromatch@4.0.8/node_modules/micromatch",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/micromatch@4.0.8/node_modules/micromatch"
+      },
+      "mlly": {
+        "from": "mlly",
+        "version": "link:../../node_modules/.pnpm/mlly@1.8.2/node_modules/mlly",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mlly@1.8.2/node_modules/mlly"
+      },
+      "monaco-editor": {
+        "from": "monaco-editor",
+        "version": "link:../../node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/monaco-editor@0.56.0/node_modules/monaco-editor"
+      },
+      "mrmime": {
+        "from": "mrmime",
+        "version": "link:../../node_modules/.pnpm/mrmime@2.0.1/node_modules/mrmime",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/mrmime@2.0.1/node_modules/mrmime"
+      },
+      "ms": {
+        "from": "ms",
+        "version": "link:../../node_modules/.pnpm/ms@2.0.0/node_modules/ms",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ms@2.0.0/node_modules/ms"
+      },
+      "muggle-string": {
+        "from": "muggle-string",
+        "version": "link:../../node_modules/.pnpm/muggle-string@0.4.1/node_modules/muggle-string",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/muggle-string@0.4.1/node_modules/muggle-string"
+      },
+      "nanoid": {
+        "from": "nanoid",
+        "version": "link:../../node_modules/.pnpm/nanoid@3.3.19/node_modules/nanoid",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/nanoid@3.3.19/node_modules/nanoid"
+      },
+      "nanotar": {
+        "from": "nanotar",
+        "version": "link:../../node_modules/.pnpm/nanotar@0.3.0/node_modules/nanotar",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/nanotar@0.3.0/node_modules/nanotar"
+      },
+      "node-fetch-native": {
+        "from": "node-fetch-native",
+        "version": "link:../../node_modules/.pnpm/node-fetch-native@1.6.7/node_modules/node-fetch-native",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/node-fetch-native@1.6.7/node_modules/node-fetch-native"
+      },
+      "node-releases": {
+        "from": "node-releases",
+        "version": "link:../../node_modules/.pnpm/node-releases@2.0.56/node_modules/node-releases",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/node-releases@2.0.56/node_modules/node-releases"
+      },
+      "normalize-path": {
+        "from": "normalize-path",
+        "version": "link:../../node_modules/.pnpm/normalize-path@3.0.0/node_modules/normalize-path",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/normalize-path@3.0.0/node_modules/normalize-path"
+      },
+      "nostics": {
+        "from": "nostics",
+        "version": "link:../../node_modules/.pnpm/nostics@1.3.0/node_modules/nostics",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/nostics@1.3.0/node_modules/nostics"
+      },
+      "nypm": {
+        "from": "nypm",
+        "version": "link:../../node_modules/.pnpm/nypm@0.6.10/node_modules/nypm",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/nypm@0.6.10/node_modules/nypm"
+      },
+      "obug": {
+        "from": "obug",
+        "version": "link:../../node_modules/.pnpm/obug@3.0.0/node_modules/obug",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/obug@3.0.0/node_modules/obug"
+      },
+      "ofetch": {
+        "from": "ofetch",
+        "version": "link:../../node_modules/.pnpm/ofetch@1.5.1/node_modules/ofetch",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ofetch@1.5.1/node_modules/ofetch"
+      },
+      "ohash": {
+        "from": "ohash",
+        "version": "link:../../node_modules/.pnpm/ohash@2.0.12/node_modules/ohash",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ohash@2.0.12/node_modules/ohash"
+      },
+      "on-finished": {
+        "from": "on-finished",
+        "version": "link:../../node_modules/.pnpm/on-finished@2.3.0/node_modules/on-finished",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/on-finished@2.3.0/node_modules/on-finished"
+      },
+      "oniguruma-parser": {
+        "from": "oniguruma-parser",
+        "version": "link:../../node_modules/.pnpm/oniguruma-parser@0.12.2/node_modules/oniguruma-parser",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/oniguruma-parser@0.12.2/node_modules/oniguruma-parser"
+      },
+      "oniguruma-to-es": {
+        "from": "oniguruma-to-es",
+        "version": "link:../../node_modules/.pnpm/oniguruma-to-es@4.3.6/node_modules/oniguruma-to-es",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/oniguruma-to-es@4.3.6/node_modules/oniguruma-to-es"
+      },
+      "open": {
+        "from": "open",
+        "version": "link:../../node_modules/.pnpm/open@11.0.4/node_modules/open",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/open@11.0.4/node_modules/open"
+      },
+      "oxc-parser": {
+        "from": "oxc-parser",
+        "version": "link:../../node_modules/.pnpm/oxc-parser@0.150.0/node_modules/oxc-parser",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/oxc-parser@0.150.0/node_modules/oxc-parser"
+      },
+      "oxc-walker": {
+        "from": "oxc-walker",
+        "version": "link:../../node_modules/.pnpm/oxc-walker@0.7.0_oxc-parser@0.150.0/node_modules/oxc-walker",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/oxc-walker@0.7.0_oxc-parser@0.150.0/node_modules/oxc-walker"
+      },
+      "p-map": {
+        "from": "p-map",
+        "version": "link:../../node_modules/.pnpm/p-map@7.0.8/node_modules/p-map",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/p-map@7.0.8/node_modules/p-map"
+      },
+      "package-manager-detector": {
+        "from": "package-manager-detector",
+        "version": "link:../../node_modules/.pnpm/package-manager-detector@1.8.0/node_modules/package-manager-detector",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/package-manager-detector@1.8.0/node_modules/package-manager-detector"
+      },
+      "pako": {
+        "from": "pako",
+        "version": "link:../../node_modules/.pnpm/pako@1.0.11/node_modules/pako",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/pako@1.0.11/node_modules/pako"
+      },
+      "parseurl": {
+        "from": "parseurl",
+        "version": "link:../../node_modules/.pnpm/parseurl@1.3.3/node_modules/parseurl",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/parseurl@1.3.3/node_modules/parseurl"
+      },
+      "path-browserify": {
+        "from": "path-browserify",
+        "version": "link:../../node_modules/.pnpm/path-browserify@1.0.1/node_modules/path-browserify",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/path-browserify@1.0.1/node_modules/path-browserify"
+      },
+      "path-data-parser": {
+        "from": "path-data-parser",
+        "version": "link:../../node_modules/.pnpm/path-data-parser@0.1.0/node_modules/path-data-parser",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/path-data-parser@0.1.0/node_modules/path-data-parser"
+      },
+      "pathe": {
+        "from": "pathe",
+        "version": "link:../../node_modules/.pnpm/pathe@2.0.3/node_modules/pathe",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/pathe@2.0.3/node_modules/pathe"
+      },
+      "pdf-lib": {
+        "from": "pdf-lib",
+        "version": "link:../../node_modules/.pnpm/pdf-lib@1.17.1/node_modules/pdf-lib",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/pdf-lib@1.17.1/node_modules/pdf-lib"
+      },
+      "perfect-debounce": {
+        "from": "perfect-debounce",
+        "version": "link:../../node_modules/.pnpm/perfect-debounce@2.1.0/node_modules/perfect-debounce",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/perfect-debounce@2.1.0/node_modules/perfect-debounce"
+      },
+      "picocolors": {
+        "from": "picocolors",
+        "version": "link:../../node_modules/.pnpm/picocolors@1.1.1/node_modules/picocolors",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/picocolors@1.1.1/node_modules/picocolors"
+      },
+      "picomatch": {
+        "from": "picomatch",
+        "version": "link:../../node_modules/.pnpm/picomatch@4.0.7/node_modules/picomatch",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/picomatch@4.0.7/node_modules/picomatch"
+      },
+      "pkg-types": {
+        "from": "pkg-types",
+        "version": "link:../../node_modules/.pnpm/pkg-types@2.3.3/node_modules/pkg-types",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/pkg-types@2.3.3/node_modules/pkg-types"
+      },
+      "plantuml-encoder": {
+        "from": "plantuml-encoder",
+        "version": "link:../../node_modules/.pnpm/plantuml-encoder@1.4.0/node_modules/plantuml-encoder",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/plantuml-encoder@1.4.0/node_modules/plantuml-encoder"
+      },
+      "points-on-curve": {
+        "from": "points-on-curve",
+        "version": "link:../../node_modules/.pnpm/points-on-curve@0.2.0/node_modules/points-on-curve",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/points-on-curve@0.2.0/node_modules/points-on-curve"
+      },
+      "points-on-path": {
+        "from": "points-on-path",
+        "version": "link:../../node_modules/.pnpm/points-on-path@0.2.1/node_modules/points-on-path",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/points-on-path@0.2.1/node_modules/points-on-path"
+      },
+      "popmotion": {
+        "from": "popmotion",
+        "version": "link:../../node_modules/.pnpm/popmotion@11.0.5/node_modules/popmotion",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/popmotion@11.0.5/node_modules/popmotion"
+      },
+      "postcss": {
+        "from": "postcss",
+        "version": "link:../../node_modules/.pnpm/postcss@8.5.28/node_modules/postcss",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/postcss@8.5.28/node_modules/postcss"
+      },
+      "postcss-nested": {
+        "from": "postcss-nested",
+        "version": "link:../../node_modules/.pnpm/postcss-nested@8.0.1_postcss@8.5.28/node_modules/postcss-nested",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/postcss-nested@8.0.1_postcss@8.5.28/node_modules/postcss-nested"
+      },
+      "postcss-selector-parser": {
+        "from": "postcss-selector-parser",
+        "version": "link:../../node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/postcss-selector-parser@7.1.6/node_modules/postcss-selector-parser"
+      },
+      "powershell-utils": {
+        "from": "powershell-utils",
+        "version": "link:../../node_modules/.pnpm/powershell-utils@0.2.1/node_modules/powershell-utils",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/powershell-utils@0.2.1/node_modules/powershell-utils"
+      },
+      "pptxgenjs": {
+        "from": "pptxgenjs",
+        "version": "link:../../node_modules/.pnpm/pptxgenjs@4.0.1/node_modules/pptxgenjs",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/pptxgenjs@4.0.1/node_modules/pptxgenjs"
+      },
+      "prettier": {
+        "from": "prettier",
+        "version": "link:../../node_modules/.pnpm/prettier@3.9.8/node_modules/prettier",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/prettier@3.9.8/node_modules/prettier"
+      },
+      "prettier-plugin-slidev": {
+        "from": "prettier-plugin-slidev",
+        "version": "link:../../node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.8/node_modules/prettier-plugin-slidev",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.8/node_modules/prettier-plugin-slidev"
+      },
+      "prism-theme-vars": {
+        "from": "prism-theme-vars",
+        "version": "link:../../node_modules/.pnpm/prism-theme-vars@0.2.5/node_modules/prism-theme-vars",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/prism-theme-vars@0.2.5/node_modules/prism-theme-vars"
+      },
+      "process-nextick-args": {
+        "from": "process-nextick-args",
+        "version": "link:../../node_modules/.pnpm/process-nextick-args@2.0.1/node_modules/process-nextick-args",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/process-nextick-args@2.0.1/node_modules/process-nextick-args"
+      },
+      "prompts": {
+        "from": "prompts",
+        "version": "link:../../node_modules/.pnpm/prompts@2.4.2/node_modules/prompts",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/prompts@2.4.2/node_modules/prompts"
+      },
+      "property-information": {
+        "from": "property-information",
+        "version": "link:../../node_modules/.pnpm/property-information@7.2.0/node_modules/property-information",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/property-information@7.2.0/node_modules/property-information"
+      },
+      "public-ip": {
+        "from": "public-ip",
+        "version": "link:../../node_modules/.pnpm/public-ip@8.0.0/node_modules/public-ip",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/public-ip@8.0.0/node_modules/public-ip"
+      },
+      "punycode.js": {
+        "from": "punycode.js",
+        "version": "link:../../node_modules/.pnpm/punycode.js@2.3.1/node_modules/punycode.js",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/punycode.js@2.3.1/node_modules/punycode.js"
+      },
+      "quansync": {
+        "from": "quansync",
+        "version": "link:../../node_modules/.pnpm/quansync@0.2.11/node_modules/quansync",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/quansync@0.2.11/node_modules/quansync"
+      },
+      "queue": {
+        "from": "queue",
+        "version": "link:../../node_modules/.pnpm/queue@6.0.2/node_modules/queue",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/queue@6.0.2/node_modules/queue"
+      },
+      "queue-microtask": {
+        "from": "queue-microtask",
+        "version": "link:../../node_modules/.pnpm/queue-microtask@1.2.3/node_modules/queue-microtask",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/queue-microtask@1.2.3/node_modules/queue-microtask"
+      },
+      "rc9": {
+        "from": "rc9",
+        "version": "link:../../node_modules/.pnpm/rc9@3.1.0/node_modules/rc9",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/rc9@3.1.0/node_modules/rc9"
+      },
+      "readable-stream": {
+        "from": "readable-stream",
+        "version": "link:../../node_modules/.pnpm/readable-stream@2.3.8/node_modules/readable-stream",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/readable-stream@2.3.8/node_modules/readable-stream"
+      },
+      "readdirp": {
+        "from": "readdirp",
+        "version": "link:../../node_modules/.pnpm/readdirp@5.1.1/node_modules/readdirp",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/readdirp@5.1.1/node_modules/readdirp"
+      },
+      "recordrtc": {
+        "from": "recordrtc",
+        "version": "link:../../node_modules/.pnpm/recordrtc@5.6.2/node_modules/recordrtc",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/recordrtc@5.6.2/node_modules/recordrtc"
+      },
+      "regex": {
+        "from": "regex",
+        "version": "link:../../node_modules/.pnpm/regex@6.1.0/node_modules/regex",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/regex@6.1.0/node_modules/regex"
+      },
+      "regex-recursion": {
+        "from": "regex-recursion",
+        "version": "link:../../node_modules/.pnpm/regex-recursion@6.0.2/node_modules/regex-recursion",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/regex-recursion@6.0.2/node_modules/regex-recursion"
+      },
+      "regex-utilities": {
+        "from": "regex-utilities",
+        "version": "link:../../node_modules/.pnpm/regex-utilities@2.3.0/node_modules/regex-utilities",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/regex-utilities@2.3.0/node_modules/regex-utilities"
+      },
+      "regexp-tree": {
+        "from": "regexp-tree",
+        "version": "link:../../node_modules/.pnpm/regexp-tree@0.1.27/node_modules/regexp-tree",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/regexp-tree@0.1.27/node_modules/regexp-tree"
+      },
+      "resolve-from": {
+        "from": "resolve-from",
+        "version": "link:../../node_modules/.pnpm/resolve-from@5.0.0/node_modules/resolve-from",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/resolve-from@5.0.0/node_modules/resolve-from"
+      },
+      "resolve-global": {
+        "from": "resolve-global",
+        "version": "link:../../node_modules/.pnpm/resolve-global@2.0.0/node_modules/resolve-global",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/resolve-global@2.0.0/node_modules/resolve-global"
+      },
+      "reusify": {
+        "from": "reusify",
+        "version": "link:../../node_modules/.pnpm/reusify@1.1.0/node_modules/reusify",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/reusify@1.1.0/node_modules/reusify"
+      },
+      "robust-predicates": {
+        "from": "robust-predicates",
+        "version": "link:../../node_modules/.pnpm/robust-predicates@3.0.3/node_modules/robust-predicates",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/robust-predicates@3.0.3/node_modules/robust-predicates"
+      },
+      "rolldown": {
+        "from": "rolldown",
+        "version": "link:../../node_modules/.pnpm/rolldown@1.2.9/node_modules/rolldown",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/rolldown@1.2.9/node_modules/rolldown"
+      },
+      "rou3": {
+        "from": "rou3",
+        "version": "link:../../node_modules/.pnpm/rou3@0.9.2/node_modules/rou3",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/rou3@0.9.2/node_modules/rou3"
+      },
+      "roughjs": {
+        "from": "roughjs",
+        "version": "link:../../node_modules/.pnpm/roughjs@4.6.6/node_modules/roughjs",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/roughjs@4.6.6/node_modules/roughjs"
+      },
+      "run-applescript": {
+        "from": "run-applescript",
+        "version": "link:../../node_modules/.pnpm/run-applescript@7.1.0/node_modules/run-applescript",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/run-applescript@7.1.0/node_modules/run-applescript"
+      },
+      "run-parallel": {
+        "from": "run-parallel",
+        "version": "link:../../node_modules/.pnpm/run-parallel@1.2.0/node_modules/run-parallel",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/run-parallel@1.2.0/node_modules/run-parallel"
+      },
+      "rw": {
+        "from": "rw",
+        "version": "link:../../node_modules/.pnpm/rw@1.3.3/node_modules/rw",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/rw@1.3.3/node_modules/rw"
+      },
+      "safe-buffer": {
+        "from": "safe-buffer",
+        "version": "link:../../node_modules/.pnpm/safe-buffer@5.1.2/node_modules/safe-buffer",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/safe-buffer@5.1.2/node_modules/safe-buffer"
+      },
+      "safer-buffer": {
+        "from": "safer-buffer",
+        "version": "link:../../node_modules/.pnpm/safer-buffer@2.1.2/node_modules/safer-buffer",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/safer-buffer@2.1.2/node_modules/safer-buffer"
+      },
+      "scule": {
+        "from": "scule",
+        "version": "link:../../node_modules/.pnpm/scule@1.3.0/node_modules/scule",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/scule@1.3.0/node_modules/scule"
+      },
+      "section-matter": {
+        "from": "section-matter",
+        "version": "link:../../node_modules/.pnpm/section-matter@1.0.0/node_modules/section-matter",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/section-matter@1.0.0/node_modules/section-matter"
+      },
+      "semver": {
+        "from": "semver",
+        "version": "link:../../node_modules/.pnpm/semver@6.3.1/node_modules/semver",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/semver@6.3.1/node_modules/semver"
+      },
+      "setimmediate": {
+        "from": "setimmediate",
+        "version": "link:../../node_modules/.pnpm/setimmediate@1.0.5/node_modules/setimmediate",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/setimmediate@1.0.5/node_modules/setimmediate"
+      },
+      "shiki": {
+        "from": "shiki",
+        "version": "link:../../node_modules/.pnpm/shiki@4.4.3/node_modules/shiki",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/shiki@4.4.3/node_modules/shiki"
+      },
+      "sirv": {
+        "from": "sirv",
+        "version": "link:../../node_modules/.pnpm/sirv@3.0.2/node_modules/sirv",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/sirv@3.0.2/node_modules/sirv"
+      },
+      "sisteransi": {
+        "from": "sisteransi",
+        "version": "link:../../node_modules/.pnpm/sisteransi@1.0.5/node_modules/sisteransi",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/sisteransi@1.0.5/node_modules/sisteransi"
+      },
+      "slidev-theme-ledger": {
+        "from": "slidev-theme-ledger",
+        "version": "link:",
+        "path": "/Users/martin/Develop/slidev/stem/themes/ledger"
+      },
+      "source-map-js": {
+        "from": "source-map-js",
+        "version": "link:../../node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/source-map-js@1.2.1/node_modules/source-map-js"
+      },
+      "space-separated-tokens": {
+        "from": "space-separated-tokens",
+        "version": "link:../../node_modules/.pnpm/space-separated-tokens@2.0.2/node_modules/space-separated-tokens",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/space-separated-tokens@2.0.2/node_modules/space-separated-tokens"
+      },
+      "sprintf-js": {
+        "from": "sprintf-js",
+        "version": "link:../../node_modules/.pnpm/sprintf-js@1.0.3/node_modules/sprintf-js",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/sprintf-js@1.0.3/node_modules/sprintf-js"
+      },
+      "srvx": {
+        "from": "srvx",
+        "version": "link:../../node_modules/.pnpm/srvx@1.0.5/node_modules/srvx",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/srvx@1.0.5/node_modules/srvx"
+      },
+      "statuses": {
+        "from": "statuses",
+        "version": "link:../../node_modules/.pnpm/statuses@1.5.0/node_modules/statuses",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/statuses@1.5.0/node_modules/statuses"
+      },
+      "string-width": {
+        "from": "string-width",
+        "version": "link:../../node_modules/.pnpm/string-width@4.2.3/node_modules/string-width",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/string-width@4.2.3/node_modules/string-width"
+      },
+      "string_decoder": {
+        "from": "string_decoder",
+        "version": "link:../../node_modules/.pnpm/string_decoder@1.1.1/node_modules/string_decoder",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/string_decoder@1.1.1/node_modules/string_decoder"
+      },
+      "stringify-entities": {
+        "from": "stringify-entities",
+        "version": "link:../../node_modules/.pnpm/stringify-entities@4.0.4/node_modules/stringify-entities",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/stringify-entities@4.0.4/node_modules/stringify-entities"
+      },
+      "strip-ansi": {
+        "from": "strip-ansi",
+        "version": "link:../../node_modules/.pnpm/strip-ansi@7.2.0/node_modules/strip-ansi",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/strip-ansi@7.2.0/node_modules/strip-ansi"
+      },
+      "strip-bom-string": {
+        "from": "strip-bom-string",
+        "version": "link:../../node_modules/.pnpm/strip-bom-string@1.0.0/node_modules/strip-bom-string",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/strip-bom-string@1.0.0/node_modules/strip-bom-string"
+      },
+      "style-value-types": {
+        "from": "style-value-types",
+        "version": "link:../../node_modules/.pnpm/style-value-types@5.1.2/node_modules/style-value-types",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/style-value-types@5.1.2/node_modules/style-value-types"
+      },
+      "stylis": {
+        "from": "stylis",
+        "version": "link:../../node_modules/.pnpm/stylis@4.4.0/node_modules/stylis",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/stylis@4.4.0/node_modules/stylis"
+      },
+      "super-regex": {
+        "from": "super-regex",
+        "version": "link:../../node_modules/.pnpm/super-regex@0.2.0/node_modules/super-regex",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/super-regex@0.2.0/node_modules/super-regex"
+      },
+      "time-span": {
+        "from": "time-span",
+        "version": "link:../../node_modules/.pnpm/time-span@5.1.0/node_modules/time-span",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/time-span@5.1.0/node_modules/time-span"
+      },
+      "tinyexec": {
+        "from": "tinyexec",
+        "version": "link:../../node_modules/.pnpm/tinyexec@1.3.1/node_modules/tinyexec",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/tinyexec@1.3.1/node_modules/tinyexec"
+      },
+      "tinyglobby": {
+        "from": "tinyglobby",
+        "version": "link:../../node_modules/.pnpm/tinyglobby@0.2.17/node_modules/tinyglobby",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/tinyglobby@0.2.17/node_modules/tinyglobby"
+      },
+      "to-regex-range": {
+        "from": "to-regex-range",
+        "version": "link:../../node_modules/.pnpm/to-regex-range@5.0.1/node_modules/to-regex-range",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/to-regex-range@5.0.1/node_modules/to-regex-range"
+      },
+      "totalist": {
+        "from": "totalist",
+        "version": "link:../../node_modules/.pnpm/totalist@3.0.1/node_modules/totalist",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/totalist@3.0.1/node_modules/totalist"
+      },
+      "trim-lines": {
+        "from": "trim-lines",
+        "version": "link:../../node_modules/.pnpm/trim-lines@3.0.1/node_modules/trim-lines",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/trim-lines@3.0.1/node_modules/trim-lines"
+      },
+      "ts-dedent": {
+        "from": "ts-dedent",
+        "version": "link:../../node_modules/.pnpm/ts-dedent@2.3.0/node_modules/ts-dedent",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ts-dedent@2.3.0/node_modules/ts-dedent"
+      },
+      "tslib": {
+        "from": "tslib",
+        "version": "link:../../node_modules/.pnpm/tslib@1.14.1/node_modules/tslib",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/tslib@1.14.1/node_modules/tslib"
+      },
+      "twoslash": {
+        "from": "twoslash",
+        "version": "link:../../node_modules/.pnpm/twoslash@0.3.9_typescript@6.0.3/node_modules/twoslash",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/twoslash@0.3.9_typescript@6.0.3/node_modules/twoslash"
+      },
+      "twoslash-protocol": {
+        "from": "twoslash-protocol",
+        "version": "link:../../node_modules/.pnpm/twoslash-protocol@0.3.9/node_modules/twoslash-protocol",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/twoslash-protocol@0.3.9/node_modules/twoslash-protocol"
+      },
+      "twoslash-vue": {
+        "from": "twoslash-vue",
+        "version": "link:../../node_modules/.pnpm/twoslash-vue@0.3.9_typescript@6.0.3/node_modules/twoslash-vue",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/twoslash-vue@0.3.9_typescript@6.0.3/node_modules/twoslash-vue"
+      },
+      "type-level-regexp": {
+        "from": "type-level-regexp",
+        "version": "link:../../node_modules/.pnpm/type-level-regexp@0.1.17/node_modules/type-level-regexp",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/type-level-regexp@0.1.17/node_modules/type-level-regexp"
+      },
+      "typescript": {
+        "from": "typescript",
+        "version": "link:../../node_modules/.pnpm/typescript@6.0.3/node_modules/typescript",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/typescript@6.0.3/node_modules/typescript"
+      },
+      "uc.micro": {
+        "from": "uc.micro",
+        "version": "link:../../node_modules/.pnpm/uc.micro@2.1.0/node_modules/uc.micro",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/uc.micro@2.1.0/node_modules/uc.micro"
+      },
+      "ufo": {
+        "from": "ufo",
+        "version": "link:../../node_modules/.pnpm/ufo@1.6.4/node_modules/ufo",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/ufo@1.6.4/node_modules/ufo"
+      },
+      "unconfig": {
+        "from": "unconfig",
+        "version": "link:../../node_modules/.pnpm/unconfig@7.5.0/node_modules/unconfig",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unconfig@7.5.0/node_modules/unconfig"
+      },
+      "unconfig-core": {
+        "from": "unconfig-core",
+        "version": "link:../../node_modules/.pnpm/unconfig-core@7.5.0/node_modules/unconfig-core",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unconfig-core@7.5.0/node_modules/unconfig-core"
+      },
+      "unctx": {
+        "from": "unctx",
+        "version": "link:../../node_modules/.pnpm/unctx@2.5.0/node_modules/unctx",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unctx@2.5.0/node_modules/unctx"
+      },
+      "undici-types": {
+        "from": "undici-types",
+        "version": "link:../../node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/undici-types@6.21.0/node_modules/undici-types"
+      },
+      "unhead": {
+        "from": "unhead",
+        "version": "link:../../node_modules/.pnpm/unhead@3.4.1_rolldown@1.2.9_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/unhead",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unhead@3.4.1_rolldown@1.2.9_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/unhead"
+      },
+      "unist-util-is": {
+        "from": "unist-util-is",
+        "version": "link:../../node_modules/.pnpm/unist-util-is@6.0.1/node_modules/unist-util-is",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unist-util-is@6.0.1/node_modules/unist-util-is"
+      },
+      "unist-util-position": {
+        "from": "unist-util-position",
+        "version": "link:../../node_modules/.pnpm/unist-util-position@5.0.0/node_modules/unist-util-position",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unist-util-position@5.0.0/node_modules/unist-util-position"
+      },
+      "unist-util-stringify-position": {
+        "from": "unist-util-stringify-position",
+        "version": "link:../../node_modules/.pnpm/unist-util-stringify-position@4.0.0/node_modules/unist-util-stringify-position",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unist-util-stringify-position@4.0.0/node_modules/unist-util-stringify-position"
+      },
+      "unist-util-visit": {
+        "from": "unist-util-visit",
+        "version": "link:../../node_modules/.pnpm/unist-util-visit@5.1.0/node_modules/unist-util-visit",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unist-util-visit@5.1.0/node_modules/unist-util-visit"
+      },
+      "unist-util-visit-parents": {
+        "from": "unist-util-visit-parents",
+        "version": "link:../../node_modules/.pnpm/unist-util-visit-parents@6.0.2/node_modules/unist-util-visit-parents",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unist-util-visit-parents@6.0.2/node_modules/unist-util-visit-parents"
+      },
+      "unocss": {
+        "from": "unocss",
+        "version": "link:../../node_modules/.pnpm/unocss@66.10.5_cac@7.0.0_rolldown@1.2.9_srvx@1.0.5_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/unocss",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unocss@66.10.5_cac@7.0.0_rolldown@1.2.9_srvx@1.0.5_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/unocss"
+      },
+      "unpipe": {
+        "from": "unpipe",
+        "version": "link:../../node_modules/.pnpm/unpipe@1.0.0/node_modules/unpipe",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unpipe@1.0.0/node_modules/unpipe"
+      },
+      "unplugin": {
+        "from": "unplugin",
+        "version": "link:../../node_modules/.pnpm/unplugin@3.4.0_rolldown@1.2.9_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/unplugin",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unplugin@3.4.0_rolldown@1.2.9_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/unplugin"
+      },
+      "unplugin-icons": {
+        "from": "unplugin-icons",
+        "version": "link:../../node_modules/.pnpm/unplugin-icons@24.0.0_@vue+compiler-sfc@3.5.43_rolldown@1.2.9_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/unplugin-icons",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unplugin-icons@24.0.0_@vue+compiler-sfc@3.5.43_rolldown@1.2.9_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/unplugin-icons"
+      },
+      "unplugin-utils": {
+        "from": "unplugin-utils",
+        "version": "link:../../node_modules/.pnpm/unplugin-utils@0.3.2/node_modules/unplugin-utils",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unplugin-utils@0.3.2/node_modules/unplugin-utils"
+      },
+      "unplugin-vue-components": {
+        "from": "unplugin-vue-components",
+        "version": "link:../../node_modules/.pnpm/unplugin-vue-components@32.1.0_@nuxt+kit@3.21.11_rolldown@1.2.9_vite@8.3.0_@types+node@_b9d3837543ecdc0c0b20ccd339a1160a/node_modules/unplugin-vue-components",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unplugin-vue-components@32.1.0_@nuxt+kit@3.21.11_rolldown@1.2.9_vite@8.3.0_@types+node@_b9d3837543ecdc0c0b20ccd339a1160a/node_modules/unplugin-vue-components"
+      },
+      "unplugin-vue-markdown": {
+        "from": "unplugin-vue-markdown",
+        "version": "link:../../node_modules/.pnpm/unplugin-vue-markdown@32.1.1_rolldown@1.2.9_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/unplugin-vue-markdown",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/unplugin-vue-markdown@32.1.1_rolldown@1.2.9_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/unplugin-vue-markdown"
+      },
+      "untun": {
+        "from": "untun",
+        "version": "link:../../node_modules/.pnpm/untun@0.2.2/node_modules/untun",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/untun@0.2.2/node_modules/untun"
+      },
+      "untyped": {
+        "from": "untyped",
+        "version": "link:../../node_modules/.pnpm/untyped@2.0.0/node_modules/untyped",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/untyped@2.0.0/node_modules/untyped"
+      },
+      "update-browserslist-db": {
+        "from": "update-browserslist-db",
+        "version": "link:../../node_modules/.pnpm/update-browserslist-db@1.3.3_browserslist@4.29.0/node_modules/update-browserslist-db",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/update-browserslist-db@1.3.3_browserslist@4.29.0/node_modules/update-browserslist-db"
+      },
+      "uqr": {
+        "from": "uqr",
+        "version": "link:../../node_modules/.pnpm/uqr@0.1.3/node_modules/uqr",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/uqr@0.1.3/node_modules/uqr"
+      },
+      "util-deprecate": {
+        "from": "util-deprecate",
+        "version": "link:../../node_modules/.pnpm/util-deprecate@1.0.2/node_modules/util-deprecate",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/util-deprecate@1.0.2/node_modules/util-deprecate"
+      },
+      "utils-merge": {
+        "from": "utils-merge",
+        "version": "link:../../node_modules/.pnpm/utils-merge@1.0.1/node_modules/utils-merge",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/utils-merge@1.0.1/node_modules/utils-merge"
+      },
+      "uuid": {
+        "from": "uuid",
+        "version": "link:../../node_modules/.pnpm/uuid@14.0.2/node_modules/uuid",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/uuid@14.0.2/node_modules/uuid"
+      },
+      "verkit": {
+        "from": "verkit",
+        "version": "link:../../node_modules/.pnpm/verkit@0.4.1/node_modules/verkit",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/verkit@0.4.1/node_modules/verkit"
+      },
+      "vfile": {
+        "from": "vfile",
+        "version": "link:../../node_modules/.pnpm/vfile@6.0.3/node_modules/vfile",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/vfile@6.0.3/node_modules/vfile"
+      },
+      "vfile-message": {
+        "from": "vfile-message",
+        "version": "link:../../node_modules/.pnpm/vfile-message@4.0.3/node_modules/vfile-message",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/vfile-message@4.0.3/node_modules/vfile-message"
+      },
+      "vite": {
+        "from": "vite",
+        "version": "link:../../node_modules/.pnpm/vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1/node_modules/vite",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1/node_modules/vite"
+      },
+      "vite-plugin-inspect": {
+        "from": "vite-plugin-inspect",
+        "version": "link:../../node_modules/.pnpm/vite-plugin-inspect@12.0.2_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_cac@7.0_089c66fba1b2de44f65618c217d3859a/node_modules/vite-plugin-inspect",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/vite-plugin-inspect@12.0.2_@modelcontextprotocol+server@2.0.0_@nuxt+kit@3.21.11_cac@7.0_089c66fba1b2de44f65618c217d3859a/node_modules/vite-plugin-inspect"
+      },
+      "vite-plugin-remote-assets": {
+        "from": "vite-plugin-remote-assets",
+        "version": "link:../../node_modules/.pnpm/vite-plugin-remote-assets@2.1.0_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/vite-plugin-remote-assets",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/vite-plugin-remote-assets@2.1.0_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/vite-plugin-remote-assets"
+      },
+      "vite-plugin-static-copy": {
+        "from": "vite-plugin-static-copy",
+        "version": "link:../../node_modules/.pnpm/vite-plugin-static-copy@4.1.1_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/vite-plugin-static-copy",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/vite-plugin-static-copy@4.1.1_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/vite-plugin-static-copy"
+      },
+      "vite-plugin-vue-server-ref": {
+        "from": "vite-plugin-vue-server-ref",
+        "version": "link:../../node_modules/.pnpm/vite-plugin-vue-server-ref@1.0.0_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1__vue@3.5.43_typescript@6.0.3_/node_modules/vite-plugin-vue-server-ref",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/vite-plugin-vue-server-ref@1.0.0_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1__vue@3.5.43_typescript@6.0.3_/node_modules/vite-plugin-vue-server-ref"
+      },
+      "vitefu": {
+        "from": "vitefu",
+        "version": "link:../../node_modules/.pnpm/vitefu@1.1.3_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/vitefu",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/vitefu@1.1.3_vite@8.3.0_@types+node@22.20.4_jiti@2.7.0_yaml@2.9.1_/node_modules/vitefu"
+      },
+      "vue": {
+        "from": "vue",
+        "version": "link:../../node_modules/.pnpm/vue@3.5.43_typescript@6.0.3/node_modules/vue",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/vue@3.5.43_typescript@6.0.3/node_modules/vue"
+      },
+      "vue-router": {
+        "from": "vue-router",
+        "version": "link:../../node_modules/.pnpm/vue-router@5.3.1_@vue+compiler-sfc@3.5.43_rolldown@1.2.9_vite@8.3.0_@types+node@22.20.4_74850f2ea6f31db9de62f1421c753bb2/node_modules/vue-router",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/vue-router@5.3.1_@vue+compiler-sfc@3.5.43_rolldown@1.2.9_vite@8.3.0_@types+node@22.20.4_74850f2ea6f31db9de62f1421c753bb2/node_modules/vue-router"
+      },
+      "watches": {
+        "from": "watches",
+        "version": "link:../../watches",
+        "path": "/Users/martin/Develop/slidev/stem/watches"
+      },
+      "webpack-virtual-modules": {
+        "from": "webpack-virtual-modules",
+        "version": "link:../../node_modules/.pnpm/webpack-virtual-modules@0.6.2/node_modules/webpack-virtual-modules",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/webpack-virtual-modules@0.6.2/node_modules/webpack-virtual-modules"
+      },
+      "wrap-ansi": {
+        "from": "wrap-ansi",
+        "version": "link:../../node_modules/.pnpm/wrap-ansi@9.0.2/node_modules/wrap-ansi",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/wrap-ansi@9.0.2/node_modules/wrap-ansi"
+      },
+      "wsl-utils": {
+        "from": "wsl-utils",
+        "version": "link:../../node_modules/.pnpm/wsl-utils@1.0.0/node_modules/wsl-utils",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/wsl-utils@1.0.0/node_modules/wsl-utils"
+      },
+      "y18n": {
+        "from": "y18n",
+        "version": "link:../../node_modules/.pnpm/y18n@5.0.8/node_modules/y18n",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/y18n@5.0.8/node_modules/y18n"
+      },
+      "yallist": {
+        "from": "yallist",
+        "version": "link:../../node_modules/.pnpm/yallist@3.1.1/node_modules/yallist",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/yallist@3.1.1/node_modules/yallist"
+      },
+      "yaml": {
+        "from": "yaml",
+        "version": "link:../../node_modules/.pnpm/yaml@2.9.1/node_modules/yaml",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/yaml@2.9.1/node_modules/yaml"
+      },
+      "yargs": {
+        "from": "yargs",
+        "version": "link:../../node_modules/.pnpm/yargs@18.2.0/node_modules/yargs",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/yargs@18.2.0/node_modules/yargs"
+      },
+      "yargs-parser": {
+        "from": "yargs-parser",
+        "version": "link:../../node_modules/.pnpm/yargs-parser@22.0.0/node_modules/yargs-parser",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/yargs-parser@22.0.0/node_modules/yargs-parser"
+      },
+      "zigpty": {
+        "from": "zigpty",
+        "version": "link:../../node_modules/.pnpm/zigpty@0.2.1/node_modules/zigpty",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/zigpty@0.2.1/node_modules/zigpty"
+      },
+      "zod": {
+        "from": "zod",
+        "version": "link:../../node_modules/.pnpm/zod@4.6.5/node_modules/zod",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/zod@4.6.5/node_modules/zod"
+      },
+      "zwitch": {
+        "from": "zwitch",
+        "version": "link:../../node_modules/.pnpm/zwitch@2.0.4/node_modules/zwitch",
+        "path": "/Users/martin/Develop/slidev/stem/node_modules/.pnpm/zwitch@2.0.4/node_modules/zwitch"
+      }
+    }
+  }
+]

@@ -108,9 +108,7 @@ def build_html(files: list[pathlib.Path], times: list[float]) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
-    parser.add_argument(
-        "paths", nargs="*", help="SVG files or directories (default: every talk's art)"
-    )
+    parser.add_argument("paths", nargs="+", help="SVG files or directories")
     parser.add_argument(
         "--times",
         nargs="+",
@@ -123,7 +121,7 @@ def main() -> None:
     )
     arguments = parser.parse_args()
 
-    files = lib.art_files(arguments.paths or None)
+    files = lib.art_files(arguments.paths)
     if not files:
         sys.exit("no SVGs found")
     out = pathlib.Path(arguments.out) if arguments.out else lib.ROOT / "out/contact.png"

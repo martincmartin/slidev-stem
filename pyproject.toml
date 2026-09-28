@@ -1,5 +1,34 @@
-# Settings for the Python checkers. The code is stem/tools/ and the talks'
-# art/ scripts, not a package; requirements.txt lists what they need.
+# The house's Python: stem/tools/ and the scripts in stem/tasks/. It is not a
+# package. Each talk is a separate uv project, with its own pyproject.toml,
+# uv.lock and .venv; see "Given talks and versions" in AGENTS.md.
+#
+#   uv sync                                # make or update stem/.venv
+#   uv run playwright install chromium     # once, for the tools that render
+#   uv run tools/artcheck.py <path>        # run a tool
+
+[project]
+name = "stem-tools"
+version = "0"
+requires-python = "==3.14.*"
+dependencies = [
+  "numpy>=2.5.3",
+  "pillow>=12.3.0",
+  "playwright>=1.63.0",
+]
+
+[dependency-groups]
+# The style and type checkers that tools/check_python.py runs.
+dev = [
+  "mypy>=2.3.1",
+  "pyright>=1.1.414",
+  "ruff>=0.16.9",
+]
+
+[tool.uv]
+package = false
+# Only an interpreter that uv installed: a Homebrew upgrade must not remove the
+# interpreter of a venv.
+python-preference = "only-managed"
 
 [tool.ruff]
 target-version = "py314"

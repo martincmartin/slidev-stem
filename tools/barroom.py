@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """What the back row of a lit room actually sees, measured rather than imagined.
 
-    .venv/bin/python3 tools/barroom.py                        # every talk's art
+    .venv/bin/python3 tools/barroom.py watches/public/        # a talk's art
     .venv/bin/python3 tools/barroom.py new.svg                # one new drawing
     .venv/bin/python3 tools/barroom.py a.svg b.svg --save /tmp/
     .venv/bin/python3 tools/barroom.py new.svg --json         # for another program
@@ -370,9 +370,7 @@ def save_views(raw: Image.Image, out: pathlib.Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
-    parser.add_argument(
-        "paths", nargs="*", help="SVG files or directories (default: every talk's art)"
-    )
+    parser.add_argument("paths", nargs="+", help="SVG files or directories")
     parser.add_argument(
         "--save",
         default=None,
@@ -386,7 +384,7 @@ def main() -> None:
     )
     arguments = parser.parse_args()
 
-    files = lib.art_files(arguments.paths or None)
+    files = lib.art_files(arguments.paths)
     if not files:
         sys.exit("no SVGs found")
     raw, cards = render(files)

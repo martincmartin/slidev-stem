@@ -1,0 +1,23 @@
+{
+  // Format on save with the workspace's local Prettier. Prettier finds
+  // ../.prettierrc (the repo root) itself, so the prettier-plugin-slidev
+  // override is honored. The ignore file is also at the repo root.
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "prettier.prettierPath": "./node_modules/prettier",
+  "prettier.ignorePath": "../.prettierignore",
+
+  // Markdown is where the Slidev parser matters most; pin the formatter
+  // explicitly so another extension doesn't claim .md files.
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[vue]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[javascript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[json]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[jsonc]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[yaml]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" }
+}

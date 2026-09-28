@@ -4,9 +4,9 @@
 THIS SCRIPT IS THE SOURCE of watches/public/favicon.ico. To change the icon,
 edit the pixel maps below and run it; do not edit the .ico.
 
-    ../.venv/bin/python3 art/favicon.py              # in watches/: writes public/favicon.ico
-    ../.venv/bin/python3 art/favicon.py out.ico      # writes there instead
-    ../.venv/bin/python3 art/favicon.py --preview p.png   # also writes the maps at 12x
+    uv run art/favicon.py              # in watches/: writes public/favicon.ico
+    uv run art/favicon.py out.ico      # writes there instead
+    uv run art/favicon.py --preview p.png   # also writes the maps at 12x
 
 The .ico holds a 16 x 16 and a 32 x 32 image, and the browser picks one. The
 headmatter of slides.md points Slidev at it (`favicon: /favicon.ico`).

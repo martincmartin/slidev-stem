@@ -1,0 +1,13 @@
+date: 2026-09-28
+node v26.10.0, pnpm 12.3.4, uv 0.12.19
+pnpm-lock.yaml lines: 6488
+pnpm-lock.yaml importers: . themes/ledger watches 
+top-level entries in stem/node_modules: 442
+top-level entries in watches/node_modules: 5
+size: 573M	node_modules
+size: 24M	watches/node_modules
+pins: .nvmrc/.node-version: 0 files; packageManager/devEngines in package.json: 0 files
+files outside a talk that a talk uses:
+  watches/art/validate_skeleton_watch.py
+  watches/package.json:14:    "slidev-theme-ledger": "workspace:*",
+  watches/slides.md:3:theme: ledger

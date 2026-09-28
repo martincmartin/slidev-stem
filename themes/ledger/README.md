@@ -11,7 +11,7 @@ theme: ledger
 and in the talk's `package.json`:
 
 ```json
-"dependencies": { "slidev-theme-ledger": "workspace:*" }
+"dependencies": { "slidev-theme-ledger": "link:../themes/ledger" }
 ```
 
 ## What it sets
