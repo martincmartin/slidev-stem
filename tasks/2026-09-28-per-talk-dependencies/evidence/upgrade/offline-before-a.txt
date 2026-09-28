@@ -1,0 +1,6 @@
+1:0 {"classes": "slidev-layout cover cover-watch", "background": "rgb(250, 247, 240)", "color": "rgb(42, 37, 32)", "font": "\"IBM Plex Sans\"", "h1": "Fraunces 600 56px rgb(42, 37, 32)", "webfonts": ["Fraunces 600", "IBM Plex Sans 400"]}
+2:0 {"classes": "slidev-layout default", "background": "rgb(250, 247, 240)", "color": "rgb(42, 37, 32)", "font": "\"IBM Plex Sans\"", "h1": "Fraunces 600 37px rgb(42, 37, 32)", "webfonts": ["Fraunces 600", "IBM Plex Sans 400"]}
+2:3 {"classes": "slidev-layout default", "background": "rgb(250, 247, 240)", "color": "rgb(42, 37, 32)", "font": "\"IBM Plex Sans\"", "h1": "Fraunces 600 37px rgb(42, 37, 32)", "webfonts": ["Fraunces 600", "IBM Plex Sans 400"]}
+2:7 {"classes": "slidev-layout default", "background": "rgb(250, 247, 240)", "color": "rgb(42, 37, 32)", "font": "\"IBM Plex Sans\"", "h1": "Fraunces 600 37px rgb(42, 37, 32)", "webfonts": ["Fraunces 600", "IBM Plex Sans 400"]}
+3:0 {"classes": "slidev-layout cover cover-watch", "background": "rgb(250, 247, 240)", "color": "rgb(42, 37, 32)", "font": "\"IBM Plex Sans\"", "h1": "Fraunces 600 56px rgb(42, 37, 32)", "webfonts": ["Fraunces 600", "IBM Plex Sans 400"]}
+outside requests: 0

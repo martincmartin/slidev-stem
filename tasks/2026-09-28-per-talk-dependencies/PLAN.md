@@ -296,3 +296,31 @@ byte-identical, so the build is deterministic and this check is strict.
   `.prettierignore`.
 
 **Still open:** step 8, when the user says the task is complete.
+
+## Upgrade to the latest versions (2026-09-28)
+
+After the migration commit, at the user's request, everything went to its
+newest version. The evidence is in `evidence/upgrade/`.
+
+| Item | Before | After |
+| --- | --- | --- |
+| Python | 3.14.7 | 3.14.7, the newest stable (3.15 is only at rc2) |
+| Node | 26.10.0 | 26.10.0, the newest |
+| pnpm | 12.3.4 | 12.6.0 |
+| Python packages | | `nodeenv` 1.10.0 → 1.11.0 in both projects. `pyee` stays at 13.0.1: the newest playwright (1.63.0) requires `pyee<14`. |
+| JS, direct | | Prettier 3.9.8 → 3.9.9 (root and `watches`). The others were already the newest. |
+| JS, `watches`, all | 694 packages | Both lockfiles were resolved again from scratch. 44 packages changed version, none to a new major version (`packages-diff.txt`). |
+
+Checks after the upgrade:
+
+- `pnpm install --frozen-lockfile` and `uv sync --locked` pass in both
+  projects.
+- `pnpm build` passes. The `offline_check.py` report for slides 1:0, 2:0, 2:3,
+  2:7 and 3:0 is identical: classes, colours, fonts, and 0 outside requests.
+- The screenshots of slides 2:0, 2:3 and 2:7 are pixel-identical. Slides 1 and
+  3 differ only in the box (1575, 210)–(1806, 441), where the balance wheel
+  animates. Two runs on one build differ in the same box by a similar number
+  of pixels (7301, against 6334 after the upgrade), so the difference is the
+  animation phase (`slide3-before-after.png`).
+- The validator's output is identical, and so are all 15 tool captures.
+- `pnpm format:check` passes at the root and in `watches`.
