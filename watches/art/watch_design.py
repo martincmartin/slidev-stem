@@ -68,6 +68,10 @@ PERIOD = 2.0  # s, one full swing of the balance: two beats, a tick and a tock
 AMPLITUDE = 150.0  # degrees each way from centre
 PIN_ARC = 25.0  # the fork moves while the balance is within this of centre
 BANK = 9.0  # degrees: the fork's swing each side of its centre line
+# The fraction of each tick window in which the fork turns but the train holds:
+# the locked pallet stone must clear its tooth before the escape wheel moves.
+# At 0.5 the stones never overlap the teeth (the geometry-problems task).
+UNLOCK = 0.5
 # s: one turn of the fourth wheel and its seconds hand, at real speed:
 # 6 degrees a beat, a beat a second
 FOURTH_LOOP = 60.0
@@ -248,7 +252,7 @@ LAYOUT = Layout(
     fourth_angle=243.5,
     escape_angle=288.5,
     lever_angle=353.5,
-    fork_pivot_distance=36.0,
+    fork_pivot_distance=40.0,
     balance_distance=110.0,
 )
 MIN_CLEARANCE = 8.0  # px between parts that do not mesh
@@ -257,6 +261,21 @@ RING_CLEARANCE = 8.0  # px from each part to the chapter ring's inside edge
 
 # Tooth phase relative to the lever, so moving the arbors preserves both locks.
 ESCAPE_PHASE = 9.5
+# The escape wheel's teeth, as watch/shapes.ts escapeOutline draws them: a
+# tooth's locking face runs from its tip, on the tip circle, to the root
+# circle this fraction of a tooth pitch ahead (in the wheel's turn).
+LOCKING_FACE_LEAD = 0.04
+# The pallet stones. When a stone locks, its face lies on the tooth's locking
+# face and its inner corner is LOCK_DEPTH inside the tip circle; the other
+# stone is then out of the teeth. The tooth each one locks, as a tip angle
+# from the line of centres, at the fork's bank: tips are ESCAPE_PHASE - 24 k
+# at the bank -BANK and ESCAPE_PHASE - 12 - 24 k at +BANK.
+LOCK_DEPTH = 4.0
+STONE_WIDTH = 4.5
+STONE_SLANT = 1.5  # the let-off corner is this much shallower: the impulse face
+STONE_LENGTH = 15.0  # from the inner corner, along the face
+STONE_SHOWN = 0.5  # the fraction of its length out of the fork's arm
+LOCKS = {"exit": (ESCAPE_PHASE - 48, -BANK), "entry": (ESCAPE_PHASE + 36, BANK)}
 
 # ---- the case, in px from the watch centre ---------------------------------------
 CASE_RADIUS, BEZEL_RADIUS = (
@@ -329,14 +348,62 @@ class Placement:
                 pivot[0] + along * cos_heading - across * sin_heading,
                 pivot[1] + along * sin_heading + across * cos_heading,
             )
-            for along, across in fork_outline(mouth)
+            for along, across in fork_outline(mouth, self.layout.fork_pivot_distance)
         ]
 
 
-def fork_outline(mouth: float) -> list[Point]:
+def pallet_stone(tip_angle: float, bank: float, pivot_distance: float) -> list[Point]:
+    """A pallet stone as (along the lever, across it) from the fork's pivot:
+    its inner (locking) corner, its let-off corner, and the two ends of the
+    part that the arm holds, on the back and on the face. The stone locks the
+    tooth whose tip is at `tip_angle` (degrees from the line of centres) when
+    the fork is at `bank`: then its face lies on the tooth's locking face."""
+    escape: Point = (-pivot_distance, 0.0)  # the escape arbor, from the pivot
+    tip = polar(ESCAPE.outer, tip_angle, escape)
+    root = polar(
+        ESCAPE.inner, tip_angle - LOCKING_FACE_LEAD * 360 / ESCAPE.teeth, escape
+    )
+    length = math.dist(tip, root)
+    face = ((tip[0] - root[0]) / length, (tip[1] - root[1]) / length)  # outward
+    # the stone lies ahead of the tooth: on the side the wheel turns toward
+    ahead = (math.sin(math.radians(tip_angle)), -math.cos(math.radians(tip_angle)))
+    side = (-face[1], face[0])
+    if side[0] * ahead[0] + side[1] * ahead[1] < 0:
+        side = (-side[0], -side[1])
+
+    def at(along: float, across: float) -> Point:
+        # `along` from the root on the face's line, `across` into the stone
+        return (
+            root[0] + face[0] * along + side[0] * across,
+            root[1] + face[1] * along + side[1] * across,
+        )
+
+    inner = ESCAPE.outer - LOCK_DEPTH - ESCAPE.inner  # along the face, roughly radial
+    shown = inner + STONE_SHOWN * STONE_LENGTH
+    corners = [
+        at(inner, 0.0),
+        at(inner + STONE_SLANT, STONE_WIDTH),
+        at(shown + STONE_SLANT, STONE_WIDTH),
+        at(shown, 0.0),
+    ]
+    # into the fork's frame: undo the bank at which it locks
+    turn = math.radians(-bank)
+    return [
+        (
+            x * math.cos(turn) - y * math.sin(turn),
+            x * math.sin(turn) + y * math.cos(turn),
+        )
+        for x, y in corners
+    ]
+
+
+def fork_outline(mouth: float, pivot_distance: float) -> list[Point]:
     """The pallet fork, as (along the lever, across it) from its pivot, with
     the lever pointing at the balance: the fork's mouth at `mouth`, its two
-    pallets on the far side of the pivot, at the escape wheel."""
+    pallet stones on the far side of the pivot, at the escape wheel. Each arm
+    reaches round outside the teeth and holds its stone at the far end."""
+    exit_stone = pallet_stone(*LOCKS["exit"], pivot_distance)
+    entry_stone = pallet_stone(*LOCKS["entry"], pivot_distance)
     return [
         (mouth - 17, 4.5),
         (mouth - 10, 11),
@@ -349,19 +416,28 @@ def fork_outline(mouth: float) -> list[Point]:
         (mouth - 10, -11),
         (mouth - 17, -4.5),
         (6, -4.5),
-        # The entry pallet locks on its inside face. It cannot be a mirror
-        # of the exit pallet below: that puts its body over the stopped tooth.
-        (0, -26),
-        (-11, -28),
-        (-17, -23),
-        (-16, -19),
-        (-7, -24),
-        (-5, 0),
-        (-6, 13),
-        (-13, 15),
-        (-15, 19),
-        (-9, 23),
-        (1, 21),
+        # the exit pallet's arm: its stone locks a tooth inside the pallets'
+        # span, on its inside face
+        (6, -26),
+        (1, -35),
+        exit_stone[2],
+        exit_stone[1],
+        exit_stone[0],
+        exit_stone[3],
+        (-4, -18),
+        (-2, -6),
+        # the back of the pivot, clear of the tooth tips
+        (-2, 6),
+        # the entry pallet's arm: its stone locks a tooth from outside the span,
+        # on its outside face
+        (-4, 16),
+        entry_stone[2],
+        entry_stone[1],
+        entry_stone[0],
+        entry_stone[3],
+        (-6, 36),
+        (3, 33),
+        (6, 18),
         (6, 4.5),
     ]
 
@@ -428,6 +504,7 @@ def design(layout: Layout = LAYOUT) -> dict[str, object]:
             "amplitude": AMPLITUDE,
             "pinArc": PIN_ARC,
             "bank": BANK,
+            "unlock": UNLOCK,
             "fourthLoop": FOURTH_LOOP,
             "hourRatio": HOUR_RATIO,
         },
@@ -444,7 +521,9 @@ def design(layout: Layout = LAYOUT) -> dict[str, object]:
         "fork": {
             "pivot": list(arbor[FORK]),
             "heading": direction(arbor[FORK], arbor[BALANCE]),
-            "outline": [list(point) for point in fork_outline(mouth)],
+            "outline": [
+                list(point) for point in fork_outline(mouth, layout.fork_pivot_distance)
+            ],
         },
         "stack": [part.name for part in STACK],
         "case": {

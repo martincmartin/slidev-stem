@@ -43,9 +43,7 @@ import {
   openings,
   pinionOutline,
   polar,
-  polygon,
   radians,
-  ring,
   spiralCurve,
 } from "./shapes.ts";
 
@@ -65,6 +63,10 @@ const CROWN_LENGTH = 22;
 /** The fork sits this far above the escape wheel's teeth. */
 const PALLET_STEP = 1;
 const STAFF_RADIUS = 3;
+/** The balance: its rim's width, its hub's radius, its arms' width. */
+const BALANCE_RIM = 8;
+const BALANCE_HUB = 10;
+const BALANCE_ARM_WIDTH = 6;
 const STAFF_ABOVE_SPRING = 4;
 /** The stud: a block around the spring's outer end. */
 const STUD_REACH: [number, number] = [-2, 5];
@@ -324,6 +326,8 @@ export function generate(design: Design = DESIGN): Watch {
   });
   const springPart = part("hairspring", {
     stroke: recipe(8, "touch", 0, true),
+    // the collet, level with the spring
+    circle: recipe(8, "body"),
   });
   const jewelPart = part("impulse jewel", {
     body: recipe(3),
@@ -559,41 +563,25 @@ export function generate(design: Design = DESIGN): Watch {
   // the balance and its hairspring
   const { balance: balanceDesign, fork: forkDesign } = design;
   const radius = balanceDesign.radius;
+  // the rim, the three arms and the hub are one piece, with no line where
+  // they meet: the rim has no marks, so only the arms show that it turns
   solid(
     balancePart,
     "body",
     balanceGroup,
-    ringsOf([ring(radius, radius - 8), line(3)]),
-    knockout,
-  );
-  for (let index = 0; index < 3; index++) {
-    const armAngle = balanceDesign.pinDirection + 60 + 120 * index;
-    const sine = Math.sin(radians(armAngle));
-    const cosine = Math.cos(radians(armAngle));
-    const corners = (
+    ringsOf(
+      [disc(radius), line(3)],
       [
-        [9, 1],
-        [radius - 8, 1],
-        [radius - 8, -1],
-        [9, -1],
-      ] as const
-    ).map(([along, side]): Point2 => [
-      along * cosine + side * 3 * sine,
-      along * sine - side * 3 * cosine,
-    ]);
-    solid(
-      balancePart,
-      "other",
-      balanceGroup,
-      ringsOf([polygon(corners), line(2)]),
-      knockout,
-    );
-  }
-  solid(
-    balancePart,
-    "circle",
-    balanceGroup,
-    ringsOf([disc(10), line(2)]),
+        openings(
+          3,
+          BALANCE_HUB,
+          radius - BALANCE_RIM,
+          BALANCE_ARM_WIDTH,
+          balanceDesign.pinDirection + 60,
+        ),
+        line(2.5),
+      ],
+    ),
     knockout,
   );
 
@@ -627,6 +615,17 @@ export function generate(design: Design = DESIGN): Watch {
         ),
       ),
     },
+  );
+
+  // the collet, which the drawing lacks: the spring's inner end is fixed to
+  // it, and it turns with the balance
+  const collet = solid(
+    springPart,
+    "circle",
+    balanceGroup,
+    ringsOf([disc(at(SPRING_RADII, 0)), line(2)]),
+    knockout,
+    { inDrawing: false },
   );
 
   // the impulse jewel, on the roller: it turns with the balance
@@ -939,6 +938,7 @@ export function generate(design: Design = DESIGN): Watch {
     [...drawnOrder, staff].indexOf(springSolid),
   );
   const springHeights = heightOf(springSolid);
+  const colletMesh = at(movementMeshes, [...drawnOrder, staff].indexOf(collet));
 
   // the stud: a block around the spring's outer end, which is fixed
   const outerEnd = at(restSpring, restSpring.length - 1);
@@ -1043,7 +1043,7 @@ export function generate(design: Design = DESIGN): Watch {
     2;
   const subject: Subject = {
     name: "hairspring and stud",
-    meshes: new Set([springMesh, studMesh]),
+    meshes: new Set([springMesh, colletMesh, studMesh]),
   };
   const scene: Scene = {
     slide: [design.canvas.width, design.canvas.height],

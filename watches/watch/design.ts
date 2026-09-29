@@ -22,6 +22,9 @@ export interface Timing {
   pinArc: number;
   /** Degrees: the fork's swing each side of its centre line. */
   bank: number;
+  /** The fraction of each tick window in which the fork turns and the train
+   *  holds: the locked pallet stone clears its tooth first. */
+  unlock: number;
   /** s: one turn of the fourth wheel. */
   fourthLoop: number;
   hourRatio: number;
@@ -240,6 +243,7 @@ export function readDesign(json: Json): Design {
       amplitude: num(timing, "amplitude", "timing"),
       pinArc: num(timing, "pinArc", "timing"),
       bank: num(timing, "bank", "timing"),
+      unlock: num(timing, "unlock", "timing"),
       fourthLoop: num(timing, "fourthLoop", "timing"),
       hourRatio: num(timing, "hourRatio", "timing"),
     },

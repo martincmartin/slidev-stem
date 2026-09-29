@@ -11,8 +11,11 @@ import type { Timing, Wheel } from "./design.ts";
 import type { Watch, WatchGroups } from "./generate.ts";
 import { polar, radians } from "./shapes.ts";
 
-/** The hairspring: an Archimedean spiral from `radii[0]` at angle
- *  `outerAngle - 360 turns + swing` to `radii[1]` at `outerAngle`. */
+/** The hairspring. Its inner end is on the collet, at `radii[0]`, and turns
+ *  with the balance; its outer end is held by the stud at `radii[1]` and
+ *  `outerAngle`. At rest it is an Archimedean spiral of `turns` turns. It keeps
+ *  its length: as the balance winds it up, its coils draw in toward the collet,
+ *  and as the balance lets it out, they spread toward the stud. */
 export interface Spring {
   radii: [number, number];
   /** Turns at rest (swing 0). */
@@ -26,19 +29,65 @@ export const SPRING_RADII: [number, number] = [8, 38];
 export const SPRING_TURNS = 3.25;
 /** At most 0.011 px from the curve at the cover's scale. */
 export const SPRING_POINTS = 480;
+/** The spread's limit: its coils cross or double back beyond it. */
+const MAX_SPREAD = 0.95;
 
 /** The spring's points about the balance's arbor, at the balance's angle
- *  `swing` (degrees). */
+ *  `swing` (degrees). The radius goes from the inner to the outer radius as
+ *  r = inner + (outer - inner) (u + k u (1 - u)), where u goes from 0 to 1
+ *  along the angle. k is the spread: 0 at rest; below 0 the coils draw in,
+ *  above 0 they spread out. It is chosen so that the length is the rest
+ *  length. */
 export function springPoints(spring: Spring, swing: number): Point2[] {
-  const [innerRadius, outerRadius] = spring.radii;
   const innerAngle = spring.outerAngle - 360 * spring.turns + swing;
+  const curve = (spread: number): Point2[] =>
+    spiralPoints(spring, innerAngle, spread);
+  const target = polylineLength(
+    spiralPoints(spring, spring.outerAngle - 360 * spring.turns, 0),
+  );
+  // the length grows with the spread: bisect
+  let low = -MAX_SPREAD;
+  let high = MAX_SPREAD;
+  if (
+    polylineLength(curve(low)) > target ||
+    polylineLength(curve(high)) < target
+  ) {
+    throw new Error(
+      `the spring cannot keep its length at swing ${String(swing)}`,
+    );
+  }
+  for (let step = 0; step < 40; step++) {
+    const middle = (low + high) / 2;
+    if (polylineLength(curve(middle)) < target) low = middle;
+    else high = middle;
+  }
+  return curve((low + high) / 2);
+}
+
+function spiralPoints(
+  spring: Spring,
+  innerAngle: number,
+  spread: number,
+): Point2[] {
+  const [innerRadius, outerRadius] = spring.radii;
   return Array.from({ length: SPRING_POINTS }, (_, index) => {
     const fraction = index / (SPRING_POINTS - 1);
+    const shaped = fraction + spread * fraction * (1 - fraction);
     return polar(
-      innerRadius + fraction * (outerRadius - innerRadius),
+      innerRadius + shaped * (outerRadius - innerRadius),
       innerAngle + fraction * (spring.outerAngle - innerAngle),
     );
   });
+}
+
+function polylineLength(points: Point2[]): number {
+  let length = 0;
+  for (let index = 1; index < points.length; index++) {
+    const [x0, y0] = at(points, index - 1);
+    const [x1, y1] = at(points, index);
+    length += Math.hypot(x1 - x0, y1 - y0);
+  }
+  return length;
 }
 
 // ---- the mechanism's keyframes ---------------------------------------------------------
@@ -69,8 +118,9 @@ export function tickWindows(
   ];
 }
 
-/** A part that turns `step` degrees at each beat and holds still between
- *  beats, over `duration` seconds. */
+/** A part of the train, which turns `step` degrees at each beat and holds
+ *  still between beats, over `duration` seconds. In each tick window it waits
+ *  for the fork to unlock the escape wheel, then turns. */
 export function stepper(
   timing: Timing,
   duration: number,
@@ -83,7 +133,8 @@ export function stepper(
   let angle = 0;
   for (let period = 0; period < Math.round(periods); period++) {
     for (const [start, end] of tickWindows(timing)) {
-      keyTimes.push((period + start) / periods, (period + end) / periods);
+      const unlocked = start + timing.unlock * (end - start);
+      keyTimes.push((period + unlocked) / periods, (period + end) / periods);
       values.push(angle, angle + step);
       angle += step;
     }

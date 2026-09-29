@@ -34,12 +34,12 @@ style; it was tried and rejected (`tasks/2026-09-20-animation-style/README.md`
 The cover's watch is drawn live in WebGL ([`stem/docs/webgl.md`](../../docs/webgl.md)),
 so `barroom.py` and `motion.py` measure PNG stills of it (`pnpm art:stills DIR`
 writes them; `validate.py` does the same and runs both tools). At
-`TV 55in @7m`, measured 2026-09-29, on the cover at tilt 0 and 980 × 552 px
+`TV 55in @7m`, measured 2026-09-29 (after the geometry-problems task), on the cover at tilt 0 and 980 × 552 px
 at 2 device px for each CSS px:
 
 ```
 drawing   ink%    hold    p90    Fmax     dPeak   px2 >=3:1
-cover      6.6    4.13   8.04   0.134     10.17        3346
+cover      6.6    4.12   7.89   0.133     10.33        3925
 ```
 
 It clears the gate, and it has more headroom than the SVG it replaced (hold

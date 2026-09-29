@@ -1,0 +1,7 @@
+swing -150  turns 3.667  length 470.774 px  radius one turn in from the stud 26.69 px  outer end 38.00 px
+swing -100  turns 3.528  length 470.774 px  radius one turn in from the stud 27.28 px  outer end 38.00 px
+swing  -50  turns 3.389  length 470.774 px  radius one turn in from the stud 28.00 px  outer end 38.00 px
+swing    0  turns 3.250  length 470.774 px  radius one turn in from the stud 28.79 px  outer end 38.00 px
+swing   50  turns 3.111  length 470.774 px  radius one turn in from the stud 29.69 px  outer end 38.00 px
+swing  100  turns 2.972  length 470.774 px  radius one turn in from the stud 30.77 px  outer end 38.00 px
+swing  150  turns 2.833  length 470.774 px  radius one turn in from the stud 32.01 px  outer end 38.00 px

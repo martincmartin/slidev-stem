@@ -237,39 +237,6 @@ export function dagger(options: DaggerOptions): Path {
   return polygon([[0, -length], ...side, ...mirrored]);
 }
 
-/** The pallet fork as (along the lever, across it) from its pivot, with the
- *  lever pointing at the balance: the fork's mouth at `mouth`, its two pallets
- *  on the far side of the pivot, at the escape wheel. */
-export function forkOutline(mouth: number): Point2[] {
-  return [
-    [mouth - 17, 4.5],
-    [mouth - 10, 11],
-    [mouth + 3, 12.5],
-    [mouth + 6.5, 8.5],
-    [mouth - 7, 6.8],
-    [mouth - 7, -6.8],
-    [mouth + 6.5, -8.5],
-    [mouth + 3, -12.5],
-    [mouth - 10, -11],
-    [mouth - 17, -4.5],
-    [6, -4.5],
-    // The entry pallet locks on its inside face. It cannot be a mirror of the
-    // exit pallet below: that puts its body over the stopped tooth.
-    [0, -26],
-    [-11, -28],
-    [-17, -23],
-    [-16, -19],
-    [-7, -24],
-    [-5, 0],
-    [-6, 13],
-    [-13, 15],
-    [-15, 19],
-    [-9, 23],
-    [1, 21],
-    [6, 4.5],
-  ];
-}
-
 /** A rectangle with rounded corners, as lines and quarter arcs. */
 export function roundedRectangle(
   x: number,
