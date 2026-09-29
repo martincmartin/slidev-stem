@@ -1,0 +1,101 @@
+{
+ "size px": [
+  3456,
+  1947
+ ],
+ "draws": 60,
+ "chromium": {
+  "version": "153.0.8010.12",
+  "renderer": {
+   "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+   "vendor": "Google Inc. (Apple)",
+   "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+   "meshes": 46,
+   "triangles": 20510,
+   "lineSegments": 16757,
+   "contextsLost": 0
+  },
+  "views": {
+   "cover at 0": {
+    "rest 1 against no fade, levels": 0,
+    "rest 0.002 against 0, levels": 0,
+    "rest 0.998 against 1, levels": 0,
+    "rest 0.5 against the mean of 0 and 1, levels": 0.5,
+    "frame time with gl.finish": {
+     "no fade": {
+      "median ms": 0.9,
+      "largest ms": 1.4
+     },
+     "middle of a fade": {
+      "median ms": 0.95,
+      "largest ms": 8.4
+     }
+    }
+   },
+   "hairspring at 20": {
+    "rest 1 against no fade, levels": 0,
+    "rest 0.002 against 0, levels": 0,
+    "rest 0.998 against 1, levels": 0,
+    "rest 0.5 against the mean of 0 and 1, levels": 0.5,
+    "frame time with gl.finish": {
+     "no fade": {
+      "median ms": 0.7,
+      "largest ms": 1.1
+     },
+     "middle of a fade": {
+      "median ms": 0.7,
+      "largest ms": 14.2
+     }
+    }
+   }
+  },
+  "page errors": []
+ },
+ "firefox": {
+  "version": "155.0",
+  "renderer": {
+   "renderer": "Apple M1, or similar",
+   "vendor": "Apple",
+   "version": "WebGL 2.0",
+   "meshes": 46,
+   "triangles": 20510,
+   "lineSegments": 16757,
+   "contextsLost": 0
+  },
+  "views": {
+   "cover at 0": {
+    "rest 1 against no fade, levels": 0,
+    "rest 0.002 against 0, levels": 0,
+    "rest 0.998 against 1, levels": 0,
+    "rest 0.5 against the mean of 0 and 1, levels": 0.5,
+    "frame time with gl.finish": {
+     "no fade": {
+      "median ms": 2.0,
+      "largest ms": 3
+     },
+     "middle of a fade": {
+      "median ms": 3.0,
+      "largest ms": 3
+     }
+    }
+   },
+   "hairspring at 20": {
+    "rest 1 against no fade, levels": 0,
+    "rest 0.002 against 0, levels": 0,
+    "rest 0.998 against 1, levels": 0,
+    "rest 0.5 against the mean of 0 and 1, levels": 0.5,
+    "frame time with gl.finish": {
+     "no fade": {
+      "median ms": 2.0,
+      "largest ms": 4
+     },
+     "middle of a fade": {
+      "median ms": 2.0,
+      "largest ms": 4
+     }
+    }
+   }
+  },
+  "page errors": []
+ }
+}

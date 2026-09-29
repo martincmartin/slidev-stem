@@ -1,6 +1,6 @@
 """Clearances in the skeleton watch's layout, as the viewer sees them.
 
-Used by validate_skeleton_watch.py and search_skeleton_watch_layout.py. Needs
+Used by validate_watch_design.py and search_watch_layout.py. Needs
 numpy (stem/.venv).
 
 WHAT "VISIBLE" MEANS HERE. The drawing stacks its round parts back to front
@@ -22,7 +22,7 @@ from dataclasses import dataclass
 
 import numpy as np
 from numpy.typing import NDArray
-from skeleton_watch import (
+from watch_design import (
     BALANCE,
     BANK,
     BARREL,

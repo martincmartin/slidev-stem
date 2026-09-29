@@ -18,6 +18,12 @@ What it checks comes from the uv project that holds the current directory:
     into a temporary directory), which offline_check.py --walk then steps
     through, slide by slide and click by click, with every outside request
     blocked. Nothing outside the talk.
+  * a talk with TypeScript (scripts in its package.json): also `pnpm typecheck`,
+    `pnpm lint` and `pnpm test`. A talk with WebGL art (the script `art:scene`)
+    also has its scene written to a temporary file and checked by scenecheck.py;
+    with the script `art:stills`, its PNG stills written to a temporary directory
+    (with pairs.json, a list of [first, second] file names), and barroom.py run
+    on the PNGs and motion.py --png-pair on each pair.
 
 It only reports, unless you give --fix: then ruff and Prettier rewrite the
 files first. It runs every check, even after one fails, then prints a summary
@@ -30,9 +36,12 @@ Run it only in a talk in progress. A given talk is not checked again
 """
 
 import argparse
+import json
+import shlex
 import sys
 import tempfile
 import textwrap
+from collections.abc import Callable, Sequence
 from pathlib import Path
 
 import lib
@@ -63,17 +72,86 @@ def house_checks(fix: bool) -> list[Check]:
     ]
 
 
-def talk_checks(directory: Path, deck: Path, fix: bool) -> list[Check]:
+# A check that is made when it is reached, because what it runs on is made by a
+# check before it.
+Later = Callable[[], Check]
+
+
+def scripts_of(directory: Path) -> set[str]:
+    """The names of the scripts in the package.json of `directory`."""
+    package = json.loads((directory / "package.json").read_text())
+    return set(package.get("scripts", {}))
+
+
+def typescript_checks(directory: Path) -> list[Check]:
+    """Types, lint and unit tests, for a talk that has the scripts."""
+    scripts = scripts_of(directory)
+    return [
+        Check(name, directory, ("pnpm", name))
+        for name in ("typecheck", "lint", "test")
+        if name in scripts
+    ]
+
+
+def art_checks(directory: Path, work: Path) -> list[Check | Later]:
+    """The checks of a talk's WebGL art: its scene, and its PNG stills. `work`
+    is an empty directory for what they write."""
+    scripts = scripts_of(directory)
+    checks: list[Check | Later] = []
+    if "art:scene" in scripts:
+        scene = work / "scene.json"
+        command = (
+            f"pnpm --silent art:scene > {shlex.quote(str(scene))}"
+            f" && cd {shlex.quote(str(STEM))}"
+            f" && {shlex.join(uv_run('tools/scenecheck.py', str(scene)))}"
+        )
+        checks.append(Check("scenecheck", directory, ("sh", "-c", command)))
+    if "art:stills" in scripts:
+        stills = work / "stills"
+        checks.append(
+            Check("stills", directory, ("pnpm", "--silent", "art:stills", str(stills)))
+        )
+        checks.append(
+            lambda: Check(
+                "barroom (png)",
+                STEM,
+                uv_run("tools/barroom.py", *map(str, sorted(stills.glob("*.png")))),
+            )
+        )
+
+        def motion() -> Check:
+            pairs = json.loads((stills / "pairs.json").read_text())
+            arguments = [
+                argument
+                for first, second in pairs
+                for argument in (
+                    "--png-pair",
+                    str(stills / first),
+                    str(stills / second),
+                )
+            ]
+            return Check("motion (png)", STEM, uv_run("tools/motion.py", *arguments))
+
+        checks.append(motion)
+    return checks
+
+
+def talk_checks(
+    directory: Path, deck: Path, work: Path, fix: bool
+) -> list[Check | Later]:
     """The checks of the talk in `directory`. The house tools run in stem/, on
-    the talk's files. The deck is built into `deck`, an empty directory."""
+    the talk's files. The deck is built into `deck`, an empty directory; the
+    art's files are written into `work`, another."""
     talk = str(lib.display_path(directory))
     public = str(lib.display_path(directory / "public"))
     return [
         *python_checks(directory, code_paths(directory), fix),
         prettier(directory, fix),
+        *typescript_checks(directory),
         Check("artcheck", STEM, uv_run("tools/artcheck.py", public)),
         Check("barroom", STEM, uv_run("tools/barroom.py", public)),
         Check("motion", STEM, uv_run("tools/motion.py", public)),
+        *art_checks(directory, work),
         Check("palette", STEM, uv_run("tools/palette.py", "--talk", talk)),
         Check("build", directory, ("pnpm", "build", "--out", str(deck))),
         Check(
@@ -94,22 +172,27 @@ def main() -> int:
     )
     arguments = parser.parse_args()
     project = project_of(Path.cwd())
-    with tempfile.TemporaryDirectory(prefix="deck-") as deck:
+    with (
+        tempfile.TemporaryDirectory(prefix="deck-") as deck,
+        tempfile.TemporaryDirectory(prefix="art-") as work,
+    ):
+        checks: Sequence[Check | Later]
         if project == STEM:
             heading, checks = "stem/, the shared files", house_checks(arguments.fix)
         elif (project / "slides.md").is_file():
             heading = f"{lib.display_path(project)}/, a talk"
-            checks = talk_checks(project, Path(deck), arguments.fix)
+            checks = talk_checks(project, Path(deck), Path(work), arguments.fix)
         else:
             sys.exit(f"{project} is neither stem/ nor a talk (it has no slides.md)")
         return run_all(heading, checks)
 
 
-def run_all(heading: str, checks: list[Check]) -> int:
+def run_all(heading: str, checks: Sequence[Check | Later]) -> int:
     """Run every check, report each, and return the exit code."""
     print(f"--    {heading}")
     failed: list[Check] = []
-    for check in checks:
+    for item in checks:
+        check = item() if callable(item) else item
         result = run(check)
         if result.returncode == 0:
             print(ok_line(check, result))

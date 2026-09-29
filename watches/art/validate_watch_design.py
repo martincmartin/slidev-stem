@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Validate skeleton_watch.py and the SVG it writes. Run it after every change
-to skeleton_watch.py:
+"""Validate watch_design.py, and write watch/design.json. Run it after every
+change to watch_design.py:
 
-    uv run art/validate_skeleton_watch.py      # in watches/
+    uv run art/validate_watch_design.py      # in watches/
 
 It runs itself under watches/.venv, stops at the first failure and exits
 non-zero. It runs the house tools in stem/ under stem/.venv.
@@ -19,15 +19,14 @@ The steps:
      MIN_CLEARANCE apart;
    - the pallet fork, at both ends of its swing, is at least FORK_CLEARANCE
      from the visible parts of the parts it does not work on;
-4. regenerate public/cover/skeleton-watch.svg;
-5. art: stem/tools/artcheck.py (palette, stroke ladder, structure),
-   barroom.py (the 3.0 gate at the design venue) and motion.py (some area
-   changes by at least 3:1), with its two frames half a balance period apart.
+4. write watch/design.json.
+
+The art checks of the drawing (palette, stroke ladder, legibility, motion) are
+run by stem/tools/validate.py on the scene and on stills of the watch.
 
 Needs uv. `uv run` makes both venvs from their uv.lock if they are missing.
 """
 
-import json
 import os
 import pathlib
 import shutil
@@ -39,15 +38,15 @@ ART = pathlib.Path(__file__).resolve().parent  # watches/art/
 TALK = ART.parent  # watches/
 STEM = TALK.parent  # stem/
 VENV = TALK / ".venv"
-GENERATOR = ART / "skeleton_watch.py"
+GENERATOR = ART / "watch_design.py"
 SCRIPTS = [
     GENERATOR,
     ART / "watch_geometry.py",
-    ART / "search_skeleton_watch_layout.py",
+    ART / "search_watch_layout.py",
     ART / "favicon.py",
     pathlib.Path(__file__),
 ]
-SVG = TALK / "public" / "cover" / "skeleton-watch.svg"
+DESIGN = TALK / "watch" / "design.json"
 UV = shutil.which("uv") or "uv"
 # Runs a house tool under stem/.venv, the project of the working directory.
 TOOL = [UV, "run", "--quiet"]
@@ -92,7 +91,7 @@ def check_python() -> None:
 
 
 def check_layout() -> None:
-    import skeleton_watch as watch
+    import watch_design as watch
     import watch_geometry as geometry
 
     placement = watch.Placement(watch.LAYOUT)
@@ -131,58 +130,6 @@ def check_layout() -> None:
     )
 
 
-def check_art() -> None:
-    from skeleton_watch import PERIOD
-
-    relative = str(SVG.relative_to(STEM))
-    run("artcheck", [*TOOL, "tools/artcheck.py", relative])
-    ok("artcheck")
-
-    barroom = json.loads(
-        run("barroom", [*TOOL, "tools/barroom.py", relative, "--json"])
-    )
-    drawing = next(
-        drawing for drawing in barroom["drawings"] if drawing["path"] == relative
-    )
-    design = barroom["design_venue"]
-    scores = drawing["venues"][design]
-    if not drawing["passes_gate"]:
-        fail(
-            f"barroom: the {barroom['floor']:g} gate",
-            f"hold {scores['hold']:.2f} at {design}",
-        )
-    ok(
-        "barroom",
-        f"at {design}: hold {scores['hold']:.2f}, p90 {scores['p90']:.2f}, "
-        f"Fmax {scores['fmax']:.3f}",
-    )
-
-    # Half a balance period apart, so the balance, fork and escape wheel are at
-    # opposite ends of their motion. motion.py's default (half the longest
-    # loop, the seconds hand's) is a whole number of periods: they would cancel.
-    separation = f"{PERIOD / 2:g}"
-    motion = json.loads(
-        run(
-            "motion",
-            [*TOOL, "tools/motion.py", relative, "--sep", separation, "--json"],
-        )
-    )
-    drawing = next(
-        drawing for drawing in motion["drawings"] if drawing["path"] == relative
-    )
-    floor_band = f"{motion['floor']:.1f}"
-    area = drawing["bands"][floor_band]
-    if area < 1:
-        fail(
-            f"motion: no area changes by {motion['floor']:g}:1",
-            f"{area:.1f} CSS px^2 does",
-        )
-    ok(
-        f"motion --sep {separation}",
-        f"dPeak {drawing['peak']:.2f}, {area:.0f} px2 >= 3:1",
-    )
-
-
 def main() -> None:
     # numpy is in watches/.venv: rerun there if this is not it
     if pathlib.Path(sys.prefix).resolve() != VENV.resolve():
@@ -190,9 +137,8 @@ def main() -> None:
         os.execv(UV, [*command, *sys.argv[1:]])
     check_python()
     check_layout()
-    run("generate", [sys.executable, str(GENERATOR)])
-    ok("generate", str(SVG.relative_to(TALK)))
-    check_art()
+    run("write design.json", [sys.executable, str(GENERATOR)])
+    ok("write design.json", str(DESIGN.relative_to(TALK)))
     print("\nall passed")
 
 

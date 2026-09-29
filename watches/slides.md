@@ -4,32 +4,31 @@ theme: ledger
 title: What Every Nerd Should Know About Watches
 # art/favicon.py writes it; without this line Slidev links its own icon on a CDN
 favicon: /favicon.ico
-class: cover-watch
+# Slidev takes the headmatter from the first slide's frontmatter, and a
+# `transition` in it becomes the default of every slide. The cover must have
+# the only watch-zoom transition, so the headmatter is a first slide of its
+# own, with no content, and hidden; the cover is the second block.
+hide: true
 ---
 
-<img class="cover-watch-art" src="/cover/skeleton-watch.svg" alt="" />
+---
+# The watch under this slide is live, in WebGL: see docs/webgl.md. The move from
+# this slide to the next has the watch-zoom transition (global-bottom.vue); no
+# other move does.
+class: cover-watch
+watch: cover
+transition: watch-zoom
+---
 
 # What Every Nerd Should Know About Watches
 
 Martin C. Martin
 
 <style>
-/* The watch fills the canvas and leaves its left half empty for the title.
-   The art is positioned, so the text must be too, to paint above it. */
+/* The watch fills the canvas and leaves its left half empty for the title. */
 .cover-watch {
-  position: relative;
   place-content: center start;
   text-align: left;
-}
-.cover-watch-art {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.cover-watch h1,
-.cover-watch p {
-  position: relative;
 }
 .cover-watch h1 {
   max-width: 480px; /* three lines; the widest, "What Every Nerd", is 464 px */
@@ -41,8 +40,20 @@ Speaker notes here
 -->
 
 ---
+watch: hairspring
+watchOnly: hairspring and stud
+watchTilt: 20
+watchSettle: 1
+clicks: 1
+---
 
 # Hairspring and Balance Wheel
+
+<!--
+The hairspring and the balance wheel: the part of a watch that keeps time.
+
+[click] The balance comes to rest.
+-->
 
 ---
 layout: full

@@ -24,3 +24,7 @@ PLAN.md, section 14, gives the commands that reproduce the evidence.
   It ports the spike to TypeScript, makes the geometry in TypeScript from a
   design file that Python writes, and removes the watch's SVG. It keeps frozen
   copies of the spike and 13 reference pictures that the spike drew.
+- 2026-09-29: implemented. The TypeScript renderer, the generator and the
+  live slides are built, and the watch's SVG is removed; the checks pass and
+  the measurements are in the implementation task's `PLAN.md`
+  (`../2026-09-29-webgl-watch/PLAN.md`).

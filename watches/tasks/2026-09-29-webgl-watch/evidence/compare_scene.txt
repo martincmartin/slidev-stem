@@ -1,0 +1,48 @@
+      0 case band: outline 0.086 px
+      1 strap 1: outline 0.045 px
+      2 lug 2: outline 0.052 px
+      3 lug 3: outline 0.052 px
+      4 strap 4: outline 0.045 px
+      5 lug 5: outline 0.052 px
+      6 lug 6: outline 0.052 px
+      7 crown: outline 0.010 px
+      8 escape wheel 1: outline 0.104 px
+      9 escape wheel 2: outline 0.051 px
+      10 escape wheel 3: outline 0.097 px
+      11 escape wheel 4: outline 0.050 px
+      12 fourth wheel 1: outline 0.099 px; disc 0: 742.78,265.27,41.05 vs 742.75,265.30,42.37 (explained: the spike measured the clip circle from the SVG's arcs, whose end points are rounded to 0.1 px: it found radius 42.37; the third wheel's root circle is 41.05)
+      13 fourth wheel 2: outline 0.061 px; disc 0: 742.78,265.27,41.05 vs 742.75,265.30,42.37 (explained: the spike measured the clip circle from the SVG's arcs, whose end points are rounded to 0.1 px: it found radius 42.37; the third wheel's root circle is 41.05)
+      14 fourth wheel 3: outline 0.103 px; disc 0: 742.78,265.27,41.05 vs 742.75,265.30,42.37 (explained: the spike measured the clip circle from the SVG's arcs, whose end points are rounded to 0.1 px: it found radius 42.37; the third wheel's root circle is 41.05)
+      15 fourth wheel 4: outline 0.060 px; disc 0: 742.78,265.27,41.05 vs 742.75,265.30,42.37 (explained: the spike measured the clip circle from the SVG's arcs, whose end points are rounded to 0.1 px: it found radius 42.37; the third wheel's root circle is 41.05)
+      16 third wheel 1: outline 0.111 px
+      17 third wheel 2: outline 0.046 px
+      18 third wheel 3: outline 0.096 px
+      19 third wheel 4: outline 0.045 px
+      20 centre wheel 1: outline 0.058 px
+      21 centre wheel 2: outline 0.010 px
+      22 centre wheel 3: outline 0.055 px
+      23 centre wheel 4: outline 0.009 px
+      24 barrel 1: outline 0.108 px
+      25 barrel 2: outline 0.152 px; outline 0.152 px (explained: the barrel's spring: the spike's 16 steps a Bezier and the SVG's rounding against 0.01 px flattening)
+      26 barrel 3: outline 0.056 px
+      27 balance 1: outline 0.073 px
+      28 balance 2: outline 0.114 px
+      29 balance 3: outline 0.110 px
+      30 balance 4: outline 0.098 px
+      31 balance 5: outline 0.063 px
+      32 hairspring 1: outline 0.427 px; outline 0.427 px (explained: the spring is an exact spiral here; the drawing's 13 Beziers bulge off it by up to 0.91 px (spike scene_export.py))
+      33 impulse jewel 1: outline 0.000 px
+      34 pallet fork 1: outline 0.110 px
+      35 pallet fork 2: outline 0.064 px
+      36 seconds hand 1: outline 0.052 px
+      37 seconds hand 2: outline 0.000 px
+      38 chapter ring 1: outline 0.078 px
+      39 hour hand 1: outline 0.001 px
+      40 minute hand 1: outline 0.000 px
+      41 centre pivot 1: outline 0.010 px
+      42 balance staff (added): outline 0.062 px
+      43 hairspring stud (added): outline 0.075 px
+      44 decal on chapter ring 1: outline 0.057 px
+      45 decal on chapter ring 1: outline 0.026 px
+
+46 solids and decals; worst outline 0.427 px; 0 failures

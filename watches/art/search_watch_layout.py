@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Search the skeleton watch's layout for the most clearance.
 
-    uv run art/search_skeleton_watch_layout.py      # in watches/
-    uv run art/search_skeleton_watch_layout.py --balance-distance 110
+    uv run art/search_watch_layout.py      # in watches/
+    uv run art/search_watch_layout.py --balance-distance 110
 
 It changes nothing: it prints the best layouts, for a person to copy into
-LAYOUT in skeleton_watch.py and then run validate_skeleton_watch.py. It takes
+LAYOUT in watch_design.py and then run validate_watch_design.py. It takes
 a few minutes.
 
 The free numbers are four of LAYOUT's angles (third, fourth, escape and lever)
@@ -32,7 +32,7 @@ import math
 from dataclasses import dataclass
 
 import watch_geometry as geometry
-from skeleton_watch import BALANCE, BARREL_ANGLE, LAYOUT, Layout, Placement
+from watch_design import BALANCE, BARREL_ANGLE, LAYOUT, Layout, Placement
 
 Angles = tuple[float, float, float, float]  # third, fourth, escape, lever
 # (first, last, step) in degrees, for each of the Angles

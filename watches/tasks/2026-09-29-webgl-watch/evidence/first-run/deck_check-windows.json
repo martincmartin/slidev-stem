@@ -1,0 +1,198 @@
+{
+ "chromium, laptop": {
+  "version": "153.0.8010.12",
+  "window": [
+   1728,
+   997,
+   2
+  ],
+  "renderer": {
+   "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+   "vendor": "Google Inc. (Apple)",
+   "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+   "meshes": 46,
+   "triangles": 20510,
+   "lineSegments": 16757,
+   "contextsLost": 0
+  },
+  "webgl contexts": 1,
+  "contexts lost": 0,
+  "drawing size equals canvas size": false,
+  "canvas css w, h, drawing w, h, ratio": [
+   980,
+   552,
+   3456,
+   1947,
+   2
+  ],
+  "slides": [
+   {
+    "slide": "cover",
+    "frames": 480,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "largest gap at ms after the change": 1716,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 1.7
+   },
+   {
+    "slide": "hairspring",
+    "frames": 485,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "largest gap at ms after the change": 1061,
+    "JS per frame, median ms": 1.1,
+    "JS per frame, 95th percentile ms": 1.6
+   }
+  ]
+ },
+ "chromium, projector": {
+  "version": "153.0.8010.12",
+  "window": [
+   1920,
+   1080,
+   1
+  ],
+  "renderer": {
+   "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+   "vendor": "Google Inc. (Apple)",
+   "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+   "meshes": 46,
+   "triangles": 20510,
+   "lineSegments": 16757,
+   "contextsLost": 0
+  },
+  "webgl contexts": 1,
+  "contexts lost": 0,
+  "drawing size equals canvas size": false,
+  "canvas css w, h, drawing w, h, ratio": [
+   980,
+   552,
+   1917,
+   1080,
+   1
+  ],
+  "slides": [
+   {
+    "slide": "cover",
+    "frames": 481,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "largest gap at ms after the change": 1219,
+    "JS per frame, median ms": 1,
+    "JS per frame, 95th percentile ms": 1.6
+   },
+   {
+    "slide": "hairspring",
+    "frames": 484,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "largest gap at ms after the change": 3115,
+    "JS per frame, median ms": 1.1,
+    "JS per frame, 95th percentile ms": 1.6
+   }
+  ]
+ },
+ "firefox, laptop": {
+  "version": "155.0",
+  "window": [
+   1728,
+   1000,
+   2
+  ],
+  "renderer": {
+   "renderer": "Apple M1, or similar",
+   "vendor": "Apple",
+   "version": "WebGL 2.0",
+   "meshes": 46,
+   "triangles": 20510,
+   "lineSegments": 16757,
+   "contextsLost": 0
+  },
+  "webgl contexts": 1,
+  "contexts lost": 0,
+  "drawing size equals canvas size": false,
+  "canvas css w, h, drawing w, h, ratio": [
+   980,
+   552,
+   3456,
+   1947,
+   2
+  ],
+  "slides": [
+   {
+    "slide": "cover",
+    "frames": 481,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "largest gap at ms after the change": 443,
+    "JS per frame, median ms": 1,
+    "JS per frame, 95th percentile ms": 2
+   },
+   {
+    "slide": "hairspring",
+    "frames": 485,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 15.9,
+    "largest gap at ms after the change": 13,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2
+   }
+  ]
+ },
+ "firefox, projector": {
+  "version": "155.0",
+  "window": [
+   1920,
+   1080,
+   1
+  ],
+  "renderer": {
+   "renderer": "Apple M1, or similar",
+   "vendor": "Apple",
+   "version": "WebGL 2.0",
+   "meshes": 46,
+   "triangles": 20510,
+   "lineSegments": 16757,
+   "contextsLost": 0
+  },
+  "webgl contexts": 1,
+  "contexts lost": 0,
+  "drawing size equals canvas size": false,
+  "canvas css w, h, drawing w, h, ratio": [
+   980,
+   552,
+   1917,
+   1080,
+   1
+  ],
+  "slides": [
+   {
+    "slide": "cover",
+    "frames": 481,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "largest gap at ms after the change": 35,
+    "JS per frame, median ms": 1,
+    "JS per frame, 95th percentile ms": 2
+   },
+   {
+    "slide": "hairspring",
+    "frames": 483,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "largest gap at ms after the change": 1356,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2
+   }
+  ]
+ }
+}

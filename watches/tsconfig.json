@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": ["node"],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@slidev/client": ["./types/slidev-client.d.ts"],
+      "@slidev/client/constants.ts": ["./types/slidev-constants.d.ts"]
+    }
+  },
+  "include": [
+    "webgl/**/*.ts",
+    "watch/**/*.ts",
+    "types/*.d.ts",
+    "*.vue",
+    "components/**/*.vue"
+  ]
+}

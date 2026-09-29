@@ -5,6 +5,7 @@
     .venv/bin/python3 tools/motion.py new.svg               # one new drawing
     .venv/bin/python3 tools/motion.py new.svg --sep 3.0     # pick the pairing yourself
     .venv/bin/python3 tools/motion.py new.svg --json        # for another program
+    .venv/bin/python3 tools/motion.py --png-pair a.png b.png    # two frames you drew
 
 Needs playwright, Pillow and numpy. Reuses `lib.py` for the venue model and
 `barroom.py` for the blur, flare and linear-light handling, so its numbers are
@@ -38,6 +39,12 @@ animation's periods, the short one lands at an IDENTICAL phase in both frames an
 cancels exactly. This file computes the separation from the SVG's own `dur` values,
 says which shorter animations cancel and which do not, and averages over four
 offset pairs so one unlucky phase cannot decide the answer.
+
+PNG PAIRS. A picture that something else drew (a talk's WebGL art, which has no
+SVG) is measured from two frames of it: `--png-pair FIRST SECOND`, once for each
+animation. Both are PNGs at DEVICE_SCALE, like barroom's, of the same size; the
+frames are chosen by whoever draws them, so nothing here plans the times. The
+scores are the same, from the same blur, flare and bands.
 
 WHAT THE THRESHOLDS ARE NOT. 1.5:1 is borrowed from barroom's mark-detection cut so
 the two tools agree on what counts as a visible difference. It is NOT a measured
@@ -161,11 +168,9 @@ def delta(
 
 
 @dataclass(frozen=True)
-class MotionScore:
-    """How strongly one drawing's animation changes it, at one venue."""
+class Change:
+    """How strongly an animation changes a picture, at one venue."""
 
-    file: pathlib.Path
-    sampling: SamplingPlan
     peak: float  # the largest contrast between a pixel's two states
     p99: float  # the same at the 99th percentile
     band_areas: dict[float, float]  # band -> CSS px^2 changing by at least it
@@ -174,6 +179,52 @@ class MotionScore:
     def in_wash(self) -> bool:
         """Changes over a wide area, and nowhere by the contrast floor."""
         return self.band_areas[lib.CONTRAST_FLOOR] < 1 and self.band_areas[1.2] > 50
+
+
+@dataclass(frozen=True)
+class MotionScore(Change):
+    """One SVG's animation."""
+
+    file: pathlib.Path
+    sampling: SamplingPlan
+
+
+@dataclass(frozen=True)
+class PairScore(Change):
+    """Two PNG frames of one animation."""
+
+    first: pathlib.Path
+    second: pathlib.Path
+
+
+def measure(
+    first: Image.Image, second: Image.Image, sigma: float, flare: float
+) -> Change:
+    """The change from one frame to another."""
+    difference = delta(first, second, sigma, flare)
+    per_csspx = barroom.DEVICE_SCALE**2
+    return Change(
+        float(difference.max()),
+        float(np.percentile(difference, 99)),
+        {band: float((difference >= band).sum()) / per_csspx for band in BANDS},
+    )
+
+
+def pair_scores(
+    pairs: list[tuple[pathlib.Path, pathlib.Path]], venue: lib.Venue, flare: float
+) -> list[PairScore]:
+    """The score of each pair of PNG frames."""
+    sigma = venue.blur_sigma(barroom.DEVICE_SCALE)
+    scores = []
+    for first, second in pairs:
+        first_frame, second_frame = barroom.render([first, second])[1]
+        if first_frame.size != second_frame.size:
+            sys.exit(f"{first} and {second} are not the same size")
+        change = measure(first_frame, second_frame, sigma, flare)
+        scores.append(
+            PairScore(change.peak, change.p99, change.band_areas, first, second)
+        )
+    return scores
 
 
 def score(
@@ -212,11 +263,13 @@ def score(
             for band in BANDS:
                 band_areas[band].append(float((difference >= band).sum()) / per_csspx)
         scores[file] = MotionScore(
-            file,
-            sampling,
-            float(np.mean(peaks)),
-            float(np.mean(p99s)),
-            {band: float(np.mean(areas)) for band, areas in band_areas.items()},
+            peak=float(np.mean(peaks)),
+            p99=float(np.mean(p99s)),
+            band_areas={
+                band: float(np.mean(areas)) for band, areas in band_areas.items()
+            },
+            file=file,
+            sampling=sampling,
         )
     return scores
 
@@ -272,9 +325,27 @@ def print_table(
         print("no drawing animates only in marks below the floor.")
 
 
+def print_pairs(scores: list[PairScore], venue: lib.Venue, flare: float) -> None:
+    print(f"MOTION between PNG frames, at {venue.label}, flare {flare:.2f}\n")
+    header = "".join(f"{'>=' + format(band, '.1f'):>9}" for band in BANDS)
+    print(
+        f"{'first frame':<22}{'dPeak':>8}{'dP99':>8}   area CSS px^2 changing by{header}"
+    )
+    for score_ in scores:
+        cells = "".join(f"{score_.band_areas[band]:>9.0f}" for band in BANDS)
+        flag = " !" if score_.in_wash else ""
+        print(
+            f"{score_.first.stem[:21]:<22}{score_.peak:>8.2f}{score_.p99:>8.2f}"
+            f"{'':>26}{cells}{flag}"
+        )
+    for score_ in scores:
+        print(f"{score_.first.stem[:21]} against {score_.second.name}")
+
+
 def as_json(
     files: list[pathlib.Path],
     scores: dict[pathlib.Path, MotionScore],
+    pairs: list[PairScore],
     venue: lib.Venue,
     flare: float,
 ) -> str:
@@ -298,6 +369,22 @@ def as_json(
                 "in_wash": motion.in_wash,
             }
         drawings.append(entry)
+    drawings.extend(
+        {
+            "path": str(lib.display_path(score_.first)),
+            "label": score_.first.stem[:21],
+            "animated": True,
+            "pair": [
+                str(lib.display_path(score_.first)),
+                str(lib.display_path(score_.second)),
+            ],
+            "peak": score_.peak,
+            "p99": score_.p99,
+            "bands": {f"{band:.1f}": area for band, area in score_.band_areas.items()},
+            "in_wash": score_.in_wash,
+        }
+        for score_ in pairs
+    )
     return json.dumps(
         {
             "venue": venue.label,
@@ -318,7 +405,15 @@ def venue_argument(label: str) -> lib.Venue:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
-    parser.add_argument("paths", nargs="+", help="SVG files or directories")
+    parser.add_argument("paths", nargs="*", help="SVG files or directories")
+    parser.add_argument(
+        "--png-pair",
+        nargs=2,
+        action="append",
+        default=[],
+        metavar=("FIRST", "SECOND"),
+        help="two PNG frames of one animation (repeat for more), at DEVICE_SCALE",
+    )
     parser.add_argument(
         "--sep",
         type=float,
@@ -340,17 +435,25 @@ def main() -> None:
     arguments = parser.parse_args()
 
     files = lib.art_files(arguments.paths)
-    if not files:
-        sys.exit("no SVGs found")
+    pairs = [
+        (pathlib.Path(first), pathlib.Path(second))
+        for first, second in arguments.png_pair
+    ]
+    if not files and not pairs:
+        sys.exit("no SVGs found, and no --png-pair given")
     plans = {file: plan(file, arguments.sep) for file in files}
-    if not any(plans.values()):
+    if files and not pairs and not any(plans.values()):
         sys.exit("no <animate dur> found in any file: nothing to measure")
-    scores = score(files, plans, arguments.venue, arguments.flare)
+    scores = score(files, plans, arguments.venue, arguments.flare) if files else {}
+    pair_results = pair_scores(pairs, arguments.venue, arguments.flare)
     if arguments.json:
-        print(as_json(files, scores, arguments.venue, arguments.flare))
+        print(as_json(files, scores, pair_results, arguments.venue, arguments.flare))
     else:
-        print_table(files, scores, arguments.venue, arguments.flare)
-    if any(motion.in_wash for motion in scores.values()):
+        if scores:
+            print_table(files, scores, arguments.venue, arguments.flare)
+        if pair_results:
+            print_pairs(pair_results, arguments.venue, arguments.flare)
+    if any(motion.in_wash for motion in [*scores.values(), *pair_results]):
         sys.exit(1)  # a drawing moves only in marks the back row cannot resolve
 
 

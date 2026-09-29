@@ -3,11 +3,17 @@
 
     .venv/bin/python3 tools/barroom.py watches/public/        # a talk's art
     .venv/bin/python3 tools/barroom.py new.svg                # one new drawing
+    .venv/bin/python3 tools/barroom.py cover.png              # a picture, not an SVG
     .venv/bin/python3 tools/barroom.py a.svg b.svg --save /tmp/
     .venv/bin/python3 tools/barroom.py new.svg --json         # for another program
 
 Needs playwright, Pillow and numpy. It installs Chromium if it is missing
 (`browsers.py`).
+
+A PNG is a picture that something else drew (a talk's WebGL art, which has no
+SVG). Give it as a file: a directory means its SVGs only. It must be at
+DEVICE_SCALE (2) device px for each CSS px of the size a slide shows it at, and
+on its own background: it is scored as it is, with no card behind it.
 
 This is the criterion that settles "can we use this?" when taste and arithmetic
 disagree, and it is the one tool here that answers a question nothing else can.
@@ -170,10 +176,21 @@ def label_for(file: pathlib.Path, others: Sequence[pathlib.Path] = ()) -> str:
     return file.stem[:21]
 
 
+def is_picture(file: pathlib.Path) -> bool:
+    """Whether the file is a PNG, not an SVG."""
+    return file.suffix.lower() == ".png"
+
+
 def sizes(files: Sequence[pathlib.Path]) -> list[lib.ShownSize]:
-    """The size each file states a slide shows it at. Exits if one has none."""
+    """The size each file states a slide shows it at: an SVG's, or a PNG's
+    pixels over DEVICE_SCALE. Exits if an SVG has none."""
     out = []
     for file in files:
+        if is_picture(file):
+            with Image.open(file) as picture:
+                width, height = picture.size
+            out.append(lib.ShownSize(width / DEVICE_SCALE, height / DEVICE_SCALE, 1.0))
+            continue
         size = lib.shown_size(file.read_text())
         if size is None:
             sys.exit(
@@ -186,8 +203,24 @@ def sizes(files: Sequence[pathlib.Path]) -> list[lib.ShownSize]:
 
 def render(
     files: Sequence[pathlib.Path], time: float = 4.0
+) -> tuple[Image.Image | None, list[Image.Image]]:
+    """One picture of each file: an SVG screenshotted at the size its file
+    states, on the panel, with its animation pinned to `time`; a PNG as it is.
+    -> (the screenshot of the SVGs, or None if there are none; one picture per
+    file, in the order of `files`)."""
+    svgs = [file for file in files if not is_picture(file)]
+    raw, drawn = render_svgs(svgs, time) if svgs else (None, [])
+    made = iter(drawn)
+    return raw, [
+        Image.open(file).convert("RGB") if is_picture(file) else next(made)
+        for file in files
+    ]
+
+
+def render_svgs(
+    files: Sequence[pathlib.Path], time: float
 ) -> tuple[Image.Image, list[Image.Image]]:
-    """Screenshot every drawing at the size its file states, on the panel, with its
+    """Screenshot every SVG at the size its file states, on the panel, with its
     animation pinned to `time`. -> (whole screenshot, one crop per file)."""
     from playwright.sync_api import sync_playwright
 
@@ -373,7 +406,9 @@ def save_views(raw: Image.Image, out: pathlib.Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
-    parser.add_argument("paths", nargs="+", help="SVG files or directories")
+    parser.add_argument(
+        "paths", nargs="+", help="SVG files or directories, or PNG files"
+    )
     parser.add_argument(
         "--save",
         default=None,
@@ -389,14 +424,14 @@ def main() -> None:
 
     files = lib.art_files(arguments.paths)
     if not files:
-        sys.exit("no SVGs found")
+        sys.exit("no SVGs or PNGs found")
     raw, cards = render(files)
     scores = [score(file, card) for file, card in zip(files, cards, strict=True)]
     if arguments.json:
         print(as_json(scores))
     else:
         print_table(scores)
-    if arguments.save:
+    if arguments.save and raw is not None:
         out = pathlib.Path(arguments.save)
         save_views(raw, out)
         if not arguments.json:

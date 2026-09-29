@@ -16,6 +16,11 @@ Each project pins its Node and pnpm versions (`devEngines` in `package.json`) an
 its Python version (`.python-version`). pnpm downloads the pinned Node for the
 talk's scripts. uv installs the pinned Python.
 
+A talk that has TypeScript (`watches/` has) also has its own `tsconfig.json`
+and `eslint.config.js`. Copy them from that talk when a new talk needs them,
+with the packages in its `package.json` (`typescript` at `~6.0`: typescript-eslint
+does not yet accept TypeScript 7).
+
 ## Set up a clone
 
 You need [pnpm](https://pnpm.io/installation) and

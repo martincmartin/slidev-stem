@@ -22,7 +22,7 @@ import argparse
 import pathlib
 
 from PIL import Image
-from skeleton_watch import FRAME, KNOCKOUT, LINE, PALETTE, TALK
+from watch_design import FRAME, KNOCKOUT, LINE, PALETTE, TALK
 
 CASE_OPACITY = 0.18  # the cover's case and strap: FRAME at this opacity
 

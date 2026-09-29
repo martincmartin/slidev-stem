@@ -88,16 +88,15 @@ classes and removes the `v-click` classes, and the dim rule stops working.
 
 ## The live watch
 
-**Being built** (2026-09-29, [`watches/tasks/2026-09-29-webgl-watch/`](../tasks/2026-09-29-webgl-watch/instructions.md)).
-Until then, the cover shows the SVG. [`stem/docs/webgl.md`](../../docs/webgl.md)
-has the rules for 3D art in any talk; this is what is true of this deck.
+[`stem/docs/webgl.md`](../../docs/webgl.md) has the rules for 3D art in any
+talk; this is what is true of this deck.
 
 One WebGL canvas lies under every slide (`global-bottom.vue`). A slide asks
 for a view of the watch in its frontmatter; a slide with no `watch:` key hides
 it. The talk's opening is the example:
 
 ```yaml
-# slide 1, the cover
+# the cover
 watch: cover
 ---
 # slide 2
@@ -113,7 +112,13 @@ clicks: 1
   moving watch will be: on slide 2 the hairspring is about 535 to 875 px
   across.
 - **The cover's title fades as the camera zooms** (the `watch-zoom`
-  transition, from slide 1 to 2 only). Slide 2's title comes in after the zoom.
+  transition, from the cover to slide 2 only). Slide 2's title comes in after
+  the zoom.
+- **The first block of `slides.md` is a hidden slide with no content.**
+  Slidev takes the headmatter from the first slide's frontmatter, and a
+  `transition` there becomes the default of every slide. The cover has the
+  only `watch-zoom`, so the headmatter has its own block, with `hide: true`.
+  Do not merge it with the cover's block.
 - **A click that changes the watch needs a `[click]` line** in the speaker
   notes, as for any click.
 - **The slide's text paints over the watch**, because the slide's layout is

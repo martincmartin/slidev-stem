@@ -95,7 +95,7 @@ pnpm versions (`devEngines` in `package.json`) and its Python version
 **A new talk needs its own `pnpm-workspace.yaml`.** Without it, pnpm uses the
 root's workspace, installs nothing for the talk, and reports no error. Copy
 these files from the newest talk: `pnpm-workspace.yaml`, `pyproject.toml`,
-`.python-version`, `.prettierignore`, and `package.json` with its `devEngines`
+`.python-version`, `.prettierignore`, `tsconfig.json`, `eslint.config.js`, and `package.json` with its `devEngines`
 and its `preinstall` script. Then run `pnpm install` and `uv sync` in the new talk's directory. A talk links
 the theme with `"slidev-theme-ledger": "link:../themes/ledger"`.
 

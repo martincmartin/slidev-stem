@@ -1,0 +1,48 @@
+{
+ "chromium 153.0.8010.12": {
+  "next-pane stills drawn": 1,
+  "presenter": {
+   "webgl contexts": 2,
+   "contexts lost": 0,
+   "slide": "/presenter/2",
+   "frames": 498,
+   "median gap ms": 8.3,
+   "gaps over 25 ms": 0,
+   "largest gap ms": 10.6,
+   "drawing size equals canvas size": false
+  },
+  "audience": {
+   "webgl contexts": 1,
+   "contexts lost": 0,
+   "slide": "/2",
+   "frames": 501,
+   "median gap ms": 8.3,
+   "gaps over 25 ms": 0,
+   "largest gap ms": 10.5,
+   "drawing size equals canvas size": false
+  }
+ },
+ "firefox 155.0": {
+  "next-pane stills drawn": 1,
+  "presenter": {
+   "webgl contexts": 2,
+   "contexts lost": 0,
+   "slide": "/presenter/2",
+   "frames": 494,
+   "median gap ms": 8.34,
+   "gaps over 25 ms": 0,
+   "largest gap ms": 15.8,
+   "drawing size equals canvas size": false
+  },
+  "audience": {
+   "webgl contexts": 1,
+   "contexts lost": 0,
+   "slide": "/2",
+   "frames": 496,
+   "median gap ms": 8.34,
+   "gaps over 25 ms": 0,
+   "largest gap ms": 15.8,
+   "drawing size equals canvas size": false
+  }
+ }
+}

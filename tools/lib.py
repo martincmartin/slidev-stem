@@ -234,6 +234,13 @@ ART_INK = {
 }
 ART_FIELD = LEDGER["panel"]  # illustrations sit on a card, not on the slide
 
+# Opacities, from docs/illustrations.md. The subject is drawn at 0.60-1.0; what
+# holds it is a wash, 0.07-0.18. A line is solid, except the detail colour's:
+# it is at half opacity.
+WASH_OPACITY = (0.07, 0.18)
+SUBJECT_MIN_OPACITY = 0.60
+DETAIL_LINE_OPACITY = 0.5
+
 # --------------------------------------------------------------------------
 # The venue. Never visited; these are the rows you cannot rule out.
 # Edit this table the day the venue is known -- it is the whole cost of

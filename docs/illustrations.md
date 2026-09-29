@@ -229,9 +229,6 @@ The four SVGs in `watches/public/timekeepers/` are **source files:
 edit them directly.** Do not regenerate them with `reline.py` from the animation-style
 archive: it writes into the archive's own copy of the art, not into the live deck.
 
-The cover's skeleton watch, `watches/public/cover/skeleton-watch.svg`, is the
-exception. Its gear teeth, spirals and keyframes are computed, so its source is
-the script `watches/art/skeleton_watch.py`: edit that, not the SVG, then run
-`watches/art/validate_skeleton_watch.py`, which regenerates the SVG and checks it.
-**It is being replaced** by the live WebGL watch ([webgl.md](webgl.md)); when
-that is done, there is no watch SVG.
+The skeleton watch of `watches` is not an SVG. It is drawn live in WebGL
+([webgl.md](webgl.md)), from `watches/watch/design.json`, which
+`watches/art/watch_design.py` writes.

@@ -1,0 +1,19 @@
+{
+ "version": "153.0.8010.12",
+ "seconds until every still is drawn": 2.8,
+ "pages": 2,
+ "webgl contexts": 1,
+ "contexts lost": 0,
+ "pdf bytes": 279935,
+ "page errors": [],
+ "pages detail": [
+  {
+   "page": 1,
+   "line pixels": 69255
+  },
+  {
+   "page": 2,
+   "line pixels": 26502
+  }
+ ]
+}

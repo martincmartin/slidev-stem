@@ -45,7 +45,9 @@ person or an AI model. Do every step in order. Do not skip a check.
   with a solid error of at most 5 CSS px² each (stage 5).
 - `docs/` and `watches/docs/` describe what was built.
 
-## 2. Decisions that are made. Do not open them again
+## 2. Decisions that are made.
+
+Do not open them again without good reason, and ask the user first.
 
 | Decision | Where the reason is |
 | --- | --- |

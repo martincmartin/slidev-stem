@@ -1,10 +1,7 @@
 # Live 3D art in WebGL
 
-**Status (2026-09-29):** decided, and being built in
-[`watches/tasks/2026-09-29-webgl-watch/`](../watches/tasks/2026-09-29-webgl-watch/instructions.md).
-Until that task is done, the `watches` cover is still the SVG
-`watches/public/cover/skeleton-watch.svg`, and the file names below that are
-in `watches/webgl/` and `watches/watch/` do not exist yet.
+**Status (2026-09-29):** built, in `watches/webgl/` and `watches/watch/`. The
+`watches` talk has no watch SVG.
 
 The skeleton watch of `watches` is drawn live, in WebGL, for the whole talk:
 one canvas under every slide, which moves its camera, fades parts, tilts the
@@ -16,6 +13,8 @@ SVG.
 
 The decision and its evidence:
 [`watches/tasks/2026-09-28-webgl-planning/`](../watches/tasks/2026-09-28-webgl-planning/PLAN.md).
+The build, its plan, and the measurements:
+[`watches/tasks/2026-09-29-webgl-watch/`](../watches/tasks/2026-09-29-webgl-watch/PLAN.md).
 
 ## How it is built
 
@@ -25,6 +24,28 @@ The decision and its evidence:
 | The model                  | TypeScript, in the talk: `watches/watch/`                                             | Turns the design into meshes, line styles, heights and views at load, and moves the parts at each frame (the balance's swing, its settle)         |
 | The renderer and the stage | TypeScript: `watches/webgl/`                                                          | Meshes, lines, the camera, fades. **No watch names.** It moves to a house package in `stem/` when a second talk needs it.                         |
 | The slides                 | Slidev: `global-bottom.vue`, `slide-bottom.vue`, the frontmatter                      | Which view, tilt and state each slide and click asks for                                                                                          |
+
+The files, in `watches/`:
+
+| Path                                                     | What it holds                                                                                                                                                         |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `webgl/scene.ts`                                         | the types of a scene: meshes, lines, silhouette edges, clip discs, groups, views, subjects                                                                            |
+| `webgl/renderer.ts`, `mesh.ts`, `stage.ts`, `stills.ts`  | the renderer; extrusions, ribbons and their triangles (earcut); the stage that runs the camera, fade and tilt one at a time; the stills                               |
+| `webgl/probe/`                                           | a page with one canvas and `window.watchProbe.render(options)`, for the pixel and fade checks                                                                         |
+| `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand                                                                                                                  |
+| `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights and views                                                                                                    |
+| `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism and the balance's settle; frontmatter to state; the watch's stills; the shared instance                                                                 |
+| `global-bottom.vue`, `slide-bottom.vue`                  | the live canvas; the still on each printed page                                                                                                                       |
+| `types/`                                                 | two small `.d.ts` files, mapped by `tsconfig.json` `paths` to `@slidev/client`. `vue-tsc` would otherwise check Slidev's own source, which fails our strict settings. |
+
+**A new talk with WebGL art** copies `webgl/`, `types/`, `tsconfig.json`,
+`eslint.config.js` and the scripts of `watches/package.json` (`typecheck`,
+`lint`, `test`, `art:scene`, `art:stills`); `validate.py` then runs the WebGL
+checks by the presence of the scripts. Keep the talk's names out of `webgl/`.
+
+**Slidev's first block is the headmatter.** Its `transition` is the default of
+every slide, so `watches` starts with a hidden slide (`hide: true`, no
+content), and only the cover has `transition: watch-zoom`. Do not merge them.
 
 Geometry is made in TypeScript at load, not ahead of time in Python, because
 the parts that move by rules (a spring that winds, a ruler that bends, a
@@ -61,7 +82,9 @@ The 3D art follows the same grammar as the SVG art
   through its silhouette lines.
 - **Clip discs:** a part can be hidden inside a disc, at every height. The
   watch uses them as the 2D art did: each lower wheel is hidden inside the root
-  circle of the wheel above it, even behind its spoke openings.
+  circle of the wheel above it, even behind its spoke openings. Each disc has
+  the exact root radius, from the design (the fourth wheel's is 41.05); the
+  2D art's SVG rounding had 42.37.
 - **Curved surfaces:** make them fine enough that the silhouette does not jump
   as the view turns: for a cylinder of screen radius $R$ px with $N$ facets,
   the jump is about $R\pi^2/2N^2$. For $R = 200$ px, 64 facets give 0.24 px.
@@ -97,27 +120,32 @@ The 3D art follows the same grammar as the SVG art
 
 ## Budgets and numbers
 
-Measured on the speaker's laptop (M3 Pro, 120 Hz) in the planning task:
+Measured on the speaker's laptop (120 Hz), 2026-09-29, on the real talk
+(`watches/tasks/2026-09-29-webgl-watch/evidence/`):
 
-| What                                                    | Chromium   | Firefox    |
-| ------------------------------------------------------- | ---------- | ---------- |
-| JS per frame, the whole watch at the laptop's full size | 0.7–0.9 ms | about 1 ms |
-| GPU per frame (with `gl.finish()`)                      | 0.5–0.8 ms | about 3 ms |
-| A fade frame (two pictures and a mix)                   | the same   | 3–4 ms     |
-| Frames over 25 ms on the watch slides, after load       | 0          | 0          |
-| WebGL contexts: a slide, the presenter view, the export | 1, 2, 1    | 1, 2, 1    |
+| What                                                    | Chromium   | Firefox                                 |
+| ------------------------------------------------------- | ---------- | --------------------------------------- |
+| JS per frame, the whole watch at the laptop's full size | 1.0–1.2 ms | about 1 ms                              |
+| GPU per frame (with `gl.finish()`)                      | 0.7–0.9 ms | 2–3 ms                                  |
+| A fade frame (two pictures and a mix)                   | the same   | the same                                |
+| Frames over 25 ms on the watch slides, after load       | 0          | 0                                       |
+| Frames over 12.5 ms in the opening (the 120 Hz gate)    | 0          | 2 in a laptop run, 0 in a projector run |
+| WebGL contexts: a slide, the presenter view, the export | 1, 2, 1    | 1, 2, 1                                 |
 
 A frame at 120 Hz has 8.3 ms. If a new model costs much more, measure it in a
-visible window (the planning task's `deck_check.py`).
+visible window with `tools/deck_check.py` and `tools/fade_check.py` (their
+docstrings give the commands). `deck_check.py` opens visible windows: do not
+use the computer while it runs.
 
 ## Checks
 
 In the talk's directory, `uv run ../tools/validate.py` runs, besides the
 checks of [talks.md](talks.md):
 
+- `art/validate_watch_design.py` on the design (clearances, the layout).
 - `pnpm typecheck` (`vue-tsc`, strict), `pnpm lint` (ESLint with
   typescript-eslint's strict, type-aware rules; Prettier formats), and
-  `pnpm test` (`node --test`: the model's rules, the settle's jumps).
+  `pnpm test` (`node --test`: the geometry's rules, the settle's jumps).
 - `tools/scenecheck.py` on the scene (`pnpm art:scene`): palette and stroke
   ladder.
 - `tools/barroom.py` and `tools/motion.py` on PNG stills of the watch

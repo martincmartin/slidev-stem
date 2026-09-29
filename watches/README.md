@@ -6,14 +6,20 @@ A [Slidev](https://github.com/slidevjs/slidev) deck for a monthly STEM meetup:
 ```bash
 pnpm install      # here; it installs the repo root's packages first. pnpm, not npm
 pnpm dev          # http://localhost:3030
-pnpm export       # a PDF of the deck
+pnpm export       # a PDF of the deck (the watch is a still on each page)
 pnpm format       # prettier; run after editing any file
+pnpm typecheck    # vue-tsc, strict
+pnpm lint         # ESLint, typescript-eslint strict
+pnpm test         # node --test: the geometry and the balance's settle
+pnpm art:scene    # the watch's scene as JSON, for tools/scenecheck.py
+pnpm art:stills DIR   # PNG stills of the watch, for barroom.py and motion.py
 ```
 
 You need pnpm and uv; see [`../docs/talks.md`](../docs/talks.md), "Set up a
 clone".
 
-Edit [slides.md](slides.md). The look comes from the house theme, Ledger, in
+Edit [slides.md](slides.md). The watch under the cover and slide 2 is drawn
+live in WebGL: [`../docs/webgl.md`](../docs/webgl.md) says how it is built. The look comes from the house theme, Ledger, in
 [`../themes/ledger/`](../themes/ledger/), which every STEM talk shares.
 
 ## Making new slides

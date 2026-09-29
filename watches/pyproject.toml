@@ -4,7 +4,7 @@
 # ../AGENTS.md.
 #
 #   uv sync                                   # make or update watches/.venv
-#   uv run art/validate_skeleton_watch.py     # after each change to the art
+#   uv run art/validate_watch_design.py     # after each change to the art
 
 [project]
 name = "watches"

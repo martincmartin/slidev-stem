@@ -12,21 +12,24 @@ from the house theme (`../themes/ledger/styles/ledger.css`), the one place they 
 set. Each drawing's display size comes from the drawing itself (its `width` and
 `height`).
 
-| tool                   | needs                    | answers                                                                                          |
-| ---------------------- | ------------------------ | ------------------------------------------------------------------------------------------------ |
-| `lib.py`               | stdlib                   | the constants themselves; run it to print them                                                   |
-| `browsers.py`          | playwright               | does this venv's Playwright have its browser; if not, install it (the tools that render call it) |
-| `palette.py`           | stdlib                   | does the palette pass its gates, does a talk set it; can I use this colour                       |
-| `artcheck.py`          | stdlib                   | is this SVG valid, in-style, and thick enough at the size it is shown                            |
-| `contact.py`           | playwright               | what does it look like, frame by frame                                                           |
-| `barroom.py`           | playwright + PIL + numpy | what does the back row of a lit room get                                                         |
-| `motion.py`            | playwright + PIL + numpy | can the back row see the thing that moves                                                        |
-| `offline_check.py`     | playwright               | does a built deck make any outside request; its fonts and colours per slide                      |
-| `check_python.py`      | ruff, mypy, pyright      | do these Python files pass the house's checks (default: every tool here)                         |
-| `validate.py`          | all of the above         | does this project (stem/ or a talk) pass every check: run before a commit                        |
-| `flatten_pnpm_list.py` | stdlib                   | every resolved JS package, one `name@version` a line: diff before and after an upgrade           |
-| `compare_dist.py`      | stdlib                   | are two deck builds the same, apart from Vue scope ids and content hashes                        |
-| `capture_outputs.sh`   | playwright               | every tool's output, saved, to compare before and after a change to a tool                       |
+| tool                   | needs                    | answers                                                                                                                                |
+| ---------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `lib.py`               | stdlib                   | the constants themselves; run it to print them                                                                                         |
+| `browsers.py`          | playwright               | does this venv's Playwright have its browser; if not, install it (the tools that render call it)                                       |
+| `palette.py`           | stdlib                   | does the palette pass its gates, does a talk set it; can I use this colour                                                             |
+| `artcheck.py`          | stdlib                   | is this SVG valid, in-style, and thick enough at the size it is shown                                                                  |
+| `scenecheck.py`        | stdlib                   | does a 3D scene (a talk's WebGL art) keep to the palette, the stroke ladder and the opacities                                          |
+| `deck_check.py`        | playwright + PIL + numpy | does a talk's live WebGL art keep its frame rate, contexts and size in visible windows, the presenter view, the export (opens windows) |
+| `fade_check.py`        | playwright + PIL + numpy | is a fade of the rest of the scene continuous, and what does it cost the GPU (needs the talk's probe page)                             |
+| `contact.py`           | playwright               | what does it look like, frame by frame                                                                                                 |
+| `barroom.py`           | playwright + PIL + numpy | what does the back row of a lit room get (an SVG, or a PNG that something else drew)                                                   |
+| `motion.py`            | playwright + PIL + numpy | can the back row see the thing that moves (an SVG's animation, or two PNG frames of one)                                               |
+| `offline_check.py`     | playwright               | does a built deck make any outside request; its fonts and colours per slide                                                            |
+| `check_python.py`      | ruff, mypy, pyright      | do these Python files pass the house's checks (default: every tool here)                                                               |
+| `validate.py`          | all of the above         | does this project (stem/ or a talk) pass every check: run before a commit                                                              |
+| `flatten_pnpm_list.py` | stdlib                   | every resolved JS package, one `name@version` a line: diff before and after an upgrade                                                 |
+| `compare_dist.py`      | stdlib                   | are two deck builds the same, apart from Vue scope ids and content hashes                                                              |
+| `capture_outputs.sh`   | playwright               | every tool's output, saved, to compare before and after a change to a tool                                                             |
 
 ```bash
 uv run tools/validate.py                                # every check of the shared files
@@ -41,6 +44,9 @@ uv run tools/validate.py --fix                          # ... after ruff formats
 .venv/bin/python3 tools/contact.py watches/public/timekeepers --times 0.2 4 8 11.8
 .venv/bin/python3 tools/barroom.py watches/public/ --save out/
 .venv/bin/python3 tools/motion.py watches/public/   # every animated drawing in a talk
+.venv/bin/python3 tools/barroom.py cover.png           # a PNG, at 2 device px a CSS px
+.venv/bin/python3 tools/motion.py --png-pair a.png b.png   # two frames of one animation
+.venv/bin/python3 tools/scenecheck.py scene.json       # from a talk's `pnpm art:scene`
 .venv/bin/python3 tools/offline_check.py <build dir> 1:0 2:5   # see its docstring
 .venv/bin/python3 tools/offline_check.py <build dir> --walk    # every slide and click
 .venv/bin/python3 tools/check_python.py      # after you change a tool
