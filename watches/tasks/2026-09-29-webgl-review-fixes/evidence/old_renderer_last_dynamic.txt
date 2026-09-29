@@ -1,0 +1,13 @@
+The renderer of commit 0af598d, with tools/old_renderer_last_dynamic.ts as
+its probe page (a worktree at 0af598d, that file in place of
+webgl/probe/probe.ts, built and served as art/watch_stills.py does),
+Chromium headless (SwiftShader), 2026-09-29:
+
+CONSOLE WebGL: INVALID_OPERATION: drawArrays: no buffer is bound to enabled attribute
+CONSOLE WebGL: INVALID_OPERATION: drawArrays: no buffer is bound to enabled attribute
+CONSOLE WebGL: INVALID_OPERATION: drawArrays: no buffer is bound to enabled attribute
+getError after each frame: [0, 1282, 1282, 1282]
+
+1282 is INVALID_OPERATION. Each frame after the first update of the dynamic
+mesh (drawn last) fails its face draws. The new renderer's check "a dynamic
+mesh drawn last takes new geometry, with no GL error" passes.

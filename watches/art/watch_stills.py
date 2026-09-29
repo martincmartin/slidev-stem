@@ -14,7 +14,9 @@ Vite into a temporary directory, serves it, and draws in Chromium:
 
 Each is at DEVICE_SCALE (2) device px for each CSS px of the 980 x 552 slide.
 It also writes pairs.json, a list of [first, second] file names, for
-`motion.py --png-pair`. The tilted views are not here: the cover's numbers are
+`motion.py --png-pair`. Then it runs the renderer's browser checks
+(`window.webglChecks()`, webgl/probe/checks.ts: context loss, dispose, the
+fade, the contract of each input) and fails if one fails. The tilted views are not here: the cover's numbers are
 what the SVG's had (watches/docs/measurements.md).
 """
 
@@ -134,9 +136,17 @@ def draw(out: pathlib.Path) -> None:
                 )
                 url = str(page.evaluate("document.querySelector('canvas').toDataURL()"))
                 (out / name).write_bytes(base64.b64decode(url.split(",", 1)[1]))
+            checks = page.evaluate("window.webglChecks()")
             browser.close()
     if errors:
         sys.exit(f"the probe page failed: {errors}")
+    failures = [
+        f"  {check['name']}: {check['failure']}"
+        for check in checks
+        if check["failure"] is not None
+    ]
+    if failures:
+        sys.exit("the renderer's checks failed:\n" + "\n".join(failures))
     (out / "pairs.json").write_text(json.dumps(PAIRS) + "\n")
 
 
@@ -146,6 +156,7 @@ def main() -> None:
     arguments = parser.parse_args()
     draw(pathlib.Path(arguments.out))
     print(f"wrote {', '.join(FRAMES)} and pairs.json to {arguments.out}")
+    print("the renderer's browser checks passed")
 
 
 if __name__ == "__main__":

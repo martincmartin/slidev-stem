@@ -6,7 +6,11 @@
 // the camera moves, then the rest fades, then the camera tilts; away from it,
 // the reverse. A new state starts from what is on the screen now, so a change
 // during a transition does not jump.
+//
+// A stage owns its renderer and its frame loop: `dispose()` stops both and
+// frees the renderer's GL objects.
 
+import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
 import type { Group, Mesh, Scene, Subject, View } from "./scene.ts";
 
@@ -94,7 +98,13 @@ const SECONDS: Record<Channel, number> = {
   tilt: TILT_SECONDS,
 };
 
-/** What the measurement scripts read: each frame's start, JS time and phase. */
+/** The frames that the log keeps: 10 minutes at 60 frames a second. When it
+ *  has twice this many, it drops the oldest half, so that a long run does
+ *  not grow without end. */
+export const FRAME_LOG_LIMIT = 36_000;
+
+/** What the measurement scripts read: each frame's start, JS time and phase,
+ *  for the last FRAME_LOG_LIMIT frames or more. */
 export interface FrameLog {
   starts: number[];
   drawTimes: number[];
@@ -108,13 +118,15 @@ export class Stage<ModelState> {
   readonly renderer: Renderer;
   readonly log: FrameLog = { starts: [], drawTimes: [], phases: [], sizes: [] };
   private readonly model: Model<ModelState>;
-  private running = false;
+  /** The pending animation frame, while the stage runs. */
+  private request: number | null = null;
+  private disposed = false;
   /** Where each channel is, when no phase runs. */
   private values: Values | null = null;
   /** One after another. */
   private phases: Phase[] = [];
   /** The subject's meshes, while the rest is faded or fading. */
-  private keep: Set<Mesh> | null = null;
+  private keep: ReadonlySet<Mesh> | null = null;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -129,6 +141,7 @@ export class Stage<ModelState> {
   /** Go to a slide's state: at once, or one channel at a time from where the
    *  camera and the fade are now. */
   show(state: StageState, modelState: ModelState, instantly = false): void {
+    check(!this.disposed, "the stage is disposed");
     const now = performance.now();
     const target: Values = {
       view: state.view,
@@ -200,18 +213,40 @@ export class Stage<ModelState> {
     return running ? running.channel : this.model.phase(now);
   }
 
+  /** Draw a frame at each animation frame, until `stop()`. */
   start(): void {
-    if (this.running) return;
-    this.running = true;
-    requestAnimationFrame(this.frame);
+    check(!this.disposed, "the stage is disposed");
+    check(this.values !== null, "show a state before the stage starts");
+    this.request ??= requestAnimationFrame(this.frame);
   }
 
   stop(): void {
-    this.running = false;
+    if (this.request !== null) cancelAnimationFrame(this.request);
+    this.request = null;
+  }
+
+  /** Stop, and free the renderer. Calling it again does nothing. */
+  dispose(): void {
+    this.stop();
+    this.renderer.dispose();
+    this.disposed = true;
+  }
+
+  private trimLog(): void {
+    const { log } = this;
+    if (log.starts.length < 2 * FRAME_LOG_LIMIT) return;
+    const oldest = log.starts.length - FRAME_LOG_LIMIT;
+    for (const list of [log.starts, log.drawTimes, log.phases]) {
+      list.splice(0, oldest);
+    }
+    const first = log.starts[0] ?? Infinity;
+    // keep the size in force at the first kept frame
+    const kept = log.sizes.findLastIndex(([start]) => start <= first);
+    if (kept > 0) log.sizes.splice(0, kept);
   }
 
   private readonly frame = (now: number): void => {
-    if (!this.running) return;
+    this.request = null;
     const before = performance.now();
     const values = this.valuesAt(now);
     const size = deviceSize(this.canvas);
@@ -230,6 +265,7 @@ export class Stage<ModelState> {
     this.log.starts.push(now);
     this.log.drawTimes.push(performance.now() - before);
     this.log.phases.push(this.phaseAt(now));
-    requestAnimationFrame(this.frame);
+    this.trimLog();
+    this.request = requestAnimationFrame(this.frame);
   };
 }

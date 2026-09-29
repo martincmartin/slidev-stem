@@ -2,14 +2,21 @@
 // The choices are in watches/tasks/2026-09-28-webgl-planning/PLAN.md and in
 // stem/docs/webgl.md. It knows nothing about what a scene shows.
 //
-// Faces: the triangles of each mesh, with the depth test, in a flat colour.
+// The camera is orthographic (`viewProjection`), and each group matrix is
+// affine: the line shader has no perspective divide.
+//
+// Faces: the triangles of each mesh, with the depth test, in a flat colour,
+// seen from both sides.
 //
 // Lines: each edge is an instanced quad, expanded on the screen in the vertex
 // shader (mattdesl's "expand in the vertex shader", in screen space). The
 // fragment shader measures the distance to the segment and makes a capsule:
 // round caps, so a polyline's joins are round, and analytic antialiasing.
-// Line widths are CSS px of the slide, at every zoom. A silhouette edge is
-// drawn only where the surface turns from facing the camera to facing away.
+// Each segment is a capsule of its own, so at a join two caps overlap: a line
+// at opacity 0.5 is 1 - 0.5^2 = 0.75 there. Give a line with joins opacity 1.
+// Line widths are px of the slide (`Frame.size` over `Scene.slide`), at every
+// zoom of the camera. A silhouette edge is drawn only where the surface turns
+// from facing the camera to facing away.
 //
 // Hidden lines: the centre-line test. The faces are drawn into a depth
 // texture first. Each fragment of a line takes the point of the line's
@@ -17,30 +24,54 @@
 // no nearer than the farthest of the 2 x 2 texels around it, plus TOLERANCE.
 // So a line is drawn at its full width where its centre is visible, and not
 // at all where it is hidden: the painter's rule of the 2D art. Lines do not
-// test each other's depth: they are drawn in increasing `lineOrder`, so a
-// nearer line covers a farther one where they cross.
+// test each other's depth: they are drawn in increasing `lineOrder`, then in
+// scene order, so a later line covers an earlier one where they cross. That
+// is depth order only if `lineOrder` follows the depth of the view.
 //
-// Hidden inside: a mesh is not drawn inside its discs (in plan), at any
-// height.
+// Hidden inside: a mesh is not drawn inside its discs, in world x and y, at
+// any height.
 //
 // A fade (`keep` and `rest` of the frame) shows the meshes in `keep`, and the
 // other meshes at opacity `rest`, as one image, as SVG's group opacity does:
 // the frame is drawn twice, with the rest and without it, and the two
 // pictures are mixed. So a fading part never shows its own hidden lines, and
 // what it hid shows through it as it fades.
+//
+// Ownership: a renderer is the only user of its canvas's context, until
+// `dispose()`. It sets the GL state that it needs at the start of each frame,
+// binds a vertex array object for each draw, and leaves the default bindings
+// at the end. It keeps every GL object that it makes, and `dispose()` deletes
+// them all. After a context loss, it makes them again from the scene and the
+// last geometry of each dynamic mesh.
 
-import type { Frame, Mesh, Scene, View, Vec3 } from "./scene.ts";
-import { at } from "./checked.ts";
-import { normalMatrix } from "./mesh.ts";
+import type { Frame, Mesh, MeshGeometry, Scene, View, Vec3 } from "./scene.ts";
+import { checkGeometry, checkScene, hexRgb } from "./scene.ts";
+import { at, check, checkFinite } from "./checked.ts";
+import { IDENTITY, checkAffine, normalMatrix } from "./math.ts";
+import type { Matrix4 } from "./math.ts";
 
 const DEPTH_RANGE = 2000; // slide px: world depth maps to clip z = -depth / range
 const TOLERANCE = 0.25; // slide px of depth, for the centre-line test
 const MAX_DISCS = 4;
-// start xyz, end xyz, normal before xyz, normal after xyz, kind, colour rgba, width
-const INSTANCE_FLOATS = 18;
-const IDENTITY = Float32Array.from([
-  1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-]);
+
+/** One line segment in the instance buffer: its attributes, in order, and
+ *  the number of floats of each. */
+const INSTANCE_LAYOUT = [
+  ["start", 3],
+  ["end", 3],
+  ["normalBefore", 3],
+  ["normalAfter", 3],
+  ["kind", 1],
+  ["colour", 4],
+  ["width", 1],
+] as const;
+type InstanceAttribute = (typeof INSTANCE_LAYOUT)[number][0];
+type Instance = Record<InstanceAttribute, readonly number[]>;
+const INSTANCE_FLOATS = INSTANCE_LAYOUT.reduce(
+  (sum, [, size]) => sum + size,
+  0,
+);
+const LINE_ATTRIBUTES = ["corner", ...INSTANCE_LAYOUT.map(([name]) => name)];
 
 const DISC_GLSL = `
 uniform vec3 discs[${String(MAX_DISCS)}];  // x, y, radius in slide px
@@ -52,6 +83,7 @@ bool hidden(vec2 plan) {
   }
   return false;
 }`;
+const DISC_UNIFORMS = ["discs", "discCount"];
 
 const FILL_VS = `#version 300 es
 in vec3 position;
@@ -83,13 +115,13 @@ in vec3 normalBefore; // a silhouette edge: the surface normals on each side
 in vec3 normalAfter;
 in float kind;       // 0: always drawn; 1: drawn only on a silhouette
 in vec4 colour;      // with the stroke's opacity
-in float width;      // CSS px of the slide
+in float width;      // px of the slide
 uniform mat4 model;
 uniform mat3 normalMatrix;
 uniform mat4 viewProj;
 uniform vec3 toCamera;
 uniform vec2 viewport;
-uniform float pixelsPerCss;  // device px per CSS px of the slide
+uniform float pixelsPerSlidePx;  // device px per px of the slide
 flat out vec2 screenStart;
 flat out vec2 screenEnd;
 flat out float depthStart;
@@ -111,7 +143,7 @@ void main() {
       return;
     }
   }
-  halfWidth = width * pixelsPerCss / 2.0;
+  halfWidth = width * pixelsPerSlidePx / 2.0;
   vec2 first = (clipStart.xy * 0.5 + 0.5) * viewport;
   vec2 last = (clipEnd.xy * 0.5 + 0.5) * viewport;
   vec2 along = last - first;
@@ -188,84 +220,30 @@ void main() {
   fragColor = mix(texelFetch(withoutRest, at, 0), texelFetch(withRest, at, 0), rest);
 }`;
 
+/** Thrown while the context is lost: the renderer waits for its restoration. */
+class ContextLost extends Error {}
+
+/** A linked program, and the location of each of its uniforms and
+ *  attributes. It has exactly the names that it was compiled with. */
 interface Program {
   program: WebGLProgram;
-  uniforms: Map<string, WebGLUniformLocation | null>;
+  uniforms: Map<string, WebGLUniformLocation>;
   attributes: Map<string, number>;
 }
 
-function compile(
-  gl: WebGL2RenderingContext,
-  vertexSource: string,
-  fragmentSource: string,
-): Program {
-  const program = gl.createProgram();
-  for (const [type, source] of [
-    [gl.VERTEX_SHADER, vertexSource],
-    [gl.FRAGMENT_SHADER, fragmentSource],
-  ] as const) {
-    const shader = gl.createShader(type);
-    if (shader === null) throw new Error("no shader");
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    if (
-      !(gl.getShaderParameter(shader, gl.COMPILE_STATUS) as boolean) &&
-      !gl.isContextLost()
-    ) {
-      throw new Error(gl.getShaderInfoLog(shader) ?? "shader failed");
-    }
-    gl.attachShader(program, shader);
-  }
-  gl.linkProgram(program);
-  if (
-    !(gl.getProgramParameter(program, gl.LINK_STATUS) as boolean) &&
-    !gl.isContextLost()
-  ) {
-    throw new Error(gl.getProgramInfoLog(program) ?? "link failed");
-  }
-  const uniforms = new Map<string, WebGLUniformLocation | null>();
-  const uniformCount = gl.getProgramParameter(
-    program,
-    gl.ACTIVE_UNIFORMS,
-  ) as number;
-  for (let index = 0; index < uniformCount; index++) {
-    const name = gl.getActiveUniform(program, index)?.name.replace("[0]", "");
-    if (name !== undefined) {
-      uniforms.set(name, gl.getUniformLocation(program, name));
-    }
-  }
-  const attributes = new Map<string, number>();
-  const attributeCount = gl.getProgramParameter(
-    program,
-    gl.ACTIVE_ATTRIBUTES,
-  ) as number;
-  for (let index = 0; index < attributeCount; index++) {
-    const name = gl.getActiveAttrib(program, index)?.name;
-    if (name !== undefined) {
-      attributes.set(name, gl.getAttribLocation(program, name));
-    }
-  }
-  return { program, uniforms, attributes };
-}
-
-function uniform(program: Program, name: string): WebGLUniformLocation | null {
-  return program.uniforms.get(name) ?? null;
+function uniform(program: Program, name: string): WebGLUniformLocation {
+  const location = program.uniforms.get(name);
+  check(location !== undefined, `the program has no uniform ${name}`);
+  return location;
 }
 
 function attribute(program: Program, name: string): number {
-  return program.attributes.get(name) ?? -1;
+  const location = program.attributes.get(name);
+  check(location !== undefined, `the program has no attribute ${name}`);
+  return location;
 }
 
 type Rgba = [number, number, number, number];
-
-function hexRgb(hex: string): Vec3 {
-  const value = parseInt(hex.slice(1), 16);
-  return [
-    ((value >> 16) & 255) / 255,
-    ((value >> 8) & 255) / 255,
-    (value & 255) / 255,
-  ];
-}
 
 function hexColour(hex: string, alpha = 1): Rgba {
   const [red, green, blue] = hexRgb(hex);
@@ -285,7 +263,7 @@ export interface Camera {
 export function viewProjection(
   view: View,
   tiltDegrees: number,
-  slide: [number, number],
+  slide: readonly [number, number],
 ): Camera {
   const [width, height] = slide;
   const tilt = (tiltDegrees * Math.PI) / 180;
@@ -322,28 +300,19 @@ export function viewProjection(
 }
 
 // ---- the renderer --------------------------------------------------------------------
-/** The geometry that a dynamic mesh takes each frame. */
-export type MeshGeometry = Pick<
-  Mesh,
-  "triangles" | "lines" | "silhouetteEdges"
->;
-
 export interface RendererOptions {
   /** For screenshots and stills. */
   preserveDrawingBuffer?: boolean;
 }
 
-interface MeshBuffers {
+/** A mesh's buffers and vertex arrays, made once for each context. */
+interface MeshResources {
   triangles: WebGLBuffer;
-  triangleVertices: number;
   lines: WebGLBuffer;
+  faces: WebGLVertexArrayObject;
+  segments: WebGLVertexArrayObject;
+  triangleVertices: number;
   lineCount: number;
-}
-
-interface DrawnMesh {
-  mesh: Mesh;
-  fillColour: Rgba | null;
-  discs: Float32Array;
 }
 
 interface Target {
@@ -353,118 +322,375 @@ interface Target {
   framebuffer: WebGLFramebuffer;
 }
 
+/** Everything that lives in the context: made again after a context loss. */
+interface Resources {
+  fill: Program;
+  line: Program;
+  mix: Program;
+  corners: WebGLBuffer;
+  /** No attributes: the mix makes its triangle from gl_VertexID. */
+  empty: WebGLVertexArrayObject;
+  meshes: Map<Mesh, MeshResources>;
+  /** Picture 0, and picture 1 for a fade. */
+  targets: (Target | undefined)[];
+}
+
+/** What the renderer computes once for each mesh, from the scene. */
+interface DrawnMesh {
+  mesh: Mesh;
+  fillColour: Rgba | null;
+  discs: Float32Array;
+}
+
 /** What one picture needs: the camera and where each mesh is. */
 interface Picture {
   camera: Camera;
-  models: Map<Mesh, Float32Array>;
+  models: Map<Mesh, Matrix4>;
   size: [number, number];
-  pixelsPerCss: number;
+  pixelsPerSlidePx: number;
 }
 
-function lineInstances(mesh: Mesh): Float32Array {
+function modelOf(picture: Picture, mesh: Mesh): Matrix4 {
+  const model = picture.models.get(mesh);
+  check(model !== undefined, `${mesh.name} is not in the picture`);
+  return model;
+}
+
+function appendInstance(values: number[], instance: Instance): void {
+  for (const [name, size] of INSTANCE_LAYOUT) {
+    const part = instance[name];
+    check(part.length === size, `${name} has ${String(part.length)} values`);
+    for (const value of part) values.push(value);
+  }
+}
+
+function lineInstances(geometry: MeshGeometry): Float32Array {
   const values: number[] = [];
-  for (const line of mesh.lines) {
+  const none = [0, 0, 0];
+  for (const line of geometry.lines) {
     const { colour, opacity, width } = line.style;
-    const style = [...hexColour(colour, opacity), width];
     const count = line.points.length;
     for (let index = 0; index < (line.closed ? count : count - 1); index++) {
-      const start = at(line.points, index);
-      const end = at(line.points, (index + 1) % count);
-      values.push(...start, ...end, 0, 0, 0, 0, 0, 0, 0, ...style);
+      appendInstance(values, {
+        start: at(line.points, index),
+        end: at(line.points, (index + 1) % count),
+        normalBefore: none,
+        normalAfter: none,
+        kind: [0],
+        colour: hexColour(colour, opacity),
+        width: [width],
+      });
     }
   }
-  for (const edge of mesh.silhouetteEdges) {
+  for (const edge of geometry.silhouetteEdges) {
     const { colour, opacity, width } = edge.style;
-    values.push(
-      ...edge.start,
-      ...edge.end,
-      ...edge.normalBefore,
-      ...edge.normalAfter,
-      1,
-      ...hexColour(colour, opacity),
-      width,
-    );
+    appendInstance(values, {
+      start: edge.start,
+      end: edge.end,
+      normalBefore: edge.normalBefore,
+      normalAfter: edge.normalAfter,
+      kind: [1],
+      colour: hexColour(colour, opacity),
+      width: [width],
+    });
   }
   return new Float32Array(values);
 }
+
+function segmentCount(geometry: MeshGeometry): number {
+  let count = geometry.silhouetteEdges.length;
+  for (const line of geometry.lines) {
+    count += line.closed ? line.points.length : line.points.length - 1;
+  }
+  return count;
+}
+
+/** The canvases that a live renderer draws on. */
+const CLAIMED = new WeakSet<HTMLCanvasElement>();
 
 export class Renderer {
   readonly canvas: HTMLCanvasElement;
   readonly scene: Scene;
   contextsLost = 0;
   private readonly gl: WebGL2RenderingContext;
-  private fill!: Program;
-  private line!: Program;
-  private mix!: Program;
-  private cornerBuffer!: WebGLBuffer;
-  private drawn: DrawnMesh[] = [];
-  private buffers = new Map<Mesh, MeshBuffers>();
-  private targets: Target[] = [];
   private readonly paper: Rgba;
+  /** In the order of their lines. */
+  private readonly drawn: DrawnMesh[];
+  /** The geometry that each mesh has now: its own, or the last that
+   *  `updateMesh` gave it. */
+  private readonly geometry = new Map<Mesh, MeshGeometry>();
+  /** Each GL object that this renderer made, and how to delete it. */
+  private readonly owned = new Map<object, () => void>();
+  private resources: Resources | null = null;
+  private disposed = false;
 
+  /** Checks the scene, and takes the canvas's WebGL2 context. The canvas
+   *  must not have another renderer until that one's `dispose()`. */
   constructor(
     canvas: HTMLCanvasElement,
     scene: Scene,
     options: RendererOptions = {},
   ) {
+    check(
+      !CLAIMED.has(canvas),
+      "another renderer draws on this canvas: dispose it first",
+    );
+    checkScene(scene);
+    for (const mesh of scene.meshes) {
+      check(
+        mesh.hiddenInside.length <= MAX_DISCS,
+        `${mesh.name} has more than ${String(MAX_DISCS)} discs`,
+      );
+    }
     this.canvas = canvas;
     this.scene = scene;
     this.paper = hexColour(scene.paper);
+    // Lines are drawn in increasing lineOrder, then in scene order.
+    this.drawn = [...scene.meshes]
+      .sort((first, second) => first.lineOrder - second.lineOrder)
+      .map((mesh) => this.prepare(mesh));
+    for (const mesh of scene.meshes) this.geometry.set(mesh, mesh);
+    const preserveDrawingBuffer = options.preserveDrawingBuffer ?? false;
     const gl = canvas.getContext("webgl2", {
       antialias: false,
       alpha: false,
-      preserveDrawingBuffer: options.preserveDrawingBuffer ?? false,
+      preserveDrawingBuffer,
     });
-    if (gl === null) throw new Error("no WebGL2");
+    check(
+      gl !== null,
+      "no WebGL2 (or the canvas has a context of another kind)",
+    );
+    // A canvas keeps its first context: an earlier renderer's settings stay.
+    const settings = gl.getContextAttributes();
+    check(
+      settings === null ||
+        (settings.antialias === false &&
+          settings.alpha === false &&
+          settings.preserveDrawingBuffer === preserveDrawingBuffer),
+      "the canvas already has a WebGL2 context with other settings",
+    );
     this.gl = gl;
-    canvas.addEventListener("webglcontextlost", (event) => {
-      event.preventDefault(); // so that the browser may restore it
-      this.contextsLost++;
-    });
-    canvas.addEventListener("webglcontextrestored", () => {
-      this.initialise();
-    });
-    this.initialise();
+    CLAIMED.add(canvas);
+    canvas.addEventListener("webglcontextlost", this.onContextLost);
+    canvas.addEventListener("webglcontextrestored", this.onContextRestored);
+    try {
+      this.resources = this.initialise();
+    } catch (error) {
+      this.dispose();
+      throw error;
+    }
   }
 
-  /** Everything that lives in the context: made again after a context loss. */
-  private initialise(): void {
-    const gl = this.gl;
-    this.fill = compile(gl, FILL_VS, FILL_FS);
-    this.line = compile(gl, LINE_VS, LINE_FS);
-    this.mix = compile(gl, MIX_VS, MIX_FS);
-    this.cornerBuffer = this.makeBuffer(
-      new Float32Array([0, -1, 0, 1, 1, -1, 1, 1]),
+  private readonly onContextLost = (event: Event): void => {
+    event.preventDefault(); // so that the browser may restore it
+    this.contextsLost++;
+    // The lost context's objects are gone: there is nothing to delete.
+    this.owned.clear();
+    this.resources = null;
+  };
+
+  private readonly onContextRestored = (): void => {
+    this.resources = this.initialise();
+  };
+
+  /** Delete every GL object that this renderer made, and let the canvas take
+   *  a new renderer. Afterwards `render` and `updateMesh` throw. Calling it
+   *  again does nothing. */
+  dispose(): void {
+    if (this.disposed) return;
+    this.disposed = true;
+    this.canvas.removeEventListener("webglcontextlost", this.onContextLost);
+    this.canvas.removeEventListener(
+      "webglcontextrestored",
+      this.onContextRestored,
     );
-    this.buffers = new Map();
-    // Lines are drawn in increasing lineOrder, then in scene order.
-    this.drawn = [...this.scene.meshes]
-      .sort((first, second) => first.lineOrder - second.lineOrder)
-      .map((mesh) => this.prepare(mesh));
-    this.targets = [];
+    this.freeAll();
+    this.resources = null;
+    CLAIMED.delete(this.canvas);
   }
 
-  private makeBuffer(data: Float32Array, dynamic = false): WebGLBuffer {
+  private own<Made extends object>(
+    made: Made,
+    remove: (made: Made) => void,
+  ): Made {
+    this.owned.set(made, () => {
+      remove(made);
+    });
+    return made;
+  }
+
+  private free(made: object): void {
+    this.owned.get(made)?.();
+    this.owned.delete(made);
+  }
+
+  private freeAll(): void {
+    if (!this.gl.isContextLost()) {
+      for (const remove of this.owned.values()) remove();
+    }
+    this.owned.clear();
+  }
+
+  /** Make everything that lives in the context. `null` if the context is
+   *  lost: then it is made when the context comes back. */
+  private initialise(): Resources | null {
     const gl = this.gl;
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      data,
-      dynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW,
-    );
-    return buffer;
+    this.freeAll();
+    if (gl.isContextLost()) return null;
+    try {
+      const corners = this.makeBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, corners);
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([0, -1, 0, 1, 1, -1, 1, 1]),
+        gl.STATIC_DRAW,
+      );
+      const resources: Resources = {
+        fill: this.compile(FILL_VS, FILL_FS, {
+          uniforms: ["model", "viewProj", "color", ...DISC_UNIFORMS],
+          attributes: ["position"],
+        }),
+        line: this.compile(LINE_VS, LINE_FS, {
+          uniforms: [
+            "model",
+            "normalMatrix",
+            "viewProj",
+            "toCamera",
+            "viewport",
+            "pixelsPerSlidePx",
+            "tolerance",
+            "faceDepth",
+            ...DISC_UNIFORMS,
+          ],
+          attributes: LINE_ATTRIBUTES,
+        }),
+        mix: this.compile(MIX_VS, MIX_FS, {
+          uniforms: ["withRest", "withoutRest", "rest"],
+          attributes: [],
+        }),
+        corners,
+        empty: this.makeVertexArray(),
+        meshes: new Map(),
+        targets: [],
+      };
+      for (const [mesh, geometry] of this.geometry) {
+        resources.meshes.set(
+          mesh,
+          this.meshResources(resources, mesh, geometry),
+        );
+      }
+      this.leaveDefaults();
+      return resources;
+    } catch (error) {
+      this.freeAll();
+      if (error instanceof ContextLost) return null;
+      throw error;
+    }
+  }
+
+  private makeBuffer(): WebGLBuffer {
+    const gl = this.gl;
+    return this.own(gl.createBuffer(), (made) => {
+      gl.deleteBuffer(made);
+    });
+  }
+
+  private makeVertexArray(): WebGLVertexArrayObject {
+    const gl = this.gl;
+    return this.own(gl.createVertexArray(), (made) => {
+      gl.deleteVertexArray(made);
+    });
+  }
+
+  private makeTexture(): WebGLTexture {
+    const gl = this.gl;
+    return this.own(gl.createTexture(), (made) => {
+      gl.deleteTexture(made);
+    });
+  }
+
+  /** Compile and link, and check that the program has exactly the uniforms
+   *  and attributes that the renderer sets. */
+  private compile(
+    vertexSource: string,
+    fragmentSource: string,
+    names: { uniforms: string[]; attributes: string[] },
+  ): Program {
+    const gl = this.gl;
+    const program = this.own(gl.createProgram(), (made) => {
+      gl.deleteProgram(made);
+    });
+    const shaders: WebGLShader[] = [];
+    try {
+      for (const [type, source] of [
+        [gl.VERTEX_SHADER, vertexSource],
+        [gl.FRAGMENT_SHADER, fragmentSource],
+      ] as const) {
+        const shader = gl.createShader(type);
+        if (shader === null) throw new ContextLost();
+        shaders.push(shader);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        gl.attachShader(program, shader);
+      }
+      gl.linkProgram(program);
+      if (gl.isContextLost()) throw new ContextLost();
+      if (!(gl.getProgramParameter(program, gl.LINK_STATUS) as boolean)) {
+        const logs = shaders.map((shader) => gl.getShaderInfoLog(shader));
+        throw new Error(
+          [gl.getProgramInfoLog(program), ...logs].filter(Boolean).join("\n") ||
+            "the program did not link",
+        );
+      }
+    } finally {
+      // A linked program keeps what it needs: the shaders can go.
+      for (const shader of shaders) {
+        gl.detachShader(program, shader);
+        gl.deleteShader(shader);
+      }
+    }
+    const uniforms = new Map<string, WebGLUniformLocation>();
+    const uniformCount = gl.getProgramParameter(
+      program,
+      gl.ACTIVE_UNIFORMS,
+    ) as number;
+    for (let index = 0; index < uniformCount; index++) {
+      const name = gl.getActiveUniform(program, index)?.name.replace("[0]", "");
+      if (name?.startsWith("gl_")) continue;
+      const location =
+        name === undefined ? null : gl.getUniformLocation(program, name);
+      if (name === undefined || location === null) throw new ContextLost();
+      uniforms.set(name, location);
+    }
+    const attributes = new Map<string, number>();
+    const attributeCount = gl.getProgramParameter(
+      program,
+      gl.ACTIVE_ATTRIBUTES,
+    ) as number;
+    for (let index = 0; index < attributeCount; index++) {
+      const name = gl.getActiveAttrib(program, index)?.name;
+      if (name === undefined) throw new ContextLost();
+      // Some drivers list built-ins (gl_VertexID): they have no location.
+      if (name.startsWith("gl_")) continue;
+      attributes.set(name, gl.getAttribLocation(program, name));
+    }
+    for (const [kind, found, wanted] of [
+      ["uniforms", [...uniforms.keys()], names.uniforms],
+      ["attributes", [...attributes.keys()], names.attributes],
+    ] as const) {
+      check(
+        [...found].sort().join() === [...wanted].sort().join(),
+        `the program's ${kind} are ${found.join(", ")}, not ${wanted.join(", ")}`,
+      );
+    }
+    return { program, uniforms, attributes };
   }
 
   private prepare(mesh: Mesh): DrawnMesh {
-    if (mesh.hiddenInside.length > MAX_DISCS) {
-      throw new Error(`${mesh.name} has more than ${String(MAX_DISCS)} discs`);
-    }
     const discs = new Float32Array(3 * MAX_DISCS);
     for (const [index, disc] of mesh.hiddenInside.entries()) {
       discs.set([...disc.centre, disc.radius], 3 * index);
     }
-    this.build(mesh);
     return { mesh, fillColour: this.fillColour(mesh), discs };
   }
 
@@ -483,57 +709,122 @@ export class Renderer {
     ];
   }
 
-  private build(mesh: Mesh): void {
+  /** A mesh's buffers, and a vertex array for its faces and one for its
+   *  lines, with the geometry in them. */
+  private meshResources(
+    resources: Resources,
+    mesh: Mesh,
+    geometry: MeshGeometry,
+  ): MeshResources {
     const gl = this.gl;
-    const old = this.buffers.get(mesh);
-    if (old) {
-      gl.deleteBuffer(old.triangles);
-      gl.deleteBuffer(old.lines);
+    const made: MeshResources = {
+      triangles: this.makeBuffer(),
+      lines: this.makeBuffer(),
+      faces: this.makeVertexArray(),
+      segments: this.makeVertexArray(),
+      triangleVertices: 0,
+      lineCount: 0,
+    };
+    gl.bindVertexArray(made.faces);
+    const position = attribute(resources.fill, "position");
+    gl.bindBuffer(gl.ARRAY_BUFFER, made.triangles);
+    gl.enableVertexAttribArray(position);
+    gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
+
+    gl.bindVertexArray(made.segments);
+    const corner = attribute(resources.line, "corner");
+    gl.bindBuffer(gl.ARRAY_BUFFER, resources.corners);
+    gl.enableVertexAttribArray(corner);
+    gl.vertexAttribPointer(corner, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, made.lines);
+    let offset = 0;
+    for (const [name, size] of INSTANCE_LAYOUT) {
+      const location = attribute(resources.line, name);
+      gl.enableVertexAttribArray(location);
+      gl.vertexAttribPointer(
+        location,
+        size,
+        gl.FLOAT,
+        false,
+        INSTANCE_FLOATS * 4,
+        offset * 4,
+      );
+      gl.vertexAttribDivisor(location, 1);
+      offset += size;
     }
-    const lines = lineInstances(mesh);
-    this.buffers.set(mesh, {
-      triangles: this.makeBuffer(mesh.triangles, mesh.dynamic),
-      triangleVertices: mesh.triangles.length / 3,
-      lines: this.makeBuffer(lines, mesh.dynamic),
-      lineCount: lines.length / INSTANCE_FLOATS,
-    });
+    gl.bindVertexArray(null);
+    this.upload(made, mesh, geometry);
+    return made;
   }
 
-  /** A dynamic mesh takes new geometry (the spring at the balance's angle). */
+  /** Put the geometry into the mesh's buffers (the same buffers each time). */
+  private upload(
+    made: MeshResources,
+    mesh: Mesh,
+    geometry: MeshGeometry,
+  ): void {
+    const gl = this.gl;
+    const usage = mesh.dynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
+    const lines = lineInstances(geometry);
+    gl.bindBuffer(gl.ARRAY_BUFFER, made.triangles);
+    gl.bufferData(gl.ARRAY_BUFFER, geometry.triangles, usage);
+    gl.bindBuffer(gl.ARRAY_BUFFER, made.lines);
+    gl.bufferData(gl.ARRAY_BUFFER, lines, usage);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    made.triangleVertices = geometry.triangles.length / 3;
+    made.lineCount = lines.length / INSTANCE_FLOATS;
+  }
+
+  /** A dynamic mesh of the scene takes new geometry (the spring at the
+   *  balance's angle). The mesh itself does not change: this renderer keeps
+   *  the geometry. */
   updateMesh(mesh: Mesh, geometry: MeshGeometry): void {
-    mesh.triangles = geometry.triangles;
-    mesh.lines = geometry.lines;
-    mesh.silhouetteEdges = geometry.silhouetteEdges;
-    if (!this.gl.isContextLost()) this.build(mesh);
+    check(!this.disposed, "the renderer is disposed");
+    check(this.geometry.has(mesh), `${mesh.name} is not in the scene`);
+    check(mesh.dynamic, `${mesh.name} is not dynamic`);
+    checkGeometry(geometry, mesh.name);
+    this.geometry.set(mesh, geometry);
+    const made = this.resources?.meshes.get(mesh);
+    if (made && !this.gl.isContextLost()) this.upload(made, mesh, geometry);
   }
 
   /** The picture `index` (0, or 1 for a fade's second picture), at this size. */
-  private target(index: number, width: number, height: number): Target {
+  private target(
+    resources: Resources,
+    index: number,
+    width: number,
+    height: number,
+  ): Target {
     const gl = this.gl;
-    const old = this.targets[index];
+    const old = resources.targets[index];
     if (old?.size[0] === width && old.size[1] === height) return old;
     if (old) {
-      gl.deleteTexture(old.colour);
-      gl.deleteTexture(old.depth);
-      gl.deleteFramebuffer(old.framebuffer);
+      this.free(old.colour);
+      this.free(old.depth);
+      this.free(old.framebuffer);
+      resources.targets[index] = undefined;
     }
     const texture = (format: number): WebGLTexture => {
-      const made = gl.createTexture();
+      const made = this.makeTexture();
       gl.bindTexture(gl.TEXTURE_2D, made);
       gl.texStorage2D(gl.TEXTURE_2D, 1, format, width, height);
       for (const parameter of [gl.TEXTURE_MIN_FILTER, gl.TEXTURE_MAG_FILTER]) {
         gl.texParameteri(gl.TEXTURE_2D, parameter, gl.NEAREST);
       }
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_COMPARE_MODE, gl.NONE);
+      gl.bindTexture(gl.TEXTURE_2D, null);
       return made;
     };
-    const framebuffer = gl.createFramebuffer();
+    const framebuffer = this.own(gl.createFramebuffer(), (made) => {
+      gl.deleteFramebuffer(made);
+    });
     const target: Target = {
       size: [width, height],
       colour: texture(gl.RGBA8),
       depth: texture(gl.DEPTH_COMPONENT24),
       framebuffer,
     };
+    resources.targets[index] = target;
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.framebufferTexture2D(
       gl.FRAMEBUFFER,
@@ -543,7 +834,12 @@ export class Renderer {
       0,
     );
     this.attachDepth(target, true);
-    this.targets[index] = target;
+    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (gl.isContextLost()) throw new ContextLost();
+    check(
+      status === gl.FRAMEBUFFER_COMPLETE,
+      `a ${String(width)} x ${String(height)} picture is not complete (status ${String(status)})`,
+    );
     return target;
   }
 
@@ -558,95 +854,181 @@ export class Renderer {
     );
   }
 
-  /** Draw one frame. */
+  /** Check the frame, and find each mesh's model matrix. */
+  private picture(frame: Frame, shown: DrawnMesh[]): Picture {
+    const [width, height] = frame.size;
+    check(
+      Number.isInteger(width) &&
+        Number.isInteger(height) &&
+        width > 0 &&
+        height > 0,
+      `a frame of ${String(width)} x ${String(height)} device px`,
+    );
+    const { view } = frame;
+    checkFinite(
+      [frame.tilt, view.scale, ...view.shift, ...view.pivot],
+      `the frame's view ${view.name}`,
+    );
+    check(view.scale > 0, `${view.name}: scale ${String(view.scale)}`);
+    const checked = new Set<Float32Array>();
+    const models = new Map<Mesh, Matrix4>();
+    for (const { mesh } of shown) {
+      let model = IDENTITY;
+      if (mesh.group) {
+        const matrix = frame.groupMatrices.get(mesh.group);
+        check(
+          matrix !== undefined,
+          `the frame has no matrix for ${mesh.group.name}`,
+        );
+        if (!checked.has(matrix)) {
+          checkAffine(matrix, `${mesh.group.name}'s matrix`);
+          normalMatrix(matrix); // throws if it is singular
+          checked.add(matrix);
+        }
+        model = matrix;
+      }
+      models.set(mesh, model);
+    }
+    return {
+      camera: viewProjection(view, frame.tilt, this.scene.slide),
+      models,
+      size: [width, height],
+      pixelsPerSlidePx: width / this.scene.slide[0],
+    };
+  }
+
+  /** Draw one frame. It sets the canvas's size to `frame.size`: give it the
+   *  slide's aspect ratio, or the picture is stretched. */
   render(frame: Frame): void {
+    check(!this.disposed, "the renderer is disposed");
+    const keep = frame.keep ?? new Set<Mesh>();
+    for (const mesh of keep) {
+      check(this.geometry.has(mesh), `${mesh.name} is not in the scene`);
+    }
+    const rest = frame.rest ?? 1;
+    check(rest >= 0 && rest <= 1, `rest ${String(rest)} is outside 0..1`);
+    const shown = this.drawn.filter(
+      ({ mesh }) => !(frame.drawingOnly ?? false) || mesh.inDrawing,
+    );
+    const picture = this.picture(frame, shown);
     const gl = this.gl;
     if (gl.isContextLost()) return;
-    const [width, height] = frame.size;
+    this.resources ??= this.initialise();
+    const resources = this.resources;
+    if (resources === null) return; // lost while it was made
+    const [width, height] = picture.size;
     if (this.canvas.width !== width || this.canvas.height !== height) {
       this.canvas.width = width;
       this.canvas.height = height;
     }
-    const shown = this.drawn.filter(
-      ({ mesh }) => !(frame.drawingOnly ?? false) || mesh.inDrawing,
-    );
-    const models = new Map<Mesh, Float32Array>();
-    for (const { mesh } of shown) {
-      models.set(
-        mesh,
-        (mesh.group ? frame.groupMatrices.get(mesh.group) : undefined) ??
-          IDENTITY,
-      );
-    }
-    const picture: Picture = {
-      camera: viewProjection(frame.view, frame.tilt, this.scene.slide),
-      models,
-      size: [width, height],
-      pixelsPerCss: width / this.scene.slide[0],
-    };
-    const keep = frame.keep;
-    const rest = keep ? Math.min(Math.max(frame.rest ?? 1, 0), 1) : 1;
-    const kept = shown.filter(({ mesh }) => keep?.has(mesh));
-
-    if (rest === 1 || rest === 0) {
-      const target = this.draw(0, rest === 1 ? shown : kept, picture);
-      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, target.framebuffer);
-      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-      gl.blitFramebuffer(
-        0,
-        0,
-        width,
-        height,
-        0,
-        0,
-        width,
-        height,
-        gl.COLOR_BUFFER_BIT,
-        gl.NEAREST,
-      );
+    this.setState();
+    try {
+      const kept = shown.filter(({ mesh }) => keep.has(mesh));
+      if (rest === 1 || rest === 0) {
+        const target = this.draw(
+          resources,
+          0,
+          rest === 1 ? shown : kept,
+          picture,
+        );
+        gl.bindFramebuffer(gl.READ_FRAMEBUFFER, target.framebuffer);
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+        gl.blitFramebuffer(
+          0,
+          0,
+          width,
+          height,
+          0,
+          0,
+          width,
+          height,
+          gl.COLOR_BUFFER_BIT,
+          gl.NEAREST,
+        );
+        return;
+      }
+      const withRest = this.draw(resources, 0, shown, picture);
+      const withoutRest = this.draw(resources, 1, kept, picture);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-      return;
+      gl.viewport(0, 0, width, height);
+      gl.disable(gl.DEPTH_TEST);
+      gl.disable(gl.BLEND);
+      const program = resources.mix;
+      gl.useProgram(program.program);
+      gl.bindVertexArray(resources.empty);
+      for (const [unit, target] of [withRest, withoutRest].entries()) {
+        gl.activeTexture(gl.TEXTURE0 + unit);
+        gl.bindTexture(gl.TEXTURE_2D, target.colour);
+      }
+      gl.uniform1i(uniform(program, "withRest"), 0);
+      gl.uniform1i(uniform(program, "withoutRest"), 1);
+      gl.uniform1f(uniform(program, "rest"), rest);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    } catch (error) {
+      if (!(error instanceof ContextLost)) throw error;
+    } finally {
+      this.leaveDefaults();
     }
-    const withRest = this.draw(0, shown, picture);
-    const withoutRest = this.draw(1, kept, picture);
+  }
+
+  /** The state that a frame assumes, whatever other code left. */
+  private setState(): void {
+    const gl = this.gl;
+    for (const capability of [
+      gl.SCISSOR_TEST,
+      gl.CULL_FACE,
+      gl.STENCIL_TEST,
+      gl.POLYGON_OFFSET_FILL,
+      gl.RASTERIZER_DISCARD,
+      gl.SAMPLE_ALPHA_TO_COVERAGE,
+      gl.SAMPLE_COVERAGE,
+    ]) {
+      gl.disable(capability);
+    }
+    gl.colorMask(true, true, true, true);
+  }
+
+  /** The default bindings, and no blend or depth test. */
+  private leaveDefaults(): void {
+    const gl = this.gl;
+    gl.bindVertexArray(null);
+    gl.useProgram(null);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.viewport(0, 0, width, height);
-    gl.disable(gl.DEPTH_TEST);
-    gl.disable(gl.BLEND);
-    const program = this.mix;
-    gl.useProgram(program.program);
-    for (const [unit, target] of [withRest, withoutRest].entries()) {
-      gl.activeTexture(gl.TEXTURE0 + unit);
-      gl.bindTexture(gl.TEXTURE_2D, target.colour);
-    }
-    gl.uniform1i(uniform(program, "withRest"), 0);
-    gl.uniform1i(uniform(program, "withoutRest"), 1);
-    gl.uniform1f(uniform(program, "rest"), rest);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
     for (const unit of [1, 0]) {
       gl.activeTexture(gl.TEXTURE0 + unit);
       gl.bindTexture(gl.TEXTURE_2D, null);
     }
+    gl.disable(gl.BLEND);
+    gl.disable(gl.DEPTH_TEST);
+    gl.depthMask(true);
+    gl.depthFunc(gl.LESS);
   }
 
   /** Draw `meshes` into the picture `index`: faces, then lines. */
-  private draw(index: number, meshes: DrawnMesh[], picture: Picture): Target {
+  private draw(
+    resources: Resources,
+    index: number,
+    meshes: DrawnMesh[],
+    picture: Picture,
+  ): Target {
     const gl = this.gl;
     const [width, height] = picture.size;
-    const target = this.target(index, width, height);
+    const target = this.target(resources, index, width, height);
     gl.bindFramebuffer(gl.FRAMEBUFFER, target.framebuffer);
     this.attachDepth(target, true);
     gl.viewport(0, 0, width, height);
     gl.clearColor(...this.paper);
     gl.clearDepth(1);
+    gl.depthMask(true);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.disable(gl.BLEND);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LESS);
-    this.drawFaces(meshes, picture);
+    this.drawFaces(resources, meshes, picture);
     // The lines read the depth texture: it must not be attached while they do.
     this.attachDepth(target, false);
-    this.drawLines(meshes, picture, target);
+    this.drawLines(resources, meshes, picture, target);
     this.attachDepth(target, true);
     return target;
   }
@@ -657,42 +1039,49 @@ export class Renderer {
     gl.uniform1i(uniform(program, "discCount"), drawn.mesh.hiddenInside.length);
   }
 
-  private drawFaces(meshes: DrawnMesh[], picture: Picture): void {
+  private meshResourcesOf(resources: Resources, mesh: Mesh): MeshResources {
+    const made = resources.meshes.get(mesh);
+    check(made !== undefined, `${mesh.name} has no buffers`);
+    return made;
+  }
+
+  private drawFaces(
+    resources: Resources,
+    meshes: DrawnMesh[],
+    picture: Picture,
+  ): void {
     const gl = this.gl;
-    const program = this.fill;
+    const program = resources.fill;
     gl.useProgram(program.program);
     gl.uniformMatrix4fv(
       uniform(program, "viewProj"),
       false,
       picture.camera.matrix,
     );
-    const position = attribute(program, "position");
-    gl.enableVertexAttribArray(position);
-    gl.depthMask(true);
     for (const drawn of meshes) {
-      const buffers = this.buffers.get(drawn.mesh);
-      if (!drawn.fillColour || !buffers || buffers.triangleVertices === 0)
-        continue;
+      const made = this.meshResourcesOf(resources, drawn.mesh);
+      if (!drawn.fillColour || made.triangleVertices === 0) continue;
       gl.uniformMatrix4fv(
         uniform(program, "model"),
         false,
-        picture.models.get(drawn.mesh) ?? IDENTITY,
+        modelOf(picture, drawn.mesh),
       );
       gl.uniform4fv(uniform(program, "color"), drawn.fillColour);
       this.setDiscs(program, drawn);
-      gl.bindBuffer(gl.ARRAY_BUFFER, buffers.triangles);
-      gl.vertexAttribPointer(position, 3, gl.FLOAT, false, 0, 0);
-      gl.drawArrays(gl.TRIANGLES, 0, buffers.triangleVertices);
+      gl.bindVertexArray(made.faces);
+      gl.drawArrays(gl.TRIANGLES, 0, made.triangleVertices);
     }
+    gl.bindVertexArray(null);
   }
 
   private drawLines(
+    resources: Resources,
     meshes: DrawnMesh[],
     picture: Picture,
     target: Target,
   ): void {
     const gl = this.gl;
-    const program = this.line;
+    const program = resources.line;
     gl.useProgram(program.program);
     gl.uniformMatrix4fv(
       uniform(program, "viewProj"),
@@ -701,7 +1090,10 @@ export class Renderer {
     );
     gl.uniform3fv(uniform(program, "toCamera"), picture.camera.toCamera);
     gl.uniform2fv(uniform(program, "viewport"), picture.size);
-    gl.uniform1f(uniform(program, "pixelsPerCss"), picture.pixelsPerCss);
+    gl.uniform1f(
+      uniform(program, "pixelsPerSlidePx"),
+      picture.pixelsPerSlidePx,
+    );
     gl.uniform1f(uniform(program, "tolerance"), TOLERANCE / (2 * DEPTH_RANGE));
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, target.depth);
@@ -715,25 +1107,10 @@ export class Renderer {
       gl.ONE,
       gl.ONE_MINUS_SRC_ALPHA,
     );
-
-    const corner = attribute(program, "corner");
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.cornerBuffer);
-    gl.enableVertexAttribArray(corner);
-    gl.vertexAttribPointer(corner, 2, gl.FLOAT, false, 0, 0);
-    gl.vertexAttribDivisor(corner, 0);
-    const layout = [
-      ["start", 3, 0],
-      ["end", 3, 3],
-      ["normalBefore", 3, 6],
-      ["normalAfter", 3, 9],
-      ["kind", 1, 12],
-      ["colour", 4, 13],
-      ["width", 1, 17],
-    ] as const;
     for (const drawn of meshes) {
-      const buffers = this.buffers.get(drawn.mesh);
-      if (!buffers || buffers.lineCount === 0) continue;
-      const model = picture.models.get(drawn.mesh) ?? IDENTITY;
+      const made = this.meshResourcesOf(resources, drawn.mesh);
+      if (made.lineCount === 0) continue;
+      const model = modelOf(picture, drawn.mesh);
       gl.uniformMatrix4fv(uniform(program, "model"), false, model);
       gl.uniformMatrix3fv(
         uniform(program, "normalMatrix"),
@@ -741,28 +1118,13 @@ export class Renderer {
         normalMatrix(model),
       );
       this.setDiscs(program, drawn);
-      gl.bindBuffer(gl.ARRAY_BUFFER, buffers.lines);
-      for (const [name, size, offset] of layout) {
-        const location = attribute(program, name);
-        gl.enableVertexAttribArray(location);
-        gl.vertexAttribPointer(
-          location,
-          size,
-          gl.FLOAT,
-          false,
-          INSTANCE_FLOATS * 4,
-          offset * 4,
-        );
-        gl.vertexAttribDivisor(location, 1);
-      }
-      gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, buffers.lineCount);
+      gl.bindVertexArray(made.segments);
+      gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, made.lineCount);
     }
-    for (const [name] of layout)
-      gl.vertexAttribDivisor(attribute(program, name), 0);
+    gl.bindVertexArray(null);
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.disable(gl.BLEND);
     gl.depthMask(true);
-    gl.depthFunc(gl.LESS);
   }
 
   /** What the GPU is, and how much there is to draw. */
@@ -781,9 +1143,9 @@ export class Renderer {
       String(gl.getParameter(parameter));
     let triangles = 0;
     let lineSegments = 0;
-    for (const buffers of this.buffers.values()) {
-      triangles += buffers.triangleVertices / 3;
-      lineSegments += buffers.lineCount;
+    for (const geometry of this.geometry.values()) {
+      triangles += geometry.triangles.length / 9;
+      lineSegments += segmentCount(geometry);
     }
     return {
       renderer: text(debug ? debug.UNMASKED_RENDERER_WEBGL : gl.RENDERER),

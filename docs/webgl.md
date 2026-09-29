@@ -15,6 +15,8 @@ The decision and its evidence:
 [`watches/tasks/2026-09-28-webgl-planning/`](../watches/tasks/2026-09-28-webgl-planning/PLAN.md).
 The build, its plan, and the measurements:
 [`watches/tasks/2026-09-29-webgl-watch/`](../watches/tasks/2026-09-29-webgl-watch/PLAN.md).
+The renderer's contract (checks, `dispose`, vertex arrays):
+[`watches/tasks/2026-09-29-webgl-review-fixes/`](../watches/tasks/2026-09-29-webgl-review-fixes/PLAN.md).
 
 ## How it is built
 
@@ -29,9 +31,10 @@ The files, in `watches/`:
 
 | Path                                                     | What it holds                                                                                                                                                         |
 | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `webgl/scene.ts`                                         | the types of a scene: meshes, lines, silhouette edges, clip discs, groups, views, subjects                                                                            |
+| `webgl/scene.ts`                                         | the types of a scene: meshes, lines, silhouette edges, clip discs, groups, views, subjects; `checkScene`, the contract                                                |
 | `webgl/renderer.ts`, `mesh.ts`, `stage.ts`, `stills.ts`  | the renderer; extrusions, ribbons and their triangles (earcut); the stage that runs the camera, fade and tilt one at a time; the stills                               |
-| `webgl/probe/`                                           | a page with one canvas and `window.watchProbe.render(options)`, for the pixel and fade checks                                                                         |
+| `webgl/math.ts`, `checked.ts`                            | matrices; `at` and `check`, for what is a bug if it is false                                                                                                          |
+| `webgl/probe/`                                           | a page with one canvas and `window.watchProbe.render(options)`, for the pixel and fade checks; `checks.ts`: `window.webglChecks()`, the renderer's browser checks     |
 | `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand                                                                                                                  |
 | `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights and views                                                                                                    |
 | `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism and the balance's settle; frontmatter to state; the watch's stills; the shared instance                                                                 |
@@ -42,6 +45,25 @@ The files, in `watches/`:
 `eslint.config.js` and the scripts of `watches/package.json` (`typecheck`,
 `lint`, `test`, `art:scene`, `art:stills`); `validate.py` then runs the WebGL
 checks by the presence of the scripts. Keep the talk's names out of `webgl/`.
+
+**The renderer's contract.** `webgl/` must be correct in any program, not only
+in this talk. It checks what it assumes, and throws with a message when an
+assumption is false:
+
+- A scene is read-only once it is made. The `Renderer` checks it
+  (`checkScene`) when it starts.
+- Only a mesh with `dynamic: true` changes, through `Renderer.updateMesh`.
+  Each renderer keeps its own copy of that geometry; the `Mesh` does not
+  change. The stage and the stills draw the same spring at different angles.
+- Each frame gives a world matrix (affine) for every group of a drawn mesh.
+  There is no identity matrix by default.
+- A canvas has one live renderer. `Renderer`, `Stage` and `Stills` each have
+  `dispose()`, which frees all that they hold (GL objects, listeners, frames,
+  object URLs). After a context loss, the renderer makes its GL objects again.
+- Each mesh has its own vertex arrays, and a dynamic mesh reuses its buffers.
+  This is not an oversight: with the default vertex array, a buffer deleted
+  after the last line draw broke every later face draw in Chromium. The
+  evidence is in the review-fixes task.
 
 **Slidev's first block is the headmatter.** Its `transition` is the default of
 every slide, so `watches` starts with a hidden slide (`hide: true`, no
@@ -150,6 +172,13 @@ checks of [talks.md](talks.md):
   ladder.
 - `tools/barroom.py` and `tools/motion.py` on PNG stills of the watch
   (`pnpm art:stills`): the back row sees it, and sees it move.
+  `art:stills` also runs the renderer's browser checks
+  (`webgl/probe/checks.ts`): context loss, `dispose`, the fade, a dynamic mesh
+  drawn last, and the contract of each input.
+
+A change to `webgl/` that must not change the picture: draw the frames with
+`uv run art/pixel_regression.py OUT_DIR` before and after, then compare with
+`--compare BEFORE AFTER`. Two runs of the same code are byte-identical.
 
 ## Mistakes that were made once
 

@@ -1,47 +1,74 @@
-// Stills: one hidden canvas and renderer for every still of a page, so that a
-// page with many stills (print, the overview) has one WebGL context for
-// them. Slidev mounts the layer once for each printed page, and one context a
-// page passes the browser's limit.
+// Stills: pictures of a scene, drawn by one hidden canvas and renderer, as
+// object URLs. A page with many stills (print, the overview) needs only one
+// WebGL context for them: one context for each still passes the browser's
+// limit. The caller decides how many `Stills` to make and when to dispose
+// them.
 
+import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
 import type { Scene } from "./scene.ts";
 
-const renderers = new Map<Scene, Renderer>();
-const stills = new Map<string, Promise<string>>();
+export class Stills {
+  readonly scene: Scene;
+  /** Made at the first still. */
+  private renderer: Renderer | null = null;
+  private readonly pictures = new Map<string, Promise<string>>();
+  /** The object URLs made, to revoke. */
+  private readonly urls = new Set<string>();
+  private disposed = false;
 
-/** A picture as an object URL. `key` says what the picture is: the same key
- *  gives the same picture, drawn once. `draw` draws it with the renderer. */
-export function stillOf(
-  scene: Scene,
-  key: string,
-  draw: (renderer: Renderer) => void,
-): Promise<string> {
-  const known = stills.get(key);
-  if (known) return known;
-  let renderer = renderers.get(scene);
-  if (!renderer) {
-    renderer = new Renderer(document.createElement("canvas"), scene);
-    renderers.set(scene, renderer);
+  constructor(scene: Scene) {
+    this.scene = scene;
   }
-  draw(renderer);
-  // Read the picture back at once, before anything else draws.
-  const canvas = renderer.canvas;
-  const picture = new Promise<string>((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (blob) resolve(URL.createObjectURL(blob));
-      else reject(new Error("no still"));
-    }, "image/png");
-  });
-  stills.set(key, picture);
-  return picture;
-}
 
-export function stillsInfo(scene: Scene): {
-  stills: number;
-  contextsLost: number;
-} {
-  return {
-    stills: stills.size,
-    contextsLost: renderers.get(scene)?.contextsLost ?? 0,
-  };
+  /** A picture as an object URL. `key` says what the picture is: the same key
+   *  gives the same picture, drawn once. `draw` draws it with the renderer. */
+  of(key: string, draw: (renderer: Renderer) => void): Promise<string> {
+    check(!this.disposed, "the stills are disposed");
+    const known = this.pictures.get(key);
+    if (known) return known;
+    this.renderer ??= new Renderer(
+      document.createElement("canvas"),
+      this.scene,
+    );
+    const renderer = this.renderer;
+    draw(renderer);
+    // Read the picture back at once, before anything else draws: toBlob
+    // copies the canvas now, and encodes it later.
+    const picture = new Promise<string>((resolve, reject) => {
+      renderer.canvas.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error("no still"));
+        } else if (this.disposed) {
+          reject(new Error("the stills were disposed"));
+        } else {
+          const url = URL.createObjectURL(blob);
+          this.urls.add(url);
+          resolve(url);
+        }
+      }, "image/png");
+    });
+    this.pictures.set(key, picture);
+    return picture;
+  }
+
+  /** Free the renderer and revoke every URL: images that show them go blank.
+   *  Calling it again does nothing. */
+  dispose(): void {
+    if (this.disposed) return;
+    this.disposed = true;
+    if (this.renderer) {
+      this.renderer.dispose();
+      // The canvas is this object's own: free its context now, not when the
+      // canvas is collected (a page may have only 16 or so contexts).
+      this.renderer.canvas
+        .getContext("webgl2")
+        ?.getExtension("WEBGL_lose_context")
+        ?.loseContext();
+      this.renderer = null;
+    }
+    for (const url of this.urls) URL.revokeObjectURL(url);
+    this.urls.clear();
+    this.pictures.clear();
+  }
 }

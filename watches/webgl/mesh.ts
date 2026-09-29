@@ -1,8 +1,20 @@
 // Helpers that make meshes: an outline with holes, extruded along z, or a
 // ribbon (walls only). Nothing here knows what the mesh is.
+//
+// The outlines must be simple: no ring crosses itself or another ring, and
+// rings do not touch. Then one point of a ring says which rings it is inside
+// (`sortRings`), and earcut triangulates each face correctly. General SVG
+// paths (self-crossing, even-odd over crossings) are not supported.
+// `checkRing` checks the cheap part of this: counts, finite numbers, no
+// zero-length edge. It does not look for crossings.
+//
+// The faces are drawn from both sides (the renderer does not cull), so the
+// triangles' winding does not matter: the two caps have the same winding.
 
 import earcut from "earcut";
-import { at } from "./checked.ts";
+import { at, check, checkFinite } from "./checked.ts";
+import { normalMatrix, transformNormal, transformPoint } from "./math.ts";
+import type { Matrix4 } from "./math.ts";
 import type {
   Colour,
   Disc,
@@ -10,11 +22,18 @@ import type {
   Line,
   LineStyle,
   Mesh,
+  MeshGeometry,
   SilhouetteEdge,
   Vec3,
 } from "./scene.ts";
 
 export type Point2 = [number, number];
+
+/** Append `values` to `into`. Not `into.push(...values)`: a spread of a long
+ *  array passes the engine's limit on arguments. */
+function append<Item>(into: Item[], values: Iterable<Item>): void {
+  for (const value of values) into.push(value);
+}
 
 /** An outline in plan. `style` is the line drawn along it (`null`: none).
  *  `corners[index]` says the outline turns sharply at point `index`: its
@@ -63,6 +82,30 @@ export function polygonRing(
   return { points, corners: points.map(() => true), style, closed };
 }
 
+/** Throw unless the ring is one that the helpers can use: enough points,
+ *  finite, a corner flag for each point, and no zero-length edge. */
+export function checkRing(ring: Ring): void {
+  const count = ring.points.length;
+  check(
+    count >= (ring.closed ? 3 : 2),
+    `a ${ring.closed ? "closed" : "open"} ring of ${String(count)} points`,
+  );
+  check(
+    ring.corners.length === count,
+    `a ring of ${String(count)} points has ${String(ring.corners.length)} corner flags`,
+  );
+  for (const point of ring.points) checkFinite(point, "a ring");
+  const edges = ring.closed ? count : count - 1;
+  for (let index = 0; index < edges; index++) {
+    const [x0, y0] = at(ring.points, index);
+    const [x1, y1] = at(ring.points, (index + 1) % count);
+    check(
+      x0 !== x1 || y0 !== y1,
+      `a ring has a zero-length edge at point ${String(index)}, (${String(x0)}, ${String(y0)})`,
+    );
+  }
+}
+
 function signedArea(points: Point2[]): number {
   let sum = 0;
   for (const [index, [x0, y0]] of points.entries()) {
@@ -89,9 +132,9 @@ export interface Face {
   holes: Ring[];
 }
 
-/** Sort closed rings by containment, with the even-odd rule: a ring inside an
- *  even number of rings is an outer ring; one inside an odd number is a hole
- *  of the smallest ring that is around it. */
+/** Sort closed, simple rings by containment, with the even-odd rule: a ring
+ *  inside an even number of rings is an outer ring; one inside an odd number
+ *  is a hole of the smallest ring that is around it. */
 export function sortRings(rings: Ring[]): Face[] {
   const around = rings.map((ring) => {
     const probe = at(ring.points, 0);
@@ -113,7 +156,11 @@ export function sortRings(rings: Ring[]): Face[] {
         ? other
         : best,
     );
-    faces.get(smallest)?.holes.push(ring);
+    const face = faces.get(smallest);
+    // The smallest ring around a hole is inside one ring fewer: an outer ring.
+    // Not so only if the rings cross, which the contract excludes.
+    check(face !== undefined, "rings that cross: a hole has no outer ring");
+    face.holes.push(ring);
   }
   return [...faces.values()];
 }
@@ -122,10 +169,10 @@ export function sortRings(rings: Ring[]): Face[] {
 function capTriangles(face: Face, z: number): number[] {
   const flat: number[] = [];
   const holeStarts: number[] = [];
-  for (const point of face.outer.points) flat.push(...point);
+  for (const point of face.outer.points) append(flat, point);
   for (const hole of face.holes) {
     holeStarts.push(flat.length / 2);
-    for (const point of hole.points) flat.push(...point);
+    for (const point of hole.points) append(flat, point);
   }
   const values: number[] = [];
   for (const vertex of earcut(flat, holeStarts, 2)) {
@@ -158,7 +205,8 @@ function wallTriangles(
 function edgeNormal(ring: Ring, from: number, to: number): Vec3 {
   const [x0, y0] = at(ring.points, from);
   const [x1, y1] = at(ring.points, to);
-  const length = Math.hypot(x1 - x0, y1 - y0) || 1;
+  const length = Math.hypot(x1 - x0, y1 - y0);
+  check(length > 0, "a zero-length edge has no normal");
   return [-(y1 - y0) / length, (x1 - x0) / length, 0];
 }
 
@@ -180,11 +228,11 @@ function ringLines(
   const result: Lines = { lines: [], silhouetteEdges: [] };
   const style = ring.style;
   if (style === null) return result;
-  const at = (z: number): Vec3[] =>
+  const pointsAtHeight = (z: number): Vec3[] =>
     ring.points.map(([x, y]): Vec3 => [x, y, z]);
-  result.lines.push({ points: at(top), closed, style });
+  result.lines.push({ points: pointsAtHeight(top), closed, style });
   if (decal) return result;
-  result.lines.push({ points: at(bottom), closed, style });
+  result.lines.push({ points: pointsAtHeight(bottom), closed, style });
   const count = ring.points.length;
   for (const [index, [x, y]] of ring.points.entries()) {
     const isEnd = !closed && (index === 0 || index === count - 1);
@@ -237,20 +285,22 @@ export function extrude(
   options: ExtrudeOptions = {},
 ): Mesh {
   const decal = options.decal ?? false;
+  rings.forEach(checkRing);
   const triangles: number[] = [];
   const lines: Lines = { lines: [], silhouetteEdges: [] };
   if (!decal) {
     for (const face of sortRings(rings.filter((ring) => ring.closed))) {
-      triangles.push(...capTriangles(face, bottom), ...capTriangles(face, top));
+      append(triangles, capTriangles(face, bottom));
+      append(triangles, capTriangles(face, top));
     }
   }
   for (const ring of rings) {
     if (!decal) {
-      triangles.push(...wallTriangles(ring, ring.closed, bottom, top));
+      append(triangles, wallTriangles(ring, ring.closed, bottom, top));
     }
     const made = ringLines(ring, ring.closed, bottom, top, decal);
-    lines.lines.push(...made.lines);
-    lines.silhouetteEdges.push(...made.silhouetteEdges);
+    append(lines.lines, made.lines);
+    append(lines.silhouetteEdges, made.silhouetteEdges);
   }
   return makeMesh(info, triangles, lines);
 }
@@ -262,6 +312,7 @@ export function ribbon(
   top: number,
   info: MeshInfo,
 ): Mesh {
+  checkRing(polyline);
   return makeMesh(
     info,
     wallTriangles(polyline, false, bottom, top),
@@ -274,7 +325,8 @@ export function ribbonGeometry(
   polyline: Ring,
   bottom: number,
   top: number,
-): Pick<Mesh, "triangles" | "lines" | "silhouetteEdges"> {
+): MeshGeometry {
+  checkRing(polyline);
   const lines = ringLines(polyline, false, bottom, top, false);
   return {
     triangles: new Float32Array(wallTriangles(polyline, false, bottom, top)),
@@ -283,50 +335,9 @@ export function ribbonGeometry(
   };
 }
 
-/** A 4 x 4 matrix, column-major, as WebGL takes it. */
-export type Matrix4 = Float32Array;
-
-function transformPoint(matrix: Matrix4, [x, y, z]: Vec3): Vec3 {
-  const output = (row: number): number =>
-    at(matrix, row) * x +
-    at(matrix, 4 + row) * y +
-    at(matrix, 8 + row) * z +
-    at(matrix, 12 + row);
-  return [output(0), output(1), output(2)];
-}
-
-/** The inverse transpose of the matrix's upper 3 x 3, for a normal. */
-export function normalMatrix(matrix: Matrix4): Float32Array {
-  // the 3 x 3's columns are (a b c), (d e f) and (g h i)
-  const [a, b, c, d, e, f, g, h, i] = [0, 1, 2, 4, 5, 6, 8, 9, 10].map(
-    (index) => at(matrix, index),
-  ) as [number, number, number, number, number, number, number, number, number];
-  const cofactors = [
-    e * i - f * h,
-    f * g - d * i,
-    d * h - e * g,
-    c * h - b * i,
-    a * i - c * g,
-    b * g - a * h,
-    b * f - c * e,
-    c * d - a * f,
-    a * e - b * d,
-  ];
-  const determinant =
-    a * at(cofactors, 0) + d * at(cofactors, 3) + g * at(cofactors, 6);
-  const scale = determinant === 0 ? 1 : 1 / determinant;
-  // the cofactor matrix over the determinant is the inverse transpose
-  return Float32Array.from(cofactors.map((value) => value * scale));
-}
-
-function transformNormal(turn: Float32Array, [x, y, z]: Vec3): Vec3 {
-  const output = (row: number): number =>
-    at(turn, row) * x + at(turn, 3 + row) * y + at(turn, 6 + row) * z;
-  return [output(0), output(1), output(2)];
-}
-
-/** The mesh with all of its geometry moved by `matrix`, once (the crown is
- *  an extrusion along x: make it along z, then turn it). */
+/** The mesh with its triangles, lines and silhouette edges moved by
+ *  `matrix`, once (the crown is an extrusion along x: make it along z, then
+ *  turn it). Its clip discs do not move: they are in world x and y. */
 export function transformMesh(mesh: Mesh, matrix: Matrix4): Mesh {
   const turn = normalMatrix(matrix);
   const triangles = new Float32Array(mesh.triangles.length);

@@ -2,7 +2,7 @@
 // the overview, the presenter's "next" pane. One hidden renderer draws them
 // all (webgl/stills.ts).
 
-import { stillOf } from "../webgl/stills.ts";
+import { Stills } from "../webgl/stills.ts";
 import type { Watch } from "./generate.ts";
 import { BalanceClock, Motion } from "./model.ts";
 import { stageState } from "./state.ts";
@@ -14,10 +14,17 @@ export const STILL_TIME = 0.37;
 export class WatchStills {
   private readonly watch: Watch;
   private readonly motion: Motion;
+  private readonly stills: Stills;
 
   constructor(watch: Watch) {
     this.watch = watch;
     this.motion = new Motion(watch);
+    this.stills = new Stills(watch.scene);
+  }
+
+  /** Free the renderer and revoke the stills' URLs. */
+  dispose(): void {
+    this.stills.dispose();
   }
 
   /** A slide's state as a picture (an object URL), at the still time, or at
@@ -31,7 +38,7 @@ export class WatchStills {
       state.settled,
       size,
     ]);
-    return stillOf(scene, key, (renderer) => {
+    return this.stills.of(key, (renderer) => {
       const clock = new BalanceClock(design.timing, 0);
       clock.place(state.settled, 0);
       const time = state.settled ? 0 : STILL_TIME;

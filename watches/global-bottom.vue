@@ -41,6 +41,7 @@ const name = computed(() => state.value?.view);
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 let stage: Stage<WatchModelState> | undefined;
 let hideTimer: ReturnType<typeof setTimeout> | undefined;
+let unmounted = false;
 
 onMounted(() => {
   if (!live || !canvas.value) return;
@@ -66,7 +67,13 @@ onMounted(() => {
     { immediate: true },
   );
 });
-onBeforeUnmount(() => stage?.stop());
+onBeforeUnmount(() => {
+  unmounted = true;
+  clearTimeout(hideTimer);
+  stage?.dispose();
+  stage = undefined;
+  delete window.watchStage;
+});
 
 // The presenter view draws the next slide's still in its "next" pane. Draw
 // them all once, while the page is idle after it loads, so that a slide
@@ -86,7 +93,7 @@ onMounted(() => {
     .filter((slide) => slide !== undefined);
   const next = (): void => {
     const slide = pending.shift();
-    if (!slide) return;
+    if (!slide || unmounted) return;
     void WATCH_STILLS.of(slide, size);
     requestIdleCallback(next);
   };

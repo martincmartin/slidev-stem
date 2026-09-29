@@ -4,9 +4,9 @@
 import { at } from "../webgl/checked.ts";
 import { ribbonGeometry, smoothRing } from "../webgl/mesh.ts";
 import type { Point2 } from "../webgl/mesh.ts";
-import type { MeshGeometry, Renderer } from "../webgl/renderer.ts";
+import type { Renderer } from "../webgl/renderer.ts";
 import type { Model } from "../webgl/stage.ts";
-import type { Group } from "../webgl/scene.ts";
+import type { Group, MeshGeometry } from "../webgl/scene.ts";
 import type { Timing, Wheel } from "./design.ts";
 import type { Watch, WatchGroups } from "./generate.ts";
 import { polar, radians } from "./shapes.ts";

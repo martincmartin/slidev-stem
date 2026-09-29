@@ -1017,14 +1017,6 @@ export function generate(design: Design = DESIGN): Watch {
   );
 
   // ---- views and subjects ----
-  const scene: Scene = {
-    slide: [design.canvas.width, design.canvas.height],
-    paper: palette.background,
-    meshes,
-    groups,
-    views: [],
-    subjects: [],
-  };
   const heightsOfAll = [...heights.values()];
   const lowest = Math.min(
     caseBottom,
@@ -1049,18 +1041,24 @@ export function generate(design: Design = DESIGN): Watch {
           .map((each) => heightOf(each).top),
       )) /
     2;
-  scene.views = views(
-    design,
-    (lowest + highest) / 2,
-    springMiddle,
-    middle,
-    crownLeft + CROWN_LENGTH / 2,
-  );
   const subject: Subject = {
     name: "hairspring and stud",
     meshes: new Set([springMesh, studMesh]),
   };
-  scene.subjects = [subject];
+  const scene: Scene = {
+    slide: [design.canvas.width, design.canvas.height],
+    paper: palette.background,
+    meshes,
+    groups,
+    views: views(
+      design,
+      (lowest + highest) / 2,
+      springMiddle,
+      middle,
+      crownLeft + CROWN_LENGTH / 2,
+    ),
+    subjects: [subject],
+  };
 
   return {
     design,
