@@ -2,7 +2,7 @@
 
 **Status: closed on 2026-09-29. The decision: WebGL for the whole talk,
 with no SVG of the watch (option F).** The implementation is
-[`stem/tasks/2026-09-29-webgl-watch/`](../../../tasks/2026-09-29-webgl-watch/instructions.md).
+[`watches/tasks/2026-09-29-webgl-watch/`](../2026-09-29-webgl-watch/instructions.md).
 First written 2026-09-28. Revised 2026-09-29:
 the parts now sit at heights where they touch (the hands, the chapter ring
 and the escapement moved), the whole cover is in 3D (case, lugs, strap,

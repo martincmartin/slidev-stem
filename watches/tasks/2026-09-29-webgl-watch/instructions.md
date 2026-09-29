@@ -1,7 +1,7 @@
 # Implement the WebGL watch, and remove the watch's SVG
 
 Written 2026-09-29, when the planning task
-[`watches/tasks/2026-09-28-webgl-planning/`](../../watches/tasks/2026-09-28-webgl-planning/PLAN.md)
+[`watches/tasks/2026-09-28-webgl-planning/`](../2026-09-28-webgl-planning/PLAN.md)
 closed. These are the instructions for the implementation. The reader can be a
 person or an AI model. Do every step in order. Do not skip a check.
 
@@ -437,7 +437,7 @@ flattening difference.
    drives the model's steppers; `swing` overrides the balance's angle (and
    the spring's shape).
 2. Serve it with Vite: `pnpm exec vite webgl/probe --port 3150` in `watches/`.
-3. Run `uv run --project ../.. python reference_stills.py compare --url
+3. Run `uv run --project ../../.. python reference_stills.py compare --url
    http://localhost:3150/` in this task's `tools/`.
 
 **Checks:** every still has a solid error of at most 5 CSS px² (the tool

@@ -1,7 +1,7 @@
 # Live 3D art in WebGL
 
 **Status (2026-09-29):** decided, and being built in
-[`tasks/2026-09-29-webgl-watch/`](../tasks/2026-09-29-webgl-watch/instructions.md).
+[`watches/tasks/2026-09-29-webgl-watch/`](../watches/tasks/2026-09-29-webgl-watch/instructions.md).
 Until that task is done, the `watches` cover is still the SVG
 `watches/public/cover/skeleton-watch.svg`, and the file names below that are
 in `watches/webgl/` and `watches/watch/` do not exist yet.

@@ -20,7 +20,7 @@ PLAN.md, section 14, gives the commands that reproduce the evidence.
 ## Later decisions
 
 - 2026-09-29: the implementation is
-  [`stem/tasks/2026-09-29-webgl-watch/`](../../../tasks/2026-09-29-webgl-watch/instructions.md).
+  [`watches/tasks/2026-09-29-webgl-watch/`](../2026-09-29-webgl-watch/instructions.md).
   It ports the spike to TypeScript, makes the geometry in TypeScript from a
   design file that Python writes, and removes the watch's SVG. It keeps frozen
   copies of the spike and 13 reference pictures that the spike drew.

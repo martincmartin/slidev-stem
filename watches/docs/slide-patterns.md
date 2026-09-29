@@ -88,7 +88,7 @@ classes and removes the `v-click` classes, and the dim rule stops working.
 
 ## The live watch
 
-**Being built** (2026-09-29, [`stem/tasks/2026-09-29-webgl-watch/`](../../tasks/2026-09-29-webgl-watch/instructions.md)).
+**Being built** (2026-09-29, [`watches/tasks/2026-09-29-webgl-watch/`](../tasks/2026-09-29-webgl-watch/instructions.md)).
 Until then, the cover shows the SVG. [`stem/docs/webgl.md`](../../docs/webgl.md)
 has the rules for 3D art in any talk; this is what is true of this deck.
 

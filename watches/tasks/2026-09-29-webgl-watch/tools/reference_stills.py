@@ -2,10 +2,10 @@
 """Reference pictures of the watch, and the check of a new renderer against
 them.
 
-    uv run --project ../.. python reference_stills.py make
-    uv run --project ../.. python reference_stills.py compare --url URL
+    uv run --project ../../.. python reference_stills.py make
+    uv run --project ../../.. python reference_stills.py compare --url URL
 
-in this task's tools/ directory, with stem/'s venv.
+in this task's tools/ directory, with the talk's venv (watches/).
 
 MAKE draws each still in STILLS with the frozen spike of the planning task
 (../inputs/spike/: its renderer.js, its probe page webgl/index.html and its
