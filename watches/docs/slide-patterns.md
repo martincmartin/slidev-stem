@@ -86,6 +86,39 @@ in the slide's `<style>` uses them: it dims each `slidev-vclick-prior` card whil
 to that element. When a `:class` binding changes, Vue rewrites the element's
 classes and removes the `v-click` classes, and the dim rule stops working.
 
+## The live watch
+
+**Being built** (2026-09-29, [`stem/tasks/2026-09-29-webgl-watch/`](../../tasks/2026-09-29-webgl-watch/instructions.md)).
+Until then, the cover shows the SVG. [`stem/docs/webgl.md`](../../docs/webgl.md)
+has the rules for 3D art in any talk; this is what is true of this deck.
+
+One WebGL canvas lies under every slide (`global-bottom.vue`). A slide asks
+for a view of the watch in its frontmatter; a slide with no `watch:` key hides
+it. The talk's opening is the example:
+
+```yaml
+# slide 1, the cover
+watch: cover
+---
+# slide 2
+watch: hairspring
+watchOnly: hairspring and stud # the rest of the watch fades out
+watchTilt: 20 # degrees: shows that the spring is a ribbon
+watchSettle: 1 # at click 1 the balance settles at rest
+clicks: 1
+```
+
+- **The order of a change is fixed:** the camera moves, then the rest fades,
+  then the view tilts. Going back runs it in reverse. Do not put text where the
+  moving watch will be: on slide 2 the hairspring is about 535 to 875 px
+  across.
+- **The cover's title fades as the camera zooms** (the `watch-zoom`
+  transition, from slide 1 to 2 only). Slide 2's title comes in after the zoom.
+- **A click that changes the watch needs a `[click]` line** in the speaker
+  notes, as for any click.
+- **The slide's text paints over the watch**, because the slide's layout is
+  positioned. A slide with its own layout must keep that.
+
 ## Speaker notes
 
 The last HTML comment on a slide becomes the presenter note. The convention in this

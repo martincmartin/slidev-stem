@@ -1,0 +1,610 @@
+{
+ "chromium, laptop": {
+  "version": "153.0.8010.12",
+  "window": [
+   1728,
+   997,
+   2
+  ],
+  "renderer": {
+   "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+   "vendor": "Google Inc. (Apple)",
+   "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+   "solids": 46,
+   "wallTriangles": 11304,
+   "lineSegments": 16292,
+   "contextsLost": 0
+  },
+  "webgl contexts": 1,
+  "contexts lost": 0,
+  "page errors": [],
+  "page loads": 1,
+  "stage frames": 2526,
+  "drawing sizes": [
+   [
+    -1.813,
+    "1 x 1"
+   ],
+   [
+    -1.763,
+    "3456 x 1947"
+   ]
+  ],
+  "after each step": [
+   {
+    "step": "to slide 2: zoom, fade, tilt",
+    "slide": "/2",
+    "balance": "free"
+   },
+   {
+    "step": "click: settle",
+    "slide": "/2",
+    "balance": "rest"
+   },
+   {
+    "step": "click back: resume",
+    "slide": "/2",
+    "balance": "free"
+   },
+   {
+    "step": "to slide 1: untilt, unfade, zoom out",
+    "slide": "/1",
+    "balance": "free"
+   }
+  ],
+  "phases": {
+   "idle": {
+    "frames": 1013,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 1,
+    "largest gap ms": 49.9,
+    "gaps over 12.5 ms": 2,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": -1.76,
+    "JS per frame, median ms": 0.8,
+    "JS per frame, 95th percentile ms": 1.2,
+    "JS per frame, largest ms": 4.6
+   },
+   "view": {
+    "frames": 433,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 16.39,
+    "JS per frame, median ms": 0.9,
+    "JS per frame, 95th percentile ms": 1.2,
+    "JS per frame, largest ms": 1.7
+   },
+   "rest": {
+    "frames": 191,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 14.85,
+    "JS per frame, median ms": 0.9,
+    "JS per frame, 95th percentile ms": 1.2,
+    "JS per frame, largest ms": 1.5
+   },
+   "tilt": {
+    "frames": 361,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 13.95,
+    "JS per frame, median ms": 0.9,
+    "JS per frame, 95th percentile ms": 1.3,
+    "JS per frame, largest ms": 1.8
+   },
+   "balance waiting": {
+    "frames": 11,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 7.2,
+    "JS per frame, median ms": 0.4,
+    "JS per frame, 95th percentile ms": 0.5,
+    "JS per frame, largest ms": 0.6
+   },
+   "balance settling": {
+    "frames": 93,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 7.55,
+    "JS per frame, median ms": 0.9,
+    "JS per frame, 95th percentile ms": 1.1,
+    "JS per frame, largest ms": 1.2
+   },
+   "balance rest": {
+    "frames": 329,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 10.7,
+    "JS per frame, median ms": 0.9,
+    "JS per frame, 95th percentile ms": 1.2,
+    "JS per frame, largest ms": 1.4
+   },
+   "balance resuming": {
+    "frames": 94,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 11.35,
+    "JS per frame, median ms": 0.8,
+    "JS per frame, 95th percentile ms": 1.1,
+    "JS per frame, largest ms": 1.5
+   }
+  }
+ },
+ "chromium, projector": {
+  "version": "153.0.8010.12",
+  "window": [
+   1920,
+   1080,
+   1
+  ],
+  "renderer": {
+   "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+   "vendor": "Google Inc. (Apple)",
+   "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+   "solids": 46,
+   "wallTriangles": 11304,
+   "lineSegments": 16292,
+   "contextsLost": 0
+  },
+  "webgl contexts": 1,
+  "contexts lost": 0,
+  "page errors": [],
+  "page loads": 1,
+  "stage frames": 2519,
+  "drawing sizes": [
+   [
+    -1.803,
+    "1 x 1"
+   ],
+   [
+    -1.762,
+    "1917 x 1080"
+   ]
+  ],
+  "after each step": [
+   {
+    "step": "to slide 2: zoom, fade, tilt",
+    "slide": "/2",
+    "balance": "free"
+   },
+   {
+    "step": "click: settle",
+    "slide": "/2",
+    "balance": "rest"
+   },
+   {
+    "step": "click back: resume",
+    "slide": "/2",
+    "balance": "free"
+   },
+   {
+    "step": "to slide 1: untilt, unfade, zoom out",
+    "slide": "/1",
+    "balance": "free"
+   }
+  ],
+  "phases": {
+   "idle": {
+    "frames": 1012,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 1,
+    "largest gap ms": 41.6,
+    "gaps over 12.5 ms": 3,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": -1.76,
+    "JS per frame, median ms": 0.9,
+    "JS per frame, 95th percentile ms": 1.3,
+    "JS per frame, largest ms": 3.4
+   },
+   "view": {
+    "frames": 432,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 15.91,
+    "JS per frame, median ms": 0.8,
+    "JS per frame, 95th percentile ms": 1.2,
+    "JS per frame, largest ms": 1.4
+   },
+   "rest": {
+    "frames": 192,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 15.44,
+    "JS per frame, median ms": 0.7,
+    "JS per frame, 95th percentile ms": 1.2,
+    "JS per frame, largest ms": 1.5
+   },
+   "tilt": {
+    "frames": 360,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 3.33,
+    "JS per frame, median ms": 0.8,
+    "JS per frame, 95th percentile ms": 1.2,
+    "JS per frame, largest ms": 1.9
+   },
+   "balance waiting": {
+    "frames": 13,
+    "median gap ms": 8.4,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 7.13,
+    "JS per frame, median ms": 0.4,
+    "JS per frame, 95th percentile ms": 0.6,
+    "JS per frame, largest ms": 0.6
+   },
+   "balance settling": {
+    "frames": 94,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.1,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 7.51,
+    "JS per frame, median ms": 0.7,
+    "JS per frame, 95th percentile ms": 1,
+    "JS per frame, largest ms": 1.3
+   },
+   "balance rest": {
+    "frames": 322,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 10.28,
+    "JS per frame, median ms": 0.8,
+    "JS per frame, 95th percentile ms": 1.1,
+    "JS per frame, largest ms": 2.3
+   },
+   "balance resuming": {
+    "frames": 93,
+    "median gap ms": 8.3,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 10.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 10.75,
+    "JS per frame, median ms": 0.7,
+    "JS per frame, 95th percentile ms": 1,
+    "JS per frame, largest ms": 1.4
+   }
+  }
+ },
+ "firefox, laptop": {
+  "version": "155.0",
+  "window": [
+   1728,
+   1000,
+   2
+  ],
+  "renderer": {
+   "renderer": "Apple M1, or similar",
+   "vendor": "Apple",
+   "version": "WebGL 2.0",
+   "solids": 46,
+   "wallTriangles": 11304,
+   "lineSegments": 16292,
+   "contextsLost": 0
+  },
+  "webgl contexts": 1,
+  "contexts lost": 0,
+  "page errors": [],
+  "page loads": 1,
+  "stage frames": 2522,
+  "drawing sizes": [
+   [
+    -1.762,
+    "1 x 1"
+   ],
+   [
+    -1.754,
+    "3456 x 1947"
+   ]
+  ],
+  "after each step": [
+   {
+    "step": "to slide 2: zoom, fade, tilt",
+    "slide": "/2",
+    "balance": "free"
+   },
+   {
+    "step": "click: settle",
+    "slide": "/2",
+    "balance": "rest"
+   },
+   {
+    "step": "click back: resume",
+    "slide": "/2",
+    "balance": "free"
+   },
+   {
+    "step": "to slide 1: untilt, unfade, zoom out",
+    "slide": "/1",
+    "balance": "free"
+   }
+  ],
+  "phases": {
+   "idle": {
+    "frames": 1012,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 1,
+    "largest gap ms": 25.0,
+    "gaps over 12.5 ms": 2,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 7.08,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 6
+   },
+   "view": {
+    "frames": 432,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 17.1,
+    "gaps over 12.5 ms": 1,
+    "of them within 100 ms of a key press": 1,
+    "largest gap at s after the first key": 0.01,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 7
+   },
+   "rest": {
+    "frames": 191,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 16.6,
+    "gaps over 12.5 ms": 1,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 2.51,
+    "JS per frame, median ms": 1,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 2
+   },
+   "tilt": {
+    "frames": 360,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 14.49,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 7
+   },
+   "balance waiting": {
+    "frames": 11,
+    "median gap ms": 8.32,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 8.9,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 7.22,
+    "JS per frame, median ms": 1,
+    "JS per frame, 95th percentile ms": 1,
+    "JS per frame, largest ms": 2
+   },
+   "balance settling": {
+    "frames": 93,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 7.95,
+    "JS per frame, median ms": 1,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 2
+   },
+   "balance rest": {
+    "frames": 328,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 1,
+    "largest gap ms": 25.2,
+    "gaps over 12.5 ms": 1,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 10.7,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 6
+   },
+   "balance resuming": {
+    "frames": 94,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 11.49,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 2
+   }
+  }
+ },
+ "firefox, projector": {
+  "version": "155.0",
+  "window": [
+   1920,
+   1080,
+   1
+  ],
+  "renderer": {
+   "renderer": "Apple M1, or similar",
+   "vendor": "Apple",
+   "version": "WebGL 2.0",
+   "solids": 46,
+   "wallTriangles": 11304,
+   "lineSegments": 16292,
+   "contextsLost": 0
+  },
+  "webgl contexts": 1,
+  "contexts lost": 0,
+  "page errors": [],
+  "page loads": 1,
+  "stage frames": 2511,
+  "drawing sizes": [
+   [
+    -1.771,
+    "1 x 1"
+   ],
+   [
+    -1.763,
+    "1917 x 1080"
+   ]
+  ],
+  "after each step": [
+   {
+    "step": "to slide 2: zoom, fade, tilt",
+    "slide": "/2",
+    "balance": "free"
+   },
+   {
+    "step": "click: settle",
+    "slide": "/2",
+    "balance": "rest"
+   },
+   {
+    "step": "click back: resume",
+    "slide": "/2",
+    "balance": "free"
+   },
+   {
+    "step": "to slide 1: untilt, unfade, zoom out",
+    "slide": "/1",
+    "balance": "free"
+   }
+  ],
+  "phases": {
+   "idle": {
+    "frames": 1006,
+    "median gap ms": 8.32,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 16.6,
+    "gaps over 12.5 ms": 1,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": -1.74,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 4
+   },
+   "view": {
+    "frames": 432,
+    "median gap ms": 8.33,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 0.81,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 5
+   },
+   "rest": {
+    "frames": 192,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 2.31,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 3
+   },
+   "tilt": {
+    "frames": 360,
+    "median gap ms": 8.32,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 3.74,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 5
+   },
+   "balance waiting": {
+    "frames": 19,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 7.15,
+    "JS per frame, median ms": 0,
+    "JS per frame, 95th percentile ms": 1,
+    "JS per frame, largest ms": 1
+   },
+   "balance settling": {
+    "frames": 93,
+    "median gap ms": 8.34,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 7.36,
+    "JS per frame, median ms": 1,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 2
+   },
+   "balance rest": {
+    "frames": 314,
+    "median gap ms": 8.32,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.4,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 8.33,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 7
+   },
+   "balance resuming": {
+    "frames": 94,
+    "median gap ms": 8.33,
+    "gaps over 25 ms": 0,
+    "largest gap ms": 9.3,
+    "gaps over 12.5 ms": 0,
+    "of them within 100 ms of a key press": 0,
+    "largest gap at s after the first key": 11.26,
+    "JS per frame, median ms": 1.0,
+    "JS per frame, 95th percentile ms": 2,
+    "JS per frame, largest ms": 2
+   }
+  }
+ }
+}

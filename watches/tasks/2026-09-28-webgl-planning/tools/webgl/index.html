@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>WebGL watch spike</title>
+    <style>
+      body { margin: 0; background: #faf7f0; font: 14px system-ui, sans-serif; color: #2a2520; }
+      canvas { display: block; width: 980px; height: 552px; }
+      form { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 10px; max-width: 960px; }
+      label { display: flex; gap: 6px; align-items: center; }
+      output { min-width: 4ch; font-variant-numeric: tabular-nums; }
+      body.probe form { display: none; }
+    </style>
+  </head>
+  <body>
+    <canvas id="stage"></canvas>
+    <form id="controls">
+      <label>View <select name="view"><option>cover</option><option>hairspring</option><option>crown</option></select></label>
+      <label>Tilt <input name="tilt" type="range" min="0" max="89.9" step="0.1" value="45" /><output name="tiltOut"></output>°</label>
+      <label>Time <input name="time" type="range" min="0" max="4" step="0.01" value="0.37" /><output name="timeOut"></output> s</label>
+      <label><input name="play" type="checkbox" /> Run the mechanism</label>
+      <label><input name="sweep" type="checkbox" /> Sweep the tilt</label>
+      <label><input name="clips" type="checkbox" /> 2D clip paths</label>
+      <label>FPS <output name="fps"></output></label>
+    </form>
+    <script type="module">
+      import { Renderer } from "./renderer.js";
+
+      const scene = await (await fetch("../../out/scene.json")).json();
+      const canvas = document.getElementById("stage");
+      const probe = new URLSearchParams(location.search).has("probe");
+      const renderer = new Renderer(canvas, scene, { preserveDrawingBuffer: probe });
+      const form = document.getElementById("controls");
+
+      function settings() {
+        return {
+          view: form.view.value,
+          tilt: Number(form.tilt.value),
+          time: Number(form.time.value),
+          clips: form.clips.checked,
+        };
+      }
+
+      // The probe's interface: draw one still. `only`: a subject's name, for
+      // a fade (the renderer's `keep`).
+      window.spike = {
+        info: () => renderer.info(),
+        render(options) {
+          const subject = scene.subjects.find((candidate) => candidate.name === options.only);
+          const keep = subject ? new Set(subject.solids.map((index) => scene.solids[index])) : undefined;
+          renderer.render({ ...options, keep });
+          renderer.gl.finish();
+          const error = renderer.gl.getError();
+          if (error !== renderer.gl.NO_ERROR) throw new Error(`WebGL error ${error}`);
+        },
+      };
+      if (probe) {
+        document.body.classList.add("probe");
+      } else {
+        let last = performance.now();
+        let frames = 0;
+        function loop(now) {
+          if (form.play.checked) form.time.value = ((Number(form.time.value) + 1 / 60) % 4).toFixed(3);
+          if (form.sweep.checked) form.tilt.value = (44.95 - 44.95 * Math.cos(now / 1000)).toFixed(1);
+          form.tiltOut.value = Number(form.tilt.value).toFixed(1);
+          form.timeOut.value = Number(form.time.value).toFixed(2);
+          renderer.render(settings());
+          frames++;
+          if (now - last > 500) {
+            form.fps.value = Math.round((frames * 1000) / (now - last));
+            frames = 0;
+            last = now;
+          }
+          requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+      }
+      window.spikeReady = true;
+    </script>
+  </body>
+</html>

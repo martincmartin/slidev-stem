@@ -8,6 +8,7 @@ story — you should never need to open `tasks/`.
 | ---------------------------------------- | ------------------------------------------------------------------------- |
 | [theme.md](theme.md)                     | choosing colours, or a slide needs one the palette does not have          |
 | [illustrations.md](illustrations.md)     | drawing anything new                                                      |
+| [webgl.md](webgl.md)                     | art that turns in 3D, zooms or moves by rules: the live WebGL watch       |
 | [legibility.md](legibility.md)           | deciding whether something is big, thick or dark enough                   |
 | [talks.md](talks.md)                     | checking or upgrading a talk; why each talk keeps its own versions        |
 | [../tools/README.md](../tools/README.md) | running the checks, which is how the above are settled rather than argued |
@@ -24,7 +25,8 @@ other check and still animate invisibly — one shipped that way for a day.
 **The one-paragraph version.** The talks are **Ledger** — warm cream `#FAF7F0`,
 deep blue accent, warm brown second — and their illustrations are **"Line,
 weighted"**: deep blue line work on the card panel, four stroke weights, in files
-that state the size a slide shows them at. Every threshold in these docs comes
+that state the size a slide shows them at. Art that turns in 3D or moves by rules
+is drawn live in WebGL, in the same style ([webgl.md](webgl.md)). Every threshold in these docs comes
 from one question, _can the back row of a bar read this_, and `tools/` answers it
 with arithmetic instead of opinion. Before you commit, run
 `uv run ../tools/validate.py` in the talk's directory: it runs every check on the
@@ -79,13 +81,14 @@ learns that the framework has moved on.
 
 ## The decisions these docs encode
 
-| what                                                                | choice                                       | when       | archive                                                                                               |
-| ------------------------------------------------------------------- | -------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------- |
-| Palette                                                             | **Ledger**                                   | 2026-09-19 | [`watches/tasks/2026-09-18-theme-colors/`](../watches/tasks/2026-09-18-theme-colors/)                 |
-| Illustration style                                                  | **Set 2, "Line, weighted"**                  | 2026-09-21 | [`watches/tasks/2026-09-20-animation-style/`](../watches/tasks/2026-09-20-animation-style/)           |
-| Where these docs and tools live; each SVG states its display size   | **`stem/docs/`, `stem/tools/`**              | 2026-09-23 | [`watches/tasks/2026-09-23-followups/PLAN.md`](../watches/tasks/2026-09-23-followups/PLAN.md)         |
-| Each talk keeps its own versions; a given talk is tagged and frozen | **a uv and a pnpm project per talk**         | 2026-09-28 | [`tasks/2026-09-28-per-talk-dependencies/PLAN.md`](../tasks/2026-09-28-per-talk-dependencies/PLAN.md) |
-| How to check the shared files, and a talk                           | **`tools/validate.py`, scoped by directory** | 2026-09-28 | [`tasks/2026-09-28-validate/PLAN.md`](../tasks/2026-09-28-validate/PLAN.md)                           |
+| what                                                                | choice                                       | when       | archive                                                                                                 |
+| ------------------------------------------------------------------- | -------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------- |
+| Palette                                                             | **Ledger**                                   | 2026-09-19 | [`watches/tasks/2026-09-18-theme-colors/`](../watches/tasks/2026-09-18-theme-colors/)                   |
+| Illustration style                                                  | **Set 2, "Line, weighted"**                  | 2026-09-21 | [`watches/tasks/2026-09-20-animation-style/`](../watches/tasks/2026-09-20-animation-style/)             |
+| Where these docs and tools live; each SVG states its display size   | **`stem/docs/`, `stem/tools/`**              | 2026-09-23 | [`watches/tasks/2026-09-23-followups/PLAN.md`](../watches/tasks/2026-09-23-followups/PLAN.md)           |
+| Each talk keeps its own versions; a given talk is tagged and frozen | **a uv and a pnpm project per talk**         | 2026-09-28 | [`tasks/2026-09-28-per-talk-dependencies/PLAN.md`](../tasks/2026-09-28-per-talk-dependencies/PLAN.md)   |
+| How to check the shared files, and a talk                           | **`tools/validate.py`, scoped by directory** | 2026-09-28 | [`tasks/2026-09-28-validate/PLAN.md`](../tasks/2026-09-28-validate/PLAN.md)                             |
+| 3D and rule-driven art: the watch                                   | **WebGL, drawn live; no SVG of the watch**   | 2026-09-29 | [`watches/tasks/2026-09-28-webgl-planning/PLAN.md`](../watches/tasks/2026-09-28-webgl-planning/PLAN.md) |
 
 ## What is still unknown
 

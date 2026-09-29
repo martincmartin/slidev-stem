@@ -1,0 +1,79 @@
+{
+ "version": "153.0.8010.12",
+ "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+ "seconds until every still is drawn": 2.6,
+ "seconds in all": 4.3,
+ "pages": 11,
+ "webgl contexts": 1,
+ "contexts lost": 0,
+ "pdf bytes": 1844946,
+ "page errors": [],
+ "slides": [
+  {
+   "slide": 1,
+   "title": "cover",
+   "watch": true,
+   "line pixels": 68737
+  },
+  {
+   "slide": 2,
+   "title": "hairspring",
+   "watch": true,
+   "line pixels": 119836
+  },
+  {
+   "slide": 3,
+   "title": "hairspring, tilted 45",
+   "watch": true,
+   "line pixels": 151000
+  },
+  {
+   "slide": 4,
+   "title": "cover, 60",
+   "watch": true,
+   "line pixels": 60287
+  },
+  {
+   "slide": 5,
+   "title": "crown",
+   "watch": true,
+   "line pixels": 53295
+  },
+  {
+   "slide": 6,
+   "title": "crown, 45",
+   "watch": true,
+   "line pixels": 74903
+  },
+  {
+   "slide": 7,
+   "title": "plain",
+   "watch": false,
+   "line pixels": 0
+  },
+  {
+   "slide": 8,
+   "title": "cover, 30",
+   "watch": true,
+   "line pixels": 76221
+  },
+  {
+   "slide": 9,
+   "title": "cover, 85",
+   "watch": true,
+   "line pixels": 14920
+  },
+  {
+   "slide": 10,
+   "title": "hairspring, 75",
+   "watch": true,
+   "line pixels": 191107
+  },
+  {
+   "slide": 11,
+   "title": "cover again",
+   "watch": true,
+   "line pixels": 68737
+  }
+ ]
+}

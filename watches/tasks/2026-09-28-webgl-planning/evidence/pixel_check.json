@@ -1,0 +1,284 @@
+{
+ "threshold": 96,
+ "device pixel ratio": 2,
+ "chromium": {
+  "renderer": {
+   "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+   "vendor": "Google Inc. (Apple)",
+   "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+   "solids": 46,
+   "wallTriangles": 10762,
+   "lineSegments": 15479,
+   "contextsLost": 0
+  },
+  "stills": {
+   "slab-cover-tilt-0-time-0.37-lines-own": {
+    "wrong": 446.8,
+    "solid": 0.0
+   },
+   "slab-cover-tilt-5-time-0.37-lines-own": {
+    "wrong": 370.2,
+    "solid": 0.0
+   },
+   "slab-cover-tilt-15-time-0.37-lines-own": {
+    "wrong": 422.0,
+    "solid": 0.0
+   },
+   "slab-cover-tilt-30-time-0.37-lines-own": {
+    "wrong": 477.8,
+    "solid": 0.0
+   },
+   "slab-cover-tilt-45-time-0.37-lines-own": {
+    "wrong": 583.2,
+    "solid": 2.5
+   },
+   "slab-cover-tilt-60-time-0.37-lines-own": {
+    "wrong": 506.0,
+    "solid": 2.0
+   },
+   "slab-cover-tilt-75-time-0.37-lines-own": {
+    "wrong": 330.5,
+    "solid": 19.5
+   },
+   "slab-cover-tilt-85-time-0.37-lines-own": {
+    "wrong": 224.8,
+    "solid": 36.5
+   },
+   "slab-cover-tilt-89-time-0.37-lines-own": {
+    "wrong": 513.8,
+    "solid": 41.8
+   },
+   "slab-hairspring-tilt-0-time-0.37-lines-own": {
+    "wrong": 177.0,
+    "solid": 0.0
+   },
+   "slab-hairspring-tilt-5-time-0.37-lines-own": {
+    "wrong": 1001.2,
+    "solid": 0.0
+   },
+   "slab-hairspring-tilt-15-time-0.37-lines-own": {
+    "wrong": 1665.2,
+    "solid": 0.0
+   },
+   "slab-hairspring-tilt-30-time-0.37-lines-own": {
+    "wrong": 1123.5,
+    "solid": 0.8
+   },
+   "slab-hairspring-tilt-45-time-0.37-lines-own": {
+    "wrong": 546.8,
+    "solid": 1.5
+   },
+   "slab-hairspring-tilt-60-time-0.37-lines-own": {
+    "wrong": 348.8,
+    "solid": 4.5
+   },
+   "slab-hairspring-tilt-75-time-0.37-lines-own": {
+    "wrong": 236.5,
+    "solid": 9.0
+   },
+   "slab-hairspring-tilt-85-time-0.37-lines-own": {
+    "wrong": 1004.5,
+    "solid": 131.8
+   },
+   "slab-hairspring-tilt-89-time-0.37-lines-own": {
+    "wrong": 969.5,
+    "solid": 115.0
+   },
+   "slab-cover-tilt-45-time-0.1-lines-own": {
+    "wrong": 588.8,
+    "solid": 1.8
+   },
+   "slab-cover-tilt-45-time-0.25-lines-own": {
+    "wrong": 599.0,
+    "solid": 2.5
+   },
+   "slab-cover-tilt-45-time-0.6-lines-own": {
+    "wrong": 594.2,
+    "solid": 2.5
+   },
+   "slab-cover-tilt-45-time-1.3-lines-own": {
+    "wrong": 604.5,
+    "solid": 2.2
+   },
+   "slab-hairspring-tilt-45-time-0.1-lines-own": {
+    "wrong": 522.5,
+    "solid": 0.8
+   },
+   "slab-hairspring-tilt-45-time-0.25-lines-own": {
+    "wrong": 569.2,
+    "solid": 0.8
+   },
+   "slab-hairspring-tilt-45-time-0.6-lines-own": {
+    "wrong": 540.5,
+    "solid": 1.2
+   },
+   "slab-hairspring-tilt-45-time-1.3-lines-own": {
+    "wrong": 513.5,
+    "solid": 1.0
+   },
+   "parity-cover-tilt-0-time-0.37-lines-own-clips": {
+    "wrong": 787.2,
+    "solid": 91.5
+   },
+   "parity-cover-tilt-0-time-0.1-lines-own-clips": {
+    "wrong": 701.5,
+    "solid": 69.8
+   },
+   "parity-cover-tilt-0-time-0.25-lines-own-clips": {
+    "wrong": 740.2,
+    "solid": 78.5
+   },
+   "parity-cover-tilt-0-time-0.6-lines-own-clips": {
+    "wrong": 758.5,
+    "solid": 83.0
+   },
+   "parity-cover-tilt-0-time-1.3-lines-own-clips": {
+    "wrong": 733.5,
+    "solid": 78.5
+   }
+  },
+  "page errors": [],
+  "worst solid": 131.8,
+  "stills that differ from the method comparison": {}
+ },
+ "firefox": {
+  "renderer": {
+   "renderer": "Apple M1, or similar",
+   "vendor": "Apple",
+   "version": "WebGL 2.0",
+   "solids": 46,
+   "wallTriangles": 10762,
+   "lineSegments": 15479,
+   "contextsLost": 0
+  },
+  "stills": {
+   "slab-cover-tilt-0-time-0.37-lines-own": {
+    "wrong": 446.8,
+    "solid": 0.0
+   },
+   "slab-cover-tilt-5-time-0.37-lines-own": {
+    "wrong": 370.2,
+    "solid": 0.0
+   },
+   "slab-cover-tilt-15-time-0.37-lines-own": {
+    "wrong": 422.0,
+    "solid": 0.0
+   },
+   "slab-cover-tilt-30-time-0.37-lines-own": {
+    "wrong": 477.8,
+    "solid": 0.0
+   },
+   "slab-cover-tilt-45-time-0.37-lines-own": {
+    "wrong": 583.2,
+    "solid": 2.5
+   },
+   "slab-cover-tilt-60-time-0.37-lines-own": {
+    "wrong": 506.0,
+    "solid": 2.0
+   },
+   "slab-cover-tilt-75-time-0.37-lines-own": {
+    "wrong": 330.5,
+    "solid": 19.5
+   },
+   "slab-cover-tilt-85-time-0.37-lines-own": {
+    "wrong": 224.8,
+    "solid": 36.5
+   },
+   "slab-cover-tilt-89-time-0.37-lines-own": {
+    "wrong": 513.8,
+    "solid": 41.8
+   },
+   "slab-hairspring-tilt-0-time-0.37-lines-own": {
+    "wrong": 177.0,
+    "solid": 0.0
+   },
+   "slab-hairspring-tilt-5-time-0.37-lines-own": {
+    "wrong": 1001.5,
+    "solid": 0.0
+   },
+   "slab-hairspring-tilt-15-time-0.37-lines-own": {
+    "wrong": 1665.2,
+    "solid": 0.0
+   },
+   "slab-hairspring-tilt-30-time-0.37-lines-own": {
+    "wrong": 1123.5,
+    "solid": 0.8
+   },
+   "slab-hairspring-tilt-45-time-0.37-lines-own": {
+    "wrong": 546.8,
+    "solid": 1.5
+   },
+   "slab-hairspring-tilt-60-time-0.37-lines-own": {
+    "wrong": 348.8,
+    "solid": 4.5
+   },
+   "slab-hairspring-tilt-75-time-0.37-lines-own": {
+    "wrong": 236.5,
+    "solid": 9.0
+   },
+   "slab-hairspring-tilt-85-time-0.37-lines-own": {
+    "wrong": 1004.5,
+    "solid": 131.8
+   },
+   "slab-hairspring-tilt-89-time-0.37-lines-own": {
+    "wrong": 969.5,
+    "solid": 115.0
+   },
+   "slab-cover-tilt-45-time-0.1-lines-own": {
+    "wrong": 588.8,
+    "solid": 1.8
+   },
+   "slab-cover-tilt-45-time-0.25-lines-own": {
+    "wrong": 599.2,
+    "solid": 2.5
+   },
+   "slab-cover-tilt-45-time-0.6-lines-own": {
+    "wrong": 594.2,
+    "solid": 2.5
+   },
+   "slab-cover-tilt-45-time-1.3-lines-own": {
+    "wrong": 604.5,
+    "solid": 2.2
+   },
+   "slab-hairspring-tilt-45-time-0.1-lines-own": {
+    "wrong": 522.5,
+    "solid": 0.8
+   },
+   "slab-hairspring-tilt-45-time-0.25-lines-own": {
+    "wrong": 569.2,
+    "solid": 0.8
+   },
+   "slab-hairspring-tilt-45-time-0.6-lines-own": {
+    "wrong": 540.2,
+    "solid": 1.2
+   },
+   "slab-hairspring-tilt-45-time-1.3-lines-own": {
+    "wrong": 513.5,
+    "solid": 1.0
+   },
+   "parity-cover-tilt-0-time-0.37-lines-own-clips": {
+    "wrong": 787.2,
+    "solid": 91.5
+   },
+   "parity-cover-tilt-0-time-0.1-lines-own-clips": {
+    "wrong": 701.5,
+    "solid": 69.8
+   },
+   "parity-cover-tilt-0-time-0.25-lines-own-clips": {
+    "wrong": 740.2,
+    "solid": 78.5
+   },
+   "parity-cover-tilt-0-time-0.6-lines-own-clips": {
+    "wrong": 758.5,
+    "solid": 83.0
+   },
+   "parity-cover-tilt-0-time-1.3-lines-own-clips": {
+    "wrong": 733.5,
+    "solid": 78.5
+   }
+  },
+  "page errors": [],
+  "worst solid": 131.8,
+  "stills that differ from the method comparison": {}
+ }
+}

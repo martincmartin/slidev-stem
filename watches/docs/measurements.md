@@ -39,7 +39,10 @@ drawing          ink%    hold    p90    Fmax     dPeak   px2 >=3:1
 skeleton-watch    6.3    3.64   6.90   0.080      9.26        2173
 ```
 
-It clears the gate, with about the candle's `Fmax`. **Run `motion.py` on it
+It clears the gate, with about the candle's `Fmax`. **When the live WebGL watch
+replaces the SVG** ([`stem/docs/webgl.md`](../../docs/webgl.md)), measure it
+again on its PNG stills (`pnpm art:stills`) and replace this table.
+**Run `motion.py` on it
 with `--sep 1`,** half the balance's 2 s period, or run
 `art/validate_skeleton_watch.py`, which does. By default the tool samples half
 the longest loop apart (30 s, the seconds hand's half-turn), which is a whole

@@ -4,6 +4,9 @@ Deep blue line work on the card panel, for every STEM talk. The examples are the
 four timekeepers in `watches`:
 `watches/public/timekeepers/{sundial,water-clock,candle,hourglass}.svg`.
 
+For art that turns in 3D, zooms, or moves by rules (the `watches` skeleton
+watch), see [webgl.md](webgl.md): the same grammar, drawn live in WebGL.
+
 **The style is a grammar, not a look.** All of it is a stated size, a palette, a
 stroke ladder and a habit about what moves. Follow those four and a new drawing
 will read as another drawing by the same hand — which is the entire job the art
@@ -230,3 +233,5 @@ The cover's skeleton watch, `watches/public/cover/skeleton-watch.svg`, is the
 exception. Its gear teeth, spirals and keyframes are computed, so its source is
 the script `watches/art/skeleton_watch.py`: edit that, not the SVG, then run
 `watches/art/validate_skeleton_watch.py`, which regenerates the SVG and checks it.
+**It is being replaced** by the live WebGL watch ([webgl.md](webgl.md)); when
+that is done, there is no watch SVG.

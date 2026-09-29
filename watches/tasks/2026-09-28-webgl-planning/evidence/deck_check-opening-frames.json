@@ -1,0 +1,44 @@
+{
+ "frames": [
+  {
+   "file": "opening-frame-01.png",
+   "label": "the cover",
+   "ms after the key": 5
+  },
+  {
+   "file": "opening-frame-02.png",
+   "label": "zooming, the title fading",
+   "ms after the key": 605
+  },
+  {
+   "file": "opening-frame-03.png",
+   "label": "zoomed",
+   "ms after the key": 1804
+  },
+  {
+   "file": "opening-frame-04.png",
+   "label": "the rest fading",
+   "ms after the key": 2253
+  },
+  {
+   "file": "opening-frame-05.png",
+   "label": "the spring and the stud",
+   "ms after the key": 2704
+  },
+  {
+   "file": "opening-frame-06.png",
+   "label": "tilting",
+   "ms after the key": 3403
+  },
+  {
+   "file": "opening-frame-07.png",
+   "label": "tilted, swinging",
+   "ms after the key": 5504
+  },
+  {
+   "file": "opening-frame-08.png",
+   "label": "settled at rest",
+   "ms after the key": 3005
+  }
+ ]
+}

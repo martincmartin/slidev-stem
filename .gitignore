@@ -36,6 +36,8 @@ __pycache__/
 # tools/contact.py writes renders here. Regenerable, and no doc cites a path
 # under it.
 /out/
+# A task's scratch output: regenerable, not evidence (a task's evidence/ is).
+tasks/*/out/
 
 # --- Machine-local tool state ---
 .claude/settings.local.json

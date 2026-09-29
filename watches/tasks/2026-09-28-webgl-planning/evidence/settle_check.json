@@ -1,0 +1,239 @@
+{
+ "swing": {
+  "amplitude": 150,
+  "period": 2
+ },
+ "settleSeconds": 0.7797,
+ "stepMs": 0.1,
+ "control": {
+  "freeSwing": {
+   "angle": 0.0471,
+   "speed": 0.15,
+   "acceleration": 0,
+   "maxSpeed": 471.2,
+   "maxAcceleration": 1480
+  }
+ },
+ "settles": [
+  {
+   "requestAt": 0,
+   "modeAfterRequest": "waiting",
+   "extremeAt": 0,
+   "restAt": 779.7,
+   "jumps": {
+    "angle": 0.0289,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 288.6,
+    "maxAcceleration": 1480
+   },
+   "atTheExtreme": {
+    "angle": 0.0029,
+    "speed": 0.15,
+    "acceleration": 0,
+    "maxSpeed": 28.6,
+    "maxAcceleration": 1480
+   },
+   "atTheStop": {
+    "angle": 0.0029,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 28.8,
+    "maxAcceleration": 1480
+   }
+  },
+  {
+   "requestAt": 250,
+   "modeAfterRequest": "waiting",
+   "extremeAt": 1000,
+   "restAt": 1779.7,
+   "jumps": {
+    "angle": 0.0471,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 471.2,
+    "maxAcceleration": 1480
+   },
+   "atTheExtreme": {
+    "angle": 0.003,
+    "speed": 0.15,
+    "acceleration": 0,
+    "maxSpeed": 29.5,
+    "maxAcceleration": 1480
+   },
+   "atTheStop": {
+    "angle": 0.0029,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 28.8,
+    "maxAcceleration": 1480
+   }
+  },
+  {
+   "requestAt": 500,
+   "modeAfterRequest": "waiting",
+   "extremeAt": 1000,
+   "restAt": 1779.7,
+   "jumps": {
+    "angle": 0.0471,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 471.2,
+    "maxAcceleration": 1480
+   },
+   "atTheExtreme": {
+    "angle": 0.003,
+    "speed": 0.15,
+    "acceleration": 0,
+    "maxSpeed": 29.5,
+    "maxAcceleration": 1480
+   },
+   "atTheStop": {
+    "angle": 0.0029,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 28.8,
+    "maxAcceleration": 1480
+   }
+  },
+  {
+   "requestAt": 999.9,
+   "modeAfterRequest": "waiting",
+   "extremeAt": 1000,
+   "restAt": 1779.7,
+   "jumps": {
+    "angle": 0.0289,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 288.6,
+    "maxAcceleration": 1480
+   },
+   "atTheExtreme": {
+    "angle": 0.0029,
+    "speed": 0.15,
+    "acceleration": 0,
+    "maxSpeed": 28.6,
+    "maxAcceleration": 1480
+   },
+   "atTheStop": {
+    "angle": 0.0029,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 28.8,
+    "maxAcceleration": 1480
+   }
+  },
+  {
+   "requestAt": 1000,
+   "modeAfterRequest": "waiting",
+   "extremeAt": 1000,
+   "restAt": 1779.7,
+   "jumps": {
+    "angle": 0.0289,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 288.6,
+    "maxAcceleration": 1480
+   },
+   "atTheExtreme": {
+    "angle": 0.0029,
+    "speed": 0.15,
+    "acceleration": 0,
+    "maxSpeed": 28.6,
+    "maxAcceleration": 1480
+   },
+   "atTheStop": {
+    "angle": 0.0029,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 28.8,
+    "maxAcceleration": 1480
+   }
+  },
+  {
+   "requestAt": 1000.1,
+   "modeAfterRequest": "waiting",
+   "extremeAt": 2000,
+   "restAt": 2779.7,
+   "jumps": {
+    "angle": 0.0471,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 471.2,
+    "maxAcceleration": 1480
+   },
+   "atTheExtreme": {
+    "angle": 0.003,
+    "speed": 0.15,
+    "acceleration": 0,
+    "maxSpeed": 29.5,
+    "maxAcceleration": 1480
+   },
+   "atTheStop": {
+    "angle": 0.0029,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 28.8,
+    "maxAcceleration": 1480
+   }
+  },
+  {
+   "requestAt": 1740,
+   "modeAfterRequest": "waiting",
+   "extremeAt": 2000,
+   "restAt": 2779.7,
+   "jumps": {
+    "angle": 0.0343,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 343.5,
+    "maxAcceleration": 1480
+   },
+   "atTheExtreme": {
+    "angle": 0.003,
+    "speed": 0.15,
+    "acceleration": 0,
+    "maxSpeed": 29.5,
+    "maxAcceleration": 1480
+   },
+   "atTheStop": {
+    "angle": 0.0029,
+    "speed": 0.15,
+    "acceleration": 786,
+    "maxSpeed": 28.8,
+    "maxAcceleration": 1480
+   }
+  }
+ ],
+ "resumeFromRest": {
+  "whole": {
+   "angle": 0.0471,
+   "speed": 0.15,
+   "acceleration": 740,
+   "maxSpeed": 471.2,
+   "maxAcceleration": 1480
+  },
+  "atTheStart": {
+   "angle": 0.0029,
+   "speed": 0.15,
+   "acceleration": 740,
+   "maxSpeed": 28.6,
+   "maxAcceleration": 1480
+  },
+  "atTheJoin": {
+   "angle": 0.0056,
+   "speed": 0.15,
+   "acceleration": 0,
+   "maxSpeed": 56.1,
+   "maxAcceleration": 1480
+  }
+ },
+ "resumeDuringSettle": {
+  "angle": 0.0471,
+  "speed": 0.18,
+  "acceleration": 364,
+  "maxSpeed": 471.2,
+  "maxAcceleration": 1770
+ },
+ "largestStepBackInMechanismTime": 0
+}

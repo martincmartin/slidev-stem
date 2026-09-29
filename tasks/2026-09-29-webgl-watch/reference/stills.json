@@ -1,0 +1,177 @@
+[
+ {
+  "name": "cover-0",
+  "options": {
+   "view": "cover",
+   "tilt": 0.0,
+   "time": 0.37,
+   "swing": 59.57218359521708,
+   "size": [
+    1960,
+    1104
+   ]
+  }
+ },
+ {
+  "name": "cover-30",
+  "options": {
+   "view": "cover",
+   "tilt": 30.0,
+   "time": 0.37,
+   "swing": 59.57218359521708,
+   "size": [
+    1960,
+    1104
+   ]
+  }
+ },
+ {
+  "name": "cover-60",
+  "options": {
+   "view": "cover",
+   "tilt": 60.0,
+   "time": 0.37,
+   "swing": 59.57218359521708,
+   "size": [
+    1960,
+    1104
+   ]
+  }
+ },
+ {
+  "name": "cover-85",
+  "options": {
+   "view": "cover",
+   "tilt": 85.0,
+   "time": 0.37,
+   "swing": 59.57218359521708,
+   "size": [
+    1960,
+    1104
+   ]
+  }
+ },
+ {
+  "name": "cover-45-moving",
+  "options": {
+   "view": "cover",
+   "tilt": 45.0,
+   "time": 1.3,
+   "swing": -88.16778784387098,
+   "size": [
+    1960,
+    1104
+   ]
+  }
+ },
+ {
+  "name": "hairspring-0",
+  "options": {
+   "view": "hairspring",
+   "tilt": 0.0,
+   "time": 0.37,
+   "swing": 59.57218359521708,
+   "size": [
+    1960,
+    1104
+   ]
+  }
+ },
+ {
+  "name": "hairspring-20",
+  "options": {
+   "view": "hairspring",
+   "tilt": 20.0,
+   "time": 0.37,
+   "swing": 59.57218359521708,
+   "size": [
+    1960,
+    1104
+   ]
+  }
+ },
+ {
+  "name": "hairspring-45",
+  "options": {
+   "view": "hairspring",
+   "tilt": 45.0,
+   "time": 0.37,
+   "swing": 59.57218359521708,
+   "size": [
+    1960,
+    1104
+   ]
+  }
+ },
+ {
+  "name": "crown-0",
+  "options": {
+   "view": "crown",
+   "tilt": 0.0,
+   "time": 0.37,
+   "swing": 59.57218359521708,
+   "size": [
+    1960,
+    1104
+   ]
+  }
+ },
+ {
+  "name": "crown-45",
+  "options": {
+   "view": "crown",
+   "tilt": 45.0,
+   "time": 0.37,
+   "swing": 59.57218359521708,
+   "size": [
+    1960,
+    1104
+   ]
+  }
+ },
+ {
+  "name": "opening-faded",
+  "options": {
+   "view": "hairspring",
+   "tilt": 20.0,
+   "time": 0.37,
+   "swing": 59.57218359521708,
+   "size": [
+    1960,
+    1104
+   ],
+   "only": "hairspring and stud",
+   "rest": 0.0
+  }
+ },
+ {
+  "name": "opening-mid-fade",
+  "options": {
+   "view": "hairspring",
+   "tilt": 20.0,
+   "time": 0.37,
+   "swing": 59.57218359521708,
+   "size": [
+    1960,
+    1104
+   ],
+   "only": "hairspring and stud",
+   "rest": 0.5
+  }
+ },
+ {
+  "name": "opening-at-rest",
+  "options": {
+   "view": "hairspring",
+   "tilt": 20.0,
+   "time": 0.37,
+   "swing": 0.0,
+   "size": [
+    1960,
+    1104
+   ],
+   "only": "hairspring and stud",
+   "rest": 0.0
+  }
+ }
+]

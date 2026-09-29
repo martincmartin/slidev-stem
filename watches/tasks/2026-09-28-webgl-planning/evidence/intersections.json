@@ -1,0 +1,164 @@
+{
+ "times": [
+  0.37,
+  0.1,
+  0.25,
+  0.6,
+  1.3
+ ],
+ "pairs": [
+  {
+   "solids": [
+    "case band",
+    "strap 1"
+   ],
+   "shared height": 4.0,
+   "worst plan overlap, px\u00b2": 0.26,
+   "at time": 0.37
+  },
+  {
+   "solids": [
+    "case band",
+    "lug 2"
+   ],
+   "shared height": 36.0,
+   "worst plan overlap, px\u00b2": 0.03,
+   "at time": 0.37
+  },
+  {
+   "solids": [
+    "case band",
+    "lug 3"
+   ],
+   "shared height": 36.0,
+   "worst plan overlap, px\u00b2": 0.03,
+   "at time": 0.37
+  },
+  {
+   "solids": [
+    "case band",
+    "strap 4"
+   ],
+   "shared height": 4.0,
+   "worst plan overlap, px\u00b2": 0.26,
+   "at time": 0.37
+  },
+  {
+   "solids": [
+    "case band",
+    "lug 5"
+   ],
+   "shared height": 36.0,
+   "worst plan overlap, px\u00b2": 0.03,
+   "at time": 0.37
+  },
+  {
+   "solids": [
+    "case band",
+    "lug 6"
+   ],
+   "shared height": 36.0,
+   "worst plan overlap, px\u00b2": 0.03,
+   "at time": 0.37
+  },
+  {
+   "solids": [
+    "escape wheel 1",
+    "escape wheel 2"
+   ],
+   "shared height": 3.0,
+   "worst plan overlap, px\u00b2": 50.24,
+   "at time": 0.37
+  },
+  {
+   "solids": [
+    "escape wheel 1",
+    "pallet fork 1"
+   ],
+   "shared height": 2.0,
+   "worst plan overlap, px\u00b2": 23.06,
+   "at time": 0.6
+  },
+  {
+   "solids": [
+    "escape wheel 3",
+    "fourth wheel 1"
+   ],
+   "shared height": 3.0,
+   "worst plan overlap, px\u00b2": 0.31,
+   "at time": 0.6
+  },
+  {
+   "solids": [
+    "fourth wheel 1",
+    "fourth wheel 2"
+   ],
+   "shared height": 3.0,
+   "worst plan overlap, px\u00b2": 50.24,
+   "at time": 0.37
+  },
+  {
+   "solids": [
+    "fourth wheel 3",
+    "third wheel 1"
+   ],
+   "shared height": 3.0,
+   "worst plan overlap, px\u00b2": 0.07,
+   "at time": 0.6
+  },
+  {
+   "solids": [
+    "third wheel 1",
+    "third wheel 2"
+   ],
+   "shared height": 3.0,
+   "worst plan overlap, px\u00b2": 50.24,
+   "at time": 0.37
+  },
+  {
+   "solids": [
+    "third wheel 3",
+    "centre wheel 1"
+   ],
+   "shared height": 3.0,
+   "worst plan overlap, px\u00b2": 0.07,
+   "at time": 0.37
+  },
+  {
+   "solids": [
+    "centre wheel 1",
+    "centre wheel 2"
+   ],
+   "shared height": 3.0,
+   "worst plan overlap, px\u00b2": 50.24,
+   "at time": 0.37
+  },
+  {
+   "solids": [
+    "balance 1",
+    "balance 2"
+   ],
+   "shared height": 3.0,
+   "worst plan overlap, px\u00b2": 0.32,
+   "at time": 0.6
+  },
+  {
+   "solids": [
+    "balance 1",
+    "balance 3"
+   ],
+   "shared height": 3.0,
+   "worst plan overlap, px\u00b2": 0.34,
+   "at time": 0.1
+  },
+  {
+   "solids": [
+    "balance 1",
+    "balance 4"
+   ],
+   "shared height": 3.0,
+   "worst plan overlap, px\u00b2": 0.18,
+   "at time": 0.37
+  }
+ ]
+}
