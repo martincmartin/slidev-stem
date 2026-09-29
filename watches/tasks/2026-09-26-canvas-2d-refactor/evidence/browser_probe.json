@@ -1,0 +1,162 @@
+[
+  {
+    "browser": "chromium",
+    "version": "153.0.8010.12",
+    "headless": true,
+    "network_requests": [],
+    "result": {
+      "nativeSvgSamples": [
+        {
+          "time": 0,
+          "angle": 150.00000000000003,
+          "x": 6.400000095367432,
+          "y": -4.900000095367432
+        },
+        {
+          "time": 0.5,
+          "angle": 0,
+          "x": -7.900000095367432,
+          "y": 1
+        },
+        {
+          "time": 1,
+          "angle": -150.00000000000003,
+          "x": 7.400000095367432,
+          "y": 3.0999999046325684
+        },
+        {
+          "time": 2,
+          "angle": 150.00000000000003,
+          "x": 6.400000095367432,
+          "y": -4.900000095367432
+        },
+        {
+          "time": 61,
+          "angle": -150.00000000000003,
+          "x": 7.400000095367432,
+          "y": 3.0999999046325684
+        }
+      ],
+      "springHandoffErrorUnits": 0,
+      "manualRestPoint": {
+        "x": -7.900000095367432,
+        "y": 1
+      },
+      "readerResults": [
+        {
+          "name": "uninterpreted_css",
+          "accepted": true
+        },
+        {
+          "name": "ignored_group_animation",
+          "accepted": true
+        },
+        {
+          "name": "transform_trailing_garbage",
+          "accepted": true
+        },
+        {
+          "name": "non_monotonic_key_times",
+          "accepted": true
+        }
+      ],
+      "path2DCloneError": "DataCloneError",
+      "groupOpacity": {
+        "perShapeAlpha": 192,
+        "groupAlpha": 128
+      },
+      "worker": {
+        "path2D": "function",
+        "domParser": "undefined",
+        "requestAnimationFrame": "function",
+        "rgba": [
+          255,
+          0,
+          0,
+          255
+        ]
+      },
+      "transferAfterContextError": "InvalidStateError"
+    }
+  },
+  {
+    "browser": "firefox",
+    "version": "155.0",
+    "headless": true,
+    "network_requests": [],
+    "result": {
+      "nativeSvgSamples": [
+        {
+          "time": 0,
+          "angle": 149.99999955470795,
+          "x": 6.400000095367432,
+          "y": -4.900000095367432
+        },
+        {
+          "time": 0.5,
+          "angle": 0,
+          "x": -7.900000095367432,
+          "y": 1
+        },
+        {
+          "time": 1,
+          "angle": -149.99999955470795,
+          "x": 7.400000095367432,
+          "y": 3.0999999046325684
+        },
+        {
+          "time": 2,
+          "angle": 149.99999955470795,
+          "x": 6.400000095367432,
+          "y": -4.900000095367432
+        },
+        {
+          "time": 61,
+          "angle": -149.99999955470795,
+          "x": 7.400000095367432,
+          "y": 3.0999999046325684
+        }
+      ],
+      "springHandoffErrorUnits": 0,
+      "manualRestPoint": {
+        "x": -7.900000095367432,
+        "y": 1
+      },
+      "readerResults": [
+        {
+          "name": "uninterpreted_css",
+          "accepted": true
+        },
+        {
+          "name": "ignored_group_animation",
+          "accepted": true
+        },
+        {
+          "name": "transform_trailing_garbage",
+          "accepted": true
+        },
+        {
+          "name": "non_monotonic_key_times",
+          "accepted": true
+        }
+      ],
+      "path2DCloneError": "DataCloneError",
+      "groupOpacity": {
+        "perShapeAlpha": 192,
+        "groupAlpha": 128
+      },
+      "worker": {
+        "path2D": "function",
+        "domParser": "undefined",
+        "requestAnimationFrame": "function",
+        "rgba": [
+          255,
+          0,
+          0,
+          255
+        ]
+      },
+      "transferAfterContextError": "InvalidStateError"
+    }
+  }
+]

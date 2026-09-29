@@ -1,0 +1,144 @@
+{
+  "date": "2026-09-27",
+  "base_commit": "1a96754c84f43d6ca4c4abf5eb4b72ac5b10adc2",
+  "files": [
+    {
+      "source": "watches/art/skeleton_watch.py",
+      "snapshot": "inputs/watches/art/skeleton_watch.py",
+      "bytes": 43727,
+      "sha256": "4f40857123960b09e9f53a13c348d1a5b03d2d464087f5f41f5abece697e71fe"
+    },
+    {
+      "source": "watches/art/watch_geometry.py",
+      "snapshot": "inputs/watches/art/watch_geometry.py",
+      "bytes": 9020,
+      "sha256": "63810cbdf56f066712493ff34a11b59cdc1913008029922b7d733efc9f2c6f2b"
+    },
+    {
+      "source": "watches/public/cover/skeleton-watch.svg",
+      "snapshot": "inputs/watches/public/cover/skeleton-watch.svg",
+      "bytes": 46102,
+      "sha256": "10e19155a69967c2fa8573bf4214f49a4cd3bca36b6852875dccef99e12ecb1f"
+    },
+    {
+      "source": "watches/tasks/2026-09-25-canvas-2d-watch/spike/site/watch_player.js",
+      "snapshot": "inputs/watches/tasks/2026-09-25-canvas-2d-watch/spike/site/watch_player.js",
+      "bytes": 17530,
+      "sha256": "6ebd928abcb3580a1c5af785acf440c67c1d680b6e1cfe99dfb5678e5eccbbf9"
+    },
+    {
+      "source": "watches/tasks/2026-09-25-canvas-2d-watch/spike/site/watch_stage.js",
+      "snapshot": "inputs/watches/tasks/2026-09-25-canvas-2d-watch/spike/site/watch_stage.js",
+      "bytes": 6389,
+      "sha256": "4642ea16133efe759255a3e323107c1694391948ae166861693e16bf63ea5e5a"
+    },
+    {
+      "source": "watches/tasks/2026-09-25-canvas-2d-watch/spike/site/watch-1dp.svg",
+      "snapshot": "inputs/watches/tasks/2026-09-25-canvas-2d-watch/spike/site/watch-1dp.svg",
+      "bytes": 46767,
+      "sha256": "a2fbc6ce1a0af1278e95f44d49ea08605467e828292789c301219d5a375a85c0"
+    },
+    {
+      "source": "watches/tasks/2026-09-25-canvas-2d-watch/spike/deck/global-bottom.vue",
+      "snapshot": "inputs/watches/tasks/2026-09-25-canvas-2d-watch/spike/deck/global-bottom.vue",
+      "bytes": 2902,
+      "sha256": "8cef38e79801f4b41a2c4a4c6cfc0192b54d6cca0955b4abb15da94ea8e0a1a4"
+    },
+    {
+      "source": "watches/tasks/2026-09-25-canvas-2d-watch/spike/deck/slide-bottom.vue",
+      "snapshot": "inputs/watches/tasks/2026-09-25-canvas-2d-watch/spike/deck/slide-bottom.vue",
+      "bytes": 355,
+      "sha256": "0c9e340e8a1f7f17fef3679f7432e226f93aab0feb37e10f9e1c03f74882e336"
+    },
+    {
+      "source": "watches/tasks/2026-09-25-canvas-2d-watch/svg-vs-canvas.md",
+      "snapshot": "inputs/watches/tasks/2026-09-25-canvas-2d-watch/svg-vs-canvas.md",
+      "bytes": 23877,
+      "sha256": "081eeacf9a3fe0e137224b7bb060f6edf1822f1f984e953b39a32610959fb203"
+    },
+    {
+      "source": "watches/tasks/2026-09-25-canvas-2d-watch/README.md",
+      "snapshot": "inputs/watches/tasks/2026-09-25-canvas-2d-watch/README.md",
+      "bytes": 12071,
+      "sha256": "f7213ab5a998acdcf17b8d288064d3971cdc203f8b95716e3227ba0d18a8717e"
+    },
+    {
+      "source": "watches/tasks/2026-09-25-canvas-2d-watch/INVESTIGATION.md",
+      "snapshot": "inputs/watches/tasks/2026-09-25-canvas-2d-watch/INVESTIGATION.md",
+      "bytes": 62182,
+      "sha256": "fbd794f8b9ab4e4378a42be21972d0b444c5034d99dcfa217632ef9a647b11b0"
+    },
+    {
+      "source": "watches/tasks/2026-09-25-canvas-2d-watch/evidence/fade.json",
+      "snapshot": "inputs/watches/tasks/2026-09-25-canvas-2d-watch/evidence/fade.json",
+      "bytes": 2889,
+      "sha256": "1be06222bfb6d5e2ae3f2b1e93b32d33054485a1d7347f3e75456cefc7408557"
+    },
+    {
+      "source": "watches/tasks/2026-09-25-canvas-2d-watch/evidence/real-firefox-beta-canvas-c21.json",
+      "snapshot": "inputs/watches/tasks/2026-09-25-canvas-2d-watch/evidence/real-firefox-beta-canvas-c21.json",
+      "bytes": 120300,
+      "sha256": "f9d351a874c900c25006c2498e3c48c97ba9c20e43a5ecc2a2260acbcca99a04"
+    },
+    {
+      "source": "watches/tasks/2026-09-25-canvas-2d-watch/evidence/real-firefox-beta-svg-c21.json",
+      "snapshot": "inputs/watches/tasks/2026-09-25-canvas-2d-watch/evidence/real-firefox-beta-svg-c21.json",
+      "bytes": 102830,
+      "sha256": "580b3b6eec6e875a854b7d1c9287c2ad411030c5a499ca054230b9c903e70300"
+    },
+    {
+      "source": "docs/illustrations.md",
+      "snapshot": "inputs/docs/illustrations.md",
+      "bytes": 12714,
+      "sha256": "16e7a35c7670141bf82ce8cc50ae96751eee779e168c4b8399a130f3c01fb93f"
+    },
+    {
+      "source": "themes/ledger/styles/ledger.css",
+      "snapshot": "inputs/themes/ledger/styles/ledger.css",
+      "bytes": 1341,
+      "sha256": "b499a182992be1a14d6d68fe5daa8224a4fb9a753607c5b46fe02c85d45dd3d6"
+    },
+    {
+      "source": "pyproject.toml",
+      "snapshot": "inputs/pyproject.toml",
+      "bytes": 289,
+      "sha256": "59b1a719f4f8c36d9bd51a8f43e86b49f6ef1cf649ccbb909ac4f9e052bfed71"
+    },
+    {
+      "source": "requirements.txt",
+      "snapshot": "inputs/requirements.txt",
+      "bytes": 534,
+      "sha256": "731fdf242def75fca2317b6445eb7f8bddde8a3a224603b22ce6f6fbd2b3c5e2"
+    },
+    {
+      "source": "package.json",
+      "snapshot": "inputs/package.json",
+      "bytes": 256,
+      "sha256": "3c20a8543bb14b43c321e2dc972a4bf6efb043235604ebb130b4d45aa79ab193"
+    },
+    {
+      "source": ".prettierignore",
+      "snapshot": "inputs/.prettierignore",
+      "bytes": 374,
+      "sha256": "5526a2e893a60c7b3d69c10e2fc5779236cb9855992b78798282bf0ac5f41183"
+    },
+    {
+      "source": ".prettierrc",
+      "snapshot": "inputs/.prettierrc",
+      "bytes": 200,
+      "sha256": "1371e104a7e7a4003e8e14e7af9126bc06b2434c0568ed5fc9615da4980bc95b"
+    },
+    {
+      "source": "watches/slides.md",
+      "snapshot": "inputs/watches/slides.md",
+      "bytes": 4286,
+      "sha256": "e14b47bef8d5fa53f301a00bbc90e9d7d4142ee7b9ccc074171cd4af13a6b5db"
+    },
+    {
+      "source": "tools/check_python.py",
+      "snapshot": "inputs/tools/check_python.py",
+      "bytes": 1961,
+      "sha256": "930142aa026adb10e8bd1788a6b5be449834cf0e7c252239ce6c9893a53e9570"
+    }
+  ]
+}

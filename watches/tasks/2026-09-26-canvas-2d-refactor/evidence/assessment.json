@@ -1,0 +1,408 @@
+{
+  "drawings": [
+    {
+      "path": "inputs/watches/public/cover/skeleton-watch.svg",
+      "bytes": 46102,
+      "gzip_bytes": 9031,
+      "elements": {
+        "animate": 1,
+        "animateTransform": 11,
+        "circle": 18,
+        "clipPath": 5,
+        "defs": 1,
+        "g": 28,
+        "path": 42,
+        "rect": 1,
+        "svg": 1
+      },
+      "drawn_shapes_excluding_defs": {
+        "circle": 18,
+        "path": 37,
+        "rect": 1
+      },
+      "drawn_shape_count": 56,
+      "part_labels": [],
+      "animations": [
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "sum"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "60s",
+          "frames": 122,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "none"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "sum"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "sum"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "sum"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 25,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "none"
+        },
+        {
+          "element": "animate",
+          "attribute": "d",
+          "duration": "2s",
+          "frames": 25,
+          "first_frame_numbers": 80,
+          "first_frame_commands": {
+            "C": 13,
+            "M": 1
+          },
+          "accumulate": "none"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 25,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "none"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "none"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "60s",
+          "frames": 122,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "none"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "sum"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "sum"
+        }
+      ]
+    },
+    {
+      "path": "inputs/watches/tasks/2026-09-25-canvas-2d-watch/spike/site/watch-1dp.svg",
+      "bytes": 46767,
+      "gzip_bytes": 9142,
+      "elements": {
+        "animate": 1,
+        "animateTransform": 11,
+        "circle": 18,
+        "clipPath": 5,
+        "defs": 1,
+        "g": 29,
+        "path": 42,
+        "rect": 1,
+        "style": 1,
+        "svg": 1
+      },
+      "drawn_shapes_excluding_defs": {
+        "circle": 18,
+        "path": 37,
+        "rect": 1
+      },
+      "drawn_shape_count": 56,
+      "part_labels": [
+        "hairspring",
+        "rest"
+      ],
+      "animations": [
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "sum"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "60s",
+          "frames": 122,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "none"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "sum"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "sum"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "sum"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 25,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "none"
+        },
+        {
+          "element": "animate",
+          "attribute": "d",
+          "duration": "2s",
+          "frames": 25,
+          "first_frame_numbers": 80,
+          "first_frame_commands": {
+            "C": 13,
+            "M": 1
+          },
+          "accumulate": "none"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 25,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "none"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "none"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "60s",
+          "frames": 122,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "none"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "sum"
+        },
+        {
+          "element": "animateTransform",
+          "attribute": "transform",
+          "duration": "2s",
+          "frames": 6,
+          "first_frame_numbers": 1,
+          "first_frame_commands": {},
+          "accumulate": "sum"
+        }
+      ]
+    }
+  ],
+  "prototype_lines": {
+    "watch_player.js": 433,
+    "watch_stage.js": 166
+  },
+  "depth": {
+    "centroid_order_crossing_degrees": 26.565051177077994,
+    "centroid_order_samples": [
+      {
+        "angle_degrees": 0,
+        "depth_difference": -1.0
+      },
+      {
+        "angle_degrees": 15,
+        "depth_difference": -0.44828773608402683
+      },
+      {
+        "angle_degrees": 26.565051177077994,
+        "depth_difference": 2.220446049250313e-16
+      },
+      {
+        "angle_degrees": 45,
+        "depth_difference": 0.7071067811865474
+      },
+      {
+        "angle_degrees": 90,
+        "depth_difference": 2.0
+      }
+    ],
+    "centroid_crossing_is_not_itself_an_occlusion_proof": true,
+    "overlapping_strips": {
+      "angle_degrees": 45.0,
+      "screen_x": 9.5,
+      "screen_y": 5.0,
+      "first_centroid_depth": 4.596194077712559,
+      "second_centroid_depth": 6.717514421272201,
+      "first_depth_at_overlap": 8.435028842544401,
+      "second_depth_at_overlap": 6.313708498984759,
+      "first_z_at_overlap": 2.4289321881345245,
+      "second_z_at_overlap": 0.9289321881345245,
+      "centroid_sort_is_wrong": true
+    }
+  },
+  "timing": {
+    "period_seconds": 2.0,
+    "amplitude_degrees": 150.0,
+    "tightest_phase_seconds": 1.0,
+    "tightest_angle_degrees": -150.0,
+    "tightest_turns": 3.6666666666666665,
+    "loosest_turns": 2.8333333333333335,
+    "linear_keyframe_velocity_after_positive_peak_degrees_per_second": -61.333512679677035,
+    "stop_samples": [
+      {
+        "fraction": 0,
+        "angle_degrees": -150.0,
+        "velocity_degrees_per_second": 0.0
+      },
+      {
+        "fraction": 0.25,
+        "angle_degrees": -126.5625,
+        "velocity_degrees_per_second": 210.9375
+      },
+      {
+        "fraction": 0.5,
+        "angle_degrees": -75.0,
+        "velocity_degrees_per_second": 281.25
+      },
+      {
+        "fraction": 0.75,
+        "angle_degrees": -23.4375,
+        "velocity_degrees_per_second": 210.9375
+      },
+      {
+        "fraction": 1,
+        "angle_degrees": 0.0,
+        "velocity_degrees_per_second": 0.0
+      }
+    ],
+    "phase_requests": [
+      {
+        "request_seconds": 0.3,
+        "boundary_seconds": 1.0
+      },
+      {
+        "request_seconds": 1.0,
+        "boundary_seconds": 1.0
+      },
+      {
+        "request_seconds": 1.001,
+        "boundary_seconds": 3.0
+      },
+      {
+        "request_seconds": 2.8,
+        "boundary_seconds": 3.0
+      },
+      {
+        "request_seconds": 60.2,
+        "boundary_seconds": 61.0
+      }
+    ]
+  },
+  "resources": {
+    "rgba_surfaces_excluding_browser_overhead": [
+      {
+        "width": 1920,
+        "height": 1080,
+        "rgba_mib": 7.91015625
+      },
+      {
+        "width": 3456,
+        "height": 1950,
+        "rgba_mib": 25.7080078125
+      },
+      {
+        "width": 3840,
+        "height": 2160,
+        "rgba_mib": 31.640625
+      }
+    ],
+    "linear_angular_interpolation_bound_css_px": 0.009519294368334643,
+    "nearest_frame_angular_error_bound_css_px": 2.181661564992912,
+    "hypothetical_projection_clip": {
+      "vertices": 1000,
+      "angles_inclusive_0_to_90": 91,
+      "float32_xy_bytes": 728000,
+      "excludes": "topology, order, styles, compression, and adaptive samples"
+    },
+    "quadratic_visibility_pairs_for_2000_faces": 1999000
+  }
+}
