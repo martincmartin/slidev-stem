@@ -1,0 +1,185 @@
+[
+ {
+  "package": "canvg",
+  "role": "SVG to Canvas 2D renderer",
+  "version": "4.0.3",
+  "published": "2025-03-12",
+  "licence": "MIT",
+  "weekly_downloads": 15805262,
+  "default_files": [
+   "dist/index.min.js"
+  ],
+  "minified_kib": 83.3,
+  "gzipped_kib": 23.0,
+  "wasm_kib": null
+ },
+ {
+  "package": "@svgdotjs/svg.js",
+  "role": "SVG DOM building and animation",
+  "version": "3.2.8",
+  "published": "2026-08-04",
+  "licence": "MIT",
+  "weekly_downloads": 847255,
+  "default_files": [
+   "dist/svg.min.js"
+  ],
+  "minified_kib": 91.3,
+  "gzipped_kib": 29.4,
+  "wasm_kib": null
+ },
+ {
+  "package": "paper",
+  "role": "vector scene graph on Canvas 2D",
+  "version": "0.12.18",
+  "published": "2024-07-17",
+  "licence": "MIT",
+  "weekly_downloads": 204196,
+  "default_files": [
+   "dist/paper-full.min.js"
+  ],
+  "minified_kib": 234.0,
+  "gzipped_kib": 80.8,
+  "wasm_kib": null
+ },
+ {
+  "package": "konva",
+  "role": "scene graph on Canvas 2D",
+  "version": "10.7.0",
+  "published": "2026-09-23",
+  "licence": "MIT",
+  "weekly_downloads": 3115053,
+  "default_files": [
+   "konva.min.js"
+  ],
+  "minified_kib": 188.4,
+  "gzipped_kib": 56.0,
+  "wasm_kib": null
+ },
+ {
+  "package": "two.js",
+  "role": "one scene graph, SVG or Canvas 2D or WebGL renderer",
+  "version": "0.8.24",
+  "published": "2026-08-29",
+  "licence": "MIT",
+  "weekly_downloads": 19584,
+  "default_files": [
+   "build/two.min.js"
+  ],
+  "minified_kib": 200.6,
+  "gzipped_kib": 48.7,
+  "wasm_kib": null
+ },
+ {
+  "package": "pixi.js",
+  "role": "2D on WebGL or WebGPU",
+  "version": "8.21.0",
+  "published": "2026-09-17",
+  "licence": "MIT",
+  "weekly_downloads": 1245311,
+  "default_files": [
+   "dist/pixi.min.js"
+  ],
+  "minified_kib": 808.9,
+  "gzipped_kib": 227.8,
+  "wasm_kib": null
+ },
+ {
+  "package": "zdog",
+  "role": "flat 3D shapes on Canvas 2D or SVG, sorted by centre depth",
+  "version": "1.1.3",
+  "published": "2022-01-22",
+  "licence": "MIT",
+  "weekly_downloads": 343737,
+  "default_files": [
+   "dist/zdog.dist.min.js"
+  ],
+  "minified_kib": 29.0,
+  "gzipped_kib": 7.1,
+  "wasm_kib": null
+ },
+ {
+  "package": "three",
+  "role": "3D on WebGL or WebGPU",
+  "version": "0.186.1",
+  "published": "2026-09-24",
+  "licence": "MIT",
+  "weekly_downloads": 19389640,
+  "default_files": [
+   "build/three.core.min.js",
+   "build/three.module.min.js"
+  ],
+  "minified_kib": 789.7,
+  "gzipped_kib": 187.5,
+  "wasm_kib": null
+ },
+ {
+  "package": "fabric",
+  "role": "canvas object model and editor",
+  "version": "7.4.0",
+  "published": "2026-05-18",
+  "licence": "MIT",
+  "weekly_downloads": 1091740,
+  "default_files": [
+   "dist/index.min.js"
+  ],
+  "minified_kib": 292.0,
+  "gzipped_kib": 89.8,
+  "wasm_kib": null
+ },
+ {
+  "package": "lottie-web",
+  "role": "Lottie player: SVG or Canvas 2D",
+  "version": "5.13.0",
+  "published": "2025-05-21",
+  "licence": "MIT",
+  "weekly_downloads": 8856591,
+  "default_files": [
+   "build/player/lottie.min.js"
+  ],
+  "minified_kib": 298.5,
+  "gzipped_kib": 74.3,
+  "wasm_kib": null
+ },
+ {
+  "package": "@lottiefiles/dotlottie-web",
+  "role": "Lottie player: ThorVG in WebAssembly",
+  "version": "0.80.0",
+  "published": "2026-08-28",
+  "licence": "MIT",
+  "weekly_downloads": 1883944,
+  "default_files": [
+   "dist/index.js"
+  ],
+  "minified_kib": 161.2,
+  "gzipped_kib": 32.1,
+  "wasm_kib": 1209.1
+ },
+ {
+  "package": "canvaskit-wasm",
+  "role": "Skia in WebAssembly, on WebGL",
+  "version": "0.42.0",
+  "published": "2026-08-18",
+  "licence": "BSD-3-Clause",
+  "weekly_downloads": 2224508,
+  "default_files": [
+   "bin/canvaskit.min.js"
+  ],
+  "minified_kib": 118.3,
+  "gzipped_kib": 36.6,
+  "wasm_kib": 7145.8
+ },
+ {
+  "package": "gsap",
+  "role": "tweens and timelines for any number, SVG or canvas",
+  "version": "3.15.0",
+  "published": "2026-04-13",
+  "licence": "Standard 'no charge' license: https://gsap.com/standard-license.",
+  "weekly_downloads": 5796974,
+  "default_files": [
+   "dist/gsap.min.js"
+  ],
+  "minified_kib": 71.2,
+  "gzipped_kib": 27.6,
+  "wasm_kib": null
+ }
+]

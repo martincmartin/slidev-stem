@@ -1,0 +1,1271 @@
+{
+ "pieces": 440,
+ "paths": 862,
+ "hold, s (at each stop, both ways)": 1.0,
+ "rate, degrees per s": 22.5,
+ "zoom": 3.0,
+ "pivot": {
+  "y": 285.45,
+  "z": 9.25
+ },
+ "file sizes, bytes (in out/)": {
+  "meshing-train-tilt-5.svg": 11307027,
+  "meshing-train-tilt-10.svg": 6277216,
+  "meshing-train-tilt-22.5.svg": 3482878,
+  "meshing-train-tilt-0-16.31-47.96-90-one-minus-cos.svg": 3143863,
+  "meshing-train-tilt-0-32.28-90-one-minus-cos.svg": 2536714,
+  "meshing-train-tilt-5-vs-10.svg": 17583942,
+  "meshing-train-tilt-10-vs-22.5.svg": 9759793,
+  "meshing-train-tilt-5-vs-0-16.31-47.96-90-one-minus-cos.svg": 21446659,
+  "meshing-train-tilt-5-vs-0-32.28-90-one-minus-cos.svg": 18507486
+ },
+ "interpolation error at the middle of each interval, slide px": {
+  "every 5 degrees": 0.136,
+  "every 10 degrees": 0.543,
+  "every 22.5 degrees": 2.691,
+  "every 45 degrees": 10.001,
+  "every 90 degrees": 29.119
+ },
+ "worst error over the way up, slide px": {
+  "Keyframes every 5\u00b0": 0.136,
+  "Keyframes every 10\u00b0": 0.543,
+  "Keyframes every 22.5\u00b0": 2.691,
+  "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos": 0.68,
+  "Keyframes at 0\u00b0, 32.28\u00b0, 90\u00b0, speed profile 1 \u2212 cos": 1.313,
+  "Keyframes every 45\u00b0, speed profile 1 \u2212 cos": 1.842,
+  "Keyframes every 90\u00b0": 29.635,
+  "Keyframes every 90\u00b0, speed profile 1 \u2212 cos": 3.838
+ },
+ "1 - cos speed profiles (keySplines x1 y1 x2 y2; worst miss in u)": {
+  "0-16.31": {
+   "keySplines": [
+    0.4332,
+    0.0,
+    0.783,
+    0.5707
+   ],
+   "miss": 0.0002
+  },
+  "16.31-47.96": {
+   "keySplines": [
+    0.3802,
+    0.203,
+    0.7221,
+    0.6073
+   ],
+   "miss": 4e-05
+  },
+  "47.96-90": {
+   "keySplines": [
+    0.3514,
+    0.2877,
+    0.6616,
+    0.63
+   ],
+   "miss": 0.00024
+  },
+  "0-32.28": {
+   "keySplines": [
+    0.429,
+    0.0,
+    0.7796,
+    0.5736
+   ],
+   "miss": 0.00033
+  },
+  "32.28-90": {
+   "keySplines": [
+    0.3507,
+    0.2227,
+    0.6877,
+    0.6284
+   ],
+   "miss": 6e-05
+  },
+  "0-45": {
+   "keySplines": [
+    0.4237,
+    0.0,
+    0.775,
+    0.5773
+   ],
+   "miss": 0.00051
+  },
+  "45-90": {
+   "keySplines": [
+    0.3552,
+    0.2813,
+    0.6648,
+    0.6289
+   ],
+   "miss": 0.00035
+  },
+  "0-90": {
+   "keySplines": [
+    0.3603,
+    0.0,
+    0.671,
+    0.4827
+   ],
+   "miss": 4e-05
+  }
+ },
+ "stills: 1 - cos panels at the middle of each interval": [
+  {
+   "panel": "Keyframes every 45\u00b0, speed profile 1 \u2212 cos",
+   "true tilt, degrees": 22.5,
+   "file": "evidence/depth/tilt-45-one-minus-cos-still-22.5.png",
+   "keyframes mixed, degrees": [
+    0.0,
+    45.0
+   ],
+   "progress u": 0.2599,
+   "plan height, fraction of true": 1.0,
+   "walls' height, fraction of true": 0.4802,
+   "apparent tilt, degrees": 11.25,
+   "worst point error, slide px": 1.842
+  },
+  {
+   "panel": "Keyframes every 45\u00b0, speed profile 1 \u2212 cos",
+   "true tilt, degrees": 67.5,
+   "file": "evidence/depth/tilt-45-one-minus-cos-still-67.5.png",
+   "keyframes mixed, degrees": [
+    45.0,
+    90.0
+   ],
+   "progress u": 0.4586,
+   "plan height, fraction of true": 1.0003,
+   "walls' height, fraction of true": 0.9108,
+   "apparent tilt, degrees": 65.54,
+   "worst point error, slide px": 0.782
+  },
+  {
+   "panel": "Keyframes at 0\u00b0, 32.28\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+   "true tilt, degrees": 16.14,
+   "file": "evidence/depth/tilt-0-32.28-90-one-minus-cos-still-16.14.png",
+   "keyframes mixed, degrees": [
+    0.0,
+    32.28
+   ],
+   "progress u": 0.255,
+   "plan height, fraction of true": 1.0,
+   "walls' height, fraction of true": 0.4898,
+   "apparent tilt, degrees": 8.07,
+   "worst point error, slide px": 1.313
+  },
+  {
+   "panel": "Keyframes at 0\u00b0, 32.28\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+   "true tilt, degrees": 61.14,
+   "file": "evidence/depth/tilt-0-32.28-90-one-minus-cos-still-61.14.png",
+   "keyframes mixed, degrees": [
+    32.28,
+    90.0
+   ],
+   "progress u": 0.4291,
+   "plan height, fraction of true": 1.0,
+   "walls' height, fraction of true": 0.8381,
+   "apparent tilt, degrees": 56.67,
+   "worst point error, slide px": 1.313
+  },
+  {
+   "panel": "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+   "true tilt, degrees": 8.155,
+   "file": "evidence/depth/tilt-0-16.31-47.96-90-one-minus-cos-still-8.155.png",
+   "keyframes mixed, degrees": [
+    0.0,
+    16.31
+   ],
+   "progress u": 0.2512,
+   "plan height, fraction of true": 1.0,
+   "walls' height, fraction of true": 0.4974,
+   "apparent tilt, degrees": 4.08,
+   "worst point error, slide px": 0.66
+  },
+  {
+   "panel": "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+   "true tilt, degrees": 32.135,
+   "file": "evidence/depth/tilt-0-16.31-47.96-90-one-minus-cos-still-32.135.png",
+   "keyframes mixed, degrees": [
+    16.31,
+    47.96
+   ],
+   "progress u": 0.3894,
+   "plan height, fraction of true": 1.0,
+   "walls' height, fraction of true": 0.866,
+   "apparent tilt, degrees": 28.55,
+   "worst point error, slide px": 0.659
+  },
+  {
+   "panel": "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+   "true tilt, degrees": 68.98,
+   "file": "evidence/depth/tilt-0-16.31-47.96-90-one-minus-cos-still-68.98.png",
+   "keyframes mixed, degrees": [
+    47.96,
+    90.0
+   ],
+   "progress u": 0.4641,
+   "plan height, fraction of true": 1.0004,
+   "walls' height, fraction of true": 0.9236,
+   "apparent tilt, degrees": 67.4,
+   "worst point error, slide px": 0.68
+  }
+ ],
+ "side by side (the labels alone differ in about 100-800 pixels)": {
+  "meshing-train-tilt-5-vs-10.svg": {
+   "holds, degrees": [
+    0.0,
+    90.0
+   ],
+   "loop, s": 9.999999999999995,
+   "frames": [
+    {
+     "moment": "hold at 0",
+     "time, s": 0.5,
+     "true tilt, degrees": 0.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 0.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 860.1,
+       "drawn height, screen px": {
+        "chromium": 862,
+        "firefox": 862
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes every 10\u00b0",
+       "apparent tilt, degrees": 0.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 860.1,
+       "drawn height, screen px": {
+        "chromium": 862,
+        "firefox": 862
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 126,
+        "firefox": 128
+       }
+      }
+     ]
+    },
+    {
+     "moment": "9",
+     "time, s": 1.4,
+     "true tilt, degrees": 9.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 9.0,
+       "squash": 0.9994,
+       "predicted outline height, screen px": 844.8,
+       "drawn height, screen px": {
+        "chromium": 848,
+        "firefox": 848
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes every 10\u00b0",
+       "apparent tilt, degrees": 9.0,
+       "squash": 0.9986,
+       "predicted outline height, screen px": 844.1,
+       "drawn height, screen px": {
+        "chromium": 847,
+        "firefox": 847
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 618,
+        "firefox": 574
+       }
+      }
+     ]
+    },
+    {
+     "moment": "22.5",
+     "time, s": 2.0,
+     "true tilt, degrees": 22.5,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 22.5,
+       "squash": 0.999,
+       "predicted outline height, screen px": 783.5,
+       "drawn height, screen px": {
+        "chromium": 786,
+        "firefox": 786
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes every 10\u00b0",
+       "apparent tilt, degrees": 22.5,
+       "squash": 0.9971,
+       "predicted outline height, screen px": 782.1,
+       "drawn height, screen px": {
+        "chromium": 784,
+        "firefox": 784
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 9094,
+        "firefox": 9049
+       }
+      }
+     ]
+    },
+    {
+     "moment": "67.5",
+     "time, s": 4.0,
+     "true tilt, degrees": 67.5,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 67.5,
+       "squash": 0.999,
+       "predicted outline height, screen px": 303.9,
+       "drawn height, screen px": {
+        "chromium": 306,
+        "firefox": 306
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes every 10\u00b0",
+       "apparent tilt, degrees": 67.5,
+       "squash": 0.9971,
+       "predicted outline height, screen px": 303.3,
+       "drawn height, screen px": {
+        "chromium": 306,
+        "firefox": 306
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 646,
+        "firefox": 633
+       }
+      }
+     ]
+    },
+    {
+     "moment": "85",
+     "time, s": 4.778,
+     "true tilt, degrees": 85.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 85.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 60.2,
+       "drawn height, screen px": {
+        "chromium": 63,
+        "firefox": 63
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes every 10\u00b0",
+       "apparent tilt, degrees": 85.0,
+       "squash": 0.9962,
+       "predicted outline height, screen px": 59.9,
+       "drawn height, screen px": {
+        "chromium": 63,
+        "firefox": 63
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 172,
+        "firefox": 183
+       }
+      }
+     ]
+    },
+    {
+     "moment": "hold at 90",
+     "time, s": 5.5,
+     "true tilt, degrees": 90.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 90.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 55.5,
+       "drawn height, screen px": {
+        "chromium": 59,
+        "firefox": 59
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes every 10\u00b0",
+       "apparent tilt, degrees": 90.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 55.5,
+       "drawn height, screen px": {
+        "chromium": 59,
+        "firefox": 59
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 122,
+        "firefox": 128
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "meshing-train-tilt-10-vs-22.5.svg": {
+   "holds, degrees": [
+    0.0,
+    90.0
+   ],
+   "loop, s": 10.000000000000002,
+   "frames": [
+    {
+     "moment": "hold at 0",
+     "time, s": 0.5,
+     "true tilt, degrees": 0.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 10\u00b0",
+       "apparent tilt, degrees": 0.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 860.1,
+       "drawn height, screen px": {
+        "chromium": 862,
+        "firefox": 862
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes every 22.5\u00b0",
+       "apparent tilt, degrees": 0.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 860.1,
+       "drawn height, screen px": {
+        "chromium": 862,
+        "firefox": 862
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 207,
+        "firefox": 201
+       }
+      }
+     ]
+    },
+    {
+     "moment": "9",
+     "time, s": 1.4,
+     "true tilt, degrees": 9.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 10\u00b0",
+       "apparent tilt, degrees": 9.0,
+       "squash": 0.9986,
+       "predicted outline height, screen px": 844.1,
+       "drawn height, screen px": {
+        "chromium": 847,
+        "firefox": 847
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes every 22.5\u00b0",
+       "apparent tilt, degrees": 8.97,
+       "squash": 0.9816,
+       "predicted outline height, screen px": 829.8,
+       "drawn height, screen px": {
+        "chromium": 832,
+        "firefox": 832
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 53075,
+        "firefox": 53076
+       }
+      }
+     ]
+    },
+    {
+     "moment": "22.5",
+     "time, s": 2.0,
+     "true tilt, degrees": 22.5,
+     "panels": [
+      {
+       "panel": "Keyframes every 10\u00b0",
+       "apparent tilt, degrees": 22.5,
+       "squash": 0.9971,
+       "predicted outline height, screen px": 782.1,
+       "drawn height, screen px": {
+        "chromium": 784,
+        "firefox": 784
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes every 22.5\u00b0",
+       "apparent tilt, degrees": 22.5,
+       "squash": 1.0,
+       "predicted outline height, screen px": 784.3,
+       "drawn height, screen px": {
+        "chromium": 788,
+        "firefox": 788
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 14902,
+        "firefox": 14882
+       }
+      }
+     ]
+    },
+    {
+     "moment": "67.5",
+     "time, s": 4.0,
+     "true tilt, degrees": 67.5,
+     "panels": [
+      {
+       "panel": "Keyframes every 10\u00b0",
+       "apparent tilt, degrees": 67.5,
+       "squash": 0.9971,
+       "predicted outline height, screen px": 303.3,
+       "drawn height, screen px": {
+        "chromium": 306,
+        "firefox": 306
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes every 22.5\u00b0",
+       "apparent tilt, degrees": 67.5,
+       "squash": 1.0,
+       "predicted outline height, screen px": 304.2,
+       "drawn height, screen px": {
+        "chromium": 307,
+        "firefox": 307
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 2781,
+        "firefox": 2743
+       }
+      }
+     ]
+    },
+    {
+     "moment": "85",
+     "time, s": 4.778,
+     "true tilt, degrees": 85.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 10\u00b0",
+       "apparent tilt, degrees": 85.0,
+       "squash": 0.9962,
+       "predicted outline height, screen px": 59.9,
+       "drawn height, screen px": {
+        "chromium": 63,
+        "firefox": 63
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes every 22.5\u00b0",
+       "apparent tilt, degrees": 85.06,
+       "squash": 0.9868,
+       "predicted outline height, screen px": 58.9,
+       "drawn height, screen px": {
+        "chromium": 62,
+        "firefox": 62
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 2349,
+        "firefox": 2368
+       }
+      }
+     ]
+    },
+    {
+     "moment": "hold at 90",
+     "time, s": 5.5,
+     "true tilt, degrees": 90.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 10\u00b0",
+       "apparent tilt, degrees": 90.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 55.5,
+       "drawn height, screen px": {
+        "chromium": 59,
+        "firefox": 59
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes every 22.5\u00b0",
+       "apparent tilt, degrees": 90.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 55.5,
+       "drawn height, screen px": {
+        "chromium": 59,
+        "firefox": 59
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 203,
+        "firefox": 201
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "meshing-train-tilt-5-vs-0-16.31-47.96-90-one-minus-cos.svg": {
+   "holds, degrees": [
+    0.0,
+    8.155,
+    32.135,
+    68.98,
+    90.0
+   ],
+   "loop, s": 15.99999999999999,
+   "frames": [
+    {
+     "moment": "hold at 0",
+     "time, s": 0.5,
+     "true tilt, degrees": 0.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 0.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 860.1,
+       "drawn height, screen px": {
+        "chromium": 862,
+        "firefox": 862
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 0.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 860.1,
+       "drawn height, screen px": {
+        "chromium": 862,
+        "firefox": 862
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 1417,
+        "firefox": 1421
+       }
+      }
+     ]
+    },
+    {
+     "moment": "hold at 8.155",
+     "time, s": 1.862,
+     "true tilt, degrees": 8.15,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 8.16,
+       "squash": 0.9991,
+       "predicted outline height, screen px": 846.8,
+       "drawn height, screen px": {
+        "chromium": 850,
+        "firefox": 850
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 4.08,
+       "squash": 0.9924,
+       "predicted outline height, screen px": 849.5,
+       "drawn height, screen px": {
+        "chromium": 853,
+        "firefox": 853
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 28513,
+        "firefox": 28560
+       }
+      }
+     ]
+    },
+    {
+     "moment": "9",
+     "time, s": 2.4,
+     "true tilt, degrees": 9.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 9.0,
+       "squash": 0.9994,
+       "predicted outline height, screen px": 844.8,
+       "drawn height, screen px": {
+        "chromium": 848,
+        "firefox": 848
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 4.97,
+       "squash": 0.9914,
+       "predicted outline height, screen px": 847.2,
+       "drawn height, screen px": {
+        "chromium": 850,
+        "firefox": 849
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 28235,
+        "firefox": 28259
+       }
+      }
+     ]
+    },
+    {
+     "moment": "22.5",
+     "time, s": 3.0,
+     "true tilt, degrees": 22.5,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 22.5,
+       "squash": 0.999,
+       "predicted outline height, screen px": 783.5,
+       "drawn height, screen px": {
+        "chromium": 786,
+        "firefox": 786
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 20.09,
+       "squash": 0.9838,
+       "predicted outline height, screen px": 785.5,
+       "drawn height, screen px": {
+        "chromium": 788,
+        "firefox": 788
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 27172,
+        "firefox": 27175
+       }
+      }
+     ]
+    },
+    {
+     "moment": "hold at 32.135",
+     "time, s": 3.928,
+     "true tilt, degrees": 32.13,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 32.13,
+       "squash": 0.9991,
+       "predicted outline height, screen px": 713.3,
+       "drawn height, screen px": {
+        "chromium": 716,
+        "firefox": 716
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 28.55,
+       "squash": 0.964,
+       "predicted outline height, screen px": 715.9,
+       "drawn height, screen px": {
+        "chromium": 719,
+        "firefox": 719
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 38506,
+        "firefox": 38479
+       }
+      }
+     ]
+    },
+    {
+     "moment": "67.5",
+     "time, s": 6.0,
+     "true tilt, degrees": 67.5,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 67.5,
+       "squash": 0.999,
+       "predicted outline height, screen px": 303.9,
+       "drawn height, screen px": {
+        "chromium": 306,
+        "firefox": 306
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 65.83,
+       "squash": 0.9349,
+       "predicted outline height, screen px": 306.2,
+       "drawn height, screen px": {
+        "chromium": 309,
+        "firefox": 309
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 28488,
+        "firefox": 28493
+       }
+      }
+     ]
+    },
+    {
+     "moment": "hold at 68.98",
+     "time, s": 6.566,
+     "true tilt, degrees": 68.98,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 68.98,
+       "squash": 0.9994,
+       "predicted outline height, screen px": 283.1,
+       "drawn height, screen px": {
+        "chromium": 286,
+        "firefox": 286
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 67.4,
+       "squash": 0.9338,
+       "predicted outline height, screen px": 285.4,
+       "drawn height, screen px": {
+        "chromium": 288,
+        "firefox": 288
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 27779,
+        "firefox": 27781
+       }
+      }
+     ]
+    },
+    {
+     "moment": "85",
+     "time, s": 7.778,
+     "true tilt, degrees": 85.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 85.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 60.2,
+       "drawn height, screen px": {
+        "chromium": 63,
+        "firefox": 63
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 84.85,
+       "squash": 0.9705,
+       "predicted outline height, screen px": 59.5,
+       "drawn height, screen px": {
+        "chromium": 62,
+        "firefox": 62
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 6790,
+        "firefox": 6776
+       }
+      }
+     ]
+    },
+    {
+     "moment": "hold at 90",
+     "time, s": 8.5,
+     "true tilt, degrees": 90.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 90.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 55.5,
+       "drawn height, screen px": {
+        "chromium": 59,
+        "firefox": 59
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 16.31\u00b0, 47.96\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 90.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 55.5,
+       "drawn height, screen px": {
+        "chromium": 59,
+        "firefox": 59
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 1413,
+        "firefox": 1421
+       }
+      }
+     ]
+    }
+   ]
+  },
+  "meshing-train-tilt-5-vs-0-32.28-90-one-minus-cos.svg": {
+   "holds, degrees": [
+    0.0,
+    16.14,
+    61.14,
+    90.0
+   ],
+   "loop, s": 13.999999999999986,
+   "frames": [
+    {
+     "moment": "hold at 0",
+     "time, s": 0.5,
+     "true tilt, degrees": 0.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 0.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 860.1,
+       "drawn height, screen px": {
+        "chromium": 862,
+        "firefox": 862
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 32.28\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 0.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 860.1,
+       "drawn height, screen px": {
+        "chromium": 862,
+        "firefox": 862
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 1205,
+        "firefox": 1197
+       }
+      }
+     ]
+    },
+    {
+     "moment": "9",
+     "time, s": 1.4,
+     "true tilt, degrees": 9.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 9.0,
+       "squash": 0.9994,
+       "predicted outline height, screen px": 844.8,
+       "drawn height, screen px": {
+        "chromium": 848,
+        "firefox": 848
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 32.28\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 2.47,
+       "squash": 0.9886,
+       "predicted outline height, screen px": 848.3,
+       "drawn height, screen px": {
+        "chromium": 851,
+        "firefox": 851
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 36486,
+        "firefox": 36446
+       }
+      }
+     ]
+    },
+    {
+     "moment": "hold at 16.14",
+     "time, s": 2.217,
+     "true tilt, degrees": 16.14,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 16.14,
+       "squash": 0.9993,
+       "predicted outline height, screen px": 818.1,
+       "drawn height, screen px": {
+        "chromium": 821,
+        "firefox": 821
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 32.28\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 8.07,
+       "squash": 0.9702,
+       "predicted outline height, screen px": 822.5,
+       "drawn height, screen px": {
+        "chromium": 825,
+        "firefox": 825
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 44662,
+        "firefox": 44638
+       }
+      }
+     ]
+    },
+    {
+     "moment": "22.5",
+     "time, s": 3.0,
+     "true tilt, degrees": 22.5,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 22.5,
+       "squash": 0.999,
+       "predicted outline height, screen px": 783.5,
+       "drawn height, screen px": {
+        "chromium": 786,
+        "firefox": 786
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 32.28\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 15.88,
+       "squash": 0.9606,
+       "predicted outline height, screen px": 787.6,
+       "drawn height, screen px": {
+        "chromium": 791,
+        "firefox": 791
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 49264,
+        "firefox": 49275
+       }
+      }
+     ]
+    },
+    {
+     "moment": "hold at 61.14",
+     "time, s": 5.217,
+     "true tilt, degrees": 61.14,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 61.14,
+       "squash": 0.9993,
+       "predicted outline height, screen px": 391.2,
+       "drawn height, screen px": {
+        "chromium": 394,
+        "firefox": 394
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 32.28\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 56.67,
+       "squash": 0.8785,
+       "predicted outline height, screen px": 395.3,
+       "drawn height, screen px": {
+        "chromium": 398,
+        "firefox": 398
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 46150,
+        "firefox": 46182
+       }
+      }
+     ]
+    },
+    {
+     "moment": "67.5",
+     "time, s": 6.0,
+     "true tilt, degrees": 67.5,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 67.5,
+       "squash": 0.999,
+       "predicted outline height, screen px": 303.9,
+       "drawn height, screen px": {
+        "chromium": 306,
+        "firefox": 306
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 32.28\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 64.13,
+       "squash": 0.877,
+       "predicted outline height, screen px": 307.9,
+       "drawn height, screen px": {
+        "chromium": 310,
+        "firefox": 311
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 39687,
+        "firefox": 39651
+       }
+      }
+     ]
+    },
+    {
+     "moment": "85",
+     "time, s": 6.778,
+     "true tilt, degrees": 85.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 85.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 60.2,
+       "drawn height, screen px": {
+        "chromium": 63,
+        "firefox": 63
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 32.28\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 84.77,
+       "squash": 0.956,
+       "predicted outline height, screen px": 59.3,
+       "drawn height, screen px": {
+        "chromium": 62,
+        "firefox": 62
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 9189,
+        "firefox": 9242
+       }
+      }
+     ]
+    },
+    {
+     "moment": "hold at 90",
+     "time, s": 7.5,
+     "true tilt, degrees": 90.0,
+     "panels": [
+      {
+       "panel": "Keyframes every 5\u00b0",
+       "apparent tilt, degrees": 90.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 55.5,
+       "drawn height, screen px": {
+        "chromium": 59,
+        "firefox": 59
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 0,
+        "firefox": 0
+       }
+      },
+      {
+       "panel": "Keyframes at 0\u00b0, 32.28\u00b0, 90\u00b0, speed profile 1 \u2212 cos",
+       "apparent tilt, degrees": 90.0,
+       "squash": 1.0,
+       "predicted outline height, screen px": 55.5,
+       "drawn height, screen px": {
+        "chromium": 59,
+        "firefox": 59
+       },
+       "pixels that differ from the first panel": {
+        "chromium": 1201,
+        "firefox": 1197
+       }
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

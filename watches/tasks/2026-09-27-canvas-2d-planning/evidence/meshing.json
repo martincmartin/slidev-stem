@@ -1,0 +1,1994 @@
+{
+ "plan pixel": 0.1,
+ "staircase (depth_order.py)": {
+  "solids": 35,
+  "heights": 30,
+  "slabs": 29,
+  "runs": 202,
+  "slab pieces": 448,
+  "slab pairs compared": 1171,
+  "slab crossings": 0,
+  "slab cycles": 0,
+  "worst slab wrong area, px\u00b2": 3.0,
+  "at tilt": 90,
+  "worst centre-per-quad wrong area, px\u00b2": 771.5,
+  "intersecting solids": [
+   {
+    "solids": [
+     "balance 1",
+     "balance 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.31,
+    "smaller outline's area, px\u00b2": 235.94
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 3"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.31,
+    "smaller outline's area, px\u00b2": 233.47
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 4"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.18,
+    "smaller outline's area, px\u00b2": 233.31
+   }
+  ],
+  "by tilt": [
+   {
+    "tilt": 5,
+    "covered": 71325.75,
+    "centre, per quad": 21.5,
+    "centre, per quad, sorted once at 45": 183.5,
+    "centre, per run": 21.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 10,
+    "covered": 71676.0,
+    "centre, per quad": 27.0,
+    "centre, per quad, sorted once at 45": 199.75,
+    "centre, per run": 27.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 15,
+    "covered": 71370.75,
+    "centre, per quad": 40.0,
+    "centre, per quad, sorted once at 45": 202.75,
+    "centre, per run": 39.25,
+    "slab": 0.0
+   },
+   {
+    "tilt": 20,
+    "covered": 70491.0,
+    "centre, per quad": 64.0,
+    "centre, per quad, sorted once at 45": 205.25,
+    "centre, per run": 63.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 25,
+    "covered": 69024.0,
+    "centre, per quad": 91.0,
+    "centre, per quad, sorted once at 45": 206.25,
+    "centre, per run": 88.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 30,
+    "covered": 66995.0,
+    "centre, per quad": 118.0,
+    "centre, per quad, sorted once at 45": 195.0,
+    "centre, per run": 119.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 35,
+    "covered": 64423.0,
+    "centre, per quad": 135.25,
+    "centre, per quad, sorted once at 45": 192.25,
+    "centre, per run": 142.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 40,
+    "covered": 61220.25,
+    "centre, per quad": 168.25,
+    "centre, per quad, sorted once at 45": 185.75,
+    "centre, per run": 175.25,
+    "slab": 0.0
+   },
+   {
+    "tilt": 45,
+    "covered": 57402.25,
+    "centre, per quad": 196.5,
+    "centre, per quad, sorted once at 45": 196.5,
+    "centre, per run": 241.25,
+    "slab": 0.0
+   },
+   {
+    "tilt": 50,
+    "covered": 53030.25,
+    "centre, per quad": 254.0,
+    "centre, per quad, sorted once at 45": 213.75,
+    "centre, per run": 315.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 55,
+    "covered": 48586.75,
+    "centre, per quad": 299.0,
+    "centre, per quad, sorted once at 45": 261.75,
+    "centre, per run": 358.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 60,
+    "covered": 43552.25,
+    "centre, per quad": 408.5,
+    "centre, per quad, sorted once at 45": 349.0,
+    "centre, per run": 444.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 65,
+    "covered": 37540.25,
+    "centre, per quad": 505.75,
+    "centre, per quad, sorted once at 45": 459.5,
+    "centre, per run": 551.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 70,
+    "covered": 31075.0,
+    "centre, per quad": 594.5,
+    "centre, per quad, sorted once at 45": 552.25,
+    "centre, per run": 633.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 75,
+    "covered": 24129.5,
+    "centre, per quad": 449.5,
+    "centre, per quad, sorted once at 45": 422.0,
+    "centre, per run": 451.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 80,
+    "covered": 16811.25,
+    "centre, per quad": 575.75,
+    "centre, per quad, sorted once at 45": 571.0,
+    "centre, per run": 572.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 85,
+    "covered": 11999.25,
+    "centre, per quad": 771.5,
+    "centre, per quad, sorted once at 45": 740.0,
+    "centre, per run": 924.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 89,
+    "covered": 7386.25,
+    "centre, per quad": 77.0,
+    "centre, per quad, sorted once at 45": 66.75,
+    "centre, per run": 79.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 90,
+    "covered": 5773.0,
+    "centre, per quad": 3.0,
+    "centre, per quad, sorted once at 45": 3.0,
+    "centre, per run": 3.0,
+    "slab": 3.0
+   }
+  ],
+  "heights of the train": [
+   {
+    "name": "escape wheel 1",
+    "bottom": 0.0,
+    "top": 3.0
+   },
+   {
+    "name": "escape wheel 2",
+    "bottom": 3.0,
+    "top": 4.5
+   },
+   {
+    "name": "escape wheel 3",
+    "bottom": 4.5,
+    "top": 8.5
+   },
+   {
+    "name": "escape wheel 4",
+    "bottom": 8.5,
+    "top": 10.0
+   },
+   {
+    "name": "fourth wheel 1",
+    "bottom": 8.5,
+    "top": 11.5
+   },
+   {
+    "name": "fourth wheel 2",
+    "bottom": 11.5,
+    "top": 13.0
+   },
+   {
+    "name": "fourth wheel 3",
+    "bottom": 13.0,
+    "top": 17.0
+   },
+   {
+    "name": "fourth wheel 4",
+    "bottom": 17.0,
+    "top": 18.5
+   },
+   {
+    "name": "third wheel 1",
+    "bottom": 18.5,
+    "top": 21.5
+   },
+   {
+    "name": "third wheel 2",
+    "bottom": 21.5,
+    "top": 23.0
+   },
+   {
+    "name": "third wheel 3",
+    "bottom": 23.0,
+    "top": 27.0
+   },
+   {
+    "name": "third wheel 4",
+    "bottom": 27.0,
+    "top": 28.5
+   },
+   {
+    "name": "centre wheel 1",
+    "bottom": 27.0,
+    "top": 30.0
+   },
+   {
+    "name": "centre wheel 2",
+    "bottom": 30.0,
+    "top": 31.5
+   },
+   {
+    "name": "centre wheel 3",
+    "bottom": 31.5,
+    "top": 35.5
+   },
+   {
+    "name": "centre wheel 4",
+    "bottom": 35.5,
+    "top": 37.0
+   },
+   {
+    "name": "barrel 1",
+    "bottom": 35.5,
+    "top": 40.5
+   },
+   {
+    "name": "barrel 2",
+    "bottom": 35.5,
+    "top": 40.5
+   },
+   {
+    "name": "barrel 3",
+    "bottom": 35.5,
+    "top": 42.0
+   }
+  ],
+  "meshes": [
+   {
+    "wheel": "fourth wheel 1",
+    "pinion": "escape wheel 3",
+    "wheel heights": [
+     8.5,
+     11.5
+    ],
+    "pinion heights": [
+     4.5,
+     8.5
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.0,
+    "worst plan overlap, px\u00b2": 0.73,
+    "at time, s": 14.25,
+    "samples": 240
+   },
+   {
+    "wheel": "third wheel 1",
+    "pinion": "fourth wheel 3",
+    "wheel heights": [
+     18.5,
+     21.5
+    ],
+    "pinion heights": [
+     13.0,
+     17.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.05,
+    "worst plan overlap, px\u00b2": 0.7,
+    "at time, s": 68.25,
+    "samples": 240
+   },
+   {
+    "wheel": "centre wheel 1",
+    "pinion": "third wheel 3",
+    "wheel heights": [
+     27.0,
+     30.0
+    ],
+    "pinion heights": [
+     23.0,
+     27.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.07,
+    "worst plan overlap, px\u00b2": 0.86,
+    "at time, s": 30.25,
+    "samples": 240
+   },
+   {
+    "wheel": "barrel 1",
+    "pinion": "centre wheel 3",
+    "wheel heights": [
+     35.5,
+     40.5
+    ],
+    "pinion heights": [
+     31.5,
+     35.5
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.0,
+    "worst plan overlap, px\u00b2": 0.44,
+    "at time, s": 114.25,
+    "samples": 240
+   }
+  ]
+ },
+ "meshing, pinion flush with its driver's teeth": {
+  "solids": 35,
+  "heights": 22,
+  "slabs": 21,
+  "runs": 202,
+  "slab pieces": 537,
+  "slab pairs compared": 2289,
+  "slab crossings": 0,
+  "slab cycles": 0,
+  "worst slab wrong area, px\u00b2": 0.5,
+  "at tilt": 70,
+  "worst centre-per-quad wrong area, px\u00b2": 1095.0,
+  "intersecting solids": [
+   {
+    "solids": [
+     "escape wheel 1",
+     "escape wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "fourth wheel 1",
+     "fourth wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "fourth wheel 3",
+     "third wheel 1"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.05,
+    "smaller outline's area, px\u00b2": 103.4
+   },
+   {
+    "solids": [
+     "third wheel 1",
+     "third wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "third wheel 3",
+     "centre wheel 1"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.07,
+    "smaller outline's area, px\u00b2": 118.62
+   },
+   {
+    "solids": [
+     "centre wheel 1",
+     "centre wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.31,
+    "smaller outline's area, px\u00b2": 235.94
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 3"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.31,
+    "smaller outline's area, px\u00b2": 233.47
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 4"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.18,
+    "smaller outline's area, px\u00b2": 233.31
+   }
+  ],
+  "by tilt": [
+   {
+    "tilt": 5,
+    "covered": 71321.75,
+    "centre, per quad": 23.25,
+    "centre, per quad, sorted once at 45": 124.25,
+    "centre, per run": 23.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 10,
+    "covered": 71692.5,
+    "centre, per quad": 36.75,
+    "centre, per quad, sorted once at 45": 145.0,
+    "centre, per run": 35.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 15,
+    "covered": 71481.75,
+    "centre, per quad": 69.5,
+    "centre, per quad, sorted once at 45": 175.5,
+    "centre, per run": 69.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 20,
+    "covered": 70676.0,
+    "centre, per quad": 88.0,
+    "centre, per quad, sorted once at 45": 192.25,
+    "centre, per run": 88.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 25,
+    "covered": 69295.75,
+    "centre, per quad": 123.75,
+    "centre, per quad, sorted once at 45": 210.75,
+    "centre, per run": 117.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 30,
+    "covered": 67347.0,
+    "centre, per quad": 154.75,
+    "centre, per quad, sorted once at 45": 221.0,
+    "centre, per run": 152.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 35,
+    "covered": 64896.0,
+    "centre, per quad": 171.0,
+    "centre, per quad, sorted once at 45": 229.0,
+    "centre, per run": 187.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 40,
+    "covered": 61917.5,
+    "centre, per quad": 246.75,
+    "centre, per quad, sorted once at 45": 246.75,
+    "centre, per run": 265.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 45,
+    "covered": 58361.5,
+    "centre, per quad": 249.5,
+    "centre, per quad, sorted once at 45": 249.5,
+    "centre, per run": 304.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 50,
+    "covered": 54341.5,
+    "centre, per quad": 301.5,
+    "centre, per quad, sorted once at 45": 291.0,
+    "centre, per run": 370.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 55,
+    "covered": 49770.75,
+    "centre, per quad": 380.5,
+    "centre, per quad, sorted once at 45": 361.25,
+    "centre, per run": 443.0,
+    "slab": 0.25
+   },
+   {
+    "tilt": 60,
+    "covered": 44562.25,
+    "centre, per quad": 533.0,
+    "centre, per quad, sorted once at 45": 460.25,
+    "centre, per run": 573.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 65,
+    "covered": 38876.5,
+    "centre, per quad": 611.25,
+    "centre, per quad, sorted once at 45": 542.5,
+    "centre, per run": 674.25,
+    "slab": 0.25
+   },
+   {
+    "tilt": 70,
+    "covered": 32820.25,
+    "centre, per quad": 754.0,
+    "centre, per quad, sorted once at 45": 695.25,
+    "centre, per run": 829.25,
+    "slab": 0.5
+   },
+   {
+    "tilt": 75,
+    "covered": 25902.5,
+    "centre, per quad": 967.25,
+    "centre, per quad, sorted once at 45": 946.25,
+    "centre, per run": 998.75,
+    "slab": 0.5
+   },
+   {
+    "tilt": 80,
+    "covered": 18116.0,
+    "centre, per quad": 1095.0,
+    "centre, per quad, sorted once at 45": 1090.75,
+    "centre, per run": 1170.25,
+    "slab": 0.25
+   },
+   {
+    "tilt": 85,
+    "covered": 10134.5,
+    "centre, per quad": 587.5,
+    "centre, per quad, sorted once at 45": 576.5,
+    "centre, per run": 603.0,
+    "slab": 0.25
+   },
+   {
+    "tilt": 89,
+    "covered": 6237.75,
+    "centre, per quad": 65.5,
+    "centre, per quad, sorted once at 45": 65.25,
+    "centre, per run": 68.25,
+    "slab": 0.0
+   },
+   {
+    "tilt": 90,
+    "covered": 4841.25,
+    "centre, per quad": 0.0,
+    "centre, per quad, sorted once at 45": 0.0,
+    "centre, per run": 0.0,
+    "slab": 0.0
+   }
+  ],
+  "heights of the train": [
+   {
+    "name": "escape wheel 1",
+    "bottom": 0.0,
+    "top": 3.0
+   },
+   {
+    "name": "escape wheel 2",
+    "bottom": 0.0,
+    "top": 3.0
+   },
+   {
+    "name": "escape wheel 3",
+    "bottom": 3.0,
+    "top": 6.0
+   },
+   {
+    "name": "escape wheel 4",
+    "bottom": 6.0,
+    "top": 7.5
+   },
+   {
+    "name": "fourth wheel 1",
+    "bottom": 3.0,
+    "top": 6.0
+   },
+   {
+    "name": "fourth wheel 2",
+    "bottom": 3.0,
+    "top": 6.0
+   },
+   {
+    "name": "fourth wheel 3",
+    "bottom": 6.0,
+    "top": 9.0
+   },
+   {
+    "name": "fourth wheel 4",
+    "bottom": 9.0,
+    "top": 10.5
+   },
+   {
+    "name": "third wheel 1",
+    "bottom": 6.0,
+    "top": 9.0
+   },
+   {
+    "name": "third wheel 2",
+    "bottom": 6.0,
+    "top": 9.0
+   },
+   {
+    "name": "third wheel 3",
+    "bottom": 9.0,
+    "top": 12.0
+   },
+   {
+    "name": "third wheel 4",
+    "bottom": 12.0,
+    "top": 13.5
+   },
+   {
+    "name": "centre wheel 1",
+    "bottom": 9.0,
+    "top": 12.0
+   },
+   {
+    "name": "centre wheel 2",
+    "bottom": 9.0,
+    "top": 12.0
+   },
+   {
+    "name": "centre wheel 3",
+    "bottom": 12.0,
+    "top": 17.0
+   },
+   {
+    "name": "centre wheel 4",
+    "bottom": 17.0,
+    "top": 18.5
+   },
+   {
+    "name": "barrel 1",
+    "bottom": 12.0,
+    "top": 17.0
+   },
+   {
+    "name": "barrel 2",
+    "bottom": 12.0,
+    "top": 17.0
+   },
+   {
+    "name": "barrel 3",
+    "bottom": 12.0,
+    "top": 18.5
+   }
+  ],
+  "meshes": [
+   {
+    "wheel": "fourth wheel 1",
+    "pinion": "escape wheel 3",
+    "wheel heights": [
+     3.0,
+     6.0
+    ],
+    "pinion heights": [
+     3.0,
+     6.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.0,
+    "worst plan overlap, px\u00b2": 0.73,
+    "at time, s": 14.25,
+    "samples": 240
+   },
+   {
+    "wheel": "third wheel 1",
+    "pinion": "fourth wheel 3",
+    "wheel heights": [
+     6.0,
+     9.0
+    ],
+    "pinion heights": [
+     6.0,
+     9.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.05,
+    "worst plan overlap, px\u00b2": 0.7,
+    "at time, s": 68.25,
+    "samples": 240
+   },
+   {
+    "wheel": "centre wheel 1",
+    "pinion": "third wheel 3",
+    "wheel heights": [
+     9.0,
+     12.0
+    ],
+    "pinion heights": [
+     9.0,
+     12.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.07,
+    "worst plan overlap, px\u00b2": 0.86,
+    "at time, s": 30.25,
+    "samples": 240
+   },
+   {
+    "wheel": "barrel 1",
+    "pinion": "centre wheel 3",
+    "wheel heights": [
+     12.0,
+     17.0
+    ],
+    "pinion heights": [
+     12.0,
+     17.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.0,
+    "worst plan overlap, px\u00b2": 0.44,
+    "at time, s": 114.25,
+    "samples": 240
+   }
+  ]
+ },
+ "meshing, pinion 1 px taller than its driver's teeth": {
+  "solids": 35,
+  "heights": 25,
+  "slabs": 24,
+  "runs": 202,
+  "slab pieces": 675,
+  "slab pairs compared": 3046,
+  "slab crossings": 0,
+  "slab cycles": 0,
+  "worst slab wrong area, px\u00b2": 0.5,
+  "at tilt": 65,
+  "worst centre-per-quad wrong area, px\u00b2": 1097.75,
+  "intersecting solids": [
+   {
+    "solids": [
+     "escape wheel 1",
+     "escape wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "fourth wheel 1",
+     "fourth wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "fourth wheel 3",
+     "third wheel 1"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.05,
+    "smaller outline's area, px\u00b2": 103.4
+   },
+   {
+    "solids": [
+     "third wheel 1",
+     "third wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "third wheel 3",
+     "centre wheel 1"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.07,
+    "smaller outline's area, px\u00b2": 118.62
+   },
+   {
+    "solids": [
+     "centre wheel 1",
+     "centre wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.31,
+    "smaller outline's area, px\u00b2": 235.94
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 3"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.31,
+    "smaller outline's area, px\u00b2": 233.47
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 4"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.18,
+    "smaller outline's area, px\u00b2": 233.31
+   }
+  ],
+  "by tilt": [
+   {
+    "tilt": 5,
+    "covered": 71323.5,
+    "centre, per quad": 23.25,
+    "centre, per quad, sorted once at 45": 165.25,
+    "centre, per run": 23.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 10,
+    "covered": 71694.75,
+    "centre, per quad": 35.5,
+    "centre, per quad, sorted once at 45": 193.5,
+    "centre, per run": 34.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 15,
+    "covered": 71486.5,
+    "centre, per quad": 71.0,
+    "centre, per quad, sorted once at 45": 228.75,
+    "centre, per run": 70.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 20,
+    "covered": 70682.0,
+    "centre, per quad": 86.75,
+    "centre, per quad, sorted once at 45": 246.5,
+    "centre, per run": 87.25,
+    "slab": 0.0
+   },
+   {
+    "tilt": 25,
+    "covered": 69301.5,
+    "centre, per quad": 120.5,
+    "centre, per quad, sorted once at 45": 262.5,
+    "centre, per run": 114.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 30,
+    "covered": 67352.0,
+    "centre, per quad": 154.25,
+    "centre, per quad, sorted once at 45": 267.0,
+    "centre, per run": 150.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 35,
+    "covered": 64901.0,
+    "centre, per quad": 177.25,
+    "centre, per quad, sorted once at 45": 266.0,
+    "centre, per run": 192.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 40,
+    "covered": 61924.75,
+    "centre, per quad": 225.0,
+    "centre, per quad, sorted once at 45": 275.25,
+    "centre, per run": 241.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 45,
+    "covered": 58372.0,
+    "centre, per quad": 273.75,
+    "centre, per quad, sorted once at 45": 273.75,
+    "centre, per run": 327.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 50,
+    "covered": 54360.25,
+    "centre, per quad": 310.25,
+    "centre, per quad, sorted once at 45": 310.25,
+    "centre, per run": 388.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 55,
+    "covered": 49794.75,
+    "centre, per quad": 386.25,
+    "centre, per quad, sorted once at 45": 371.75,
+    "centre, per run": 457.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 60,
+    "covered": 44580.75,
+    "centre, per quad": 535.25,
+    "centre, per quad, sorted once at 45": 462.5,
+    "centre, per run": 584.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 65,
+    "covered": 38897.75,
+    "centre, per quad": 610.25,
+    "centre, per quad, sorted once at 45": 537.75,
+    "centre, per run": 658.0,
+    "slab": 0.5
+   },
+   {
+    "tilt": 70,
+    "covered": 32844.0,
+    "centre, per quad": 754.5,
+    "centre, per quad, sorted once at 45": 692.25,
+    "centre, per run": 830.0,
+    "slab": 0.5
+   },
+   {
+    "tilt": 75,
+    "covered": 25920.25,
+    "centre, per quad": 960.75,
+    "centre, per quad, sorted once at 45": 938.25,
+    "centre, per run": 992.5,
+    "slab": 0.5
+   },
+   {
+    "tilt": 80,
+    "covered": 18154.5,
+    "centre, per quad": 1097.75,
+    "centre, per quad, sorted once at 45": 1089.5,
+    "centre, per run": 1173.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 85,
+    "covered": 10184.0,
+    "centre, per quad": 591.0,
+    "centre, per quad, sorted once at 45": 576.5,
+    "centre, per run": 606.75,
+    "slab": 0.25
+   },
+   {
+    "tilt": 89,
+    "covered": 6304.25,
+    "centre, per quad": 64.25,
+    "centre, per quad, sorted once at 45": 64.0,
+    "centre, per run": 67.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 90,
+    "covered": 4901.25,
+    "centre, per quad": 0.0,
+    "centre, per quad, sorted once at 45": 0.0,
+    "centre, per run": 0.0,
+    "slab": 0.0
+   }
+  ],
+  "heights of the train": [
+   {
+    "name": "escape wheel 1",
+    "bottom": 0.0,
+    "top": 3.0
+   },
+   {
+    "name": "escape wheel 2",
+    "bottom": 0.0,
+    "top": 3.0
+   },
+   {
+    "name": "escape wheel 3",
+    "bottom": 3.0,
+    "top": 7.0
+   },
+   {
+    "name": "escape wheel 4",
+    "bottom": 7.0,
+    "top": 8.5
+   },
+   {
+    "name": "fourth wheel 1",
+    "bottom": 3.0,
+    "top": 6.0
+   },
+   {
+    "name": "fourth wheel 2",
+    "bottom": 3.0,
+    "top": 6.0
+   },
+   {
+    "name": "fourth wheel 3",
+    "bottom": 6.0,
+    "top": 10.0
+   },
+   {
+    "name": "fourth wheel 4",
+    "bottom": 10.0,
+    "top": 11.5
+   },
+   {
+    "name": "third wheel 1",
+    "bottom": 6.0,
+    "top": 9.0
+   },
+   {
+    "name": "third wheel 2",
+    "bottom": 6.0,
+    "top": 9.0
+   },
+   {
+    "name": "third wheel 3",
+    "bottom": 9.0,
+    "top": 13.0
+   },
+   {
+    "name": "third wheel 4",
+    "bottom": 13.0,
+    "top": 14.5
+   },
+   {
+    "name": "centre wheel 1",
+    "bottom": 9.0,
+    "top": 12.0
+   },
+   {
+    "name": "centre wheel 2",
+    "bottom": 9.0,
+    "top": 12.0
+   },
+   {
+    "name": "centre wheel 3",
+    "bottom": 12.0,
+    "top": 18.0
+   },
+   {
+    "name": "centre wheel 4",
+    "bottom": 18.0,
+    "top": 19.5
+   },
+   {
+    "name": "barrel 1",
+    "bottom": 12.0,
+    "top": 17.0
+   },
+   {
+    "name": "barrel 2",
+    "bottom": 12.0,
+    "top": 17.0
+   },
+   {
+    "name": "barrel 3",
+    "bottom": 12.0,
+    "top": 18.5
+   }
+  ],
+  "meshes": [
+   {
+    "wheel": "fourth wheel 1",
+    "pinion": "escape wheel 3",
+    "wheel heights": [
+     3.0,
+     6.0
+    ],
+    "pinion heights": [
+     3.0,
+     7.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.0,
+    "worst plan overlap, px\u00b2": 0.73,
+    "at time, s": 14.25,
+    "samples": 240
+   },
+   {
+    "wheel": "third wheel 1",
+    "pinion": "fourth wheel 3",
+    "wheel heights": [
+     6.0,
+     9.0
+    ],
+    "pinion heights": [
+     6.0,
+     10.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.05,
+    "worst plan overlap, px\u00b2": 0.7,
+    "at time, s": 68.25,
+    "samples": 240
+   },
+   {
+    "wheel": "centre wheel 1",
+    "pinion": "third wheel 3",
+    "wheel heights": [
+     9.0,
+     12.0
+    ],
+    "pinion heights": [
+     9.0,
+     13.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.07,
+    "worst plan overlap, px\u00b2": 0.86,
+    "at time, s": 30.25,
+    "samples": 240
+   },
+   {
+    "wheel": "barrel 1",
+    "pinion": "centre wheel 3",
+    "wheel heights": [
+     12.0,
+     17.0
+    ],
+    "pinion heights": [
+     12.0,
+     18.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.0,
+    "worst plan overlap, px\u00b2": 0.44,
+    "at time, s": 114.25,
+    "samples": 240
+   }
+  ]
+ },
+ "meshing, pinion flush, no arbor ends": {
+  "solids": 31,
+  "heights": 19,
+  "slabs": 18,
+  "runs": 198,
+  "slab pieces": 375,
+  "slab pairs compared": 1469,
+  "slab crossings": 0,
+  "slab cycles": 0,
+  "worst slab wrong area, px\u00b2": 0.75,
+  "at tilt": 70,
+  "worst centre-per-quad wrong area, px\u00b2": 1095.25,
+  "intersecting solids": [
+   {
+    "solids": [
+     "escape wheel 1",
+     "escape wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "fourth wheel 1",
+     "fourth wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "fourth wheel 3",
+     "third wheel 1"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.05,
+    "smaller outline's area, px\u00b2": 103.4
+   },
+   {
+    "solids": [
+     "third wheel 1",
+     "third wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "third wheel 3",
+     "centre wheel 1"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.07,
+    "smaller outline's area, px\u00b2": 118.62
+   },
+   {
+    "solids": [
+     "centre wheel 1",
+     "centre wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.31,
+    "smaller outline's area, px\u00b2": 235.94
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 3"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.31,
+    "smaller outline's area, px\u00b2": 233.47
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 4"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.18,
+    "smaller outline's area, px\u00b2": 233.31
+   }
+  ],
+  "by tilt": [
+   {
+    "tilt": 5,
+    "covered": 71321.75,
+    "centre, per quad": 23.25,
+    "centre, per quad, sorted once at 45": 124.0,
+    "centre, per run": 23.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 10,
+    "covered": 71692.5,
+    "centre, per quad": 36.75,
+    "centre, per quad, sorted once at 45": 144.5,
+    "centre, per run": 35.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 15,
+    "covered": 71481.75,
+    "centre, per quad": 69.5,
+    "centre, per quad, sorted once at 45": 175.25,
+    "centre, per run": 69.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 20,
+    "covered": 70676.0,
+    "centre, per quad": 88.75,
+    "centre, per quad, sorted once at 45": 192.75,
+    "centre, per run": 88.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 25,
+    "covered": 69295.75,
+    "centre, per quad": 125.5,
+    "centre, per quad, sorted once at 45": 212.25,
+    "centre, per run": 119.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 30,
+    "covered": 67347.0,
+    "centre, per quad": 155.0,
+    "centre, per quad, sorted once at 45": 222.75,
+    "centre, per run": 152.25,
+    "slab": 0.0
+   },
+   {
+    "tilt": 35,
+    "covered": 64896.0,
+    "centre, per quad": 173.5,
+    "centre, per quad, sorted once at 45": 231.75,
+    "centre, per run": 189.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 40,
+    "covered": 61917.5,
+    "centre, per quad": 249.75,
+    "centre, per quad, sorted once at 45": 249.75,
+    "centre, per run": 267.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 45,
+    "covered": 58361.5,
+    "centre, per quad": 252.75,
+    "centre, per quad, sorted once at 45": 252.75,
+    "centre, per run": 306.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 50,
+    "covered": 54341.0,
+    "centre, per quad": 306.75,
+    "centre, per quad, sorted once at 45": 294.75,
+    "centre, per run": 373.0,
+    "slab": 0.25
+   },
+   {
+    "tilt": 55,
+    "covered": 49769.25,
+    "centre, per quad": 384.75,
+    "centre, per quad, sorted once at 45": 364.5,
+    "centre, per run": 445.25,
+    "slab": 0.25
+   },
+   {
+    "tilt": 60,
+    "covered": 44560.5,
+    "centre, per quad": 536.25,
+    "centre, per quad, sorted once at 45": 462.5,
+    "centre, per run": 575.25,
+    "slab": 0.25
+   },
+   {
+    "tilt": 65,
+    "covered": 38876.5,
+    "centre, per quad": 613.5,
+    "centre, per quad, sorted once at 45": 544.0,
+    "centre, per run": 675.25,
+    "slab": 0.5
+   },
+   {
+    "tilt": 70,
+    "covered": 32820.25,
+    "centre, per quad": 755.5,
+    "centre, per quad, sorted once at 45": 696.25,
+    "centre, per run": 830.5,
+    "slab": 0.75
+   },
+   {
+    "tilt": 75,
+    "covered": 25902.5,
+    "centre, per quad": 968.0,
+    "centre, per quad, sorted once at 45": 946.75,
+    "centre, per run": 999.0,
+    "slab": 0.75
+   },
+   {
+    "tilt": 80,
+    "covered": 18116.0,
+    "centre, per quad": 1095.25,
+    "centre, per quad, sorted once at 45": 1091.25,
+    "centre, per run": 1170.5,
+    "slab": 0.25
+   },
+   {
+    "tilt": 85,
+    "covered": 10133.0,
+    "centre, per quad": 587.5,
+    "centre, per quad, sorted once at 45": 576.5,
+    "centre, per run": 603.0,
+    "slab": 0.25
+   },
+   {
+    "tilt": 89,
+    "covered": 6215.25,
+    "centre, per quad": 65.5,
+    "centre, per quad, sorted once at 45": 65.25,
+    "centre, per run": 68.25,
+    "slab": 0.0
+   },
+   {
+    "tilt": 90,
+    "covered": 4814.25,
+    "centre, per quad": 0.0,
+    "centre, per quad, sorted once at 45": 0.0,
+    "centre, per run": 0.0,
+    "slab": 0.0
+   }
+  ],
+  "heights of the train": [
+   {
+    "name": "escape wheel 1",
+    "bottom": 0.0,
+    "top": 3.0
+   },
+   {
+    "name": "escape wheel 2",
+    "bottom": 0.0,
+    "top": 3.0
+   },
+   {
+    "name": "escape wheel 3",
+    "bottom": 3.0,
+    "top": 6.0
+   },
+   {
+    "name": "fourth wheel 1",
+    "bottom": 3.0,
+    "top": 6.0
+   },
+   {
+    "name": "fourth wheel 2",
+    "bottom": 3.0,
+    "top": 6.0
+   },
+   {
+    "name": "fourth wheel 3",
+    "bottom": 6.0,
+    "top": 9.0
+   },
+   {
+    "name": "third wheel 1",
+    "bottom": 6.0,
+    "top": 9.0
+   },
+   {
+    "name": "third wheel 2",
+    "bottom": 6.0,
+    "top": 9.0
+   },
+   {
+    "name": "third wheel 3",
+    "bottom": 9.0,
+    "top": 12.0
+   },
+   {
+    "name": "centre wheel 1",
+    "bottom": 9.0,
+    "top": 12.0
+   },
+   {
+    "name": "centre wheel 2",
+    "bottom": 9.0,
+    "top": 12.0
+   },
+   {
+    "name": "centre wheel 3",
+    "bottom": 12.0,
+    "top": 17.0
+   },
+   {
+    "name": "barrel 1",
+    "bottom": 12.0,
+    "top": 17.0
+   },
+   {
+    "name": "barrel 2",
+    "bottom": 12.0,
+    "top": 17.0
+   },
+   {
+    "name": "barrel 3",
+    "bottom": 12.0,
+    "top": 18.5
+   }
+  ],
+  "meshes": [
+   {
+    "wheel": "fourth wheel 1",
+    "pinion": "escape wheel 3",
+    "wheel heights": [
+     3.0,
+     6.0
+    ],
+    "pinion heights": [
+     3.0,
+     6.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.0,
+    "worst plan overlap, px\u00b2": 0.73,
+    "at time, s": 14.25,
+    "samples": 240
+   },
+   {
+    "wheel": "third wheel 1",
+    "pinion": "fourth wheel 3",
+    "wheel heights": [
+     6.0,
+     9.0
+    ],
+    "pinion heights": [
+     6.0,
+     9.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.05,
+    "worst plan overlap, px\u00b2": 0.7,
+    "at time, s": 68.25,
+    "samples": 240
+   },
+   {
+    "wheel": "centre wheel 1",
+    "pinion": "third wheel 3",
+    "wheel heights": [
+     9.0,
+     12.0
+    ],
+    "pinion heights": [
+     9.0,
+     12.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.07,
+    "worst plan overlap, px\u00b2": 0.86,
+    "at time, s": 30.25,
+    "samples": 240
+   },
+   {
+    "wheel": "barrel 1",
+    "pinion": "centre wheel 3",
+    "wheel heights": [
+     12.0,
+     17.0
+    ],
+    "pinion heights": [
+     12.0,
+     17.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.0,
+    "worst plan overlap, px\u00b2": 0.44,
+    "at time, s": 114.25,
+    "samples": 240
+   }
+  ]
+ },
+ "meshing, pinion flush, arbor ends one wheel thick": {
+  "solids": 35,
+  "heights": 20,
+  "slabs": 19,
+  "runs": 202,
+  "slab pieces": 390,
+  "slab pairs compared": 1482,
+  "slab crossings": 0,
+  "slab cycles": 0,
+  "worst slab wrong area, px\u00b2": 0.75,
+  "at tilt": 70,
+  "worst centre-per-quad wrong area, px\u00b2": 1094.0,
+  "intersecting solids": [
+   {
+    "solids": [
+     "escape wheel 1",
+     "escape wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "fourth wheel 1",
+     "fourth wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "fourth wheel 3",
+     "third wheel 1"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.05,
+    "smaller outline's area, px\u00b2": 103.4
+   },
+   {
+    "solids": [
+     "third wheel 1",
+     "third wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "third wheel 3",
+     "centre wheel 1"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.07,
+    "smaller outline's area, px\u00b2": 118.62
+   },
+   {
+    "solids": [
+     "centre wheel 1",
+     "centre wheel 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 50.24,
+    "smaller outline's area, px\u00b2": 50.24
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 2"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.31,
+    "smaller outline's area, px\u00b2": 235.94
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 3"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.31,
+    "smaller outline's area, px\u00b2": 233.47
+   },
+   {
+    "solids": [
+     "balance 1",
+     "balance 4"
+    ],
+    "shared height": 3.0,
+    "plan overlap, px\u00b2": 0.18,
+    "smaller outline's area, px\u00b2": 233.31
+   }
+  ],
+  "by tilt": [
+   {
+    "tilt": 5,
+    "covered": 71321.75,
+    "centre, per quad": 23.25,
+    "centre, per quad, sorted once at 45": 124.0,
+    "centre, per run": 23.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 10,
+    "covered": 71692.5,
+    "centre, per quad": 36.75,
+    "centre, per quad, sorted once at 45": 144.5,
+    "centre, per run": 35.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 15,
+    "covered": 71481.75,
+    "centre, per quad": 69.5,
+    "centre, per quad, sorted once at 45": 174.75,
+    "centre, per run": 69.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 20,
+    "covered": 70676.0,
+    "centre, per quad": 88.0,
+    "centre, per quad, sorted once at 45": 191.25,
+    "centre, per run": 88.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 25,
+    "covered": 69295.75,
+    "centre, per quad": 130.5,
+    "centre, per quad, sorted once at 45": 210.25,
+    "centre, per run": 124.5,
+    "slab": 0.0
+   },
+   {
+    "tilt": 30,
+    "covered": 67347.0,
+    "centre, per quad": 155.0,
+    "centre, per quad, sorted once at 45": 220.25,
+    "centre, per run": 152.25,
+    "slab": 0.0
+   },
+   {
+    "tilt": 35,
+    "covered": 64896.0,
+    "centre, per quad": 171.75,
+    "centre, per quad, sorted once at 45": 228.5,
+    "centre, per run": 187.75,
+    "slab": 0.0
+   },
+   {
+    "tilt": 40,
+    "covered": 61917.5,
+    "centre, per quad": 246.75,
+    "centre, per quad, sorted once at 45": 246.75,
+    "centre, per run": 264.0,
+    "slab": 0.0
+   },
+   {
+    "tilt": 45,
+    "covered": 58362.75,
+    "centre, per quad": 249.5,
+    "centre, per quad, sorted once at 45": 249.5,
+    "centre, per run": 303.25,
+    "slab": 0.0
+   },
+   {
+    "tilt": 50,
+    "covered": 54344.5,
+    "centre, per quad": 301.5,
+    "centre, per quad, sorted once at 45": 291.0,
+    "centre, per run": 369.0,
+    "slab": 0.25
+   },
+   {
+    "tilt": 55,
+    "covered": 49774.25,
+    "centre, per quad": 380.25,
+    "centre, per quad, sorted once at 45": 361.25,
+    "centre, per run": 442.0,
+    "slab": 0.25
+   },
+   {
+    "tilt": 60,
+    "covered": 44562.75,
+    "centre, per quad": 533.0,
+    "centre, per quad, sorted once at 45": 460.25,
+    "centre, per run": 573.75,
+    "slab": 0.25
+   },
+   {
+    "tilt": 65,
+    "covered": 38876.5,
+    "centre, per quad": 611.25,
+    "centre, per quad, sorted once at 45": 542.5,
+    "centre, per run": 674.25,
+    "slab": 0.5
+   },
+   {
+    "tilt": 70,
+    "covered": 32820.25,
+    "centre, per quad": 752.75,
+    "centre, per quad, sorted once at 45": 694.0,
+    "centre, per run": 828.0,
+    "slab": 0.75
+   },
+   {
+    "tilt": 75,
+    "covered": 25902.5,
+    "centre, per quad": 966.5,
+    "centre, per quad, sorted once at 45": 945.75,
+    "centre, per run": 998.25,
+    "slab": 0.75
+   },
+   {
+    "tilt": 80,
+    "covered": 18118.0,
+    "centre, per quad": 1094.0,
+    "centre, per quad, sorted once at 45": 1089.75,
+    "centre, per run": 1169.25,
+    "slab": 0.25
+   },
+   {
+    "tilt": 85,
+    "covered": 10150.5,
+    "centre, per quad": 587.5,
+    "centre, per quad, sorted once at 45": 576.5,
+    "centre, per run": 603.0,
+    "slab": 0.25
+   },
+   {
+    "tilt": 89,
+    "covered": 6262.75,
+    "centre, per quad": 65.5,
+    "centre, per quad, sorted once at 45": 65.25,
+    "centre, per run": 68.25,
+    "slab": 0.0
+   },
+   {
+    "tilt": 90,
+    "covered": 4859.25,
+    "centre, per quad": 0.0,
+    "centre, per quad, sorted once at 45": 0.0,
+    "centre, per run": 0.0,
+    "slab": 0.0
+   }
+  ],
+  "heights of the train": [
+   {
+    "name": "escape wheel 1",
+    "bottom": 0.0,
+    "top": 3.0
+   },
+   {
+    "name": "escape wheel 2",
+    "bottom": 0.0,
+    "top": 3.0
+   },
+   {
+    "name": "escape wheel 3",
+    "bottom": 3.0,
+    "top": 6.0
+   },
+   {
+    "name": "escape wheel 4",
+    "bottom": 6.0,
+    "top": 9.0
+   },
+   {
+    "name": "fourth wheel 1",
+    "bottom": 3.0,
+    "top": 6.0
+   },
+   {
+    "name": "fourth wheel 2",
+    "bottom": 3.0,
+    "top": 6.0
+   },
+   {
+    "name": "fourth wheel 3",
+    "bottom": 6.0,
+    "top": 9.0
+   },
+   {
+    "name": "fourth wheel 4",
+    "bottom": 9.0,
+    "top": 12.0
+   },
+   {
+    "name": "third wheel 1",
+    "bottom": 6.0,
+    "top": 9.0
+   },
+   {
+    "name": "third wheel 2",
+    "bottom": 6.0,
+    "top": 9.0
+   },
+   {
+    "name": "third wheel 3",
+    "bottom": 9.0,
+    "top": 12.0
+   },
+   {
+    "name": "third wheel 4",
+    "bottom": 12.0,
+    "top": 15.0
+   },
+   {
+    "name": "centre wheel 1",
+    "bottom": 9.0,
+    "top": 12.0
+   },
+   {
+    "name": "centre wheel 2",
+    "bottom": 9.0,
+    "top": 12.0
+   },
+   {
+    "name": "centre wheel 3",
+    "bottom": 12.0,
+    "top": 17.0
+   },
+   {
+    "name": "centre wheel 4",
+    "bottom": 17.0,
+    "top": 20.0
+   },
+   {
+    "name": "barrel 1",
+    "bottom": 12.0,
+    "top": 17.0
+   },
+   {
+    "name": "barrel 2",
+    "bottom": 12.0,
+    "top": 17.0
+   },
+   {
+    "name": "barrel 3",
+    "bottom": 12.0,
+    "top": 18.5
+   }
+  ],
+  "meshes": [
+   {
+    "wheel": "fourth wheel 1",
+    "pinion": "escape wheel 3",
+    "wheel heights": [
+     3.0,
+     6.0
+    ],
+    "pinion heights": [
+     3.0,
+     6.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.0,
+    "worst plan overlap, px\u00b2": 0.73,
+    "at time, s": 14.25,
+    "samples": 240
+   },
+   {
+    "wheel": "third wheel 1",
+    "pinion": "fourth wheel 3",
+    "wheel heights": [
+     6.0,
+     9.0
+    ],
+    "pinion heights": [
+     6.0,
+     9.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.05,
+    "worst plan overlap, px\u00b2": 0.7,
+    "at time, s": 68.25,
+    "samples": 240
+   },
+   {
+    "wheel": "centre wheel 1",
+    "pinion": "third wheel 3",
+    "wheel heights": [
+     9.0,
+     12.0
+    ],
+    "pinion heights": [
+     9.0,
+     12.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.07,
+    "worst plan overlap, px\u00b2": 0.86,
+    "at time, s": 30.25,
+    "samples": 240
+   },
+   {
+    "wheel": "barrel 1",
+    "pinion": "centre wheel 3",
+    "wheel heights": [
+     12.0,
+     17.0
+    ],
+    "pinion heights": [
+     12.0,
+     17.0
+    ],
+    "plan overlap at the still pose, px\u00b2": 0.0,
+    "worst plan overlap, px\u00b2": 0.44,
+    "at time, s": 114.25,
+    "samples": 240
+   }
+  ]
+ }
+}

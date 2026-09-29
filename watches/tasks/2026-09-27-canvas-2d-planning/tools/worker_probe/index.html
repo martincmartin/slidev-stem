@@ -1,0 +1,123 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>OffscreenCanvas probe</title>
+<!--
+worker_probe.py serves this directory over HTTP (a worker cannot load from
+file://) and drives it in Chromium and Firefox:
+1. what the main thread and a worker offer (capabilities);
+2. the same drawScene() on a <canvas> here and on an OffscreenCanvas in a
+   worker, drawn at the same time, for a pixel comparison of screenshots;
+3. both drawing every frame for 4 s while this thread is blocked for 100 ms
+   in every 400 ms, as a slide change might block it;
+4. the cost of making a Path2D from a string or from calls.
+-->
+<style>
+  body { margin: 0; background: #fff; }
+  canvas { display: block; width: 490px; height: 276px; margin: 4px; }
+</style>
+<canvas id="main"></canvas>
+<canvas id="offscreen"></canvas>
+<script type="module">
+  import { block, drawScene } from "./draw_scene.js";
+
+  const mainCanvas = document.getElementById("main");
+  const offscreenCanvas = document.getElementById("offscreen");
+  const worker = new Worker("./worker.js", { type: "module" });
+  const replies = new Map();
+  worker.onmessage = ({ data }) => {
+    const resolve = replies.get(data.kind);
+    replies.delete(data.kind);
+    resolve?.(data.value);
+  };
+  const ask = (message, reply, transfer = []) =>
+    new Promise(resolve => {
+      replies.set(reply, resolve);
+      worker.postMessage(message, transfer);
+    });
+  const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
+  let scene = null;
+
+  window.setUp = async function setUp(sceneData, time) {
+    scene = sceneData;
+    const main = {
+      transferControlToOffscreen: typeof HTMLCanvasElement.prototype.transferControlToOffscreen === "function",
+      offscreenCanvas: typeof OffscreenCanvas === "function",
+      timeOrigin: performance.timeOrigin,
+      devicePixelRatio,
+    };
+    const inWorker = await ask({ kind: "capabilities" }, "capabilities");
+    const width = scene.width * devicePixelRatio, height = scene.height * devicePixelRatio;
+    mainCanvas.width = width;
+    mainCanvas.height = height;
+    drawScene(mainCanvas.getContext("2d"), scene, time);
+    const offscreen = offscreenCanvas.transferControlToOffscreen();
+    await ask({ kind: "canvas", canvas: offscreen, scene, width, height, time }, "drawn", [offscreen]);
+    let readBack;
+    try {
+      offscreenCanvas.toDataURL();
+      readBack = "toDataURL worked";
+    } catch (error) {
+      readBack = `${error.name}: ${error.message}`;
+    }
+    return { main, worker: inWorker, timeOriginDifferenceMs: inWorker.timeOrigin - performance.timeOrigin, readBack };
+  };
+
+  function gaps(times) {
+    const intervals = times.slice(1).map((time, index) => time - times[index]);
+    const sorted = [...intervals].sort((first, second) => first - second);
+    return {
+      frames: times.length,
+      medianMs: +sorted[Math.floor(sorted.length / 2)].toFixed(2),
+      over25Ms: intervals.filter(interval => interval > 25).length,
+      largestMs: +Math.max(...intervals).toFixed(1),
+    };
+  }
+
+  window.blockingTest = async function blockingTest(seconds, blockEvery, blockFor) {
+    const mainTimes = [];
+    let running = true;
+    const context = mainCanvas.getContext("2d");
+    const loop = now => {
+      if (!running) return;
+      mainTimes.push(now + performance.timeOrigin);
+      drawScene(context, scene, now / 1000);
+      requestAnimationFrame(loop);
+    };
+    await ask({ kind: "start" }, "started");
+    requestAnimationFrame(loop);
+    const blocker = setInterval(() => block(blockFor), blockEvery);
+    await sleep(seconds * 1000);
+    clearInterval(blocker);
+    running = false;
+    const workerTimes = await ask({ kind: "stop" }, "frames");
+    return { mainThread: gaps(mainTimes), worker: gaps(workerTimes) };
+  };
+
+  window.redrawBoth = async function redrawBoth(time) {
+    drawScene(mainCanvas.getContext("2d"), scene, time);
+    await ask({ kind: "redraw", time }, "drawn");
+  };
+
+  // Path2D for a morphing spiral: from a string made each time, or by calls.
+  window.pathCosts = function pathCosts(numbers) {
+    const count = 20000;
+    let started = performance.now();
+    for (let index = 0; index < count; index += 1) {
+      let text = `M${numbers[0]} ${numbers[1]}`;
+      for (let at = 2; at < numbers.length; at += 6)
+        text += `C${numbers[at]} ${numbers[at + 1]} ${numbers[at + 2]} ${numbers[at + 3]} ${numbers[at + 4] + index * 1e-6} ${numbers[at + 5]}`;
+      new Path2D(text);
+    }
+    const fromString = (performance.now() - started) / count;
+    started = performance.now();
+    for (let index = 0; index < count; index += 1) {
+      const path = new Path2D();
+      path.moveTo(numbers[0], numbers[1]);
+      for (let at = 2; at < numbers.length; at += 6)
+        path.bezierCurveTo(numbers[at], numbers[at + 1], numbers[at + 2], numbers[at + 3], numbers[at + 4] + index * 1e-6, numbers[at + 5]);
+    }
+    const fromCalls = (performance.now() - started) / count;
+    return { microsecondsFromString: +(fromString * 1000).toFixed(2), microsecondsFromCalls: +(fromCalls * 1000).toFixed(2) };
+  };
+  window.ready = true;
+</script>

@@ -1,0 +1,100 @@
+{
+ "chromium": {
+  "main": {
+   "transferControlToOffscreen": true,
+   "offscreenCanvas": true,
+   "timeOrigin": 1790522831569.5,
+   "devicePixelRatio": 2
+  },
+  "worker": {
+   "offscreenCanvas": true,
+   "path2d": true,
+   "path2dFromString": true,
+   "requestAnimationFrame": true,
+   "fonts": true,
+   "fontFace": true,
+   "domParser": false,
+   "domMatrix": true,
+   "timeOrigin": 1790522831585.1
+  },
+  "timeOriginDifferenceMs": 15.60009765625,
+  "readBack": "toDataURL worked",
+  "pixels": {
+   "size": [
+    552,
+    980
+   ],
+   "largest channel difference": 89,
+   "pixels differing by more than 2 levels": 59
+  },
+  "blocking": {
+   "mainThread": {
+    "frames": 205,
+    "medianMs": 16.7,
+    "over25Ms": 9,
+    "largestMs": 83.4
+   },
+   "worker": {
+    "frames": 247,
+    "medianMs": 16.7,
+    "over25Ms": 0,
+    "largestMs": 16.8
+   }
+  },
+  "path2dCost": {
+   "microsecondsFromString": 3.67,
+   "microsecondsFromCalls": 0.3
+  },
+  "version": "153.0.8010.12",
+  "pageErrors": []
+ },
+ "firefox": {
+  "main": {
+   "transferControlToOffscreen": true,
+   "offscreenCanvas": true,
+   "timeOrigin": 1790522837066,
+   "devicePixelRatio": 2
+  },
+  "worker": {
+   "offscreenCanvas": true,
+   "path2d": true,
+   "path2dFromString": true,
+   "requestAnimationFrame": true,
+   "fonts": true,
+   "fontFace": true,
+   "domParser": false,
+   "domMatrix": true,
+   "timeOrigin": 1790522837145
+  },
+  "timeOriginDifferenceMs": 79,
+  "readBack": "toDataURL worked",
+  "pixels": {
+   "size": [
+    552,
+    980
+   ],
+   "largest channel difference": 0,
+   "pixels differing by more than 2 levels": 0
+  },
+  "blocking": {
+   "mainThread": {
+    "frames": 380,
+    "medianMs": 8.34,
+    "over25Ms": 9,
+    "largestMs": 100.8
+   },
+   "worker": {
+    "frames": 480,
+    "medianMs": 8.34,
+    "over25Ms": 0,
+    "largestMs": 17.5
+   }
+  },
+  "path2dCost": {
+   "microsecondsFromString": 6.9,
+   "microsecondsFromCalls": 0.5
+  },
+  "version": "155.0",
+  "pageErrors": []
+ }
+}

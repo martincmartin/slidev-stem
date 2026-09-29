@@ -1,0 +1,20 @@
+{
+ "whole watch": {
+  "faces": 33,
+  "walls": 415,
+  "face points in plan": 4527,
+  "wall points in plan": 6160,
+  "face points written per frame": 9054,
+  "wall points written per frame": 20516,
+  "faces' share of points written": 0.306
+ },
+ "balance and hairspring": {
+  "faces": 6,
+  "walls": 17,
+  "face points in plan": 492,
+  "wall points in plan": 651,
+  "face points written per frame": 984,
+  "wall points written per frame": 2312,
+  "faces' share of points written": 0.299
+ }
+}

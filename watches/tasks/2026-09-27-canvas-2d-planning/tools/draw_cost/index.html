@@ -1,0 +1,161 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>Draw cost of a tilting 3D view</title>
+<!--
+draw_cost.py serves the task directory and calls measure(scene, renderer,
+seconds). out/draw_cost_scenes.json holds each scene's pieces in the slab order made by
+depth_order.py: walls (an x-monotone run between two heights, with the
+corners inside it) and faces (rings at a height). Each frame sets a new
+tilt, projects every piece and draws it: on a canvas, or by setting the `d`
+of SVG paths.
+-->
+<style>
+  body { margin: 0; background: #fff; }
+  canvas, svg { position: absolute; left: 0; top: 0; width: 980px; height: 552px; }
+</style>
+<canvas id="canvas"></canvas>
+<svg id="svg" viewBox="0 0 980 552" xmlns="http://www.w3.org/2000/svg"></svg>
+<script type="module">
+  const LINE = "#143C6B";
+  const scenes = await (await fetch("../../out/draw_cost_scenes.json")).json();
+  const canvas = document.getElementById("canvas");
+  const svg = document.getElementById("svg");
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  // The projected outline of a piece, and the lines to stroke, as flat
+  // number arrays [x0, y0, x1, y1, ...], for a tilt with sine s, cosine c.
+  function project(piece, sine, cosine) {
+    if (piece.face) {
+      const rings = piece.face.map(ring => {
+        const points = new Array(ring.length);
+        for (let at = 0; at < ring.length; at += 2) {
+          points[at] = ring[at];
+          points[at + 1] = ring[at + 1] * cosine - piece.height * sine;
+        }
+        return points;
+      });
+      return { fill: rings, strokes: rings, closed: true };
+    }
+    const count = piece.xs.length;
+    const top = new Array(2 * count), bottom = new Array(2 * count);
+    for (let index = 0; index < count; index += 1) {
+      top[2 * index] = bottom[2 * index] = piece.xs[index];
+      top[2 * index + 1] = piece.ys[index] * cosine - piece.top * sine;
+      bottom[2 * index + 1] = piece.ys[index] * cosine - piece.bottom * sine;
+    }
+    const outline = top.slice();
+    for (let index = count - 1; index >= 0; index -= 1) outline.push(bottom[2 * index], bottom[2 * index + 1]);
+    const strokes = [];
+    if (piece.strokeTop) strokes.push(top);
+    if (piece.strokeBottom) strokes.push(bottom);
+    // a vertical line at each end, and at each corner of the outline inside
+    for (const at of [0, ...piece.corners, count - 1]) {
+      strokes.push([top[2 * at], top[2 * at + 1], bottom[2 * at], bottom[2 * at + 1]]);
+    }
+    return { fill: [outline], strokes, closed: false };
+  }
+
+  function addToPath(path, points, close) {
+    path.moveTo(points[0], points[1]);
+    for (let at = 2; at < points.length; at += 2) path.lineTo(points[at], points[at + 1]);
+    if (close) path.closePath();
+  }
+
+  function pathData(points, close) {
+    let text = `M${points[0].toFixed(1)} ${points[1].toFixed(1)}`;
+    for (let at = 2; at < points.length; at += 2) text += `L${points[at].toFixed(1)} ${points[at + 1].toFixed(1)}`;
+    return close ? text + "Z" : text;
+  }
+
+  // Fit the watch (about 500 x 500 px around (798, 276)) into the slide.
+  const FIT = { scale: 1, x: -300, y: 20 };
+
+  function drawCanvas(pieces, tilt, context) {
+    const sine = Math.sin(tilt), cosine = Math.cos(tilt);
+    const ratio = canvas.width / 980;
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.fillStyle = "#FAF7F0";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.setTransform(ratio * FIT.scale, 0, 0, ratio * FIT.scale, ratio * FIT.x, ratio * FIT.y);
+    context.lineJoin = context.lineCap = "round";
+    context.strokeStyle = LINE;
+    for (const piece of pieces) {
+      const shape = project(piece, sine, cosine);
+      const fill = new Path2D();
+      for (const points of shape.fill) addToPath(fill, points, true);
+      context.fillStyle = piece.fill;
+      context.fill(fill, "evenodd");
+      const lines = new Path2D();
+      for (const points of shape.strokes) addToPath(lines, points, shape.closed);
+      context.lineWidth = piece.width;
+      context.stroke(lines);
+    }
+  }
+
+  function buildSvg(pieces) {
+    svg.replaceChildren();
+    const camera = document.createElementNS(SVG_NS, "g");
+    camera.setAttribute("transform", `translate(${FIT.x} ${FIT.y}) scale(${FIT.scale})`);
+    svg.append(camera);
+    return pieces.map(piece => {
+      const fill = document.createElementNS(SVG_NS, "path");
+      fill.setAttribute("fill", piece.fill);
+      fill.setAttribute("fill-rule", "evenodd");
+      const lines = document.createElementNS(SVG_NS, "path");
+      lines.setAttribute("fill", "none");
+      lines.setAttribute("stroke", LINE);
+      lines.setAttribute("stroke-width", piece.width);
+      lines.setAttribute("stroke-linejoin", "round");
+      lines.setAttribute("stroke-linecap", "round");
+      camera.append(fill, lines);
+      return { fill, lines };
+    });
+  }
+
+  function drawSvg(pieces, elements, tilt) {
+    const sine = Math.sin(tilt), cosine = Math.cos(tilt);
+    pieces.forEach((piece, index) => {
+      const shape = project(piece, sine, cosine);
+      elements[index].fill.setAttribute("d", shape.fill.map(points => pathData(points, true)).join(""));
+      elements[index].lines.setAttribute("d", shape.strokes.map(points => pathData(points, shape.closed)).join(""));
+    });
+  }
+
+  window.measure = async function measure(sceneName, renderer, seconds) {
+    const pieces = scenes[sceneName];
+    canvas.width = 980 * devicePixelRatio;
+    canvas.height = 552 * devicePixelRatio;
+    canvas.style.display = renderer === "canvas" ? "block" : "none";
+    svg.style.display = renderer === "svg" ? "block" : "none";
+    const context = canvas.getContext("2d");
+    const elements = renderer === "svg" ? buildSvg(pieces) : null;
+    const frames = [], scriptTimes = [];
+    const start = performance.now();
+    await new Promise(resolve => {
+      const step = now => {
+        frames.push(now);
+        const tilt = ((30 + 25 * Math.sin((now - start) / 700)) * Math.PI) / 180;
+        const before = performance.now();
+        if (renderer === "canvas") drawCanvas(pieces, tilt, context);
+        else drawSvg(pieces, elements, tilt);
+        scriptTimes.push(performance.now() - before);
+        if (now - start < seconds * 1000) requestAnimationFrame(step);
+        else resolve();
+      };
+      requestAnimationFrame(step);
+    });
+    const intervals = frames.slice(1).map((time, index) => time - frames[index]).sort((a, b) => a - b);
+    const sortedScript = [...scriptTimes].sort((a, b) => a - b);
+    const at = (list, fraction) => +list[Math.min(list.length - 1, Math.floor(fraction * list.length))].toFixed(2);
+    return {
+      pieces: pieces.length,
+      frames: frames.length,
+      scriptMedianMs: at(sortedScript, 0.5),
+      script95Ms: at(sortedScript, 0.95),
+      intervalMedianMs: at(intervals, 0.5),
+      interval95Ms: at(intervals, 0.95),
+      intervalsOver25Ms: intervals.filter(interval => interval > 25).length,
+    };
+  };
+  window.ready = true;
+</script>

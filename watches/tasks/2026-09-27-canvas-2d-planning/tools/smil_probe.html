@@ -1,0 +1,302 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>SMIL control probe</title>
+<!--
+What can JavaScript learn and change about SVG animations (SMIL) while they
+run? smil_probe.py loads this page in Chromium and Firefox and calls
+runProbe(), which returns one JSON object.
+
+The drawing copies the watch's kinds of animation:
+- #swing: the balance, 25 linear keyframes of 150 cos(2 pi t / 2 s);
+- #step: a wheel that steps and holds, with accumulate="sum";
+- #breathe: a path morph (<animate attributeName="d">);
+- #settle: begin="indefinite", from an extreme to 0 degrees in 0.78 s with a
+  smoothstep (keySplines 1/3 0 2/3 1), fill="freeze". The probe starts it at
+  the swing's next extreme with beginElementAt() and ends the swing with
+  endElementAt(), both scheduled ahead of time.
+A second <svg> (#other) has its own clock.
+-->
+<svg id="stage" width="400" height="300" viewBox="0 0 400 300">
+  <g transform="translate(200 150)">
+    <g id="swinger" transform="rotate(150)">
+      <animateTransform id="swing" attributeName="transform" type="rotate" dur="2s" repeatCount="indefinite" />
+      <animateTransform
+        id="settle"
+        attributeName="transform"
+        type="rotate"
+        values="150;0"
+        keyTimes="0;1"
+        calcMode="spline"
+        keySplines="0.3333 0 0.6667 1"
+        dur="0.78s"
+        begin="indefinite"
+        fill="freeze"
+      />
+      <rect x="-4" y="-60" width="8" height="60" fill="#143C6B" />
+    </g>
+  </g>
+  <g transform="translate(80 80)">
+    <g id="stepper">
+      <animateTransform
+        id="step"
+        attributeName="transform"
+        type="rotate"
+        values="0;0;-12;-12;-24;-24"
+        keyTimes="0;0.2233;0.2767;0.7233;0.7767;1"
+        dur="2s"
+        repeatCount="indefinite"
+        accumulate="sum"
+      />
+      <rect x="-3" y="-30" width="6" height="30" fill="#736A60" />
+    </g>
+  </g>
+  <path id="spring" d="M300 250C310 250 320 260 330 280" fill="none" stroke="#143C6B">
+    <animate
+      id="breathe"
+      attributeName="d"
+      values="M300 250C310 250 320 260 330 280;M300 250C310 255 320 270 330 290;M300 250C310 250 320 260 330 280"
+      keyTimes="0;0.5;1"
+      dur="2s"
+      repeatCount="indefinite"
+    />
+  </path>
+</svg>
+<svg id="other" width="100" height="100" viewBox="0 0 100 100">
+  <g transform="translate(50 50)">
+    <g id="other-turner">
+      <animateTransform attributeName="transform" type="rotate" values="0;360" dur="4s" repeatCount="indefinite" />
+      <rect x="-2" y="-40" width="4" height="40" />
+    </g>
+  </g>
+</svg>
+<svg id="waapi" width="100" height="100" viewBox="0 0 100 100">
+  <g id="waapi-group"><rect x="-2" y="-40" width="4" height="40" /></g>
+  <path id="waapi-path" d="M0 0L10 0" stroke="black" />
+</svg>
+<script>
+  "use strict";
+  const AMPLITUDE = 150, PERIOD = 2, SETTLE = 0.78;
+  const swingValues = Array.from({ length: 25 }, (_, index) => AMPLITUDE * Math.cos((2 * Math.PI * index) / 24));
+  const swingTimes = Array.from({ length: 25 }, (_, index) => index / 24);
+  const swing = document.getElementById("swing");
+  swing.setAttribute("values", swingValues.map(value => value.toFixed(4)).join(";"));
+  swing.setAttribute("keyTimes", swingTimes.map(time => time.toFixed(6)).join(";"));
+
+  const stage = document.getElementById("stage");
+  const swinger = document.getElementById("swinger");
+  const stepper = document.getElementById("stepper");
+  const spring = document.getElementById("spring");
+  const settle = document.getElementById("settle");
+  const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve));
+  const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
+
+  // SMIL's linear keyframes, with accumulate: the reference values.
+  function keyframeValue(values, keyTimes, duration, accumulate, time) {
+    const repeat = Math.floor(time / duration);
+    const fraction = time / duration - repeat;
+    let index = 0;
+    while (index < keyTimes.length - 2 && keyTimes[index + 1] <= fraction) index += 1;
+    const span = keyTimes[index + 1] - keyTimes[index];
+    const along = span > 0 ? Math.min((fraction - keyTimes[index]) / span, 1) : 1;
+    const value = values[index] + (values[index + 1] - values[index]) * along;
+    return accumulate ? repeat * values.at(-1) + value : value;
+  }
+  const expectedSwing = time => keyframeValue(swingValues, swingTimes, PERIOD, false, time);
+  const expectedStep = time =>
+    keyframeValue([0, 0, -12, -12, -24, -24], [0, 0.2233, 0.2767, 0.7233, 0.7767, 1], 2, true, time);
+  const smoothstep = fraction => fraction * fraction * (3 - 2 * fraction);
+  const angleOf = element => {
+    const list = element.transform.animVal;
+    return list.numberOfItems ? list.getItem(0).angle : 0;
+  };
+
+  async function seekAccuracy(readAfterFrame) {
+    stage.pauseAnimations();
+    const times = [0, 0.13, 0.5, 0.97, 1.0, 1.51, 2.37, 7.02, 61.3, 600.4];
+    let worstSwing = 0, worstStep = 0;
+    for (const time of times) {
+      stage.setCurrentTime(time);
+      if (readAfterFrame) await nextFrame();
+      worstSwing = Math.max(worstSwing, Math.abs(angleOf(swinger) - expectedSwing(time)));
+      worstStep = Math.max(worstStep, Math.abs(angleOf(stepper) - expectedStep(time)));
+    }
+    return { worstSwingError: worstSwing, worstStepError: worstStep };
+  }
+
+  function seekCost() {
+    stage.pauseAnimations();
+    const count = 2000;
+    let started = performance.now();
+    for (let index = 0; index < count; index += 1) {
+      stage.setCurrentTime(10 + index * 0.0167);
+      angleOf(swinger);
+    }
+    const seekAndRead = (performance.now() - started) / count;
+    started = performance.now();
+    for (let index = 0; index < count; index += 1) {
+      stage.setCurrentTime(10 + index * 0.0167);
+      spring.getBBox();
+    }
+    const seekAndMeasurePath = (performance.now() - started) / count;
+    return { millisecondsPerSeekAndRead: seekAndRead, millisecondsPerSeekAndPathBox: seekAndMeasurePath };
+  }
+
+  function morphReadBack() {
+    stage.pauseAnimations();
+    stage.setCurrentTime(0);
+    const atStart = spring.getTotalLength();
+    stage.setCurrentTime(1);
+    const atMiddle = spring.getTotalLength();
+    return {
+      totalLengthAt0: atStart,
+      totalLengthAt1s: atMiddle,
+      animatedPathReadable: Math.abs(atStart - atMiddle) > 0.5,
+      attributeStillStatic: spring.getAttribute("d") === "M300 250C310 250 320 260 330 280",
+    };
+  }
+
+  async function eventsWhileRunning() {
+    const seen = [];
+    for (const name of ["beginEvent", "endEvent", "repeatEvent"])
+      swing.addEventListener(name, () => seen.push([name, +stage.getCurrentTime().toFixed(3)]));
+    stage.setCurrentTime(1.2);
+    stage.unpauseAnimations();
+    await sleep(1300);
+    stage.pauseAnimations();
+    return seen;
+  }
+
+  // Wait for the swing's next extreme, then settle to 0 with a smoothstep.
+  async function handoff() {
+    stage.setCurrentTime(0.3);
+    stage.unpauseAnimations();
+    await sleep(250);
+    const now = stage.getCurrentTime();
+    const extreme = Math.ceil(now / (PERIOD / 2)) * (PERIOD / 2);
+    const extremeAngle = expectedSwing(extreme);
+    settle.setAttribute("values", `${extremeAngle.toFixed(4)};0`);
+    const delay = extreme - now;
+    swing.endElementAt(delay);
+    settle.beginElementAt(delay);
+    const samples = [];
+    const until = performance.now() + (delay + SETTLE + 0.5) * 1000;
+    while (performance.now() < until) {
+      await nextFrame();
+      samples.push([stage.getCurrentTime(), angleOf(swinger)]);
+    }
+    stage.pauseAnimations();
+    const expected = time =>
+      time < extreme
+        ? expectedSwing(time)
+        : extremeAngle * (1 - smoothstep(Math.min((time - extreme) / SETTLE, 1)));
+    let worst = 0, worstAt = null;
+    for (const [time, angle] of samples) {
+      const error = Math.abs(angle - expected(time));
+      if (error > worst) [worst, worstAt] = [error, time];
+    }
+    const steps = samples.slice(1).map(([time, angle], index) => Math.abs(angle - samples[index][1]));
+    // Seek back into the settle, then forward past it: do the scheduled
+    // begin and end survive a seek?
+    stage.setCurrentTime(extreme + SETTLE / 2);
+    const afterSeekBack = angleOf(swinger);
+    stage.setCurrentTime(extreme + 5);
+    const afterSeekForward = angleOf(swinger);
+    return {
+      scheduledAt: +now.toFixed(4),
+      extremeAt: extreme,
+      extremeAngle: +extremeAngle.toFixed(2),
+      frames: samples.length,
+      worstErrorDegrees: +worst.toFixed(3),
+      worstErrorAt: worstAt === null ? null : +worstAt.toFixed(4),
+      largestStepBetweenFramesDegrees: +Math.max(...steps).toFixed(3),
+      finalAngle: +samples.at(-1)[1].toFixed(3),
+      seekBackIntoSettle: {
+        angle: +afterSeekBack.toFixed(3),
+        expected: +(extremeAngle * (1 - smoothstep(0.5))).toFixed(3),
+        swingAngleThere: +expectedSwing(extreme + SETTLE / 2).toFixed(3),
+      },
+      seekForwardPastSettle: { angle: +afterSeekForward.toFixed(3), expected: 0 },
+    };
+  }
+
+  async function separateClocks() {
+    const other = document.getElementById("other");
+    const otherTurner = document.getElementById("other-turner");
+    stage.pauseAnimations();
+    other.unpauseAnimations();
+    const stageBefore = stage.getCurrentTime(), otherBefore = other.getCurrentTime();
+    await sleep(300);
+    return {
+      pausedClockMoved: stage.getCurrentTime() - stageBefore,
+      otherClockMoved: +(other.getCurrentTime() - otherBefore).toFixed(3),
+      otherAngle: +angleOf(otherTurner).toFixed(2),
+    };
+  }
+
+  function webAnimations() {
+    const group = document.getElementById("waapi-group");
+    const result = {};
+    try {
+      const animation = group.animate([{ transform: "rotate(0deg)" }, { transform: "rotate(-12deg)" }], {
+        duration: 2000,
+        iterations: Infinity,
+        iterationComposite: "accumulate",
+      });
+      animation.pause();
+      animation.currentTime = 4500;
+      const matrix = new DOMMatrix(getComputedStyle(group).transform);
+      result.iterationCompositeAngle = +((Math.atan2(matrix.b, matrix.a) * 180) / Math.PI).toFixed(2);
+      result.iterationCompositeExpected = -27;
+      result.iterationCompositeOption = animation.effect.getComputedTiming().currentIteration;
+      animation.cancel();
+    } catch (error) {
+      result.iterationCompositeError = String(error);
+    }
+    try {
+      const path = document.getElementById("waapi-path");
+      const animation = path.animate([{ d: 'path("M0 0L10 0")' }, { d: 'path("M0 0L20 0")' }], { duration: 1000 });
+      animation.pause();
+      animation.currentTime = 500;
+      result.cssPathAtHalf = getComputedStyle(path).d;
+      result.cssPathLength = +path.getTotalLength().toFixed(2);
+      animation.cancel();
+    } catch (error) {
+      result.cssPathError = String(error);
+    }
+    return result;
+  }
+
+  window.runProbe = async function runProbe() {
+    const result = { userAgent: navigator.userAgent };
+    result.api = {
+      svgElement: Object.fromEntries(
+        ["getCurrentTime", "setCurrentTime", "pauseAnimations", "unpauseAnimations", "animationsPaused"].map(name => [
+          name,
+          typeof stage[name] === "function",
+        ]),
+      ),
+      animationElement: Object.fromEntries(
+        [
+          "getStartTime",
+          "getCurrentTime",
+          "getSimpleDuration",
+          "beginElement",
+          "beginElementAt",
+          "endElement",
+          "endElementAt",
+        ].map(name => [name, typeof swing[name] === "function"]),
+      ),
+      swingSimpleDuration: swing.getSimpleDuration(),
+      swingStartTime: swing.getStartTime(),
+    };
+    result.seekThenReadAtOnce = await seekAccuracy(false);
+    result.seekThenReadAfterFrame = await seekAccuracy(true);
+    result.seekCost = seekCost();
+    result.morph = morphReadBack();
+    result.events = await eventsWhileRunning();
+    result.handoff = await handoff();
+    result.separateClocks = await separateClocks();
+    result.webAnimations = webAnimations();
+    return result;
+  };
+</script>

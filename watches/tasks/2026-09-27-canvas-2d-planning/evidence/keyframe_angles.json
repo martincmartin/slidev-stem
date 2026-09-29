@@ -1,0 +1,466 @@
+{
+ "height |Z|, px": 9.25,
+ "checks (sampled against the closed form)": [
+  {
+   "interval, degrees": [
+    0.0,
+    45.0
+   ],
+   "sampled worst tilt, degrees": 22.5,
+   "middle, degrees": 22.5,
+   "sampled worst gap": 0.19891237,
+   "closed form": 0.19891237
+  },
+  {
+   "interval, degrees": [
+    45.0,
+    90.0
+   ],
+   "sampled worst tilt, degrees": 67.5,
+   "middle, degrees": 67.5,
+   "sampled worst gap": 0.0823922,
+   "closed form": 0.0823922
+  },
+  {
+   "interval, degrees": [
+    0.0,
+    90.0
+   ],
+   "sampled worst tilt, degrees": 45.0,
+   "middle, degrees": 45.0,
+   "sampled worst gap": 0.41421356,
+   "closed form": 0.41421356
+  },
+  {
+   "interval, degrees": [
+    10.0,
+    35.0
+   ],
+   "sampled worst tilt, degrees": 22.5,
+   "middle, degrees": 22.5,
+   "sampled worst gap": 0.06194152,
+   "closed form": 0.06194152
+  },
+  {
+   "interval, degrees": [
+    60.0,
+    70.0
+   ],
+   "sampled worst tilt, degrees": 65.0,
+   "middle, degrees": 65.0,
+   "sampled worst gap": 0.00419869,
+   "closed form": 0.00419869
+  }
+ ],
+ "equal worst error": {
+  "0 interior": {
+   "keyframes, degrees": [
+    0.0,
+    90.0
+   ],
+   "worst error per interval, px": [
+    3.831
+   ],
+   "worst error, px": 3.831,
+   "walls at each interval's middle, fraction of true": [
+    0.414
+   ]
+  },
+  "1 interior": {
+   "keyframes, degrees": [
+    0.0,
+    32.28,
+    90.0
+   ],
+   "worst error per interval, px": [
+    1.312,
+    1.312
+   ],
+   "worst error, px": 1.312,
+   "walls at each interval's middle, fraction of true": [
+    0.49,
+    0.838
+   ]
+  },
+  "2 interior": {
+   "keyframes, degrees": [
+    0.0,
+    16.31,
+    47.96,
+    90.0
+   ],
+   "worst error per interval, px": [
+    0.659,
+    0.659,
+    0.659
+   ],
+   "worst error, px": 0.659,
+   "walls at each interval's middle, fraction of true": [
+    0.497,
+    0.866,
+    0.924
+   ]
+  },
+  "3 interior": {
+   "keyframes, degrees": [
+    0.0,
+    9.81,
+    29.23,
+    57.04,
+    90.0
+   ],
+   "worst error per interval, px": [
+    0.396,
+    0.396,
+    0.396,
+    0.396
+   ],
+   "worst error, px": 0.396,
+   "walls at each interval's middle, fraction of true": [
+    0.499,
+    0.872,
+    0.937,
+    0.955
+   ]
+  },
+  "4 interior": {
+   "keyframes, degrees": [
+    0.0,
+    6.55,
+    19.59,
+    38.74,
+    62.92,
+    90.0
+   ],
+   "worst error per interval, px": [
+    0.264,
+    0.264,
+    0.264,
+    0.264,
+    0.264
+   ],
+   "worst error, px": 0.264,
+   "walls at each interval's middle, fraction of true": [
+    0.5,
+    0.874,
+    0.941,
+    0.963,
+    0.971
+   ]
+  },
+  "5 interior": {
+   "keyframes, degrees": [
+    0.0,
+    4.68,
+    14.02,
+    27.89,
+    45.85,
+    67.03,
+    90.0
+   ],
+   "worst error per interval, px": [
+    0.189,
+    0.189,
+    0.189,
+    0.189,
+    0.189,
+    0.189
+   ],
+   "worst error, px": 0.189,
+   "walls at each interval's middle, fraction of true": [
+    0.5,
+    0.874,
+    0.943,
+    0.966,
+    0.975,
+    0.979
+   ]
+  }
+ },
+ "two interior keyframes, over ranges inside 0-90 degrees": {
+  "0-90": {
+   "keyframes, degrees": [
+    0.0,
+    16.31,
+    47.96,
+    90.0
+   ],
+   "worst error per interval, px": [
+    0.659,
+    0.659,
+    0.659
+   ],
+   "worst error, px": 0.659,
+   "walls at each interval's middle, fraction of true": [
+    0.497,
+    0.866,
+    0.924
+   ]
+  },
+  "0-45": {
+   "keyframes, degrees": [
+    0.0,
+    7.65,
+    22.84,
+    45.0
+   ],
+   "worst error per interval, px": [
+    0.309,
+    0.309,
+    0.309
+   ],
+   "worst error, px": 0.309,
+   "walls at each interval's middle, fraction of true": [
+    0.499,
+    0.873,
+    0.94
+   ]
+  },
+  "45-90": {
+   "keyframes, degrees": [
+    45.0,
+    59.06,
+    74.24,
+    90.0
+   ],
+   "worst error per interval, px": [
+    0.088,
+    0.088,
+    0.088
+   ],
+   "worst error, px": 0.088,
+   "walls at each interval's middle, fraction of true": [
+    0.988,
+    0.99,
+    0.99
+   ]
+  },
+  "0-30": {
+   "keyframes, degrees": [
+    0.0,
+    5.04,
+    15.1,
+    30.0
+   ],
+   "worst error per interval, px": [
+    0.204,
+    0.204,
+    0.204
+   ],
+   "worst error, px": 0.204,
+   "walls at each interval's middle, fraction of true": [
+    0.5,
+    0.874,
+    0.943
+   ]
+  },
+  "60-90": {
+   "keyframes, degrees": [
+    60.0,
+    69.74,
+    79.79,
+    90.0
+   ],
+   "worst error per interval, px": [
+    0.037,
+    0.037,
+    0.037
+   ],
+   "worst error, px": 0.037,
+   "walls at each interval's middle, fraction of true": [
+    0.996,
+    0.996,
+    0.996
+   ]
+  },
+  "20-70": {
+   "keyframes, degrees": [
+    20.0,
+    33.87,
+    50.78,
+    70.0
+   ],
+   "worst error per interval, px": [
+    0.149,
+    0.149,
+    0.149
+   ],
+   "worst error, px": 0.149,
+   "walls at each interval's middle, fraction of true": [
+    0.964,
+    0.976,
+    0.981
+   ]
+  },
+  "10-80": {
+   "keyframes, degrees": [
+    10.0,
+    27.05,
+    51.09,
+    80.0
+   ],
+   "worst error per interval, px": [
+    0.322,
+    0.322,
+    0.322
+   ],
+   "worst error, px": 0.322,
+   "walls at each interval's middle, fraction of true": [
+    0.891,
+    0.945,
+    0.962
+   ]
+  },
+  "5-90": {
+   "keyframes, degrees": [
+    5.0,
+    23.67,
+    53.33,
+    90.0
+   ],
+   "worst error per interval, px": [
+    0.495,
+    0.495,
+    0.495
+   ],
+   "worst error, px": 0.495,
+   "walls at each interval's middle, fraction of true": [
+    0.784,
+    0.914,
+    0.944
+   ]
+  }
+ },
+ "interior keyframes needed for 0-90 degrees, worst error <= 0.68 px": {
+  "|Z| = 9.25 px": 2,
+  "|Z| = 15 px": 3,
+  "|Z| = 20 px": 4,
+  "|Z| = 30 px": 5,
+  "|Z| = 50 px": 7
+ },
+ "evenly spaced, for comparison": {
+  "0 interior": {
+   "keyframes, degrees": [
+    0.0,
+    90.0
+   ],
+   "worst error per interval, px": [
+    3.831
+   ],
+   "worst error, px": 3.831,
+   "walls at each interval's middle, fraction of true": [
+    0.414
+   ]
+  },
+  "1 interior": {
+   "keyframes, degrees": [
+    0.0,
+    45.0,
+    90.0
+   ],
+   "worst error per interval, px": [
+    1.84,
+    0.762
+   ],
+   "worst error, px": 1.84,
+   "walls at each interval's middle, fraction of true": [
+    0.48,
+    0.911
+   ]
+  },
+  "2 interior": {
+   "keyframes, degrees": [
+    0.0,
+    30.0,
+    60.0,
+    90.0
+   ],
+   "worst error per interval, px": [
+    1.218,
+    0.446,
+    0.326
+   ],
+   "worst error, px": 1.218,
+   "walls at each interval's middle, fraction of true": [
+    0.491,
+    0.932,
+    0.963
+   ]
+  },
+  "3 interior": {
+   "keyframes, degrees": [
+    0.0,
+    22.5,
+    45.0,
+    67.5,
+    90.0
+   ],
+   "worst error per interval, px": [
+    0.911,
+    0.32,
+    0.214,
+    0.181
+   ],
+   "worst error, px": 0.911,
+   "walls at each interval's middle, fraction of true": [
+    0.495,
+    0.938,
+    0.972,
+    0.98
+   ]
+  },
+  "4 interior": {
+   "keyframes, degrees": [
+    0.0,
+    18.0,
+    36.0,
+    54.0,
+    72.0,
+    90.0
+   ],
+   "worst error per interval, px": [
+    0.728,
+    0.251,
+    0.161,
+    0.128,
+    0.115
+   ],
+   "worst error, px": 0.728,
+   "walls at each interval's middle, fraction of true": [
+    0.497,
+    0.94,
+    0.975,
+    0.984,
+    0.987
+   ]
+  },
+  "5 interior": {
+   "keyframes, degrees": [
+    0.0,
+    15.0,
+    30.0,
+    45.0,
+    60.0,
+    75.0,
+    90.0
+   ],
+   "worst error per interval, px": [
+    0.606,
+    0.207,
+    0.13,
+    0.1,
+    0.086,
+    0.08
+   ],
+   "worst error, px": 0.606,
+   "walls at each interval's middle, fraction of true": [
+    0.498,
+    0.942,
+    0.977,
+    0.986,
+    0.99,
+    0.991
+   ]
+  }
+ }
+}

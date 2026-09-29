@@ -1,0 +1,170 @@
+{
+ "chromium": {
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+  "api": {
+   "svgElement": {
+    "getCurrentTime": true,
+    "setCurrentTime": true,
+    "pauseAnimations": true,
+    "unpauseAnimations": true,
+    "animationsPaused": true
+   },
+   "animationElement": {
+    "getStartTime": true,
+    "getCurrentTime": true,
+    "getSimpleDuration": true,
+    "beginElement": true,
+    "beginElementAt": true,
+    "endElement": true,
+    "endElementAt": true
+   },
+   "swingSimpleDuration": 2,
+   "swingStartTime": 0
+  },
+  "seekThenReadAtOnce": {
+   "worstSwingError": 0.010555920124872387,
+   "worstStepError": 0.00010994043243428564
+  },
+  "seekThenReadAfterFrame": {
+   "worstSwingError": 0.010555920124872387,
+   "worstStepError": 0.00010994043243428564
+  },
+  "seekCost": {
+   "millisecondsPerSeekAndRead": 0.003950000017881394,
+   "millisecondsPerSeekAndPathBox": 0.009349999994039536
+  },
+  "morph": {
+   "totalLengthAt0": 44.368343353271484,
+   "totalLengthAt1s": 50.68698501586914,
+   "animatedPathReadable": true,
+   "attributeStillStatic": true
+  },
+  "events": [
+   [
+    "repeatEvent",
+    2
+   ],
+   [
+    "endEvent",
+    1
+   ]
+  ],
+  "handoff": {
+   "scheduledAt": 0.55,
+   "extremeAt": 1,
+   "extremeAngle": -150,
+   "frames": 105,
+   "worstErrorDegrees": 0.002,
+   "worstErrorAt": 1.2167,
+   "largestStepBetweenFramesDegrees": 7.733,
+   "finalAngle": 0,
+   "seekBackIntoSettle": {
+    "angle": -75,
+    "expected": -75,
+    "swingAngleThere": -50.4
+   },
+   "seekForwardPastSettle": {
+    "angle": 0,
+    "expected": 0
+   }
+  },
+  "separateClocks": {
+   "pausedClockMoved": 0,
+   "otherClockMoved": 0.3,
+   "otherAngle": 340.89
+  },
+  "webAnimations": {
+   "iterationCompositeAngle": -3,
+   "iterationCompositeExpected": -27,
+   "iterationCompositeOption": 2,
+   "cssPathAtHalf": "path(\"M 0 0 L 15 0\")",
+   "cssPathLength": 15
+  },
+  "version": "153.0.8010.12",
+  "pageErrors": []
+ },
+ "firefox": {
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:155.0) Gecko/20100101 Firefox/155.0",
+  "api": {
+   "svgElement": {
+    "getCurrentTime": true,
+    "setCurrentTime": true,
+    "pauseAnimations": true,
+    "unpauseAnimations": true,
+    "animationsPaused": true
+   },
+   "animationElement": {
+    "getStartTime": true,
+    "getCurrentTime": true,
+    "getSimpleDuration": true,
+    "beginElement": true,
+    "beginElementAt": true,
+    "endElement": true,
+    "endElementAt": true
+   },
+   "swingSimpleDuration": 2,
+   "swingStartTime": 0
+  },
+  "seekThenReadAtOnce": {
+   "worstSwingError": 0.00014494765369477136,
+   "worstStepError": 6.857882688393602e-07
+  },
+  "seekThenReadAfterFrame": {
+   "worstSwingError": 0.00014494765369477136,
+   "worstStepError": 6.857882688393602e-07
+  },
+  "seekCost": {
+   "millisecondsPerSeekAndRead": 0.0225,
+   "millisecondsPerSeekAndPathBox": 0.0235
+  },
+  "morph": {
+   "totalLengthAt0": 44.36823654174805,
+   "totalLengthAt1s": 50.68690872192383,
+   "animatedPathReadable": true,
+   "attributeStillStatic": true
+  },
+  "events": [
+   [
+    "repeatEvent",
+    2.001
+   ],
+   [
+    "endEvent",
+    1.004
+   ]
+  ],
+  "handoff": {
+   "scheduledAt": 0.554,
+   "extremeAt": 1,
+   "extremeAngle": -150,
+   "frames": 208,
+   "worstErrorDegrees": 0.002,
+   "worstErrorAt": 1.221,
+   "largestStepBetweenFramesDegrees": 4.045,
+   "finalAngle": 0,
+   "seekBackIntoSettle": {
+    "angle": -75,
+    "expected": -75,
+    "swingAngleThere": -50.4
+   },
+   "seekForwardPastSettle": {
+    "angle": 0,
+    "expected": 0
+   }
+  },
+  "separateClocks": {
+   "pausedClockMoved": 0,
+   "otherClockMoved": 0.3,
+   "otherAngle": 339.66
+  },
+  "webAnimations": {
+   "iterationCompositeAngle": -27,
+   "iterationCompositeExpected": -27,
+   "iterationCompositeOption": 2,
+   "cssPathAtHalf": "path(\"M 0 0 L 15 0\")",
+   "cssPathLength": 15
+  },
+  "version": "155.0",
+  "pageErrors": []
+ }
+}

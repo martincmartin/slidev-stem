@@ -1,0 +1,84 @@
+{
+ "chromium": {
+  "version": "153.0.8010.12",
+  "runs": {
+   "whole watch, canvas": {
+    "pieces": 448,
+    "frames": 241,
+    "scriptMedianMs": 0.7,
+    "script95Ms": 1,
+    "intervalMedianMs": 16.7,
+    "interval95Ms": 16.8,
+    "intervalsOver25Ms": 0
+   },
+   "whole watch, svg": {
+    "pieces": 448,
+    "frames": 241,
+    "scriptMedianMs": 3.9,
+    "script95Ms": 4.3,
+    "intervalMedianMs": 16.7,
+    "interval95Ms": 16.7,
+    "intervalsOver25Ms": 0
+   },
+   "balance and hairspring, canvas": {
+    "pieces": 23,
+    "frames": 241,
+    "scriptMedianMs": 0.2,
+    "script95Ms": 0.4,
+    "intervalMedianMs": 16.7,
+    "interval95Ms": 16.7,
+    "intervalsOver25Ms": 0
+   },
+   "balance and hairspring, svg": {
+    "pieces": 23,
+    "frames": 241,
+    "scriptMedianMs": 1.2,
+    "script95Ms": 2.7,
+    "intervalMedianMs": 16.7,
+    "interval95Ms": 16.8,
+    "intervalsOver25Ms": 0
+   }
+  }
+ },
+ "firefox": {
+  "version": "155.0",
+  "runs": {
+   "whole watch, canvas": {
+    "pieces": 448,
+    "frames": 323,
+    "scriptMedianMs": 12,
+    "script95Ms": 14,
+    "intervalMedianMs": 9.22,
+    "interval95Ms": 16.7,
+    "intervalsOver25Ms": 0
+   },
+   "whole watch, svg": {
+    "pieces": 448,
+    "frames": 421,
+    "scriptMedianMs": 5,
+    "script95Ms": 5,
+    "intervalMedianMs": 8.34,
+    "interval95Ms": 16.66,
+    "intervalsOver25Ms": 0
+   },
+   "balance and hairspring, canvas": {
+    "pieces": 23,
+    "frames": 480,
+    "scriptMedianMs": 3,
+    "script95Ms": 4,
+    "intervalMedianMs": 8.32,
+    "interval95Ms": 9.08,
+    "intervalsOver25Ms": 1
+   },
+   "balance and hairspring, svg": {
+    "pieces": 23,
+    "frames": 481,
+    "scriptMedianMs": 1,
+    "script95Ms": 1,
+    "intervalMedianMs": 8.32,
+    "interval95Ms": 9.18,
+    "intervalsOver25Ms": 0
+   }
+  }
+ }
+}

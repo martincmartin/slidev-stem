@@ -1,0 +1,26 @@
+{
+ "settle duration, s (sqrt(6)/omega)": 0.7797,
+ "free swing, peak speed, degrees/s": 471.2,
+ "jumps at the hand-over": {
+  "settle": {
+   "angle, degrees": 0.0,
+   "speed, degrees/s": 0.1,
+   "acceleration, degrees/s^2": 0
+  },
+  "slow clock": {
+   "angle, degrees": 0.0,
+   "speed, degrees/s": 0.1,
+   "acceleration, degrees/s^2": -1480
+  },
+  "freeze at the key press": {
+   "angle, degrees": 0.0,
+   "speed, degrees/s": 381.2,
+   "acceleration, degrees/s^2": 871
+  }
+ },
+ "peak speed while settling, degrees/s": {
+  "settle": 288.6,
+  "slow clock": 373.7
+ },
+ "swing's acceleration at the extreme, degrees/s^2": 1480.0
+}
