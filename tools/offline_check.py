@@ -34,6 +34,7 @@ import mimetypes
 import pathlib
 import urllib.parse
 
+import browsers
 from playwright.async_api import Route, async_playwright
 
 HOST = "deck.test"
@@ -91,6 +92,7 @@ async def main(arguments: argparse.Namespace) -> int:
         return None
 
     async with async_playwright() as playwright:
+        browsers.install(playwright.chromium)
         browser = await playwright.chromium.launch()
         page = await browser.new_page(
             viewport={"width": 1960, "height": 1104},

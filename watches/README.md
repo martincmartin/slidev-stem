@@ -4,10 +4,14 @@ A [Slidev](https://github.com/slidevjs/slidev) deck for a monthly STEM meetup:
 15–20 minutes, weekday evening, back room of a bar.
 
 ```bash
-pnpm install      # run at the repo root (stem/); pnpm, not npm — see ../AGENTS.md
+pnpm install      # here; it installs the repo root's packages first. pnpm, not npm
 pnpm dev          # http://localhost:3030
+pnpm export       # a PDF of the deck
 pnpm format       # prettier; run after editing any file
 ```
+
+You need pnpm and uv; see [`../docs/talks.md`](../docs/talks.md), "Set up a
+clone".
 
 Edit [slides.md](slides.md). The look comes from the house theme, Ledger, in
 [`../themes/ledger/`](../themes/ledger/), which every STEM talk shares.
@@ -22,12 +26,15 @@ measurements of its drawings. Building new content should never require opening
 
 ```bash
 # in stem/
-.venv/bin/python3 tools/artcheck.py         # every illustration: structure, style, legibility
-.venv/bin/python3 tools/palette.py          # the palette still passes its own gates
+uv run tools/artcheck.py watches/public/    # every illustration: structure, style, legibility
+uv run tools/palette.py                     # the palette still passes its own gates
+# here, before a commit
+uv run ../tools/validate.py                 # every check of this talk
 ```
 
 [`../tools/`](../tools/README.md) holds the checks that settle "is this good
-enough?" with arithmetic. They are stdlib-only unless they need to render.
+enough?" with arithmetic. They are stdlib-only unless they need to render. The ones that render install
+Chromium the first time they run.
 
 ## Decisions
 

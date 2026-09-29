@@ -5,9 +5,9 @@
     .venv/bin/python3 tools/contact.py new.svg --times 0.2 4 8 11.8
     .venv/bin/python3 tools/contact.py new.svg --out /tmp/sheet.png
 
-Needs playwright (+ `playwright install chromium`). Writes a PNG and prints its
-path. Each drawing appears once large, and once at every requested time at the
-size its file states: the size a slide shows it at.
+Needs playwright; it installs Chromium if it is missing (`browsers.py`). Writes
+a PNG and prints its path. Each drawing appears once large, and once at every
+requested time at the size its file states: the size a slide shows it at.
 
 WHY THIS EXISTS RATHER THAN JUST SCREENSHOTTING THE DECK. Two traps, both of
 which cost real time:
@@ -35,6 +35,7 @@ import pathlib
 import re
 import sys
 
+import browsers
 import lib
 
 DEFAULT_TIMES = [0.2, 3.0, 6.0, 9.0, 11.8]
@@ -132,6 +133,7 @@ def main() -> None:
     from playwright.sync_api import sync_playwright
 
     with sync_playwright() as playwright:
+        browsers.install(playwright.chromium)
         browser = playwright.chromium.launch()
         page = browser.new_page(
             viewport={"width": 260 + 150 * len(files), "height": 800}

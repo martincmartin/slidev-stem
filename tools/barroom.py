@@ -6,7 +6,8 @@
     .venv/bin/python3 tools/barroom.py a.svg b.svg --save /tmp/
     .venv/bin/python3 tools/barroom.py new.svg --json         # for another program
 
-Needs playwright (+ `playwright install chromium`), Pillow and numpy.
+Needs playwright, Pillow and numpy. It installs Chromium if it is missing
+(`browsers.py`).
 
 This is the criterion that settles "can we use this?" when taste and arithmetic
 disagree, and it is the one tool here that answers a question nothing else can.
@@ -60,6 +61,7 @@ import sys
 from collections.abc import Sequence
 from dataclasses import dataclass
 
+import browsers
 import lib
 import numpy as np
 from numpy.typing import NDArray
@@ -204,6 +206,7 @@ def render(
         f"s.pauseAnimations();s.setCurrentTime({time});}});</script>"
     )
     with sync_playwright() as playwright:
+        browsers.install(playwright.chromium)
         browser = playwright.chromium.launch()
         page = browser.new_page(
             viewport={

@@ -2,9 +2,10 @@
 # package. Each talk is a separate uv project, with its own pyproject.toml,
 # uv.lock and .venv; see "Given talks and versions" in AGENTS.md.
 #
-#   uv sync                                # make or update stem/.venv
-#   uv run playwright install chromium     # once, for the tools that render
-#   uv run tools/artcheck.py <path>        # run a tool
+#   uv run tools/artcheck.py <path>        # run a tool; uv makes stem/.venv first
+#
+# The tools that render install Chromium the first time they run
+# (tools/browsers.py).
 
 [project]
 name = "stem-tools"

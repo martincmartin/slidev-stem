@@ -5,6 +5,8 @@ dist
 .remote-assets
 components.d.ts
 *.local
+# `pnpm export` writes the PDF here. Make it again before each talk.
+slides-export.pdf
 
 # --- Editor backups and autosaves ---
 # Emacs: `foo~` backups, `#foo#` autosaves, `.#foo` lock symlinks.

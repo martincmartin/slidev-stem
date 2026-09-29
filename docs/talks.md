@@ -16,6 +16,31 @@ Each project pins its Node and pnpm versions (`devEngines` in `package.json`) an
 its Python version (`.python-version`). pnpm downloads the pinned Node for the
 talk's scripts. uv installs the pinned Python.
 
+## Set up a clone
+
+You need [pnpm](https://pnpm.io/installation) and
+[uv](https://docs.astral.sh/uv/getting-started/installation/). pnpm downloads
+the pinned Node, and uv downloads the pinned Python. Then, in a talk's
+directory:
+
+```bash
+pnpm install    # the root's packages (the theme's fonts), then the talk's
+pnpm dev        # the deck, at http://localhost:3030
+```
+
+`pnpm install` in a talk runs `pnpm install --frozen-lockfile` at the root
+first (the talk's `preinstall` script). The theme's fonts are the root's
+packages, so a talk does not build without them. It also downloads Chromium for
+`slidev export`, from the talk's `playwright-chromium` package.
+
+The Python needs no setup step. `uv run` makes the project's `.venv` first. The
+tools that render install Chromium the first time they run
+(`tools/browsers.py`).
+
+Playwright keeps its browsers in one cache for your user
+(`~/Library/Caches/ms-playwright` on macOS). All checkouts and worktrees share
+it, so a new one downloads no browser.
+
 ## Why each talk is its own project
 
 The usual life of a talk is: write it, give it, tag it, and never touch it
@@ -79,6 +104,10 @@ Upgrade only a talk in progress. In the talk's directory:
    pnpm update --latest                # the JS packages in package.json
    rm pnpm-lock.yaml && pnpm install   # and every package below them
    ```
+
+   Keep the Python `playwright` and the JS `playwright-chromium` at the same
+   version (`uv.lock` and `package.json`). Then `slidev export` and the tools
+   that render use the same Chromium build, and the cache holds one copy.
 
    To move Node or pnpm, change the versions in `devEngines` in
    `package.json`. To move Python, run `uv python pin <version>`. Use stable

@@ -78,7 +78,7 @@ is one more project: the house theme (`themes/ledger/`), the house tools
 recommend it, and uv for Python:
 
 ```bash
-pnpm install          # in a talk's directory, or at the root; not `npm install`
+pnpm install          # in a talk's directory (it installs the root first); not `npm install`
 pnpm add -D <pkg>     # in a talk's directory; not `npm i -D <pkg>`
 pnpm dev              # in a talk's directory; not `npm run dev`
 uv sync               # in a talk's directory, or at the root: make its .venv
@@ -95,14 +95,14 @@ pnpm versions (`devEngines` in `package.json`) and its Python version
 **A new talk needs its own `pnpm-workspace.yaml`.** Without it, pnpm uses the
 root's workspace, installs nothing for the talk, and reports no error. Copy
 these files from the newest talk: `pnpm-workspace.yaml`, `pyproject.toml`,
-`.python-version`, `.prettierignore`, and `package.json` with its `devEngines`.
-Then run `pnpm install` and `uv sync` in the new talk's directory. A talk links
+`.python-version`, `.prettierignore`, and `package.json` with its `devEngines`
+and its `preinstall` script. Then run `pnpm install` and `uv sync` in the new talk's directory. A talk links
 the theme with `"slidev-theme-ledger": "link:../themes/ledger"`.
 
 The house style for every talk (palette, illustrations, legibility) is in
 `docs/`, and the checks for it are in `tools/`. Run a check at the root, with
 the paths to check: `uv run tools/artcheck.py watches/public/`. The checks that
-render need Chromium: run `uv run playwright install chromium` once. A talk's
+render install Chromium the first time they run (`tools/browsers.py`). A talk's
 own `docs/` holds what is true of that talk only.
 
 After editing any file, run `pnpm format` in the project that holds it. For a
