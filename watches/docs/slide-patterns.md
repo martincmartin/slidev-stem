@@ -127,6 +127,28 @@ clicks: 1
 - **The slide's text paints over the watch**, because the slide's layout is
   positioned. A slide with its own layout must keep that.
 
+## The flexing ruler
+
+Slide 2 ends with `components/FlexingRuler.vue`, which inlines
+`public/flexing-ruler.svg` (written by `art/flexing_ruler.py`; edit the script,
+not the SVG). The slide's `watchHide: 2` fades the watch at click 2, and the
+component's `visible` fades the ruler in. `playing` (click 3) runs the SVG's
+timeline from 0. The component sets the SMIL clock by hand, so a click back
+returns to the face-on ruler. The swing never damps, on purpose.
+
+- **The component runs the clock, not the SVG.** A self-playing `<img>` cannot
+  start on a click or reset on a click back. The clock runs only while the
+  slide is the current one: Slidev keeps a left slide mounted and gives it its
+  last click, so `playing` alone would keep it running off-screen.
+- **The SVG is 85 KB because it is sampled** (30 frames a second of a path),
+  from the first vibration mode of a fixed-end beam at constant length. That is
+  not an oversight; the options are in
+  `tasks/2026-09-30-flexing-ruler/PLAN.md`.
+- **`art/flexing_ruler.py --check`** fails if the SVG on disk differs, or if the
+  frame rate changes any `begin` or `dur`.
+- **Print and export show no ruler still.** The ruler's overview thumbnail
+  shows the hairspring still under the ruler; this is known and left alone.
+
 ## Speaker notes
 
 The last HTML comment on a slide becomes the presenter note. The convention in this

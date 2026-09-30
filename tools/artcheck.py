@@ -133,6 +133,8 @@ def check_file(file: pathlib.Path) -> tuple[list[str], list[str]]:
         for missing in sorted(set(re.findall(r"url\(#([^)]+)\)", raw)) - set(ids))
     )
     for element in root.iter():
+        if element.tag.split("}")[-1] in ("animate", "animateTransform", "set"):
+            continue  # its `fill` is SMIL timing ("freeze"), not a colour
         for attribute in ("fill", "stroke", "stop-color"):
             value = element.attrib.get(attribute)
             if (

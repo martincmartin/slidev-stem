@@ -11,6 +11,7 @@ export interface SlideRoute {
 
 export function useNav(): {
   isPrintMode: Ref<boolean>;
+  currentSlideNo: Ref<number>;
   slides: Ref<SlideRoute[]>;
 };
 
@@ -19,4 +20,6 @@ export function useNav(): {
 export function useSlideContext(): {
   $frontmatter: Record<string, unknown>;
   $renderContext: Ref<string>;
+  /** This slide's number (1-based). */
+  $page: Ref<number>;
 };

@@ -5,6 +5,8 @@
 //   watchTilt: degrees (default 0)
 //   watchOnly: a subject ("hairspring and stud"): the rest of the watch fades
 //   watchSettle: the click at which the balance settles at rest
+//   watchHide: the click at which the watch fades out, as on a slide without
+//     a `watch`; the slide shows something else from then on
 
 import type { Scene } from "../webgl/scene.ts";
 import type { StageState } from "../webgl/stage.ts";
@@ -49,6 +51,14 @@ export function watchState(
   ) {
     return wrong("watchSettle", settleAt, "a click number");
   }
+  const hideAt = frontmatter["watchHide"];
+  if (
+    hideAt !== undefined &&
+    (typeof hideAt !== "number" || !Number.isInteger(hideAt) || hideAt < 0)
+  ) {
+    return wrong("watchHide", hideAt, "a click number");
+  }
+  if (hideAt !== undefined && clicks >= hideAt) return undefined;
   return {
     view,
     tilt,

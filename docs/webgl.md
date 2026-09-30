@@ -150,6 +150,7 @@ scene, palette)` takes a `Palette` (the paper, and one `#rrggbb` for each
   | `watchTilt: 20`                  | degrees, towards the viewer's side (default 0)                               |
   | `watchOnly: hairspring and stud` | the rest of the watch fades out                                              |
   | `watchSettle: 1`                 | at this click, the balance waits for its next extreme and then comes to rest |
+  | `watchHide: 2`                   | at this click, the watch fades out, as on a slide with no `watch`            |
 
   A key of the wrong kind (`watchTilt: "20"`, an empty `watchOnly`) throws
   when the deck loads, with the key's name. `design.json` is checked the same

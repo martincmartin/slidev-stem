@@ -31,6 +31,13 @@ test("the fields and their defaults", () => {
   });
 });
 
+test("the watch hides at the click named by watchHide", () => {
+  const frontmatter = { watch: "hairspring", watchHide: 2 };
+  assert.equal(watchState(frontmatter, 1)?.view, "hairspring");
+  assert.equal(watchState(frontmatter, 2), undefined);
+  assert.equal(watchState(frontmatter, 3), undefined);
+});
+
 test("a field of the wrong kind throws, with its name", () => {
   for (const [field, value] of [
     ["watch", ""],
@@ -44,6 +51,9 @@ test("a field of the wrong kind throws, with its name", () => {
     ["watchSettle", "1"],
     ["watchSettle", 1.5],
     ["watchSettle", -1],
+    ["watchHide", "2"],
+    ["watchHide", 2.5],
+    ["watchHide", -1],
   ] as const) {
     assert.throws(
       () => watchState({ watch: "cover", [field]: value }, 0),
