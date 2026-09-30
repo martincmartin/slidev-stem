@@ -231,24 +231,40 @@ export interface Watch {
   readonly ringTop: number;
 }
 
-// ---- the generator -------------------------------------------------------------------------
-export function generate(design: Design = DESIGN): Watch {
-  const { palette, watchCentre } = design;
-  const knockout: Colour = { hex: palette.knockout, opacity: 1 };
-  const inkFill: Colour = { hex: palette.line, opacity: 1 };
-  const frameFill: Colour = { hex: palette.frame, opacity: 1 };
-  const wash: Colour = { hex: palette.frame, opacity: WASH_OPACITY };
-  const line = (width: number): LineStyle => ({
-    colour: palette.line,
-    opacity: 1,
-    width,
-  });
-  const frameLine = (width: number): LineStyle => ({
-    colour: palette.frame,
-    opacity: 1,
-    width,
-  });
+// ---- paint ------------------------------------------------------------------------------
+/** The palette as the fills and line styles that the shapes use. */
+interface Paint {
+  knockout: Colour;
+  ink: Colour;
+  frame: Colour;
+  wash: Colour;
+  /** An ink line. */
+  line: (width: number) => LineStyle;
+  /** A line in the frame's colour. */
+  frameLine: (width: number) => LineStyle;
+}
 
+function paintOf(palette: Design["palette"]): Paint {
+  return {
+    knockout: { hex: palette.knockout, opacity: 1 },
+    ink: { hex: palette.line, opacity: 1 },
+    frame: { hex: palette.frame, opacity: 1 },
+    wash: { hex: palette.frame, opacity: WASH_OPACITY },
+    line: (width) => ({ colour: palette.line, opacity: 1, width }),
+    frameLine: (width) => ({ colour: palette.frame, opacity: 1, width }),
+  };
+}
+
+// ---- the train -------------------------------------------------------------------------
+interface Train {
+  barrel: Wheel;
+  centre: Wheel;
+  third: Wheel;
+  fourth: Wheel;
+  escape: Wheel;
+}
+
+function trainOf(design: Design): Train {
   const [barrel, centre, third, fourth, escape] = design.wheels as [
     Wheel,
     Wheel,
@@ -256,44 +272,71 @@ export function generate(design: Design = DESIGN): Watch {
     Wheel,
     Wheel,
   ];
-  const trainWheels = [escape, fourth, third, centre, barrel];
+  return { barrel, centre, third, fourth, escape };
+}
 
-  // ---- groups ----
+// ---- groups ----------------------------------------------------------------------------
+interface GroupTree {
+  groups: WatchGroups;
+  /** Every group, the root first. */
+  all: Group[];
+  /** Where each group's origin is, in the frame of the watch centre. */
+  origins: Map<Group, Point2>;
+}
+
+function makeGroups(design: Design): GroupTree {
+  const { centre, fourth } = trainOf(design);
   const root: Group = { name: "watch", parent: null };
   const origins = new Map<Group, Point2>([[root, [0, 0]]]);
-  const groups: Group[] = [root];
-  const groupAt = (
-    name: string,
-    arbor: Point2,
-    parent: Group = root,
-  ): Group => {
-    const made: Group = { name, parent };
+  const all: Group[] = [root];
+  const groupAt = (name: string, arbor: Point2): Group => {
+    const made: Group = { name, parent: root };
     origins.set(made, arbor);
-    groups.push(made);
+    all.push(made);
     return made;
   };
-  const wheelGroups = new Map<Wheel, Group>(
+  const wheels = new Map<Wheel, Group>(
     design.wheels.map((wheel) => [
       wheel,
       groupAt(`${wheel.name} wheel`, wheel.arbor),
     ]),
   );
-  const balanceGroup = groupAt("balance", design.balance.arbor);
-  const springBase = groupAt("spring base", design.balance.arbor);
-  const forkGroup = groupAt("fork", design.fork.pivot);
-  const secondsGroup = groupAt("seconds hand", fourth.arbor);
-  const hourGroup = groupAt("hour hand", centre.arbor);
-  const minuteGroup = groupAt("minute hand", centre.arbor);
-  const groupOf = (wheel: Wheel): Group => {
-    const found = wheelGroups.get(wheel);
-    if (!found) throw new Error(`no group for the ${wheel.name} wheel`);
-    return found;
+  return {
+    groups: {
+      root,
+      wheels,
+      balance: groupAt("balance", design.balance.arbor),
+      springBase: groupAt("spring base", design.balance.arbor),
+      fork: groupAt("fork", design.fork.pivot),
+      seconds: groupAt("seconds hand", fourth.arbor),
+      hour: groupAt("hour hand", centre.arbor),
+      minute: groupAt("minute hand", centre.arbor),
+    },
+    all,
+    origins,
   };
+}
 
-  // ---- parts ----
-  const wheelParts = new Map<Wheel, Part>();
+// ---- parts -----------------------------------------------------------------------------
+interface Parts {
+  /** The parts of the train's wheels, with their drivers linked. */
+  wheels: Map<Wheel, Part>;
+  balance: Part;
+  spring: Part;
+  jewel: Part;
+  fork: Part;
+  seconds: Part;
+  ring: Part;
+  hour: Part;
+  minute: Part;
+  pivot: Part;
+}
+
+function makeParts({ barrel, centre, third, fourth, escape }: Train): Parts {
+  const trainWheels = [escape, fourth, third, centre, barrel];
+  const wheels = new Map<Wheel, Part>();
   for (const wheel of trainWheels) {
-    wheelParts.set(
+    wheels.set(
       wheel,
       wheel === barrel
         ? part(
@@ -309,71 +352,72 @@ export function generate(design: Design = DESIGN): Watch {
         : part(`${wheel.name} wheel`, WHEEL_RECIPES, wheel),
     );
   }
-  const wheelPart = (wheel: Wheel): Part => {
-    const found = wheelParts.get(wheel);
-    if (!found) throw new Error(`no part for the ${wheel.name} wheel`);
-    return found;
-  };
-  for (const wheel of trainWheels) {
+  for (const [wheel, owner] of wheels) {
     // the wheel whose teeth turn this wheel's pinion is the one that drives it
     const driver = trainWheels.find((other) => other.driven === wheel);
-    wheelPart(wheel).driver = driver ? wheelPart(driver) : null;
+    owner.driver = driver ? (wheels.get(driver) ?? null) : null;
   }
-  const balancePart = part("balance", {
-    body: recipe(5),
-    circle: recipe(2),
-    other: recipe(3, "body"),
-  });
-  const springPart = part("hairspring", {
-    stroke: recipe(8, "touch", 0, true),
-    // the collet, level with the spring
-    circle: recipe(8, "body"),
-  });
-  const jewelPart = part("impulse jewel", {
-    body: recipe(3),
-    circle: recipe(3),
-    other: recipe(3),
-  });
-  const forkPart = part("pallet fork", {
-    body: recipe(3),
-    circle: recipe(1.5),
-    other: recipe(3),
-  });
-  const secondsPart = part("seconds hand", {
-    body: recipe(1.5),
-    circle: recipe(1),
-    other: recipe(1.5),
-  });
-  const ringPart = part("chapter ring", {
-    body: recipe(3, "everything"),
-    circle: recipe(3),
-    other: recipe(3),
-  });
-  const hourPart = part("hour hand", {
-    body: recipe(1.5, "everything"),
-    circle: recipe(1),
-    other: recipe(1.5),
-  });
-  const minutePart = part("minute hand", {
-    body: recipe(1.5, "everything"),
-    circle: recipe(1),
-    other: recipe(1.5),
-  });
-  const pivotPart = part("centre pivot", {
-    body: recipe(1, "everything"),
-    circle: recipe(1),
-    other: recipe(1),
-  });
-  const staffPart = springPart; // the balance staff belongs to the hairspring's part
+  return {
+    wheels,
+    balance: part("balance", {
+      body: recipe(5),
+      circle: recipe(2),
+      other: recipe(3, "body"),
+    }),
+    spring: part("hairspring", {
+      stroke: recipe(8, "touch", 0, true),
+      // the collet, level with the spring
+      circle: recipe(8, "body"),
+    }),
+    jewel: part("impulse jewel", {
+      body: recipe(3),
+      circle: recipe(3),
+      other: recipe(3),
+    }),
+    fork: part("pallet fork", {
+      body: recipe(3),
+      circle: recipe(1.5),
+      other: recipe(3),
+    }),
+    seconds: part("seconds hand", {
+      body: recipe(1.5),
+      circle: recipe(1),
+      other: recipe(1.5),
+    }),
+    ring: part("chapter ring", {
+      body: recipe(3, "everything"),
+      circle: recipe(3),
+      other: recipe(3),
+    }),
+    hour: part("hour hand", {
+      body: recipe(1.5, "everything"),
+      circle: recipe(1),
+      other: recipe(1.5),
+    }),
+    minute: part("minute hand", {
+      body: recipe(1.5, "everything"),
+      circle: recipe(1),
+      other: recipe(1.5),
+    }),
+    pivot: part("centre pivot", {
+      body: recipe(1, "everything"),
+      circle: recipe(1),
+      other: recipe(1),
+    }),
+  };
+}
 
-  // ---- clip discs: a lower wheel is hidden inside the root circle of each
-  // round part above it that overlaps it ----
+// ---- clip discs ------------------------------------------------------------------------
+/** A lower wheel is hidden inside the root circle of each round part above it
+ *  that overlaps it. */
+function clipDiscs(design: Design): Map<Wheel, Disc[]> {
   interface Round {
     wheel: Wheel | null;
     arbor: Point2;
     inner: number;
     outer: number;
   }
+  const { watchCentre } = design;
   const rounds: Round[] = design.stack.map((entry) =>
     entry === "balance"
       ? {
@@ -413,6 +457,322 @@ export function generate(design: Design = DESIGN): Watch {
         })),
     );
   }
+  return discsOver;
+}
+
+// ---- meshes ----------------------------------------------------------------------------
+/** The mesh of each solid, in the drawing's order. */
+function solidMeshes(
+  solids: Solid[],
+  heights: Map<Solid, Heights>,
+  dynamic: Solid,
+): Map<Solid, Mesh> {
+  return new Map(
+    solids.map((each) => {
+      const { bottom, top } = lookup(heights, each, `heights for ${each.name}`);
+      const info = {
+        name: each.name,
+        part: each.part.name,
+        group: each.group,
+        fill: each.fill,
+        hiddenInside: each.discs,
+        lineOrder: top,
+        inDrawing: each.inDrawing,
+        dynamic: each === dynamic,
+      };
+      return [
+        each,
+        each.ribbon
+          ? ribbon(at(each.rings, 0), bottom, top, info)
+          : extrude(each.rings, bottom, top, info),
+      ];
+    }),
+  );
+}
+
+interface CaseMeshes {
+  meshes: Mesh[];
+  caseBottom: number;
+  /** Half way between the case's bottom and the chapter ring's top. */
+  middle: number;
+  /** Where the crown is, along x. */
+  crownCentreX: number;
+}
+
+/** The case, lugs, strap and crown, around a chapter ring whose top is at
+ *  `ringTop`. */
+function caseOf(
+  design: Design,
+  paint: Paint,
+  root: Group,
+  ringTop: number,
+): CaseMeshes {
+  const { wash, frameLine } = paint;
+  const { caseRadius, bezelRadius } = design.case;
+  const caseDepth = 2 * (CROWN_RADIUS + CROWN_CLEARANCE);
+  const caseBottom = ringTop - caseDepth;
+  const middle = (caseBottom + ringTop) / 2;
+  const meshes: Mesh[] = [];
+  meshes.push(
+    extrude(
+      ringsOf(
+        [circlePath(0, 0, caseRadius), frameLine(4)],
+        [circlePath(0, 0, bezelRadius), frameLine(3)],
+      ),
+      caseBottom,
+      ringTop,
+      {
+        name: "case band",
+        part: "case band",
+        group: root,
+        fill: wash,
+        lineOrder: ringTop,
+      },
+    ),
+  );
+  const caseY = (x: number, side: number): number =>
+    side * Math.sqrt(caseRadius ** 2 - x ** 2);
+  // the arc flag that follows the case edge on its outside
+  const sweep = (left: number, right: number, side: number): boolean =>
+    (right - left) * side < 0;
+  let level = 1;
+  for (const side of [-1, 1]) {
+    const far = side * LUG_LENGTH;
+    const strapFar = side * STRAP_LENGTH;
+    const strapPath = new Path()
+      .moveTo(-84, strapFar)
+      .lineTo(-84, caseY(84, side))
+      .arcTo(caseRadius, false, sweep(-84, 84, side), 84, caseY(84, side))
+      .lineTo(84, strapFar)
+      .close();
+    meshes.push(
+      extrude(
+        ringsOf([strapPath, frameLine(3)]),
+        middle - STRAP_THICKNESS / 2,
+        middle + STRAP_THICKNESS / 2,
+        {
+          name: `strap ${String(level)}`,
+          part: "strap",
+          group: root,
+          fill: wash,
+          lineOrder: middle + STRAP_THICKNESS / 2,
+        },
+      ),
+    );
+    level++;
+    for (const [left, right] of [
+      [-112, -84],
+      [84, 112],
+    ] as const) {
+      const lug = new Path()
+        .moveTo(left, far)
+        .lineTo(left, caseY(left, side))
+        .arcTo(
+          caseRadius,
+          false,
+          sweep(left, right, side),
+          right,
+          caseY(right, side),
+        )
+        .lineTo(right, far)
+        .close();
+      meshes.push(
+        extrude(ringsOf([lug, frameLine(3)]), caseBottom, ringTop, {
+          name: `lug ${String(level)}`,
+          part: "lug",
+          group: root,
+          fill: wash,
+          lineOrder: ringTop,
+        }),
+      );
+      level++;
+    }
+  }
+  // the crown: a cylinder along x (the 2D drawing's rectangle is its view from
+  // above), at the case's mid-height; the 2D rectangle is 248..270 by -17..17
+  const crownLeft = caseRadius - 2;
+  const crownMesh = extrude(
+    ringsOf([circlePath(0, 0, CROWN_RADIUS), frameLine(3)]),
+    crownLeft,
+    crownLeft + CROWN_LENGTH,
+    {
+      name: "crown",
+      part: "crown",
+      group: root,
+      fill: wash,
+      lineOrder: middle + CROWN_RADIUS,
+    },
+  );
+  meshes.push(transformMesh(crownMesh, crownPlacement(middle)));
+  return {
+    meshes,
+    caseBottom,
+    middle,
+    crownCentreX: crownLeft + CROWN_LENGTH / 2,
+  };
+}
+
+/** The crown's placement: the outline's (u, v) to the slide's (y, z), the
+ *  extrusion's w to x, and up to the case's mid-height. */
+function crownPlacement(middle: number): Float32Array {
+  // prettier-ignore
+  return Float32Array.from([
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    1, 0, 0, 0,
+    0, 0, middle, 1,
+  ]);
+}
+
+/** The stud: a block around the spring's outer end, which is fixed. */
+function studMesh(
+  restSpring: Point2[],
+  arbor: Point2,
+  springHeights: Heights,
+  paint: Paint,
+  root: Group,
+): { mesh: Mesh; top: number } {
+  const outerEnd = at(restSpring, restSpring.length - 1);
+  const outward: Point2 = [
+    outerEnd[0] / Math.hypot(...outerEnd),
+    outerEnd[1] / Math.hypot(...outerEnd),
+  ];
+  const across: Point2 = [-outward[1], outward[0]];
+  const half = STUD_WIDTH / 2;
+  const [near, far] = STUD_REACH;
+  const points = (
+    [
+      [near, -half],
+      [far, -half],
+      [far, half],
+      [near, half],
+    ] as const
+  ).map(([along, side]): Point2 => [
+    arbor[0] + outerEnd[0] + outward[0] * along + across[0] * side,
+    arbor[1] + outerEnd[1] + outward[1] * along + across[1] * side,
+  ]);
+  const bottom = springHeights.bottom - STUD_OVERHANG;
+  const top = springHeights.top + STUD_OVERHANG;
+  return {
+    mesh: extrude([polygonRing(points, paint.line(2))], bottom, top, {
+      name: "hairspring stud (added)",
+      part: "hairspring stud",
+      group: root,
+      fill: paint.knockout,
+      lineOrder: top,
+      inDrawing: false,
+    }),
+    top,
+  };
+}
+
+/** The minute ticks and the hour marks, lying on the chapter ring. */
+function decalMeshes(
+  palette: Design["palette"],
+  paint: Paint,
+  root: Group,
+  ringTop: number,
+): Mesh[] {
+  const tick = (from: number, to: number, angle: number): Ring =>
+    polygonRing(
+      [polar(from, clock(angle)), polar(to, clock(angle))],
+      null,
+      false,
+    );
+  const minuteTicks: Ring[] = [];
+  const hourMarks: Ring[] = [];
+  for (let minute = 0; minute < 60; minute++) {
+    if (minute % 5 !== 0) minuteTicks.push(tick(214, 221, minute * 6));
+  }
+  for (let hour = 0; hour < 12; hour++)
+    hourMarks.push(tick(200, 220, hour * 30));
+  const decal = (rings: Ring[], style: LineStyle): Mesh =>
+    extrude(
+      rings.map((each) => ({ ...each, style })),
+      ringTop,
+      ringTop,
+      {
+        name: "decal on chapter ring 1",
+        part: "chapter ring",
+        group: root,
+        fill: null,
+        lineOrder: ringTop,
+      },
+      { decal: true },
+    );
+  return [
+    decal(minuteTicks, { colour: palette.detail, opacity: 0.5, width: 2 }),
+    decal(hourMarks, paint.line(4)),
+  ];
+}
+
+/** The lowest bottom and the highest top of some heights. */
+function heightRange(items: Iterable<Heights>): Heights {
+  const all = [...items];
+  return {
+    bottom: Math.min(...all.map((each) => each.bottom)),
+    top: Math.max(...all.map((each) => each.top)),
+  };
+}
+
+function lookup<Key, Value>(
+  map: ReadonlyMap<Key, Value>,
+  key: Key,
+  what: string,
+): Value {
+  const found = map.get(key);
+  if (found === undefined) throw new Error(`no ${what}`);
+  return found;
+}
+
+// ---- the generator -------------------------------------------------------------------------
+export function generate(design: Design = DESIGN): Watch {
+  const { palette, watchCentre } = design;
+  const paint = paintOf(palette);
+  const { knockout, ink: inkFill, frame: frameFill, line, frameLine } = paint;
+  const train = trainOf(design);
+  const { barrel, centre, third, fourth, escape } = train;
+
+  // ---- groups ----
+  const tree = makeGroups(design);
+  const { origins } = tree;
+  const {
+    root,
+    wheels: wheelGroups,
+    balance: balanceGroup,
+    springBase,
+    fork: forkGroup,
+    seconds: secondsGroup,
+    hour: hourGroup,
+    minute: minuteGroup,
+  } = tree.groups;
+  const groupOf = (wheel: Wheel): Group => {
+    const found = wheelGroups.get(wheel);
+    if (!found) throw new Error(`no group for the ${wheel.name} wheel`);
+    return found;
+  };
+
+  // ---- parts ----
+  const parts = makeParts(train);
+  const wheelPart = (wheel: Wheel): Part => {
+    const found = parts.wheels.get(wheel);
+    if (!found) throw new Error(`no part for the ${wheel.name} wheel`);
+    return found;
+  };
+  const {
+    balance: balancePart,
+    spring: springPart,
+    jewel: jewelPart,
+    fork: forkPart,
+    seconds: secondsPart,
+    ring: ringPart,
+    hour: hourPart,
+    minute: minutePart,
+    pivot: pivotPart,
+  } = parts;
+  const staffPart = springPart; // the balance staff belongs to the hairspring's part
+
+  const discsOver = clipDiscs(design);
 
   // ---- the solids of the movement, in the drawing's order ----
   const solids: Solid[] = [];
@@ -689,7 +1049,7 @@ export function generate(design: Design = DESIGN): Watch {
   );
 
   // the chapter ring: what is left of the dial
-  const { caseRadius, bezelRadius, ringRadius } = design.case;
+  const { bezelRadius, ringRadius } = design.case;
   const ringSolid = solid(
     ringPart,
     "body",
@@ -799,263 +1159,56 @@ export function generate(design: Design = DESIGN): Watch {
   const ringTop = heightOf(ringSolid).top;
 
   // ---- the case, lugs, strap and crown ----
-  const caseDepth = 2 * (CROWN_RADIUS + CROWN_CLEARANCE);
-  const caseBottom = ringTop - caseDepth;
-  const middle = (caseBottom + ringTop) / 2;
-  const meshes: Mesh[] = [];
-  meshes.push(
-    extrude(
-      ringsOf(
-        [circlePath(0, 0, caseRadius), frameLine(4)],
-        [circlePath(0, 0, bezelRadius), frameLine(3)],
-      ),
-      caseBottom,
-      ringTop,
-      {
-        name: "case band",
-        part: "case band",
-        group: root,
-        fill: wash,
-        lineOrder: ringTop,
-      },
-    ),
-  );
-  const caseY = (x: number, side: number): number =>
-    side * Math.sqrt(caseRadius ** 2 - x ** 2);
-  // the arc flag that follows the case edge on its outside
-  const sweep = (left: number, right: number, side: number): boolean =>
-    (right - left) * side < 0;
-  let level = 1;
-  for (const side of [-1, 1]) {
-    const far = side * LUG_LENGTH;
-    const strapFar = side * STRAP_LENGTH;
-    const strapPath = new Path()
-      .moveTo(-84, strapFar)
-      .lineTo(-84, caseY(84, side))
-      .arcTo(caseRadius, false, sweep(-84, 84, side), 84, caseY(84, side))
-      .lineTo(84, strapFar)
-      .close();
-    meshes.push(
-      extrude(
-        ringsOf([strapPath, frameLine(3)]),
-        middle - STRAP_THICKNESS / 2,
-        middle + STRAP_THICKNESS / 2,
-        {
-          name: `strap ${String(level)}`,
-          part: "strap",
-          group: root,
-          fill: wash,
-          lineOrder: middle + STRAP_THICKNESS / 2,
-        },
-      ),
-    );
-    level++;
-    for (const [left, right] of [
-      [-112, -84],
-      [84, 112],
-    ] as const) {
-      const lug = new Path()
-        .moveTo(left, far)
-        .lineTo(left, caseY(left, side))
-        .arcTo(
-          caseRadius,
-          false,
-          sweep(left, right, side),
-          right,
-          caseY(right, side),
-        )
-        .lineTo(right, far)
-        .close();
-      meshes.push(
-        extrude(ringsOf([lug, frameLine(3)]), caseBottom, ringTop, {
-          name: `lug ${String(level)}`,
-          part: "lug",
-          group: root,
-          fill: wash,
-          lineOrder: ringTop,
-        }),
-      );
-      level++;
-    }
-  }
-  // the crown: a cylinder along x (the 2D drawing's rectangle is its view from
-  // above), at the case's mid-height; the 2D rectangle is 248..270 by -17..17
-  const crownLeft = caseRadius - 2;
-  const crownMesh = extrude(
-    ringsOf([circlePath(0, 0, CROWN_RADIUS), frameLine(3)]),
-    crownLeft,
-    crownLeft + CROWN_LENGTH,
-    {
-      name: "crown",
-      part: "crown",
-      group: root,
-      fill: wash,
-      lineOrder: middle + CROWN_RADIUS,
-    },
-  );
-  // the outline's (u, v) to the slide's (y, z), the extrusion's w to x
-  const crownPlacement = Float32Array.from([
-    0,
-    1,
-    0,
-    0,
-    0,
-    0,
-    1,
-    0,
-    1,
-    0,
-    0,
-    0,
-    0,
-    0,
+  const {
+    meshes: caseMeshes,
+    caseBottom,
     middle,
-    1,
-  ]);
-  meshes.push(transformMesh(crownMesh, crownPlacement));
+    crownCentreX,
+  } = caseOf(design, paint, root, ringTop);
+  const meshes: Mesh[] = [...caseMeshes];
 
-  // ---- the movement's meshes, and the stud ----
-  const drawnOrder = solids.filter((each) => each !== staff);
-  const movementMeshes = [...drawnOrder, staff].map((each) => {
-    const { bottom, top } = heightOf(each);
-    const info = {
-      name: each.name,
-      part: each.part.name,
-      group: each.group,
-      fill: each.fill,
-      hiddenInside: each.discs,
-      lineOrder: top,
-      inDrawing: each.inDrawing,
-      dynamic: each === springSolid,
-    };
-    return each.ribbon
-      ? ribbon(at(each.rings, 0), bottom, top, info)
-      : extrude(each.rings, bottom, top, info);
-  });
-  meshes.push(...movementMeshes);
-  const springMesh = at(
-    movementMeshes,
-    [...drawnOrder, staff].indexOf(springSolid),
-  );
+  // ---- the movement's meshes ----
+  const movementMeshes = solidMeshes(solids, heights, springSolid);
+  meshes.push(...movementMeshes.values());
+  const springMesh = lookup(movementMeshes, springSolid, "spring mesh");
   const springHeights = heightOf(springSolid);
-  const colletMesh = at(movementMeshes, [...drawnOrder, staff].indexOf(collet));
+  const colletMesh = lookup(movementMeshes, collet, "collet mesh");
 
-  // the stud: a block around the spring's outer end, which is fixed
-  const outerEnd = at(restSpring, restSpring.length - 1);
-  const outward: Point2 = [
-    outerEnd[0] / Math.hypot(...outerEnd),
-    outerEnd[1] / Math.hypot(...outerEnd),
-  ];
-  const across: Point2 = [-outward[1], outward[0]];
-  const half = STUD_WIDTH / 2;
-  const [near, far] = STUD_REACH;
-  const studPoints = (
-    [
-      [near, -half],
-      [far, -half],
-      [far, half],
-      [near, half],
-    ] as const
-  ).map(([along, side]): Point2 => [
-    balanceDesign.arbor[0] +
-      outerEnd[0] +
-      outward[0] * along +
-      across[0] * side,
-    balanceDesign.arbor[1] +
-      outerEnd[1] +
-      outward[1] * along +
-      across[1] * side,
-  ]);
-  const studBottom = springHeights.bottom - STUD_OVERHANG;
-  const studTop = springHeights.top + STUD_OVERHANG;
-  const studMesh = extrude(
-    [polygonRing(studPoints, line(2))],
-    studBottom,
-    studTop,
-    {
-      name: "hairspring stud (added)",
-      part: "hairspring stud",
-      group: root,
-      fill: knockout,
-      lineOrder: studTop,
-      inDrawing: false,
-    },
+  const stud = studMesh(
+    restSpring,
+    balanceDesign.arbor,
+    springHeights,
+    paint,
+    root,
   );
-  meshes.push(studMesh);
+  meshes.push(stud.mesh);
 
-  // ---- decals: the minute ticks and the hour marks, on the chapter ring ----
-  const tick = (from: number, to: number, angle: number): Ring =>
-    polygonRing(
-      [polar(from, clock(angle)), polar(to, clock(angle))],
-      null,
-      false,
-    );
-  const minuteTicks: Ring[] = [];
-  const hourMarks: Ring[] = [];
-  for (let minute = 0; minute < 60; minute++) {
-    if (minute % 5 !== 0) minuteTicks.push(tick(214, 221, minute * 6));
-  }
-  for (let hour = 0; hour < 12; hour++)
-    hourMarks.push(tick(200, 220, hour * 30));
-  const decal = (rings: Ring[], style: LineStyle): Mesh =>
-    extrude(
-      rings.map((each) => ({ ...each, style })),
-      ringTop,
-      ringTop,
-      {
-        name: "decal on chapter ring 1",
-        part: "chapter ring",
-        group: root,
-        fill: null,
-        lineOrder: ringTop,
-      },
-      { decal: true },
-    );
-  meshes.push(
-    decal(minuteTicks, { colour: palette.detail, opacity: 0.5, width: 2 }),
-    decal(hourMarks, line(4)),
-  );
+  meshes.push(...decalMeshes(palette, paint, root, ringTop));
 
   // ---- views and subjects ----
-  const heightsOfAll = [...heights.values()];
-  const lowest = Math.min(
-    caseBottom,
-    ...heightsOfAll.map((each) => each.bottom),
+  const allHeights = heightRange(heights.values());
+  const lowest = Math.min(caseBottom, allHeights.bottom);
+  const highest = Math.max(ringTop, stud.top, allHeights.top);
+  const balanceSpan = heightRange(
+    solids
+      .filter((each) => each.part === balancePart || each.part === springPart)
+      .map(heightOf),
   );
-  const highest = Math.max(
-    ringTop,
-    studTop,
-    ...heightsOfAll.map((each) => each.top),
-  );
-  const springMiddle =
-    (Math.min(
-      ...[...solids]
-        .filter((each) => each.part === balancePart || each.part === springPart)
-        .map((each) => heightOf(each).bottom),
-    ) +
-      Math.max(
-        ...[...solids]
-          .filter(
-            (each) => each.part === balancePart || each.part === springPart,
-          )
-          .map((each) => heightOf(each).top),
-      )) /
-    2;
   const subject: Subject = {
     name: "hairspring and stud",
-    meshes: new Set([springMesh, colletMesh, studMesh]),
+    meshes: new Set([springMesh, colletMesh, stud.mesh]),
   };
   const scene: Scene = {
     slide: [design.canvas.width, design.canvas.height],
     paper: palette.background,
     meshes,
-    groups,
+    groups: tree.all,
     views: views(
       design,
       (lowest + highest) / 2,
-      springMiddle,
+      (balanceSpan.bottom + balanceSpan.top) / 2,
       middle,
-      crownLeft + CROWN_LENGTH / 2,
+      crownCentreX,
     ),
     subjects: [subject],
   };
@@ -1063,16 +1216,7 @@ export function generate(design: Design = DESIGN): Watch {
   return {
     design,
     scene,
-    groups: {
-      root,
-      wheels: wheelGroups,
-      balance: balanceGroup,
-      springBase,
-      fork: forkGroup,
-      seconds: secondsGroup,
-      hour: hourGroup,
-      minute: minuteGroup,
-    },
+    groups: tree.groups,
     spring: springMesh,
     springShape,
     springHeights,
