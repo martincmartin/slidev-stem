@@ -49,6 +49,29 @@ and run the checks again. Everything below is in CSS px as shown.
 | `#2A2520` | tertiary detail: tick marks, smoke. Usually at 0.5 stroke-opacity    | 13.10:1  |
 | `#D3DCE3` | knockout: a pale face that must read as lit, not as bare paper       | 1.20:1   |
 
+**The page's theme paints the drawing, at run time.** Do not let an SVG keep its
+colours to itself. Put a `<style>` in the file that gives each mark
+`var(--palette-<role>, <hex>)`, through a class. Then a slide's own `class:`
+can override the theme (see [theme.md](theme.md)), and the drawing takes that
+slide's colours. Keep the hex
+as the mark's attribute too (`fill="#D3DCE3"`): the tools read the attributes
+and render the file on its own, where the `var()` fallback paints the same
+pixels.
+
+- **Inline the SVG in the page.** An SVG in an `<img>` is a separate document,
+  and no page CSS reaches it. `watches/components/FlexingRuler.vue` inlines its
+  file.
+- **Namespace every class**, as for an `id`: a `<style>` in an inlined SVG
+  applies to the whole page (`.flexing-ruler-stroke-art-line`).
+- **Always give `var()` its fallback.** Without the theme, a `var()` with no
+  fallback does not use the attribute: the mark takes its parent's colour.
+- **Write the hex from the theme, not by hand.** `watches/art/flexing_ruler.py`
+  reads the values from the theme that the talk links, and its `--check` fails
+  when the theme changes. It is the example.
+
+The four timekeepers do not do this yet: `TimekeeperCard.vue` shows them in an
+`<img>`.
+
 **Which colour, and at what opacity, is decided by the job — not by taste.** The
 set has a rule:
 

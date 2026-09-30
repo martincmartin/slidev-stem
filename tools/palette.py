@@ -3,6 +3,7 @@
 
     .venv/bin/python3 tools/palette.py                  # the palette, every gate, pass/fail
     .venv/bin/python3 tools/palette.py --talk watches   # only: does this talk set it?
+                                                        # (only a slide class may)
     .venv/bin/python3 tools/palette.py "#C0451C"        # can I use this? measured in every role
     .venv/bin/python3 tools/palette.py "#C0451C" accent # ... and specifically as the accent
 
@@ -48,6 +49,41 @@ def show_palette() -> bool:
         print(f"  {lib.PALETTE_PREFIX}{role:<11} {value}")
 
     print("\ncontrast gates\n")
+    passed = show_gates(palette)
+
+    print("\nroom light: contrast at additive ambient flare\n")
+    print(
+        f"  {'pair':<24}"
+        + "".join(f"{flare:>8.2f}" for flare in FLARES)
+        + f"{'Fmax':>8}"
+    )
+    for mark, surface in (
+        ("ink", "background"),
+        ("ink", "panel"),
+        ("accent", "panel"),
+        ("second", "panel"),
+        ("muted", "panel"),
+    ):
+        row = "".join(
+            f"{lib.contrast(palette[mark], palette[surface], flare):>8.2f}"
+            for flare in FLARES
+        )
+        print(
+            f"  {mark + ' vs ' + surface:<24}{row}"
+            f"{lib.max_flare(palette[mark], palette[surface]):>8.3f}"
+        )
+    print(
+        f"  {'ceiling for ANY design':<24}"
+        + "".join(f"{lib.flare_ceiling(flare):>8.2f}" for flare in FLARES)
+        + f"{0.30:>8.3f}"
+    )
+
+    print(f"\n{'ALL GATES PASS' if passed else 'SOMETHING FAILS -- see above'}")
+    return passed
+
+
+def show_gates(palette: lib.Palette) -> bool:
+    """Print every gate of `palette`. True if all pass."""
     passes = []
     for gate in lib.GATES:
         ratio = lib.contrast(palette[gate.role], palette[gate.against])
@@ -78,51 +114,32 @@ def show_palette() -> bool:
         f"  {'ok  ' if lightness >= 1.4 else 'note'} accent  vs second      "
         f"{lightness:>5.2f}x   (>= 1.4 preferred)   hue fails before lightness does"
     )
-
-    print("\nroom light: contrast at additive ambient flare\n")
-    print(
-        f"  {'pair':<24}"
-        + "".join(f"{flare:>8.2f}" for flare in FLARES)
-        + f"{'Fmax':>8}"
-    )
-    for mark, surface in (
-        ("ink", "background"),
-        ("ink", "panel"),
-        ("accent", "panel"),
-        ("second", "panel"),
-        ("muted", "panel"),
-    ):
-        row = "".join(
-            f"{lib.contrast(palette[mark], palette[surface], flare):>8.2f}"
-            for flare in FLARES
-        )
-        print(
-            f"  {mark + ' vs ' + surface:<24}{row}"
-            f"{lib.max_flare(palette[mark], palette[surface]):>8.3f}"
-        )
-    print(
-        f"  {'ceiling for ANY design':<24}"
-        + "".join(f"{lib.flare_ceiling(flare):>8.2f}" for flare in FLARES)
-        + f"{0.30:>8.3f}"
-    )
-
-    print(f"\n{'ALL GATES PASS' if all(passes) else 'SOMETHING FAILS -- see above'}")
     return all(passes)
 
 
-def show_stray(talks: list[pathlib.Path]) -> bool:
-    """Fail if one of `talks` sets the palette. Only the theme may."""
+def show_talks(talks: list[pathlib.Path]) -> bool:
+    """Fail if one of `talks` sets the palette, except for the slides with a
+    class, or if such a slide's palette fails a gate."""
     css_name = lib.display_path(lib.THEME_CSS)
-    print(f"\nonly the theme sets the palette ({css_name})\n")
-    stray = lib.stray_palette_declarations(talks)
-    for path, number, text in stray:
-        print(f"  FAIL {path}:{number} sets {text!r}")
-    if not stray:
+    print(f"\nthe theme sets the palette ({css_name}); a slide class may override it\n")
+    found = lib.talk_palette_declarations(talks, lib.LEDGER)
+    for declaration, fault in found.faults:
+        print(
+            f"  FAIL {declaration.path}:{declaration.line} sets "
+            f"{lib.PALETTE_PREFIX}{declaration.role}: {fault.value}"
+        )
+    passed = not found.faults
+    for override in found.overrides:
+        first = override.declarations[0]
+        roles = ", ".join(declaration.role for declaration in override.declarations)
+        print(f"\n  {override.selector} ({first.path}:{first.line}) sets {roles}\n")
+        passed = show_gates(override.palette(lib.LEDGER)) and passed
+    if not found.faults and not found.overrides:
         print(
             f"  ok   no talk declares a {lib.PALETTE_PREFIX}* variable "
             f"({len(talks)} talk(s) checked)"
         )
-    return not stray
+    return passed
 
 
 def show_candidate(candidate: lib.Colour, role: str | None = None) -> None:
@@ -198,11 +215,14 @@ def main() -> int:
         default=[],
         type=pathlib.Path,
         metavar="DIR",
-        help="without a colour: check only that this talk does not set the palette",
+        help=(
+            "without a colour: check only that this talk sets the palette just "
+            "for slide classes, and that each such palette passes the gates"
+        ),
     )
     arguments = parser.parse_args()
     if arguments.colour is None and arguments.talk:
-        return 0 if show_stray(arguments.talk) else 1
+        return 0 if show_talks(arguments.talk) else 1
     if arguments.colour is None:
         return 0 if show_palette() else 1
     try:

@@ -1,0 +1,41 @@
+
+the theme sets the palette (themes/ledger/styles/ledger.css); a slide class may override it
+
+  FAIL watches/tasks/2026-09-30-flexing-ruler/evidence/palette-fixture/slides.md:9 sets --palette-accent: outside a `.slidev-layout.<class>` rule
+  FAIL watches/tasks/2026-09-30-flexing-ruler/evidence/palette-fixture/styles/index.css:11 sets --palette-ink: outside a `.slidev-layout.<class>` rule
+  FAIL watches/tasks/2026-09-30-flexing-ruler/evidence/palette-fixture/styles/index.css:14 sets --palette-nope: a role that the theme does not set
+  FAIL watches/tasks/2026-09-30-flexing-ruler/evidence/palette-fixture/styles/index.css:15 sets --palette-ink: a value that is not a #rrggbb colour
+
+  .slidev-layout.cool (watches/tasks/2026-09-30-flexing-ruler/evidence/palette-fixture/slides.md:7) sets second
+
+  ok   ink     vs background   14.18:1  (>= 12.0)   headroom to degrade from; Ledger has 14.2
+  ok   ink     vs panel        13.10:1  (>= 12.0)   the same text on a card
+  ok   accent  vs panel         5.56:1  (>= 4.5)   the 37px stat number
+  ok   second  vs panel         5.30:1  (>= 3.5)   20px bold counts as large text: 3:1 plus margin
+  ok   muted   vs panel         4.58:1  (>= 4.5)   17px body is normal text, so WCAG AA applies
+  ok   accent  vs ink         dE    55    (>= 35)   emphasis must read as emphasis
+  ok   accent  vs second      dE    73    (>= 25)   worst of deuter/protan
+  note accent  vs second       1.05x   (>= 1.4 preferred)   hue fails before lightness does
+
+  .slidev-layout.warm (watches/tasks/2026-09-30-flexing-ruler/evidence/palette-fixture/styles/index.css:3) sets accent, muted
+
+  ok   ink     vs background   14.18:1  (>= 12.0)   headroom to degrade from; Ledger has 14.2
+  ok   ink     vs panel        13.10:1  (>= 12.0)   the same text on a card
+  ok   accent  vs panel         6.07:1  (>= 4.5)   the 37px stat number
+  ok   second  vs panel         4.34:1  (>= 3.5)   20px bold counts as large text: 3:1 plus margin
+  ok   muted   vs panel         6.21:1  (>= 4.5)   17px body is normal text, so WCAG AA applies
+  ok   accent  vs ink         dE    58    (>= 35)   emphasis must read as emphasis
+  FAIL accent  vs second      dE    13    (>= 25)   worst of deuter/protan
+  note accent  vs second       1.40x   (>= 1.4 preferred)   hue fails before lightness does
+
+  .slidev-layout.bad (watches/tasks/2026-09-30-flexing-ruler/evidence/palette-fixture/styles/index.css:7) sets accent
+
+  ok   ink     vs background   14.18:1  (>= 12.0)   headroom to degrade from; Ledger has 14.2
+  ok   ink     vs panel        13.10:1  (>= 12.0)   the same text on a card
+  FAIL accent  vs panel         1.08:1  (>= 4.5)   the 37px stat number
+  ok   second  vs panel         4.34:1  (>= 3.5)   20px bold counts as large text: 3:1 plus margin
+  ok   muted   vs panel         4.58:1  (>= 4.5)   17px body is normal text, so WCAG AA applies
+  ok   accent  vs ink         dE   124    (>= 35)   emphasis must read as emphasis
+  ok   accent  vs second      dE    78    (>= 25)   worst of deuter/protan
+  ok   accent  vs second       4.68x   (>= 1.4 preferred)   hue fails before lightness does
+exit 1

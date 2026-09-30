@@ -51,3 +51,52 @@ the sequence plays once, and the swing goes on for ever. Going back resets it.
 `tools/artcheck.py` now skips `fill` on `animate`, `animateTransform` and `set`
 (`fill="freeze"` is timing). `tools/flexing_ruler.py` and `evidence/` are the
 copies from when this was done.
+
+## Reopened 2026-09-30: colours from the theme at run time
+
+Request: every SVG takes its colours from the theme when the page runs, not
+from colours built into the file. A slide's `class:` can override the theme's
+CSS, and the SVG must follow that slide's colours.
+
+The ruler is inlined in the page (`FlexingRuler.vue`), so CSS custom
+properties reach it and cascade from its slide. An SVG in an `<img>` is a
+separate document: no page CSS reaches it. So the file must be inlined, and
+its paint must come from `var(--palette-…)`.
+
+| option                                                                                                                     | pro                                                                                                                                                                                     | con                                                                                                                                                                                                                  |
+| -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A. Each mark keeps its palette hex attribute. A `<style>` in the file maps namespaced classes to `var(--palette-role, hex)` | The house tools (`artcheck`, `barroom`, `motion`) read and render the file as before, with the same pixels. Standalone, the fallback is the hex. No change to a shared tool or the theme | Each colour is in the file twice (attribute and fallback). The generator writes both from one table, read from the theme                                                                                             |
+| B. The theme maps hex to var with attribute selectors (`svg [stroke="#143c6b"]`)                                           | No change to any SVG                                                                                                                                                                    | Ties the theme's selectors to its own values; it repaints any inline SVG that happens to use that hex; case and short hex forms need more selectors                                                                  |
+| C. Only `style="stroke: var(--palette-role, hex)"`, and `artcheck` learns to read `var()` fallbacks                        | Each mark states its colour once                                                                                                                                                        | Changes a house tool that every talk uses; `artcheck`'s inheritance walk and ladder checks read attributes; more work for no visible gain. A CSS `var()` with no fallback, outside the theme, paints the parent's colour |
+
+Chosen: A. The generator reads the four ink values from the theme that the
+talk links (`node_modules/slidev-theme-ledger/styles/ledger.css`), so
+`--check` fails if the theme's values change and the file was not written
+again.
+
+**A conflict.** `tools/palette.py` failed if a slide declared a
+`--palette-*` variable ("only the theme sets the palette"). So no slide could
+use the override this change supports. The user decided to relax the rule.
+
+| option                                                                                              | pro                                                                                                                                                                                | con                                                                                                                           |
+| --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 1. Delete the check                                                                                 | Least code                                                                                                                                                                         | A talk can replace the palette for every slide (`:root`, `.slidev-layout`) with no gate measured                              |
+| 2. Allow a declaration only in a `.slidev-layout.<class>` rule; measure each such palette's gates   | Slidev puts `class:` on `.slidev-layout`, so the selector is exactly "these slides". A global override still fails. An override that fails contrast or colour-blind gates fails | About 110 lines in `lib.py` and `palette.py`; a CSS reader built from regular expressions, not a CSS parser                   |
+| 3. Allow any selector in a talk; measure nothing                                                    | Most freedom                                                                                                                                                                       | Same loss as 1 for global rules                                                                                               |
+
+Chosen: 2. `tools/lib.py` (`talk_palette_declarations`) and
+`tools/palette.py` (`show_talks`, `show_gates`) are the copies from this
+change. `evidence/palette-fixture/` is the test talk, and
+`evidence/palette-fixture.txt` is the output. The output shows these results:
+
+- A comment is ignored.
+- `:root` and a comma list with `:root` fail, and so does an inline `style=`.
+- An unknown role fails, and so does a `var()` value.
+- An override with a failing gate fails: `#FFFF00` accent on the panel is
+  1.08:1, and `warm` fails accent vs second under colour blindness,
+  $\Delta E = 13 < 25$.
+
+In the deck, `class: probe` on slide 2 with
+`.slidev-layout.probe { --palette-art-line: #C0451C; }` painted the ruler's
+line `rgb(192, 69, 28)`. Slide 1 kept `#143c6b`. `palette.py --talk watches`
+passed with that probe, and the probe was then removed.

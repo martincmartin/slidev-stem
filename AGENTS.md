@@ -131,7 +131,8 @@ directory.
 - **A talk's run** checks the talk's Python with the same four tools, in the
   talk's own venv. It checks the talk with Prettier, and every SVG in its
   `public/` with `artcheck`, `barroom` and `motion`. It checks that the talk
-  does not set the palette. It builds the deck, and then walks every slide and
+  sets the palette only for a slide class, and that each such palette passes
+  the gates. It builds the deck, and then walks every slide and
   click with `offline_check --walk`, with every outside request blocked.
 
 It runs every check, prints a summary, and exits non-zero if any failed. Do not

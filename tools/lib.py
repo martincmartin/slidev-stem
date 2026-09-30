@@ -471,11 +471,69 @@ def namespace_ids(source: str, tag: str) -> str:
     return source
 
 
-def stray_palette_declarations(
-    talks: Iterable[pathlib.Path],
-) -> list[tuple[pathlib.Path, int, str]]:
-    """Every place in `talks` (talk directories) that declares a PALETTE_PREFIX
-    variable, as (path, line number, text). Only the theme sets the palette."""
+# A slide's `class:` goes on its layout's root, which has THEME_SELECTOR. So
+# `.slidev-layout.dark` is the slides with `class: dark`, and nothing else.
+SLIDE_CLASS_SELECTOR = re.compile(re.escape(THEME_SELECTOR) + r"(\.[\w-]+)+")
+
+
+class Fault(Enum):
+    """Why a talk may not make a palette declaration."""
+
+    NOT_A_SLIDE_CLASS = "outside a `.slidev-layout.<class>` rule"
+    UNKNOWN_ROLE = "a role that the theme does not set"
+    NOT_A_COLOUR = "a value that is not a #rrggbb colour"
+
+
+@dataclass(frozen=True)
+class Declaration:
+    """One PALETTE_PREFIX declaration in a talk's file."""
+
+    path: pathlib.Path
+    line: int
+    role: str
+    value: str
+
+
+@dataclass(frozen=True)
+class SlideOverride:
+    """A rule that sets roles of the palette for the slides with a class."""
+
+    selector: str
+    declarations: tuple[Declaration, ...]
+
+    def palette(self, theme: Palette) -> Palette:
+        """`theme`, with this rule's roles replaced: what those slides show."""
+        return theme | {
+            declaration.role: Colour.from_hex(declaration.value)
+            for declaration in self.declarations
+        }
+
+
+@dataclass(frozen=True)
+class PaletteDeclarations:
+    """What `talk_palette_declarations` finds: the rules that may set the
+    palette, and each declaration that may not, with its fault."""
+
+    overrides: list[SlideOverride]
+    faults: list[tuple[Declaration, Fault]]
+
+
+def _rule_selector(before: str) -> str:
+    """The selector of a CSS rule, from the text `before` its `{`: the last
+    line, and each line above it that ends in a comma."""
+    lines = before.rstrip().splitlines() or [""]
+    selector = [lines.pop().strip()]
+    while lines and lines[-1].rstrip().endswith(","):
+        selector.insert(0, lines.pop().strip())
+    return " ".join(selector)
+
+
+def talk_palette_declarations(
+    talks: Iterable[pathlib.Path], theme: Palette
+) -> PaletteDeclarations:
+    """Every PALETTE_PREFIX declaration in `talks` (talk directories). The theme
+    sets the palette. A talk may only change roles of `theme` for the slides
+    with a class, in a SLIDE_CLASS_SELECTOR rule, with #rrggbb values."""
     files = [
         file
         for talk in talks
@@ -484,12 +542,59 @@ def stray_palette_declarations(
         + sorted((talk / "components").glob("*.vue"))
         + sorted((talk / "styles").glob("*.css"))
     ]
-    out = []
+    declaration_pattern = re.compile(
+        re.escape(PALETTE_PREFIX) + r"([\w-]+)\s*:\s*([^;}\"'\n]*)"
+    )
+    overrides = []
+    faults = []
     for file in files:
-        for number, line in enumerate(file.read_text().splitlines(), 1):
-            if re.search(re.escape(PALETTE_PREFIX) + r"[\w-]+\s*:", line):
-                out.append((display_path(file), number, line.strip()))
-    return out
+        # blank each comment, but keep its newlines, so line numbers hold
+        source = re.sub(
+            r"/\*.*?\*/",
+            lambda comment: re.sub(r"[^\n]", " ", comment.group()),
+            file.read_text(),
+            flags=re.DOTALL,
+        )
+        slide_rules = [
+            rule
+            for rule in re.finditer(r"([^{}]*)\{([^{}]*)\}", source)
+            if all(
+                SLIDE_CLASS_SELECTOR.fullmatch(part.strip())
+                for part in _rule_selector(rule.group(1)).split(",")
+            )
+        ]
+        found: dict[re.Match[str], list[Declaration]] = {
+            rule: [] for rule in slide_rules
+        }
+        for match in declaration_pattern.finditer(source):
+            declaration = Declaration(
+                display_path(file),
+                source.count("\n", 0, match.start()) + 1,
+                match.group(1),
+                match.group(2).strip(),
+            )
+            rule = next(
+                (
+                    rule
+                    for rule in slide_rules
+                    if rule.start(2) <= match.start() < rule.end(2)
+                ),
+                None,
+            )
+            if rule is None:
+                faults.append((declaration, Fault.NOT_A_SLIDE_CLASS))
+            elif declaration.role not in theme:
+                faults.append((declaration, Fault.UNKNOWN_ROLE))
+            elif not re.fullmatch(r"#[0-9A-Fa-f]{6}", declaration.value):
+                faults.append((declaration, Fault.NOT_A_COLOUR))
+            else:
+                found[rule].append(declaration)
+        overrides += [
+            SlideOverride(_rule_selector(rule.group(1)), tuple(declarations))
+            for rule, declarations in found.items()
+            if declarations
+        ]
+    return PaletteDeclarations(overrides, faults)
 
 
 def colours_in(source: str) -> set[Colour]:

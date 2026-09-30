@@ -37,7 +37,7 @@ uv run tools/validate.py                                # every check of the sha
 uv run tools/validate.py --fix                          # ... after ruff formats and fixes
 .venv/bin/python3 tools/lib.py                          # the framework, as numbers
 .venv/bin/python3 tools/palette.py                      # every gate, pass/fail
-.venv/bin/python3 tools/palette.py --talk watches       # only: does this talk set it?
+.venv/bin/python3 tools/palette.py --talk watches       # only: does this talk set it outside a slide class?
 .venv/bin/python3 tools/palette.py "#C0451C" accent     # a candidate colour, measured
 .venv/bin/python3 tools/artcheck.py watches/public/     # every SVG in a talk's public/
 .venv/bin/python3 tools/artcheck.py path/to/new.svg     # ... or just the new one

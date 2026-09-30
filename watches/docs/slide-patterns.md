@@ -26,8 +26,11 @@ Three rules for a slide:
   other variables for colour. In a component, use `@apply font-serif` or
   `@apply font-mono` for type. If a slide needs a colour that the palette does
   not have, see [theme.md](../../docs/theme.md#adding-a-colour).
-  `tools/palette.py` fails if a slide, page or component declares a
-  `--palette-*` variable.
+  To change a role for one slide, give the slide a `class:` and set the role in
+  a `.slidev-layout.<class>` rule (see
+  [theme.md](../../docs/theme.md#how-to-use-it)). `tools/palette.py` fails if a
+  talk declares a `--palette-*` variable in a different rule, or if that
+  slide's palette fails a gate.
 - **`layout: full` plus a class, not a custom layout.** It keeps each slide's layout
   next to its content, which has been worth more than the duplication costs — the
   slide you are reading is the slide you are editing.

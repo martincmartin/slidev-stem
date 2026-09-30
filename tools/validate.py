@@ -14,7 +14,7 @@ What it checks comes from the uv project that holds the current directory:
   * a talk: the same four checks on the talk's own code, in the talk's uv
     project, with its versions and its settings; Prettier on the talk; artcheck.py,
     barroom.py and motion.py on every SVG in its public/; palette.py's check that
-    the talk does not set the palette; and a build of the deck (`pnpm build`,
+    the talk sets the palette only for slide classes, within the gates; and a build of the deck (`pnpm build`,
     into a temporary directory), which offline_check.py --walk then steps
     through, slide by slide and click by click, with every outside request
     blocked. Nothing outside the talk.

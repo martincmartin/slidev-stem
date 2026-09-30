@@ -21,12 +21,29 @@ Run it if you change one.
 ## How to use it
 
 **Use the variables, not literals.** The nine values are set once, on every
-slide, by the house theme (`themes/ledger/styles/ledger.css`), and nowhere else.
+slide, by the house theme (`themes/ledger/styles/ledger.css`). Only a slide's
+class can override them (see below).
 Components read `var(--palette-ink)` and so on, so everything on a slide follows
 the palette. `tools/lib.py` reads the values from the same file, so
-`.venv/bin/python3 tools/palette.py` always measures what the slides render. With
-`--talk <talk>`, it fails if a slide, page or component in that talk declares a
-`--palette-*` variable.
+`.venv/bin/python3 tools/palette.py` always measures what the slides render.
+
+**A slide can override the palette, through its class.** Slidev puts a slide's
+`class:` on the slide's `.slidev-layout` element. So a rule with the selector
+`.slidev-layout.<class>` changes the roles for those slides only:
+
+```css
+.slidev-layout.warm {
+  --palette-accent: #9a3a10;
+}
+```
+
+Put the rule in the talk's `styles/`, or in a `<style>` on the slide. Use a
+`#rrggbb` value and a role that the theme sets. With `--talk <talk>`,
+`palette.py` fails if the talk declares a `--palette-*` variable in a different
+rule, such as `:root` or `.slidev-layout` without a class. It also measures each
+slide's palette (the theme with the override) against every gate, and fails if
+one gate fails. The inlined drawings follow the override (see
+[illustrations.md](illustrations.md)).
 
 **One accent per slide.** The accent is not "the blue one", it is _the thing you
 want them to look at_. A slide with four accented spans has none. The 37 px stat

@@ -1,0 +1,16 @@
+/* --palette-ink: #000000; in a comment */
+.slidev-layout.warm {
+  --palette-accent: #9A3A10;
+  --palette-muted: #5E564E;
+}
+.slidev-layout.bad {
+  --palette-accent: #FFFF00;
+}
+:root,
+.slidev-layout.sneaky {
+  --palette-ink: #111111;
+}
+.slidev-layout.odd {
+  --palette-nope: #111111;
+  --palette-ink: var(--x);
+}

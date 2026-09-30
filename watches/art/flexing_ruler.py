@@ -23,6 +23,14 @@ the release has no jump.
 A page that shows the file drives the clock itself (components/FlexingRuler.vue):
 the SVG's root has `data-swing-start`, the time at which the swing begins, so a
 page can tell the start of the sequence from the start of the swing.
+
+COLOURS. The page's theme paints the drawing. Each mark has a class, and a
+<style> in the file gives each class `var(--palette-<role>, <hex>)`, so an
+inlined SVG takes the colours of the slide it is on, including a slide's own
+`class:`. Each mark also keeps the hex as its attribute: the house tools
+(artcheck, barroom, motion) read and render the file on its own, where the
+fallback paints the same pixels. The hex values are read from the theme that
+the talk links, so `--check` fails when the theme changes.
 """
 
 import argparse
@@ -37,11 +45,74 @@ OUTPUT = TALK / "public" / "flexing-ruler.svg"
 
 Point = tuple[float, float]
 
-# The palette (stem/docs/illustrations.md): line, secondary, tertiary, knockout.
-LINE = "#143C6B"
-SECOND = "#736A60"
-TICK = "#2A2520"
-KNOCKOUT = "#D3DCE3"
+THEME_CSS = TALK / "node_modules" / "slidev-theme-ledger" / "styles" / "ledger.css"
+CLASS_PREFIX = "flexing-ruler-"  # a <style> in an inlined SVG is the page's
+
+
+@dataclass(frozen=True)
+class Ink:
+    """A palette role (`--palette-<role>`) and its value in the theme."""
+
+    role: str
+    value: str  # #RRGGBB
+
+    def class_name(self, name: str) -> str:
+        """The class that paints `name` (fill or stroke) in this ink."""
+        return f"{CLASS_PREFIX}{name}-{self.role}"
+
+    def rule(self, name: str) -> str:
+        return f".{self.class_name(name)} {{ {name}: var(--palette-{self.role}, {self.value}); }}"
+
+
+def paint(*, fill: Ink | None = None, stroke: Ink | None = None) -> str:
+    """The attributes of a mark painted in these inks: a class for the page's
+    palette, and the hex for a viewer without it."""
+    painted = [(name, ink) for name, ink in (("fill", fill), ("stroke", stroke)) if ink]
+    classes = " ".join(ink.class_name(name) for name, ink in painted)
+    return f'class="{classes}" ' + " ".join(
+        f'{name}="{ink.value}"' for name, ink in painted
+    )
+
+
+def theme_inks(path: pathlib.Path) -> dict[str, Ink]:
+    """Every `--palette-<role>: #hex` that the theme's CSS sets, by role."""
+    source = re.sub(r"/\*.*?\*/", "", path.read_text(), flags=re.DOTALL)
+    return {
+        role: Ink(role, value.upper())
+        for role, value in re.findall(
+            r"--palette-([\w-]+)\s*:\s*(#[0-9A-Fa-f]{6})\s*;", source
+        )
+    }
+
+
+@dataclass(frozen=True)
+class Inks:
+    """The drawing's four inks (stem/docs/illustrations.md)."""
+
+    line: Ink  # the subject: the ruler
+    second: Ink  # what holds or moves it: the clamp and the hand
+    tick: Ink  # the graduations
+    knockout: Ink  # a pale face
+
+    @classmethod
+    def from_theme(cls, path: pathlib.Path = THEME_CSS) -> Inks:
+        inks = theme_inks(path)
+        roles = ("art-line", "muted", "ink", "art-knockout")
+        missing = [role for role in roles if role not in inks]
+        if missing:
+            raise SystemExit(f"{path} sets no --palette-{', --palette-'.join(missing)}")
+        return cls(*(inks[role] for role in roles))
+
+    def style(self) -> str:
+        """The <style> that paints each mark from the page's palette."""
+        rules = [
+            self.knockout.rule("fill"),
+            self.line.rule("stroke"),
+            self.second.rule("stroke"),
+            self.tick.rule("stroke"),
+        ]
+        return "<style>\n" + "\n".join(rules) + "\n</style>"
+
 
 # First vibration mode of a cantilever: beta * length, and the mode's sigma.
 MODE_BETA_LENGTH = 1.8751040687119611
@@ -295,7 +366,9 @@ HAND = (
 HAND_CREASE = "M30 -22 Q46 -4 34 22"
 
 
-def build(design: RulerDesign = DESIGN, timeline: Timeline = TIMELINE) -> str:
+def build(
+    inks: Inks, design: RulerDesign = DESIGN, timeline: Timeline = TIMELINE
+) -> str:
     turn_frames = timeline.frames(timeline.turn)
     pull_frames = timeline.frames(timeline.pull_and_hold)
     swing_frames = timeline.frames(timeline.period)
@@ -379,8 +452,9 @@ def build(design: RulerDesign = DESIGN, timeline: Timeline = TIMELINE) -> str:
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{design.width}" height="{design.height}" '
             f'viewBox="0 0 {design.width} {design.height}" data-swing-start="{number(timeline.swing_start)}">'
         ),
+        inks.style(),
         "<title>A 12 inch steel ruler, turned edge-on, clamped at one end, pulled down and let go</title>",
-        f'<g id="flexing-ruler-body" fill="{KNOCKOUT}" stroke="{LINE}" stroke-width="3" stroke-linejoin="round">',
+        f'<g id="flexing-ruler-body" {paint(fill=inks.knockout, stroke=inks.line)} stroke-width="3" stroke-linejoin="round">',
         f'<path id="flexing-ruler-edge" d="{strip_frames[0]}">',
         "  " + animate("d", strip_frames, 0, timeline.turn),
         "  " + animate("d", pull_beams, timeline.pull_start, timeline.pull_and_hold),
@@ -391,13 +465,13 @@ def build(design: RulerDesign = DESIGN, timeline: Timeline = TIMELINE) -> str:
         f'<path d="{face_frames[0]}">',
         "  " + animate("d", face_frames, 0, timeline.turn),
         "</path>",
-        f'<path d="{mark_frames[0]}" fill="none" stroke="{TICK}" stroke-opacity="0.6" stroke-width="2">',
+        f'<path d="{mark_frames[0]}" fill="none" {paint(stroke=inks.tick)} stroke-opacity="0.6" stroke-width="2">',
         "  " + animate("d", mark_frames, 0, timeline.turn),
         "</path>",
         f'<set attributeName="display" to="none" begin="{number(timeline.turn)}s" fill="freeze"/>',
         "</g>",
         "</g>",
-        f'<g id="flexing-ruler-clamp" opacity="0" transform="translate({clamp_from})" fill="{KNOCKOUT}" stroke="{SECOND}" stroke-width="3" stroke-linejoin="round">',
+        f'<g id="flexing-ruler-clamp" opacity="0" transform="translate({clamp_from})" {paint(fill=inks.knockout, stroke=inks.second)} stroke-width="3" stroke-linejoin="round">',
         f'<path d="{clamp_top_face}"/>',
         f'<path d="{clamp_side_face}"/>',
         f'<path d="{clamp_front}"/>',
@@ -433,8 +507,8 @@ def build(design: RulerDesign = DESIGN, timeline: Timeline = TIMELINE) -> str:
         transform_animate(
             "rotate", pull_turns, timeline.pull_start, timeline.pull_and_hold
         ),
-        f'<path d="{HAND}" fill="{KNOCKOUT}" stroke="{SECOND}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>',
-        f'<path d="{HAND_CREASE}" fill="none" stroke="{SECOND}" stroke-width="2" stroke-linecap="round"/>',
+        f'<path d="{HAND}" {paint(fill=inks.knockout, stroke=inks.second)} stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>',
+        f'<path d="{HAND_CREASE}" fill="none" {paint(stroke=inks.second)} stroke-width="2" stroke-linecap="round"/>',
         "</g>",
         "</g>",
         "</svg>",
@@ -449,8 +523,9 @@ def timings(text: str) -> list[tuple[str, str]]:
 
 def frame_rate_keeps_timing() -> bool:
     """The sampling density must not change when anything begins or lasts."""
-    return timings(build(timeline=Timeline(frames_per_second=30))) == timings(
-        build(timeline=Timeline(frames_per_second=60))
+    inks = Inks.from_theme()
+    return timings(build(inks, timeline=Timeline(frames_per_second=30))) == timings(
+        build(inks, timeline=Timeline(frames_per_second=60))
     )
 
 
@@ -462,7 +537,7 @@ def main() -> int:
         "--check", action="store_true", help="fail if the file on disk differs"
     )
     arguments = parser.parse_args()
-    text = build()
+    text = build(Inks.from_theme())
     if arguments.check:
         if not frame_rate_keeps_timing():
             print("the frame rate changes a begin or a dur", file=sys.stderr)
