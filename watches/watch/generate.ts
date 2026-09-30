@@ -725,59 +725,36 @@ function lookup<Key, Value>(
   return found;
 }
 
-// ---- the generator -------------------------------------------------------------------------
-export function generate(design: Design = DESIGN): Watch {
-  const { palette, watchCentre } = design;
-  const paint = paintOf(palette);
-  const { knockout, ink: inkFill, frame: frameFill, line, frameLine } = paint;
-  const train = trainOf(design);
-  const { barrel, centre, third, fourth, escape } = train;
+// ---- solids ----------------------------------------------------------------------------
+/** What the functions that make solids share. */
+interface Kit {
+  design: Design;
+  paint: Paint;
+  train: Train;
+  parts: Parts;
+  groups: WatchGroups;
+  solids: SolidList;
+}
 
-  // ---- groups ----
-  const tree = makeGroups(design);
-  const { origins } = tree;
-  const {
-    root,
-    wheels: wheelGroups,
-    balance: balanceGroup,
-    springBase,
-    fork: forkGroup,
-    seconds: secondsGroup,
-    hour: hourGroup,
-    minute: minuteGroup,
-  } = tree.groups;
-  const groupOf = (wheel: Wheel): Group => {
-    const found = wheelGroups.get(wheel);
-    if (!found) throw new Error(`no group for the ${wheel.name} wheel`);
-    return found;
-  };
+/** The solids of the movement, in the drawing's order. */
+class SolidList {
+  readonly solids: Solid[] = [];
+  private readonly counts = new Map<Part, number>();
+  private readonly origins: ReadonlyMap<Group, Point2>;
+  private readonly watchCentre: Point2;
+  private readonly discsOver: ReadonlyMap<Wheel, Disc[]>;
 
-  // ---- parts ----
-  const parts = makeParts(train);
-  const wheelPart = (wheel: Wheel): Part => {
-    const found = parts.wheels.get(wheel);
-    if (!found) throw new Error(`no part for the ${wheel.name} wheel`);
-    return found;
-  };
-  const {
-    balance: balancePart,
-    spring: springPart,
-    jewel: jewelPart,
-    fork: forkPart,
-    seconds: secondsPart,
-    ring: ringPart,
-    hour: hourPart,
-    minute: minutePart,
-    pivot: pivotPart,
-  } = parts;
-  const staffPart = springPart; // the balance staff belongs to the hairspring's part
+  constructor(
+    origins: ReadonlyMap<Group, Point2>,
+    watchCentre: Point2,
+    discsOver: ReadonlyMap<Wheel, Disc[]>,
+  ) {
+    this.origins = origins;
+    this.watchCentre = watchCentre;
+    this.discsOver = discsOver;
+  }
 
-  const discsOver = clipDiscs(design);
-
-  // ---- the solids of the movement, in the drawing's order ----
-  const solids: Solid[] = [];
-  const countOf = new Map<Part, number>();
-  const solid = (
+  add(
     owner: Part,
     role: Role,
     group: Group,
@@ -786,14 +763,15 @@ export function generate(design: Design = DESIGN): Watch {
     extra: Partial<
       Pick<Solid, "pivot" | "reach" | "ribbon" | "inDrawing">
     > = {},
-  ): Solid => {
-    const origin = origins.get(group) ?? [0, 0];
+  ): Solid {
+    const { watchCentre } = this;
+    const origin = this.origins.get(group) ?? [0, 0];
     const pivot = extra.pivot ?? [
       watchCentre[0] + origin[0],
       watchCentre[1] + origin[1],
     ];
-    const number = (countOf.get(owner) ?? 0) + 1;
-    countOf.set(owner, number);
+    const number = (this.counts.get(owner) ?? 0) + 1;
+    this.counts.set(owner, number);
     const made: Solid = {
       part: owner,
       role,
@@ -811,30 +789,42 @@ export function generate(design: Design = DESIGN): Watch {
             : [0, 0],
         ),
       ribbon: extra.ribbon ?? false,
-      discs: owner.wheel ? (discsOver.get(owner.wheel) ?? []) : [],
+      discs: owner.wheel ? (this.discsOver.get(owner.wheel) ?? []) : [],
       inDrawing: extra.inDrawing ?? true,
     };
-    solids.push(made);
+    this.solids.push(made);
     return made;
-  };
+  }
+}
 
-  // The train, back to front: escape wheel, fourth, third, centre, barrel.
+/** The train's wheels but the barrel, back to front: escape wheel, fourth,
+ *  third, centre. */
+function trainSolids(kit: Kit): void {
+  const { design, paint, train, parts, groups, solids } = kit;
+  const { knockout, line } = paint;
+  const { centre, third, fourth, escape } = train;
   interface Drawing {
     rim: number;
     hub: number;
     spokeWidth: number;
   }
-  const drawings = new Map<Wheel, Drawing>([
+  const drawings: [Wheel, Drawing][] = [
     [escape, { rim: 5, hub: 8, spokeWidth: 5 }],
     [fourth, { rim: 5, hub: 8, spokeWidth: 6 }],
     [third, { rim: 6, hub: 12, spokeWidth: 6 }],
     [centre, { rim: 6, hub: 14, spokeWidth: 7 }],
-  ]);
-  for (const wheel of [escape, fourth, third, centre]) {
-    const owner = wheelPart(wheel);
-    const group = groupOf(wheel);
-    const drawing = drawings.get(wheel);
-    if (!drawing) throw new Error("no drawing for the wheel");
+  ];
+  for (const [wheel, drawing] of drawings) {
+    const owner = lookup(
+      parts.wheels,
+      wheel,
+      `part for the ${wheel.name} wheel`,
+    );
+    const group = lookup(
+      groups.wheels,
+      wheel,
+      `group for the ${wheel.name} wheel`,
+    );
     const outline =
       wheel === escape
         ? escapeOutline(
@@ -862,8 +852,8 @@ export function generate(design: Design = DESIGN): Watch {
       [outline, line(fine ? 2 : 2.5)],
       ...(gaps ? ([[gaps, line(2)]] as [Path, LineStyle][]) : []),
     );
-    solid(owner, "body", group, bodyRings, knockout);
-    solid(
+    solids.add(owner, "body", group, bodyRings, knockout);
+    solids.add(
       owner,
       "circle",
       group,
@@ -873,7 +863,7 @@ export function generate(design: Design = DESIGN): Watch {
     if (wheel.pinionRadius === null || wheel.pinionPhase === null) {
       throw new Error(`the ${wheel.name} wheel has no pinion`);
     }
-    solid(
+    solids.add(
       owner,
       "other",
       group,
@@ -883,7 +873,7 @@ export function generate(design: Design = DESIGN): Watch {
       ]),
       knockout,
     );
-    solid(
+    solids.add(
       owner,
       "circle",
       group,
@@ -891,41 +881,60 @@ export function generate(design: Design = DESIGN): Watch {
       knockout,
     );
   }
-  // the barrel, in front: its lid is cut away to show the mainspring
-  {
-    const owner = wheelPart(barrel);
-    const group = groupOf(barrel);
-    const lid = barrel.pitchRadius - 12;
-    solid(
-      owner,
-      "body",
-      group,
-      ringsOf(
-        [gear(barrel.teeth, barrel.pitchRadius, barrel.toothPhase), line(2.5)],
-        [disc(lid), line(2)],
-      ),
-      knockout,
-    );
-    solid(
-      owner,
-      "stroke",
-      group,
-      ringsOf([
-        spiralCurve(19, barrel.pitchRadius - 16, 300, 300 + 360 * 3.5, 14),
-        line(2),
-      ]),
-      knockout,
-      { ribbon: true },
-    );
-    solid(owner, "circle", group, ringsOf([disc(15), line(3)]), knockout);
-  }
+}
 
-  // the balance and its hairspring
-  const { balance: balanceDesign, fork: forkDesign } = design;
+/** The barrel, in front: its lid is cut away to show the mainspring. */
+function barrelSolids(kit: Kit): void {
+  const { paint, train, parts, groups, solids } = kit;
+  const { knockout, line } = paint;
+  const { barrel } = train;
+  const owner = lookup(parts.wheels, barrel, "barrel part");
+  const group = lookup(groups.wheels, barrel, "barrel group");
+  const lid = barrel.pitchRadius - 12;
+  solids.add(
+    owner,
+    "body",
+    group,
+    ringsOf(
+      [gear(barrel.teeth, barrel.pitchRadius, barrel.toothPhase), line(2.5)],
+      [disc(lid), line(2)],
+    ),
+    knockout,
+  );
+  solids.add(
+    owner,
+    "stroke",
+    group,
+    ringsOf([
+      spiralCurve(19, barrel.pitchRadius - 16, 300, 300 + 360 * 3.5, 14),
+      line(2),
+    ]),
+    knockout,
+    { ribbon: true },
+  );
+  solids.add(owner, "circle", group, ringsOf([disc(15), line(3)]), knockout);
+}
+
+interface BalanceSolids {
+  /** The hairspring's coil. */
+  spring: Solid;
+  collet: Solid;
+  /** The coil's points at rest. */
+  restSpring: Point2[];
+  springShape: Spring;
+}
+
+/** The balance, its hairspring and collet, and the impulse jewel. */
+function balanceSolids(kit: Kit): BalanceSolids {
+  const { design, paint, parts, groups, solids } = kit;
+  const { knockout, ink: inkFill, line } = paint;
+  const { balance: balancePart, spring: springPart, jewel: jewelPart } = parts;
+  const { balance: balanceGroup, springBase } = groups;
+  const balanceDesign = design.balance;
   const radius = balanceDesign.radius;
   // the rim, the three arms and the hub are one piece, with no line where
   // they meet: the rim has no marks, so only the arms show that it turns
-  solid(
+  solids.add(
     balancePart,
     "body",
     balanceGroup,
@@ -957,7 +966,7 @@ export function generate(design: Design = DESIGN): Watch {
       Math.cos((2 * Math.PI * index) / (SPRING_FRAMES - 1)),
   );
   const restSpring = springPoints(springShape, at(swingSamples, 0));
-  const springSolid = solid(
+  const springSolid = solids.add(
     springPart,
     "stroke",
     springBase,
@@ -979,7 +988,7 @@ export function generate(design: Design = DESIGN): Watch {
 
   // the collet, which the drawing lacks: the spring's inner end is fixed to
   // it, and it turns with the balance
-  const collet = solid(
+  const collet = solids.add(
     springPart,
     "circle",
     balanceGroup,
@@ -993,16 +1002,24 @@ export function generate(design: Design = DESIGN): Watch {
     balanceDesign.impulsePinRadius,
     balanceDesign.pinDirection,
   );
-  solid(
+  solids.add(
     jewelPart,
     "body",
     balanceGroup,
     ringsOf([circlePath(jewelCentre[0], jewelCentre[1], 6), null]),
     inkFill,
   );
+  return { spring: springSolid, collet, restSpring, springShape };
+}
 
-  // the pallet fork
-  solid(
+/** The pallet fork. */
+function forkSolids(kit: Kit): void {
+  const { design, paint, parts, groups, solids } = kit;
+  const { knockout, line } = paint;
+  const { fork: forkPart } = parts;
+  const { fork: forkGroup } = groups;
+  const forkDesign = design.fork;
+  solids.add(
     forkPart,
     "body",
     forkGroup,
@@ -1014,16 +1031,35 @@ export function generate(design: Design = DESIGN): Watch {
     ],
     knockout,
   );
-  solid(
+  solids.add(
     forkPart,
     "circle",
     forkGroup,
     ringsOf([circlePath(0, 0, 4), line(2)]),
     knockout,
   );
+}
 
+/** The seconds hand, the chapter ring, the hands (at 2:35) and their pivot.
+ *  Returns the chapter ring. */
+function dialSolids(kit: Kit): Solid {
+  const { design, paint, parts, groups, solids } = kit;
+  const { knockout, ink: inkFill, frame: frameFill, frameLine, line } = paint;
+  const {
+    root,
+    seconds: secondsGroup,
+    hour: hourGroup,
+    minute: minuteGroup,
+  } = groups;
+  const {
+    seconds: secondsPart,
+    ring: ringPart,
+    hour: hourPart,
+    minute: minutePart,
+    pivot: pivotPart,
+  } = parts;
   // the seconds hand, on the fourth wheel's arbor
-  solid(
+  solids.add(
     secondsPart,
     "body",
     secondsGroup,
@@ -1040,7 +1076,7 @@ export function generate(design: Design = DESIGN): Watch {
     ]),
     frameFill,
   );
-  solid(
+  solids.add(
     secondsPart,
     "circle",
     secondsGroup,
@@ -1050,7 +1086,7 @@ export function generate(design: Design = DESIGN): Watch {
 
   // the chapter ring: what is left of the dial
   const { bezelRadius, ringRadius } = design.case;
-  const ringSolid = solid(
+  const ringSolid = solids.add(
     ringPart,
     "body",
     root,
@@ -1063,7 +1099,7 @@ export function generate(design: Design = DESIGN): Watch {
 
   // the hands, at 2:35
   const hourTurn = (design.hands.hour + design.hands.minute / 60) * 30;
-  solid(
+  solids.add(
     hourPart,
     "body",
     hourGroup,
@@ -1083,7 +1119,7 @@ export function generate(design: Design = DESIGN): Watch {
     ]),
     frameFill,
   );
-  solid(
+  solids.add(
     minutePart,
     "body",
     minuteGroup,
@@ -1103,17 +1139,26 @@ export function generate(design: Design = DESIGN): Watch {
     ]),
     frameFill,
   );
-  solid(
+  solids.add(
     pivotPart,
     "body",
     root,
     ringsOf([circlePath(0, 0, 3.5), line(2)]),
     knockout,
   );
+  return ringSolid;
+}
 
-  // the balance staff, which the drawing lacks: it rises through the spring's
-  // inner coil
-  const staff = solid(
+/** The balance staff, which the drawing lacks: it rises through the spring's
+ *  inner coil. It must come last: the heights place it after the others. */
+function staffSolid(kit: Kit): Solid {
+  const { design, paint, parts, groups, solids } = kit;
+  const { knockout, line } = paint;
+  const { watchCentre } = design;
+  const balanceDesign = design.balance;
+  const staffPart = parts.spring; // the balance staff belongs to the hairspring's part
+  const { root } = groups;
+  return solids.add(
     staffPart,
     "body",
     root,
@@ -1130,6 +1175,41 @@ export function generate(design: Design = DESIGN): Watch {
       reach: STAFF_RADIUS,
     },
   );
+}
+
+// ---- the generator -------------------------------------------------------------------------
+export function generate(design: Design = DESIGN): Watch {
+  const { palette, watchCentre } = design;
+  const paint = paintOf(palette);
+  const train = trainOf(design);
+  const tree = makeGroups(design);
+  const { root } = tree.groups;
+  const parts = makeParts(train);
+  const partOf = (wheel: Wheel): Part =>
+    lookup(parts.wheels, wheel, `part for the ${wheel.name} wheel`);
+
+  // ---- the solids of the movement, in the drawing's order ----
+  const list = new SolidList(tree.origins, watchCentre, clipDiscs(design));
+  const kit: Kit = {
+    design,
+    paint,
+    train,
+    parts,
+    groups: tree.groups,
+    solids: list,
+  };
+  trainSolids(kit);
+  barrelSolids(kit);
+  const {
+    spring: springSolid,
+    collet,
+    restSpring,
+    springShape,
+  } = balanceSolids(kit);
+  forkSolids(kit);
+  const ringSolid = dialSolids(kit);
+  const staff = staffSolid(kit);
+  const solids = list.solids;
 
   // ---- heights ----
   const heights = assignHeights(solids, {
@@ -1137,18 +1217,18 @@ export function generate(design: Design = DESIGN): Watch {
     staff,
     ringSolid,
     partsOf: {
-      escape: wheelPart(escape),
-      fourth: wheelPart(fourth),
-      centre: wheelPart(centre),
-      balance: balancePart,
-      spring: springPart,
-      jewel: jewelPart,
-      fork: forkPart,
-      seconds: secondsPart,
-      ring: ringPart,
-      hour: hourPart,
-      minute: minutePart,
-      pivot: pivotPart,
+      escape: partOf(train.escape),
+      fourth: partOf(train.fourth),
+      centre: partOf(train.centre),
+      balance: parts.balance,
+      spring: parts.spring,
+      jewel: parts.jewel,
+      fork: parts.fork,
+      seconds: parts.seconds,
+      ring: parts.ring,
+      hour: parts.hour,
+      minute: parts.minute,
+      pivot: parts.pivot,
     },
   });
   const heightOf = (which: Solid): Heights => {
@@ -1176,7 +1256,7 @@ export function generate(design: Design = DESIGN): Watch {
 
   const stud = studMesh(
     restSpring,
-    balanceDesign.arbor,
+    design.balance.arbor,
     springHeights,
     paint,
     root,
@@ -1191,7 +1271,9 @@ export function generate(design: Design = DESIGN): Watch {
   const highest = Math.max(ringTop, stud.top, allHeights.top);
   const balanceSpan = heightRange(
     solids
-      .filter((each) => each.part === balancePart || each.part === springPart)
+      .filter(
+        (each) => each.part === parts.balance || each.part === parts.spring,
+      )
       .map(heightOf),
   );
   const subject: Subject = {
