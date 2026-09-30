@@ -8,13 +8,17 @@
 The 3D art follows the grammar of `artcheck.py` (docs/illustrations.md), but a
 scene has no SVG to read: its colours, widths and opacities are data. This
 checks them, on the scene that `pnpm art:scene` writes (a talk's
-`watch/dump.ts`: a list of meshes, each with its fill and its line styles):
+`watch/dump.ts`: a list of meshes, each with its fill and its line styles).
+The scene holds no colours. Each fill and line has an ink, and the dump says
+which theme variable (`--palette-ink`, ...) gives each ink its colour, so the
+check holds for any theme:
 
-  * every fill colour and every line colour is one of the four art colours;
+  * every fill and every line is in one of the four art inks: an ink whose
+    variable is one of the four art roles (`lib.ART_ROLES`);
   * every line width is on the stroke ladder (2, 2.5, 3 and 4 CSS px, within
     5%): line widths in a scene are CSS px on the screen, at every zoom;
   * opacities follow the docs: a line is solid, except a line of the detail
-    colour, which is at 0.5; a fill is the subject (0.60-1.0) or a wash
+    ink, which is at 0.5; a fill is the subject (0.60-1.0) or a wash
     (0.07-0.18), and nothing between.
 
 Stdlib only, with `lib.py`. It exits non-zero on a failure.
@@ -39,22 +43,36 @@ class Finding:
     what: str
 
 
-def colour_finding(mesh: str, role: str, text: str) -> Finding | None:
-    try:
-        colour = lib.Colour.from_hex(text)
-    except ValueError:
-        return Finding(mesh, f"{role} colour {text!r} is not a hex colour")
-    if colour not in lib.ART_INK:
+@dataclass(frozen=True)
+class Ink:
+    """An ink of the scene, and the role of the theme variable that colours it."""
+
+    name: str
+    role: str
+
+
+def read_inks(scene: dict[str, object]) -> list[Ink]:
+    """The scene's inks, in the order that the meshes refer to them by index."""
+    inks = scene["inks"]
+    assert isinstance(inks, list)
+    return [
+        Ink(str(ink["name"]), str(ink["variable"]).removeprefix(lib.PALETTE_PREFIX))
+        for ink in inks
+    ]
+
+
+def ink_finding(mesh: str, kind: str, ink: Ink) -> Finding | None:
+    if ink.role not in lib.ART_ROLES:
         return Finding(
             mesh,
-            f"{role} colour {colour} is not in the drawing palette "
-            f"({', '.join(str(ink) for ink in sorted(lib.ART_INK))})",
+            f"{kind} ink {ink.name} is the theme's {lib.PALETTE_PREFIX}{ink.role}, "
+            f"which is not an art colour ({', '.join(lib.ART_ROLES)})",
         )
     return None
 
 
-def fill_findings(mesh: str, fill: dict[str, object]) -> list[Finding]:
-    found = [colour_finding(mesh, "fill", str(fill["hex"]))]
+def fill_findings(mesh: str, fill: dict[str, object], inks: list[Ink]) -> list[Finding]:
+    found = [ink_finding(mesh, "fill", inks[int(str(fill["ink"]))])]
     opacity = float(str(fill["opacity"]))
     low, high = lib.WASH_OPACITY
     is_wash = low - OPACITY_TOLERANCE <= opacity <= high + OPACITY_TOLERANCE
@@ -70,8 +88,11 @@ def fill_findings(mesh: str, fill: dict[str, object]) -> list[Finding]:
     return [finding for finding in found if finding]
 
 
-def style_findings(mesh: str, style: dict[str, object]) -> list[Finding]:
-    found = [colour_finding(mesh, "line", str(style["colour"]))]
+def style_findings(
+    mesh: str, style: dict[str, object], inks: list[Ink]
+) -> list[Finding]:
+    ink = inks[int(str(style["ink"]))]
+    found = [ink_finding(mesh, "line", ink)]
     width = float(str(style["width"]))
     if not any(
         abs(width / step - 1) <= lib.LADDER_TOLERANCE for step in lib.STROKE_LADDER
@@ -84,17 +105,14 @@ def style_findings(mesh: str, style: dict[str, object]) -> list[Finding]:
             )
         )
     opacity = float(str(style["opacity"]))
-    try:
-        detail = lib.Colour.from_hex(str(style["colour"])) == lib.LEDGER["ink"]
-    except ValueError:
-        detail = False
+    detail = ink.role == lib.DETAIL_ROLE
     wanted = lib.DETAIL_LINE_OPACITY if detail else 1.0
     if abs(opacity - wanted) > OPACITY_TOLERANCE:
         found.append(
             Finding(
                 mesh,
                 f"line opacity {opacity:g} should be {wanted:g} "
-                f"({'detail colour' if detail else 'a solid line'})",
+                f"({'detail ink' if detail else 'a solid line'})",
             )
         )
     return [finding for finding in found if finding]
@@ -104,13 +122,14 @@ def check(scene: dict[str, object]) -> tuple[int, list[Finding]]:
     """The number of meshes, and everything wrong with them."""
     meshes = scene["meshes"]
     assert isinstance(meshes, list)
+    inks = read_inks(scene)
     findings: list[Finding] = []
     for mesh in meshes:
         name = str(mesh["name"])
         if mesh["fill"] is not None:
-            findings += fill_findings(name, mesh["fill"])
+            findings += fill_findings(name, mesh["fill"], inks)
         for style in mesh["lineStyles"]:
-            findings += style_findings(name, style)
+            findings += style_findings(name, style, inks)
     seen: set[tuple[str, str]] = set()
     unique = []
     for finding in findings:  # the same fault in several meshes is one line each
@@ -151,7 +170,7 @@ def main() -> int:
             print(f"FAIL  {finding.mesh}: {finding.what}")
         print(
             f"{count} mesh(es), {len(findings)} finding(s). Grammar: strokes "
-            f"{lib.STROKE_LADDER} CSS px, four colours, washes "
+            f"{lib.STROKE_LADDER} CSS px, four inks, washes "
             f"{lib.WASH_OPACITY[0]:g}-{lib.WASH_OPACITY[1]:g}."
         )
     return 1 if findings else 0

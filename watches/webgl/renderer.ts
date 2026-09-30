@@ -44,8 +44,23 @@
 // them all. After a context loss, it makes them again from the scene and the
 // last geometry of each dynamic mesh.
 
-import type { Frame, Mesh, MeshGeometry, Scene, View, Vec3 } from "./scene.ts";
-import { checkGeometry, checkScene, hexRgb } from "./scene.ts";
+import type {
+  Frame,
+  Ink,
+  Mesh,
+  MeshGeometry,
+  Palette,
+  Scene,
+  View,
+  Vec3,
+} from "./scene.ts";
+import {
+  INKS,
+  checkGeometry,
+  checkPalette,
+  checkScene,
+  hexRgb,
+} from "./scene.ts";
 import { at, check, checkFinite } from "./checked.ts";
 import { IDENTITY, checkAffine, normalMatrix } from "./math.ts";
 import type { Matrix4 } from "./math.ts";
@@ -250,6 +265,18 @@ function hexColour(hex: string, alpha = 1): Rgba {
   return [red, green, blue, alpha];
 }
 
+/** The colour of each ink, as the renderer resolved it when it started. */
+type InkColours = ReadonlyMap<Ink, Rgba>;
+
+function inkColour(inks: InkColours, ink: Ink): Rgba {
+  const colour = inks.get(ink);
+  check(
+    colour !== undefined,
+    `the palette has no colour for the ink ${ink.name}`,
+  );
+  return colour;
+}
+
 // ---- the camera --------------------------------------------------------------------
 export interface Camera {
   matrix: Float32Array;
@@ -364,11 +391,12 @@ function appendInstance(values: number[], instance: Instance): void {
   }
 }
 
-function lineInstances(geometry: MeshGeometry): Float32Array {
+function lineInstances(geometry: MeshGeometry, inks: InkColours): Float32Array {
   const values: number[] = [];
   const none = [0, 0, 0];
   for (const line of geometry.lines) {
-    const { colour, opacity, width } = line.style;
+    const { ink, opacity, width } = line.style;
+    const [red, green, blue] = inkColour(inks, ink);
     const count = line.points.length;
     for (let index = 0; index < (line.closed ? count : count - 1); index++) {
       appendInstance(values, {
@@ -377,20 +405,21 @@ function lineInstances(geometry: MeshGeometry): Float32Array {
         normalBefore: none,
         normalAfter: none,
         kind: [0],
-        colour: hexColour(colour, opacity),
+        colour: [red, green, blue, opacity],
         width: [width],
       });
     }
   }
   for (const edge of geometry.silhouetteEdges) {
-    const { colour, opacity, width } = edge.style;
+    const { ink, opacity, width } = edge.style;
+    const [red, green, blue] = inkColour(inks, ink);
     appendInstance(values, {
       start: edge.start,
       end: edge.end,
       normalBefore: edge.normalBefore,
       normalAfter: edge.normalAfter,
       kind: [1],
-      colour: hexColour(colour, opacity),
+      colour: [red, green, blue, opacity],
       width: [width],
     });
   }
@@ -414,6 +443,9 @@ export class Renderer {
   contextsLost = 0;
   private readonly gl: WebGL2RenderingContext;
   private readonly paper: Rgba;
+  /** Each ink of the scene, resolved once: a change to the palette that the
+   *  caller gave does not reach this renderer. */
+  private readonly inks: InkColours;
   /** In the order of their lines. */
   private readonly drawn: DrawnMesh[];
   /** The geometry that each mesh has now: its own, or the last that
@@ -424,11 +456,13 @@ export class Renderer {
   private resources: Resources | null = null;
   private disposed = false;
 
-  /** Checks the scene, and takes the canvas's WebGL2 context. The canvas
-   *  must not have another renderer until that one's `dispose()`. */
+  /** Checks the scene and its palette, and takes the canvas's WebGL2
+   *  context. The canvas must not have another renderer until that one's
+   *  `dispose()`. The palette is read here, once. */
   constructor(
     canvas: HTMLCanvasElement,
     scene: Scene,
+    palette: Palette,
     options: RendererOptions = {},
   ) {
     check(
@@ -436,6 +470,7 @@ export class Renderer {
       "another renderer draws on this canvas: dispose it first",
     );
     checkScene(scene);
+    checkPalette(palette);
     for (const mesh of scene.meshes) {
       check(
         mesh.hiddenInside.length <= MAX_DISCS,
@@ -444,7 +479,10 @@ export class Renderer {
     }
     this.canvas = canvas;
     this.scene = scene;
-    this.paper = hexColour(scene.paper);
+    this.paper = hexColour(palette.paper);
+    this.inks = new Map(
+      Object.values(INKS).map((ink) => [ink, hexColour(palette[ink.name])]),
+    );
     // Lines are drawn in increasing lineOrder, then in scene order.
     this.drawn = [...scene.meshes]
       .sort((first, second) => first.lineOrder - second.lineOrder)
@@ -697,7 +735,7 @@ export class Renderer {
   /** A palette colour over the paper: `opacity x colour + (1 - opacity) x paper`. */
   private fillColour(mesh: Mesh): Rgba | null {
     if (mesh.fill === null) return null;
-    const [red, green, blue] = hexRgb(mesh.fill.hex);
+    const [red, green, blue] = inkColour(this.inks, mesh.fill.ink);
     const opacity = mesh.fill.opacity;
     const mixed = (own: number, paper: number): number =>
       opacity * own + (1 - opacity) * paper;
@@ -765,7 +803,7 @@ export class Renderer {
   ): void {
     const gl = this.gl;
     const usage = mesh.dynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
-    const lines = lineInstances(geometry);
+    const lines = lineInstances(geometry, this.inks);
     gl.bindBuffer(gl.ARRAY_BUFFER, made.triangles);
     gl.bufferData(gl.ARRAY_BUFFER, geometry.triangles, usage);
     gl.bindBuffer(gl.ARRAY_BUFFER, made.lines);

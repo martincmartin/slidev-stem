@@ -11,9 +11,10 @@ import {
 } from "./mesh.ts";
 import { at } from "./checked.ts";
 import type { MeshInfo, Point2, Ring } from "./mesh.ts";
+import { INKS } from "./scene.ts";
 import type { LineStyle, Vec3 } from "./scene.ts";
 
-const STYLE: LineStyle = { colour: "#143C6B", opacity: 1, width: 2 };
+const STYLE: LineStyle = { ink: INKS.line, opacity: 1, width: 2 };
 const INFO: MeshInfo = { name: "test", part: "test", group: null, fill: null };
 
 function square(centreX: number, centreY: number, half: number): Point2[] {

@@ -13,9 +13,8 @@ After every change, run the validator. It type-checks the art scripts, checks
 the layout and writes the JSON:
     uv run art/validate_watch_design.py         # in watches/
 
-Stdlib only. The colours come from the talk's theme: the `theme:` line of
-slides.md names it, and themes/<name>/styles/<name>.css sets the --palette-*
-variables.
+Stdlib only. The design has no colours: the watch's inks get their colours
+from the theme, in the browser (watch/palette.ts).
 
 The escapement moves in slow motion, at a beat a second, tick and tock (a
 real watch beats six times a second); the hands keep real time. Why the
@@ -29,7 +28,6 @@ import argparse
 import json
 import math
 import pathlib
-import re
 from dataclasses import dataclass, field
 
 Point = tuple[float, float]  # x, y in CSS px; y points down
@@ -38,30 +36,6 @@ WIDTH, HEIGHT = 980, 552  # the slide canvas, in CSS px
 TALK = pathlib.Path(__file__).resolve().parents[1]  # watches/
 ORIGIN: Point = (0.0, 0.0)  # a part is drawn about its own origin, then moved
 
-
-def theme_palette(talk: pathlib.Path = TALK) -> dict[str, str]:
-    """The --palette-* variables of the talk's theme, as {role: "#RRGGBB"}.
-    The theme is the `theme:` line in the headmatter of the talk's slides.md."""
-    slides = talk / "slides.md"
-    headmatter = re.match(r"---\n(.*?)\n---", slides.read_text(), re.DOTALL)
-    theme = (
-        re.search(r"(?m)^theme:\s*(\S+)", headmatter.group(1)) if headmatter else None
-    )
-    if theme is None:
-        raise SystemExit(f"no `theme:` line in the headmatter of {slides}")
-    name = theme.group(1)
-    css = (talk.parent / "themes" / name / "styles" / f"{name}.css").read_text()
-    return {
-        role: value.strip().upper()
-        for role, value in re.findall(r"--palette-([\w-]+)\s*:\s*([^;]+);", css)
-    }
-
-
-PALETTE = theme_palette()
-LINE = PALETTE["art-line"]  # the movement and the hands' outlines
-FRAME = PALETTE["muted"]  # the case, lugs, strap; the hands' faces
-DETAIL = PALETTE["ink"]  # the minute ticks, at half opacity
-KNOCKOUT = PALETTE["art-knockout"]  # lit faces: wheels, chapter ring, fork
 
 # ---- timing -------------------------------------------------------------------
 PERIOD = 2.0  # s, one full swing of the balance: two beats, a tick and a tock
@@ -492,13 +466,6 @@ def design(layout: Layout = LAYOUT) -> dict[str, object]:
         "format": 1,
         "canvas": {"width": WIDTH, "height": HEIGHT},
         "watchCentre": list(WATCH_CENTRE),
-        "palette": {
-            "line": LINE,
-            "frame": FRAME,
-            "detail": DETAIL,
-            "knockout": KNOCKOUT,
-            "background": PALETTE["background"],
-        },
         "timing": {
             "period": PERIOD,
             "amplitude": AMPLITUDE,

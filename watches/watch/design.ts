@@ -5,14 +5,6 @@
 import type { Point2 } from "../webgl/mesh.ts";
 import designFile from "./design.json" with { type: "json" };
 
-export interface Palette {
-  readonly line: string;
-  readonly frame: string;
-  readonly detail: string;
-  readonly knockout: string;
-  readonly background: string;
-}
-
 export interface Timing {
   /** s: one swing of the balance. */
   readonly period: number;
@@ -72,7 +64,6 @@ export interface ForkDesign {
 export interface Design {
   readonly canvas: { readonly width: number; readonly height: number };
   readonly watchCentre: Point2;
-  readonly palette: Palette;
   readonly timing: Timing;
   /** In train order: barrel, centre, third, fourth, escape. */
   readonly wheels: readonly Wheel[];
@@ -227,7 +218,6 @@ export function readDesign(json: Json): Design {
   const root = record(json, "the file");
   if (num(root, "format", "the file") !== 1) return fail("format", "1");
   const canvas = record(field(root, "canvas", "the file"), "canvas");
-  const palette = record(field(root, "palette", "the file"), "palette");
   const timing = record(field(root, "timing", "the file"), "timing");
   const balance = record(field(root, "balance", "the file"), "balance");
   const fork = record(field(root, "fork", "the file"), "fork");
@@ -285,13 +275,6 @@ export function readDesign(json: Json): Design {
       height: num(canvas, "height", "canvas"),
     },
     watchCentre: point(field(root, "watchCentre", "the file"), "watchCentre"),
-    palette: {
-      line: text(palette, "line", "palette"),
-      frame: text(palette, "frame", "palette"),
-      detail: text(palette, "detail", "palette"),
-      knockout: text(palette, "knockout", "palette"),
-      background: text(palette, "background", "palette"),
-    },
     timing: readTiming(timing),
     wheels,
     escapeSolid: flag(root, "escapeSolid", "the file"),

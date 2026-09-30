@@ -220,18 +220,18 @@ ASPECT_TOLERANCE = 0.01  # width:height vs the viewBox's, so nothing is squashed
 # Every colour a Line-weighted drawing is allowed to use, and its job. The
 # values come from the theme: two are the drawings' own variables, two are
 # palette colours.
-ART_INK = {
-    LEDGER["art-line"]: (
+ART_ROLES = {
+    "art-line": (
         "primary line work: the subject's own structure. Also as a 0.07-0.08 fill."
     ),
-    LEDGER["muted"]: (
-        "secondary structure: the stand, the frame, the thing holding it up."
-    ),
-    LEDGER["ink"]: "tertiary detail: tick marks, smoke. Usually at 0.5 stroke-opacity.",
-    LEDGER["art-knockout"]: (
+    "muted": ("secondary structure: the stand, the frame, the thing holding it up."),
+    "ink": "tertiary detail: tick marks, smoke. Usually at 0.5 stroke-opacity.",
+    "art-knockout": (
         "knockout: a pale face that has to read as lit, not as empty paper."
     ),
 }
+ART_INK = {LEDGER[role]: job for role, job in ART_ROLES.items()}
+DETAIL_ROLE = "ink"  # the role whose lines are at DETAIL_LINE_OPACITY
 ART_FIELD = LEDGER["panel"]  # illustrations sit on a card, not on the slide
 
 # Opacities, from docs/illustrations.md. The subject is drawn at 0.60-1.0; what

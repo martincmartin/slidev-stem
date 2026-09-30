@@ -3,6 +3,7 @@
 // all (webgl/stills.ts).
 
 import { Stills } from "../webgl/stills.ts";
+import type { Palette } from "../webgl/scene.ts";
 import type { Watch } from "./generate.ts";
 import { BalanceClock, Motion } from "./model.ts";
 import { stageState } from "./state.ts";
@@ -16,10 +17,10 @@ export class WatchStills {
   private readonly motion: Motion;
   private readonly stills: Stills;
 
-  constructor(watch: Watch) {
+  constructor(watch: Watch, palette: Palette) {
     this.watch = watch;
     this.motion = new Motion(watch);
-    this.stills = new Stills(watch.scene);
+    this.stills = new Stills(watch.scene, palette);
   }
 
   /** Free the renderer and revoke the stills' URLs. */

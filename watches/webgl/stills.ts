@@ -6,10 +6,11 @@
 
 import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
-import type { Scene } from "./scene.ts";
+import type { Palette, Scene } from "./scene.ts";
 
 export class Stills {
   readonly scene: Scene;
+  readonly palette: Palette;
   /** Made at the first still. */
   private renderer: Renderer | null = null;
   private readonly pictures = new Map<string, Promise<string>>();
@@ -17,8 +18,9 @@ export class Stills {
   private readonly urls = new Set<string>();
   private disposed = false;
 
-  constructor(scene: Scene) {
+  constructor(scene: Scene, palette: Palette) {
     this.scene = scene;
+    this.palette = palette;
   }
 
   /** A picture as an object URL. `key` says what the picture is: the same key
@@ -30,6 +32,7 @@ export class Stills {
     this.renderer ??= new Renderer(
       document.createElement("canvas"),
       this.scene,
+      this.palette,
     );
     const renderer = this.renderer;
     draw(renderer);

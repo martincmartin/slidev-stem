@@ -31,12 +31,13 @@ The files, in `watches/`:
 
 | Path                                                     | What it holds                                                                                                                                                         |
 | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `webgl/scene.ts`                                         | the types of a scene: meshes, lines, silhouette edges, clip discs, groups, views, subjects; `checkScene`, the contract                                                |
+| `webgl/scene.ts`                                         | the types of a scene: `INKS`, meshes, lines, silhouette edges, clip discs, groups, views, subjects, the palette; `checkScene`, `checkPalette`, the contract           |
 | `webgl/renderer.ts`, `mesh.ts`, `stage.ts`, `stills.ts`  | the renderer; extrusions, ribbons and their triangles (earcut); the stage that runs the camera, fade and tilt one at a time; the stills                               |
 | `webgl/math.ts`, `checked.ts`                            | matrices; `at` and `check`, for what is a bug if it is false                                                                                                          |
 | `webgl/probe/`                                           | a page with one canvas and `window.watchProbe.render(options)`, for the pixel and fade checks; `checks.ts`: `window.webglChecks()`, the renderer's browser checks     |
 | `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand                                                                                                                  |
 | `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights and views                                                                                                    |
+| `watch/palette.ts`                                       | which theme variable colours each ink; `themePalette()` reads them from the page                                                                                      |
 | `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism and the balance's settle; frontmatter to state; the watch's stills; the shared instance                                                                 |
 | `global-bottom.vue`, `slide-bottom.vue`                  | the live canvas; the still on each printed page                                                                                                                       |
 | `types/`                                                 | two small `.d.ts` files, mapped by `tsconfig.json` `paths` to `@slidev/client`. `vue-tsc` would otherwise check Slidev's own source, which fails our strict settings. |
@@ -85,9 +86,33 @@ The 3D art follows the same grammar as the SVG art
 ([illustrations.md](illustrations.md)), with these additions.
 
 - **Colours:** the four art colours, and only those, for lines and fills. A
-  wash (the case, the strap) is a palette colour at an opacity over the paper;
-  the renderer blends it into an opaque fill. `tools/scenecheck.py` checks the
+  wash (the case, the strap) is an ink at an opacity over the paper; the
+  renderer blends it into an opaque fill. `tools/scenecheck.py` checks the
   scene.
+- **A scene holds inks, not colours.** An `Ink` is one of the four objects in
+  `INKS` (`webgl/scene.ts`: `line`, `frame`, `detail`, `knockout`, the house's
+  art colours) that fills and line styles point to. `new Renderer(canvas,
+scene, palette)` takes a `Palette` (the paper, and one `#rrggbb` for each
+  ink) and turns the inks into colours once, when it starts. The type
+  `InkName` is the one list of the inks: `Palette` is a `Record` over it, so a
+  palette that lacks an ink does not compile, and `checkScene` rejects an ink
+  that is not in `INKS`. The page reads the palette from the theme's
+  `--palette-*` variables when it loads (`themePalette()` in `watch/palette.ts`,
+  which also says which variable gives each ink), so a new theme reaches the
+  watch with no other step: change `theme:` in `slides.md` and reload. Nothing
+  else in the watch knows a colour value. `pnpm art:scene` writes the inks and
+  their theme variables, so `scenecheck.py` checks the roles and not the
+  values, for any theme. The paper is also the clear colour, so it is in the
+  palette, not the scene. The renderer does not see a later change to the
+  palette: to change colours while a talk runs, make a new stage.
+- **Not an oversight: `Ink` is an object with a typed name, not a string enum
+  or a bare string.** Node runs `.ts` files by removing types, so `enum` does
+  not run (`erasableSyntaxOnly`); a bare string would make each ink a name to
+  look up, and the house rules say to refer to a thing by an object.
+- **Not an oversight: the palette is not in `design.json`.** It was, written
+  by `watch_design.py` from the theme's CSS, and the watch kept old colours
+  until someone ran the script again. `art/favicon.py` still reads the theme
+  itself, because an icon is a file made ahead of time.
 - **Line widths are CSS px on the screen, at every zoom:** 2, 2.5, 3 or 4, the
   stroke ladder. When the camera zooms 4.46×, a 2 px line stays 2 px. So parts
   must not meet only through their ink: they touch in the model.
@@ -177,8 +202,8 @@ checks of [talks.md](talks.md):
 - `pnpm typecheck` (`vue-tsc`, strict), `pnpm lint` (ESLint with
   typescript-eslint's strict, type-aware rules; Prettier formats), and
   `pnpm test` (`node --test`: the geometry's rules, the settle's jumps).
-- `tools/scenecheck.py` on the scene (`pnpm art:scene`): palette and stroke
-  ladder.
+- `tools/scenecheck.py` on the scene (`pnpm art:scene`): inks, stroke ladder
+  and opacities.
 - `tools/barroom.py` and `tools/motion.py` on PNG stills of the watch
   (`pnpm art:stills`): the back row sees it, and sees it move.
   `art:stills` also runs the renderer's browser checks

@@ -27,6 +27,7 @@ import type {
   Subject,
   View,
 } from "../webgl/scene.ts";
+import { INKS } from "../webgl/scene.ts";
 import { at } from "../webgl/checked.ts";
 import type { Design, Wheel } from "./design.ts";
 import { DESIGN } from "./design.ts";
@@ -232,7 +233,7 @@ export interface Watch {
 }
 
 // ---- paint ------------------------------------------------------------------------------
-/** The palette as the fills and line styles that the shapes use. */
+/** The inks as the fills and line styles that the shapes use. */
 interface Paint {
   knockout: Colour;
   ink: Colour;
@@ -244,14 +245,14 @@ interface Paint {
   frameLine: (width: number) => LineStyle;
 }
 
-function paintOf(palette: Design["palette"]): Paint {
+function paintOf(): Paint {
   return {
-    knockout: { hex: palette.knockout, opacity: 1 },
-    ink: { hex: palette.line, opacity: 1 },
-    frame: { hex: palette.frame, opacity: 1 },
-    wash: { hex: palette.frame, opacity: WASH_OPACITY },
-    line: (width) => ({ colour: palette.line, opacity: 1, width }),
-    frameLine: (width) => ({ colour: palette.frame, opacity: 1, width }),
+    knockout: { ink: INKS.knockout, opacity: 1 },
+    ink: { ink: INKS.line, opacity: 1 },
+    frame: { ink: INKS.frame, opacity: 1 },
+    wash: { ink: INKS.frame, opacity: WASH_OPACITY },
+    line: (width) => ({ ink: INKS.line, opacity: 1, width }),
+    frameLine: (width) => ({ ink: INKS.frame, opacity: 1, width }),
   };
 }
 
@@ -667,12 +668,7 @@ function studMesh(
 }
 
 /** The minute ticks and the hour marks, lying on the chapter ring. */
-function decalMeshes(
-  palette: Design["palette"],
-  paint: Paint,
-  root: Group,
-  ringTop: number,
-): Mesh[] {
+function decalMeshes(paint: Paint, root: Group, ringTop: number): Mesh[] {
   const tick = (from: number, to: number, angle: number): Ring =>
     polygonRing(
       [polar(from, clock(angle)), polar(to, clock(angle))],
@@ -701,7 +697,7 @@ function decalMeshes(
       { decal: true },
     );
   return [
-    decal(minuteTicks, { colour: palette.detail, opacity: 0.5, width: 2 }),
+    decal(minuteTicks, { ink: INKS.detail, opacity: 0.5, width: 2 }),
     decal(hourMarks, paint.line(4)),
   ];
 }
@@ -1179,8 +1175,8 @@ function staffSolid(kit: Kit): Solid {
 
 // ---- the generator -------------------------------------------------------------------------
 export function generate(design: Design = DESIGN): Watch {
-  const { palette, watchCentre } = design;
-  const paint = paintOf(palette);
+  const { watchCentre } = design;
+  const paint = paintOf();
   const train = trainOf(design);
   const tree = makeGroups(design);
   const { root } = tree.groups;
@@ -1263,7 +1259,7 @@ export function generate(design: Design = DESIGN): Watch {
   );
   meshes.push(stud.mesh);
 
-  meshes.push(...decalMeshes(palette, paint, root, ringTop));
+  meshes.push(...decalMeshes(paint, root, ringTop));
 
   // ---- views and subjects ----
   const allHeights = heightRange(heights.values());
@@ -1282,7 +1278,6 @@ export function generate(design: Design = DESIGN): Watch {
   };
   const scene: Scene = {
     slide: [design.canvas.width, design.canvas.height],
-    paper: palette.background,
     meshes,
     groups: tree.all,
     views: views(

@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { extrude, polygonRing } from "./mesh.ts";
-import { checkScene, hexRgb } from "./scene.ts";
-import type { Group, Mesh, Scene } from "./scene.ts";
+import { INKS, checkPalette, checkScene, hexRgb } from "./scene.ts";
+import type { Group, Mesh, Palette, Scene } from "./scene.ts";
 
-const STYLE = { colour: "#143C6B", opacity: 1, width: 2 };
+const STYLE = { ink: INKS.line, opacity: 1, width: 2 };
 const ROOT: Group = { name: "root", parent: null };
 
 function box(name: string): Mesh {
@@ -22,14 +22,18 @@ function box(name: string): Mesh {
     ],
     0,
     1,
-    { name, part: name, group: ROOT, fill: { hex: "#E3E8EC", opacity: 0.5 } },
+    {
+      name,
+      part: name,
+      group: ROOT,
+      fill: { ink: INKS.knockout, opacity: 0.5 },
+    },
   );
 }
 
 const MESH = box("box");
 const GOOD: Scene = {
   slide: [980, 552],
-  paper: "#FAF7F0",
   meshes: [MESH],
   groups: [ROOT],
   views: [{ name: "all", scale: 1, shift: [0, 0], pivot: [0, 0, 0] }],
@@ -40,6 +44,29 @@ test("a colour is #rrggbb", () => {
   assert.deepEqual(hexRgb("#FF0000"), [1, 0, 0]);
   for (const bad of ["FF0000", "#F00", "#GG0000", "#FF00001", "red"]) {
     assert.throws(() => hexRgb(bad), /not a #rrggbb/, bad);
+  }
+});
+
+const PALETTE: Palette = {
+  paper: "#FAF7F0",
+  line: "#143C6B",
+  frame: "#736A60",
+  detail: "#2A2520",
+  knockout: "#D3DCE3",
+};
+
+test("checkPalette wants a #rrggbb colour for the paper and for each ink", () => {
+  assert.doesNotThrow(() => {
+    checkPalette(PALETTE);
+  });
+  for (const key of ["paper", "line", "frame", "detail", "knockout"] as const) {
+    assert.throws(
+      () => {
+        checkPalette({ ...PALETTE, [key]: "pale blue" });
+      },
+      /not a #rrggbb/,
+      key,
+    );
   }
 });
 
@@ -64,8 +91,18 @@ test("checkScene takes a good scene, and names what is wrong with a bad one", ()
       { ...GOOD, subjects: [{ name: "s", meshes: new Set([other]) }] },
     ],
     [
+      /not one of INKS/,
+      {
+        ...GOOD,
+        meshes: [{ ...MESH, fill: { ink: { name: "line" }, opacity: 0.5 } }],
+      },
+    ],
+    [
       /opacity/,
-      { ...GOOD, meshes: [{ ...MESH, fill: { hex: "#E3E8EC", opacity: 2 } }] },
+      {
+        ...GOOD,
+        meshes: [{ ...MESH, fill: { ink: INKS.knockout, opacity: 2 } }],
+      },
     ],
     [
       /whole triangles/,
@@ -125,7 +162,6 @@ test("checkScene takes a good scene, and names what is wrong with a bad one", ()
         views: [{ name: "flat", scale: 0, shift: [0, 0], pivot: [0, 0, 0] }],
       },
     ],
-    [/not a #rrggbb/, { ...GOOD, paper: "white" }],
     [
       /two views have one name/,
       { ...GOOD, views: [...GOOD.views, ...GOOD.views] },

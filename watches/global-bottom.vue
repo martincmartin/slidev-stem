@@ -20,7 +20,8 @@ import {
 import { Stage } from "./webgl/stage.ts";
 import { WatchModel } from "./watch/model.ts";
 import type { WatchModelState } from "./watch/model.ts";
-import { WATCH, WATCH_STILLS } from "./watch/instance.ts";
+import { WATCH, watchStills } from "./watch/instance.ts";
+import { themePalette } from "./watch/palette.ts";
 import { modelState, stageState, watchState } from "./watch/state.ts";
 
 declare global {
@@ -45,7 +46,12 @@ let unmounted = false;
 
 onMounted(() => {
   if (!live || !canvas.value) return;
-  stage = new Stage(canvas.value, WATCH.scene, new WatchModel(WATCH));
+  stage = new Stage(
+    canvas.value,
+    WATCH.scene,
+    themePalette(),
+    new WatchModel(WATCH),
+  );
   window.watchStage = stage;
   onChange(
     () => JSON.stringify(state.value ?? null),
@@ -94,7 +100,7 @@ onMounted(() => {
   const next = (): void => {
     const slide = pending.shift();
     if (!slide || unmounted) return;
-    void WATCH_STILLS.of(slide, size);
+    void watchStills().of(slide, size);
     requestIdleCallback(next);
   };
   setTimeout(() => {

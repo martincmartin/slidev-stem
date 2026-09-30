@@ -20,9 +20,36 @@ at 16 px, with no hands. The colours are the cover's, from the talk's theme.
 
 import argparse
 import pathlib
+import re
 
 from PIL import Image
-from watch_design import FRAME, KNOCKOUT, LINE, PALETTE, TALK
+from watch_design import TALK
+
+
+def theme_palette(talk: pathlib.Path = TALK) -> dict[str, str]:
+    """The --palette-* variables of the talk's theme, as {role: "#RRGGBB"}.
+    The theme is the `theme:` line in the headmatter of the talk's slides.md.
+    A favicon is a file, so it takes its colours when it is made; the live
+    watch reads them in the browser (watch/palette.ts)."""
+    slides = talk / "slides.md"
+    headmatter = re.match(r"---\n(.*?)\n---", slides.read_text(), re.DOTALL)
+    theme = (
+        re.search(r"(?m)^theme:\s*(\S+)", headmatter.group(1)) if headmatter else None
+    )
+    if theme is None:
+        raise SystemExit(f"no `theme:` line in the headmatter of {slides}")
+    name = theme.group(1)
+    css = (talk.parent / "themes" / name / "styles" / f"{name}.css").read_text()
+    return {
+        role: value.strip().upper()
+        for role, value in re.findall(r"--palette-([\w-]+)\s*:\s*([^;]+);", css)
+    }
+
+
+PALETTE = theme_palette()
+LINE = PALETTE["art-line"]  # the wheels, the hands' pivot, the hour ticks
+FRAME = PALETTE["muted"]  # the case, the strap, the crown; the hands
+KNOCKOUT = PALETTE["art-knockout"]  # the chapter ring; the balance wheel's face
 
 CASE_OPACITY = 0.18  # the cover's case and strap: FRAME at this opacity
 

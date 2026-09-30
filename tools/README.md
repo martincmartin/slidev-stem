@@ -18,7 +18,7 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 | `browsers.py`          | playwright               | does this venv's Playwright have its browser; if not, install it (the tools that render call it)                                       |
 | `palette.py`           | stdlib                   | does the palette pass its gates, does a talk set it; can I use this colour                                                             |
 | `artcheck.py`          | stdlib                   | is this SVG valid, in-style, and thick enough at the size it is shown                                                                  |
-| `scenecheck.py`        | stdlib                   | does a 3D scene (a talk's WebGL art) keep to the palette, the stroke ladder and the opacities                                          |
+| `scenecheck.py`        | stdlib                   | does a 3D scene (a talk's WebGL art) keep to the four art inks, the stroke ladder and the opacities                                    |
 | `deck_check.py`        | playwright + PIL + numpy | does a talk's live WebGL art keep its frame rate, contexts and size in visible windows, the presenter view, the export (opens windows) |
 | `fade_check.py`        | playwright + PIL + numpy | is a fade of the rest of the scene continuous, and what does it cost the GPU (needs the talk's probe page)                             |
 | `contact.py`           | playwright               | what does it look like, frame by frame                                                                                                 |

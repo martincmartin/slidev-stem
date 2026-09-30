@@ -19,7 +19,7 @@
 
 import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
-import type { Group, Scene, Subject, View } from "./scene.ts";
+import type { Group, Palette, Scene, Subject, View } from "./scene.ts";
 
 export const MOVE_SECONDS = 1.8;
 export const FADE_SECONDS = 0.8;
@@ -140,11 +140,12 @@ export class Stage<ModelState> {
   constructor(
     canvas: HTMLCanvasElement,
     scene: Scene,
+    palette: Palette,
     model: Model<ModelState>,
   ) {
     this.canvas = canvas;
     this.model = model;
-    this.renderer = new Renderer(canvas, scene);
+    this.renderer = new Renderer(canvas, scene, palette);
   }
 
   /** Go to a slide's state: at once, or one channel at a time from where the

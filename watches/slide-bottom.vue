@@ -7,7 +7,7 @@
 // comes from the page's nav.
 import { useNav, useSlideContext } from "@slidev/client";
 import { computed, onMounted, ref } from "vue";
-import { WATCH, WATCH_STILLS } from "./watch/instance.ts";
+import { WATCH, watchStills } from "./watch/instance.ts";
 import { watchState } from "./watch/state.ts";
 
 const { $frontmatter, $renderContext } = useSlideContext();
@@ -25,7 +25,7 @@ onMounted(async () => {
   if (!needsStill.value || !state.value) return;
   const ratio = window.devicePixelRatio || 1;
   const [width, height] = WATCH.scene.slide;
-  source.value = await WATCH_STILLS.of(state.value, [
+  source.value = await watchStills().of(state.value, [
     Math.round(width * ratio),
     Math.round(height * ratio),
   ]);

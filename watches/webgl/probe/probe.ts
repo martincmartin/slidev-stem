@@ -8,7 +8,7 @@ import { generate } from "../../watch/generate.ts";
 import { Motion } from "../../watch/model.ts";
 import { Renderer } from "../renderer.ts";
 import "./checks.ts";
-import type { Scene } from "../scene.ts";
+import type { Palette, Scene } from "../scene.ts";
 
 /** What one frame asks for. */
 interface ProbeOptions {
@@ -39,11 +39,21 @@ declare global {
   }
 }
 
+// The page has no theme: these are Ledger's values, as index.html's background
+// is. They keep the reference pictures the same from run to run.
+const PROBE_PALETTE: Palette = {
+  paper: "#FAF7F0",
+  line: "#143C6B",
+  frame: "#736A60",
+  detail: "#2A2520",
+  knockout: "#D3DCE3",
+};
+
 const canvas = document.getElementById("stage");
 if (!(canvas instanceof HTMLCanvasElement)) throw new Error("no canvas");
 const watch = generate();
 const motion = new Motion(watch);
-const renderer = new Renderer(canvas, watch.scene, {
+const renderer = new Renderer(canvas, watch.scene, PROBE_PALETTE, {
   preserveDrawingBuffer: true,
 });
 const gl = canvas.getContext("webgl2");

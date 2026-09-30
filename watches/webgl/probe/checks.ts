@@ -14,7 +14,15 @@ import {
 } from "../mesh.ts";
 import type { Point2 } from "../mesh.ts";
 import { Renderer } from "../renderer.ts";
-import type { Frame, Group, Mesh, MeshGeometry, Scene } from "../scene.ts";
+import { INKS } from "../scene.ts";
+import type {
+  Frame,
+  Group,
+  Mesh,
+  MeshGeometry,
+  Palette,
+  Scene,
+} from "../scene.ts";
 import { FADE_SECONDS, Stage } from "../stage.ts";
 import type { Model } from "../stage.ts";
 import { Stills } from "../stills.ts";
@@ -33,7 +41,14 @@ declare global {
 
 const SIZE: [number, number] = [200, 100];
 const CHECK_SECONDS = 10;
-const STYLE = { colour: "#143C6B", opacity: 1, width: 3 };
+const STYLE = { ink: INKS.line, opacity: 1, width: 3 };
+const PALETTE: Palette = {
+  paper: "#FAF7F0",
+  line: "#143C6B",
+  frame: "#736A60",
+  detail: "#2A2520",
+  knockout: "#E3E8EC",
+};
 
 function square(left: number, top: number, side: number): Point2[] {
   return [
@@ -71,7 +86,7 @@ function makeScene(): {
       name,
       part: name,
       group,
-      fill: { hex: "#E3E8EC", opacity: 1 },
+      fill: { ink: INKS.knockout, opacity: 1 },
       lineOrder: bottom + 10,
     });
   const back = box("back", 20, 0);
@@ -86,7 +101,6 @@ function makeScene(): {
   });
   const scene: Scene = {
     slide: SIZE,
-    paper: "#FAF7F0",
     meshes: [back, front, spring],
     groups: [group],
     views: [{ name: "all", scale: 1, shift: [0, 0], pivot: [0, 0, 0] }],
@@ -120,7 +134,7 @@ function canvas(): HTMLCanvasElement {
 }
 
 function renderer(target: HTMLCanvasElement, scene: Scene): Renderer {
-  return new Renderer(target, scene, { preserveDrawingBuffer: true });
+  return new Renderer(target, scene, PALETTE, { preserveDrawingBuffer: true });
 }
 
 function contextOf(target: HTMLCanvasElement): WebGL2RenderingContext {
@@ -350,7 +364,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
       second.render(frameOf(test));
       same(pixels(target), before, "a new renderer on the same canvas");
       second.dispose();
-      throws(() => new Renderer(target, test.scene), /other settings/);
+      throws(() => new Renderer(target, test.scene, PALETTE), /other settings/);
     },
   ],
   [
@@ -445,7 +459,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
         phase: () => "still",
       };
       const target = canvas();
-      const stage = own(new Stage(target, test.scene, model));
+      const stage = own(new Stage(target, test.scene, PALETTE, model));
       const view = test.scene.views[0];
       check(view !== undefined, "no view");
       stage.show({ view, tilt: 0, subject: null }, null, true);
@@ -494,7 +508,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
         frame: () => new Map([[test.group, IDENTITY]]),
         phase: () => "still",
       };
-      const stage = own(new Stage(canvas(), test.scene, model));
+      const stage = own(new Stage(canvas(), test.scene, PALETTE, model));
       stage.show({ view, tilt: 0, subject: front }, null, true);
       const shown = performance.now();
       stage.show({ view, tilt: 0, subject: back }, null);
@@ -528,7 +542,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
     "stills: one picture for each key, and dispose revokes their URLs",
     async (own) => {
       const test = makeScene();
-      const stills = own(new Stills(test.scene));
+      const stills = own(new Stills(test.scene, PALETTE));
       let draws = 0;
       const draw = (drawn: Renderer): void => {
         draws++;

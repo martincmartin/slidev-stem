@@ -12,16 +12,45 @@ import { check, checkFinite } from "./checked.ts";
 
 export type Vec3 = readonly [number, number, number];
 
-/** A palette colour, `#rrggbb`; `opacity` is over the paper. */
+/** The house's four art colours, by their jobs (docs/illustrations.md). This
+ *  is the one list of them: `INKS` and `Palette` must each cover it. */
+export type InkName = "line" | "frame" | "detail" | "knockout";
+
+/** A colour by its job, not its value. A scene's fills and lines point to one
+ *  of `INKS`; a `Palette` says which colour each ink is when a renderer
+ *  starts, so a scene does not change with the theme. */
+export interface Ink {
+  /** For reports and export; also the ink's field in a `Palette`. */
+  readonly name: InkName;
+}
+
+export const INKS = {
+  /** Primary line work: the subject's own structure. */
+  line: { name: "line" },
+  /** Secondary structure: the frame, the case, what holds the subject. */
+  frame: { name: "frame" },
+  /** Tertiary detail: tick marks, at half opacity. */
+  detail: { name: "detail" },
+  /** A pale face that must read as lit, not as bare paper. */
+  knockout: { name: "knockout" },
+} as const satisfies Readonly<Record<InkName, Ink>>;
+
+/** `#rrggbb` for the paper (what the scene is drawn on, and what a fill's
+ *  opacity is over) and for each ink. */
+export type Palette = Readonly<Record<InkName, string>> & {
+  readonly paper: string;
+};
+
+/** An ink, and how much of it is over the paper. */
 export interface Colour {
-  readonly hex: string;
+  readonly ink: Ink;
   readonly opacity: number;
 }
 
 /** `width` is in px of the slide (CSS px when the slide is shown at its own
  *  size), at every zoom of the camera. */
 export interface LineStyle {
-  readonly colour: string;
+  readonly ink: Ink;
   readonly opacity: number;
   readonly width: number;
 }
@@ -96,8 +125,6 @@ export interface Subject {
 export interface Scene {
   /** Width and height, in slide px. */
   readonly slide: readonly [number, number];
-  /** `#rrggbb`. */
-  readonly paper: string;
   readonly meshes: readonly Mesh[];
   readonly groups: readonly Group[];
   readonly views: readonly View[];
@@ -143,8 +170,14 @@ function checkOpacity(opacity: number, what: string): void {
   );
 }
 
+const ALL_INKS: ReadonlySet<Ink> = new Set(Object.values(INKS));
+
+function checkInk(ink: Ink, what: string): void {
+  check(ALL_INKS.has(ink), `${what}: the ink ${ink.name} is not one of INKS`);
+}
+
 function checkStyle(style: LineStyle, what: string): void {
-  hexRgb(style.colour);
+  checkInk(style.ink, what);
   checkOpacity(style.opacity, what);
   check(
     Number.isFinite(style.width) && style.width > 0,
@@ -184,7 +217,6 @@ export function checkScene(scene: Scene): void {
   const [width, height] = scene.slide;
   check(width > 0 && height > 0, "the slide has no area");
   checkFinite(scene.slide, "the slide");
-  hexRgb(scene.paper);
   const groups = new Set(scene.groups);
   check(groups.size === scene.groups.length, "a group is listed twice");
   for (const group of scene.groups) {
@@ -201,7 +233,7 @@ export function checkScene(scene: Scene): void {
       `${mesh.name}'s group is not in the scene`,
     );
     if (mesh.fill) {
-      hexRgb(mesh.fill.hex);
+      checkInk(mesh.fill.ink, mesh.name);
       checkOpacity(mesh.fill.opacity, mesh.name);
     }
     for (const disc of mesh.hiddenInside) {
@@ -234,4 +266,10 @@ export function checkScene(scene: Scene): void {
       );
     }
   }
+}
+
+/** Throw unless each colour of the palette is `#rrggbb`. */
+export function checkPalette(palette: Palette): void {
+  hexRgb(palette.paper);
+  for (const ink of ALL_INKS) hexRgb(palette[ink.name]);
 }
