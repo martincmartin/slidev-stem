@@ -17,19 +17,43 @@ export interface WatchState {
   settled: boolean;
 }
 
+function wrong(name: string, value: unknown, wanted: string): never {
+  throw new Error(`${name}: ${JSON.stringify(value)} should be ${wanted}`);
+}
+
+/** The slide's watch state, or `undefined` if the slide has no `watch`.
+ *  Throws if a field is there but is not what the list above says. */
 export function watchState(
   frontmatter: Record<string, unknown>,
   clicks: number,
 ): WatchState | undefined {
   const view = frontmatter["watch"];
-  if (typeof view !== "string" || view === "") return undefined;
-  const settleAt = frontmatter["watchSettle"];
+  if (view === undefined) return undefined;
+  if (typeof view !== "string" || view === "") {
+    return wrong("watch", view, "the name of a view");
+  }
+  const tilt = frontmatter["watchTilt"] ?? 0;
+  if (typeof tilt !== "number" || !Number.isFinite(tilt)) {
+    return wrong("watchTilt", tilt, "a number of degrees");
+  }
   const only = frontmatter["watchOnly"];
+  if (only !== undefined && (typeof only !== "string" || only === "")) {
+    return wrong("watchOnly", only, "the name of a subject");
+  }
+  const settleAt = frontmatter["watchSettle"];
+  if (
+    settleAt !== undefined &&
+    (typeof settleAt !== "number" ||
+      !Number.isInteger(settleAt) ||
+      settleAt < 0)
+  ) {
+    return wrong("watchSettle", settleAt, "a click number");
+  }
   return {
     view,
-    tilt: Number(frontmatter["watchTilt"] ?? 0),
-    only: typeof only === "string" ? only : undefined,
-    settled: settleAt !== undefined && clicks >= Number(settleAt),
+    tilt,
+    only,
+    settled: settleAt !== undefined && clicks >= settleAt,
   };
 }
 

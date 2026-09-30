@@ -1,7 +1,7 @@
 // The watch's motion: the keyframes of the mechanism, the balance's swing and
 // the hairspring. The spring's formula exists once, here.
 
-import { at } from "../webgl/checked.ts";
+import { at, check } from "../webgl/checked.ts";
 import { ribbonGeometry, smoothRing } from "../webgl/mesh.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import type { Renderer } from "../webgl/renderer.ts";
@@ -119,8 +119,9 @@ export function tickWindows(
 }
 
 /** A part of the train, which turns `step` degrees at each beat and holds
- *  still between beats, over `duration` seconds. In each tick window it waits
- *  for the fork to unlock the escape wheel, then turns. */
+ *  still between beats, over `duration` seconds: a whole number of periods.
+ *  In each tick window it waits for the fork to unlock the escape wheel, then
+ *  turns. */
 export function stepper(
   timing: Timing,
   duration: number,
@@ -128,10 +129,14 @@ export function stepper(
   accumulate: boolean,
 ): Keyframes {
   const periods = duration / timing.period;
+  check(
+    Number.isInteger(periods) && periods >= 1,
+    `${String(duration)} s is not a whole number of ${String(timing.period)} s periods`,
+  );
   const keyTimes = [0];
   const values = [0];
   let angle = 0;
-  for (let period = 0; period < Math.round(periods); period++) {
+  for (let period = 0; period < periods; period++) {
     for (const [start, end] of tickWindows(timing)) {
       const unlocked = start + timing.unlock * (end - start);
       keyTimes.push((period + unlocked) / periods, (period + end) / periods);

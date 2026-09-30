@@ -60,6 +60,9 @@ assumption is false:
 - A canvas has one live renderer. `Renderer`, `Stage` and `Stills` each have
   `dispose()`, which frees all that they hold (GL objects, listeners, frames,
   object URLs). After a context loss, the renderer makes its GL objects again.
+- If a stage's frame throws, the loop stops, and the error goes to the
+  console. `start()` runs the loop again. The stage does not continue after a
+  frame that it could not finish.
 - Each mesh has its own vertex arrays, and a dynamic mesh reuses its buffers.
   This is not an oversight: with the default vertex array, a buffer deleted
   after the last line draw broke every later face draw in Chromium. The
@@ -123,9 +126,15 @@ The 3D art follows the same grammar as the SVG art
   | `watchOnly: hairspring and stud` | the rest of the watch fades out                                              |
   | `watchSettle: 1`                 | at this click, the balance waits for its next extreme and then comes to rest |
 
+  A key of the wrong kind (`watchTilt: "20"`, an empty `watchOnly`) throws
+  when the deck loads, with the key's name. `design.json` is checked the same
+  way, including the timing's ranges.
+
 - **Changes run one at a time:** towards a subject, the camera moves (1.8 s),
   then the rest fades (0.8 s), then the view tilts (1.5 s); away from it, the
-  reverse. A key press during a change starts from what is on the screen.
+  reverse. From one subject to another, the rest first fades back in around
+  the old subject. A key press during a change starts from what is on the
+  screen.
 - **A fade fades the rest as one picture**, as SVG's group opacity does: the
   fading parts never show their own hidden lines.
 - **The settle:** the balance waits for its next extreme (at most half a

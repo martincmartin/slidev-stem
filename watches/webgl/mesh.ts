@@ -13,7 +13,12 @@
 
 import earcut from "earcut";
 import { at, check, checkFinite } from "./checked.ts";
-import { normalMatrix, transformNormal, transformPoint } from "./math.ts";
+import {
+  checkAffine,
+  normalMatrix,
+  transformNormal,
+  transformPoint,
+} from "./math.ts";
 import type { Matrix4 } from "./math.ts";
 import type {
   Colour,
@@ -274,6 +279,16 @@ function makeMesh(info: MeshInfo, triangles: number[], lines: Lines): Mesh {
   };
 }
 
+/** Throw unless `bottom` and `top` are finite and `bottom` is below `top`
+ *  (or at it, for a flat decal). */
+function checkHeights(bottom: number, top: number, flat = false): void {
+  checkFinite([bottom, top], "the heights");
+  check(
+    flat ? bottom <= top : bottom < top,
+    `the bottom ${String(bottom)} is not below the top ${String(top)}`,
+  );
+}
+
 /** Closed outlines with holes (even-odd, as SVG fills) become a mesh: a cap at
  *  `bottom` and one at `top`, a wall on each edge, and the lines. An open ring
  *  has walls and lines only. */
@@ -285,6 +300,7 @@ export function extrude(
   options: ExtrudeOptions = {},
 ): Mesh {
   const decal = options.decal ?? false;
+  checkHeights(bottom, top, decal);
   rings.forEach(checkRing);
   const triangles: number[] = [];
   const lines: Lines = { lines: [], silhouetteEdges: [] };
@@ -312,6 +328,7 @@ export function ribbon(
   top: number,
   info: MeshInfo,
 ): Mesh {
+  checkHeights(bottom, top);
   checkRing(polyline);
   return makeMesh(
     info,
@@ -326,6 +343,7 @@ export function ribbonGeometry(
   bottom: number,
   top: number,
 ): MeshGeometry {
+  checkHeights(bottom, top);
   checkRing(polyline);
   const lines = ringLines(polyline, false, bottom, top, false);
   return {
@@ -339,6 +357,7 @@ export function ribbonGeometry(
  *  `matrix`, once (the crown is an extrusion along x: make it along z, then
  *  turn it). Its clip discs do not move: they are in world x and y. */
 export function transformMesh(mesh: Mesh, matrix: Matrix4): Mesh {
+  checkAffine(matrix, "the mesh's matrix");
   const turn = normalMatrix(matrix);
   const triangles = new Float32Array(mesh.triangles.length);
   for (let index = 0; index < mesh.triangles.length; index += 3) {

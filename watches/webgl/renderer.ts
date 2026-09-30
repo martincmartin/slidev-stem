@@ -815,32 +815,45 @@ export class Renderer {
       gl.bindTexture(gl.TEXTURE_2D, null);
       return made;
     };
-    const framebuffer = this.own(gl.createFramebuffer(), (made) => {
-      gl.deleteFramebuffer(made);
-    });
-    const target: Target = {
-      size: [width, height],
-      colour: texture(gl.RGBA8),
-      depth: texture(gl.DEPTH_COMPONENT24),
-      framebuffer,
-    };
-    resources.targets[index] = target;
-    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-    gl.framebufferTexture2D(
-      gl.FRAMEBUFFER,
-      gl.COLOR_ATTACHMENT0,
-      gl.TEXTURE_2D,
-      target.colour,
-      0,
-    );
-    this.attachDepth(target, true);
-    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-    if (gl.isContextLost()) throw new ContextLost();
-    check(
-      status === gl.FRAMEBUFFER_COMPLETE,
-      `a ${String(width)} x ${String(height)} picture is not complete (status ${String(status)})`,
-    );
-    return target;
+    // Kept only when it is complete, so that a later call does not take an
+    // incomplete picture of the same size; if it is not, its objects go now.
+    const made: object[] = [];
+    try {
+      const framebuffer = this.own(gl.createFramebuffer(), (object) => {
+        gl.deleteFramebuffer(object);
+      });
+      made.push(framebuffer);
+      const colour = texture(gl.RGBA8);
+      made.push(colour);
+      const depth = texture(gl.DEPTH_COMPONENT24);
+      made.push(depth);
+      const target: Target = {
+        size: [width, height],
+        colour,
+        depth,
+        framebuffer,
+      };
+      gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+      gl.framebufferTexture2D(
+        gl.FRAMEBUFFER,
+        gl.COLOR_ATTACHMENT0,
+        gl.TEXTURE_2D,
+        colour,
+        0,
+      );
+      this.attachDepth(target, true);
+      const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+      if (gl.isContextLost()) throw new ContextLost();
+      check(
+        status === gl.FRAMEBUFFER_COMPLETE,
+        `a ${String(width)} x ${String(height)} picture is not complete (status ${String(status)})`,
+      );
+      resources.targets[index] = target;
+      return target;
+    } catch (error) {
+      for (const object of made) this.free(object);
+      throw error;
+    }
   }
 
   private attachDepth(target: Target, attached: boolean): void {

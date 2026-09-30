@@ -107,6 +107,9 @@ watchSettle: 1 # at click 1 the balance settles at rest
 clicks: 1
 ```
 
+- **A key of the wrong kind stops the deck at load**, with the key's name:
+  `watchTilt` is a number, `watchSettle` a click number, `watchOnly` the name
+  of a subject.
 - **The order of a change is fixed:** the camera moves, then the rest fades,
   then the view tilts. Going back runs it in reverse. Do not put text where the
   moving watch will be: on slide 2 the hairspring is about 535 to 875 px

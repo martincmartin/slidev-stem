@@ -214,6 +214,14 @@ export function checkScene(scene: Scene): void {
     checkFinite([mesh.lineOrder], `${mesh.name}'s line order`);
     checkGeometry(mesh, mesh.name);
   }
+  // slides name the views and the subjects
+  for (const [kind, named] of [
+    ["view", scene.views],
+    ["subject", scene.subjects],
+  ] as const) {
+    const names = new Set(named.map((item) => item.name));
+    check(names.size === named.length, `two ${kind}s have one name`);
+  }
   for (const view of scene.views) {
     checkFinite([view.scale, ...view.shift, ...view.pivot], view.name);
     check(view.scale > 0, `${view.name}: scale ${String(view.scale)}`);

@@ -4,15 +4,22 @@
 //
 // THE ORDER. Each change runs one channel at a time, eased: towards a subject
 // the camera moves, then the rest fades, then the camera tilts; away from it,
-// the reverse. A new state starts from what is on the screen now, so a change
-// during a transition does not jump.
+// the reverse. From one subject to another, the rest first fades in around
+// the old subject; then the stage goes towards the new one. A new state starts
+// from what is on the screen now, so a change during a transition does not
+// jump.
 //
 // A stage owns its renderer and its frame loop: `dispose()` stops both and
 // frees the renderer's GL objects.
+//
+// AN ERROR. If a frame throws (a model's bad matrix, a frame that breaks the
+// renderer's contract), the loop stops: the stage does not continue after a
+// frame that it could not finish. The error goes to the browser's console;
+// `start()` runs the loop again.
 
 import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
-import type { Group, Mesh, Scene, Subject, View } from "./scene.ts";
+import type { Group, Scene, Subject, View } from "./scene.ts";
 
 export const MOVE_SECONDS = 1.8;
 export const FADE_SECONDS = 0.8;
@@ -43,6 +50,8 @@ interface Values {
   view: View;
   tilt: number;
   rest: number;
+  /** What the fade keeps. It matters only while `rest` < 1. */
+  subject: Subject | null;
 }
 
 interface Phase {
@@ -52,6 +61,8 @@ interface Phase {
   /** ms. */
   start: number;
   seconds: number;
+  /** A fade towards a subject: the subject that it keeps, from its start. */
+  subject?: Subject;
 }
 
 export function ease(fraction: number): number {
@@ -125,8 +136,6 @@ export class Stage<ModelState> {
   private values: Values | null = null;
   /** One after another. */
   private phases: Phase[] = [];
-  /** The subject's meshes, while the rest is faded or fading. */
-  private keep: ReadonlySet<Mesh> | null = null;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -147,8 +156,8 @@ export class Stage<ModelState> {
       view: state.view,
       tilt: state.tilt,
       rest: state.subject ? 0 : 1,
+      subject: state.subject,
     };
-    if (state.subject) this.keep = state.subject.meshes;
     if (instantly || !this.values) {
       this.values = target;
       this.phases = [];
@@ -156,23 +165,38 @@ export class Stage<ModelState> {
       return;
     }
     const current = this.valuesAt(now);
-    const order =
-      target.rest < current.rest
-        ? TOWARDS_SUBJECT
-        : [...TOWARDS_SUBJECT].reverse();
     this.values = current;
     this.phases = [];
     let start = now;
+    const add = (phase: Omit<Phase, "start" | "seconds">): void => {
+      const seconds = SECONDS[phase.channel];
+      this.phases.push({ ...phase, start, seconds });
+      start += seconds * 1000;
+    };
+    // where each channel is when the phases so far end
+    const reached = { ...current };
+    if (
+      state.subject !== null &&
+      current.subject !== state.subject &&
+      current.rest < 1
+    ) {
+      add({ channel: "rest", from: current.rest, to: 1 });
+      reached.rest = 1;
+    }
+    const order =
+      target.rest < reached.rest
+        ? TOWARDS_SUBJECT
+        : [...TOWARDS_SUBJECT].reverse();
     for (const channel of order) {
-      if (current[channel] === target[channel]) continue;
-      this.phases.push({
+      if (reached[channel] === target[channel]) continue;
+      add({
         channel,
-        from: current[channel],
+        from: reached[channel],
         to: target[channel],
-        start,
-        seconds: SECONDS[channel],
+        ...(channel === "rest" && state.subject
+          ? { subject: state.subject }
+          : {}),
       });
-      start += SECONDS[channel] * 1000;
     }
     this.model.show(modelState, now, false);
   }
@@ -183,6 +207,7 @@ export class Stage<ModelState> {
     const values = { ...this.values };
     for (const phase of this.phases) {
       if (now < phase.start) continue;
+      if (phase.subject) values.subject = phase.subject;
       const fraction = Math.min(
         1,
         (now - phase.start) / (phase.seconds * 1000),
@@ -258,7 +283,7 @@ export class Stage<ModelState> {
       view: values.view,
       tilt: values.tilt,
       groupMatrices: this.model.frame(now, this.renderer),
-      ...(this.keep ? { keep: this.keep } : {}),
+      ...(values.subject ? { keep: values.subject.meshes } : {}),
       rest: values.rest,
       size,
     });

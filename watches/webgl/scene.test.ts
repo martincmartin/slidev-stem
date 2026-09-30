@@ -126,6 +126,17 @@ test("checkScene takes a good scene, and names what is wrong with a bad one", ()
       },
     ],
     [/not a #rrggbb/, { ...GOOD, paper: "white" }],
+    [
+      /two views have one name/,
+      { ...GOOD, views: [...GOOD.views, ...GOOD.views] },
+    ],
+    [
+      /two subjects have one name/,
+      {
+        ...GOOD,
+        subjects: [...GOOD.subjects, { name: "the box", meshes: new Set() }],
+      },
+    ],
   ];
   for (const [message, scene] of bad) {
     assert.throws(() => {

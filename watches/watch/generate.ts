@@ -205,30 +205,30 @@ function turned(path: Path, degrees: number): Path {
 /** The groups that turn or move, for the model. Every mesh is in one. */
 export interface WatchGroups {
   /** Static: the watch centre on the slide. */
-  root: Group;
+  readonly root: Group;
   /** Each wheel of the train, about its arbor. */
-  wheels: Map<Wheel, Group>;
+  readonly wheels: ReadonlyMap<Wheel, Group>;
   /** The balance and the impulse jewel: they swing together. */
-  balance: Group;
+  readonly balance: Group;
   /** Static: the balance's arbor, where the spring is. */
-  springBase: Group;
-  fork: Group;
-  seconds: Group;
-  hour: Group;
-  minute: Group;
+  readonly springBase: Group;
+  readonly fork: Group;
+  readonly seconds: Group;
+  readonly hour: Group;
+  readonly minute: Group;
 }
 
 export interface Watch {
-  design: Design;
-  scene: Scene;
-  groups: WatchGroups;
+  readonly design: Design;
+  readonly scene: Scene;
+  readonly groups: WatchGroups;
   /** The hairspring: its geometry changes with the balance's angle. */
-  spring: Mesh;
-  springShape: Spring;
+  readonly spring: Mesh;
+  readonly springShape: Spring;
   /** The spring's heights, for `ribbonGeometry`. */
-  springHeights: Heights;
+  readonly springHeights: Heights;
   /** The chapter ring's height, on which the decals lie. */
-  ringTop: number;
+  readonly ringTop: number;
 }
 
 // ---- the generator -------------------------------------------------------------------------
@@ -1080,7 +1080,10 @@ export function generate(design: Design = DESIGN): Watch {
   };
 }
 
-function forkOutlineLocal(outline: Point2[], heading: number): Point2[] {
+function forkOutlineLocal(
+  outline: readonly Point2[],
+  heading: number,
+): Point2[] {
   const cosine = Math.cos(radians(heading));
   const sine = Math.sin(radians(heading));
   return outline.map(([along, across]) => [

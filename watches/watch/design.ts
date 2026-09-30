@@ -6,88 +6,96 @@ import type { Point2 } from "../webgl/mesh.ts";
 import designFile from "./design.json" with { type: "json" };
 
 export interface Palette {
-  line: string;
-  frame: string;
-  detail: string;
-  knockout: string;
-  background: string;
+  readonly line: string;
+  readonly frame: string;
+  readonly detail: string;
+  readonly knockout: string;
+  readonly background: string;
 }
 
 export interface Timing {
   /** s: one swing of the balance. */
-  period: number;
+  readonly period: number;
   /** Degrees each way from centre. */
-  amplitude: number;
+  readonly amplitude: number;
   /** The fork moves while the balance is within this of centre (degrees). */
-  pinArc: number;
+  readonly pinArc: number;
   /** Degrees: the fork's swing each side of its centre line. */
-  bank: number;
+  readonly bank: number;
   /** The fraction of each tick window in which the fork turns and the train
    *  holds: the locked pallet stone clears its tooth first. */
-  unlock: number;
+  readonly unlock: number;
   /** s: one turn of the fourth wheel. */
-  fourthLoop: number;
-  hourRatio: number;
+  readonly fourthLoop: number;
+  readonly hourRatio: number;
 }
 
 /** A wheel and the pinion on its arbor. */
 export interface Wheel {
-  name: string;
-  teeth: number;
-  pitchRadius: number;
+  readonly name: string;
+  readonly teeth: number;
+  readonly pitchRadius: number;
   /** The root circle: the wheel hides what is below it inside this. */
-  inner: number;
+  readonly inner: number;
   /** The tip circle. */
-  outer: number;
-  depth: number;
-  pitch: number;
-  spokes: number;
-  leaves: number;
-  pinionRadius: number | null;
+  readonly outer: number;
+  readonly depth: number;
+  readonly pitch: number;
+  readonly spokes: number;
+  readonly leaves: number;
+  readonly pinionRadius: number | null;
   /** Degrees a beat. */
-  step: number;
+  readonly step: number;
   /** From the watch centre. */
-  arbor: Point2;
+  readonly arbor: Point2;
   /** The wheel whose pinion this one's teeth turn. */
-  driven: Wheel | null;
-  toothPhase: number;
-  pinionPhase: number | null;
+  readonly driven: Wheel | null;
+  readonly toothPhase: number;
+  readonly pinionPhase: number | null;
 }
 
 export interface BalanceDesign {
-  radius: number;
-  arbor: Point2;
-  impulsePinRadius: number;
-  pinDirection: number;
-  studAngle: number;
+  readonly radius: number;
+  readonly arbor: Point2;
+  readonly impulsePinRadius: number;
+  readonly pinDirection: number;
+  readonly studAngle: number;
 }
 
 export interface ForkDesign {
-  pivot: Point2;
-  heading: number;
+  readonly pivot: Point2;
+  readonly heading: number;
   /** (along, across) from the pivot. */
-  outline: Point2[];
+  readonly outline: readonly Point2[];
 }
 
 export interface Design {
-  canvas: { width: number; height: number };
-  watchCentre: Point2;
-  palette: Palette;
-  timing: Timing;
+  readonly canvas: { readonly width: number; readonly height: number };
+  readonly watchCentre: Point2;
+  readonly palette: Palette;
+  readonly timing: Timing;
   /** In train order: barrel, centre, third, fourth, escape. */
-  wheels: Wheel[];
-  escapeSolid: boolean;
-  escapePhase: number;
-  balance: BalanceDesign;
-  fork: ForkDesign;
+  readonly wheels: readonly Wheel[];
+  readonly escapeSolid: boolean;
+  readonly escapePhase: number;
+  readonly balance: BalanceDesign;
+  readonly fork: ForkDesign;
   /** The round parts a part is hidden inside, back to front: wheels, then
    *  the balance. */
-  stack: (Wheel | "balance")[];
-  case: { caseRadius: number; bezelRadius: number; ringRadius: number };
-  hands: { hour: number; minute: number };
+  readonly stack: readonly (Wheel | "balance")[];
+  readonly case: {
+    readonly caseRadius: number;
+    readonly bezelRadius: number;
+    readonly ringRadius: number;
+  };
+  readonly hands: { readonly hour: number; readonly minute: number };
 }
 
 type Json = unknown;
+
+/** A wheel while `readDesign` makes it: it sets `driven` when every wheel is
+ *  made. */
+type Draft<Made> = { -readonly [Key in keyof Made]: Made[Key] };
 
 function fail(where: string, wanted: string): never {
   throw new Error(`design.json: ${where} should be ${wanted}`);
@@ -146,7 +154,9 @@ function point(value: Json, where: string): Point2 {
     !Array.isArray(value) ||
     value.length !== 2 ||
     typeof value[0] !== "number" ||
-    typeof value[1] !== "number"
+    typeof value[1] !== "number" ||
+    !Number.isFinite(value[0]) ||
+    !Number.isFinite(value[1])
   ) {
     return fail(where, "a pair of numbers");
   }
@@ -171,6 +181,47 @@ function nullableNumber(
   return field(parent, name, where) === null ? null : num(parent, name, where);
 }
 
+/** Throw unless the timing is in the ranges that watch/model.ts needs:
+ *  `tickWindows` takes the arccosine of `pinArc / amplitude`, and `stepper`
+ *  runs a whole number of periods. */
+function checkTiming(timing: Timing): void {
+  const ranges: [keyof Timing, boolean, string][] = [
+    ["period", timing.period > 0, "more than 0"],
+    ["amplitude", timing.amplitude > 0, "more than 0"],
+    [
+      "pinArc",
+      timing.pinArc > 0 && timing.pinArc < timing.amplitude,
+      "more than 0 and less than the amplitude",
+    ],
+    ["bank", timing.bank > 0, "more than 0"],
+    ["unlock", timing.unlock >= 0 && timing.unlock < 1, "in 0 to 1, not 1"],
+    [
+      "fourthLoop",
+      Number.isInteger(timing.fourthLoop / timing.period) &&
+        timing.fourthLoop >= timing.period,
+      "a whole number of periods",
+    ],
+    ["hourRatio", timing.hourRatio > 0, "more than 0"],
+  ];
+  for (const [name, inRange, wanted] of ranges) {
+    if (!inRange) fail(`timing.${name}`, wanted);
+  }
+}
+
+function readTiming(timing: Record<string, Json>): Timing {
+  const read: Timing = {
+    period: num(timing, "period", "timing"),
+    amplitude: num(timing, "amplitude", "timing"),
+    pinArc: num(timing, "pinArc", "timing"),
+    bank: num(timing, "bank", "timing"),
+    unlock: num(timing, "unlock", "timing"),
+    fourthLoop: num(timing, "fourthLoop", "timing"),
+    hourRatio: num(timing, "hourRatio", "timing"),
+  };
+  checkTiming(read);
+  return read;
+}
+
 /** Check the JSON and turn its names into objects. */
 export function readDesign(json: Json): Design {
   const root = record(json, "the file");
@@ -187,7 +238,7 @@ export function readDesign(json: Json): Design {
   const wheels = list(root, "wheels", "the file").map((entry, index) => {
     const where = `wheels[${String(index)}]`;
     const wheel = record(entry, where);
-    const made: Wheel = {
+    const made: Draft<Wheel> = {
       name: text(wheel, "name", where),
       teeth: num(wheel, "teeth", where),
       pitchRadius: num(wheel, "pitchRadius", where),
@@ -211,6 +262,9 @@ export function readDesign(json: Json): Design {
     drivenNames.set(made, driven);
     return made;
   });
+  if (new Set(wheels.map((wheel) => wheel.name)).size !== wheels.length) {
+    return fail("wheels", "wheels with different names");
+  }
   for (const wheel of wheels) {
     const name = drivenNames.get(wheel);
     if (name === null || name === undefined) continue;
@@ -238,15 +292,7 @@ export function readDesign(json: Json): Design {
       knockout: text(palette, "knockout", "palette"),
       background: text(palette, "background", "palette"),
     },
-    timing: {
-      period: num(timing, "period", "timing"),
-      amplitude: num(timing, "amplitude", "timing"),
-      pinArc: num(timing, "pinArc", "timing"),
-      bank: num(timing, "bank", "timing"),
-      unlock: num(timing, "unlock", "timing"),
-      fourthLoop: num(timing, "fourthLoop", "timing"),
-      hourRatio: num(timing, "hourRatio", "timing"),
-    },
+    timing: readTiming(timing),
     wheels,
     escapeSolid: flag(root, "escapeSolid", "the file"),
     escapePhase: num(root, "escapePhase", "the file"),

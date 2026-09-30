@@ -221,3 +221,26 @@ test("a shear keeps each silhouette normal perpendicular to its vertical edge", 
     }
   }
 });
+
+test("heights must be finite with the bottom below the top; a decal may be flat", () => {
+  const ring = [polygonRing(square(0, 0, 5), STYLE)];
+  for (const [bottom, top] of [
+    [1, 1],
+    [2, 1],
+    [0, Number.NaN],
+    [Number.NEGATIVE_INFINITY, 0],
+  ] as const) {
+    assert.throws(() => extrude(ring, bottom, top, INFO), /heights|below/);
+  }
+  const line = smoothRing(square(0, 0, 5), STYLE, false);
+  assert.throws(() => ribbon(line, 1, 0, INFO), /below/);
+  assert.doesNotThrow(() => extrude(ring, 1, 1, INFO, { decal: true }));
+});
+
+test("transformMesh refuses a matrix that is not affine", () => {
+  const mesh = extrude([polygonRing(square(0, 0, 5), STYLE)], 0, 1, INFO);
+  const projective = new Float32Array([
+    1, 0, 0, 0.5, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
+  ]);
+  assert.throws(() => transformMesh(mesh, projective), /not affine/);
+});

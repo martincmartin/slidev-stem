@@ -15,7 +15,7 @@ import {
 import type { Point2 } from "../mesh.ts";
 import { Renderer } from "../renderer.ts";
 import type { Frame, Group, Mesh, MeshGeometry, Scene } from "../scene.ts";
-import { Stage } from "../stage.ts";
+import { FADE_SECONDS, Stage } from "../stage.ts";
 import type { Model } from "../stage.ts";
 import { Stills } from "../stills.ts";
 
@@ -90,7 +90,10 @@ function makeScene(): {
     meshes: [back, front, spring],
     groups: [group],
     views: [{ name: "all", scale: 1, shift: [0, 0], pivot: [0, 0, 0] }],
-    subjects: [{ name: "front", meshes: new Set([front]) }],
+    subjects: [
+      { name: "front", meshes: new Set([front]) },
+      { name: "back", meshes: new Set([back]) },
+    ],
   };
   return { scene, group, front, back, spring };
 }
@@ -208,19 +211,25 @@ function expected(
   };
   const target = canvas();
   const fresh = renderer(target, scene);
-  fresh.render(frame);
-  const result = pixels(target);
-  fresh.dispose();
-  return result;
+  try {
+    fresh.render(frame);
+    return pixels(target);
+  } finally {
+    fresh.dispose();
+  }
 }
 
-const CHECKS: [string, () => Promise<void> | void][] = [
+/** Keep `thing` until the check ends, and dispose it then, even if the check
+ *  fails: a failed check does not leave a live context to the next one. */
+type Own = <Thing extends { dispose(): void }>(thing: Thing) => Thing;
+
+const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
   [
     "a dynamic mesh drawn last takes new geometry, with no GL error",
-    () => {
+    (own) => {
       const test = makeScene();
       const target = canvas();
-      const drawn = renderer(target, test.scene);
+      const drawn = own(renderer(target, test.scene));
       const frame = frameOf(test);
       drawn.render(frame);
       for (const turn of [0.3, 0.6, 0.9]) {
@@ -238,10 +247,10 @@ const CHECKS: [string, () => Promise<void> | void][] = [
   ],
   [
     "the renderer leaves the default bindings",
-    () => {
+    (own) => {
       const test = makeScene();
       const target = canvas();
-      const drawn = renderer(target, test.scene);
+      const drawn = own(renderer(target, test.scene));
       drawn.render(frameOf(test, { keep: new Set([test.front]), rest: 0.5 }));
       const gl = contextOf(target);
       for (const binding of [
@@ -261,10 +270,10 @@ const CHECKS: [string, () => Promise<void> | void][] = [
   ],
   [
     "a fade: rest 1 is the whole scene, rest 0.5 is halfway between 0 and 1",
-    () => {
+    (own) => {
       const test = makeScene();
       const target = canvas();
-      const drawn = renderer(target, test.scene);
+      const drawn = own(renderer(target, test.scene));
       const keep = new Set([test.front]);
       drawn.render(frameOf(test));
       const whole = pixels(target);
@@ -285,10 +294,10 @@ const CHECKS: [string, () => Promise<void> | void][] = [
   ],
   [
     "a lost context: frames are skipped, and after its restoration the last geometry is drawn",
-    async () => {
+    async (own) => {
       const test = makeScene();
       const target = canvas();
-      const drawn = renderer(target, test.scene);
+      const drawn = own(renderer(target, test.scene));
       const frame = frameOf(test);
       drawn.render(frame);
       const lose = contextOf(target).getExtension("WEBGL_lose_context");
@@ -320,10 +329,10 @@ const CHECKS: [string, () => Promise<void> | void][] = [
   ],
   [
     "dispose: a second call does nothing, the renderer refuses work, and the canvas takes a new renderer",
-    () => {
+    (own) => {
       const test = makeScene();
       const target = canvas();
-      const first = renderer(target, test.scene);
+      const first = own(renderer(target, test.scene));
       throws(() => renderer(target, test.scene), /another renderer/);
       first.render(frameOf(test));
       const before = pixels(target);
@@ -337,7 +346,7 @@ const CHECKS: [string, () => Promise<void> | void][] = [
       }, /disposed/);
       // its listener is gone: a restored event does not make its resources again
       target.dispatchEvent(new Event("webglcontextrestored"));
-      const second = renderer(target, test.scene);
+      const second = own(renderer(target, test.scene));
       second.render(frameOf(test));
       same(pixels(target), before, "a new renderer on the same canvas");
       second.dispose();
@@ -346,11 +355,11 @@ const CHECKS: [string, () => Promise<void> | void][] = [
   ],
   [
     "the renderer refuses a frame or a mesh that breaks its contract",
-    () => {
+    (own) => {
       const test = makeScene();
       const other = makeScene();
       const target = canvas();
-      const drawn = renderer(target, test.scene);
+      const drawn = own(renderer(target, test.scene));
       const cases: [RegExp, () => void][] = [
         [
           /no matrix for root/,
@@ -428,7 +437,7 @@ const CHECKS: [string, () => Promise<void> | void][] = [
   ],
   [
     "the stage runs one loop, however often it starts and stops, and dispose ends it",
-    async () => {
+    async (own) => {
       const test = makeScene();
       const model: Model<null> = {
         show: () => undefined,
@@ -436,7 +445,7 @@ const CHECKS: [string, () => Promise<void> | void][] = [
         phase: () => "still",
       };
       const target = canvas();
-      const stage = new Stage(target, test.scene, model);
+      const stage = own(new Stage(target, test.scene, model));
       const view = test.scene.views[0];
       check(view !== undefined, "no view");
       stage.show({ view, tilt: 0, subject: null }, null, true);
@@ -471,10 +480,55 @@ const CHECKS: [string, () => Promise<void> | void][] = [
     },
   ],
   [
-    "stills: one picture for each key, and dispose revokes their URLs",
-    async () => {
+    "from one subject to another, the rest fades in around the old subject before the new one is kept",
+    (own) => {
       const test = makeScene();
-      const stills = new Stills(test.scene);
+      const [front, back] = test.scene.subjects;
+      const view = test.scene.views[0];
+      check(
+        front !== undefined && back !== undefined && view !== undefined,
+        "the test scene is incomplete",
+      );
+      const model: Model<null> = {
+        show: () => undefined,
+        frame: () => new Map([[test.group, IDENTITY]]),
+        phase: () => "still",
+      };
+      const stage = own(new Stage(canvas(), test.scene, model));
+      stage.show({ view, tilt: 0, subject: front }, null, true);
+      const shown = performance.now();
+      stage.show({ view, tilt: 0, subject: back }, null);
+      const fade = FADE_SECONDS * 1000;
+      for (const [after, subject, rest] of [
+        [fade / 2, front, 0.5],
+        [fade + fade / 2, back, 0.5],
+        [3 * fade, back, 0],
+      ] as const) {
+        const values = stage.valuesAt(shown + after);
+        check(
+          values.subject === subject,
+          `after ${String(after)} ms the fade keeps ${values.subject?.name ?? "nothing"}, not ${subject.name}`,
+        );
+        check(
+          Math.abs(values.rest - rest) < 0.05,
+          `after ${String(after)} ms the rest is ${String(values.rest)}, not about ${String(rest)}`,
+        );
+      }
+      stage.show({ view, tilt: 0, subject: back }, null, true);
+      const leaving = performance.now();
+      stage.show({ view, tilt: 0, subject: null }, null);
+      const values = stage.valuesAt(leaving + fade / 2);
+      check(
+        values.subject === back,
+        "the fade to no subject drops its subject before the rest is back",
+      );
+    },
+  ],
+  [
+    "stills: one picture for each key, and dispose revokes their URLs",
+    async (own) => {
+      const test = makeScene();
+      const stills = own(new Stills(test.scene));
       let draws = 0;
       const draw = (drawn: Renderer): void => {
         draws++;
@@ -504,6 +558,11 @@ const CHECKS: [string, () => Promise<void> | void][] = [
 window.webglChecks = async () => {
   const results: CheckResult[] = [];
   for (const [name, run] of CHECKS) {
+    const held: { dispose(): void }[] = [];
+    const own: Own = (thing) => {
+      held.push(thing);
+      return thing;
+    };
     try {
       // A check that waits for an event that never comes fails, not hangs.
       let timer: ReturnType<typeof setTimeout> | undefined;
@@ -513,9 +572,10 @@ window.webglChecks = async () => {
         }, CHECK_SECONDS * 1000);
       });
       try {
-        await Promise.race([run(), late]);
+        await Promise.race([run(own), late]);
       } finally {
         clearTimeout(timer);
+        for (const thing of held) thing.dispose();
       }
       results.push({ name, failure: null });
     } catch (error) {

@@ -1,0 +1,54 @@
+// A slide's frontmatter to a watch state: what it accepts, and what it
+// refuses with the field's name.
+
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import { watchState } from "./state.ts";
+
+test("a slide without watch has no state", () => {
+  assert.equal(watchState({}, 0), undefined);
+});
+
+test("the fields and their defaults", () => {
+  assert.deepEqual(watchState({ watch: "cover" }, 0), {
+    view: "cover",
+    tilt: 0,
+    only: undefined,
+    settled: false,
+  });
+  const frontmatter = {
+    watch: "hairspring",
+    watchTilt: 20,
+    watchOnly: "hairspring and stud",
+    watchSettle: 1,
+  };
+  assert.equal(watchState(frontmatter, 0)?.settled, false);
+  assert.deepEqual(watchState(frontmatter, 1), {
+    view: "hairspring",
+    tilt: 20,
+    only: "hairspring and stud",
+    settled: true,
+  });
+});
+
+test("a field of the wrong kind throws, with its name", () => {
+  for (const [field, value] of [
+    ["watch", ""],
+    ["watch", 3],
+    ["watchTilt", "20"],
+    ["watchTilt", ""],
+    ["watchTilt", true],
+    ["watchTilt", Number.NaN],
+    ["watchOnly", ""],
+    ["watchOnly", 1],
+    ["watchSettle", "1"],
+    ["watchSettle", 1.5],
+    ["watchSettle", -1],
+  ] as const) {
+    assert.throws(
+      () => watchState({ watch: "cover", [field]: value }, 0),
+      new RegExp(`^Error: ${field}:`),
+      `${field}: ${String(value)}`,
+    );
+  }
+});
