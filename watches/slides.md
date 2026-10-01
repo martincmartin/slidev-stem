@@ -66,7 +66,7 @@ The hairspring and the balance wheel: the part of a watch that keeps time.
 ---
 layout: full
 class: tk-timekeepers
-hide: true
+# hide: true
 ---
 
 # Before clocks, time was a flow
