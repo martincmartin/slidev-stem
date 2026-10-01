@@ -23,15 +23,15 @@ import type {
   Palette,
   Scene,
 } from "../scene.ts";
+import { Stage } from "../stage.ts";
+import type { Model } from "../stage.ts";
+import { Stills } from "../stills.ts";
 import {
   FADE_SECONDS,
   FLASH_OFF_SECONDS,
   FLASH_ON_SECONDS,
   FLASH_SECONDS,
-  Stage,
-} from "../stage.ts";
-import type { Model } from "../stage.ts";
-import { Stills } from "../stills.ts";
+} from "../timeline.ts";
 
 export interface CheckResult {
   name: string;

@@ -40,8 +40,9 @@ until a second talk needs it; then it moves to a house package in `stem/`.
 
 **A new talk with WebGL art** copies `webgl/`, `types/`, `tsconfig.json`,
 `eslint.config.js` and the scripts of `watches/package.json` (`typecheck`,
-`lint`, `test`, `art:scene`, `art:stills`). `validate.py` runs the WebGL checks
-when it finds the scripts. Keep the talk's names out of `webgl/`.
+`lint`, `test`, `art:scene`, `art:stills`, and `art:generated` if the talk
+writes files with scripts). `validate.py` runs the WebGL checks when it finds
+the scripts. Keep the talk's names out of `webgl/`.
 
 **Geometry is made in TypeScript at load**, not ahead of time in Python. The
 parts that move by rules must be TypeScript anyway, so each shape has one copy.
@@ -132,12 +133,14 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   deck loads, with the key's name.
 - **Changes run one at a time:** towards a subject, the camera moves, then the
   view tilts, then the rest fades; away from it, the reverse. A key press
-  during a change starts from what is on the screen. The durations are
-  constants in `webgl/stage.ts`.
+  during a change starts from what is on the screen. The order, the durations
+  and the flash are the timeline's (`webgl/timeline.ts`): it has no DOM and no
+  WebGL, so its tests (`timeline.test.ts`) drive it with made-up times.
+  `Stage` (`webgl/stage.ts`) holds the renderer, the model and the frame loop.
 - **A state can flash a subject first** (`StageState.flash`), before its
   channels change. It flashes only in a transition that changes a channel,
   not in a state shown at once. A key press during the flash does not start
-  it again. `Stage.show` returns the seconds until the flash ends, so that a
+  it again. `Stage.show` (from `Timeline.show`) returns the seconds until the flash ends, so that a
   slide's text can wait for it.
 - **A fade fades the rest as one picture**, as SVG's group opacity does: the
   fading parts never show their own hidden lines.

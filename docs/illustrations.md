@@ -139,7 +139,7 @@ its own colours.
   state with no flash.
 - **Safety.** Two flashes a second is below the WCAG 2.3.1 limit of three.
 - **In WebGL**: `FLASH_INKS` in `watches/webgl/scene.ts`, the stage's flash
-  phase and its timing constants in `watches/webgl/stage.ts`, and a slide's
+  phase and its timing constants in `watches/webgl/timeline.ts`, and a slide's
   `watchFlash` ([webgl.md](webgl.md)).
 - **In an inlined SVG**: a CSS animation on the part's group, five cycles of
   0.5 s with `steps`, that sets `stroke` to `var(--palette-second)` and

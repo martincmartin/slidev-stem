@@ -25,6 +25,12 @@ Slidev's slidev-vclick-target class. --walk presses the right arrow from slide 1
 until the URL stops changing, at the end of the deck. So every slide and every
 click loads, and a request from any of them is caught. It prints how many steps
 it took and where it stopped. tools/validate.py uses it.
+
+The check fails (exit 1) if any outside request was blocked, and also if the deck
+did not work: a page whose script threw an error (`pageerror`), a page that
+shows no slide within READY_TIMEOUT_MS, a walk that did not move from slide 1,
+and a walk that reached WALK_LIMIT without reaching an end. A deck that
+cannot start requests nothing, so a request count alone would pass it.
 """
 
 import argparse
@@ -36,6 +42,7 @@ import urllib.parse
 
 import browsers
 from playwright.async_api import Route, async_playwright
+from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 
 HOST = "deck.test"
 INFO_JS = """() => {
@@ -69,11 +76,15 @@ CLASSES_JS = """() => { const m = [...document.querySelectorAll('[data-vc]')];
   return m.filter(e => e.classList.contains('slidev-vclick-target')).length + '/' + m.length }"""
 # --walk stops here if the URL still changes: no talk has this many steps.
 WALK_LIMIT = 1000
+# A page has loaded when a slide shows. Slidev draws its first one after its
+# scripts run, so a deck that cannot start never gets one.
+READY_TIMEOUT_MS = 15_000
 
 
 async def main(arguments: argparse.Namespace) -> int:
     root = pathlib.Path(arguments.build)
-    blocked = []
+    blocked: list[str] = []
+    problems: list[str] = []
 
     async def route(request_route: Route) -> None:
         url = urllib.parse.urlparse(request_route.request.url)
@@ -99,16 +110,31 @@ async def main(arguments: argparse.Namespace) -> int:
             color_scheme=arguments.color_scheme,
         )
         await page.route("**/*", route)
+        page.on("pageerror", lambda error: problems.append(f"page error: {error}"))
+
+        async def load(path: str) -> bool:
+            """Go to `path` and wait until a slide shows; if none does, say so."""
+            await page.goto(f"http://{HOST}/{path}")
+            try:
+                await page.wait_for_selector(
+                    ".slidev-layout", state="visible", timeout=READY_TIMEOUT_MS
+                )
+            except PlaywrightTimeoutError:
+                problems.append(f"/{path} showed no slide within {READY_TIMEOUT_MS} ms")
+                return False
+            return True
+
         for slide_and_clicks in arguments.shots_at:
             slide, clicks = slide_and_clicks.split(":")
-            await page.goto(f"http://{HOST}/{slide}?clicks={clicks}")
+            if not await load(f"{slide}?clicks={clicks}"):
+                continue
             await page.wait_for_timeout(1800)
             await page.evaluate("document.fonts.ready")
             print(slide_and_clicks, json.dumps(await page.evaluate(INFO_JS)))
             if arguments.shots:
                 await page.screenshot(path=f"{arguments.shots}-{slide}-{clicks}.png")
         if arguments.clicks:
-            await page.goto(f"http://{HOST}/{arguments.clicks}")
+            await load(f"{arguments.clicks}")
             await page.wait_for_timeout(1500)
             await page.evaluate(MARK_JS)
             keys = ["ArrowRight"] * arguments.presses + (
@@ -124,8 +150,7 @@ async def main(arguments: argparse.Namespace) -> int:
                 )
                 await page.keyboard.press(key)
                 await page.wait_for_timeout(500)
-        if arguments.walk:
-            await page.goto(f"http://{HOST}/1")
+        if arguments.walk and await load("1"):
             await page.wait_for_timeout(1500)
             steps = [page.url]
             while len(steps) < WALK_LIMIT:
@@ -135,11 +160,17 @@ async def main(arguments: argparse.Namespace) -> int:
                     break
                 steps.append(page.url)
             print(f"walked {len(steps)} steps, to {steps[-1].split(HOST)[1]}")
+            if len(steps) == 1:
+                problems.append("the walk did not move from slide 1")
+            elif len(steps) >= WALK_LIMIT:
+                problems.append(f"the walk did not end within {WALK_LIMIT} steps")
         await browser.close()
     print("outside requests:", len(blocked))
     for url_text in blocked:
         print("  ", url_text)
-    return 1 if blocked else 0
+    for problem in problems:
+        print("FAIL", problem)
+    return 1 if blocked or problems else 0
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import { DESIGN } from "./design.ts";
-import { BalanceClock } from "./model.ts";
+import { BalanceClock, stillPose } from "./model.ts";
 
 const TIMING = DESIGN.timing;
 const STEP = 0.1; // ms
@@ -185,4 +185,20 @@ test("a resume during a settle has no jump in angle or speed", () => {
 
 test("the mechanism's time never goes back", () => {
   assert.equal(stepBack, 0);
+});
+
+test("a settled still has the mechanism time and the angle of the settled live clock", () => {
+  const live = new BalanceClock(TIMING, 0);
+  live.place(true, 0);
+  const pose = stillPose(TIMING, true, 0.37);
+  assert.equal(pose.swing, 0);
+  assert.equal(pose.time, live.time(5000));
+  // the fork is where the live watch has it: at the quarter period, not at 0
+  assert.equal(pose.time, TIMING.period / 4);
+});
+
+test("a free still is on the swing curve at its time", () => {
+  const pose = stillPose(TIMING, false, 0.37);
+  assert.equal(pose.time, 0.37);
+  assert.equal(pose.swing, new BalanceClock(TIMING, 0).swingAt(0.37));
 });

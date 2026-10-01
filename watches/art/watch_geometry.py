@@ -141,15 +141,32 @@ def polygon_points(corners: Sequence[Point], spacing: float) -> Points:
     return np.concatenate(samples)
 
 
+def inside_polygon(points: Points, corners: Sequence[Point]) -> NDArray[np.bool_]:
+    """Which of `points` lie inside the closed polygon (even-odd rule)."""
+    result = np.zeros(len(points), dtype=bool)
+    for start, end in zip(corners, [*corners[1:], corners[0]], strict=True):
+        # the edge crosses the horizontal ray to the right of the point
+        straddles = (start[1] > points[:, 1]) != (end[1] > points[:, 1])
+        with np.errstate(divide="ignore", invalid="ignore"):
+            crossing_x = start[0] + (points[:, 1] - start[1]) * (end[0] - start[0]) / (
+                end[1] - start[1]
+            )
+        result ^= straddles & (points[:, 0] < crossing_x)
+    return result
+
+
 def polygon_gap(
     corners: Sequence[Point], region: Region, spacing: float = 1.0
 ) -> float:
     """The gap between a polygon (drawn above everything) and a visible
-    region: 0 if they overlap."""
+    region: 0 if they overlap. They overlap if an edge of the polygon enters
+    the region, or the polygon covers part of the region's outline (the case of
+    a polygon that holds the whole region)."""
     edge = polygon_points(corners, spacing)
-    if inside(region, edge).any():
+    region_outline = outline(region, spacing)
+    if inside(region, edge).any() or inside_polygon(region_outline, corners).any():
         return 0.0
-    return nearest(edge, outline(region, spacing))
+    return nearest(edge, region_outline)
 
 
 # ---- the whole watch ------------------------------------------------------------------

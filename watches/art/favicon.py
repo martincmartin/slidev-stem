@@ -6,6 +6,7 @@ edit the pixel maps below and run it; do not edit the .ico.
 
     uv run art/favicon.py              # in watches/: writes public/favicon.ico
     uv run art/favicon.py out.ico      # writes there instead
+    uv run art/favicon.py --check      # fail if public/favicon.ico differs
     uv run art/favicon.py --preview p.png   # also writes the maps at 12x
 
 The .ico holds a 16 x 16 and a 32 x 32 image, and the browser picks one. The
@@ -19,8 +20,10 @@ at 16 px, with no hands. The colours are the cover's, from the talk's theme.
 """
 
 import argparse
+import io
 import pathlib
 import re
+import sys
 
 from PIL import Image
 from watch_design import TALK
@@ -163,20 +166,42 @@ def preview(icons: list[Image.Image], scale: int = 12) -> Image.Image:
     return sheet
 
 
-def main() -> None:
+def icon_bytes() -> bytes:
+    """The .ico file this script writes."""
+    buffer = io.BytesIO()
+    image(ICON_32).save(
+        buffer, format="ICO", sizes=[(16, 16), (32, 32)], append_images=[image(ICON_16)]
+    )
+    return buffer.getvalue()
+
+
+def main() -> int:
     parser = argparse.ArgumentParser(description="Write the deck's favicon.")
     parser.add_argument(
         "out", nargs="?", type=pathlib.Path, default=TALK / "public" / "favicon.ico"
     )
     parser.add_argument("--preview", type=pathlib.Path)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="fail if the file on disk differs; write nothing",
+    )
     arguments = parser.parse_args()
-    small, large = image(ICON_16), image(ICON_32)
-    large.save(arguments.out, sizes=[(16, 16), (32, 32)], append_images=[small])
+    if arguments.check:
+        if not arguments.out.exists() or arguments.out.read_bytes() != icon_bytes():
+            print(
+                f"{arguments.out} differs from what {pathlib.Path(__file__).name} writes",
+                file=sys.stderr,
+            )
+            return 1
+        return 0
+    arguments.out.write_bytes(icon_bytes())
     print(f"wrote {arguments.out}")
     if arguments.preview:
-        preview([large, small]).save(arguments.preview)
+        preview([image(ICON_32), image(ICON_16)]).save(arguments.preview)
         print(f"wrote {arguments.preview}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

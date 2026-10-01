@@ -2,18 +2,8 @@
 // rest of the scene away from a subject, tilts, and runs a model. It knows
 // nothing about what the scene shows: the model does.
 //
-// THE ORDER. Each change runs one channel at a time, eased: towards a subject
-// the camera moves, then the camera tilts, then the rest fades; away from it,
-// the reverse. From one subject to another, the rest first fades in around
-// the old subject; then the stage goes towards the new one. A new state starts
-// from what is on the screen now, so a change during a transition does not
-// jump.
-//
-// A FLASH (docs/illustrations.md, "Flash"). A state can name a subject to
-// flash: before the channels change, the subject is drawn in FLASH_INKS and in
-// its own inks, in turn, FLASH_CYCLES times. Only in a transition: a state
-// shown at once, or one that changes no channel, does not flash. It ends on
-// its own inks, so the move starts from the drawing as it was.
+// THE ORDER AND THE FLASH are the timeline's (timeline.ts): the stage has the
+// renderer, the model and the frame loop, and asks the timeline what to draw.
 //
 // A stage owns its renderer and its frame loop: `dispose()` stops both and
 // frees the renderer's GL objects.
@@ -26,23 +16,9 @@
 import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
 import { FLASH_INKS } from "./scene.ts";
-import type { Group, Palette, Scene, Subject, View } from "./scene.ts";
-
-export const MOVE_SECONDS = 1.8;
-export const FADE_SECONDS = 0.8;
-export const TILT_SECONDS = 1.5;
-/** A flash: on (in FLASH_INKS), then off (in its own inks), this many times. */
-export const FLASH_ON_SECONDS = 0.25;
-export const FLASH_OFF_SECONDS = 0.25;
-export const FLASH_CYCLES = 5;
-export const FLASH_SECONDS =
-  FLASH_CYCLES * (FLASH_ON_SECONDS + FLASH_OFF_SECONDS);
-
-/** Whether a flash that started `elapsed` seconds ago is on. */
-export function flashIsOn(elapsed: number): boolean {
-  if (elapsed < 0 || elapsed >= FLASH_SECONDS) return false;
-  return elapsed % (FLASH_ON_SECONDS + FLASH_OFF_SECONDS) < FLASH_ON_SECONDS;
-}
+import type { Group, Palette, Scene, Subject } from "./scene.ts";
+import { Timeline } from "./timeline.ts";
+import type { StageState, Values } from "./timeline.ts";
 
 /** What the scene shows and moves. */
 export interface Model<ModelState> {
@@ -52,63 +28,6 @@ export interface Model<ModelState> {
   frame(now: number, renderer: Renderer): Map<Group, Float32Array>;
   /** What the model is doing, for the measurement scripts. */
   phase(now: number): string;
-}
-
-/** What the camera and the fade show. */
-export interface StageState {
-  view: View;
-  /** Degrees. */
-  tilt: number;
-  /** The rest of the scene fades away from this; `null`: nothing fades. */
-  subject: Subject | null;
-  /** Flashed before the channels change, in a transition; `null`: none. */
-  flash: Subject | null;
-}
-
-type Channel = "view" | "rest" | "tilt";
-
-interface Values {
-  view: View;
-  tilt: number;
-  rest: number;
-  /** What the fade keeps. It matters only while `rest` < 1. */
-  subject: Subject | null;
-}
-
-interface Phase {
-  channel: Channel;
-  from: Values[Channel];
-  to: Values[Channel];
-  /** ms. */
-  start: number;
-  seconds: number;
-  /** A fade towards a subject: the subject that it keeps, from its start. */
-  subject?: Subject;
-}
-
-export function ease(fraction: number): number {
-  return fraction < 0.5 ? 4 * fraction ** 3 : 1 - (-2 * fraction + 2) ** 3 / 2;
-}
-
-export function mix(first: number, second: number, fraction: number): number {
-  return first + (second - first) * fraction;
-}
-
-/** An eased mix of two views, as a view of its own. */
-export function mixView(first: View, second: View, fraction: number): View {
-  return {
-    name: `${first.name} to ${second.name}`,
-    scale: mix(first.scale, second.scale, fraction),
-    shift: [
-      mix(first.shift[0], second.shift[0], fraction),
-      mix(first.shift[1], second.shift[1], fraction),
-    ],
-    pivot: [
-      mix(first.pivot[0], second.pivot[0], fraction),
-      mix(first.pivot[1], second.pivot[1], fraction),
-      mix(first.pivot[2], second.pivot[2], fraction),
-    ],
-  };
 }
 
 /** The element's size on the screen, in device px. Slidev scales the slide
@@ -122,13 +41,6 @@ export function deviceSize(element: Element): [number, number] {
     Math.max(1, Math.round(height * ratio)),
   ];
 }
-
-const TOWARDS_SUBJECT: Channel[] = ["view", "tilt", "rest"];
-const SECONDS: Record<Channel, number> = {
-  view: MOVE_SECONDS,
-  rest: FADE_SECONDS,
-  tilt: TILT_SECONDS,
-};
 
 /** The frames that the log keeps: 10 minutes at 60 frames a second. When it
  *  has twice this many, it drops the oldest half, so that a long run does
@@ -153,12 +65,7 @@ export class Stage<ModelState> {
   /** The pending animation frame, while the stage runs. */
   private request: number | null = null;
   private disposed = false;
-  /** Where each channel is, when no phase runs. */
-  private values: Values | null = null;
-  /** One after another. */
-  private phases: Phase[] = [];
-  /** The flash before the phases, and when it starts (ms). */
-  private flash: { subject: Subject; start: number } | null = null;
+  private readonly timeline = new Timeline();
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -172,133 +79,36 @@ export class Stage<ModelState> {
   }
 
   /** Go to a slide's state: at once, or one channel at a time from where the
-   *  camera and the fade are now, after the state's flash. Returns the
-   *  seconds until the flash ends, or 0 if there is none. */
+   *  camera and the fade are now, after the state's flash (the timeline's).
+   *  Returns the seconds until the flash ends, or 0 if there is none. */
   show(state: StageState, modelState: ModelState, instantly = false): number {
     check(!this.disposed, "the stage is disposed");
     const now = performance.now();
-    const target: Values = {
-      view: state.view,
-      tilt: state.tilt,
-      rest: state.subject ? 0 : 1,
-      subject: state.subject,
-    };
-    const running = this.flash;
-    this.flash = null;
-    if (instantly || !this.values) {
-      this.values = target;
-      this.phases = [];
-      this.model.show(modelState, now, true);
-      return 0;
-    }
-    const current = this.valuesAt(now);
-    this.values = current;
-    this.phases = [];
-    let start = now;
-    const add = (phase: Omit<Phase, "start" | "seconds">): void => {
-      const seconds = SECONDS[phase.channel];
-      this.phases.push({ ...phase, start, seconds });
-      start += seconds * 1000;
-    };
-    // where each channel is when the phases so far end
-    const reached = { ...current };
-    if (
-      state.subject !== null &&
-      current.subject !== state.subject &&
-      current.rest < 1
-    ) {
-      add({ channel: "rest", from: current.rest, to: 1 });
-      reached.rest = 1;
-    }
-    const order =
-      target.rest < reached.rest
-        ? TOWARDS_SUBJECT
-        : [...TOWARDS_SUBJECT].reverse();
-    for (const channel of order) {
-      if (reached[channel] === target[channel]) continue;
-      add({
-        channel,
-        from: reached[channel],
-        to: target[channel],
-        ...(channel === "rest" && state.subject
-          ? { subject: state.subject }
-          : {}),
-      });
-    }
-    let flashSeconds = 0;
-    if (state.flash && this.phases.length > 0) {
-      // a flash of the same subject that is still running goes on: a click
-      // during it does not start it again
-      const start =
-        running?.subject === state.flash &&
-        now < running.start + FLASH_SECONDS * 1000
-          ? running.start
-          : now;
-      this.flash = { subject: state.flash, start };
-      flashSeconds = FLASH_SECONDS - (now - start) / 1000;
-      const delay = start + FLASH_SECONDS * 1000 - now;
-      for (const phase of this.phases) phase.start += delay;
-    }
-    this.model.show(modelState, now, false);
+    const atOnce = instantly || !this.timeline.hasState;
+    const flashSeconds = this.timeline.show(state, now, atOnce);
+    this.model.show(modelState, now, atOnce);
     return flashSeconds;
   }
 
   /** The flashed subject, if the flash is on at `now`. */
   flashingAt(now: number): Subject | null {
-    const { flash } = this;
-    if (!flash || !flashIsOn((now - flash.start) / 1000)) return null;
-    return flash.subject;
+    return this.timeline.flashingAt(now);
   }
 
   /** Each channel's value at `now`. */
   valuesAt(now: number): Values {
-    if (!this.values) throw new Error("the stage has no state yet");
-    const values = { ...this.values };
-    for (const phase of this.phases) {
-      if (now < phase.start) continue;
-      if (phase.subject) values.subject = phase.subject;
-      const fraction = Math.min(
-        1,
-        (now - phase.start) / (phase.seconds * 1000),
-      );
-      const eased = ease(fraction);
-      // At its end, the target itself, so that the next state can tell that
-      // this channel is already there.
-      if (fraction >= 1) {
-        Object.assign(values, { [phase.channel]: phase.to });
-      } else if (phase.channel === "view") {
-        values.view = mixView(phase.from as View, phase.to as View, eased);
-      } else {
-        values[phase.channel] = mix(
-          phase.from as number,
-          phase.to as number,
-          eased,
-        );
-      }
-    }
-    return values;
+    return this.timeline.valuesAt(now);
   }
 
   /** What is moving at `now`: the flash, a channel, or the model's phase. */
   phaseAt(now: number): string {
-    const { flash } = this;
-    if (
-      flash &&
-      now >= flash.start &&
-      now < flash.start + FLASH_SECONDS * 1000
-    ) {
-      return "flash";
-    }
-    const running = this.phases.find(
-      (phase) => now >= phase.start && now < phase.start + phase.seconds * 1000,
-    );
-    return running ? running.channel : this.model.phase(now);
+    return this.timeline.phaseAt(now) ?? this.model.phase(now);
   }
 
   /** Draw a frame at each animation frame, until `stop()`. */
   start(): void {
     check(!this.disposed, "the stage is disposed");
-    check(this.values !== null, "show a state before the stage starts");
+    check(this.timeline.hasState, "show a state before the stage starts");
     this.request ??= requestAnimationFrame(this.frame);
   }
 

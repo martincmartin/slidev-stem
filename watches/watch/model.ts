@@ -529,6 +529,22 @@ export class BalanceClock {
   }
 }
 
+/** The mechanism's time and the balance's angle in a still, `seconds` after the
+ *  slide was reached. Both come from one clock, as in the live watch, so a
+ *  settled still shows the pose that the live watch settles into. */
+export function stillPose(
+  timing: Timing,
+  settled: boolean,
+  seconds: number,
+): { time: number; swing: number } {
+  const clock = new BalanceClock(timing, 0);
+  clock.place(settled, 0);
+  return {
+    time: clock.time(seconds * 1000),
+    swing: clock.angle(seconds * 1000),
+  };
+}
+
 // ---- the watch's model for the stage ----------------------------------------------------------
 /** What a slide asks of the watch's motion. */
 export interface WatchModelState {

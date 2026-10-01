@@ -25,6 +25,7 @@
     "lint": "eslint .",
     "test": "node --test \"webgl/**/*.test.ts\" \"watch/**/*.test.ts\"",
     "art:scene": "node watch/dump.ts",
+    "art:generated": "uv run art/flexing_ruler.py --check && uv run art/watch_design.py --check && uv run art/favicon.py --check",
     "art:stills": "uv run art/watch_stills.py"
   },
   "dependencies": {
@@ -35,7 +36,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@slidev/theme-seriph": "^0.25.0",
     "@types/node": "^26.6.3",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",

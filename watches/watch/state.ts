@@ -11,7 +11,7 @@
 //     a `watch`; the slide shows something else from then on
 
 import type { Scene } from "../webgl/scene.ts";
-import type { StageState } from "../webgl/stage.ts";
+import type { StageState } from "../webgl/timeline.ts";
 import type { WatchModelState } from "./model.ts";
 
 export interface WatchState {

@@ -15,3 +15,4 @@ the two lists in step.
 
 The browser-tab icon is `art/favicon.py`: edit its pixel maps and run it. It is
 drawn pixel by pixel, not scaled down from the cover, on purpose.
+`art/favicon.py --check` fails if the file on disk differs.

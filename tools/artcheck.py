@@ -55,52 +55,63 @@ from xml.etree import ElementTree
 import lib
 
 HEX = re.compile(r"^#[0-9A-Fa-f]{6}$")
-INHERIT = ("fill", "stroke", "fill-opacity", "stroke-opacity", "opacity")
+# These inherit. `opacity` does not: it applies to the element as a group, so
+# the opacities of a mark and all its ancestors multiply.
+INHERIT = ("fill", "stroke", "fill-opacity", "stroke-opacity")
+
+
+# Elements that carry a style down to their children but paint nothing.
+NOT_PAINTED = ("g", "svg", "title", "desc", "animate", "animateTransform", "set")
 
 
 def marks(
-    element: ElementTree.Element, inherited: dict[str, str] | None = None
+    element: ElementTree.Element,
+    inherited: dict[str, str] | None = None,
+    group_opacity: float = 1.0,
 ) -> Iterator[tuple[str, lib.Colour, float]]:
     """Every (kind, colour, effective alpha) this tree paints.
 
     SVG presentation attributes inherit, so a <g stroke-opacity="0.5"> makes
     every line under it half strength. This walks the tree carrying them down,
-    which is the only way to see what a mark is actually drawn at.
+    which is the only way to see what a mark is actually drawn at. A group's
+    `opacity` is carried apart (`group_opacity`) and multiplies: a mark in two
+    nested groups at 0.5 is drawn at 0.25, and a child at opacity 1 does not
+    undo its parent's 0.5.
     """
-    style = dict(inherited or {})
-    style.update(
-        {key: value for key, value in element.attrib.items() if key in INHERIT}
-    )
-    tag = element.tag.split("}")[-1]
     # An attribute that is ANIMATED is not the attribute the viewer sees. A contour
     # that starts at opacity="0" and animates to 1 is fully opaque for most of the
-    # cycle; reading the static value called it a wash. Drop any attribute an
+    # cycle; reading the static value called it a wash. Ignore any attribute an
     # <animate> child targets, and let tools/motion.py judge what moves.
     animated = {
         child.attrib.get("attributeName", "")
         for child in element
         if child.tag.split("}")[-1] in ("animate", "set")
     }
+    style = {
+        **(inherited or {}),
+        **{key: value for key, value in element.attrib.items() if key in INHERIT},
+    }
     for key in animated & set(INHERIT):
         style.pop(key, None)
-        element.attrib.pop(key, None)
+    if "opacity" not in animated:
+        group_opacity *= float(element.attrib.get("opacity", 1))
+    tag = element.tag.split("}")[-1]
     if tag not in ("defs", "clipPath", "mask", "pattern", "marker"):
-        group = float(style.get("opacity", 1))
         for kind in ("fill", "stroke"):
             colour = style.get(kind)
             if (
                 colour
                 and colour != "none"
                 and HEX.match(colour)
-                and tag not in ("g", "svg", "title")
+                and tag not in NOT_PAINTED
             ):
                 yield (
                     kind,
                     lib.Colour.from_hex(colour),
-                    float(style.get(f"{kind}-opacity", 1)) * group,
+                    float(style.get(f"{kind}-opacity", 1)) * group_opacity,
                 )
         for child in element:
-            yield from marks(child, style)
+            yield from marks(child, style, group_opacity)
 
 
 def check_file(file: pathlib.Path) -> tuple[list[str], list[str]]:

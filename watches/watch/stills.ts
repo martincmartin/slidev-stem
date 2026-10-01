@@ -5,7 +5,7 @@
 import { Stills } from "../webgl/stills.ts";
 import type { Palette } from "../webgl/scene.ts";
 import type { Watch } from "./generate.ts";
-import { BalanceClock, Motion } from "./model.ts";
+import { Motion, stillPose } from "./model.ts";
 import { stageState } from "./state.ts";
 import type { WatchState } from "./state.ts";
 
@@ -40,10 +40,11 @@ export class WatchStills {
       size,
     ]);
     return this.stills.of(key, (renderer) => {
-      const clock = new BalanceClock(design.timing, 0);
-      clock.place(state.settled, 0);
-      const time = state.settled ? 0 : STILL_TIME;
-      const swing = state.settled ? 0 : clock.swingAt(time);
+      const { time, swing } = stillPose(
+        design.timing,
+        state.settled,
+        STILL_TIME,
+      );
       const stage = stageState(scene, state);
       renderer.updateMesh(this.watch.spring, this.motion.springGeometry(swing));
       renderer.render({

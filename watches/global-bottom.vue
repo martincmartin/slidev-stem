@@ -17,7 +17,8 @@ import {
   useTemplateRef,
   watch as onChange,
 } from "vue";
-import { MOVE_SECONDS, Stage } from "./webgl/stage.ts";
+import { Stage } from "./webgl/stage.ts";
+import { MOVE_SECONDS } from "./webgl/timeline.ts";
 import { WatchModel } from "./watch/model.ts";
 import type { WatchModelState } from "./watch/model.ts";
 import { WATCH, watchStills } from "./watch/instance.ts";

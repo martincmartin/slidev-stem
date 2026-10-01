@@ -30,7 +30,8 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 | `contact.py`           | playwright               | what does it look like, frame by frame                                                                                                 |
 | `barroom.py`           | playwright + PIL + numpy | what does the back row of a lit room get (an SVG, or a PNG that something else drew)                                                   |
 | `motion.py`            | playwright + PIL + numpy | can the back row see the thing that moves (an SVG's animation, or two PNG frames of one)                                               |
-| `offline_check.py`     | playwright               | does a built deck make any outside request; its fonts and colours per slide                                                            |
+| `offline_check.py`     | playwright               | does a built deck make any outside request, and does it start and show its slides; its fonts and colours per slide                     |
+| `talkcheck.py`         | stdlib, pnpm             | does a talk have its own `pnpm-workspace.yaml`, and does Prettier read each of its deck files with the Slidev parser                   |
 | `check_python.py`      | ruff, mypy, pyright      | do these Python files pass the house's checks (default: every tool here)                                                               |
 | `doccheck.py`          | stdlib                   | do the docs' links and anchors resolve, does each `docs/` match its two indexes, does each named tool exist                            |
 | `validate.py`          | all of the above         | does this project (stem/ or a talk) pass every check: run before a commit                                                              |
@@ -57,7 +58,7 @@ uv run tools/scenecheck.py scene.json       # from a talk's `pnpm art:scene`
 uv run tools/offline_check.py <build dir> 1:0 2:5   # see its docstring
 uv run tools/offline_check.py <build dir> --walk    # every slide and click
 uv run tools/check_python.py      # after you change a tool
-tools/capture_outputs.sh /tmp/before          # before you change a tool; again after,
+tools/capture_outputs.sh /tmp/before watches  # before you change a tool; again after,
 diff -r /tmp/before /tmp/after                # ... then compare: a refactor changes nothing
 ```
 
@@ -147,14 +148,15 @@ uv run tools/doccheck.py watches/docs watches/README.md watches/AGENTS.md --tool
 ```
 
 It checks that the docs hold together (links, anchors, indexes, tool paths),
-not that what they say is true. That is still a reader's job: see the global
-`AGENTS.md`, "Docs".
+not that what they say is true. That is still a reader's job: when you change
+code, search the docs for each name that you changed.
 
 It reads Markdown with regular expressions. The cases it must get right (and
 the limits it documents) are tests in `test_doccheck.py`, which the root run of
 `validate.py` runs with pytest. When doccheck reads some Markdown wrongly, add
-a test that fails, then fix the reader. A tool in `tools/` that gets its own
-`test_<tool>.py` is run the same way.
+a test that fails, then fix the reader. Each tool and `lib.py` has its own
+`test_<name>.py`, run the same way. When a check gives a wrong answer, add a
+test with the input that fooled it, then fix the check.
 
 ## Adding a tool
 

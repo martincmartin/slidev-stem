@@ -152,4 +152,5 @@ check of the talk, and builds the deck ([`stem/docs/talks.md`](../../docs/talks.
 **A deck file must match a `.prettierrc` override** (`slides.md`,
 `slides-*.md`, `pages/*.md`). If you add a deck file with another name, add it
 to the `files` array in `stem/.prettierrc` in the same change: the Markdown
-parser breaks a slide's frontmatter. `stem/AGENTS.md` has the details.
+parser breaks a slide's frontmatter. `stem/AGENTS.md` has the details, and
+`validate.py` fails if a file is missing from the override.

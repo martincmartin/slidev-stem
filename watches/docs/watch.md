@@ -30,10 +30,11 @@ before the zoom).
 | Path                                                     | What it holds                                                                                                                                                         |
 | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `webgl/scene.ts`                                         | the types of a scene: `INKS`, meshes, lines, silhouette edges, clip discs, groups, views, subjects, the palette; `checkScene`, `checkPalette`                         |
-| `webgl/renderer.ts`, `mesh.ts`, `stage.ts`, `stills.ts`  | the renderer; extrusions, ribbons and their triangles (earcut); the stage that runs the camera, fade and tilt one at a time; the stills                               |
+| `webgl/renderer.ts`, `mesh.ts`, `stage.ts`, `stills.ts`  | the renderer; extrusions, ribbons and their triangles (earcut); the stage (renderer, model and frame loop); the stills                                                |
+| `webgl/timeline.ts`                                      | the choreography, with no DOM: the camera, fade and tilt one at a time, and the flash; the durations                                                                  |
 | `webgl/math.ts`, `checked.ts`                            | matrices; `at` and `check`, for what is a bug if it is false                                                                                                          |
 | `webgl/probe/`                                           | a page with one canvas and `window.watchProbe.render(options)`, for the pixel and fade checks; `checks.ts`: `window.webglChecks()`, the renderer's browser checks     |
-| `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand                                                                                                                  |
+| `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand. `art/watch_design.py --check` compares what the file means, not its bytes (`pnpm format` rewrites its spacing)  |
 | `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights, views and subjects                                                                                          |
 | `watch/palette.ts`                                       | which theme variable colours each ink; `themePalette()` reads them from the page                                                                                      |
 | `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism and the balance's settle; frontmatter to state; the watch's stills; the shared instance                                                                 |
@@ -156,7 +157,10 @@ never damps, on purpose.
   second of a path), from the first vibration mode of a fixed-end beam at
   constant length. The options are in the flexing-ruler task.
 - **`art/flexing_ruler.py --check`** fails if the SVG on disk differs, or if
-  the frame rate changes any `begin` or `dur`.
+  the frame rate changes any `begin` or `dur`. `pnpm art:generated` runs it
+  with the `--check` of `watch_design.py` and `favicon.py`, and `validate.py`
+  runs that script: a change to the theme or to a generator fails until the
+  file is written again.
 - **The SVG takes its colours from the theme** through namespaced classes
   ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "The page's
   theme paints the drawing").

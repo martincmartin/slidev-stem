@@ -8,6 +8,7 @@ geometry is made from the JSON in TypeScript, at load (watch/generate.ts).
 
     uv run art/watch_design.py                  # in watches/: writes watch/design.json
     uv run art/watch_design.py out.json         # writes there instead
+    uv run art/watch_design.py --check          # fail if watch/design.json differs
 
 After every change, run the validator. It type-checks the art scripts, checks
 the layout and writes the JSON:
@@ -28,6 +29,7 @@ import argparse
 import json
 import math
 import pathlib
+import sys
 from dataclasses import dataclass, field
 
 Point = tuple[float, float]  # x, y in CSS px; y points down
@@ -507,15 +509,52 @@ def design_text(layout: Layout = LAYOUT) -> str:
     return json.dumps(design(layout), indent=1) + "\n"
 
 
-def main() -> None:
+# A regenerated number may differ in its last digits between machines (numpy,
+# scipy), and `pnpm format` rewrites the file's whitespace, so --check compares
+# what the JSON means, not its bytes.
+CHECK_TOLERANCE = 1e-9
+
+
+def same_design(first: object, second: object) -> bool:
+    """Whether two parsed JSON values are equal, numbers up to CHECK_TOLERANCE."""
+    if isinstance(first, dict) and isinstance(second, dict):
+        return first.keys() == second.keys() and all(
+            same_design(first[key], second[key]) for key in first
+        )
+    if isinstance(first, list) and isinstance(second, list):
+        return len(first) == len(second) and all(
+            same_design(one, other) for one, other in zip(first, second, strict=True)
+        )
+    if isinstance(first, (int, float)) and isinstance(second, (int, float)):
+        return abs(first - second) <= CHECK_TOLERANCE
+    return first == second
+
+
+def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("out", nargs="?", default=str(DESIGN_FILE))
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="fail if the file on disk means something else; write nothing",
+    )
     args = parser.parse_args()
     out = pathlib.Path(args.out)
+    if args.check:
+        if not out.exists() or not same_design(
+            json.loads(out.read_text()), json.loads(design_text())
+        ):
+            print(
+                f"{out} differs from what {pathlib.Path(__file__).name} writes",
+                file=sys.stderr,
+            )
+            return 1
+        return 0
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(design_text())
     print(f"wrote {out} ({out.stat().st_size / 1024:.1f} KiB)")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

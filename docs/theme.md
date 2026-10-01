@@ -108,8 +108,10 @@ only:
 
 Put the rule in the talk's `styles/`, or in a `<style>` on the slide. Use a
 `#rrggbb` value and a role that the theme sets. `uv run tools/palette.py --talk
-<talk>` fails if the talk sets a `--palette-*` variable in any other rule, and
-it measures each such slide's palette against the gates. Inlined drawings
+<talk>` fails if the talk sets a `--palette-*` variable in any other rule, in
+any of its source files (it skips only `docs/`, `tasks/`, `public/`, the
+READMEs and the dependencies), and it measures each such slide's palette
+against the gates. Inlined drawings
 follow the override.
 
 ## The gates

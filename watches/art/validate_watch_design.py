@@ -19,6 +19,7 @@ The steps:
      MIN_CLEARANCE apart;
    - the pallet fork, at both ends of its swing, is at least FORK_CLEARANCE
      from the visible parts of the parts it does not work on;
+   (first, the clearance functions themselves, on shapes with a known gap);
 4. write watch/design.json.
 
 The art checks of the drawing (palette, stroke ladder, legibility, motion) are
@@ -130,12 +131,38 @@ def check_layout() -> None:
     )
 
 
+def check_clearance_functions() -> None:
+    """The clearance functions give the right gap for shapes whose gap is known:
+    the layout check can be no better than they are."""
+    import watch_geometry as geometry
+
+    disc = geometry.Region((0.0, 0.0), 1.0, ())
+    around = [(-10.0, -10.0), (10.0, -10.0), (10.0, 10.0), (-10.0, 10.0)]
+    beside = [(5.0, -10.0), (10.0, -10.0), (10.0, 10.0), (5.0, 10.0)]
+    far = geometry.Region((20.0, 0.0), 1.0, ())
+    problems = []
+    if geometry.polygon_gap(around, disc) != 0:
+        problems.append("a polygon that holds a whole region has a gap")
+    if abs(geometry.polygon_gap(beside, disc) - 4.0) > 0.1:
+        problems.append("a polygon 4 px from a region does not have a gap of 4 px")
+    if geometry.polygon_gap(around, far) < 9.0:
+        problems.append("a polygon 9 px from a region has a gap under 9 px")
+    if abs(geometry.region_gap(disc, far) - 18.0) > 0.1:
+        problems.append("two discs 18 px apart do not have a gap of 18 px")
+    if problems:
+        fail(
+            "clearance functions", "\n".join(f"      {problem}" for problem in problems)
+        )
+    ok("clearance functions", "gaps of known shapes")
+
+
 def main() -> None:
     # numpy is in watches/.venv: rerun there if this is not it
     if pathlib.Path(sys.prefix).resolve() != VENV.resolve():
         command = [UV, "run", "--project", str(TALK), "python", __file__]
         os.execv(UV, [*command, *sys.argv[1:]])
     check_python()
+    check_clearance_functions()
     check_layout()
     run("write design.json", [sys.executable, str(GENERATOR)])
     ok("write design.json", str(DESIGN.relative_to(TALK)))

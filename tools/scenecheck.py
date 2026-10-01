@@ -26,6 +26,7 @@ Stdlib only, with `lib.py`. It exits non-zero on a failure.
 
 import argparse
 import json
+import math
 import pathlib
 import sys
 from dataclasses import dataclass
@@ -61,6 +62,26 @@ def read_inks(scene: dict[str, object]) -> list[Ink]:
     ]
 
 
+def malformed(
+    mesh: str, kind: str, entry: dict[str, object], numbers: tuple[str, ...], inks: int
+) -> Finding | None:
+    """What is wrong with the shape of a fill or a line style: an ink that is
+    not one of the scene's `inks`, or a number that is missing or not finite.
+    The grammar's comparisons are false for NaN, so a NaN would pass them."""
+    ink = entry.get("ink")
+    if isinstance(ink, bool) or not isinstance(ink, int) or not 0 <= ink < inks:
+        return Finding(mesh, f"{kind} ink {ink!r} is not one of the scene's {inks}")
+    for name in numbers:
+        value = entry.get(name)
+        if (
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(value)
+        ):
+            return Finding(mesh, f"{kind} {name} {value!r} is not a finite number")
+    return None
+
+
 def ink_finding(mesh: str, kind: str, ink: Ink) -> Finding | None:
     if ink.role not in lib.ART_ROLES:
         return Finding(
@@ -72,6 +93,8 @@ def ink_finding(mesh: str, kind: str, ink: Ink) -> Finding | None:
 
 
 def fill_findings(mesh: str, fill: dict[str, object], inks: list[Ink]) -> list[Finding]:
+    if problem := malformed(mesh, "fill", fill, ("opacity",), len(inks)):
+        return [problem]
     found = [ink_finding(mesh, "fill", inks[int(str(fill["ink"]))])]
     opacity = float(str(fill["opacity"]))
     low, high = lib.WASH_OPACITY
@@ -91,6 +114,8 @@ def fill_findings(mesh: str, fill: dict[str, object], inks: list[Ink]) -> list[F
 def style_findings(
     mesh: str, style: dict[str, object], inks: list[Ink]
 ) -> list[Finding]:
+    if problem := malformed(mesh, "line", style, ("width", "opacity"), len(inks)):
+        return [problem]
     ink = inks[int(str(style["ink"]))]
     found = [ink_finding(mesh, "line", ink)]
     width = float(str(style["width"]))
@@ -140,6 +165,11 @@ def check(scene: dict[str, object]) -> tuple[int, list[Finding]]:
     return len(meshes), unique
 
 
+def reject_constant(token: str) -> object:
+    """Python's JSON reader takes NaN and Infinity, which JSON does not have."""
+    raise ValueError(f"{token} is not JSON")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
     parser.add_argument("scene", help="the scene's JSON, from `pnpm art:scene`")
@@ -149,7 +179,9 @@ def main() -> int:
         help="print the findings as JSON, for another program",
     )
     arguments = parser.parse_args()
-    scene = json.loads(pathlib.Path(arguments.scene).read_text())
+    scene = json.loads(
+        pathlib.Path(arguments.scene).read_text(), parse_constant=reject_constant
+    )
     count, findings = check(scene)
     if arguments.json:
         print(

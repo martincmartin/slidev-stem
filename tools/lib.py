@@ -198,7 +198,11 @@ class ShownSize:
 
 def plain_number(text: str | None) -> float | None:
     """`text` as a number, or None if it is missing or not a plain number."""
-    return float(text) if text and re.fullmatch(r"[0-9.]+", text) else None
+    return (
+        float(text)
+        if text and re.fullmatch(r"[0-9]+\.?[0-9]*|\.[0-9]+", text)
+        else None
+    )
 
 
 def shown_size(source: str) -> ShownSize | None:
@@ -534,20 +538,40 @@ def _rule_selector(before: str) -> str:
     return " ".join(selector)
 
 
+# What a talk's own files may hold that the palette check does not read: the
+# docs and tasks talk about the palette, and the rest is not source.
+TALK_SOURCE_SUFFIXES = frozenset({".md", ".vue", ".css", ".ts", ".mts", ".js", ".html"})
+TALK_SKIPPED_DIRECTORIES = frozenset(
+    {"node_modules", "dist", "docs", "tasks", "public", ".venv"}
+)
+TALK_SKIPPED_FILES = frozenset({"README.md", "AGENTS.md"})
+
+
+def talk_source_files(talk: pathlib.Path) -> list[pathlib.Path]:
+    """Every file of the talk that can set a style: all source files, except
+    the docs, the tasks, `public/` and the dependencies. This is a denylist, so
+    a file in a place that nobody thought of is still read."""
+    return sorted(
+        file
+        for file in talk.rglob("*")
+        if file.is_file()
+        and file.suffix in TALK_SOURCE_SUFFIXES
+        and file.name not in TALK_SKIPPED_FILES
+        and not any(
+            part in TALK_SKIPPED_DIRECTORIES or part.startswith(".")
+            for part in file.relative_to(talk).parts[:-1]
+        )
+    )
+
+
 def talk_palette_declarations(
     talks: Iterable[pathlib.Path], theme: Palette
 ) -> PaletteDeclarations:
-    """Every PALETTE_PREFIX declaration in `talks` (talk directories). The theme
-    sets the palette. A talk may only change roles of `theme` for the slides
-    with a class, in a SLIDE_CLASS_SELECTOR rule, with #rrggbb values."""
-    files = [
-        file
-        for talk in talks
-        for file in sorted(talk.glob("slides*.md"))
-        + sorted(talk.glob("pages/*.md"))
-        + sorted((talk / "components").glob("*.vue"))
-        + sorted((talk / "styles").glob("*.css"))
-    ]
+    """Every PALETTE_PREFIX declaration in the source files of `talks` (talk
+    directories; see `talk_source_files`). The theme sets the palette. A talk
+    may only change roles of `theme` for the slides with a class, in a
+    SLIDE_CLASS_SELECTOR rule, with #rrggbb values."""
+    files = [file for talk in talks for file in talk_source_files(talk)]
     declaration_pattern = re.compile(
         re.escape(PALETTE_PREFIX) + r"([\w-]+)\s*:\s*([^;}\"'\n]*)"
     )

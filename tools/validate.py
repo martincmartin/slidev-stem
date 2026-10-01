@@ -23,7 +23,8 @@ What it checks comes from the uv project that holds the current directory:
   * a talk with TypeScript (scripts in its package.json): also `pnpm typecheck`,
     `pnpm lint` and `pnpm test`. A talk with WebGL art (the script `art:scene`)
     also has its scene written to a temporary file and checked by scenecheck.py;
-    with the script `art:stills`, its PNG stills written to a temporary directory
+    with the script `art:generated`, its generated files are checked against
+    the scripts that write them; with the script `art:stills`, its PNG stills written to a temporary directory
     (with pairs.json, a list of [first, second] file names), and barroom.py run
     on the PNGs and motion.py --png-pair on each pair.
 
@@ -44,6 +45,7 @@ import sys
 import tempfile
 import textwrap
 from collections.abc import Callable, Sequence
+from dataclasses import dataclass
 from pathlib import Path
 
 import lib
@@ -98,9 +100,14 @@ def house_checks(fix: bool) -> list[Check]:
     ]
 
 
-# A check that is made when it is reached, because what it runs on is made by a
-# check before it.
-Later = Callable[[], Check]
+@dataclass(frozen=True)
+class Later:
+    """A check that is made when it is reached, because what it runs on is made
+    by a check before it. Its label is known now, so that a failure to make it
+    is reported under its name, and the checks after it still run."""
+
+    label: str
+    make: Callable[[], Check]
 
 
 def scripts_of(directory: Path) -> set[str]:
@@ -132,16 +139,23 @@ def art_checks(directory: Path, work: Path) -> list[Check | Later]:
             f" && {shlex.join(uv_run('tools/scenecheck.py', str(scene)))}"
         )
         checks.append(Check("scenecheck", directory, ("sh", "-c", command)))
+    if "art:generated" in scripts:
+        checks.append(
+            Check("generated", directory, ("pnpm", "--silent", "art:generated"))
+        )
     if "art:stills" in scripts:
         stills = work / "stills"
         checks.append(
             Check("stills", directory, ("pnpm", "--silent", "art:stills", str(stills)))
         )
         checks.append(
-            lambda: Check(
+            Later(
                 "barroom (png)",
-                STEM,
-                uv_run("tools/barroom.py", *map(str, sorted(stills.glob("*.png")))),
+                lambda: Check(
+                    "barroom (png)",
+                    STEM,
+                    uv_run("tools/barroom.py", *map(str, sorted(stills.glob("*.png")))),
+                ),
             )
         )
 
@@ -158,7 +172,7 @@ def art_checks(directory: Path, work: Path) -> list[Check | Later]:
             ]
             return Check("motion (png)", STEM, uv_run("tools/motion.py", *arguments))
 
-        checks.append(motion)
+        checks.append(Later("motion (png)", motion))
     return checks
 
 
@@ -180,6 +194,7 @@ def talk_checks(
         Check("motion", STEM, uv_run("tools/motion.py", public)),
         *art_checks(directory, work),
         Check("palette", STEM, uv_run("tools/palette.py", "--talk", talk)),
+        Check("talk setup", STEM, uv_run("tools/talkcheck.py", talk)),
         Check("build", directory, ("pnpm", "build", "--out", str(deck))),
         Check(
             "offline",
@@ -217,18 +232,27 @@ def main() -> int:
 def run_all(heading: str, checks: Sequence[Check | Later]) -> int:
     """Run every check, report each, and return the exit code."""
     print(f"--    {heading}")
-    failed: list[Check] = []
+    failed: list[str] = []
     for item in checks:
-        check = item() if callable(item) else item
+        if isinstance(item, Later):
+            try:
+                check = item.make()
+            except (OSError, ValueError) as error:  # what the check before it left
+                failed.append(item.label)
+                print(f"FAIL  {item.label}")
+                print(f"      could not be made: {error}")
+                continue
+        else:
+            check = item
         result = run(check)
         if result.returncode == 0:
             print(ok_line(check, result))
             continue
-        failed.append(check)
+        failed.append(check.label)
         print(f"FAIL  {check.label}")
         print(textwrap.indent((result.stdout + result.stderr).rstrip(), "      "))
     if failed:
-        names = ", ".join(check.label for check in failed)
+        names = ", ".join(failed)
         print(f"\n{len(failed)} of {len(checks)} checks failed ({names})")
         return 1
     print(f"\nall {len(checks)} checks passed")
