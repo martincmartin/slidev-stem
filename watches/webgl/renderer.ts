@@ -8,6 +8,10 @@
 // Faces: the triangles of each mesh, with the depth test, in a flat colour,
 // seen from both sides.
 //
+// Inks: a line instance holds the index of its ink, not a colour, and each
+// draw gives the colour of every ink as a uniform. So a frame can draw some
+// meshes in other inks (`Frame.recolour`, a flash) with no new buffers.
+//
 // Lines: each edge is an instanced quad, expanded on the screen in the vertex
 // shader (mattdesl's "expand in the vertex shader", in screen space). The
 // fragment shader measures the distance to the segment and makes a capsule:
@@ -45,11 +49,13 @@
 // last geometry of each dynamic mesh.
 
 import type {
+  Colour,
   Frame,
   Ink,
   Mesh,
   MeshGeometry,
   Palette,
+  Recolour,
   Scene,
   View,
   Vec3,
@@ -57,6 +63,7 @@ import type {
 import {
   INKS,
   checkGeometry,
+  checkInk,
   checkPalette,
   checkScene,
   hexRgb,
@@ -69,6 +76,12 @@ const DEPTH_RANGE = 2000; // slide px: world depth maps to clip z = -depth / ran
 const TOLERANCE = 0.25; // slide px of depth, for the centre-line test
 const MAX_DISCS = 4;
 
+/** Every ink, in the order of the shader's `inks` uniform. */
+const INK_ORDER: readonly Ink[] = Object.values(INKS);
+const INK_INDEX: ReadonlyMap<Ink, number> = new Map(
+  INK_ORDER.map((ink, index) => [ink, index]),
+);
+
 /** One line segment in the instance buffer: its attributes, in order, and
  *  the number of floats of each. */
 const INSTANCE_LAYOUT = [
@@ -77,7 +90,8 @@ const INSTANCE_LAYOUT = [
   ["normalBefore", 3],
   ["normalAfter", 3],
   ["kind", 1],
-  ["colour", 4],
+  ["ink", 1],
+  ["opacity", 1],
   ["width", 1],
 ] as const;
 type InstanceAttribute = (typeof INSTANCE_LAYOUT)[number][0];
@@ -129,8 +143,10 @@ in vec3 end;
 in vec3 normalBefore; // a silhouette edge: the surface normals on each side
 in vec3 normalAfter;
 in float kind;       // 0: always drawn; 1: drawn only on a silhouette
-in vec4 colour;      // with the stroke's opacity
+in float ink;        // an index into inks
+in float opacity;    // the stroke's
 in float width;      // px of the slide
+uniform vec3 inks[${String(INK_ORDER.length)}];  // the colour of each ink, for this draw
 uniform mat4 model;
 uniform mat3 normalMatrix;
 uniform mat4 viewProj;
@@ -176,7 +192,7 @@ void main() {
   depthEnd = clipEnd.z * 0.5 + 0.5;
   planStart = worldStart.xy;
   planEnd = worldEnd.xy;
-  lineColour = colour;
+  lineColour = vec4(inks[int(ink)], opacity);
 }`;
 
 const LINE_FS = `#version 300 es
@@ -365,16 +381,16 @@ interface Resources {
 /** What the renderer computes once for each mesh, from the scene. */
 interface DrawnMesh {
   mesh: Mesh;
-  fillColour: Rgba | null;
   discs: Float32Array;
 }
 
-/** What one picture needs: the camera and where each mesh is. */
+/** What one picture needs: the camera, where each mesh is, and its inks. */
 interface Picture {
   camera: Camera;
   models: Map<Mesh, Matrix4>;
   size: [number, number];
   pixelsPerSlidePx: number;
+  recolour: Recolour | null;
 }
 
 function modelOf(picture: Picture, mesh: Mesh): Matrix4 {
@@ -391,12 +407,17 @@ function appendInstance(values: number[], instance: Instance): void {
   }
 }
 
-function lineInstances(geometry: MeshGeometry, inks: InkColours): Float32Array {
+function inkIndex(ink: Ink): number {
+  const index = INK_INDEX.get(ink);
+  check(index !== undefined, `the ink ${ink.name} is not one of INKS`);
+  return index;
+}
+
+function lineInstances(geometry: MeshGeometry): Float32Array {
   const values: number[] = [];
   const none = [0, 0, 0];
   for (const line of geometry.lines) {
     const { ink, opacity, width } = line.style;
-    const [red, green, blue] = inkColour(inks, ink);
     const count = line.points.length;
     for (let index = 0; index < (line.closed ? count : count - 1); index++) {
       appendInstance(values, {
@@ -405,21 +426,22 @@ function lineInstances(geometry: MeshGeometry, inks: InkColours): Float32Array {
         normalBefore: none,
         normalAfter: none,
         kind: [0],
-        colour: [red, green, blue, opacity],
+        ink: [inkIndex(ink)],
+        opacity: [opacity],
         width: [width],
       });
     }
   }
   for (const edge of geometry.silhouetteEdges) {
     const { ink, opacity, width } = edge.style;
-    const [red, green, blue] = inkColour(inks, ink);
     appendInstance(values, {
       start: edge.start,
       end: edge.end,
       normalBefore: edge.normalBefore,
       normalAfter: edge.normalAfter,
       kind: [1],
-      colour: [red, green, blue, opacity],
+      ink: [inkIndex(ink)],
+      opacity: [opacity],
       width: [width],
     });
   }
@@ -446,6 +468,11 @@ export class Renderer {
   /** Each ink of the scene, resolved once: a change to the palette that the
    *  caller gave does not reach this renderer. */
   private readonly inks: InkColours;
+  /** The `inks` uniform for each map of inks (the identity map: `null`). */
+  private readonly inkUniforms = new Map<
+    ReadonlyMap<Ink, Ink> | null,
+    Float32Array
+  >();
   /** In the order of their lines. */
   private readonly drawn: DrawnMesh[];
   /** The geometry that each mesh has now: its own, or the last that
@@ -598,6 +625,7 @@ export class Renderer {
             "pixelsPerSlidePx",
             "tolerance",
             "faceDepth",
+            "inks",
             ...DISC_UNIFORMS,
           ],
           attributes: LINE_ATTRIBUTES,
@@ -729,14 +757,43 @@ export class Renderer {
     for (const [index, disc] of mesh.hiddenInside.entries()) {
       discs.set([...disc.centre, disc.radius], 3 * index);
     }
-    return { mesh, fillColour: this.fillColour(mesh), discs };
+    return { mesh, discs };
   }
 
-  /** A palette colour over the paper: `opacity x colour + (1 - opacity) x paper`. */
-  private fillColour(mesh: Mesh): Rgba | null {
-    if (mesh.fill === null) return null;
-    const [red, green, blue] = inkColour(this.inks, mesh.fill.ink);
-    const opacity = mesh.fill.opacity;
+  /** The map of inks that `mesh` is drawn with in `picture`, or `null`: its
+   *  own inks. */
+  private inkMap(picture: Picture, mesh: Mesh): ReadonlyMap<Ink, Ink> | null {
+    const { recolour } = picture;
+    return recolour?.meshes.has(mesh) ? recolour.inks : null;
+  }
+
+  /** The colour of each ink of INK_ORDER, after `map`, for the `inks`
+   *  uniform. Made once for each map. */
+  private inkUniform(map: ReadonlyMap<Ink, Ink> | null): Float32Array {
+    let made = this.inkUniforms.get(map);
+    if (!made) {
+      made = new Float32Array(
+        INK_ORDER.flatMap((ink) =>
+          inkColour(this.inks, map?.get(ink) ?? ink).slice(0, 3),
+        ),
+      );
+      this.inkUniforms.set(map, made);
+    }
+    return made;
+  }
+
+  /** A palette colour over the paper: `opacity x colour + (1 - opacity) x
+   *  paper`, with the fill's ink after `map`. */
+  private fillColour(
+    fill: Colour | null,
+    map: ReadonlyMap<Ink, Ink> | null,
+  ): Rgba | null {
+    if (fill === null) return null;
+    const [red, green, blue] = inkColour(
+      this.inks,
+      map?.get(fill.ink) ?? fill.ink,
+    );
+    const opacity = fill.opacity;
     const mixed = (own: number, paper: number): number =>
       opacity * own + (1 - opacity) * paper;
     return [
@@ -803,7 +860,7 @@ export class Renderer {
   ): void {
     const gl = this.gl;
     const usage = mesh.dynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
-    const lines = lineInstances(geometry, this.inks);
+    const lines = lineInstances(geometry);
     gl.bindBuffer(gl.ARRAY_BUFFER, made.triangles);
     gl.bufferData(gl.ARRAY_BUFFER, geometry.triangles, usage);
     gl.bindBuffer(gl.ARRAY_BUFFER, made.lines);
@@ -940,11 +997,22 @@ export class Renderer {
       }
       models.set(mesh, model);
     }
+    const recolour = frame.recolour ?? null;
+    if (recolour) {
+      for (const mesh of recolour.meshes) {
+        check(this.geometry.has(mesh), `${mesh.name} is not in the scene`);
+      }
+      for (const [from, to] of recolour.inks) {
+        checkInk(from, "recolour");
+        checkInk(to, "recolour");
+      }
+    }
     return {
       camera: viewProjection(view, frame.tilt, this.scene.slide),
       models,
       size: [width, height],
       pixelsPerSlidePx: width / this.scene.slide[0],
+      recolour,
     };
   }
 
@@ -1111,13 +1179,17 @@ export class Renderer {
     );
     for (const drawn of meshes) {
       const made = this.meshResourcesOf(resources, drawn.mesh);
-      if (!drawn.fillColour || made.triangleVertices === 0) continue;
+      const colour = this.fillColour(
+        drawn.mesh.fill,
+        this.inkMap(picture, drawn.mesh),
+      );
+      if (!colour || made.triangleVertices === 0) continue;
       gl.uniformMatrix4fv(
         uniform(program, "model"),
         false,
         modelOf(picture, drawn.mesh),
       );
-      gl.uniform4fv(uniform(program, "color"), drawn.fillColour);
+      gl.uniform4fv(uniform(program, "color"), colour);
       this.setDiscs(program, drawn);
       gl.bindVertexArray(made.faces);
       gl.drawArrays(gl.TRIANGLES, 0, made.triangleVertices);
@@ -1167,6 +1239,10 @@ export class Renderer {
         uniform(program, "normalMatrix"),
         false,
         normalMatrix(model),
+      );
+      gl.uniform3fv(
+        uniform(program, "inks"),
+        this.inkUniform(this.inkMap(picture, drawn.mesh)),
       );
       this.setDiscs(program, drawn);
       gl.bindVertexArray(made.segments);

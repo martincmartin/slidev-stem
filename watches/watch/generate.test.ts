@@ -122,3 +122,21 @@ test("the views: the cover is centred on the watch and the spring's view on the 
   assert.ok(Math.abs((hairspring?.scale ?? 0) - 250 / 56) < 1e-12);
   assert.ok(Math.abs((crown?.scale ?? 0) - 2) < 1e-12);
 });
+
+test("the flashed subject is the balance, its spring, collet, staff, stud and jewel, not the fork", () => {
+  const subject = scene.subjects.find(
+    (candidate) => candidate.name === "balance and hairspring",
+  );
+  assert.ok(subject);
+  const parts = new Set([...subject.meshes].map((mesh) => mesh.part));
+  assert.deepEqual(
+    [...parts].sort(),
+    ["balance", "hairspring", "hairspring stud", "impulse jewel"].sort(),
+  );
+  for (const part of parts) {
+    for (const mesh of partMeshes(part)) {
+      assert.ok(subject.meshes.has(mesh), `${mesh.name} does not flash`);
+    }
+  }
+  assert.ok(subject.meshes.has(watch.spring));
+});

@@ -9,7 +9,8 @@ frames before and after, and compare. Two runs of the same code give
 byte-identical PNGs in Chromium. It reuses art/watch_stills.py to build and
 serve the probe.
 The frames cover each path of the renderer: a still frame, the spring's
-update, the tilt, the three views, and a fade at rest 0, 0.5 and 1. The same
+update, the tilt, the three views, a fade at rest 0, 0.5 and 1, and a flash
+(a recolour). The same
 page draws them in order, so the GL state that one frame leaves is what the
 next one starts from. `--compare` says which files differ, and by how many
 pixels.
@@ -29,10 +30,16 @@ from PIL import Image
 from playwright.sync_api import sync_playwright
 
 SUBJECT = "hairspring and stud"
+FLASHED = "balance and hairspring"
 
 
 def options(
-    view: str, tilt: float, time: float, rest: float | None = None
+    view: str,
+    tilt: float,
+    time: float,
+    rest: float | None = None,
+    *,
+    flash: bool = False,
 ) -> dict[str, object]:
     swing = watch_stills.AMPLITUDE * math.cos(2 * math.pi * time / watch_stills.PERIOD)
     result: dict[str, object] = {
@@ -45,6 +52,8 @@ def options(
     if rest is not None:
         result["only"] = SUBJECT
         result["rest"] = rest
+    if flash:
+        result["flash"] = FLASHED
     return result
 
 
@@ -59,6 +68,7 @@ FRAMES = {
     "08-hairspring-fade-in.png": options("hairspring", 20, 0.6, 1),
     "09-crown.png": options("crown", 0, 1.1),
     "10-cover-again.png": options("cover", 0, 0),
+    "11-cover-flash.png": options("cover", 0, 0.1, flash=True),
 }
 
 

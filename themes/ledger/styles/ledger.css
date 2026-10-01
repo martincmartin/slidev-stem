@@ -1,6 +1,6 @@
 /* Ledger: the palette and the house type, on every slide.
 
-   The palette is set here and nowhere else. stem/tools/lib.py reads the nine
+   The palette is set here and nowhere else. stem/tools/lib.py reads the ten
    values from this rule, and `uv run tools/palette.py` (in stem/) measures
    them against their gates. If you change a value, run it. The roles and
    the gates that any theme must meet are in stem/docs/theme.md. */
@@ -19,6 +19,10 @@
      drawings' other two colours are muted and ink. */
   --palette-art-line: #143c6b;
   --palette-art-knockout: #d3dce3;
+  /* A flash's fill: a pale second, as the knockout is a pale line. Second over
+     the background at the opacity that gives the knockout's contrast. The
+     flash's lines are the second itself. */
+  --palette-art-second-knockout: #e6d8ca;
 
   background: var(--palette-background);
   color: var(--palette-ink);

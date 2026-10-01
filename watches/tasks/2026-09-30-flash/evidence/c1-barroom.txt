@@ -1,0 +1,10 @@
+drawing                 ink%                    laptop               TV 55in @5m               TV 55in @7m               proj 2m @6m
+                                 hold     p90     Fmax     hold     p90     Fmax     hold     p90     Fmax     hold     p90     Fmax
+c1-plain                 6.6     5.10   10.38   0.201      4.85    9.83   0.187      4.12    7.90   0.133      4.95   10.33   0.193 
+c1-flash-on              6.6     4.95   10.38   0.193      4.55    9.54   0.167      3.83    7.47   0.107      4.88   10.25   0.189 
+
+gate: hold >= 3.0 at TV 55in @7m   (marked ! if it fails)
+all clear the gate. Above it, headroom stops deciding and taste takes over.
+
+Read `hold` with `p90`, never alone. Fmax is room light tolerated; 0.30 is the
+ceiling for any design. watches/docs/measurements.md has the timekeepers' numbers.

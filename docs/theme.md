@@ -15,7 +15,9 @@ theme.
 [`tasks/2026-09-23-theme-aware-art/`](../tasks/2026-09-23-theme-aware-art/instructions.md)
 (the art takes its colours from the theme),
 [`watches/tasks/2026-09-30-flexing-ruler/`](../watches/tasks/2026-09-30-flexing-ruler/PLAN.md)
-(a slide class sets the palette).
+(a slide class sets the palette),
+[`watches/tasks/2026-09-30-flash/`](../watches/tasks/2026-09-30-flash/PLAN.md)
+(`second` in the art: the flash, and its pale fill).
 
 The theme is not final. It will be chosen again when a deck is more complete,
 and a dark theme may be tried. So the roles and the gates below are the rules.
@@ -23,22 +25,23 @@ Ledger's values are one theme that passes them.
 
 ## The roles
 
-A theme sets nine variables on `.slidev-layout` in its CSS. For Ledger, that
+A theme sets ten variables on `.slidev-layout` in its CSS. For Ledger, that
 file is `themes/ledger/styles/ledger.css`. It is the only place that sets them:
 `tools/lib.py` reads them from there, and the WebGL art reads them from the
 page ([webgl.md](webgl.md)).
 
-| Variable                 | Job in text and layout                 | Job in the art                                                                                                        |
-| ------------------------ | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `--palette-background`   | the slide field                        | the paper of full-slide art and of the WebGL art                                                                      |
-| `--palette-ink`          | body text, headings                    | scales and fine detail: ticks, graduations; usually at 0.5 (WebGL ink `detail`)                                       |
-| `--palette-muted`        | captions, units, dates, secondary text | context: what holds or acts on the subject (a stand, a case, a clamp); as a line, and a 0.18 wash (WebGL ink `frame`) |
-| `--palette-accent`       | the one emphasised thing on a slide    | not used: see `art-line`                                                                                              |
-| `--palette-second`       | the turn: the catch, the warning       | not used yet                                                                                                          |
-| `--palette-panel`        | a card's fill                          | the paper of a card's art                                                                                             |
-| `--palette-border`       | a card's edge                          | not used                                                                                                              |
-| `--palette-art-line`     | not used                               | the subject: its structure, and the thing that moves (WebGL ink `line`)                                               |
-| `--palette-art-knockout` | not used                               | a pale, opaque face that reads as lit, not as bare paper (WebGL ink `knockout`)                                       |
+| Variable                        | Job in text and layout                 | Job in the art                                                                                                        |
+| ------------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `--palette-background`          | the slide field                        | the paper of full-slide art and of the WebGL art                                                                      |
+| `--palette-ink`                 | body text, headings                    | scales and fine detail: ticks, graduations; usually at 0.5 (WebGL ink `detail`)                                       |
+| `--palette-muted`               | captions, units, dates, secondary text | context: what holds or acts on the subject (a stand, a case, a clamp); as a line, and a 0.18 wash (WebGL ink `frame`) |
+| `--palette-accent`              | the one emphasised thing on a slide    | not used: see `art-line`                                                                                              |
+| `--palette-second`              | the turn: the catch, the warning       | a flash's lines: a short "look here" ([illustrations.md](illustrations.md), "Flash"; WebGL ink `second`)              |
+| `--palette-panel`               | a card's fill                          | the paper of a card's art                                                                                             |
+| `--palette-border`              | a card's edge                          | not used                                                                                                              |
+| `--palette-art-line`            | not used                               | the subject: its structure, and the thing that moves (WebGL ink `line`)                                               |
+| `--palette-art-knockout`        | not used                               | a pale, opaque face that reads as lit, not as bare paper (WebGL ink `knockout`)                                       |
+| `--palette-art-second-knockout` | not used                               | a flash's fill: a pale second, as art-knockout is a pale art-line (WebGL ink `secondKnockout`)                        |
 
 How a drawing uses these (opacity, washes, strokes) is in
 [illustrations.md](illustrations.md).
@@ -53,6 +56,9 @@ card's one big number is the canonical use.
 
 **`second` is for the turn, not for decoration.** On the cards it carries the
 catch ("Freezes in winter"). Used as a second decorative accent, it is wasted.
+In the art it has one more job: a short "look here", the flash. The accent
+cannot do it there, because the art line is the accent's own hue: the subject
+is already in it.
 
 **The art line is the accent, darkened along its own hue.** The accent is
 sized for a large numeral. A 2–4 px line spends the same contrast at a much
@@ -85,15 +91,16 @@ so the harder, of the two, and `tools/lib.py` measures the text gates against
 it. **A new theme whose panel is not the harder surface needs its gates
 measured against the background as well.**
 
-| Check                   | Against | Threshold | Why                                                 |
-| ----------------------- | ------- | --------- | --------------------------------------------------- |
-| ink                     | panel   | ≥ 12:1    | headroom to degrade from                            |
-| accent                  | panel   | ≥ 4.5:1   | the 37 px stat number                               |
-| second                  | panel   | ≥ 3.5:1   | 20 px bold is large text: the 3:1 floor plus margin |
-| muted                   | panel   | ≥ 4.5:1   | 17 px body is normal text, so WCAG AA applies       |
-| accent vs **ink**       | —       | ≥ ΔE76 35 | emphasis must read as emphasis, not as darker ink   |
-| accent vs second        | —       | ≥ ΔE76 25 | under deuteranopia _and_ protanopia                 |
-| accent/second lightness | —       | ≥ 1.4×    | preferred: hue fails before lightness does          |
+| Check                   | Against             | Threshold | Why                                                       |
+| ----------------------- | ------------------- | --------- | --------------------------------------------------------- |
+| ink                     | panel               | ≥ 12:1    | headroom to degrade from                                  |
+| accent                  | panel               | ≥ 4.5:1   | the 37 px stat number                                     |
+| second                  | panel               | ≥ 3.5:1   | 20 px bold is large text: the 3:1 floor plus margin       |
+| muted                   | panel               | ≥ 4.5:1   | 17 px body is normal text, so WCAG AA applies             |
+| accent vs **ink**       | —                   | ≥ ΔE76 35 | emphasis must read as emphasis, not as darker ink         |
+| accent vs second        | —                   | ≥ ΔE76 25 | under deuteranopia _and_ protanopia                       |
+| accent/second lightness | —                   | ≥ 1.4×    | preferred: hue fails before lightness does                |
+| second                  | art-second-knockout | ≥ 3:1     | a flash's line on its fill: the drawing's structure holds |
 
 The thresholds are in `tools/lib.py` (`GATES`). `uv run tools/palette.py` (in
 `stem/`) measures the theme against each one, and shows how much room light
@@ -115,7 +122,7 @@ to a highlighted part in a tint of its parent. `uv run tools/palette.py
 
 ## Adding a colour
 
-The usual right answer is to **reuse a role**. Nine roles are already more than
+The usual right answer is to **reuse a role**. Ten roles are already more than
 most slides need.
 
 When a slide really needs one more, measure it before you commit:

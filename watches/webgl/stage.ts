@@ -9,6 +9,12 @@
 // from what is on the screen now, so a change during a transition does not
 // jump.
 //
+// A FLASH (docs/illustrations.md, "Flash"). A state can name a subject to
+// flash: before the channels change, the subject is drawn in FLASH_INKS and in
+// its own inks, in turn, FLASH_CYCLES times. Only in a transition: a state
+// shown at once, or one that changes no channel, does not flash. It ends on
+// its own inks, so the move starts from the drawing as it was.
+//
 // A stage owns its renderer and its frame loop: `dispose()` stops both and
 // frees the renderer's GL objects.
 //
@@ -19,11 +25,24 @@
 
 import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
+import { FLASH_INKS } from "./scene.ts";
 import type { Group, Palette, Scene, Subject, View } from "./scene.ts";
 
 export const MOVE_SECONDS = 1.8;
 export const FADE_SECONDS = 0.8;
 export const TILT_SECONDS = 1.5;
+/** A flash: on (in FLASH_INKS), then off (in its own inks), this many times. */
+export const FLASH_ON_SECONDS = 0.25;
+export const FLASH_OFF_SECONDS = 0.25;
+export const FLASH_CYCLES = 5;
+export const FLASH_SECONDS =
+  FLASH_CYCLES * (FLASH_ON_SECONDS + FLASH_OFF_SECONDS);
+
+/** Whether a flash that started `elapsed` seconds ago is on. */
+export function flashIsOn(elapsed: number): boolean {
+  if (elapsed < 0 || elapsed >= FLASH_SECONDS) return false;
+  return elapsed % (FLASH_ON_SECONDS + FLASH_OFF_SECONDS) < FLASH_ON_SECONDS;
+}
 
 /** What the scene shows and moves. */
 export interface Model<ModelState> {
@@ -42,6 +61,8 @@ export interface StageState {
   tilt: number;
   /** The rest of the scene fades away from this; `null`: nothing fades. */
   subject: Subject | null;
+  /** Flashed before the channels change, in a transition; `null`: none. */
+  flash: Subject | null;
 }
 
 type Channel = "view" | "rest" | "tilt";
@@ -136,6 +157,8 @@ export class Stage<ModelState> {
   private values: Values | null = null;
   /** One after another. */
   private phases: Phase[] = [];
+  /** The flash before the phases, and when it starts (ms). */
+  private flash: { subject: Subject; start: number } | null = null;
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -149,8 +172,9 @@ export class Stage<ModelState> {
   }
 
   /** Go to a slide's state: at once, or one channel at a time from where the
-   *  camera and the fade are now. */
-  show(state: StageState, modelState: ModelState, instantly = false): void {
+   *  camera and the fade are now, after the state's flash. Returns the
+   *  seconds until the flash ends, or 0 if there is none. */
+  show(state: StageState, modelState: ModelState, instantly = false): number {
     check(!this.disposed, "the stage is disposed");
     const now = performance.now();
     const target: Values = {
@@ -159,11 +183,13 @@ export class Stage<ModelState> {
       rest: state.subject ? 0 : 1,
       subject: state.subject,
     };
+    const running = this.flash;
+    this.flash = null;
     if (instantly || !this.values) {
       this.values = target;
       this.phases = [];
       this.model.show(modelState, now, true);
-      return;
+      return 0;
     }
     const current = this.valuesAt(now);
     this.values = current;
@@ -199,7 +225,29 @@ export class Stage<ModelState> {
           : {}),
       });
     }
+    let flashSeconds = 0;
+    if (state.flash && this.phases.length > 0) {
+      // a flash of the same subject that is still running goes on: a click
+      // during it does not start it again
+      const start =
+        running?.subject === state.flash &&
+        now < running.start + FLASH_SECONDS * 1000
+          ? running.start
+          : now;
+      this.flash = { subject: state.flash, start };
+      flashSeconds = FLASH_SECONDS - (now - start) / 1000;
+      const delay = start + FLASH_SECONDS * 1000 - now;
+      for (const phase of this.phases) phase.start += delay;
+    }
     this.model.show(modelState, now, false);
+    return flashSeconds;
+  }
+
+  /** The flashed subject, if the flash is on at `now`. */
+  flashingAt(now: number): Subject | null {
+    const { flash } = this;
+    if (!flash || !flashIsOn((now - flash.start) / 1000)) return null;
+    return flash.subject;
   }
 
   /** Each channel's value at `now`. */
@@ -231,8 +279,16 @@ export class Stage<ModelState> {
     return values;
   }
 
-  /** What is moving at `now`: a channel, or the model's phase. */
+  /** What is moving at `now`: the flash, a channel, or the model's phase. */
   phaseAt(now: number): string {
+    const { flash } = this;
+    if (
+      flash &&
+      now >= flash.start &&
+      now < flash.start + FLASH_SECONDS * 1000
+    ) {
+      return "flash";
+    }
     const running = this.phases.find(
       (phase) => now >= phase.start && now < phase.start + phase.seconds * 1000,
     );
@@ -275,6 +331,7 @@ export class Stage<ModelState> {
     this.request = null;
     const before = performance.now();
     const values = this.valuesAt(now);
+    const flashing = this.flashingAt(now);
     const size = deviceSize(this.canvas);
     const sizeText = size.join(" x ");
     if (this.log.sizes.at(-1)?.[1] !== sizeText) {
@@ -286,6 +343,9 @@ export class Stage<ModelState> {
       groupMatrices: this.model.frame(now, this.renderer),
       ...(values.subject ? { keep: values.subject.meshes } : {}),
       rest: values.rest,
+      ...(flashing
+        ? { recolour: { meshes: flashing.meshes, inks: FLASH_INKS } }
+        : {}),
       size,
     });
     this.log.starts.push(now);

@@ -1,6 +1,6 @@
 // Checks of the renderer, the stage and the stills that need a browser:
-// context loss, dispose, a dynamic mesh drawn last, the fade, and the
-// contract of each input. They draw small scenes of their own, not the
+// context loss, dispose, a dynamic mesh drawn last, the fade, a recolour,
+// the flash, and the contract of each input. They draw small scenes of their own, not the
 // watch. `window.webglChecks()` runs them all; art/watch_stills.py calls it.
 
 import { check } from "../checked.ts";
@@ -14,7 +14,7 @@ import {
 } from "../mesh.ts";
 import type { Point2 } from "../mesh.ts";
 import { Renderer } from "../renderer.ts";
-import { INKS } from "../scene.ts";
+import { FLASH_INKS, INKS, hexRgb } from "../scene.ts";
 import type {
   Frame,
   Group,
@@ -23,7 +23,13 @@ import type {
   Palette,
   Scene,
 } from "../scene.ts";
-import { FADE_SECONDS, Stage } from "../stage.ts";
+import {
+  FADE_SECONDS,
+  FLASH_OFF_SECONDS,
+  FLASH_ON_SECONDS,
+  FLASH_SECONDS,
+  Stage,
+} from "../stage.ts";
 import type { Model } from "../stage.ts";
 import { Stills } from "../stills.ts";
 
@@ -48,6 +54,8 @@ const PALETTE: Palette = {
   frame: "#736A60",
   detail: "#2A2520",
   knockout: "#E3E8EC",
+  second: "#9A6238",
+  secondKnockout: "#E6D8CA",
 };
 
 function square(left: number, top: number, side: number): Point2[] {
@@ -462,7 +470,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
       const stage = own(new Stage(target, test.scene, PALETTE, model));
       const view = test.scene.views[0];
       check(view !== undefined, "no view");
-      stage.show({ view, tilt: 0, subject: null }, null, true);
+      stage.show({ view, tilt: 0, subject: null, flash: null }, null, true);
       let animationFrames = 0;
       let counting = true;
       const count = (): void => {
@@ -509,9 +517,9 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
         phase: () => "still",
       };
       const stage = own(new Stage(canvas(), test.scene, PALETTE, model));
-      stage.show({ view, tilt: 0, subject: front }, null, true);
+      stage.show({ view, tilt: 0, subject: front, flash: null }, null, true);
       const shown = performance.now();
-      stage.show({ view, tilt: 0, subject: back }, null);
+      stage.show({ view, tilt: 0, subject: back, flash: null }, null);
       const fade = FADE_SECONDS * 1000;
       for (const [after, subject, rest] of [
         [fade / 2, front, 0.5],
@@ -528,13 +536,141 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
           `after ${String(after)} ms the rest is ${String(values.rest)}, not about ${String(rest)}`,
         );
       }
-      stage.show({ view, tilt: 0, subject: back }, null, true);
+      stage.show({ view, tilt: 0, subject: back, flash: null }, null, true);
       const leaving = performance.now();
-      stage.show({ view, tilt: 0, subject: null }, null);
+      stage.show({ view, tilt: 0, subject: null, flash: null }, null);
       const values = stage.valuesAt(leaving + fade / 2);
       check(
         values.subject === back,
         "the fade to no subject drops its subject before the rest is back",
+      );
+    },
+  ],
+  [
+    "a recolour draws only its meshes, in the inks that its map gives",
+    (own) => {
+      const test = makeScene();
+      const target = canvas();
+      const drawn = own(renderer(target, test.scene));
+      const [red, green, blue] = hexRgb(PALETTE.secondKnockout).map((value) =>
+        Math.round(value * 255),
+      );
+      const flashFill = (picture: Uint8Array): number => {
+        let count = 0;
+        for (let index = 0; index < picture.length; index += 4) {
+          if (
+            picture[index] === red &&
+            picture[index + 1] === green &&
+            picture[index + 2] === blue
+          ) {
+            count++;
+          }
+        }
+        return count;
+      };
+      drawn.render(frameOf(test));
+      const plain = pixels(target);
+      check(flashFill(plain) === 0, "the plain picture has the flash's fill");
+      for (const [what, recolour] of [
+        ["no meshes", { meshes: new Set<Mesh>(), inks: FLASH_INKS }],
+        ["an empty map", { meshes: new Set([test.front]), inks: new Map() }],
+      ] as const) {
+        drawn.render(frameOf(test, { recolour }));
+        same(plain, pixels(target), `a recolour of ${what}`);
+      }
+      drawn.render(
+        frameOf(test, {
+          recolour: { meshes: new Set([test.front]), inks: FLASH_INKS },
+        }),
+      );
+      const flashed = pixels(target);
+      check(flashFill(flashed) > 100, "the front box has not the flash's fill");
+      drawn.render(frameOf(test));
+      same(plain, pixels(target), "the picture after the recolour");
+      throws(() => {
+        drawn.render(
+          frameOf(test, {
+            recolour: {
+              meshes: new Set([makeScene().front]),
+              inks: FLASH_INKS,
+            },
+          }),
+        );
+      }, /not in the scene/);
+      noError(target);
+    },
+  ],
+  [
+    "a flash runs before the channels change, on and off, and only in a transition",
+    (own) => {
+      const test = makeScene();
+      const [subject] = test.scene.subjects;
+      const view = test.scene.views[0];
+      check(subject !== undefined && view !== undefined, "no subject or view");
+      const model: Model<null> = {
+        show: () => undefined,
+        frame: () => new Map([[test.group, IDENTITY]]),
+        phase: () => "still",
+      };
+      const stage = own(new Stage(canvas(), test.scene, PALETTE, model));
+      const flashing = { view, tilt: 0, subject, flash: subject };
+      check(
+        stage.show(flashing, null, true) === 0,
+        "a state shown at once flashed",
+      );
+      stage.show({ view, tilt: 0, subject: null, flash: null }, null, true);
+      const before = performance.now();
+      const seconds = stage.show(flashing, null);
+      const after = performance.now();
+      check(seconds === FLASH_SECONDS, `the flash is ${String(seconds)} s`);
+      const cycle = (FLASH_ON_SECONDS + FLASH_OFF_SECONDS) * 1000;
+      const on = FLASH_ON_SECONDS * 1000;
+      for (let index = 0; index < 5; index++) {
+        const start = index * cycle;
+        check(
+          stage.flashingAt(after + start + on / 2) !== null,
+          `the flash is off ${String(start + on / 2)} ms in`,
+        );
+        check(
+          stage.flashingAt(before + start + on + 20) === null,
+          `the flash is on ${String(start + on + 20)} ms in`,
+        );
+      }
+      const end = before + FLASH_SECONDS * 1000;
+      check(
+        stage.phaseAt(after + 10) === "flash",
+        "the phase is not the flash",
+      );
+      check(
+        stage.valuesAt(end - 20).rest === 1,
+        "the fade started during the flash",
+      );
+      check(
+        stage.flashingAt(after + FLASH_SECONDS * 1000) === null,
+        "the flash outlasts its time",
+      );
+      check(
+        stage.valuesAt(after + FLASH_SECONDS * 1000 + FADE_SECONDS * 1000 + 50)
+          .rest === 0,
+        "the fade did not run after the flash",
+      );
+      // a click during the flash: the same flash goes on, it does not restart
+      stage.show({ view, tilt: 0, subject: null, flash: null }, null, true);
+      const first = performance.now();
+      stage.show(flashing, null);
+      const left = stage.show(flashing, null);
+      check(
+        left <= FLASH_SECONDS && left > FLASH_SECONDS - 0.2,
+        `the flash restarted or jumped: ${String(left)} s left`,
+      );
+      check(
+        stage.flashingAt(first + FLASH_SECONDS * 1000 + 20) === null,
+        "the flash ran past its first end",
+      );
+      stage.show(flashing, null, true);
+      check(
+        stage.show(flashing, null) === 0,
+        "a state that changes no channel flashed",
       );
     },
   ],

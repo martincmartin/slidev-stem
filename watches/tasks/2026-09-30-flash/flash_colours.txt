@@ -1,0 +1,41 @@
+art-line #143C6B  art-knockout #D3DCE3  second #9A6238
+paper #FAF7F0  panel #F2EEE4
+
+balance at the cover view: fill 3,612 px^2, outline 2,537 px^2 (1.4x)
+
+the line's change: art-line to a flash line
+  art-line -> second #9A6238         dE  69.3   colour-blind dE  63.7   contrast  2.21
+  art-line -> second, deepened #52341E dE  51.1   colour-blind dE  49.5   contrast  1.01
+
+the fill's change: art-knockout to a flash fill
+  unchanged (knockout) #D3DCE3       dE   0.0   colour-blind dE   0.0   contrast  1.00
+  second at 0.20 (knockout's contrast) #E6D8CA dE  13.8   colour-blind dE  12.3   contrast  1.01
+  second at 0.25 #E2D2C2             dE  15.3   colour-blind dE  13.9   contrast  1.06
+  second at 0.34 (3:1 floor) #D9C5B2 dE  18.7   colour-blind dE  17.3   contrast  1.20
+  second at 0.40 #D4BBA6             dE  22.1   colour-blind dE  20.3   contrast  1.32
+  second, solid #9A6238              dE  58.7   colour-blind dE  54.8   contrast  3.62
+
+does the flash line read on the flash fill (normal: art-line on knockout)
+  art-line on knockout               dE  68.1   colour-blind dE  67.6   contrast  8.00
+  second on second at 0.20 (knockout's contrast) dE  49.7   colour-blind dE  47.5   contrast  3.60
+  second on second at 0.25           dE  47.3   colour-blind dE  45.1   contrast  3.41
+  second on second at 0.34 (3:1 floor) dE  42.3   colour-blind dE  40.1   contrast  3.01
+  second on second at 0.40           dE  38.3   colour-blind dE  36.3   contrast  2.74
+  second on second, solid            dE   0.0   colour-blind dE   0.0   contrast  1.00
+
+the flash fill against the paper and the panel
+  unchanged (knockout)                     paper  1.30   panel  1.20
+  second at 0.20 (knockout's contrast)     paper  1.31   panel  1.21
+  second at 0.25                           paper  1.38   panel  1.27
+  second at 0.34 (3:1 floor)               paper  1.56   panel  1.44
+  second at 0.40                           paper  1.71   panel  1.58
+  second, solid                            paper  4.70   panel  4.34
+
+the options, on the balance at the cover view. signal: sum of dE x area, in thousands;
+structure: the flash line on the flash fill (normal 8.00; floor 3.00)
+  A lines only                       signal    176   colour-blind    161   structure  3.62
+  B one colour, lines and fill       signal    388   colour-blind    360   structure  1.00
+  C lines + tint 0.20                signal    225   colour-blind    206   structure  3.60
+  C lines + tint 0.34                signal    243   colour-blind    224   structure  3.01
+  D fill only                        signal    212   colour-blind    198   structure  2.21
+  E inverted: knockout on second     signal    384   colour-blind    369   structure  3.62

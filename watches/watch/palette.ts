@@ -11,6 +11,8 @@ export const INK_VARIABLES: Readonly<Record<InkName, string>> = {
   frame: "--palette-muted",
   detail: "--palette-ink",
   knockout: "--palette-art-knockout",
+  second: "--palette-second",
+  secondKnockout: "--palette-art-second-knockout",
 };
 
 export const PAPER_VARIABLE = "--palette-background";
@@ -28,13 +30,10 @@ export function readPalette(variables: Variables): Palette {
     check(value !== "", `the theme does not set ${name}`);
     return value;
   };
-  return {
-    paper: read(PAPER_VARIABLE),
-    line: read(INK_VARIABLES.line),
-    frame: read(INK_VARIABLES.frame),
-    detail: read(INK_VARIABLES.detail),
-    knockout: read(INK_VARIABLES.knockout),
-  };
+  const inks = Object.fromEntries(
+    Object.entries(INK_VARIABLES).map(([ink, name]) => [ink, read(name)]),
+  ) as Record<InkName, string>;
+  return { paper: read(PAPER_VARIABLE), ...inks };
 }
 
 /** The palette of the theme that is on the page now. The theme sets its

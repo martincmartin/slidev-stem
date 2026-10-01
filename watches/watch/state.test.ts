@@ -14,12 +14,14 @@ test("the fields and their defaults", () => {
     view: "cover",
     tilt: 0,
     only: undefined,
+    flash: undefined,
     settled: false,
   });
   const frontmatter = {
     watch: "hairspring",
     watchTilt: 20,
     watchOnly: "hairspring and stud",
+    watchFlash: "balance and hairspring",
     watchSettle: 1,
   };
   assert.equal(watchState(frontmatter, 0)?.settled, false);
@@ -27,6 +29,7 @@ test("the fields and their defaults", () => {
     view: "hairspring",
     tilt: 20,
     only: "hairspring and stud",
+    flash: "balance and hairspring",
     settled: true,
   });
 });
@@ -48,6 +51,8 @@ test("a field of the wrong kind throws, with its name", () => {
     ["watchTilt", Number.NaN],
     ["watchOnly", ""],
     ["watchOnly", 1],
+    ["watchFlash", ""],
+    ["watchFlash", 2],
     ["watchSettle", "1"],
     ["watchSettle", 1.5],
     ["watchSettle", -1],

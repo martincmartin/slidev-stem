@@ -17,7 +17,7 @@ import {
   useTemplateRef,
   watch as onChange,
 } from "vue";
-import { Stage } from "./webgl/stage.ts";
+import { MOVE_SECONDS, Stage } from "./webgl/stage.ts";
 import { WatchModel } from "./watch/model.ts";
 import type { WatchModelState } from "./watch/model.ts";
 import { WATCH, watchStills } from "./watch/instance.ts";
@@ -63,10 +63,16 @@ onMounted(() => {
         return;
       }
       // a slide reached from a slide without the watch starts at its state
-      stage?.show(
-        stageState(WATCH.scene, now),
-        modelState(now),
-        old === undefined || old === "null",
+      const flashSeconds =
+        stage?.show(
+          stageState(WATCH.scene, now),
+          modelState(now),
+          old === undefined || old === "null",
+        ) ?? 0;
+      // the new slide's text comes in after the flash and the move
+      document.documentElement.style.setProperty(
+        "--watch-text-delay",
+        `${String(flashSeconds + MOVE_SECONDS)}s`,
       );
       stage?.start();
     },
@@ -153,13 +159,14 @@ onMounted(() => {
   height: 100%;
   display: block;
 }
-/* `transition: watch-zoom`: the old slide's text fades while the camera
-   starts its move; the new slide's text comes in after the move. */
+/* `transition: watch-zoom`: the old slide's text fades while the watch
+   flashes or the camera starts its move; the new slide's text comes in after
+   the move. The script sets --watch-text-delay from the stage's times. */
 .watch-zoom-leave-active {
   transition: opacity 0.9s ease-in;
 }
 .watch-zoom-enter-active {
-  transition: opacity 0.5s ease-out 1.8s;
+  transition: opacity 0.5s ease-out var(--watch-text-delay);
 }
 .watch-zoom-leave-to,
 .watch-zoom-enter-from {

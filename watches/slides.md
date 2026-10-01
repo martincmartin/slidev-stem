@@ -41,6 +41,7 @@ Speaker notes here
 
 ---
 watch: hairspring
+watchFlash: balance and hairspring
 watchOnly: hairspring and stud
 watchTilt: 20
 watchSettle: 1

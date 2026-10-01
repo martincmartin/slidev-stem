@@ -1,0 +1,10 @@
+background   #FAF7F0  L* 97.3 C*  3.7 h  93.1  vs bg  1.00 vs panel  1.08
+ink          #2A2520  L* 15.1 C*  4.4 h  73.1  vs bg 14.18 vs panel 13.10
+muted        #736A60  L* 45.4 C*  7.1 h  76.2  vs bg  4.96 vs panel  4.58
+accent       #1F5FA8  L* 40.1 C* 45.4 h 279.1  vs bg  6.02 vs panel  5.56
+second       #9A6238  L* 46.8 C* 37.7 h  60.7  vs bg  4.70 vs panel  4.34
+panel        #F2EEE4  L* 94.2 C*  5.3 h  94.0  vs bg  1.08 vs panel  1.00
+border       #E0D9CA  L* 86.9 C*  8.2 h  91.1  vs bg  1.31 vs panel  1.21
+art-line     #143C6B  L* 25.1 C* 31.7 h 278.3  vs bg 10.39 vs panel  9.60
+art-knockout #D3DCE3  L* 87.3 C*  4.8 h 249.3  vs bg  1.30 vs panel  1.20
+#E6D8CA L* 87.1 C*  9.0 h  73.9

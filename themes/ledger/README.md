@@ -20,7 +20,7 @@ and in the talk's `package.json`:
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `package.json`      | the font families for Slidev, with `provider: none` (no web-font service); light only                                     |
 | `styles/fonts.css`  | the self-hosted font weights, from Fontsource                                                                             |
-| `styles/ledger.css` | the nine `--palette-*` variables, background and ink on every slide; `h1`; `cover`                                        |
+| `styles/ledger.css` | the ten `--palette-*` variables, background and ink on every slide; `h1`; `cover`                                         |
 | `vite.config.mts`   | lets a talk's dev server and `slidev export` serve the fonts, which `pnpm install` at the repo root puts outside the talk |
 | `styles/index.ts`   | Slidev's base layout styles, then the two files above                                                                     |
 

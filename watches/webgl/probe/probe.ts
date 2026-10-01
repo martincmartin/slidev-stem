@@ -8,7 +8,8 @@ import { generate } from "../../watch/generate.ts";
 import { Motion } from "../../watch/model.ts";
 import { Renderer } from "../renderer.ts";
 import "./checks.ts";
-import type { Palette, Scene } from "../scene.ts";
+import { FLASH_INKS } from "../scene.ts";
+import type { Palette, Scene, Subject } from "../scene.ts";
 
 /** What one frame asks for. */
 interface ProbeOptions {
@@ -26,6 +27,8 @@ interface ProbeOptions {
   only?: string;
   /** The opacity of everything but the subject, 0 to 1. */
   rest?: number;
+  /** A subject's name: it is drawn as a flash draws it while it is on. */
+  flash?: string;
 }
 
 declare global {
@@ -47,6 +50,8 @@ const PROBE_PALETTE: Palette = {
   frame: "#736A60",
   detail: "#2A2520",
   knockout: "#D3DCE3",
+  second: "#9A6238",
+  secondKnockout: "#E6D8CA",
 };
 
 const canvas = document.getElementById("stage");
@@ -58,6 +63,15 @@ const renderer = new Renderer(canvas, watch.scene, PROBE_PALETTE, {
 });
 const gl = canvas.getContext("webgl2");
 
+function subjectNamed(name: string | undefined): Subject | undefined {
+  if (name === undefined) return undefined;
+  const subject = watch.scene.subjects.find(
+    (candidate) => candidate.name === name,
+  );
+  if (!subject) throw new Error(`no subject called ${name}`);
+  return subject;
+}
+
 window.watchProbe = {
   info: () => renderer.info(),
   scene: () => watch.scene,
@@ -66,9 +80,8 @@ window.watchProbe = {
       (candidate) => candidate.name === options.view,
     );
     if (!view) throw new Error(`no view called ${options.view}`);
-    const subject = watch.scene.subjects.find(
-      (candidate) => candidate.name === options.only,
-    );
+    const subject = subjectNamed(options.only);
+    const flash = subjectNamed(options.flash);
     renderer.updateMesh(watch.spring, motion.springGeometry(options.swing));
     renderer.render({
       view,
@@ -77,6 +90,9 @@ window.watchProbe = {
       size: options.size,
       ...(subject ? { keep: subject.meshes } : {}),
       ...(options.rest === undefined ? {} : { rest: options.rest }),
+      ...(flash
+        ? { recolour: { meshes: flash.meshes, inks: FLASH_INKS } }
+        : {}),
     });
     if (gl) {
       gl.finish();

@@ -1,8 +1,8 @@
 # Illustrations: "Line, weighted"
 
 **Covers:** the drawing grammar of every STEM talk (size, colour, stroke
-ladder, motion), how an SVG takes the theme's colours, washes, and how to draw
-a new one.
+ladder, motion), how an SVG takes the theme's colours, the flash, washes, and
+how to draw a new one.
 **Read before** you draw or change an illustration. For art that turns in 3D,
 zooms, or moves by rules, read [webgl.md](webgl.md) as well: the same grammar,
 drawn live.
@@ -15,7 +15,9 @@ grammar),
 [`watches/tasks/2026-09-23-followups/`](../watches/tasks/2026-09-23-followups/PLAN.md)
 (each SVG states its display size),
 [`watches/tasks/2026-09-30-flexing-ruler/`](../watches/tasks/2026-09-30-flexing-ruler/PLAN.md)
-(an inlined SVG with theme colours, and a generator).
+(an inlined SVG with theme colours, and a generator),
+[`watches/tasks/2026-09-30-flash/`](../watches/tasks/2026-09-30-flash/PLAN.md)
+(the flash: its colours and how WebGL draws it).
 
 The examples are the four timekeepers in
 `watches/public/timekeepers/{sundial,water-clock,candle,hourglass}.svg`, and the
@@ -50,6 +52,7 @@ CSS px as shown.
 subject), muted (context: what holds or acts on it), ink (scales and fine
 detail) and art-knockout (a lit face). The jobs and the variables are in
 [theme.md](theme.md), "The roles". The values below are Ledger's, as examples.
+A flash draws in two more colours ("Flash", below).
 
 **Which colour, and at what opacity, is decided by the job, not by taste.**
 
@@ -112,6 +115,37 @@ own, where the `var()` fallback paints the same pixels.
 
 The four timekeepers do not do this yet: `TimekeeperCard.vue` shows them in an
 `<img>`, so they keep Ledger's colours.
+
+## Flash
+
+**A flash says "look at this part".** The part is drawn in the flash colours
+for 0.25 s, then in its own colours for 0.25 s, five times: 2.5 s. It ends in
+its own colours.
+
+- **Its colours.** Lines in `second`; fills in `art-second-knockout`, a pale
+  second. Each line colour of the part (art-line, muted, ink) goes to
+  `second`, and art-knockout goes to art-second-knockout. A fill in art-line
+  (the watch's impulse jewel) goes to `second`. So the part is the same
+  drawing in a warm pair, with line on fill as art-line is on art-knockout.
+- **Why these.** The accent cannot flash a part: art-line is the accent's own
+  hue, only ΔE 20 from it, and `second` is ΔE 69 away. The fill is most of a
+  part's area, so changing it carries most of the signal. The line on the pale
+  fill stays at the 3:1 floor (a gate in [theme.md](theme.md)), so the
+  structure stays readable. One colour for lines and fills merges a spring's
+  coils into the wheel behind them, and pale lines on a dark fill read as a
+  negative: both were drawn and rejected (the flash task).
+- **When.** Before a camera move to the part, so that the audience knows where
+  the zoom will land. Only in a transition: a slide reached directly shows its
+  state with no flash.
+- **Safety.** Two flashes a second is below the WCAG 2.3.1 limit of three.
+- **In WebGL**: `FLASH_INKS` in `watches/webgl/scene.ts`, the stage's flash
+  phase and its timing constants in `watches/webgl/stage.ts`, and a slide's
+  `watchFlash` ([webgl.md](webgl.md)).
+- **In an inlined SVG**: a CSS animation on the part's group, five cycles of
+  0.5 s with `steps`, that sets `stroke` to `var(--palette-second)` and
+  `fill` to `var(--palette-art-second-knockout)` for the first half of each
+  cycle. An animation wins over the drawing's own class rules. No SVG flashes
+  yet: the first one builds the helper.
 
 ## Drawing a new one
 

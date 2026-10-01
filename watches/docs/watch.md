@@ -21,7 +21,9 @@ watch on the cover),
 the budgets),
 [`2026-09-29-geometry-problems`](../tasks/2026-09-29-geometry-problems/instructions.md)
 (pallet stones, the balance's rim),
-[`2026-09-30-flexing-ruler`](../tasks/2026-09-30-flexing-ruler/PLAN.md).
+[`2026-09-30-flexing-ruler`](../tasks/2026-09-30-flexing-ruler/PLAN.md),
+[`2026-09-30-flash`](../tasks/2026-09-30-flash/PLAN.md) (the balance flashes
+before the zoom).
 
 ## The files
 
@@ -53,6 +55,7 @@ A slide asks for a view of the watch in its frontmatter. A slide with no
 
 ```yaml
 watch: hairspring
+watchFlash: balance and hairspring # flashes before the camera moves
 watchOnly: hairspring and stud # the rest of the watch fades out
 watchTilt: 20 # degrees: shows that the spring is a ribbon
 watchSettle: 1 # at click 1 the balance settles at rest
@@ -60,20 +63,27 @@ watchHide: 2 # at click 2 the watch fades out
 clicks: 3
 ```
 
-| Key                              | Meaning                                                                      |
-| -------------------------------- | ---------------------------------------------------------------------------- |
-| `watch: cover`                   | the view: `cover`, `hairspring` or `crown`; no key hides the watch           |
-| `watchTilt: 20`                  | degrees, towards the viewer's side (default 0)                               |
-| `watchOnly: hairspring and stud` | the name of a subject: the rest of the watch fades out                       |
-| `watchSettle: 1`                 | at this click, the balance waits for its next extreme and then comes to rest |
-| `watchHide: 2`                   | at this click, the watch fades out, as on a slide with no `watch`            |
+| Key                                  | Meaning                                                                                                                                                |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `watch: cover`                       | the view: `cover`, `hairspring` or `crown`; no key hides the watch                                                                                     |
+| `watchTilt: 20`                      | degrees, towards the viewer's side (default 0)                                                                                                         |
+| `watchFlash: balance and hairspring` | the name of a subject: it flashes before the camera moves, in a transition only ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash") |
+| `watchOnly: hairspring and stud`     | the name of a subject: the rest of the watch fades out                                                                                                 |
+| `watchSettle: 1`                     | at this click, the balance waits for its next extreme and then comes to rest                                                                           |
+| `watchHide: 2`                       | at this click, the watch fades out, as on a slide with no `watch`                                                                                      |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
-at load with the key's name.
+at load with the key's name. The subjects are made in `watch/generate.ts`:
+
+- `hairspring and stud`: the spring, its collet and the stud.
+- `balance and hairspring`: the balance, the spring with its collet and the
+  balance staff, the stud and the impulse jewel. Not the pallet fork.
 
 - **The order of a change:** the camera moves (1.8 s), then the rest fades
   (0.8 s), then the view tilts (1.5 s); going back runs it in reverse. From one
   subject to another, the rest first fades back in around the old subject.
+  With `watchFlash`, the subject flashes first (2.5 s), so the change from the
+  cover to slide 2 takes 6.6 s.
 - **The settle:** the balance waits for its next extreme (at most half a
   period, 1 s), then moves to rest in 0.78 s, with no jump in angle, speed or
   acceleration where it starts. The rest of the mechanism stops with it.
@@ -81,9 +91,10 @@ at load with the key's name.
   opposite extreme.
 - **Keep text out of the watch's way.** On slide 2 the hairspring is about 535
   to 875 px across.
-- **The cover's title fades as the camera zooms**: the `watch-zoom`
+- **The cover's title fades as the watch flashes**: the `watch-zoom`
   transition, from the cover to slide 2 only. Slide 2's text comes in after
-  the zoom (`global-bottom.vue`).
+  the flash and the zoom: `global-bottom.vue` sets `--watch-text-delay` from
+  what `Stage.show` returns.
 - **The first block of `slides.md` is a hidden slide with no content.** Slidev
   takes the headmatter from the first slide's frontmatter, and a `transition`
   there becomes the default of every slide. The cover has the only

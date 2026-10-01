@@ -1276,6 +1276,17 @@ export function generate(design: Design = DESIGN): Watch {
     name: "hairspring and stud",
     meshes: new Set([springMesh, colletMesh, stud.mesh]),
   };
+  // the oscillator: what slide 2 flashes. Not the pallet fork.
+  const oscillatorParts = new Set([parts.balance, parts.spring, parts.jewel]);
+  const oscillator: Subject = {
+    name: "balance and hairspring",
+    meshes: new Set([
+      ...[...movementMeshes]
+        .filter(([solid]) => oscillatorParts.has(solid.part))
+        .map(([, mesh]) => mesh),
+      stud.mesh,
+    ]),
+  };
   const scene: Scene = {
     slide: [design.canvas.width, design.canvas.height],
     meshes,
@@ -1287,7 +1298,7 @@ export function generate(design: Design = DESIGN): Watch {
       middle,
       crownCentreX,
     ),
-    subjects: [subject],
+    subjects: [subject, oscillator],
   };
 
   return {

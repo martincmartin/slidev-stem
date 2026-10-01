@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { extrude, polygonRing } from "./mesh.ts";
-import { INKS, checkPalette, checkScene, hexRgb } from "./scene.ts";
-import type { Group, Mesh, Palette, Scene } from "./scene.ts";
+import { FLASH_INKS, INKS, checkPalette, checkScene, hexRgb } from "./scene.ts";
+import type { Group, Ink, Mesh, Palette, Scene } from "./scene.ts";
 
 const STYLE = { ink: INKS.line, opacity: 1, width: 2 };
 const ROOT: Group = { name: "root", parent: null };
@@ -53,6 +53,8 @@ const PALETTE: Palette = {
   frame: "#736A60",
   detail: "#2A2520",
   knockout: "#D3DCE3",
+  second: "#9A6238",
+  secondKnockout: "#E6D8CA",
 };
 
 test("checkPalette wants a #rrggbb colour for the paper and for each ink", () => {
@@ -179,4 +181,15 @@ test("checkScene takes a good scene, and names what is wrong with a bad one", ()
       checkScene(scene);
     }, message);
   }
+});
+
+test("a flash draws each ink that a scene uses in a flash ink", () => {
+  const flashInks: ReadonlySet<Ink> = new Set([
+    INKS.second,
+    INKS.secondKnockout,
+  ]);
+  const sceneInks = Object.values(INKS).filter((ink) => !flashInks.has(ink));
+  assert.deepEqual(new Set(FLASH_INKS.keys()), new Set(sceneInks));
+  for (const ink of FLASH_INKS.values()) assert.ok(flashInks.has(ink));
+  assert.equal(FLASH_INKS.get(INKS.knockout), INKS.secondKnockout);
 });

@@ -4,6 +4,8 @@
 //   watch: a view (cover, hairspring, crown); none hides the watch
 //   watchTilt: degrees (default 0)
 //   watchOnly: a subject ("hairspring and stud"): the rest of the watch fades
+//   watchFlash: a subject ("balance and hairspring") that flashes before the
+//     camera moves, when the slide is reached by a transition
 //   watchSettle: the click at which the balance settles at rest
 //   watchHide: the click at which the watch fades out, as on a slide without
 //     a `watch`; the slide shows something else from then on
@@ -16,6 +18,7 @@ export interface WatchState {
   view: string;
   tilt: number;
   only: string | undefined;
+  flash: string | undefined;
   settled: boolean;
 }
 
@@ -42,6 +45,10 @@ export function watchState(
   if (only !== undefined && (typeof only !== "string" || only === "")) {
     return wrong("watchOnly", only, "the name of a subject");
   }
+  const flash = frontmatter["watchFlash"];
+  if (flash !== undefined && (typeof flash !== "string" || flash === "")) {
+    return wrong("watchFlash", flash, "the name of a subject");
+  }
   const settleAt = frontmatter["watchSettle"];
   if (
     settleAt !== undefined &&
@@ -63,6 +70,7 @@ export function watchState(
     view,
     tilt,
     only,
+    flash,
     settled: settleAt !== undefined && clicks >= settleAt,
   };
 }
@@ -71,15 +79,18 @@ export function watchState(
 export function stageState(scene: Scene, state: WatchState): StageState {
   const view = scene.views.find((candidate) => candidate.name === state.view);
   if (!view) throw new Error(`no watch view ${state.view}`);
-  const subject =
-    state.only === undefined
-      ? null
-      : (scene.subjects.find((candidate) => candidate.name === state.only) ??
-        null);
-  if (state.only !== undefined && subject === null) {
-    throw new Error(`no watch subject ${state.only}`);
-  }
-  return { view, tilt: state.tilt, subject };
+  const subjectNamed = (name: string | undefined) => {
+    if (name === undefined) return null;
+    const found = scene.subjects.find((candidate) => candidate.name === name);
+    if (!found) throw new Error(`no watch subject ${name}`);
+    return found;
+  };
+  return {
+    view,
+    tilt: state.tilt,
+    subject: subjectNamed(state.only),
+    flash: subjectNamed(state.flash),
+  };
 }
 
 export function modelState(state: WatchState): WatchModelState {

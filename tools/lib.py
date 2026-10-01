@@ -160,6 +160,12 @@ GATES = [
     # and the real finding is recorded in docs/theme.md: muted-on-panel has 1.7%
     # of margin and is the thinnest thing in the palette. Do not shrink it.
     Gate("muted", "panel", 4.5, "17px body is normal text, so WCAG AA applies"),
+    Gate(
+        "second",
+        "art-second-knockout",
+        3.0,
+        "a flash's line on its fill: the drawing's structure must stay at the floor",
+    ),
 ]
 _unknown_roles = {role for gate in GATES for role in (gate.role, gate.against)} - set(
     LEDGER

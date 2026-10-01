@@ -12,9 +12,11 @@ import { check, checkFinite } from "./checked.ts";
 
 export type Vec3 = readonly [number, number, number];
 
-/** The house's four art colours, by their jobs (docs/illustrations.md). This
- *  is the one list of them: `INKS` and `Palette` must each cover it. */
-export type InkName = "line" | "frame" | "detail" | "knockout";
+/** The house's art colours, by their jobs (docs/illustrations.md): four that
+ *  a scene draws with, and two that a flash draws with. This is the one list
+ *  of them: `INKS` and `Palette` must each cover it. */
+export type InkName =
+  "line" | "frame" | "detail" | "knockout" | "second" | "secondKnockout";
 
 /** A colour by its job, not its value. A scene's fills and lines point to one
  *  of `INKS`; a `Palette` says which colour each ink is when a renderer
@@ -33,7 +35,20 @@ export const INKS = {
   detail: { name: "detail" },
   /** A pale face that must read as lit, not as bare paper. */
   knockout: { name: "knockout" },
+  /** A flash's lines: the second accent. */
+  second: { name: "second" },
+  /** A flash's faces: a pale second, as knockout is a pale line. */
+  secondKnockout: { name: "secondKnockout" },
 } as const satisfies Readonly<Record<InkName, Ink>>;
+
+/** A flash (docs/illustrations.md, "Flash"): each ink of a flashed part, and
+ *  the ink that it is drawn in while the flash is on. */
+export const FLASH_INKS: ReadonlyMap<Ink, Ink> = new Map<Ink, Ink>([
+  [INKS.line, INKS.second],
+  [INKS.frame, INKS.second],
+  [INKS.detail, INKS.second],
+  [INKS.knockout, INKS.secondKnockout],
+]);
 
 /** `#rrggbb` for the paper (what the scene is drawn on, and what a fill's
  *  opacity is over) and for each ink. */
@@ -148,6 +163,14 @@ export interface Frame {
   readonly size: readonly [number, number];
   /** Leave out the meshes with `inDrawing` false. */
   readonly drawingOnly?: boolean;
+  /** Draw these meshes with other inks: each ink that `inks` has goes to its
+   *  value (a flash: `FLASH_INKS`). Default: every mesh in its own inks. */
+  readonly recolour?: Recolour;
+}
+
+export interface Recolour {
+  readonly meshes: ReadonlySet<Mesh>;
+  readonly inks: ReadonlyMap<Ink, Ink>;
 }
 
 const HEX = /^#[0-9a-fA-F]{6}$/;
@@ -172,7 +195,7 @@ function checkOpacity(opacity: number, what: string): void {
 
 const ALL_INKS: ReadonlySet<Ink> = new Set(Object.values(INKS));
 
-function checkInk(ink: Ink, what: string): void {
+export function checkInk(ink: Ink, what: string): void {
   check(ALL_INKS.has(ink), `${what}: the ink ${ink.name} is not one of INKS`);
 }
 

@@ -12,7 +12,9 @@ frontmatter keys and measurements), read
 [`watches/tasks/2026-09-29-webgl-watch/`](../watches/tasks/2026-09-29-webgl-watch/PLAN.md)
 (the build and its measurements),
 [`watches/tasks/2026-09-29-webgl-review-fixes/`](../watches/tasks/2026-09-29-webgl-review-fixes/PLAN.md)
-(the renderer's contract).
+(the renderer's contract),
+[`watches/tasks/2026-09-30-flash/`](../watches/tasks/2026-09-30-flash/PLAN.md)
+(inks as a uniform, the recolour, the flash phase).
 
 ## When to use it
 
@@ -77,12 +79,20 @@ these additions.
   renderer blends it into an opaque fill. `tools/scenecheck.py` checks the
   scene.
 - **A scene holds inks, not colours.** An `Ink` is one of the objects in
-  `INKS` (`webgl/scene.ts`): `line`, `frame`, `detail`, `knockout`. Each is an
-  art role of the theme ([theme.md](theme.md), "The roles"). `new
+  `INKS` (`webgl/scene.ts`): `line`, `frame`, `detail` and `knockout` for the
+  scene, and `second` and `secondKnockout` for a flash. Each is an art role of
+  the theme ([theme.md](theme.md), "The roles"). `new
 Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   `#rrggbb` for each ink) and turns the inks into colours once, when it
   starts. `InkName` is the one list of the inks: `Palette` is a `Record` over
   it, so a palette that lacks an ink does not compile.
+- **A frame can draw meshes in other inks.** A line instance holds the index
+  of its ink, and each draw sets the colour of every ink as a uniform. So
+  `Frame.recolour` (some meshes, and a map from ink to ink) changes their
+  colours with no new buffers. A flash uses it with `FLASH_INKS`
+  ([illustrations.md](illustrations.md), "Flash"). Without a recolour, the
+  pixels are the same as when the colours were in the buffers:
+  `watches/art/pixel_regression.py` checks it.
 - **The page gives the palette.** The talk reads it from the theme's
   `--palette-*` variables when the page loads (in `watches`,
   `themePalette()` in `watch/palette.ts`, which says which variable gives each
@@ -124,6 +134,11 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   rest fades, then the view tilts; away from it, the reverse. A key press
   during a change starts from what is on the screen. The durations are
   constants in `webgl/stage.ts`.
+- **A state can flash a subject first** (`StageState.flash`), before its
+  channels change. It flashes only in a transition that changes a channel,
+  not in a state shown at once. A key press during the flash does not start
+  it again. `Stage.show` returns the seconds until the flash ends, so that a
+  slide's text can wait for it.
 - **A fade fades the rest as one picture**, as SVG's group opacity does: the
   fading parts never show their own hidden lines.
 - **Stills:** the export, the overview and the presenter's "next" pane show a
