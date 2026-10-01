@@ -9,9 +9,9 @@ What it checks comes from the uv project that holds the current directory:
 
   * stem/, the house: the four Python checks of check_python.py (ruff format,
     ruff check, mypy --strict, pyright) on tools/; Prettier on the shared files
-    (`pnpm format:check`); the doc check (doccheck.py) on docs/,
-    tools/, themes/, README.md and AGENTS.md; and the palette's gates
-    (palette.py). Nothing in a talk.
+    (`pnpm format:check`); pytest on the tests in tools/ (test_*.py); the doc
+    check (doccheck.py) on docs/, tools/, themes/, README.md and AGENTS.md; and
+    the palette's gates (palette.py). Nothing in a talk.
   * a talk: the same four checks on the talk's own code, in the talk's uv
     project, with its versions and its settings; Prettier on the talk; the doc
     check on its docs/, README.md and AGENTS.md; artcheck.py,
@@ -90,6 +90,9 @@ def house_checks(fix: bool) -> list[Check]:
     return [
         *python_checks(STEM, code_paths(STEM), fix),
         prettier(STEM, fix),
+        Check(
+            "pytest", STEM, uv_run("pytest", "-q", "-p", "no:cacheprovider", "tools")
+        ),
         doccheck(STEM, HOUSE_DOC_PATHS),
         Check("palette", STEM, uv_run("tools/palette.py")),
     ]

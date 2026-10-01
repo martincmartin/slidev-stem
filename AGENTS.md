@@ -140,8 +140,9 @@ Each run checks only its own project, and it takes its scope from the current
 directory.
 
 - **The root run** checks `tools/` with ruff (format and lint), mypy (strict)
-  and pyright. It checks the shared files with Prettier, the docs with
-  `doccheck`, and the palette's gates.
+  and pyright. It checks the shared files with Prettier, runs the tests in
+  `tools/` (pytest), checks the docs with `doccheck`, and checks the palette's
+  gates.
 - **A talk's run** checks the talk's Python with the same four tools, in the
   talk's own venv. It checks the talk with Prettier, its docs with
   `doccheck`, and every SVG in its

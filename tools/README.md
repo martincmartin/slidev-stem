@@ -150,6 +150,12 @@ It checks that the docs hold together (links, anchors, indexes, tool paths),
 not that what they say is true. That is still a reader's job: see the global
 `AGENTS.md`, "Docs".
 
+It reads Markdown with regular expressions. The cases it must get right (and
+the limits it documents) are tests in `test_doccheck.py`, which the root run of
+`validate.py` runs with pytest. When doccheck reads some Markdown wrongly, add
+a test that fails, then fix the reader. A tool in `tools/` that gets its own
+`test_<tool>.py` is run the same way.
+
 ## Adding a tool
 
 Put the thresholds in `lib.py`, never in the tool. Before you change a tool,
