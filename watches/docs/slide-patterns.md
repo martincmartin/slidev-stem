@@ -1,18 +1,21 @@
 # Slide patterns
 
-How a slide in this deck is actually built: the theme, the components, the
-click conventions and the speaker notes. `slides.md` is the working example —
-the "Before clocks" slide uses every pattern here.
+**Covers:** how a slide in this deck is built: the theme on a slide, the
+timekeeper card, clicks, speaker notes, what fits, borrowed assets.
+**Read before** you add or change a slide. For a slide that shows the watch or
+the ruler, read [watch.md](watch.md) as well.
+**Tasks:**
+[`2026-09-23-followups`](../tasks/2026-09-23-followups/instructions.md) (where
+the docs live; the click pattern).
+
+`slides.md` is the working example: the "Before clocks" slide uses every
+pattern here.
 
 ## The theme
 
-Every slide is Ledger, because the deck uses the house theme:
-
-```yaml
-theme: ledger # stem/themes/ledger/, shared by all the STEM talks
-```
-
-The theme sets the seven `--palette-*` palette variables, the slide background, the
+The deck uses the house theme, named in the headmatter (now Ledger:
+`theme: ledger`). The theme sets the `--palette-*` variables
+([theme.md](../../docs/theme.md)), the slide background, the
 text colour and the fonts, on every slide. A slide needs no class to get them. So
 a slide's own `<style>` holds only its layout. The "Before clocks" slide in
 `slides.md` is the example: `layout: full`, `class: tk-timekeepers`, and a
@@ -28,7 +31,7 @@ Three rules for a slide:
   not have, see [theme.md](../../docs/theme.md#adding-a-colour).
   To change a role for one slide, give the slide a `class:` and set the role in
   a `.slidev-layout.<class>` rule (see
-  [theme.md](../../docs/theme.md#how-to-use-it)). `tools/palette.py` fails if a
+  [theme.md](../../docs/theme.md#one-slide-can-change-a-role)). `tools/palette.py` fails if a
   talk declares a `--palette-*` variable in a different rule, or if that
   slide's palette fails a gate.
 - **`layout: full` plus a class, not a custom layout.** It keeps each slide's layout
@@ -89,68 +92,10 @@ in the slide's `<style>` uses them: it dims each `slidev-vclick-prior` card whil
 to that element. When a `:class` binding changes, Vue rewrites the element's
 classes and removes the `v-click` classes, and the dim rule stops working.
 
-## The live watch
+## The live watch and the ruler
 
-[`stem/docs/webgl.md`](../../docs/webgl.md) has the rules for 3D art in any
-talk; this is what is true of this deck.
-
-One WebGL canvas lies under every slide (`global-bottom.vue`). A slide asks
-for a view of the watch in its frontmatter; a slide with no `watch:` key hides
-it. The talk's opening is the example:
-
-```yaml
-# the cover
-watch: cover
----
-# slide 2
-watch: hairspring
-watchOnly: hairspring and stud # the rest of the watch fades out
-watchTilt: 20 # degrees: shows that the spring is a ribbon
-watchSettle: 1 # at click 1 the balance settles at rest
-clicks: 1
-```
-
-- **A key of the wrong kind stops the deck at load**, with the key's name:
-  `watchTilt` is a number, `watchSettle` a click number, `watchOnly` the name
-  of a subject.
-- **The order of a change is fixed:** the camera moves, then the rest fades,
-  then the view tilts. Going back runs it in reverse. Do not put text where the
-  moving watch will be: on slide 2 the hairspring is about 535 to 875 px
-  across.
-- **The cover's title fades as the camera zooms** (the `watch-zoom`
-  transition, from the cover to slide 2 only). Slide 2's title comes in after
-  the zoom.
-- **The first block of `slides.md` is a hidden slide with no content.**
-  Slidev takes the headmatter from the first slide's frontmatter, and a
-  `transition` there becomes the default of every slide. The cover has the
-  only `watch-zoom`, so the headmatter has its own block, with `hide: true`.
-  Do not merge it with the cover's block.
-- **A click that changes the watch needs a `[click]` line** in the speaker
-  notes, as for any click.
-- **The slide's text paints over the watch**, because the slide's layout is
-  positioned. A slide with its own layout must keep that.
-
-## The flexing ruler
-
-Slide 2 ends with `components/FlexingRuler.vue`, which inlines
-`public/flexing-ruler.svg` (written by `art/flexing_ruler.py`; edit the script,
-not the SVG). The slide's `watchHide: 2` fades the watch at click 2, and the
-component's `visible` fades the ruler in. `playing` (click 3) runs the SVG's
-timeline from 0. The component sets the SMIL clock by hand, so a click back
-returns to the face-on ruler. The swing never damps, on purpose.
-
-- **The component runs the clock, not the SVG.** A self-playing `<img>` cannot
-  start on a click or reset on a click back. The clock runs only while the
-  slide is the current one: Slidev keeps a left slide mounted and gives it its
-  last click, so `playing` alone would keep it running off-screen.
-- **The SVG is 85 KB because it is sampled** (30 frames a second of a path),
-  from the first vibration mode of a fixed-end beam at constant length. That is
-  not an oversight; the options are in
-  `tasks/2026-09-30-flexing-ruler/PLAN.md`.
-- **`art/flexing_ruler.py --check`** fails if the SVG on disk differs, or if the
-  frame rate changes any `begin` or `dur`.
-- **Print and export show no ruler still.** The ruler's overview thumbnail
-  shows the hairspring still under the ruler; this is known and left alone.
+A slide that shows the watch sets its view in the frontmatter, and slide 2
+ends with the flexing ruler. Both are in [watch.md](watch.md).
 
 ## Speaker notes
 
@@ -201,17 +146,10 @@ the history.
 
 ## Before you ship
 
-```bash
-# in stem/
-pnpm format                       # prettier -- required, see stem/AGENTS.md
-.venv/bin/python3 tools/palette.py          # the palette still passes its own gates
-.venv/bin/python3 tools/artcheck.py         # every SVG: structure, grammar, legibility
-# in watches/
-pnpm build                        # it actually builds
-```
+In `watches/`: `pnpm format`, then `uv run ../tools/validate.py`. It runs every
+check of the talk, and builds the deck ([`stem/docs/talks.md`](../../docs/talks.md)).
 
-`stem/.prettierrc` sends deck files to `prettier-plugin-slidev` and all other
-Markdown to the normal Markdown parser. **This split is necessary**: the Markdown
-parser breaks a slide's frontmatter. If you add a deck whose filename is not
-`slides.md`, `slides-*.md` or `pages/*.md`, add it to the `files` array in
-`stem/.prettierrc` **in the same change**. `stem/AGENTS.md` has the details.
+**A deck file must match a `.prettierrc` override** (`slides.md`,
+`slides-*.md`, `pages/*.md`). If you add a deck file with another name, add it
+to the `files` array in `stem/.prettierrc` in the same change: the Markdown
+parser breaks a slide's frontmatter. `stem/AGENTS.md` has the details.

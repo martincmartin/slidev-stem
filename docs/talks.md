@@ -1,5 +1,13 @@
 # Talks as projects: versions, upgrades and checks
 
+**Covers:** each talk as its own project: the layout, setting up a clone, why
+each talk keeps its own versions, and how to upgrade a talk's packages.
+**Read before** you set up a clone, upgrade, validate, tag or build a talk, or
+start a new talk.
+**Tasks:**
+[`tasks/2026-09-28-per-talk-dependencies/`](../tasks/2026-09-28-per-talk-dependencies/PLAN.md),
+[`tasks/2026-09-28-validate/`](../tasks/2026-09-28-validate/PLAN.md).
+
 Each talk is a separate project, with its own package versions. A talk that you
 gave is frozen. This page tells you why, and how to work in that setup. The rules
 themselves are in [`../AGENTS.md`](../AGENTS.md): "Given talks and versions" and
@@ -18,7 +26,7 @@ talk's scripts. uv installs the pinned Python.
 
 A talk that has TypeScript (`watches/` has) also has its own `tsconfig.json`
 and `eslint.config.js`. Copy them from that talk when a new talk needs them,
-with the packages in its `package.json` (`typescript` at `~6.0`: typescript-eslint
+with the packages in its `package.json` (`typescript` at `^6.0`: typescript-eslint
 does not yet accept TypeScript 7).
 
 ## Set up a clone
@@ -70,25 +78,12 @@ copy, which all talks use. You make every change to them yourself, so you can
 find the talks in progress that use an item before you change it. The tag
 records the version that each given talk used.
 
-The decision and its evidence: `tasks/2026-09-28-per-talk-dependencies/`.
-
 ## Check your work
 
-Before you commit, validate the project that you changed:
-
-```bash
-uv run tools/validate.py          # at the root: the shared files
-uv run ../tools/validate.py       # in a talk's directory: that talk
-```
-
-A talk's run takes about 45 s. It runs ruff, mypy and pyright on the talk's
-Python. It runs Prettier. It runs `artcheck`, `barroom` and `motion` on every SVG.
-It checks that the talk does not set the palette. It builds the deck, and walks
-every slide and click with every outside request blocked. See
-[`../tools/README.md`](../tools/README.md) for each tool.
-
-The decision and the other checks that were measured:
-`tasks/2026-09-28-validate/`.
+Before you commit, run `validate.py` in each project that you changed
+([`../AGENTS.md`](../AGENTS.md), "Validate before you commit", says what each
+run checks). A talk's run takes about 45 s. Each tool is in
+[`../tools/README.md`](../tools/README.md).
 
 ## Upgrade a talk's packages
 

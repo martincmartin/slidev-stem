@@ -1,8 +1,19 @@
-# Legibility — how "is this big enough?" gets settled
+# Legibility: how "is this big enough?" gets settled
+
+**Covers:** the design venue, the resolution and contrast floors, room light,
+how to read the metrics of `barroom.py` and `motion.py`, text sizes, and how
+the metrics can mislead.
+**Read before** you decide whether something is big, thick or dark enough, or
+read a back-row measurement.
+**Tasks:**
+[`watches/tasks/2026-09-20-animation-style/`](../watches/tasks/2026-09-20-animation-style/README.md)
+(§3 the constraint, §8.1–8.2 the method and the venues, §9),
+[`watches/tasks/2026-09-23-followups/`](../watches/tasks/2026-09-23-followups/PLAN.md)
+(each SVG states its display size).
 
 Every threshold in these docs comes from one question: **can the back row of a bar
-read this?** This file is the arithmetic that answers it, and the tools that check
-new work against it. Run the commands here in `stem/`.
+read this?** This file is the arithmetic that answers it. The tools that check
+new work against it are in [`../tools/README.md`](../tools/README.md).
 
 The short version: **design for a 55-inch TV seen from 7 metres.** Marks thinner
 than **1.64 CSS px** are below the eye's resolution limit there, and marks under
@@ -162,21 +173,11 @@ leader lines were drawn at the very bottom of the weight hierarchy. **A diagram 
 needs labels is not a card. It is a full-slide drawing**: it is shown larger, so
 its file states a larger size, and every number on this page changes with it.
 
-## How to check new work
+## When to check
 
-```bash
-.venv/bin/python3 tools/palette.py                    # the palette still passes its gates
-.venv/bin/python3 tools/palette.py "#C0451C"          # can I use this colour
-.venv/bin/python3 tools/artcheck.py new.svg           # box, palette, ladder, floor, opacity
-.venv/bin/python3 tools/contact.py new.svg  # look at it, pinned at several times
-.venv/bin/python3 tools/barroom.py new.svg  # what the back row gets
-.venv/bin/python3 tools/motion.py new.svg   # ... of the thing that MOVES
-```
-
-The first three are stdlib-only and take a second; there is no excuse for skipping
-them. The last three need `playwright`, `Pillow` and `numpy`, which `stem/.venv`
-has (`pyproject.toml` lists them, and `uv sync` makes the venv). **If the drawing animates, `motion.py` is not
-optional**: it is the only one that can tell you the animation is invisible.
+The commands are in [`../tools/README.md`](../tools/README.md). **If the
+drawing animates, `motion.py` is not optional**: it is the only check that can
+tell you the animation is invisible.
 
 **Run `barroom.py` on the first day of a new drawing, not the last.** Every failure
 it finds is cheap to fix while the art is still being drawn and expensive

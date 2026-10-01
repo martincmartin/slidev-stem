@@ -1,0 +1,42 @@
+[project]
+name = "doccheck"
+version = "0.1.0"
+description = "Check a project's Markdown docs: links, anchors, the doc indexes, and tool paths."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+doccheck = "doccheck.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+  "mypy>=2.3.1",
+  "pyright>=1.1.414",
+  "pytest>=9.0.0",
+  "ruff>=0.16.9",
+]
+
+[tool.uv]
+python-preference = "only-managed"
+
+[tool.ruff]
+target-version = "py314"
+
+[tool.ruff.lint]
+extend-select = ["I", "UP", "B", "SIM", "C4", "PTH", "N", "PERF", "RUF"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+files = ["src", "tests", "validate.py"]
+
+[tool.pyright]
+pythonVersion = "3.14"
+include = ["src", "tests", "validate.py"]
+venvPath = "."
+venv = ".venv"

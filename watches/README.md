@@ -44,7 +44,6 @@ Chromium the first time they run.
 
 ## Decisions
 
-[`../docs/README.md`](../docs/README.md) lists the decisions behind the palette
-and the illustrations, each with a link to the task directory that records why.
-It also explains why `docs/` and `tasks/` are separate, and why their tools are
-deliberately duplicated rather than shared.
+Each doc links the task directories that record why its rules are what they
+are. This talk's tasks are in [`tasks/`](tasks/); the house's are in
+[`../tasks/`](../tasks/).

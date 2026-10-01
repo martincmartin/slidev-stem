@@ -1,12 +1,17 @@
-# watches — the talk's own docs
+# watches: the talk's own docs
 
-What is true of this talk only. The house style for every STEM talk (palette,
-illustrations, legibility, and the checks) is in [`stem/docs/`](../../docs/README.md).
+What is true of this talk only. The house rules for every STEM talk (theme,
+illustrations, WebGL, legibility, how to work in the repo) are in
+[`stem/docs/`](../../docs/README.md). When to read each doc is in
+[`stem/AGENTS.md`](../../AGENTS.md), "House docs: read before you act"; keep
+the two lists in step.
 
-| read this                              | when                                                                                                                                                                                                                                                                                                                               |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [slide-patterns.md](slide-patterns.md) | building a slide: layout, components, clicks, speaker notes                                                                                                                                                                                                                                                                        |
-| [rough-slides.md](rough-slides.md)     | choosing what the next slide says: the talk's outline, as working notes. Check each claim before it goes on a slide                                                                                                                                                                                                                |
-| [measurements.md](measurements.md)     | what the timekeeper drawings and the cover watch measure at the back row                                                                                                                                                                                                                                                           |
-| [../art/](../art/)                     | changing the skeleton watch: edit `watch_design.py`, then run `validate_watch_design.py`; it writes `watch/design.json`. To move the wheels, run `search_watch_layout.py` first. The watch is drawn live in WebGL: see [`stem/docs/webgl.md`](../../docs/webgl.md) and [the task](../tasks/2026-09-29-webgl-watch/instructions.md) |
-| [../art/favicon.py](../art/favicon.py) | changing the browser-tab icon: edit its pixel maps and run it. It is drawn pixel by pixel, not scaled down from the cover, on purpose                                                                                                                                                                                              |
+| Doc                                    | What it holds                                                                                                      |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| [slide-patterns.md](slide-patterns.md) | how a slide is built: the theme on a slide, the timekeeper card, clicks, speaker notes, what fits, borrowed assets |
+| [watch.md](watch.md)                   | the live watch (files, design, frontmatter keys, zoom line widths, budgets) and the flexing ruler                  |
+| [measurements.md](measurements.md)     | what the timekeepers, the cover watch and the ruler measure at the back row                                        |
+| [rough-slides.md](rough-slides.md)     | the talk's outline, as working notes. Check each claim before it goes on a slide                                   |
+
+The browser-tab icon is `art/favicon.py`: edit its pixel maps and run it. It is
+drawn pixel by pixel, not scaled down from the cover, on purpose.

@@ -20,7 +20,7 @@ and in the talk's `package.json`:
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `package.json`      | the font families for Slidev, with `provider: none` (no web-font service); light only                                     |
 | `styles/fonts.css`  | the self-hosted font weights, from Fontsource                                                                             |
-| `styles/ledger.css` | the seven `--palette-*` palette variables, background and ink on every slide; `h1`; `cover`                               |
+| `styles/ledger.css` | the nine `--palette-*` variables, background and ink on every slide; `h1`; `cover`                                        |
 | `vite.config.mts`   | lets a talk's dev server and `slidev export` serve the fonts, which `pnpm install` at the repo root puts outside the talk |
 | `styles/index.ts`   | Slidev's base layout styles, then the two files above                                                                     |
 
@@ -29,11 +29,12 @@ theme adds none yet.
 
 ## Rules
 
-- **The palette is set here and nowhere else.** The values and the reasoning
-  behind them are in [`docs/theme.md`](../../docs/theme.md) at the repo root.
-  `tools/lib.py` there reads the values from `styles/ledger.css`, and
-  `.venv/bin/python3 tools/palette.py` measures them against their gates. It also fails
-  if a talk declares a `--palette-*` variable.
+- **The palette is set here and nowhere else.** The roles, their gates and
+  why Ledger meets them are in [`docs/theme.md`](../../docs/theme.md) at the
+  repo root. `tools/lib.py` there reads the values from `styles/ledger.css`,
+  and `uv run tools/palette.py` measures them against their gates. A talk may
+  change a role only for a slide class (`.slidev-layout.<class>`); `palette.py
+--talk <talk>` fails on any other rule.
 - **No outside requests.** A talk must run on a laptop with no network. Fonts
   come from Fontsource packages. A font that is not on Fontsource and is not one
   of the 14 fonts every Mac and Windows laptop has: ask first.

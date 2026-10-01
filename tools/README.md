@@ -1,8 +1,14 @@
-# tools — the checks that settle arguments
+# tools: the checks that settle arguments
+
+**Covers:** each house tool, its commands, and which tool is the authority.
+This is the one place that lists the commands; the docs link here.
+**Read before** you run a check, change a tool, or add one.
+**Tasks:**
+[`tasks/2026-09-25-tools-cleanup/`](../tasks/2026-09-25-tools-cleanup/PLAN.md),
+[`tasks/2026-09-28-validate/`](../tasks/2026-09-28-validate/PLAN.md).
 
 These answer "is this good enough?" with arithmetic rather than opinion, for every
-STEM talk. The thresholds they enforce are the ones in [`../docs/`](../docs/); the
-reasoning behind the thresholds is in the talks' `tasks/` directories. Run them in
+STEM talk. The thresholds they enforce are the ones in [`../docs/`](../docs/README.md). Run them in
 `stem/`.
 
 **All of them read `lib.py` for constants.** Change a threshold, a stroke weight or
@@ -26,6 +32,7 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 | `motion.py`            | playwright + PIL + numpy | can the back row see the thing that moves (an SVG's animation, or two PNG frames of one)                                               |
 | `offline_check.py`     | playwright               | does a built deck make any outside request; its fonts and colours per slide                                                            |
 | `check_python.py`      | ruff, mypy, pyright      | do these Python files pass the house's checks (default: every tool here)                                                               |
+| `doccheck.py`          | stdlib                   | do the docs' links and anchors resolve, does each `docs/` match its two indexes, does each named tool exist                            |
 | `validate.py`          | all of the above         | does this project (stem/ or a talk) pass every check: run before a commit                                                              |
 | `flatten_pnpm_list.py` | stdlib                   | every resolved JS package, one `name@version` a line: diff before and after an upgrade                                                 |
 | `compare_dist.py`      | stdlib                   | are two deck builds the same, apart from Vue scope ids and content hashes                                                              |
@@ -35,21 +42,21 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 uv run tools/validate.py                                # every check of the shared files
 (cd watches && uv run ../tools/validate.py)             # every check of one talk, only
 uv run tools/validate.py --fix                          # ... after ruff formats and fixes
-.venv/bin/python3 tools/lib.py                          # the framework, as numbers
-.venv/bin/python3 tools/palette.py                      # every gate, pass/fail
-.venv/bin/python3 tools/palette.py --talk watches       # only: does this talk set it outside a slide class?
-.venv/bin/python3 tools/palette.py "#C0451C" accent     # a candidate colour, measured
-.venv/bin/python3 tools/artcheck.py watches/public/     # every SVG in a talk's public/
-.venv/bin/python3 tools/artcheck.py path/to/new.svg     # ... or just the new one
-.venv/bin/python3 tools/contact.py watches/public/timekeepers --times 0.2 4 8 11.8
-.venv/bin/python3 tools/barroom.py watches/public/ --save out/
-.venv/bin/python3 tools/motion.py watches/public/   # every animated drawing in a talk
-.venv/bin/python3 tools/barroom.py cover.png           # a PNG, at 2 device px a CSS px
-.venv/bin/python3 tools/motion.py --png-pair a.png b.png   # two frames of one animation
-.venv/bin/python3 tools/scenecheck.py scene.json       # from a talk's `pnpm art:scene`
-.venv/bin/python3 tools/offline_check.py <build dir> 1:0 2:5   # see its docstring
-.venv/bin/python3 tools/offline_check.py <build dir> --walk    # every slide and click
-.venv/bin/python3 tools/check_python.py      # after you change a tool
+uv run tools/lib.py                          # the framework, as numbers
+uv run tools/palette.py                      # every gate, pass/fail
+uv run tools/palette.py --talk watches       # only: does this talk set it outside a slide class?
+uv run tools/palette.py "#C0451C" accent     # a candidate colour, measured
+uv run tools/artcheck.py watches/public/     # every SVG in a talk's public/
+uv run tools/artcheck.py path/to/new.svg     # ... or just the new one
+uv run tools/contact.py watches/public/timekeepers --times 0.2 4 8 11.8
+uv run tools/barroom.py watches/public/ --save out/
+uv run tools/motion.py watches/public/   # every animated drawing in a talk
+uv run tools/barroom.py cover.png           # a PNG, at 2 device px a CSS px
+uv run tools/motion.py --png-pair a.png b.png   # two frames of one animation
+uv run tools/scenecheck.py scene.json       # from a talk's `pnpm art:scene`
+uv run tools/offline_check.py <build dir> 1:0 2:5   # see its docstring
+uv run tools/offline_check.py <build dir> --walk    # every slide and click
+uv run tools/check_python.py      # after you change a tool
 tools/capture_outputs.sh /tmp/before          # before you change a tool; again after,
 diff -r /tmp/before /tmp/after                # ... then compare: a refactor changes nothing
 ```
@@ -58,8 +65,8 @@ Every check exits non-zero on failure, so it works in `validate.py`, a
 pre-commit hook or CI. `barroom.py` fails if a drawing is below the gate, and
 `motion.py` if a drawing moves only in a wash. They also print their scores as
 JSON with `--json`: a program that reads the scores (such as a talk's validator)
-must use that, not their tables. All of them need Python 3.14, so run them
-with `stem/.venv/bin/python3` or `uv run`: `uv sync` in `stem/` makes the venv. The
+must use that, not their tables. All of them need Python 3.14: run them with `uv run`, which makes
+`stem/.venv` first. The
 "needs" column above lists the packages. The tools that render install Chromium
 the first time they run, into Playwright's cache for your user, which every
 checkout shares (`browsers.py`). Each tool that checks art needs the paths
@@ -88,19 +95,8 @@ on every save; `barroom` costs a browser launch, so it runs when the drawing is
 roughly done — but _early_ in the drawing's life, not at the end. Every failure it
 finds is cheap while the art is still being drawn.
 
-## Three signatures worth recognising
-
-Failures are not all the same failure. `barroom.py` says so in its own output, and
-it is the single most useful thing to internalise from `../docs/legibility.md`:
-
-- **`hold` low, `p90` healthy** -- the outline survives and the washes do not. The
-  drawing reduces to line work at the back row. Often fine; check that the line work
-  alone carries the meaning.
-- **`hold` and `p90` both low** -- a real failure. Ask whether it is _weight_
-  (fixable by remapping the stroke span; do not ship a uniform multiplier) or
-  _palette_ (not fixable with ink at all).
-- **`barroom` fine, `motion` with area at 1.2 and nothing at 3.0** -- the drawing is
-  legible and its animation is not. Put the motion in the marks that survive.
+How to read what they report, and what a failure means, is in
+[`../docs/legibility.md`](../docs/legibility.md).
 
 ## Why these are copies of tools in `tasks/`
 
@@ -138,6 +134,21 @@ and the evidence are in
   a `sys.path` change. Both tools start a browser, so a subprocess costs nothing.
 - **The stroke floor is computed from `DESIGN_VENUE` (1.6357 CSS px), not pinned
   at 1.64.** Change the design venue and the floor follows.
+
+## `doccheck.py`
+
+`validate.py` runs it on each project's `docs/`, `README.md` and `AGENTS.md`
+(and, at the root, `tools/` and `themes/`), never on `tasks/`. To run it by
+hand, in `stem/`:
+
+```bash
+uv run tools/doccheck.py docs tools themes README.md AGENTS.md --tools tools
+uv run tools/doccheck.py watches/docs watches/README.md watches/AGENTS.md --tools tools
+```
+
+It checks that the docs hold together (links, anchors, indexes, tool paths),
+not that what they say is true. That is still a reader's job: see the global
+`AGENTS.md`, "Docs".
 
 ## Adding a tool
 

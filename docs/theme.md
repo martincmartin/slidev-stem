@@ -1,35 +1,69 @@
-# Theme — Ledger
+# Theme: colour roles and gates
 
-Warm cream, deep blue, warm brown. Chosen 2026-09-19 out of 23 candidates.
+**Covers:** the colour roles that every theme fills, the gates each role must
+pass, how one slide changes a role, and how to add a colour. Then the current
+theme, Ledger, as the example.
+**Read before** you choose, compare, measure or add a colour, or make a new
+theme.
+**Tasks:**
+[`watches/tasks/2026-09-18-theme-colors/`](../watches/tasks/2026-09-18-theme-colors/)
+(the palette: 23 candidates, the gates),
+[`watches/tasks/2026-09-20-animation-style/`](../watches/tasks/2026-09-20-animation-style/README.md)
+§7, §8.5 (dark themes, measured),
+[`tasks/2026-09-23-house-theme/`](../tasks/2026-09-23-house-theme/PLAN.md)
+(the palette as a Slidev theme),
+[`tasks/2026-09-23-theme-aware-art/`](../tasks/2026-09-23-theme-aware-art/instructions.md)
+(the art takes its colours from the theme),
+[`watches/tasks/2026-09-30-flexing-ruler/`](../watches/tasks/2026-09-30-flexing-ruler/PLAN.md)
+(a slide class sets the palette).
 
-```
---palette-background  #FAF7F0    the slide field
---palette-ink         #2A2520    body text, headings
---palette-muted       #736A60    captions, units, dates, secondary text
---palette-accent      #1F5FA8    the one emphasised thing
---palette-second      #9A6238    the warm counterpart: the catch, the warning
---palette-panel       #F2EEE4    card fill
---palette-border      #E0D9CA    card edge
+The theme is not final. It will be chosen again when a deck is more complete,
+and a dark theme may be tried. So the roles and the gates below are the rules.
+Ledger's values are one theme that passes them.
 
---palette-art-line      #143C6B  drawings: line work (illustrations.md)
---palette-art-knockout  #D3DCE3  drawings: a pale face that reads as lit
-```
+## The roles
 
-`.venv/bin/python3 tools/palette.py` (in `stem/`) prints these with every gate measured.
-Run it if you change one.
+A theme sets nine variables on `.slidev-layout` in its CSS. For Ledger, that
+file is `themes/ledger/styles/ledger.css`. It is the only place that sets them:
+`tools/lib.py` reads them from there, and the WebGL art reads them from the
+page ([webgl.md](webgl.md)).
 
-## How to use it
+| Variable                 | Job in text and layout                 | Job in the art                                                                                                        |
+| ------------------------ | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `--palette-background`   | the slide field                        | the paper of full-slide art and of the WebGL art                                                                      |
+| `--palette-ink`          | body text, headings                    | scales and fine detail: ticks, graduations; usually at 0.5 (WebGL ink `detail`)                                       |
+| `--palette-muted`        | captions, units, dates, secondary text | context: what holds or acts on the subject (a stand, a case, a clamp); as a line, and a 0.18 wash (WebGL ink `frame`) |
+| `--palette-accent`       | the one emphasised thing on a slide    | not used: see `art-line`                                                                                              |
+| `--palette-second`       | the turn: the catch, the warning       | not used yet                                                                                                          |
+| `--palette-panel`        | a card's fill                          | the paper of a card's art                                                                                             |
+| `--palette-border`       | a card's edge                          | not used                                                                                                              |
+| `--palette-art-line`     | not used                               | the subject: its structure, and the thing that moves (WebGL ink `line`)                                               |
+| `--palette-art-knockout` | not used                               | a pale, opaque face that reads as lit, not as bare paper (WebGL ink `knockout`)                                       |
 
-**Use the variables, not literals.** The nine values are set once, on every
-slide, by the house theme (`themes/ledger/styles/ledger.css`). Only a slide's
-class can override them (see below).
-Components read `var(--palette-ink)` and so on, so everything on a slide follows
-the palette. `tools/lib.py` reads the values from the same file, so
-`.venv/bin/python3 tools/palette.py` always measures what the slides render.
+How a drawing uses these (opacity, washes, strokes) is in
+[illustrations.md](illustrations.md).
 
-**A slide can override the palette, through its class.** Slidev puts a slide's
-`class:` on the slide's `.slidev-layout` element. So a rule with the selector
-`.slidev-layout.<class>` changes the roles for those slides only:
+**Use the variables, not values.** Components read `var(--palette-ink)` and so
+on, so everything on a slide follows the theme. An inlined SVG does the same
+through its classes ([illustrations.md](illustrations.md)).
+
+**One accent per slide.** The accent is not "the blue one". It is _the thing
+you want them to look at_. A slide with four accented spans has none. The
+card's one big number is the canonical use.
+
+**`second` is for the turn, not for decoration.** On the cards it carries the
+catch ("Freezes in winter"). Used as a second decorative accent, it is wasted.
+
+**The art line is the accent, darkened along its own hue.** The accent is
+sized for a large numeral. A 2–4 px line spends the same contrast at a much
+smaller size, so the line needs more. In Ledger, the accent is 5.56:1 on the
+panel and the art line is 9.60:1. Do not "fix" the art line back to the accent.
+
+## One slide can change a role
+
+Slidev puts a slide's `class:` on the slide's `.slidev-layout` element. A rule
+with the selector `.slidev-layout.<class>` changes roles for those slides
+only:
 
 ```css
 .slidev-layout.warm {
@@ -38,150 +72,113 @@ the palette. `tools/lib.py` reads the values from the same file, so
 ```
 
 Put the rule in the talk's `styles/`, or in a `<style>` on the slide. Use a
-`#rrggbb` value and a role that the theme sets. With `--talk <talk>`,
-`palette.py` fails if the talk declares a `--palette-*` variable in a different
-rule, such as `:root` or `.slidev-layout` without a class. It also measures each
-slide's palette (the theme with the override) against every gate, and fails if
-one gate fails. The inlined drawings follow the override (see
-[illustrations.md](illustrations.md)).
-
-**One accent per slide.** The accent is not "the blue one", it is _the thing you
-want them to look at_. A slide with four accented spans has none. The 37 px stat
-number on a timekeeper card is the canonical use: one number, one colour, nothing
-else competing.
-
-**`second` is for the turn, not for decoration.** On the cards it carries the
-problem line — "Freezes in winter", "Someone must flip it". It is the warm colour
-because the point it makes is a warm one: here is the catch. Using it as a second
-decorative accent wastes it.
-
-**Measure a mark against the surface it lands on.** Text on a card sits on
-`--palette-panel` (`#F2EEE4`), not on `--palette-background` (`#FAF7F0`). The two differ by
-enough to move a gate: `muted` is 4.96:1 on the background and 4.58:1 on the panel.
-Every gate below is stated against the panel for that reason — it is the harder of
-the two and the one that actually applies.
+`#rrggbb` value and a role that the theme sets. `uv run tools/palette.py --talk
+<talk>` fails if the talk sets a `--palette-*` variable in any other rule, and
+it measures each such slide's palette against the gates. Inlined drawings
+follow the override.
 
 ## The gates
 
-| check                   | against | threshold | Ledger    | why                                                 |
-| ----------------------- | ------- | --------- | --------- | --------------------------------------------------- |
-| ink                     | panel   | ≥ 12:1    | **13.10** | headroom to degrade from                            |
-| accent                  | panel   | ≥ 4.5:1   | **5.56**  | the 37 px stat number                               |
-| second                  | panel   | ≥ 3.5:1   | **4.34**  | 20 px bold is large text: the 3:1 floor plus margin |
-| muted                   | panel   | ≥ 4.5:1   | **4.58**  | 17 px body is normal text, so WCAG AA applies       |
-| accent vs **ink**       | —       | ≥ ΔE76 35 | **55**    | emphasis has to read as emphasis                    |
-| accent vs second        | —       | ≥ ΔE76 25 | **75**    | under deuteranopia _and_ protanopia                 |
-| accent/second lightness | —       | ≥ 1.4×    | 1.28× ⚠   | hue fails before lightness does                     |
+Every gate is measured against the surface the mark sits on. Text on a card
+sits on the panel, not on the background. In Ledger the panel is the darker,
+so the harder, of the two, and `tools/lib.py` measures the text gates against
+it. **A new theme whose panel is not the harder surface needs its gates
+measured against the background as well.**
 
-**Two of those rows need reading carefully.**
+| Check                   | Against | Threshold | Why                                                 |
+| ----------------------- | ------- | --------- | --------------------------------------------------- |
+| ink                     | panel   | ≥ 12:1    | headroom to degrade from                            |
+| accent                  | panel   | ≥ 4.5:1   | the 37 px stat number                               |
+| second                  | panel   | ≥ 3.5:1   | 20 px bold is large text: the 3:1 floor plus margin |
+| muted                   | panel   | ≥ 4.5:1   | 17 px body is normal text, so WCAG AA applies       |
+| accent vs **ink**       | —       | ≥ ΔE76 35 | emphasis must read as emphasis, not as darker ink   |
+| accent vs second        | —       | ≥ ΔE76 25 | under deuteranopia _and_ protanopia                 |
+| accent/second lightness | —       | ≥ 1.4×    | preferred: hue fails before lightness does          |
 
-**`muted` has almost no margin: 4.58 against a gate of 4.5, 1.7%.** It is the
-thinnest thing in the palette and the first text colour to fail as a room brightens
-(`Fmax 0.156` — it drops below 3:1 at about 16% ambient flare). Practical rule:
-**never shrink muted text below 17 px, and never put muted on `--palette-border` or on
-another muted-adjacent surface** — muted on border is 3.78:1, which is below the
-gate for body text. If a caption needs to be smaller, make it ink, not muted.
-
-> The theme archive states this gate as ≥ 4.6, which Ledger fails by 0.02, and
-> gives no derivation for 4.6. The number enforced here is 4.5 because that is
-> WCAG AA for normal text and 17 px is normal text — the large-text relaxation
-> starts at 18 px, or 14 px bold. The margin is genuinely thin either way, which
-> is the part that matters.
-
-**The accent/second lightness ratio is 1.28× against a preferred 1.4×, and this is
-a known, accepted cost of a light field.** On a light background both the accent
-and the second must be dark to have contrast, so they land at similar lightness and
-have to separate by hue. Ledger's ΔE 75 says they separate very well for normal and
-colour-deficient vision alike — but hue is what desaturates first in a washed-out
-room. If the venue turns out bright, this is where it shows.
+The thresholds are in `tools/lib.py` (`GATES`). `uv run tools/palette.py` (in
+`stem/`) measures the theme against each one, and shows how much room light
+each pair survives.
 
 ## Two marks of the same hue need a lightness gap
 
-The accent/second row above is one case of a rule that applies wherever two marks of
-the same hue meet: **hue separation fails before lightness separation does**, so two
-same-hue marks that differ only in saturation or opacity merge as a room brightens —
-and merge immediately at any distance if the gap is small.
+Hue separation fails before lightness separation does. Two marks of the same
+hue that differ only in saturation or opacity merge as a room gets brighter.
 
-> **≥ 1.4× lightness separation** between same-hue marks that sit inside, against or
-> next to each other.
+> **≥ 1.4× lightness separation** between same-hue marks that sit inside,
+> against or next to each other.
 
-The illustrations hit this directly: the water in the water clock is the same
-`#143C6B` as the vessel outline holding it, so it is bracketed from _both_ sides —
-dark enough to clear 3:1 against the panel, light enough to stay 1.4× off the
-outline. [illustrations.md](illustrations.md) has the worked window. The same check
-applies to a chart with two shades of the accent, or a diagram with a highlighted
-sub-part in a tint of its parent.
-
-```bash
-.venv/bin/python3 tools/palette.py "#6D839B"   # reports lightness ratio against every role
-```
+The water in the water clock is the same hue as the vessel that holds it, so
+it is bracketed from both sides ([illustrations.md](illustrations.md),
+"Washes"). The same rule applies to a chart with two shades of one colour, or
+to a highlighted part in a tint of its parent. `uv run tools/palette.py
+"#6D839B"` reports the lightness ratio against every role.
 
 ## Adding a colour
 
-The usual right answer is **reuse a role**. Seven is already more than most slides
-need, and a chart with a fifth series is usually a chart that should be two charts.
+The usual right answer is to **reuse a role**. Nine roles are already more than
+most slides need.
 
-When you genuinely need one — a diagram with more parts than roles, a third series —
-run it through the measurement before you commit:
+When a slide really needs one more, measure it before you commit:
 
 ```bash
-.venv/bin/python3 tools/palette.py "#C0451C"           # every surface, every neighbour
-.venv/bin/python3 tools/palette.py "#C0451C" accent    # ... and against one role's gates
+uv run tools/palette.py "#C0451C"           # every surface, every neighbour
+uv run tools/palette.py "#C0451C" accent    # ... and against one role's gates
 ```
 
 It reports contrast against every surface, ΔE against every existing mark, the
-colour-blind separation, and the flare headroom. **Do not eyeball colour-blind
-risk.** Hand estimates in the theme archive were wrong in both directions: they
-called two safe pairs dangerous and the two worst pairs safe.
+colour-blind separation, and the room-light headroom. **Do not estimate
+colour-blind risk by eye.** Hand estimates in the palette task were wrong in
+both directions.
 
-Three traps worth knowing before you pick:
+Three traps:
 
-- **A warm accent beside a green is a colour-blind trap**, and its severity scales
-  with the warm colour's saturation. A soft apricot cannot hold a green at all. A
-  saturated caramel can. Blue secondaries have no such constraint.
-- **Red-green deficiency shifts red toward grey**, so grey-plus-burgundy is the
-  hardest common pairing — those two actively converge for those viewers. It works
-  only with a large deliberate lightness gap.
-- **A mid-lightness saturated field is the worst of both worlds.** It is neither a
-  good light nor a good dark. The watches deck's first field, `#1B44A6`, capped white at
-  8.7:1 — it gave away 40% of the available contrast before any other colour was
-  chosen.
+- **A warm accent beside a green is a colour-blind trap**, and it gets worse as
+  the warm colour gets more saturated. Blue secondaries have no such limit.
+- **Red-green deficiency shifts red toward grey**, so grey with burgundy is the
+  hardest common pair. It works only with a large lightness gap.
+- **A mid-lightness, saturated field is neither a good light nor a good dark.**
+  One early field capped white text at 8.7:1: 40% of the contrast was gone
+  before any other colour was chosen.
 
-## Pasted content, which is why Ledger won
+## The current theme: Ledger
 
-Code blocks, matplotlib charts, screenshots, papers and wiki diagrams are
-overwhelmingly light-background. A light deck absorbs them; a dark deck turns every
-one into a glaring white rectangle aimed at the audience. The seam is arithmetically
-symmetric — a white paste against a dark deck and a dark photo against Ledger both
-seam at 17:1 — but the _frequency_ is not, and a bright rectangle in a dim room is
-worse than a dark one in a lit room.
+Warm cream, deep blue, warm brown, with Fraunces titles and IBM Plex text. The
+values are in `themes/ledger/styles/ledger.css`; `uv run tools/palette.py`
+prints them with each gate. The theme package and its rules are in
+[`themes/ledger/README.md`](../themes/ledger/README.md).
 
-**This is the single reason Ledger won, and the reason that would flip it.** If this
-forum turns out to be photo-led rather than code-and-chart-led, the dark candidate
-(Beacon, `#0F1C33` navy / `#FFC24E` gold) wins outright.
+**Why Ledger, in one line: pasted content is mostly light.** Code blocks,
+charts, screenshots, papers and wiki diagrams almost all have a light
+background. A light deck takes them in; a dark deck turns each one into a
+bright rectangle aimed at the audience. If the talks turn out to be led by
+photos instead, a dark theme could win.
 
-Two practical consequences:
+**Its thin margins:**
 
-- **Shiki's code theme is deck-level, not slide-level.** A code block renders light
-  regardless of the slide's palette. On Ledger that is a 1.0:1 seam — invisible,
-  which is the point. If anyone ever proposes going dark, this is a config
-  dependency a guest presenter could undo without noticing.
-- **A house frame for pasted images** — padded, rounded, slightly tinted — would
-  blunt the seam for whichever theme is chosen. Never implemented; still a good idea.
+- **muted on the panel is 4.58:1 against a gate of 4.5.** It is the thinnest
+  value in the palette and the first text colour to fail as the room gets
+  brighter. Never make muted text smaller than 17 px, and never put muted text
+  on the border (3.78:1). If a caption must be smaller, make it ink.
+- **accent/second lightness is 1.28×, not 1.4×.** On a light field, both must
+  be dark to have contrast, so they separate by hue (ΔE 75, also for
+  colour-blind viewers). Hue is what fades first in a bright room.
 
-## Do not go dark without re-reading this
+**Consequences of a light theme:**
 
-Dark was explored properly: four candidate dark themes were built, measured and
-probed on real rendered pixels (`watches/tasks/2026-09-20-animation-style/README.md`
-§7, §8.5). The finding that surprises people is that **ambient flare does not punish
-dark themes** — measured unclipped, the dark candidate is ahead of Ledger at every
-flare level. So "keep it light because the room might be bright" is folklore and the
-arithmetic does not support it.
+- Shiki's code theme is set for the deck, not per slide. A code block renders
+  light on every slide. On Ledger that seam is invisible. A guest presenter
+  could undo this without noticing if the deck went dark.
+- A house frame for pasted images (padded, rounded, a little tinted) would
+  soften the seam for any theme. It is not built yet.
 
-Ledger is light for the pasted-content reason above, and for that reason only.
+## Dark themes
 
-There is one standing exception, and it is recommended rather than forbidden: **one
-full-bleed dark slide at the narrative pivot.** A dark _card_ punched into a light
-slide reads as a rendering error, especially under flare, which is why the dark
-drawing sets were ranked down. A dark _slide_ just reads as a dark slide. The
-watches talk has no narrative pivot yet; when it does, that beat is waiting.
+Four dark themes were built and measured on rendered pixels (the
+animation-style task, §7 and §8.5). **Room light does not favour light
+themes:** measured without clipping, the best dark candidate beat Ledger at
+every level of flare. So "keep it light because the room may be bright" is
+not a reason. The reason for Ledger is pasted content, above.
+
+One dark slide is fine and is recommended: **a full-bleed dark slide at the
+talk's turning point.** A dark _card_ inside a light slide reads as a
+rendering error. A dark _slide_ reads as a dark slide.

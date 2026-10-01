@@ -1,0 +1,15 @@
+  2313 docs/illustrations.md
+  2078 docs/legibility.md
+   988 docs/README.md
+   904 docs/talks.md
+  1627 docs/theme.md
+  2311 docs/webgl.md
+   452 watches/docs/measurements.md
+   159 watches/docs/README.md
+  1827 watches/docs/rough-slides.md
+  1669 watches/docs/slide-patterns.md
+  1560 tools/README.md
+   292 themes/ledger/README.md
+   234 README.md
+   321 watches/README.md
+ 16735 total

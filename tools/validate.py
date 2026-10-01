@@ -9,10 +9,12 @@ What it checks comes from the uv project that holds the current directory:
 
   * stem/, the house: the four Python checks of check_python.py (ruff format,
     ruff check, mypy --strict, pyright) on tools/; Prettier on the shared files
-    (`pnpm format:check`); and the palette's gates (palette.py). Nothing in a
-    talk.
+    (`pnpm format:check`); the doc check (doccheck.py) on docs/,
+    tools/, themes/, README.md and AGENTS.md; and the palette's gates
+    (palette.py). Nothing in a talk.
   * a talk: the same four checks on the talk's own code, in the talk's uv
-    project, with its versions and its settings; Prettier on the talk; artcheck.py,
+    project, with its versions and its settings; Prettier on the talk; the doc
+    check on its docs/, README.md and AGENTS.md; artcheck.py,
     barroom.py and motion.py on every SVG in its public/; palette.py's check that
     the talk sets the palette only for slide classes, within the gates; and a build of the deck (`pnpm build`,
     into a temporary directory), which offline_check.py --walk then steps
@@ -63,11 +65,32 @@ def prettier(directory: Path, fix: bool) -> Check:
     return Check("prettier", directory, ("pnpm", "format" if fix else "format:check"))
 
 
+# The Markdown that doccheck reads in each project, if it is there. Not tasks/:
+# a finished task is frozen, and its links may point at what has moved since.
+DOC_PATHS = ("docs", "README.md", "AGENTS.md")
+HOUSE_DOC_PATHS = (*DOC_PATHS, "tools", "themes")
+
+
+def doccheck(directory: Path, names: Sequence[str]) -> Check:
+    """The doc check (doccheck.py): links, anchors, each docs/
+    against its two indexes, and the paths into tools/, in the files and
+    directories `names` of `directory`."""
+    paths = [
+        str(lib.display_path(directory / name))
+        for name in names
+        if (directory / name).exists()
+    ]
+    return Check(
+        "doccheck", STEM, uv_run("tools/doccheck.py", *paths, "--tools", "tools")
+    )
+
+
 def house_checks(fix: bool) -> list[Check]:
     """The checks of the shared files in stem/."""
     return [
         *python_checks(STEM, code_paths(STEM), fix),
         prettier(STEM, fix),
+        doccheck(STEM, HOUSE_DOC_PATHS),
         Check("palette", STEM, uv_run("tools/palette.py")),
     ]
 
@@ -147,6 +170,7 @@ def talk_checks(
     return [
         *python_checks(directory, code_paths(directory), fix),
         prettier(directory, fix),
+        doccheck(directory, DOC_PATHS),
         *typescript_checks(directory),
         Check("artcheck", STEM, uv_run("tools/artcheck.py", public)),
         Check("barroom", STEM, uv_run("tools/barroom.py", public)),

@@ -70,6 +70,20 @@ How to work in this setup, including how to upgrade a talk, is in
 `docs/talks.md`. The options and the evidence are in
 `tasks/2026-09-28-per-talk-dependencies/`.
 
+## House docs: read before you act
+
+Read the doc before the action, not after. They are the source of truth; code
+comments point to them.
+
+| Before you…                                              | Read                                                         |
+| -------------------------------------------------------- | ------------------------------------------------------------ |
+| choose, compare, measure or add a colour                 | `docs/theme.md`                                              |
+| draw or change any illustration (SVG)                    | `docs/illustrations.md`                                      |
+| change the WebGL renderer, the watch, or its frontmatter | `docs/webgl.md`                                              |
+| decide if something is big, thick or dark enough         | `docs/legibility.md`                                         |
+| upgrade, validate, tag or build a talk                   | `docs/talks.md`                                              |
+| work in a talk (slides, its art, its code)               | `<talk>/AGENTS.md`: the talk's own index into `<talk>/docs/` |
+
 ## Working in this repo
 
 Each talk is a separate project, for pnpm and for uv. The repo root, `stem/`,
@@ -126,10 +140,11 @@ Each run checks only its own project, and it takes its scope from the current
 directory.
 
 - **The root run** checks `tools/` with ruff (format and lint), mypy (strict)
-  and pyright. It checks the shared files with Prettier, and the palette's
-  gates.
+  and pyright. It checks the shared files with Prettier, the docs with
+  `doccheck`, and the palette's gates.
 - **A talk's run** checks the talk's Python with the same four tools, in the
-  talk's own venv. It checks the talk with Prettier, and every SVG in its
+  talk's own venv. It checks the talk with Prettier, its docs with
+  `doccheck`, and every SVG in its
   `public/` with `artcheck`, `barroom` and `motion`. It checks that the talk
   sets the palette only for a slide class, and that each such palette passes
   the gates. It builds the deck, and then walks every slide and
