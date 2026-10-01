@@ -131,7 +131,7 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   slide with no key hides the canvas. A key of the wrong kind throws when the
   deck loads, with the key's name.
 - **Changes run one at a time:** towards a subject, the camera moves, then the
-  rest fades, then the view tilts; away from it, the reverse. A key press
+  view tilts, then the rest fades; away from it, the reverse. A key press
   during a change starts from what is on the screen. The durations are
   constants in `webgl/stage.ts`.
 - **A state can flash a subject first** (`StageState.flash`), before its

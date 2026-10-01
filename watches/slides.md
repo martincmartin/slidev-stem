@@ -44,19 +44,16 @@ watch: hairspring
 watchFlash: balance and hairspring
 watchOnly: hairspring and stud
 watchTilt: 20
-watchSettle: 1
-watchHide: 2
-clicks: 3
+watchHide: 1
+clicks: 2
 ---
 
 # Hairspring and Balance Wheel
 
-<FlexingRuler :visible="$clicks >= 2" :playing="$clicks >= 3" />
+<FlexingRuler :visible="$clicks >= 1" :playing="$clicks >= 2" />
 
 <!--
 The hairspring and the balance wheel: the part of a watch that keeps time.
-
-[click] The balance comes to rest.
 
 [click] The hairspring fades and a steel ruler takes its place.
 

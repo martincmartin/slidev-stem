@@ -3,7 +3,7 @@
 // nothing about what the scene shows: the model does.
 //
 // THE ORDER. Each change runs one channel at a time, eased: towards a subject
-// the camera moves, then the rest fades, then the camera tilts; away from it,
+// the camera moves, then the camera tilts, then the rest fades; away from it,
 // the reverse. From one subject to another, the rest first fades in around
 // the old subject; then the stage goes towards the new one. A new state starts
 // from what is on the screen now, so a change during a transition does not
@@ -123,7 +123,7 @@ export function deviceSize(element: Element): [number, number] {
   ];
 }
 
-const TOWARDS_SUBJECT: Channel[] = ["view", "rest", "tilt"];
+const TOWARDS_SUBJECT: Channel[] = ["view", "tilt", "rest"];
 const SECONDS: Record<Channel, number> = {
   view: MOVE_SECONDS,
   rest: FADE_SECONDS,

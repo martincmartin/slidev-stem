@@ -132,18 +132,23 @@ onMounted(() => {
   padding: 0;
   transition: opacity 0.3s;
 }
-.watch-layer.watch-off {
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 0.3s,
-    visibility 0s 0.3s;
-}
+/* Only the canvas fades. The layer keeps painting the paper: a slide with a
+   `watch:` is see-through (see .watch-marker below), and when the watch hides
+   at a click (`watchHide`) the slide is still that slide, so the layer is its
+   background. */
 .watch-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  transition: opacity 0.3s;
+}
+.watch-layer.watch-off .watch-canvas {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s,
+    visibility 0s 0.3s;
 }
 /* see-through, and positioned, so it paints above a still (which is positioned) */
 .watch-marker ~ .slidev-layout {

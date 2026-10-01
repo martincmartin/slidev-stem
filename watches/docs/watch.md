@@ -51,16 +51,16 @@ each change to the design.
 ## The frontmatter keys
 
 A slide asks for a view of the watch in its frontmatter. A slide with no
-`watch:` key hides it. Slide 2 is the example:
+`watch:` key hides it. Slide 2 is the example (it does not use `watchSettle`, which a slide can still
+ask for):
 
 ```yaml
 watch: hairspring
 watchFlash: balance and hairspring # flashes before the camera moves
 watchOnly: hairspring and stud # the rest of the watch fades out
 watchTilt: 20 # degrees: shows that the spring is a ribbon
-watchSettle: 1 # at click 1 the balance settles at rest
-watchHide: 2 # at click 2 the watch fades out
-clicks: 3
+watchHide: 1 # at click 1 the watch fades out, still swinging
+clicks: 2
 ```
 
 | Key                                  | Meaning                                                                                                                                                |
@@ -79,9 +79,10 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
 - `balance and hairspring`: the balance, the spring with its collet and the
   balance staff, the stud and the impulse jewel. Not the pallet fork.
 
-- **The order of a change:** the camera moves (1.8 s), then the rest fades
-  (0.8 s), then the view tilts (1.5 s); going back runs it in reverse. From one
-  subject to another, the rest first fades back in around the old subject.
+- **The order of a change:** the camera moves (1.8 s), then the view tilts
+  (1.5 s), then the rest fades (0.8 s); going back runs it in reverse. The
+  tilt happens with the whole watch still in view. From one subject to
+  another, the rest first fades back in around the old subject.
   With `watchFlash`, the subject flashes first (2.5 s), so the change from the
   cover to slide 2 takes 6.6 s.
 - **The settle:** the balance waits for its next extreme (at most half a
@@ -102,6 +103,10 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   merge it with the cover's block.
 - **A click that changes the watch needs a `[click]` line** in the speaker
   notes, as for any click.
+- **The watch's layer paints the paper behind a `watch:` slide**, because that
+  slide is see-through. When the watch hides (no `watch:`, or `watchHide`), only
+  the canvas fades; the layer stays. Fading the whole layer left the page's
+  white behind slide 2 after its `watchHide` click.
 - **The slide's text paints over the watch** because the slide's layout is
   positioned. A slide with its own layout must keep that.
 
@@ -138,8 +143,8 @@ The back-row numbers of the watch are in [measurements.md](measurements.md).
 
 Slide 2 ends with `components/FlexingRuler.vue`, which inlines
 `public/flexing-ruler.svg`. `art/flexing_ruler.py` writes the SVG: edit the
-script, not the SVG. The slide's `watchHide: 2` fades the watch at click 2, and
-the component's `visible` fades the ruler in. `playing` (click 3) runs the
+script, not the SVG. The slide's `watchHide: 1` fades the watch at click 1, and
+the component's `visible` fades the ruler in. `playing` (click 2) runs the
 SVG's timeline from 0. A click back returns to the face-on ruler. The swing
 never damps, on purpose.
 
