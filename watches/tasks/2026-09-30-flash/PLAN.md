@@ -4,7 +4,7 @@ The request is in [instructions.md](instructions.md). The measurements are in
 [flash_colours.txt](flash_colours.txt), from
 [tools/flash_colours.py](tools/flash_colours.py).
 
-**Status:** decided and built 2026-10-01 (sections 9 and 10). Not yet closed.
+**Status:** decided and built 2026-10-01 (sections 9 and 10). Closed 2026-10-01: the guidance in `COLOUR-ROLES.md` is in `stem/docs/theme.md`.
 
 **To see the options:** [evidence/flash-options.gif](evidence/flash-options.gif)
 and [evidence/flash-options.mp4](evidence/flash-options.mp4) show A, B, C1 and E

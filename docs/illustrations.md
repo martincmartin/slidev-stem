@@ -245,6 +245,13 @@ and a hand (muted, as context) that moves into the frame. Still untested:
 - **A surface.** No foil, no crinkle, no material. This style draws structure.
   A subject whose character _is_ its texture will look poor in it.
 
+**Some marks break the colour jobs, and no one has decided if they should.**
+The watch's hands are filled muted with art-line outlines, so they mix the two
+families ([theme.md](theme.md)). The candle's drips are filled at 0.35, below
+the subject's 0.60. Ink is at 0.5 to 1.0, not always 0.5. The list is in the
+flash task ([`COLOUR-ROLES.md`](../watches/tasks/2026-09-30-flash/COLOUR-ROLES.md),
+§5). Decide each one when you next change that drawing.
+
 A subject that moves in a new way: run it through `tools/motion.py` early, not
 at the end. When you extend the grammar, extend it here, and add the check to
 `tools/artcheck.py`, so the next person inherits it.

@@ -1,8 +1,9 @@
 # Theme: colour roles and gates
 
-**Covers:** the colour roles that every theme fills, the gates each role must
-pass, how one slide changes a role, and how to add a colour. Then the current
-theme, Ledger, as the example.
+**Covers:** the colour roles that every theme fills, how a theme makes its
+art colours from its text colours, the gates each role must pass, how one
+slide changes a role, and how to add a colour. Then the current theme, Ledger,
+as the example.
 **Read before** you choose, compare, measure or add a colour, or make a new
 theme.
 **Tasks:**
@@ -60,10 +61,38 @@ In the art it has one more job: a short "look here", the flash. The accent
 cannot do it there, because the art line is the accent's own hue: the subject
 is already in it.
 
-**The art line is the accent, darkened along its own hue.** The accent is
-sized for a large numeral. A 2–4 px line spends the same contrast at a much
-smaller size, so the line needs more. In Ledger, the accent is 5.56:1 on the
-panel and the art line is 9.60:1. Do not "fix" the art line back to the accent.
+## The art's colours come from the text colours
+
+The art's colours are in two families, and the flash adds a third. Each family
+has a dark colour for lines and a pale colour for faces:
+
+| Family                             | Line       | Face                                   |
+| ---------------------------------- | ---------- | -------------------------------------- |
+| the subject, in the accent's hue   | art-line   | art-knockout                           |
+| not the subject, the neutrals      | ink, muted | a 0.18 wash of muted                   |
+| "look here", for a short time only | second     | art-second-knockout (the flash's fill) |
+
+The art's muted and ink are the text colours, not colours of their own. So a
+new theme's muted and ink must also work in the art: muted as a line and as a
+wash, ink at half opacity. To make the other art colours of a new theme:
+
+- **art-line: the accent, darkened along its own hue.** Keep the hue and the
+  chroma, and darken it until the art passes the back-row check
+  ([legibility.md](legibility.md)). The accent is sized for a large numeral. A
+  2–4 px line spends the same contrast at a much smaller size, so the line
+  needs more. As an example, Ledger's accent is 5.56:1 on the panel and its
+  art line is 9.60:1. Do not "fix" the art line back to the accent.
+- **art-knockout: the paper, tinted towards the accent's hue.** Use a low
+  chroma (Ledger's is about 5), at the border's lightness: about 1.2:1 on the
+  panel. Paler reads as bare paper. Darker competes with the lines.
+- **art-second-knockout: art-knockout's lightness, in the second's hue.**
+  `second` on it must pass its gate (below). `second` itself must be far from
+  art-line in hue, or a flashed part does not change colour. In Ledger they
+  are ΔE 69 apart; the accent and art-line are only ΔE 20 apart.
+
+The survey of every colour in the watches talk's art, and how each one is
+used, is in the flash task
+([`COLOUR-ROLES.md`](../watches/tasks/2026-09-30-flash/COLOUR-ROLES.md)).
 
 ## One slide can change a role
 
