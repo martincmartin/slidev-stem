@@ -182,7 +182,9 @@ the slide's whole width (980 px, its viewBox starting at x -380): a narrower one
 would cut that edge in the middle of the slide. The board, the stand and the pool
 are where they are on the slide's right, and the board ends on the hairspring's
 rest shape, where the hairspring was. Nothing is hidden by paper (it is not an
-art colour): the ground is clipped round the stand's outline. Ground and water
+art colour): the ground is clipped round the stand's outline. The component sets `overflow: visible` on the SVG: the curling board rises above
+the drawing's top edge, into the slide title's space, and must not be cropped
+there. Ground and water
 are not the same colour on purpose: a blue ground beside white water read as a
 pool of the wrong colours.
 

@@ -165,6 +165,11 @@ onBeforeUnmount(stop);
 .diving-board-on {
   opacity: 1;
 }
+/* the curling board rises above the drawing's top edge, into the title's
+   space: do not crop it to the SVG's box (the slide crops the rest) */
+.diving-board svg {
+  overflow: visible;
+}
 @media (prefers-reduced-motion: reduce) {
   .diving-board {
     transition: none;
