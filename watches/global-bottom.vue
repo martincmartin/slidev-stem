@@ -64,16 +64,15 @@ onMounted(() => {
         return;
       }
       // a slide reached from a slide without the watch starts at its state
-      const flashSeconds =
-        stage?.show(
-          stageState(WATCH.scene, now),
-          modelState(now),
-          old === undefined || old === "null",
-        ) ?? 0;
-      // the new slide's text comes in after the flash and the move
+      stage?.show(
+        stageState(WATCH.scene, now),
+        modelState(now),
+        old === undefined || old === "null",
+      );
+      // the new slide's text comes in after the move
       document.documentElement.style.setProperty(
         "--watch-text-delay",
-        `${String(flashSeconds + MOVE_SECONDS)}s`,
+        `${String(MOVE_SECONDS)}s`,
       );
       stage?.start();
     },
@@ -166,7 +165,7 @@ onMounted(() => {
   display: block;
 }
 /* `transition: watch-zoom`: the old slide's text fades while the watch
-   flashes or the camera starts its move; the new slide's text comes in after
+   flashes and the camera starts its move; the new slide's text comes in after
    the move. The script sets --watch-text-delay from the stage's times. */
 .watch-zoom-leave-active {
   transition: opacity 0.9s ease-in;

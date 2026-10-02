@@ -137,11 +137,10 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   and the flash are the timeline's (`webgl/timeline.ts`): it has no DOM and no
   WebGL, so its tests (`timeline.test.ts`) drive it with made-up times.
   `Stage` (`webgl/stage.ts`) holds the renderer, the model and the frame loop.
-- **A state can flash a subject first** (`StageState.flash`), before its
-  channels change. It flashes only in a transition that changes a channel,
+- **A state can flash a subject during a change** (`StageState.flash`).
+  The flash and the first channel start together. It flashes only in a transition that changes a channel,
   not in a state shown at once. A key press during the flash does not start
-  it again. `Stage.show` (from `Timeline.show`) returns the seconds until the flash ends, so that a
-  slide's text can wait for it.
+  it again. `Stage.show` (from `Timeline.show`) returns the seconds until the flash ends. The flash does not delay the channels.
 - **A fade fades the rest as one picture**, as SVG's group opacity does: the
   fading parts never show their own hidden lines.
 - **Stills:** the export, the overview and the presenter's "next" pane show a

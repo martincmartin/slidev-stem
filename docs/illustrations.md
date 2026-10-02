@@ -134,8 +134,8 @@ its own colours.
   structure stays readable. One colour for lines and fills merges a spring's
   coils into the wheel behind them, and pale lines on a dark fill read as a
   negative: both were drawn and rejected (the flash task).
-- **When.** Before a camera move to the part, so that the audience knows where
-  the zoom will land. Only in a transition: a slide reached directly shows its
+- **When.** During a camera move to the part, so that the audience can follow
+  the zoom. Only in a transition: a slide reached directly shows its
   state with no flash.
 - **Safety.** Two flashes a second is below the WCAG 2.3.1 limit of three.
 - **In WebGL**: `FLASH_INKS` in `watches/webgl/scene.ts`, the stage's flash

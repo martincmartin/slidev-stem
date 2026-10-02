@@ -4,7 +4,7 @@
 //   watch: a view (cover, hairspring, crown); none hides the watch
 //   watchTilt: degrees (default 0)
 //   watchOnly: a subject ("hairspring and stud"): the rest of the watch fades
-//   watchFlash: a subject ("balance and hairspring") that flashes before the
+//   watchFlash: a subject ("balance and hairspring") that flashes while the
 //     camera moves, when the slide is reached by a transition
 //   watchSettle: the click at which the balance settles at rest
 //   watchResume: the click at which a settled balance starts to swing again

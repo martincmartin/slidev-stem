@@ -601,7 +601,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
     },
   ],
   [
-    "a flash runs before the channels change, on and off, and only in a transition",
+    "a flash runs during the channels, on and off, and only in a transition",
     (own) => {
       const test = makeScene();
       const [subject] = test.scene.subjects;
@@ -638,12 +638,12 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
       }
       const end = before + FLASH_SECONDS * 1000;
       check(
-        stage.phaseAt(after + 10) === "flash",
-        "the phase is not the flash",
+        stage.phaseAt(after + 10) === "rest",
+        "the fade did not start with the flash",
       );
       check(
-        stage.valuesAt(end - 20).rest === 1,
-        "the fade started during the flash",
+        stage.valuesAt(end - 20).rest === 0,
+        "the fade did not finish during the flash",
       );
       check(
         stage.flashingAt(after + FLASH_SECONDS * 1000) === null,
@@ -652,7 +652,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
       check(
         stage.valuesAt(after + FLASH_SECONDS * 1000 + FADE_SECONDS * 1000 + 50)
           .rest === 0,
-        "the fade did not run after the flash",
+        "the fade did not finish",
       );
       // a click during the flash: the same flash goes on, it does not restart
       stage.show({ view, tilt: 0, subject: null, flash: null }, null, true);

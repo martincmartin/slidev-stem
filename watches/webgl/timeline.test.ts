@@ -177,21 +177,38 @@ test("shown at once, a state has no phase and no flash", () => {
 
 // ---- the flash ----------------------------------------------------------------
 
-test("a flash runs first, and delays the phases until it ends", () => {
+test("a flash starts with the zoom, while zoom, tilt and fade keep their timing", () => {
   const timeline = timelineAt(state({ view: WIDE }));
+  const start = 1000;
   const seconds = timeline.show(
-    state({ view: CLOSE, subject: SPRING, flash: SPRING }),
-    1000,
+    state({ view: CLOSE, tilt: 20, subject: SPRING, flash: SPRING }),
+    start,
   );
   assert.equal(seconds, FLASH_SECONDS);
-  assert.equal(timeline.phaseAt(1000), "flash");
-  assert.equal(timeline.flashingAt(1000), SPRING);
-  assert.equal(timeline.flashingAt(1000 + FLASH_ON_SECONDS * 1000), null);
-  // nothing else moves during the flash
-  assert.equal(timeline.valuesAt(1000 + FLASH_SECONDS * 1000 - 1).view, WIDE);
-  const end = 1000 + FLASH_SECONDS * 1000;
-  assert.equal(timeline.phaseAt(end), "view");
-  assert.equal(timeline.flashingAt(end), null);
+  assert.equal(timeline.phaseAt(start), "view");
+  assert.equal(timeline.flashingAt(start), SPRING);
+  assert.equal(timeline.flashingAt(start + FLASH_ON_SECONDS * 1000), null);
+  const zooming = timeline.valuesAt(start + MOVE / 2);
+  assert.ok(
+    zooming.view.scale > WIDE.scale && zooming.view.scale < CLOSE.scale,
+  );
+  assert.equal(zooming.tilt, 0);
+  assert.equal(zooming.rest, 1);
+  assert.equal(timeline.phaseAt(start + MOVE - 1), "view");
+  assert.equal(timeline.phaseAt(start + MOVE), "tilt");
+  const flashEnd = start + FLASH_SECONDS * 1000;
+  assert.equal(timeline.flashingAt(flashEnd), null);
+  assert.equal(timeline.phaseAt(flashEnd), "tilt");
+  const tilting = timeline.valuesAt(flashEnd);
+  assert.equal(tilting.view, CLOSE);
+  assert.ok(tilting.tilt > 0 && tilting.tilt < 20);
+  assert.equal(tilting.rest, 1);
+  assert.equal(timeline.phaseAt(start + MOVE + TILT), "rest");
+  const fading = timeline.valuesAt(start + MOVE + TILT + FADE / 2);
+  assert.ok(fading.rest > 0 && fading.rest < 1);
+  assert.equal(fading.tilt, 20);
+  assert.equal(timeline.phaseAt(start + MOVE + TILT + FADE), null);
+  assert.equal(timeline.valuesAt(start + MOVE + TILT + FADE).rest, 0);
 });
 
 test("a click during a flash of the same subject does not start it again", () => {

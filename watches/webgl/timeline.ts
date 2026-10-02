@@ -10,10 +10,10 @@
 // jump.
 //
 // A FLASH (docs/illustrations.md, "Flash"). A state can name a subject to
-// flash: before the channels change, the subject is drawn in FLASH_INKS and in
+// flash: while the channels change, the subject is drawn in FLASH_INKS and in
 // its own inks, in turn, FLASH_CYCLES times. Only in a transition: a state
 // shown at once, or one that changes no channel, does not flash. It ends on
-// its own inks, so the move starts from the drawing as it was.
+// its own inks. The flash and the first channel start together.
 
 import type { Subject, View } from "./scene.ts";
 
@@ -40,7 +40,7 @@ export interface StageState {
   tilt: number;
   /** The rest of the scene fades away from this; `null`: nothing fades. */
   subject: Subject | null;
-  /** Flashed before the channels change, in a transition; `null`: none. */
+  /** Flashed while the channels change, in a transition; `null`: none. */
   flash: Subject | null;
 }
 
@@ -165,7 +165,7 @@ export class Timeline {
   private values: Values | null = null;
   /** One after another. */
   private phases: Phase[] = [];
-  /** The flash before the phases, and when it starts (ms). */
+  /** The flash alongside the phases, and when it starts (ms). */
   private flash: { subject: Subject; start: number } | null = null;
 
   /** Whether a state has been shown yet. Until then, there is nothing to
@@ -175,7 +175,7 @@ export class Timeline {
   }
 
   /** Go to a state at `now` (ms): at once, or one channel at a time from where
-   *  the channels are now, after the state's flash. Returns the seconds until
+   *  the channels are now, alongside the state's flash. Returns the seconds until
    *  the flash ends, or 0 if there is none. */
   show(state: StageState, now: number, instantly = false): number {
     const target: Values = {
@@ -226,8 +226,6 @@ export class Timeline {
         ? running.start
         : now;
     this.flash = { subject: state.flash, start: flashStart };
-    const delay = flashStart + FLASH_SECONDS * 1000 - now;
-    for (const phase of this.phases) phase.start += delay;
     return FLASH_SECONDS - (now - flashStart) / 1000;
   }
 
@@ -249,6 +247,10 @@ export class Timeline {
   /** What the timeline is moving at `now`: "flash", the name of a channel, or
    *  `null` if nothing. */
   phaseAt(now: number): string | null {
+    const running = this.phases.find(
+      (phase) => now >= phase.start && now < phase.start + phase.seconds * 1000,
+    );
+    if (running) return running.channel;
     const { flash } = this;
     if (
       flash &&
@@ -257,9 +259,6 @@ export class Timeline {
     ) {
       return "flash";
     }
-    const running = this.phases.find(
-      (phase) => now >= phase.start && now < phase.start + phase.seconds * 1000,
-    );
-    return running ? running.channel : null;
+    return null;
   }
 }
