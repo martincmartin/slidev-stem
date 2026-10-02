@@ -1,0 +1,86 @@
+[
+  {
+    "name": "A · Lower oscillator",
+    "balance": [
+      -18,
+      -13
+    ],
+    "spring": {
+      "bottom": -11,
+      "top": -3
+    },
+    "roller": [
+      -1,
+      1
+    ],
+    "jewel": [
+      1,
+      4
+    ],
+    "staff": [
+      -13,
+      1
+    ],
+    "stud": [
+      -12,
+      -2
+    ],
+    "checks": "passed"
+  },
+  {
+    "name": "B · Raised escape wheel",
+    "balance": [
+      4,
+      9
+    ],
+    "spring": {
+      "bottom": 11,
+      "top": 19
+    },
+    "roller": [
+      21,
+      23
+    ],
+    "jewel": [
+      23,
+      26
+    ],
+    "staff": [
+      9,
+      23
+    ],
+    "stud": [
+      10,
+      20
+    ],
+    "checks": "passed"
+  },
+  {
+    "name": "C · Stepped fork",
+    "balance": [
+      4,
+      9
+    ],
+    "spring": {
+      "bottom": 11,
+      "top": 19
+    },
+    "roller": [
+      21,
+      23
+    ],
+    "jewel": [
+      23,
+      26
+    ],
+    "staff": [
+      9,
+      23
+    ],
+    "stud": [
+      10,
+      20
+    ],
+    "checks": "passed"
+  }
+]

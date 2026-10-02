@@ -123,7 +123,7 @@ test("the views: the cover is centred on the watch and the spring's view on the 
   assert.ok(Math.abs((crown?.scale ?? 0) - 2) < 1e-12);
 });
 
-test("the flashed subject is the balance, its spring, collet, staff, stud and jewel, not the fork", () => {
+test("the flashed subject includes the roller and oscillator, not the fork", () => {
   const subject = scene.subjects.find(
     (candidate) => candidate.name === "balance and hairspring",
   );
@@ -131,7 +131,13 @@ test("the flashed subject is the balance, its spring, collet, staff, stud and je
   const parts = new Set([...subject.meshes].map((mesh) => mesh.part));
   assert.deepEqual(
     [...parts].sort(),
-    ["balance", "hairspring", "hairspring stud", "impulse jewel"].sort(),
+    [
+      "balance",
+      "hairspring",
+      "hairspring stud",
+      "impulse jewel",
+      "roller",
+    ].sort(),
   );
   for (const part of parts) {
     for (const mesh of partMeshes(part)) {
@@ -139,4 +145,50 @@ test("the flashed subject is the balance, its spring, collet, staff, stud and je
     }
   }
   assert.ok(subject.meshes.has(watch.spring));
+});
+
+test("the lowered oscillator connects to the upper roller and jewel with clearance", () => {
+  const [balanceBottom, balanceTop] = heights(at(partMeshes("balance"), 0));
+  const [springBottom, springTop] = [
+    watch.springHeights.bottom,
+    watch.springHeights.top,
+  ];
+  const [rollerBottom, rollerTop] = heights(at(partMeshes("roller"), 0));
+  const [jewelBottom, jewelTop] = heights(at(partMeshes("impulse jewel"), 0));
+  const [forkBottom, forkTop] = heights(at(partMeshes("pallet fork"), 0));
+  const staff = partMeshes("hairspring").find(
+    (mesh) => mesh.name === "hairspring 3",
+  );
+  assert.ok(staff);
+  assert.deepEqual(heights(staff), [balanceTop, rollerTop]);
+  assert.equal(springBottom - balanceTop, 2);
+  assert.equal(rollerBottom - springTop, 2);
+  assert.equal(jewelBottom, rollerTop);
+  assert.deepEqual([jewelBottom, jewelTop], [forkBottom, forkTop]);
+  assert.ok(heights(at(partMeshes("case band"), 0))[0] <= balanceBottom - 2);
+});
+
+test("slide 2 keeps only the spring, collet and stud when the mechanism fades", () => {
+  const subject = scene.subjects.find(
+    (candidate) => candidate.name === "hairspring and stud",
+  );
+  assert.ok(subject);
+  assert.equal(subject.meshes.size, 3);
+  for (const part of ["roller", "impulse jewel", "balance", "pallet fork"]) {
+    for (const mesh of partMeshes(part)) assert.ok(!subject.meshes.has(mesh));
+  }
+});
+
+test("the lowered spring stays at slide 2's target through its tilt", () => {
+  const view = scene.views.find((candidate) => candidate.name === "hairspring");
+  assert.ok(view);
+  const arborX = design.watchCentre[0] + design.balance.arbor[0];
+  const arborY = design.watchCentre[1] + design.balance.arbor[1];
+  assert.deepEqual(view.pivot, [
+    arborX,
+    arborY,
+    (watch.springHeights.bottom + watch.springHeights.top) / 2,
+  ]);
+  assert.ok(Math.abs(view.scale * arborX + view.shift[0] - 705) < 1e-9);
+  assert.ok(Math.abs(view.scale * arborY + view.shift[1] - 276) < 1e-9);
 });

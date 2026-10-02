@@ -1,0 +1,229 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import type { Subject, View } from "./scene.ts";
+import {
+  FADE_SECONDS,
+  FLASH_CYCLES,
+  FLASH_OFF_SECONDS,
+  FLASH_ON_SECONDS,
+  FLASH_SECONDS,
+  MOVE_SECONDS,
+  TILT_SECONDS,
+  Timeline,
+  flashIsOn,
+} from "./timeline.ts";
+import type { StageState } from "./timeline.ts";
+
+test("a flash is five cycles of 0.25 s on and 0.25 s off", () => {
+  assert.equal(FLASH_CYCLES, 5);
+  assert.equal(FLASH_ON_SECONDS, 0.25);
+  assert.equal(FLASH_OFF_SECONDS, 0.25);
+  assert.equal(FLASH_SECONDS, 2.5);
+});
+
+test("a flash is on in the first part of each cycle, and ends off", () => {
+  for (let cycle = 0; cycle < FLASH_CYCLES; cycle++) {
+    const start = cycle * (FLASH_ON_SECONDS + FLASH_OFF_SECONDS);
+    assert.equal(flashIsOn(start), true, `${String(start)} s`);
+    assert.equal(flashIsOn(start + 0.2), true, `${String(start + 0.2)} s`);
+    assert.equal(flashIsOn(start + 0.25), false, `${String(start + 0.25)} s`);
+    assert.equal(flashIsOn(start + 0.45), false, `${String(start + 0.45)} s`);
+  }
+  for (const outside of [-0.1, FLASH_SECONDS, FLASH_SECONDS + 0.1]) {
+    assert.equal(flashIsOn(outside), false, `${String(outside)} s`);
+  }
+});
+
+// ---- the order of the channels ------------------------------------------------
+
+const view = (name: string, scale: number): View => ({
+  name,
+  scale,
+  shift: [0, 0],
+  pivot: [0, 0, 0],
+});
+const WIDE = view("wide", 1);
+const CLOSE = view("close", 3);
+const FAR = view("far", 5);
+const SPRING: Subject = { name: "spring", meshes: new Set() };
+const BALANCE: Subject = { name: "balance", meshes: new Set() };
+
+function state(options: Partial<StageState> & { view: View }): StageState {
+  return { tilt: 0, subject: null, flash: null, ...options };
+}
+
+const MOVE = MOVE_SECONDS * 1000;
+const TILT = TILT_SECONDS * 1000;
+const FADE = FADE_SECONDS * 1000;
+
+function timelineAt(initial: StageState): Timeline {
+  const timeline = new Timeline();
+  timeline.show(initial, 0, false);
+  return timeline;
+}
+
+test("the first state is shown at once, with no phase", () => {
+  const timeline = new Timeline();
+  assert.equal(timeline.hasState, false);
+  const flashSeconds = timeline.show(
+    state({ view: CLOSE, tilt: 20, subject: SPRING, flash: SPRING }),
+    0,
+  );
+  assert.equal(flashSeconds, 0);
+  assert.equal(timeline.hasState, true);
+  assert.deepEqual(timeline.valuesAt(0), {
+    view: CLOSE,
+    tilt: 20,
+    rest: 0,
+    subject: SPRING,
+  });
+  assert.equal(timeline.phaseAt(0), null);
+});
+
+test("valuesAt before any state throws", () => {
+  assert.throws(() => new Timeline().valuesAt(0), /no state/);
+});
+
+test("towards a subject: the view moves, then the camera tilts, then the rest fades", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  timeline.show(state({ view: CLOSE, tilt: 30, subject: SPRING }), 0);
+  assert.equal(timeline.phaseAt(0), "view");
+  assert.equal(timeline.phaseAt(MOVE - 1), "view");
+  assert.equal(timeline.phaseAt(MOVE), "tilt");
+  assert.equal(timeline.phaseAt(MOVE + TILT), "rest");
+  assert.equal(timeline.phaseAt(MOVE + TILT + FADE), null);
+  // while the view moves, the others wait
+  const early = timeline.valuesAt(MOVE / 2);
+  assert.ok(early.view.scale > WIDE.scale && early.view.scale < CLOSE.scale);
+  assert.equal(early.tilt, 0);
+  assert.equal(early.rest, 1);
+  // the end of a phase is the target itself, not a value near it
+  const tilting = timeline.valuesAt(MOVE + TILT / 2);
+  assert.equal(tilting.view, CLOSE);
+  assert.ok(tilting.tilt > 0 && tilting.tilt < 30);
+  assert.equal(tilting.rest, 1);
+  const fading = timeline.valuesAt(MOVE + TILT + FADE / 2);
+  assert.equal(fading.tilt, 30);
+  assert.ok(fading.rest > 0 && fading.rest < 1);
+  assert.equal(fading.subject, SPRING);
+  assert.deepEqual(timeline.valuesAt(MOVE + TILT + FADE), {
+    view: CLOSE,
+    tilt: 30,
+    rest: 0,
+    subject: SPRING,
+  });
+});
+
+test("away from a subject: the rest fades in, then the camera untilts, then the view moves", () => {
+  const timeline = timelineAt(
+    state({ view: CLOSE, tilt: 30, subject: SPRING }),
+  );
+  timeline.show(state({ view: WIDE }), 0);
+  assert.equal(timeline.phaseAt(0), "rest");
+  assert.equal(timeline.phaseAt(FADE), "tilt");
+  assert.equal(timeline.phaseAt(FADE + TILT), "view");
+  assert.equal(timeline.phaseAt(FADE + TILT + MOVE), null);
+  assert.equal(timeline.valuesAt(FADE + TILT + MOVE).view, WIDE);
+});
+
+test("from one subject to another: the rest fades in around the first, then the stage goes to the second", () => {
+  const timeline = timelineAt(state({ view: CLOSE, subject: SPRING }));
+  timeline.show(state({ view: FAR, subject: BALANCE }), 0);
+  assert.equal(timeline.phaseAt(0), "rest");
+  // the old subject is kept while the rest comes back
+  assert.equal(timeline.valuesAt(FADE / 2).subject, SPRING);
+  assert.equal(timeline.valuesAt(FADE).rest, 1);
+  assert.equal(timeline.phaseAt(FADE), "view");
+  // the tilt does not change: it has no phase
+  assert.equal(timeline.phaseAt(FADE + MOVE), "rest");
+  assert.equal(timeline.valuesAt(FADE + MOVE).subject, BALANCE);
+  assert.equal(timeline.valuesAt(FADE + MOVE - 1).subject, SPRING);
+  assert.equal(timeline.valuesAt(FADE + MOVE + FADE).rest, 0);
+});
+
+test("a state that changes nothing has no phase", () => {
+  const timeline = timelineAt(state({ view: CLOSE, tilt: 10 }));
+  assert.equal(
+    timeline.show(state({ view: CLOSE, tilt: 10, flash: SPRING }), 100),
+    0,
+  );
+  assert.equal(timeline.phaseAt(100), null);
+  assert.equal(timeline.flashingAt(100), null);
+});
+
+test("a new state during a transition starts from what is shown, with no jump", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  timeline.show(state({ view: CLOSE }), 0);
+  const before = timeline.valuesAt(900);
+  timeline.show(state({ view: FAR }), 900);
+  const after = timeline.valuesAt(900);
+  assert.equal(before.view.name, "wide to close");
+  // the same camera (the new view is named for how it was made)
+  assert.equal(after.view.scale, before.view.scale);
+  assert.deepEqual(after.view.shift, before.view.shift);
+  assert.deepEqual(after.view.pivot, before.view.pivot);
+  assert.equal(timeline.valuesAt(900 + MOVE).view, FAR);
+});
+
+test("shown at once, a state has no phase and no flash", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  assert.equal(
+    timeline.show(state({ view: CLOSE, flash: SPRING }), 0, true),
+    0,
+  );
+  assert.equal(timeline.phaseAt(0), null);
+  assert.equal(timeline.valuesAt(0).view, CLOSE);
+});
+
+// ---- the flash ----------------------------------------------------------------
+
+test("a flash runs first, and delays the phases until it ends", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  const seconds = timeline.show(
+    state({ view: CLOSE, subject: SPRING, flash: SPRING }),
+    1000,
+  );
+  assert.equal(seconds, FLASH_SECONDS);
+  assert.equal(timeline.phaseAt(1000), "flash");
+  assert.equal(timeline.flashingAt(1000), SPRING);
+  assert.equal(timeline.flashingAt(1000 + FLASH_ON_SECONDS * 1000), null);
+  // nothing else moves during the flash
+  assert.equal(timeline.valuesAt(1000 + FLASH_SECONDS * 1000 - 1).view, WIDE);
+  const end = 1000 + FLASH_SECONDS * 1000;
+  assert.equal(timeline.phaseAt(end), "view");
+  assert.equal(timeline.flashingAt(end), null);
+});
+
+test("a click during a flash of the same subject does not start it again", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  timeline.show(state({ view: CLOSE, subject: SPRING, flash: SPRING }), 0);
+  const seconds = timeline.show(
+    state({ view: FAR, subject: SPRING, flash: SPRING }),
+    1000,
+  );
+  assert.equal(seconds, FLASH_SECONDS - 1);
+  assert.equal(timeline.flashingAt(1000 + FLASH_SECONDS * 1000 - 1000), null);
+  assert.equal(timeline.phaseAt(FLASH_SECONDS * 1000), "view");
+});
+
+test("a flash of another subject starts from the click", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  timeline.show(state({ view: CLOSE, subject: SPRING, flash: SPRING }), 0);
+  const seconds = timeline.show(
+    state({ view: FAR, subject: BALANCE, flash: BALANCE }),
+    1000,
+  );
+  assert.equal(seconds, FLASH_SECONDS);
+  assert.equal(timeline.flashingAt(1000), BALANCE);
+});
+
+test("a flash that has ended does not go on", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  timeline.show(state({ view: CLOSE, subject: SPRING, flash: SPRING }), 0);
+  const later = FLASH_SECONDS * 1000 + 10;
+  const seconds = timeline.show(
+    state({ view: WIDE, subject: SPRING, flash: SPRING }),
+    later,
+  );
+  assert.equal(seconds, FLASH_SECONDS);
+});

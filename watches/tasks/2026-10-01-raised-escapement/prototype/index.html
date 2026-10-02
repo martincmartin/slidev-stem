@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Raised escapement proposals</title>
+    <style>
+      body {
+        margin: 0;
+        background: #faf7f0;
+        color: #2a2520;
+        font-family: Arial, sans-serif;
+      }
+      #card {
+        width: 980px;
+        height: 460px;
+        box-sizing: border-box;
+        padding: 22px 0 0;
+      }
+      h1 {
+        font-size: 25px;
+        margin: 0 28px 6px;
+      }
+      p {
+        font-size: 17px;
+        margin: 0 28px;
+        line-height: 1.5;
+      }
+      canvas {
+        display: block;
+        width: 980px;
+        height: 340px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="card">
+      <h1 id="title"></h1>
+      <p>Blue: balance and hairspring · Brown: roller, jewel and pallet fork</p>
+      <canvas id="stage"></canvas>
+      <p id="description"></p>
+    </div>
+    <script type="module" src="./proposals.ts"></script>
+  </body>
+</html>
