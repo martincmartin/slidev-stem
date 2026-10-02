@@ -192,3 +192,13 @@ test("the lowered spring stays at slide 2's target through its tilt", () => {
   assert.ok(Math.abs(view.scale * arborX + view.shift[0] - 705) < 1e-9);
   assert.ok(Math.abs(view.scale * arborY + view.shift[1] - 276) < 1e-9);
 });
+
+test("the spring's height and the hairspring view's pivot are what art/diving_board.py copies", () => {
+  // The board curls into the spring, drawn with the spring's height at the
+  // view's tilt: SPRING_Z and SPRING_PIVOT_Z in art/diving_board.py.
+  const view = scene.views.find((candidate) => candidate.name === "hairspring");
+  assert.deepEqual(
+    [watch.springHeights.bottom, watch.springHeights.top, view?.pivot[2]],
+    [-11, -3, -7],
+  );
+});

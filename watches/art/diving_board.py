@@ -174,8 +174,8 @@ SPRING_TILT = math.radians(20.0)  # `watchTilt` on slide 2: squeezes y
 # The spring is a ribbon, a wall as high as `SPRING_Z` (watch/generate.ts
 # `springHeights`), and the view's pivot is at `SPRING_PIVOT_Z`: a higher point
 # is drawn higher up the slide, by its height times sin(tilt) times the zoom.
-SPRING_Z = (9.0, 17.0)  # the ribbon's bottom and top
-SPRING_PIVOT_Z = 12.5
+SPRING_Z = (-11.0, -3.0)  # the ribbon's bottom and top
+SPRING_PIVOT_Z = -7.0  # watch/generate.test.ts fails if these three change
 RIBBON_BOTTOM = (SPRING_PIVOT_Z - SPRING_Z[0]) * math.sin(SPRING_TILT) * SPRING_SCALE
 RIBBON_TOP = (SPRING_Z[1] - SPRING_PIVOT_Z) * math.sin(SPRING_TILT) * SPRING_SCALE
 

@@ -227,8 +227,8 @@ The swing never damps, on purpose.
   height, going up): the top face turns into the wall. The thickness under the
   near edge shrinks to nothing. The ribbon's height and the pivot are copied
   from `springHeights` and the hairspring view (`RIBBON_BOTTOM` and
-  `RIBBON_TOP` in the script: 5.3 px below the spring's centre line and 6.9 px
-  above it). The curl mixes each segment's angle and length between
+  `RIBBON_TOP` in the script: 6.1 px below the spring's centre line and 6.1 px
+  above it; `watch/generate.test.ts` fails if the heights or the pivot change). The curl mixes each segment's angle and length between
   the bent board and the spiral, not each point's position: the free end turns
   round and round, like a stiff strip winding up, with no kink and no crossing.
   (A mix of positions folded and crossed.) Every edge is a cubic curve through
