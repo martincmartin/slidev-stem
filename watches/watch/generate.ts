@@ -68,7 +68,10 @@ const STAFF_RADIUS = 3;
 const BALANCE_RIM = 8;
 const BALANCE_HUB = 10;
 const BALANCE_ARM_WIDTH = 6;
-const STAFF_ABOVE_SPRING = 4;
+/** Clearance between moving oscillator layers and beneath the balance. */
+const OSCILLATOR_CLEARANCE = 2;
+const ROLLER_THICKNESS = 2;
+const JEWEL_RADIUS = 6;
 /** The stud: a block around the spring's outer end. */
 const STUD_REACH: [number, number] = [-2, 5];
 const STUD_WIDTH = 5;
@@ -324,6 +327,7 @@ interface Parts {
   wheels: Map<Wheel, Part>;
   balance: Part;
   spring: Part;
+  roller: Part;
   jewel: Part;
   fork: Part;
   seconds: Part;
@@ -370,6 +374,7 @@ function makeParts({ barrel, centre, third, fourth, escape }: Train): Parts {
       // the collet, level with the spring
       circle: recipe(8, "body"),
     }),
+    roller: part("roller", { body: recipe(ROLLER_THICKNESS) }),
     jewel: part("impulse jewel", {
       body: recipe(3),
       circle: recipe(3),
@@ -507,11 +512,15 @@ function caseOf(
   paint: Paint,
   root: Group,
   ringTop: number,
+  movementBottom: number,
 ): CaseMeshes {
   const { wash, frameLine } = paint;
   const { caseRadius, bezelRadius } = design.case;
   const caseDepth = 2 * (CROWN_RADIUS + CROWN_CLEARANCE);
-  const caseBottom = ringTop - caseDepth;
+  const caseBottom = Math.min(
+    ringTop - caseDepth,
+    movementBottom - OSCILLATOR_CLEARANCE,
+  );
   const middle = (caseBottom + ringTop) / 2;
   const meshes: Mesh[] = [];
   meshes.push(
@@ -993,6 +1002,16 @@ function balanceSolids(kit: Kit): BalanceSolids {
     { inDrawing: false },
   );
 
+  // The roller and jewel turn with the balance. The roller supports the
+  // jewel's full footprint and joins it to the staff above the hairspring.
+  solids.add(
+    parts.roller,
+    "body",
+    balanceGroup,
+    ringsOf([disc(balanceDesign.impulsePinRadius + JEWEL_RADIUS), line(2.5)]),
+    knockout,
+  );
+
   // the impulse jewel, on the roller: it turns with the balance
   const jewelCentre = polar(
     balanceDesign.impulsePinRadius,
@@ -1002,7 +1021,7 @@ function balanceSolids(kit: Kit): BalanceSolids {
     jewelPart,
     "body",
     balanceGroup,
-    ringsOf([circlePath(jewelCentre[0], jewelCentre[1], 6), null]),
+    ringsOf([circlePath(jewelCentre[0], jewelCentre[1], JEWEL_RADIUS), null]),
     inkFill,
   );
   return { spring: springSolid, collet, restSpring, springShape };
@@ -1218,6 +1237,7 @@ export function generate(design: Design = DESIGN): Watch {
       centre: partOf(train.centre),
       balance: parts.balance,
       spring: parts.spring,
+      roller: parts.roller,
       jewel: parts.jewel,
       fork: parts.fork,
       seconds: parts.seconds,
@@ -1240,7 +1260,13 @@ export function generate(design: Design = DESIGN): Watch {
     caseBottom,
     middle,
     crownCentreX,
-  } = caseOf(design, paint, root, ringTop);
+  } = caseOf(
+    design,
+    paint,
+    root,
+    ringTop,
+    heightRange(heights.values()).bottom,
+  );
   const meshes: Mesh[] = [...caseMeshes];
 
   // ---- the movement's meshes ----
@@ -1265,19 +1291,17 @@ export function generate(design: Design = DESIGN): Watch {
   const allHeights = heightRange(heights.values());
   const lowest = Math.min(caseBottom, allHeights.bottom);
   const highest = Math.max(ringTop, stud.top, allHeights.top);
-  const balanceSpan = heightRange(
-    solids
-      .filter(
-        (each) => each.part === parts.balance || each.part === parts.spring,
-      )
-      .map(heightOf),
-  );
   const subject: Subject = {
     name: "hairspring and stud",
     meshes: new Set([springMesh, colletMesh, stud.mesh]),
   };
   // the oscillator: what slide 2 flashes. Not the pallet fork.
-  const oscillatorParts = new Set([parts.balance, parts.spring, parts.jewel]);
+  const oscillatorParts = new Set([
+    parts.balance,
+    parts.spring,
+    parts.roller,
+    parts.jewel,
+  ]);
   const oscillator: Subject = {
     name: "balance and hairspring",
     meshes: new Set([
@@ -1294,7 +1318,7 @@ export function generate(design: Design = DESIGN): Watch {
     views: views(
       design,
       (lowest + highest) / 2,
-      (balanceSpan.bottom + balanceSpan.top) / 2,
+      (springHeights.bottom + springHeights.top) / 2,
       middle,
       crownCentreX,
     ),
@@ -1378,6 +1402,7 @@ interface HeightParts {
     centre: Part;
     balance: Part;
     spring: Part;
+    roller: Part;
     jewel: Part;
     fork: Part;
     seconds: Part;
@@ -1450,16 +1475,6 @@ function assignHeights(
     }
     if (!bodyOf.has(owner)) bodyOf.set(owner, each);
   }
-  // the balance staff rises through the spring's inner coil
-  const hub = placed
-    .filter((each) => each.part === partsOf.balance)
-    .reduce((best, each) =>
-      heightOf(each).top > heightOf(best).top ? each : best,
-    );
-  heights.set(found.staff, {
-    bottom: heightOf(hub).top,
-    top: heightOf(found.springSolid).top + STAFF_ABOVE_SPRING,
-  });
   placed.push(found.staff);
 
   // ---- movement(): the escapement, the hands and the chapter ring ----
@@ -1474,16 +1489,33 @@ function assignHeights(
   const moves = new Map<Solid, Heights>();
   moves.set(forkBody, { bottom: forkBottom, top: forkTop });
   moves.set(forkArbor, { bottom: forkTop, top: forkTop + arborHeight });
-  for (const each of ofPart(partsOf.jewel)) {
-    moves.set(each, { ...heightOf(teeth) });
-  }
-  const lift =
-    forkTop -
-    Math.min(...ofPart(partsOf.balance).map((each) => heightOf(each).bottom));
-  for (const each of [...ofPart(partsOf.balance), ...ofPart(partsOf.spring)]) {
+  // Stack down from the fork, preserving train heights. The spring is
+  // between the lower balance and the upper roller (task: raised-escapement).
+  const thicknessOf = (each: Solid): number => {
     const own = heightOf(each);
-    moves.set(each, { bottom: own.bottom + lift, top: own.top + lift });
+    return own.top - own.bottom;
+  };
+  const roller = at(ofPart(partsOf.roller), 0);
+  const rollerTop = forkBottom;
+  const rollerBottom = rollerTop - thicknessOf(roller);
+  moves.set(roller, { bottom: rollerBottom, top: rollerTop });
+  for (const each of ofPart(partsOf.jewel)) {
+    moves.set(each, { bottom: rollerTop, top: rollerTop + thicknessOf(each) });
   }
+  const springTop = rollerBottom - OSCILLATOR_CLEARANCE;
+  const springBottom = springTop - thicknessOf(found.springSolid);
+  for (const each of ofPart(partsOf.spring)) {
+    if (each === found.staff) continue;
+    moves.set(each, { bottom: springBottom, top: springTop });
+  }
+  const balanceTop = springBottom - OSCILLATOR_CLEARANCE;
+  for (const each of ofPart(partsOf.balance)) {
+    moves.set(each, {
+      bottom: balanceTop - thicknessOf(each),
+      top: balanceTop,
+    });
+  }
+  moves.set(found.staff, { bottom: balanceTop, top: rollerTop });
   const original = new Map(heights);
   for (const [each, moved] of moves) heights.set(each, moved);
 

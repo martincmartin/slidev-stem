@@ -1,0 +1,118 @@
+{
+  "chromium": {
+    "during_fade": {
+      "rest": 0.29030776350863796,
+      "tilt": 20,
+      "view": {
+        "name": "hairspring",
+        "scale": 4.464285714285714,
+        "shift": [
+          -3067.5741113803374,
+          -450.19514083548074
+        ],
+        "pivot": [
+          845.0566009491955,
+          162.6677115471477,
+          -7
+        ]
+      },
+      "springHeights": [
+        -11,
+        -3
+      ],
+      "kept": [
+        "hairspring 1",
+        "hairspring 2",
+        "hairspring stud (added)"
+      ],
+      "flashed": null
+    },
+    "after_fade": {
+      "rest": 0,
+      "tilt": 20,
+      "view": {
+        "name": "hairspring",
+        "scale": 4.464285714285714,
+        "shift": [
+          -3067.5741113803374,
+          -450.19514083548074
+        ],
+        "pivot": [
+          845.0566009491955,
+          162.6677115471477,
+          -7
+        ]
+      },
+      "springHeights": [
+        -11,
+        -3
+      ],
+      "kept": [
+        "hairspring 1",
+        "hairspring 2",
+        "hairspring stud (added)"
+      ],
+      "flashed": null
+    },
+    "page_errors": [],
+    "outside_requests": []
+  },
+  "firefox": {
+    "during_fade": {
+      "rest": 0.8946775625,
+      "tilt": 20,
+      "view": {
+        "name": "hairspring",
+        "scale": 4.464285714285714,
+        "shift": [
+          -3067.5741113803374,
+          -450.19514083548074
+        ],
+        "pivot": [
+          845.0566009491955,
+          162.6677115471477,
+          -7
+        ]
+      },
+      "springHeights": [
+        -11,
+        -3
+      ],
+      "kept": [
+        "hairspring 1",
+        "hairspring 2",
+        "hairspring stud (added)"
+      ],
+      "flashed": null
+    },
+    "after_fade": {
+      "rest": 0,
+      "tilt": 20,
+      "view": {
+        "name": "hairspring",
+        "scale": 4.464285714285714,
+        "shift": [
+          -3067.5741113803374,
+          -450.19514083548074
+        ],
+        "pivot": [
+          845.0566009491955,
+          162.6677115471477,
+          -7
+        ]
+      },
+      "springHeights": [
+        -11,
+        -3
+      ],
+      "kept": [
+        "hairspring 1",
+        "hairspring 2",
+        "hairspring stud (added)"
+      ],
+      "flashed": null
+    },
+    "page_errors": [],
+    "outside_requests": []
+  }
+}

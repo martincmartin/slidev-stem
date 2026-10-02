@@ -1,0 +1,10 @@
+{
+  "chromium": {
+    "controls": "passed",
+    "page_errors": []
+  },
+  "firefox": {
+    "controls": "passed",
+    "page_errors": []
+  }
+}

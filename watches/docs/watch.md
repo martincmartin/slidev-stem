@@ -23,7 +23,9 @@ the budgets),
 (pallet stones, the balance's rim),
 [`2026-09-30-flexing-ruler`](../tasks/2026-09-30-flexing-ruler/PLAN.md),
 [`2026-09-30-flash`](../tasks/2026-09-30-flash/PLAN.md) (the balance flashes
-before the zoom).
+before the zoom),
+[`2026-10-01-raised-escapement`](../tasks/2026-10-01-raised-escapement/README.md)
+(the lower oscillator and upper roller).
 
 ## The files
 
@@ -48,6 +50,23 @@ checks the Python and the layout (meshing, clearances), and writes
 `watch/design.json`. To move the wheels, run `art/search_watch_layout.py`
 first. `uv run ../tools/validate.py` does not run it: run it yourself after
 each change to the design.
+
+## Oscillator geometry and framing
+
+The balance wheel sits below the hairspring. The roller sits above the spring.
+The jewel rises from the roller to meet the pallet fork at escape-wheel height.
+The staff connects the balance hub, collet, and roller. The spring's outer end attaches to the fixed stud.
+The case extends below the balance. The train and fork keep their meshing heights.
+`watch/generate.ts` computes these heights from the fork and the parts' thicknesses.
+
+The hairspring view keeps its on-slide target and zoom when the oscillator height changes.
+Its camera pivot uses the spring's midpoint in height. Thus the spring stays at its target as the view tilts.
+`watch/generate.ts` holds the target and zoom.
+
+On slide 2, the roller flashes with the oscillator before the zoom.
+Then it fades with the balance, jewel, staff, fork, and other mechanism parts.
+Only the hairspring, collet, and stud remain visible, so the roller does not cover the coils.
+The subject sets in `watch/generate.ts` control this fade.
 
 ## The frontmatter keys
 
@@ -78,7 +97,7 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
 
 - `hairspring and stud`: the spring, its collet and the stud.
 - `balance and hairspring`: the balance, the spring with its collet and the
-  balance staff, the stud and the impulse jewel. Not the pallet fork.
+  balance staff, the stud, roller and impulse jewel. Not the pallet fork.
 
 - **The order of a change:** the camera moves (1.8 s), then the view tilts
   (1.5 s), then the rest fades (0.8 s); going back runs it in reverse. The
@@ -138,7 +157,8 @@ On the speaker's laptop (120 Hz), 2026-09-29, on the real talk
 | Frames over 12.5 ms in the opening (the 120 Hz gate)    | 0          | 2 in a laptop run, 0 in a projector run |
 | WebGL contexts: a slide, the presenter view, the export | 1, 2, 1    | 1, 2, 1                                 |
 
-The back-row numbers of the watch are in [measurements.md](measurements.md).
+This timing sample predates the lower oscillator adopted on 2026-10-01.
+The current art's back-row measurements are in [measurements.md](measurements.md).
 
 ## The flexing ruler
 

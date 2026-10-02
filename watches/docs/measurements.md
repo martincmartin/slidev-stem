@@ -8,7 +8,9 @@ read the metrics is in [`stem/docs/legibility.md`](../../docs/legibility.md).
 [`2026-09-20-animation-style`](../tasks/2026-09-20-animation-style/README.md)
 (the timekeepers, §14),
 [`2026-09-29-webgl-watch`](../tasks/2026-09-29-webgl-watch/PLAN.md) (the
-watch), [`2026-09-30-flexing-ruler`](../tasks/2026-09-30-flexing-ruler/PLAN.md).
+watch), [`2026-09-30-flexing-ruler`](../tasks/2026-09-30-flexing-ruler/PLAN.md), and
+[`2026-10-01-raised-escapement`](../tasks/2026-10-01-raised-escapement/README.md)
+(the lower oscillator and its measurements).
 
 **Measure again whenever the art changes**, and update this page. In `stem/`:
 
@@ -44,12 +46,12 @@ but it stops being this drawing style (the animation-style task, §14).
 
 The watch is drawn live in WebGL, so `barroom.py` and `motion.py` measure PNG
 stills of it (`pnpm art:stills DIR` writes them). At `TV 55in @7m`, measured
-2026-09-29, on the cover at tilt 0, 980 × 552 px at 2 device px for each CSS
+2026-10-01, on the cover at tilt 0, 980 × 552 px at 2 device px for each CSS
 px:
 
 ```
 drawing   ink%    hold    p90    Fmax     dPeak   px2 >=3:1
-cover      6.6    4.12   7.89   0.133     10.33        3925
+cover      6.6    4.11   7.86   0.132     10.01      3744.5
 ```
 
 It clears the gate. `dPeak` is the change between two frames one second apart:

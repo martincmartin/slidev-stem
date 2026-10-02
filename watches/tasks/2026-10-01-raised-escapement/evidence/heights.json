@@ -1,0 +1,1364 @@
+{
+  "a-lowered": [
+    {
+      "name": "case band",
+      "part": "case band",
+      "heights": [
+        -20,
+        20
+      ]
+    },
+    {
+      "name": "strap 1",
+      "part": "strap",
+      "heights": [
+        -2,
+        2
+      ]
+    },
+    {
+      "name": "lug 2",
+      "part": "lug",
+      "heights": [
+        -20,
+        20
+      ]
+    },
+    {
+      "name": "lug 3",
+      "part": "lug",
+      "heights": [
+        -20,
+        20
+      ]
+    },
+    {
+      "name": "strap 4",
+      "part": "strap",
+      "heights": [
+        -2,
+        2
+      ]
+    },
+    {
+      "name": "lug 5",
+      "part": "lug",
+      "heights": [
+        -20,
+        20
+      ]
+    },
+    {
+      "name": "lug 6",
+      "part": "lug",
+      "heights": [
+        -20,
+        20
+      ]
+    },
+    {
+      "name": "crown",
+      "part": "crown",
+      "heights": [
+        -17,
+        17
+      ]
+    },
+    {
+      "name": "roller table",
+      "part": "roller",
+      "heights": [
+        -1,
+        1
+      ]
+    },
+    {
+      "name": "escape wheel 1",
+      "part": "escape wheel",
+      "heights": [
+        0,
+        3
+      ]
+    },
+    {
+      "name": "escape wheel 2",
+      "part": "escape wheel",
+      "heights": [
+        0,
+        3
+      ]
+    },
+    {
+      "name": "escape wheel 3",
+      "part": "escape wheel",
+      "heights": [
+        3,
+        6
+      ]
+    },
+    {
+      "name": "escape wheel 4",
+      "part": "escape wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "fourth wheel 1",
+      "part": "fourth wheel",
+      "heights": [
+        3,
+        6
+      ]
+    },
+    {
+      "name": "fourth wheel 2",
+      "part": "fourth wheel",
+      "heights": [
+        3,
+        6
+      ]
+    },
+    {
+      "name": "fourth wheel 3",
+      "part": "fourth wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "fourth wheel 4",
+      "part": "fourth wheel",
+      "heights": [
+        9,
+        15
+      ]
+    },
+    {
+      "name": "third wheel 1",
+      "part": "third wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "third wheel 2",
+      "part": "third wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "third wheel 3",
+      "part": "third wheel",
+      "heights": [
+        9,
+        12
+      ]
+    },
+    {
+      "name": "third wheel 4",
+      "part": "third wheel",
+      "heights": [
+        12,
+        15
+      ]
+    },
+    {
+      "name": "centre wheel 1",
+      "part": "centre wheel",
+      "heights": [
+        9,
+        12
+      ]
+    },
+    {
+      "name": "centre wheel 2",
+      "part": "centre wheel",
+      "heights": [
+        9,
+        12
+      ]
+    },
+    {
+      "name": "centre wheel 3",
+      "part": "centre wheel",
+      "heights": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "centre wheel 4",
+      "part": "centre wheel",
+      "heights": [
+        17,
+        20
+      ]
+    },
+    {
+      "name": "barrel 1",
+      "part": "barrel",
+      "heights": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "barrel 2",
+      "part": "barrel",
+      "heights": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "barrel 3",
+      "part": "barrel",
+      "heights": [
+        12,
+        18.5
+      ]
+    },
+    {
+      "name": "balance 1",
+      "part": "balance",
+      "heights": [
+        -18,
+        -13
+      ]
+    },
+    {
+      "name": "hairspring 1",
+      "part": "hairspring",
+      "heights": [
+        -11,
+        -3
+      ]
+    },
+    {
+      "name": "hairspring 2",
+      "part": "hairspring",
+      "heights": [
+        -11,
+        -3
+      ]
+    },
+    {
+      "name": "impulse jewel 1",
+      "part": "impulse jewel",
+      "heights": [
+        1,
+        4
+      ]
+    },
+    {
+      "name": "pallet fork 1",
+      "part": "pallet fork",
+      "heights": [
+        1,
+        4
+      ]
+    },
+    {
+      "name": "pallet fork 2",
+      "part": "pallet fork",
+      "heights": [
+        4,
+        5.5
+      ]
+    },
+    {
+      "name": "seconds hand 1",
+      "part": "seconds hand",
+      "heights": [
+        15,
+        16.5
+      ]
+    },
+    {
+      "name": "seconds hand 2",
+      "part": "seconds hand",
+      "heights": [
+        16.5,
+        17.5
+      ]
+    },
+    {
+      "name": "chapter ring 1",
+      "part": "chapter ring",
+      "heights": [
+        17,
+        20
+      ]
+    },
+    {
+      "name": "hour hand 1",
+      "part": "hour hand",
+      "heights": [
+        18.5,
+        20
+      ]
+    },
+    {
+      "name": "minute hand 1",
+      "part": "minute hand",
+      "heights": [
+        20,
+        21.5
+      ]
+    },
+    {
+      "name": "centre pivot 1",
+      "part": "centre pivot",
+      "heights": [
+        21.5,
+        22.5
+      ]
+    },
+    {
+      "name": "hairspring 3",
+      "part": "hairspring",
+      "heights": [
+        -13,
+        1
+      ]
+    },
+    {
+      "name": "hairspring stud (added)",
+      "part": "hairspring stud",
+      "heights": [
+        -12,
+        -2
+      ]
+    }
+  ],
+  "b-raised": [
+    {
+      "name": "case band",
+      "part": "case band",
+      "heights": [
+        -4,
+        32
+      ]
+    },
+    {
+      "name": "strap 1",
+      "part": "strap",
+      "heights": [
+        12,
+        16
+      ]
+    },
+    {
+      "name": "lug 2",
+      "part": "lug",
+      "heights": [
+        -4,
+        32
+      ]
+    },
+    {
+      "name": "lug 3",
+      "part": "lug",
+      "heights": [
+        -4,
+        32
+      ]
+    },
+    {
+      "name": "strap 4",
+      "part": "strap",
+      "heights": [
+        12,
+        16
+      ]
+    },
+    {
+      "name": "lug 5",
+      "part": "lug",
+      "heights": [
+        -4,
+        32
+      ]
+    },
+    {
+      "name": "lug 6",
+      "part": "lug",
+      "heights": [
+        -4,
+        32
+      ]
+    },
+    {
+      "name": "crown",
+      "part": "crown",
+      "heights": [
+        -3,
+        31
+      ]
+    },
+    {
+      "name": "roller table",
+      "part": "roller",
+      "heights": [
+        21,
+        23
+      ]
+    },
+    {
+      "name": "escape wheel 1",
+      "part": "escape wheel",
+      "heights": [
+        22,
+        25
+      ]
+    },
+    {
+      "name": "escape wheel 2",
+      "part": "escape wheel",
+      "heights": [
+        22,
+        25
+      ]
+    },
+    {
+      "name": "escape wheel 3",
+      "part": "escape wheel",
+      "heights": [
+        3,
+        6
+      ]
+    },
+    {
+      "name": "escape wheel 4",
+      "part": "escape wheel",
+      "heights": [
+        3,
+        28
+      ]
+    },
+    {
+      "name": "fourth wheel 1",
+      "part": "fourth wheel",
+      "heights": [
+        3,
+        6
+      ]
+    },
+    {
+      "name": "fourth wheel 2",
+      "part": "fourth wheel",
+      "heights": [
+        3,
+        6
+      ]
+    },
+    {
+      "name": "fourth wheel 3",
+      "part": "fourth wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "fourth wheel 4",
+      "part": "fourth wheel",
+      "heights": [
+        9,
+        28
+      ]
+    },
+    {
+      "name": "third wheel 1",
+      "part": "third wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "third wheel 2",
+      "part": "third wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "third wheel 3",
+      "part": "third wheel",
+      "heights": [
+        9,
+        12
+      ]
+    },
+    {
+      "name": "third wheel 4",
+      "part": "third wheel",
+      "heights": [
+        12,
+        15
+      ]
+    },
+    {
+      "name": "centre wheel 1",
+      "part": "centre wheel",
+      "heights": [
+        9,
+        12
+      ]
+    },
+    {
+      "name": "centre wheel 2",
+      "part": "centre wheel",
+      "heights": [
+        9,
+        12
+      ]
+    },
+    {
+      "name": "centre wheel 3",
+      "part": "centre wheel",
+      "heights": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "centre wheel 4",
+      "part": "centre wheel",
+      "heights": [
+        17,
+        30.5
+      ]
+    },
+    {
+      "name": "barrel 1",
+      "part": "barrel",
+      "heights": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "barrel 2",
+      "part": "barrel",
+      "heights": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "barrel 3",
+      "part": "barrel",
+      "heights": [
+        12,
+        18.5
+      ]
+    },
+    {
+      "name": "balance 1",
+      "part": "balance",
+      "heights": [
+        4,
+        9
+      ]
+    },
+    {
+      "name": "hairspring 1",
+      "part": "hairspring",
+      "heights": [
+        11,
+        19
+      ]
+    },
+    {
+      "name": "hairspring 2",
+      "part": "hairspring",
+      "heights": [
+        11,
+        19
+      ]
+    },
+    {
+      "name": "impulse jewel 1",
+      "part": "impulse jewel",
+      "heights": [
+        23,
+        26
+      ]
+    },
+    {
+      "name": "pallet fork 1",
+      "part": "pallet fork",
+      "heights": [
+        23,
+        26
+      ]
+    },
+    {
+      "name": "pallet fork 2",
+      "part": "pallet fork",
+      "heights": [
+        4,
+        27.5
+      ]
+    },
+    {
+      "name": "seconds hand 1",
+      "part": "seconds hand",
+      "heights": [
+        28,
+        29.5
+      ]
+    },
+    {
+      "name": "seconds hand 2",
+      "part": "seconds hand",
+      "heights": [
+        29.5,
+        30.5
+      ]
+    },
+    {
+      "name": "chapter ring 1",
+      "part": "chapter ring",
+      "heights": [
+        29,
+        32
+      ]
+    },
+    {
+      "name": "hour hand 1",
+      "part": "hour hand",
+      "heights": [
+        30.5,
+        32
+      ]
+    },
+    {
+      "name": "minute hand 1",
+      "part": "minute hand",
+      "heights": [
+        32,
+        33.5
+      ]
+    },
+    {
+      "name": "centre pivot 1",
+      "part": "centre pivot",
+      "heights": [
+        33.5,
+        34.5
+      ]
+    },
+    {
+      "name": "hairspring 3",
+      "part": "hairspring",
+      "heights": [
+        9,
+        23
+      ]
+    },
+    {
+      "name": "hairspring stud (added)",
+      "part": "hairspring stud",
+      "heights": [
+        10,
+        20
+      ]
+    }
+  ],
+  "c-stepped": [
+    {
+      "name": "case band",
+      "part": "case band",
+      "heights": [
+        -6,
+        30
+      ]
+    },
+    {
+      "name": "strap 1",
+      "part": "strap",
+      "heights": [
+        10,
+        14
+      ]
+    },
+    {
+      "name": "lug 2",
+      "part": "lug",
+      "heights": [
+        -6,
+        30
+      ]
+    },
+    {
+      "name": "lug 3",
+      "part": "lug",
+      "heights": [
+        -6,
+        30
+      ]
+    },
+    {
+      "name": "strap 4",
+      "part": "strap",
+      "heights": [
+        10,
+        14
+      ]
+    },
+    {
+      "name": "lug 5",
+      "part": "lug",
+      "heights": [
+        -6,
+        30
+      ]
+    },
+    {
+      "name": "lug 6",
+      "part": "lug",
+      "heights": [
+        -6,
+        30
+      ]
+    },
+    {
+      "name": "crown",
+      "part": "crown",
+      "heights": [
+        -5,
+        29
+      ]
+    },
+    {
+      "name": "roller table",
+      "part": "roller",
+      "heights": [
+        21,
+        23
+      ]
+    },
+    {
+      "name": "lower pallet arms",
+      "part": "pallet fork",
+      "heights": [
+        1,
+        4
+      ]
+    },
+    {
+      "name": "fork step",
+      "part": "pallet fork",
+      "heights": [
+        4,
+        23
+      ]
+    },
+    {
+      "name": "escape wheel 1",
+      "part": "escape wheel",
+      "heights": [
+        0,
+        3
+      ]
+    },
+    {
+      "name": "escape wheel 2",
+      "part": "escape wheel",
+      "heights": [
+        0,
+        3
+      ]
+    },
+    {
+      "name": "escape wheel 3",
+      "part": "escape wheel",
+      "heights": [
+        3,
+        6
+      ]
+    },
+    {
+      "name": "escape wheel 4",
+      "part": "escape wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "fourth wheel 1",
+      "part": "fourth wheel",
+      "heights": [
+        3,
+        6
+      ]
+    },
+    {
+      "name": "fourth wheel 2",
+      "part": "fourth wheel",
+      "heights": [
+        3,
+        6
+      ]
+    },
+    {
+      "name": "fourth wheel 3",
+      "part": "fourth wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "fourth wheel 4",
+      "part": "fourth wheel",
+      "heights": [
+        9,
+        26
+      ]
+    },
+    {
+      "name": "third wheel 1",
+      "part": "third wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "third wheel 2",
+      "part": "third wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "third wheel 3",
+      "part": "third wheel",
+      "heights": [
+        9,
+        12
+      ]
+    },
+    {
+      "name": "third wheel 4",
+      "part": "third wheel",
+      "heights": [
+        12,
+        15
+      ]
+    },
+    {
+      "name": "centre wheel 1",
+      "part": "centre wheel",
+      "heights": [
+        9,
+        12
+      ]
+    },
+    {
+      "name": "centre wheel 2",
+      "part": "centre wheel",
+      "heights": [
+        9,
+        12
+      ]
+    },
+    {
+      "name": "centre wheel 3",
+      "part": "centre wheel",
+      "heights": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "centre wheel 4",
+      "part": "centre wheel",
+      "heights": [
+        17,
+        28.5
+      ]
+    },
+    {
+      "name": "barrel 1",
+      "part": "barrel",
+      "heights": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "barrel 2",
+      "part": "barrel",
+      "heights": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "barrel 3",
+      "part": "barrel",
+      "heights": [
+        12,
+        18.5
+      ]
+    },
+    {
+      "name": "balance 1",
+      "part": "balance",
+      "heights": [
+        4,
+        9
+      ]
+    },
+    {
+      "name": "hairspring 1",
+      "part": "hairspring",
+      "heights": [
+        11,
+        19
+      ]
+    },
+    {
+      "name": "hairspring 2",
+      "part": "hairspring",
+      "heights": [
+        11,
+        19
+      ]
+    },
+    {
+      "name": "impulse jewel 1",
+      "part": "impulse jewel",
+      "heights": [
+        23,
+        26
+      ]
+    },
+    {
+      "name": "upper fork lever",
+      "part": "pallet fork",
+      "heights": [
+        23,
+        26
+      ]
+    },
+    {
+      "name": "pallet fork 2",
+      "part": "pallet fork",
+      "heights": [
+        4,
+        27.5
+      ]
+    },
+    {
+      "name": "seconds hand 1",
+      "part": "seconds hand",
+      "heights": [
+        26,
+        27.5
+      ]
+    },
+    {
+      "name": "seconds hand 2",
+      "part": "seconds hand",
+      "heights": [
+        27.5,
+        28.5
+      ]
+    },
+    {
+      "name": "chapter ring 1",
+      "part": "chapter ring",
+      "heights": [
+        27,
+        30
+      ]
+    },
+    {
+      "name": "hour hand 1",
+      "part": "hour hand",
+      "heights": [
+        28.5,
+        30
+      ]
+    },
+    {
+      "name": "minute hand 1",
+      "part": "minute hand",
+      "heights": [
+        30,
+        31.5
+      ]
+    },
+    {
+      "name": "centre pivot 1",
+      "part": "centre pivot",
+      "heights": [
+        31.5,
+        32.5
+      ]
+    },
+    {
+      "name": "hairspring 3",
+      "part": "hairspring",
+      "heights": [
+        9,
+        23
+      ]
+    },
+    {
+      "name": "hairspring stud (added)",
+      "part": "hairspring stud",
+      "heights": [
+        10,
+        20
+      ]
+    }
+  ],
+  "current": [
+    {
+      "name": "case band",
+      "part": "case band",
+      "heights": [
+        -13.5,
+        22.5
+      ]
+    },
+    {
+      "name": "strap 1",
+      "part": "strap",
+      "heights": [
+        2.5,
+        6.5
+      ]
+    },
+    {
+      "name": "lug 2",
+      "part": "lug",
+      "heights": [
+        -13.5,
+        22.5
+      ]
+    },
+    {
+      "name": "lug 3",
+      "part": "lug",
+      "heights": [
+        -13.5,
+        22.5
+      ]
+    },
+    {
+      "name": "strap 4",
+      "part": "strap",
+      "heights": [
+        2.5,
+        6.5
+      ]
+    },
+    {
+      "name": "lug 5",
+      "part": "lug",
+      "heights": [
+        -13.5,
+        22.5
+      ]
+    },
+    {
+      "name": "lug 6",
+      "part": "lug",
+      "heights": [
+        -13.5,
+        22.5
+      ]
+    },
+    {
+      "name": "crown",
+      "part": "crown",
+      "heights": [
+        -12.5,
+        21.5
+      ]
+    },
+    {
+      "name": "escape wheel 1",
+      "part": "escape wheel",
+      "heights": [
+        0,
+        3
+      ]
+    },
+    {
+      "name": "escape wheel 2",
+      "part": "escape wheel",
+      "heights": [
+        0,
+        3
+      ]
+    },
+    {
+      "name": "escape wheel 3",
+      "part": "escape wheel",
+      "heights": [
+        3,
+        6
+      ]
+    },
+    {
+      "name": "escape wheel 4",
+      "part": "escape wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "fourth wheel 1",
+      "part": "fourth wheel",
+      "heights": [
+        3,
+        6
+      ]
+    },
+    {
+      "name": "fourth wheel 2",
+      "part": "fourth wheel",
+      "heights": [
+        3,
+        6
+      ]
+    },
+    {
+      "name": "fourth wheel 3",
+      "part": "fourth wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "fourth wheel 4",
+      "part": "fourth wheel",
+      "heights": [
+        9,
+        15
+      ]
+    },
+    {
+      "name": "third wheel 1",
+      "part": "third wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "third wheel 2",
+      "part": "third wheel",
+      "heights": [
+        6,
+        9
+      ]
+    },
+    {
+      "name": "third wheel 3",
+      "part": "third wheel",
+      "heights": [
+        9,
+        12
+      ]
+    },
+    {
+      "name": "third wheel 4",
+      "part": "third wheel",
+      "heights": [
+        12,
+        15
+      ]
+    },
+    {
+      "name": "centre wheel 1",
+      "part": "centre wheel",
+      "heights": [
+        9,
+        12
+      ]
+    },
+    {
+      "name": "centre wheel 2",
+      "part": "centre wheel",
+      "heights": [
+        9,
+        12
+      ]
+    },
+    {
+      "name": "centre wheel 3",
+      "part": "centre wheel",
+      "heights": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "centre wheel 4",
+      "part": "centre wheel",
+      "heights": [
+        17,
+        21
+      ]
+    },
+    {
+      "name": "barrel 1",
+      "part": "barrel",
+      "heights": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "barrel 2",
+      "part": "barrel",
+      "heights": [
+        12,
+        17
+      ]
+    },
+    {
+      "name": "barrel 3",
+      "part": "barrel",
+      "heights": [
+        12,
+        18.5
+      ]
+    },
+    {
+      "name": "balance 1",
+      "part": "balance",
+      "heights": [
+        4,
+        9
+      ]
+    },
+    {
+      "name": "hairspring 1",
+      "part": "hairspring",
+      "heights": [
+        9,
+        17
+      ]
+    },
+    {
+      "name": "hairspring 2",
+      "part": "hairspring",
+      "heights": [
+        9,
+        17
+      ]
+    },
+    {
+      "name": "impulse jewel 1",
+      "part": "impulse jewel",
+      "heights": [
+        0,
+        3
+      ]
+    },
+    {
+      "name": "pallet fork 1",
+      "part": "pallet fork",
+      "heights": [
+        1,
+        4
+      ]
+    },
+    {
+      "name": "pallet fork 2",
+      "part": "pallet fork",
+      "heights": [
+        4,
+        5.5
+      ]
+    },
+    {
+      "name": "seconds hand 1",
+      "part": "seconds hand",
+      "heights": [
+        15,
+        16.5
+      ]
+    },
+    {
+      "name": "seconds hand 2",
+      "part": "seconds hand",
+      "heights": [
+        16.5,
+        17.5
+      ]
+    },
+    {
+      "name": "chapter ring 1",
+      "part": "chapter ring",
+      "heights": [
+        19.5,
+        22.5
+      ]
+    },
+    {
+      "name": "hour hand 1",
+      "part": "hour hand",
+      "heights": [
+        21,
+        22.5
+      ]
+    },
+    {
+      "name": "minute hand 1",
+      "part": "minute hand",
+      "heights": [
+        22.5,
+        24
+      ]
+    },
+    {
+      "name": "centre pivot 1",
+      "part": "centre pivot",
+      "heights": [
+        24,
+        25
+      ]
+    },
+    {
+      "name": "hairspring 3",
+      "part": "hairspring",
+      "heights": [
+        9,
+        21
+      ]
+    },
+    {
+      "name": "hairspring stud (added)",
+      "part": "hairspring stud",
+      "heights": [
+        8,
+        18
+      ]
+    }
+  ],
+  "browser_errors": [],
+  "motion_frames": 196
+}
