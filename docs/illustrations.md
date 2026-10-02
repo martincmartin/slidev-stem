@@ -21,7 +21,7 @@ grammar),
 
 The examples are the four timekeepers in
 `watches/public/timekeepers/{sundial,water-clock,candle,hourglass}.svg`, and the
-flexing ruler, `watches/public/flexing-ruler.svg`.
+diving board, `watches/public/diving-board.svg`.
 
 **The style is a grammar, not a look.** It is a stated size, the art's colour
 roles, a stroke ladder and a habit about what moves. Follow those four and a
@@ -103,13 +103,13 @@ that slide's colours. Keep the hex as the mark's attribute too
 own, where the `var()` fallback paints the same pixels.
 
 - **Inline the SVG in the page.** An SVG in an `<img>` is a separate document,
-  and no page CSS reaches it. `watches/components/FlexingRuler.vue` inlines its
+  and no page CSS reaches it. `watches/components/DivingBoard.vue` inlines its
   file.
 - **Namespace every class**, as for an `id`: a `<style>` in an inlined SVG
-  applies to the whole page (`.flexing-ruler-stroke-art-line`).
+  applies to the whole page (`.diving-board-stroke-art-line`).
 - **Always give `var()` its fallback.** Without the theme, a `var()` with no
   fallback does not use the attribute: the mark takes its parent's colour.
-- **Write the hex from the theme, not by hand.** `watches/art/flexing_ruler.py`
+- **Write the hex from the theme, not by hand.** `watches/art/diving_board.py`
   reads the values from the theme that the talk links, and its `--check` fails
   when the theme changes. It is the example.
 
@@ -234,8 +234,9 @@ than as water. The arithmetic brackets the choice; it does not make it.
 ## What the grammar has not settled
 
 The four timekeepers are one kind of problem: **a container with a level that
-moves one way.** The flexing ruler added a second kind: a part that vibrates,
-and a hand (muted, as context) that moves into the frame. Still untested:
+moves one way.** The diving board added a second kind: a part that
+vibrates (art line), and an oblique scene round it (muted, as context). Still
+untested:
 
 - **A path rather than an edge.** Every line is the boundary of a thing. A
   beam, a signal or a flow of control needs a mark that means direction.
@@ -261,7 +262,7 @@ at the end. When you extend the grammar, extend it here, and add the check to
 - The four timekeepers in `watches/public/timekeepers/` are **source files:
   edit them directly.** Do not regenerate them with the animation-style task's
   `reline.py`: it writes into the task's own copy of the art.
-- `watches/public/flexing-ruler.svg` is **generated**: edit
-  `watches/art/flexing_ruler.py` and run it.
+- `watches/public/diving-board.svg` is **generated**: edit
+  `watches/art/diving_board.py` and run it.
 - The watch is not an SVG. It is drawn live in WebGL ([webgl.md](webgl.md)),
   from `watches/watch/design.json`, which `watches/art/watch_design.py` writes.

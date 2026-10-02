@@ -7,8 +7,11 @@
 //   watchFlash: a subject ("balance and hairspring") that flashes before the
 //     camera moves, when the slide is reached by a transition
 //   watchSettle: the click at which the balance settles at rest
+//   watchResume: the click at which a settled balance starts to swing again
 //   watchHide: the click at which the watch fades out, as on a slide without
 //     a `watch`; the slide shows something else from then on
+//   watchShow: the click at which a hidden watch fades back in, in the state
+//     that the click gives it (a settled balance is at rest, not settling)
 
 import type { Scene } from "../webgl/scene.ts";
 import type { StageState } from "../webgl/timeline.ts";
@@ -24,6 +27,19 @@ export interface WatchState {
 
 function wrong(name: string, value: unknown, wanted: string): never {
   throw new Error(`${name}: ${JSON.stringify(value)} should be ${wanted}`);
+}
+
+/** A click number in the frontmatter, or `undefined` if the field is not there. */
+function clickOf(
+  frontmatter: Record<string, unknown>,
+  name: string,
+): number | undefined {
+  const click = frontmatter[name];
+  if (click === undefined) return undefined;
+  if (typeof click !== "number" || !Number.isInteger(click) || click < 0) {
+    return wrong(name, click, "a click number");
+  }
+  return click;
 }
 
 /** The slide's watch state, or `undefined` if the slide has no `watch`.
@@ -49,29 +65,33 @@ export function watchState(
   if (flash !== undefined && (typeof flash !== "string" || flash === "")) {
     return wrong("watchFlash", flash, "the name of a subject");
   }
-  const settleAt = frontmatter["watchSettle"];
+  const settleAt = clickOf(frontmatter, "watchSettle");
+  const resumeAt = clickOf(frontmatter, "watchResume");
+  const hideAt = clickOf(frontmatter, "watchHide");
+  const showAt = clickOf(frontmatter, "watchShow");
   if (
-    settleAt !== undefined &&
-    (typeof settleAt !== "number" ||
-      !Number.isInteger(settleAt) ||
-      settleAt < 0)
+    resumeAt !== undefined &&
+    (settleAt === undefined || resumeAt <= settleAt)
   ) {
-    return wrong("watchSettle", settleAt, "a click number");
+    return wrong("watchResume", resumeAt, "a click after watchSettle");
   }
-  const hideAt = frontmatter["watchHide"];
-  if (
+  if (showAt !== undefined && (hideAt === undefined || showAt <= hideAt)) {
+    return wrong("watchShow", showAt, "a click after watchHide");
+  }
+  const hidden =
     hideAt !== undefined &&
-    (typeof hideAt !== "number" || !Number.isInteger(hideAt) || hideAt < 0)
-  ) {
-    return wrong("watchHide", hideAt, "a click number");
-  }
-  if (hideAt !== undefined && clicks >= hideAt) return undefined;
+    clicks >= hideAt &&
+    (showAt === undefined || clicks < showAt);
+  if (hidden) return undefined;
   return {
     view,
     tilt,
     only,
     flash,
-    settled: settleAt !== undefined && clicks >= settleAt,
+    settled:
+      settleAt !== undefined &&
+      clicks >= settleAt &&
+      (resumeAt === undefined || clicks < resumeAt),
   };
 }
 

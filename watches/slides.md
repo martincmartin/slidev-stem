@@ -45,19 +45,30 @@ watchFlash: balance and hairspring
 watchOnly: hairspring and stud
 watchTilt: 20
 watchHide: 1
-clicks: 2
+watchSettle: 2
+watchShow: 3
+watchResume: 4
+clicks: 4
 ---
 
 # Hairspring and Balance Wheel
 
-<FlexingRuler :visible="$clicks >= 1" :playing="$clicks >= 2" />
+<DivingBoard
+  :visible="$clicks >= 1 && $clicks < 3"
+  :playing="$clicks >= 1"
+  :curling="$clicks >= 2"
+/>
 
 <!--
 The hairspring and the balance wheel: the part of a watch that keeps time.
 
-[click] The hairspring fades and a steel ruler takes its place.
+[click] The hairspring fades. A diving board takes its place: it bends down, and when it lets go it bounces up and down, once a second. With no friction it would bounce at the same height for ever. This is why a hairspring swings: it is a springboard.
 
-[click] The ruler turns edge-on, is clamped at one end, and a hand pulls the other end down and lets go. With no friction it would swing at the same height for ever.
+[click] The pool and the stand fade. The board curls up until it is the hairspring, at rest in its middle position.
+
+[click] The board fades out and the real hairspring fades in, at rest, with the same shape.
+
+[click] The hairspring starts to swing again, as the board did.
 -->
 
 ---

@@ -24,3 +24,8 @@ this version. Standalone, the new file renders the same pixels as the first
 `.slidev-layout.<class>` rule, and measures that slide's palette against the
 gates. See PLAN.md, "A conflict". `tools/lib.py` and `tools/palette.py` here
 are the copies from that change. The task is closed again.
+
+
+## Replaced (2026-10-01)
+
+Slide 2 shows a diving board instead of the ruler: `art/flexing_ruler.py`, `components/FlexingRuler.vue` and `public/flexing-ruler.svg` are deleted from the project, and the copies here remain.

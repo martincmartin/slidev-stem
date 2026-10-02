@@ -1,10 +1,10 @@
-# The live watch and the flexing ruler
+# The live watch and the diving board
 
 **Covers:** this talk's live art: the skeleton watch in WebGL (its files, its
 design, the frontmatter keys that drive it, line widths when zooming, its
-measured budgets) and the flexing ruler on slide 2.
+measured budgets) and the diving board on slide 2.
 **Read before** you change `watch/`, `art/`, the watch's frontmatter,
-`global-bottom.vue`, `slide-bottom.vue`, the ruler, or the slides that show
+`global-bottom.vue`, `slide-bottom.vue`, the diving board, or the slides that show
 them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
@@ -21,7 +21,8 @@ watch on the cover),
 the budgets),
 [`2026-09-29-geometry-problems`](../tasks/2026-09-29-geometry-problems/instructions.md)
 (pallet stones, the balance's rim),
-[`2026-09-30-flexing-ruler`](../tasks/2026-09-30-flexing-ruler/PLAN.md),
+[`2026-09-30-flexing-ruler`](../tasks/2026-09-30-flexing-ruler/PLAN.md) (the
+ruler that the diving board replaced),
 [`2026-09-30-flash`](../tasks/2026-09-30-flash/PLAN.md) (the balance flashes
 before the zoom).
 
@@ -52,8 +53,7 @@ each change to the design.
 ## The frontmatter keys
 
 A slide asks for a view of the watch in its frontmatter. A slide with no
-`watch:` key hides it. Slide 2 is the example (it does not use `watchSettle`, which a slide can still
-ask for):
+`watch:` key hides it. Slide 2 is the example:
 
 ```yaml
 watch: hairspring
@@ -61,17 +61,22 @@ watchFlash: balance and hairspring # flashes before the camera moves
 watchOnly: hairspring and stud # the rest of the watch fades out
 watchTilt: 20 # degrees: shows that the spring is a ribbon
 watchHide: 1 # at click 1 the watch fades out, still swinging
-clicks: 2
+watchSettle: 2 # the balance comes to rest while the watch is hidden
+watchShow: 3 # at click 3 it fades back in, at rest
+watchResume: 4 # at click 4 it starts to swing again
+clicks: 4
 ```
 
-| Key                                  | Meaning                                                                                                                                                |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `watch: cover`                       | the view: `cover`, `hairspring` or `crown`; no key hides the watch                                                                                     |
-| `watchTilt: 20`                      | degrees, towards the viewer's side (default 0)                                                                                                         |
-| `watchFlash: balance and hairspring` | the name of a subject: it flashes before the camera moves, in a transition only ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash") |
-| `watchOnly: hairspring and stud`     | the name of a subject: the rest of the watch fades out                                                                                                 |
-| `watchSettle: 1`                     | at this click, the balance waits for its next extreme and then comes to rest                                                                           |
-| `watchHide: 2`                       | at this click, the watch fades out, as on a slide with no `watch`                                                                                      |
+| Key                                  | Meaning                                                                                                                                                  |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `watch: cover`                       | the view: `cover`, `hairspring` or `crown`; no key hides the watch                                                                                       |
+| `watchTilt: 20`                      | degrees, towards the viewer's side (default 0)                                                                                                           |
+| `watchFlash: balance and hairspring` | the name of a subject: it flashes before the camera moves, in a transition only ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash")   |
+| `watchOnly: hairspring and stud`     | the name of a subject: the rest of the watch fades out                                                                                                   |
+| `watchSettle: 1`                     | at this click, the balance waits for its next extreme and then comes to rest                                                                             |
+| `watchResume: 4`                     | at this click, a settled balance starts to swing again (it needs `watchSettle` before it)                                                                |
+| `watchHide: 2`                       | at this click, the watch fades out, as on a slide with no `watch`                                                                                        |
+| `watchShow: 3`                       | at this click, a hidden watch fades back in, in the state of that click: a settled balance is at rest, with no settling (it needs `watchHide` before it) |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
 at load with the key's name. The subjects are made in `watch/generate.ts`:
@@ -140,29 +145,85 @@ On the speaker's laptop (120 Hz), 2026-09-29, on the real talk
 
 The back-row numbers of the watch are in [measurements.md](measurements.md).
 
-## The flexing ruler
+## The diving board
 
-Slide 2 ends with `components/FlexingRuler.vue`, which inlines
-`public/flexing-ruler.svg`. `art/flexing_ruler.py` writes the SVG: edit the
-script, not the SVG. The slide's `watchHide: 1` fades the watch at click 1, and
-the component's `visible` fades the ruler in. `playing` (click 2) runs the
-SVG's timeline from 0. A click back returns to the face-on ruler. The swing
-never damps, on purpose.
+Slide 2 ends with `components/DivingBoard.vue`, which inlines
+`public/diving-board.svg`. `art/diving_board.py` writes the SVG: edit the
+script, not the SVG. It is a straight diving board over the edge of a pool,
+which stands for the hairspring without its coils: the talk says why a spring
+swings, and the spiral would distract. Ground on the left, pool on the right,
+running off the slide. The board is over the pool for two thirds of its length.
+The ground and the stand are washes of muted (warm); the water is a wash of the
+art line (blue) at 0.6 with light ripples, and the pool's walls are a darker
+muted. The pool has no near wall, and the ground has no front: both go on in
+front, as if they ran far past the bottom of the slide, and the drawing is
+cropped there (it is 452 px tall, so its bottom is the slide's). The ground's
+left edge slants down and to the left as it comes forward, so the drawing is
+the slide's whole width (980 px, its viewBox starting at x -380): a narrower one
+would cut that edge in the middle of the slide. The board, the stand and the pool
+are where they are on the slide's right, and the board ends on the hairspring's
+rest shape, where the hairspring was. Nothing is hidden by paper (it is not an
+art colour): the ground is clipped round the stand's outline. Ground and water
+are not the same colour on purpose: a blue ground beside white water read as a
+pool of the wrong colours.
+
+| Click | The slide                                                                                                                                     |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `watchHide: 1` fades the watch; the component's `visible` fades the board in, and `playing` bends it, holds it, lets go and swings it at 1 Hz |
+| 2     | `curling` fades the pool and the stand, and the board winds into the spiral                                                                   |
+| 3     | the board fades out (`visible` goes false; the clock goes on, so it does not reset) and `watchShow` fades the watch in, at rest               |
+| 4     | `watchResume`: the balance starts to swing again                                                                                              |
+
+A click back from 2 returns to the bend from 0, and from 1 hides the board.
+The balance settles at click 2 (`watchSettle`), while the watch is hidden: a
+hidden watch gets no new state, so at click 3 it appears at rest (`place`, at
+once). At click 4 the clock's `resume` starts it: the cubic from rest to the
+opposite extreme, which is the settle mirrored, so there is no jump in angle,
+speed or acceleration where it meets the free swing. A click back from 4 to 3
+settles it again. The board's end and the hairspring at rest are the same
+shape: laid over each other (a screenshot of slide 2 at click 3, and the
+board's last frame) they agree to about a pixel, except for the real spring's
+stud and collet.
+The swing never damps, on purpose.
 
 - **The component runs the clock, not the SVG.** A self-playing `<img>` cannot
   start on a click or reset on a click back. The clock runs only while the
   slide is the current one: Slidev keeps a left slide mounted and gives it its
   last click, so `playing` alone would keep it running off-screen.
-- **Not an oversight: the SVG is 85 KB because it is sampled** (30 frames a
+- **The curl waits for the bottom of the swing**, where the board is still, so
+  it has no jump in position or speed (up to one period, 1 s, after the click).
+  The pool and the stand fade at once, through a class on the SVG root and a
+  CSS transition in the file. While it waits, the component keeps the SVG's
+  time inside the swing's one cycle, so the jump to the curl is between two
+  equal poses. The times are the root's `data-` attributes.
+- **The end of the curl is the hairspring at rest** (swing 0, the middle of its
+  swing), at the hairspring's place and size on slide 2, with the view's tilt.
+  Its numbers are copied from `watch/model.ts` and `watch/generate.ts` into
+  `art/diving_board.py`: change them there when the spring or its view changes.
+  The spring is a ribbon (a wall 8 units high), and the tilt shows it as two
+  copies of its curve, one a little above the other, joined by a vertical line
+  at each end. The board's near edge becomes the ribbon's bottom edge, and its
+  far edge (the plank's width, going back) becomes the top edge (the ribbon's
+  height, going up): the top face turns into the wall. The thickness under the
+  near edge shrinks to nothing. The ribbon's height and the pivot are copied
+  from `springHeights` and the hairspring view (`RIBBON_BOTTOM` and
+  `RIBBON_TOP` in the script: 5.3 px below the spring's centre line and 6.9 px
+  above it). The curl mixes each segment's angle and length between
+  the bent board and the spiral, not each point's position: the free end turns
+  round and round, like a stiff strip winding up, with no kink and no crossing.
+  (A mix of positions folded and crossed.) Every edge is a cubic curve through
+  sample points, not a line of segments, so no corner shows: the curl has 40
+  points, within 0.06 px of the spring (`smooth_data` in `art/diving_board.py`). The segments grow, late, because the
+  spiral is five times longer than the board.
+- **Not an oversight: the SVG is 640 KB because it is sampled** (30 frames a
   second of a path), from the first vibration mode of a fixed-end beam at
-  constant length. The options are in the flexing-ruler task.
-- **`art/flexing_ruler.py --check`** fails if the SVG on disk differs, or if
-  the frame rate changes any `begin` or `dur`. `pnpm art:generated` runs it
-  with the `--check` of `watch_design.py` and `favicon.py`, and `validate.py`
-  runs that script: a change to the theme or to a generator fails until the
-  file is written again.
+  constant length.
+- **`art/diving_board.py --check`** fails if the SVG on disk differs. `pnpm
+art:generated` runs it with the `--check` of `watch_design.py` and
+  `favicon.py`, and `validate.py` runs that script: a change to the theme or to
+  a generator fails until the file is written again.
 - **The SVG takes its colours from the theme** through namespaced classes
   ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "The page's
   theme paints the drawing").
-- **Print and export show no ruler still.** The ruler's overview thumbnail
-  shows the hairspring still under the ruler; this is known and left alone.
+- **Print and export show no board still.** The overview thumbnail shows the
+  hairspring still under the board; this is known and left alone.

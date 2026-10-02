@@ -1,14 +1,15 @@
 # Measurements: the drawings at the back row
 
 **Covers:** what this talk's drawings measure at the design venue: the four
-timekeepers, the cover watch and the flexing ruler.
+timekeepers, the cover watch and the diving board.
 **Read before** you change a drawing, or claim that one is legible. How to
 read the metrics is in [`stem/docs/legibility.md`](../../docs/legibility.md).
 **Tasks:**
 [`2026-09-20-animation-style`](../tasks/2026-09-20-animation-style/README.md)
 (the timekeepers, §14),
 [`2026-09-29-webgl-watch`](../tasks/2026-09-29-webgl-watch/PLAN.md) (the
-watch), [`2026-09-30-flexing-ruler`](../tasks/2026-09-30-flexing-ruler/PLAN.md).
+watch). The diving board replaced the ruler of
+[`2026-09-30-flexing-ruler`](../tasks/2026-09-30-flexing-ruler/PLAN.md).
 
 **Measure again whenever the art changes**, and update this page. In `stem/`:
 
@@ -57,14 +58,17 @@ the balance at each end of its swing, and the escapement one step on. One
 second is half the balance's 2 s period. `motion.py`'s default (30 s) is a
 whole number of periods, so the escapement would look still.
 
-## The flexing ruler
+## The diving board
 
-At `TV 55in @7m`, measured 2026-09-30, the SVG on its own clock (the page
+At `TV 55in @7m`, measured 2026-10-01, the SVG on its own clock (the page
 starts it on a click):
 
 ```
 drawing          ink%    hold    p90    Fmax     dPeak   px2 >=3:1
-flexing-ruler     1.7    4.00   7.54   0.113      9.49        5690
+diving-board     19.7    3.37    4.01   0.050      9.59        4552
 ```
 
-It clears the gate.
+It clears the gate. The hold is the water against the paper: the water is a
+wash of the art line at 0.6, the bottom of the water window in
+[`illustrations.md`](../../docs/illustrations.md). At 0.5 the hold was 2.65, and at
+0.3 it was 1.73: below the gate.

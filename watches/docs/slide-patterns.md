@@ -3,7 +3,7 @@
 **Covers:** how a slide in this deck is built: the theme on a slide, the
 timekeeper card, clicks, speaker notes, what fits, borrowed assets.
 **Read before** you add or change a slide. For a slide that shows the watch or
-the ruler, read [watch.md](watch.md) as well.
+the diving board, read [watch.md](watch.md) as well.
 **Tasks:**
 [`2026-09-23-followups`](../tasks/2026-09-23-followups/instructions.md) (where
 the docs live; the click pattern).
@@ -92,10 +92,10 @@ in the slide's `<style>` uses them: it dims each `slidev-vclick-prior` card whil
 to that element. When a `:class` binding changes, Vue rewrites the element's
 classes and removes the `v-click` classes, and the dim rule stops working.
 
-## The live watch and the ruler
+## The live watch and the diving board
 
 A slide that shows the watch sets its view in the frontmatter, and slide 2
-ends with the flexing ruler. Both are in [watch.md](watch.md).
+ends with the diving board. Both are in [watch.md](watch.md).
 
 ## Speaker notes
 
