@@ -60,6 +60,16 @@ clicks: 4
 />
 
 <!--
+The _hairspring_ beats every 2 seconds, controlling the speed of the rest of the watch.
+
+When bent, a diving board pushes back with _elastic restoring force_.
+
+It overshoots, then overshoots again, _oscillating_ back and forth.
+
+The diving board's rest shape is a straight line. The hairspring's is a curve.
+
+If you wind it tighter, it unwinds back to its rest shape, then overshoots, then winds up back to its rest shape, oscillating back and forth. Just like the diving board.
+
 The hairspring and the balance wheel: the part of a watch that keeps time.
 
 [click] The hairspring fades. A diving board takes its place: it bends down, and when it lets go it bounces up and down, once a second. With no friction it would bounce at the same height for ever. This is why a hairspring swings: it is a springboard.
