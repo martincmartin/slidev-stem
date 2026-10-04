@@ -17,9 +17,11 @@ draws one pose of it. It does not check that the still's picture matches its
 state.
 
 The diving board (components/DivingBoard.vue) is checked the same way: the
-printed page must show the board when the live slide does, curling when it
-curls, and its SVG clock must be at the pose of its click: the bottom of the
-swing, or inside the curl. The live board bounces, so its time is not compared.
+printed page must show the board when the live slide does, its picture when
+the live one does, curling when it curls, and its SVG clock must be at the pose
+of its click: the bottom of the swing, inside the curl, or, once only the rest
+shape shows, the end of the sentence's edit. The live board bounces, so its
+time is not compared.
 The live board is the watch layer's (global-bottom.vue), and a printed page's
 is the page's own (slide-bottom.vue). A page with no board shows none.
 
@@ -133,8 +135,8 @@ def printed_board(slide: int) -> str:
 
 def board_pose(page: Page, selector: str) -> dict[str, float | bool] | None:
     """The diving board that `selector` finds: whether it shows (the picture or
-    the rest shape), whether it curls, and its SVG clock with the times of the
-    file. `None` if there is no board."""
+    the rest shape), whether the picture shows, whether it curls, and its SVG
+    clock with the times of the file. `None` if there is no board."""
     pose: dict[str, float | bool] | None = page.evaluate(
         """selector => {
             const host = document.querySelector(selector);
@@ -144,11 +146,13 @@ def board_pose(page: Page, selector: str) -> dict[str, float | bool] | None:
             return {
                 shown: host.classList.contains('diving-board-picture-on')
                     || host.classList.contains('diving-board-rest-on'),
+                picture: host.classList.contains('diving-board-picture-on'),
                 curling: board.classList.contains('diving-board-curling'),
                 time: board.getCurrentTime(),
                 swingStart: Number(times.swingStart),
                 curlStart: Number(times.curlStart),
                 curlDuration: Number(times.curlDuration),
+                editDuration: Number(times.editDuration),
             };
         }""",
         selector,
@@ -165,14 +169,26 @@ def board_problems(
         return ["only one of the two pages shows the board"] if shown else []
     problems = [
         f"the board's {name} is {printed[name]}, live {live[name]}"
-        for name in ("shown", "curling")
+        for name in ("shown", "picture", "curling")
         if live[name] != printed[name]
     ]
     time = float(printed["time"])
     curl_start = float(printed["curlStart"])
     curl_end = curl_start + float(printed["curlDuration"])
-    if printed["shown"] and printed["curling"] and not curl_start < time < curl_end:
+    edit_end = curl_end + float(printed["editDuration"])
+    curling = printed["shown"] and printed["curling"]
+    if curling and printed["picture"] and not curl_start < time < curl_end:
         problems.append(f"the board's clock, {time:.2f} s, is not inside its curl")
+    # only the rest shape and its callout: curled, and the sentence edited
+    if (
+        curling
+        and not printed["picture"]
+        and abs(time - edit_end) > BOARD_TIME_TOLERANCE_S
+    ):
+        problems.append(
+            f"the board's clock, {time:.2f} s, is not at the edit's end,"
+            f" {edit_end:.2f} s"
+        )
     if printed["shown"] and not printed["curling"]:
         swing_start = float(printed["swingStart"])
         if abs(time - swing_start) > BOARD_TIME_TOLERANCE_S:

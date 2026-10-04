@@ -3,7 +3,15 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { BoardClock, boardPoseTime, boardState, CURL_SHOWN } from "./board.ts";
+import {
+  BoardClock,
+  boardPoseTime,
+  boardState,
+  CURL_SHOWN,
+  EDIT_STEPS,
+  editStep,
+  storyEnd,
+} from "./board.ts";
 import type { BoardState, BoardTiming } from "./board.ts";
 
 // diving-board.svg's times, as an example
@@ -12,8 +20,10 @@ const TIMING: BoardTiming = {
   swingPeriod: 1,
   curlStart: 3.4,
   curlDuration: 2.4,
+  editDuration: 1.2,
 };
 const CURL_END = TIMING.curlStart + TIMING.curlDuration;
+const END = storyEnd(TIMING);
 // slide 2's keys
 const SLIDE = { board: 1, boardCurl: 2, boardHide: 3 };
 
@@ -63,11 +73,30 @@ test("the keys must come in order", () => {
   assert.throws(() => boardState({ board: "one" }, 0), /board/);
 });
 
-test("a page's pose: 0, the bottom of the swing, part of the way through the curl", () => {
+test("a page's pose: 0, the bottom of the swing, part of the way through the curl, the end", () => {
   assert.equal(boardPoseTime(TIMING, stateAt(0)), 0);
   assert.equal(boardPoseTime(TIMING, stateAt(1)), TIMING.swingStart);
   const time = boardPoseTime(TIMING, stateAt(2));
   assert.equal(time, TIMING.curlStart + CURL_SHOWN * TIMING.curlDuration);
+  // only the rest shape and its callout: curled, and the sentence edited
+  assert.equal(boardPoseTime(TIMING, stateAt(3)), END);
+  assert.equal(boardPoseTime(TIMING, stateAt(4)), END);
+});
+
+test("the edit: after the curl, one step after another, in reading order", () => {
+  // rounded: the times are sums of tenths
+  const steps = (time: number): number[] =>
+    Array.from(
+      { length: EDIT_STEPS },
+      (_, index) => Math.round(editStep(TIMING, time, index) * 1e9) / 1e9,
+    );
+  assert.deepEqual(steps(CURL_END), [0, 0, 0, 0]);
+  const length = TIMING.editDuration / EDIT_STEPS;
+  assert.deepEqual(steps(CURL_END + length), [1, 0, 0, 0]);
+  assert.deepEqual(steps(CURL_END + 2.5 * length), [1, 1, 0.5, 0]);
+  assert.deepEqual(steps(END), [1, 1, 1, 1]);
+  assert.deepEqual(steps(0), [0, 0, 0, 0]);
+  assert.throws(() => editStep(TIMING, END, EDIT_STEPS), /edit step/);
 });
 
 test("forward: the swing plays from 0, and the curl waits for the bottom", () => {
@@ -82,7 +111,9 @@ test("forward: the swing plays from 0, and the curl waits for the bottom", () =>
   assert.ok(Math.abs(clock.time(3300) - 3.3) < 1e-9); // still swinging
   assert.ok(Math.abs(clock.time(3400) - TIMING.curlStart) < 1e-9);
   assert.ok(Math.abs(clock.time(4400) - (TIMING.curlStart + 1)) < 1e-9);
-  assert.equal(clock.time(9000), CURL_END);
+  // the curl, then the edit: busy until both are done
+  assert.equal(clock.phase(3400 + 1000 * TIMING.curlDuration + 100), "curl");
+  assert.equal(clock.time(9000), END);
   assert.equal(clock.phase(9000), "curled");
   assert.equal(clock.moving(9000), false);
 });
@@ -90,12 +121,13 @@ test("forward: the swing plays from 0, and the curl waits for the bottom", () =>
 test("back: the board uncurls to the bottom of the swing, and swings on", () => {
   const clock = new BoardClock(TIMING);
   clock.show("curled", 0, true);
-  assert.equal(clock.time(0), CURL_END);
+  assert.equal(clock.time(0), END);
   clock.show("swing", 1000, false);
   assert.equal(clock.phase(1500), "uncurl");
-  assert.ok(Math.abs(clock.time(1500) - (CURL_END - 0.5)) < 1e-9);
-  // the uncurl lasts as long as the curl; then the swing starts at its bottom
-  const uncurled = 1000 + TIMING.curlDuration * 1000;
+  assert.ok(Math.abs(clock.time(1500) - (END - 0.5)) < 1e-9);
+  // the edit is undone, then the board uncurls, each as long as forward; then
+  // the swing starts at its bottom
+  const uncurled = 1000 + (END - TIMING.curlStart) * 1000;
   assert.ok(Math.abs(clock.time(uncurled + 1) - TIMING.swingStart) < 0.01);
   assert.equal(clock.phase(uncurled + 100), "swing");
 });
@@ -105,9 +137,9 @@ test("a change of mind in the middle of a curl turns it round where it is", () =
   clock.show("curled", 0, true);
   clock.show("swing", 0, false);
   clock.show("curled", 500, false);
-  assert.ok(Math.abs(clock.time(500) - (CURL_END - 0.5)) < 1e-9);
+  assert.ok(Math.abs(clock.time(500) - (END - 0.5)) < 1e-9);
   assert.equal(clock.phase(600), "curl");
-  assert.equal(clock.time(1000), CURL_END);
+  assert.equal(clock.time(1000), END);
 });
 
 test("off and back: the pose holds, and the next swing plays from 0", () => {
@@ -126,7 +158,7 @@ test("a jump shows the target at once", () => {
   assert.equal(clock.time(0), TIMING.swingStart);
   assert.equal(clock.phase(0), "swing");
   clock.show("curled", 100, true);
-  assert.equal(clock.time(100), CURL_END);
+  assert.equal(clock.time(100), END); // curled, and the sentence edited
   clock.show("start", 200, true);
   assert.equal(clock.time(200), 0);
 });

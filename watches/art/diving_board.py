@@ -19,6 +19,8 @@ The file is a SMIL animation with one timeline (`Timeline`, seconds):
   swing  it is let go and swings for ever, one period a second (a loop)
   curl   the board curls into the hairspring's rest shape; the board's plank
          and thickness shrink to the line that the hairspring is
+  edit   nothing in this file moves: the page edits the callout's sentence
+         (components/DivingBoard.vue), on this clock
 
 The swing has a constant amplitude, as if nothing lost energy. It is the first
 vibration mode of a beam that is fixed at one end, drawn with a constant length:
@@ -31,8 +33,13 @@ page waits for it. The root's data attributes give the page the times:
 `data-swing-start` and `data-swing-period` (the swing's cycle is the loop of
 `swing-start` to `swing-start + swing-period`) and `data-curl-start`, which is
 the end of that cycle: a page shows the swing at times inside the cycle, and the
-curl from `curl-start`, for `data-curl-duration`. The pool and the stand fade when the root has the class
+curl from `curl-start`, for `data-curl-duration`, then the edit, for
+`data-edit-duration`. The pool and the stand fade when the root has the class
 `diving-board-curling` (a CSS transition in the file's <style>).
+
+The callout is the leader in this file and a sentence that the page draws
+(components/DivingBoard.vue), as HTML: the simpler tool for text. `data-label-x` and `data-label-y` are where the
+leader's sentence starts: the left end of its baseline, in this file's units.
 
 The curl ends on the spring of watch/model.ts at swing 0, as the hairspring
 view shows it: `SPRING_RADII`, `SPRING_TURNS` and the stud's angle, in the
@@ -195,6 +202,7 @@ class Timeline:
     hold: float = 0.6
     period: float = 1.0  # one swing, there and back: 1 Hz
     curl: float = 2.4
+    edit: float = 1.2  # the page's edit of the sentence, after the curl
     frames_per_second: int = 30
 
     def frames(self, seconds: float) -> int:
@@ -850,6 +858,9 @@ class LeaderDesign:
 
     start: Point = (640.0, 150.0)
     elbow: Point = (600.0, 150.0)
+    # the left end of the baseline of the sentence's line that the leader points
+    # to: the page draws the sentence there (`data-label-x`, `data-label-y`)
+    label: Point = (660.0, 160.0)
     length_weight: float = 0.75
     bend_weight: float = 15.0
     normal_velocity_weight: float = 0.006
@@ -1098,7 +1109,8 @@ def rest_markup(
     anchors: list[Point],
     id_prefix: str,
 ) -> list[str]:
-    """A rest outline and its callout. Only the curl changes their geometry."""
+    """A rest outline and its callout's leader. Only the curl changes their
+    geometry. The callout's sentence is the page's (see the docstring)."""
     lines = [
         (
             f'<g id="{id_prefix}rest" data-layer="rest" fill="none" {paint(stroke=inks.context)} '
@@ -1147,10 +1159,6 @@ def rest_markup(
             ),
             animate("d", leaders, timeline.curl_start, timeline.curl),
             "</path>",
-            (
-                f'<text x="660" y="160" {paint(fill=inks.context)} '
-                'font-family="IBM Plex Sans" font-weight="600" font-size="29">Rest Shape</text>'
-            ),
             "</g>",
         )
     )
@@ -1196,7 +1204,8 @@ def build(
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{design.width}" height="{design.height}" '
             f'viewBox="{design.view_left} 0 {design.width} {design.height}" data-swing-start="{number(timeline.swing_start)}" '
             f'data-swing-period="{number(timeline.period)}" data-curl-start="{number(timeline.curl_start)}" '
-            f'data-curl-duration="{number(timeline.curl)}">'
+            f'data-curl-duration="{number(timeline.curl)}" data-edit-duration="{number(timeline.edit)}" '
+            f'data-label-x="{number(leader_design.label[0])}" data-label-y="{number(leader_design.label[1])}">'
         ),
         inks.style(),
         "<title>A diving board over the edge of a pool: it bends down, swings up and down, then curls into the hairspring</title>",

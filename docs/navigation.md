@@ -40,8 +40,10 @@ the viewer went (`navDirection`, `clicksDirection`): the layer decides that.
 
 Examples in the watch talk (`watches/docs/watch.md`): fades, the swap, the
 camera's move and tilt are presentation; the flash is the attention cue; the
-diving board's bend and curl are story animations, and its swing is a steady
-loop; the watch's mechanism is a physical process.
+diving board's bend and curl, and the edit of its callout's sentence after the
+curl, are story animations, and its swing is a steady loop; the watch's
+mechanism is a physical process. Text that is part of a story animation runs on
+that animation's clock, not on a `v-click`.
 
 **Rule 3: a visual on more than one slide is one element.** It lives in a layer
 that stays mounted for the whole talk (`global-bottom.vue` or `global-top.vue`)

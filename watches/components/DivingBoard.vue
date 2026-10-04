@@ -20,6 +20,16 @@
 //
 // `data-phase` and `data-busy` on the host are for tools/navcheck.py
 // (watch/slide-state.ts).
+//
+// THE CALLOUT'S SENTENCE is here, as HTML, not in the SVG: HTML is the simpler
+// tool for text (the browser lays it out, so a strike is its word's width).
+// It is the leader's label, so it fades with the
+// leader (`data-layer="rest-callout"`), and its line "from straight," starts
+// where the SVG's root says (`data-label-x`, `data-label-y`). After the curl,
+// on the board's clock, "Bend" and "straight" are struck out and "Wind" and
+// "rest" written above them (`editStep`): the label names the rest shape that
+// the dashed outline now is. The rows for the new words are there from the
+// start, so no line moves.
 import {
   computed,
   nextTick,
@@ -29,7 +39,12 @@ import {
   useTemplateRef,
   watch,
 } from "vue";
-import { BoardClock, boardPoseTime } from "../watch/board.ts";
+import {
+  BoardClock,
+  boardPoseTime,
+  EDIT_STEPS,
+  editStep,
+} from "../watch/board.ts";
 import type { BoardState, BoardTarget, BoardTiming } from "../watch/board.ts";
 
 const props = defineProps<{ target: BoardTarget; live: boolean }>();
@@ -61,7 +76,32 @@ function timingOf(board: SVGSVGElement): BoardTiming {
     swingPeriod: read("swingPeriod"),
     curlStart: read("curlStart"),
     curlDuration: read("curlDuration"),
+    editDuration: read("editDuration"),
   };
+}
+
+/** Put the sentence where the SVG's root says: its x is in the SVG's units,
+ *  whose viewBox starts right of the host's left edge. */
+function placeSentence(board: SVGSVGElement): void {
+  const x = Number(board.dataset["labelX"]);
+  const y = Number(board.dataset["labelY"]);
+  if (!Number.isFinite(x) || !Number.isFinite(y))
+    throw new Error("diving-board.svg has no data-label-x or data-label-y");
+  host.value?.style.setProperty(
+    "--label-x",
+    `${String(x - board.viewBox.baseVal.x)}px`,
+  );
+  host.value?.style.setProperty("--label-y", `${String(y)}px`);
+}
+
+/** Draw the edit of the sentence as it is at the SVG's `time` (s). */
+function drawEdit(timing: BoardTiming, time: number): void {
+  for (let index = 0; index < EDIT_STEPS; index++) {
+    host.value?.style.setProperty(
+      `--edit-${String(index)}`,
+      String(editStep(timing, time, index)),
+    );
+  }
 }
 
 /** Set the SVG's time and the host's phase at `now`; go on while it moves. */
@@ -69,7 +109,9 @@ function draw(now: number): void {
   frame = 0;
   const board = svg();
   if (!board || !clock || !host.value) return;
-  board.setCurrentTime(clock.time(now));
+  const time = clock.time(now);
+  board.setCurrentTime(time);
+  drawEdit(timingOf(board), time);
   const phase = shown.value ? clock.phase(now) : "off";
   host.value.dataset["phase"] = phase;
   host.value.dataset["busy"] = String(BUSY_PHASES.has(phase));
@@ -84,7 +126,12 @@ function apply(target: BoardTarget): void {
   board.classList.toggle(CURLING_CLASS, state?.curling ?? false);
   if (!props.live) {
     shown.value = state;
-    if (state) board.setCurrentTime(boardPoseTime(timingOf(board), state));
+    if (state) {
+      const timing = timingOf(board);
+      const time = boardPoseTime(timing, state);
+      board.setCurrentTime(time);
+      drawEdit(timing, time);
+    }
     board.setAttribute("data-posed", "");
     return;
   }
@@ -113,6 +160,8 @@ onMounted(async () => {
   if (!response.ok) throw new Error(`${source}: ${String(response.status)}`);
   markup.value = await response.text();
   await nextTick(); // v-html puts the SVG in the page
+  const board = svg();
+  if (board) placeSentence(board);
   apply({ state: props.target.state, atOnce: true });
 });
 watch(
@@ -134,16 +183,24 @@ const classes = computed(() => ({
 </script>
 
 <template>
-  <!-- eslint-disable vue/no-v-html -- our own file, public/diving-board.svg -->
   <div
     ref="host"
     class="diving-board"
     :data-waitfor="live ? undefined : 'svg[data-posed]'"
     :class="classes"
     aria-hidden="true"
-    v-html="markup"
-  />
-  <!-- eslint-enable vue/no-v-html -->
+  >
+    <!-- eslint-disable-next-line vue/no-v-html -- our own file, public/diving-board.svg -->
+    <div class="diving-board-art" v-html="markup" />
+    <div v-if="markup" class="diving-board-sentence" data-layer="rest-callout">
+      <!-- no space inside a struck word's span: the strike is the span's width -->
+      <!-- prettier-ignore -->
+      <div><span class="diving-board-edit" style="--strike: var(--edit-0)">Bend<span class="diving-board-insert" style="--insert: var(--edit-1)">Wind</span></span> it away</div>
+      <!-- prettier-ignore -->
+      <div>from <span class="diving-board-edit" style="--strike: var(--edit-2)">straight<span class="diving-board-insert" style="--insert: var(--edit-3)">rest</span></span>,</div>
+      <div>it pushes back</div>
+    </div>
+  </div>
 </template>
 
 <style>
@@ -180,6 +237,52 @@ const classes = computed(() => ({
 }
 .diving-board [data-layer="set"] {
   opacity: 0;
+}
+/* THE SENTENCE. 35 px: in the column right of the picture, sentence case at
+   35 px is as wide as capitals at 29 px, and its lowercase is 18 px high
+   (tasks/2026-10-04-hairspring-sentence-placement/). Each line is 2.1 em, room
+   for a written-in word above a word and the line above's descenders, so the
+   edit moves no line. The second line's baseline is at --label-y: IBM Plex
+   Sans's ascent and descent are 1.025 and 0.275 em, so a baseline is 0.375 em
+   below the middle of its line, and the second line's is 1.5 lines + 0.375 em
+   = 3.525 em from the top. */
+.diving-board-sentence {
+  position: absolute;
+  left: var(--label-x);
+  top: calc(var(--label-y) - 3.525em);
+  font-size: 35px;
+  font-weight: 600;
+  line-height: 2.1;
+  white-space: nowrap;
+  color: var(--palette-ink);
+}
+.diving-board-edit {
+  position: relative;
+}
+/* the strike: 3 px (the stroke ladder), through the middle of the x-height
+   (0.26 em above the baseline, which is 1.025 em below the content's top),
+   drawn left to right */
+.diving-board-edit::after {
+  content: "";
+  position: absolute;
+  left: -0.06em;
+  right: -0.06em;
+  top: calc(0.765em - 1.5px);
+  height: 3px;
+  background: var(--palette-accent);
+  transform: scaleX(var(--strike, 0));
+  transform-origin: left;
+}
+/* the new word, centred above the old one: its baseline 0.91 em above the old
+   word's, clear of the old word's ascenders (0.74 em) */
+.diving-board-insert {
+  position: absolute;
+  left: 50%;
+  top: -0.91em;
+  line-height: 1.3;
+  transform: translateX(-50%);
+  color: var(--palette-accent);
+  opacity: var(--insert, 0);
 }
 .diving-board-picture-on [data-layer="board"],
 .diving-board-picture-on svg:not(.diving-board-curling) [data-layer="set"],

@@ -63,7 +63,15 @@ A flash draws in two more colours ("Flash", below).
 | candle flame         | solid → 9.60:1  | candle wax body            | `0.08` → 1.14:1 |
 | water clock water    | `0.60` → 3.38:1 | water clock vessel         | unfilled        |
 
-(Contrasts are Ledger's art line on Ledger's panel.) **The subject is drawn at
+(Contrasts are Ledger's art line on Ledger's panel.)
+
+**The four art colours are the ones the art has used so far, not a ban.**
+`artcheck` fails any other colour, so that a colour is added on purpose. If a
+drawing has a good use for another theme colour, give it a job here and change
+`artcheck` to allow it. Do not move a mark out of the art only to get past
+`artcheck`.
+
+**The subject is drawn at
 0.60–1.0; the thing that holds it at 0.07–0.18.** A subject drawn at container
 opacity disappears at the back row, and its animation with it. See "Washes".
 

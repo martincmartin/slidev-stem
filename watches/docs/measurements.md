@@ -95,6 +95,8 @@ Measured 2026-10-04 at `TV 55in @7m`, from isolated Chromium screenshots at the 
 | Slide 2, single spring edge | 3.35 | 5.12 | 0.055 |
 
 Both clear the 3:1 gate. These screenshots include the dashed ghost, leader, and label on the slide background.
+The label was then "Rest Shape", in muted at 29 px. The callout's sentence that
+replaced it (ink and accent, 35 px) has not been measured with `barroom`.
 They exclude the moving subject, pool, and title.
 The reference paints above the subject, so shared portions remain visible.
 The task holds the source screenshots and machine-readable results.

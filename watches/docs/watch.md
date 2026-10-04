@@ -279,15 +279,39 @@ boardHide: 3 # the board fades out; the rest shape stays to the slide's end
 `watch/board.ts` checks the keys (`boardState`), as `watch/state.ts` checks the
 watch's: each is a click number, in this order.
 
-| Click | The slide                                                                                           |
-| ----- | --------------------------------------------------------------------------------------------------- |
-| 1     | `watchHide: 1` fades the watch; `board: 1` fades the board in, and it bends, holds, lets go, swings |
-| 2     | `boardCurl: 2` fades the pool and the stand, and the board winds into the spiral                    |
-| 3     | `boardHide: 3` fades the board out, the rest outline stays, and `watchShow` fades the watch in      |
-| 4     | `watchResume`: the balance starts to swing again                                                    |
+| Click | The slide                                                                                                |
+| ----- | -------------------------------------------------------------------------------------------------------- |
+| 1     | `watchHide: 1` fades the watch; `board: 1` fades the board in, and it bends, holds, lets go, swings      |
+| 2     | `boardCurl: 2` fades the pool and the stand, the board winds into the spiral, and the sentence is edited |
+| 3     | `boardHide: 3` fades the board out, the rest outline stays, and `watchShow` fades the watch in           |
+| 4     | `watchResume`: the balance starts to swing again                                                         |
 
-The `Rest Shape` callout appears with the board at click 1.
-It uses the theme's IBM Plex Sans at weight 600.
+The callout appears with the board at click 1: a leader and the sentence
+"Bend it away / from straight, / it pushes back", in ink. After the curl, on
+the board's clock, the sentence is edited in the accent, in reading order:
+"Bend" is struck out and "Wind" written above it, then "straight" and "rest".
+It then reads "Wind it away from rest": the label names the rest shape that the
+dashed outline has become. Each step is a quarter of `Timeline.edit` in
+`art/diving_board.py` (`editStep` in `watch/board.ts`).
+
+- **The sentence is HTML in `components/DivingBoard.vue`, not text in the
+  SVG.** All else being equal, use the simplest tool for the job, and HTML is
+  simpler than SVG for text: the browser lays it out, so a strike is its
+  word's width, with no font metrics in the generator. It fades with the
+  leader (`data-layer="rest-callout"`).
+- **The leader points to the line "from straight,".** Its baseline starts at
+  `LeaderDesign.label`, which the SVG's root gives the page (`data-label-x`,
+  `data-label-y`). The leader joins "straight" to the straight outline, and,
+  after the edit, "rest" to the spiral.
+- **Not an oversight: the lines are 2.1 em apart from the start.** That is
+  room for a written-in word, so the edit moves no line. Lines that spread
+  apart during the curl were judged too much motion.
+- **The edit waits for the curl to end**, so that one thing moves at a time,
+  and the leader never joins "straight" to the spiral for long.
+- 35 px, sentence case, weight 600, left of the column right of the picture.
+  The options for its place, case and timing are in
+  [`2026-10-04-hairspring-sentence-placement`](../tasks/2026-10-04-hairspring-sentence-placement/PLAN.md).
+
 Dashed, unfilled outlines show the board at zero deflection.
 They stay fixed during the bend, hold, and swing.
 The full 3D outline helps the audience see the straight board's depth.
@@ -309,7 +333,7 @@ Stronger movement weighting can therefore increase rapid movement along the line
 The [weight-tuning task](../tasks/2026-10-04-leader-path-comparison/weight-tuning/README.md) compares this tradeoff.
 `LeaderDesign` in `art/diving_board.py` holds the weights, angular sampling, and stroke width.
 The [quarter-bend task](../tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/README.md) records the selected bend coefficient.
-The label stays on the right.
+The sentence stays on the right.
 
 At clicks 3 and 4, the rest shape stays while `boardHide` fades the moving board out.
 The ghost does not change during the crossfade because the two rest outlines match.
@@ -361,7 +385,8 @@ The swing never damps, on purpose.
   CSS transition in the file. While it waits, the component keeps the SVG's
   time inside the swing's one cycle, so the jump to the curl is between two
   equal poses. The times are the root's `data-` attributes (`swing-start`,
-  `swing-period`, `curl-start`, `curl-duration`).
+  `swing-period`, `curl-start`, `curl-duration`, `edit-duration`). The edit
+  comes after the curl: a click back undoes it first, then uncurls.
 - **The end of the curl is the hairspring at rest** (swing 0, the middle of its
   swing), at the hairspring's place and size on slide 2, with the view's tilt.
   Its numbers are copied from `watch/model.ts` and `watch/generate.ts` into
@@ -403,8 +428,10 @@ art:generated` runs it with the `--check` of `watch_design.py` and
 - **The board is posed in print.** A page that does not run the clock (print,
   export, the overview) sets the SVG's time to the pose of its click
   (`boardPoseTime` in `watch/board.ts`; the posed board is `slide-bottom.vue`'s): bent, at the bottom of the swing, at click 1, and half
-  way through the curl at click 2 (`CURL_SHOWN`). Half way, not the end: the
-  end is the hairspring at rest, the same picture as click 3's. Print mode never
+  way through the curl at click 2 (`CURL_SHOWN`), with the sentence not yet
+  edited. Half way, not the end: the end is the hairspring at rest, the same
+  picture as click 3's. At clicks 3 and 4, once the board is hidden, the pose
+  is the end of the edit: the curled outline and the edited sentence. Print mode never
   runs the clock, so the pose does not drift. `art:print` checks the board too:
   its classes against the live slide's, and its clock against the pose. The
   component's `data-waitfor` makes `slidev export` wait until the SVG is posed.

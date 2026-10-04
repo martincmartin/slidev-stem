@@ -9,13 +9,14 @@
 // (`swing`) or curled into the spring (`curled`). The clock goes from where it
 // is to the target, in either direction:
 //   start -> swing: play from 0: bend, hold, let go, then swing for ever
-//   swing -> curled: wait for the next bottom of the swing, then curl
-//   curled -> swing: uncurl (the curl played backwards) to the bottom of the
-//     swing, then swing
+//   swing -> curled: wait for the next bottom of the swing, then curl, then
+//     edit the callout's sentence
+//   curled -> swing: undo the edit and uncurl (both played backwards) to the
+//     bottom of the swing, then swing
 //   -> start: the picture fades out; the clock holds its pose, and the next
 //     swing plays from 0
 // A jump (a reload, a slide that is not a neighbour) goes to the target at
-// once: the start, the bottom of the swing, or the end of the curl.
+// once: the start, the bottom of the swing, or the end of the edit.
 
 import { clickOf, wrong } from "./state.ts";
 
@@ -28,6 +29,30 @@ export interface BoardTiming {
   /** When the curl starts, and how long it lasts. */
   curlStart: number;
   curlDuration: number;
+  /** The edit of the callout's sentence, straight after the curl. */
+  editDuration: number;
+}
+
+/** The edit's steps, in reading order: strike "Bend", write "Wind", strike
+ *  "straight", write "rest". Each takes an equal share of the edit. */
+export const EDIT_STEPS = 4;
+
+/** How far step `index` of the edit is at the SVG's `time` (s): 0 before it,
+ *  1 after it, eased in between. */
+export function editStep(
+  timing: BoardTiming,
+  time: number,
+  index: number,
+): number {
+  if (!Number.isInteger(index) || index < 0 || index >= EDIT_STEPS) {
+    throw new Error(
+      `edit step ${String(index)}: not 0 to ${String(EDIT_STEPS - 1)}`,
+    );
+  }
+  const length = timing.editDuration / EDIT_STEPS;
+  const start = timing.curlStart + timing.curlDuration + index * length;
+  const fraction = Math.min(Math.max((time - start) / length, 0), 1);
+  return fraction * fraction * (3 - 2 * fraction);
 }
 
 export type BoardPlace = "start" | "swing" | "curled";
@@ -84,17 +109,27 @@ export function boardState(
  *  (the hairspring at rest). */
 export const CURL_SHOWN = 0.5;
 
+/** The end of the curl and of the edit after it (s): the board curled, and
+ *  the sentence edited. */
+export function storyEnd(timing: BoardTiming): number {
+  return timing.curlStart + timing.curlDuration + timing.editDuration;
+}
+
 /** The SVG's time (s) for a page that does not run the clock: print and
  *  export, the overview, the presenter's "next" pane. Before the board plays,
- *  the picture is faded out, so time 0. */
+ *  the picture is faded out, so time 0. While the board shows, the curl is
+ *  part done; once only the rest shape shows, the curl and the edit are done. */
 export function boardPoseTime(timing: BoardTiming, state: BoardState): number {
   if (state.place === "start") return 0;
-  if (state.curling) return timing.curlStart + CURL_SHOWN * timing.curlDuration;
-  return timing.swingStart;
+  if (!state.curling) return timing.swingStart;
+  return state.picture
+    ? timing.curlStart + CURL_SHOWN * timing.curlDuration
+    : storyEnd(timing);
 }
 
 /** What the clock is doing, for tools/navcheck.py and the tests. A bend, a
- *  curl (or the wait for it) and an uncurl are busy: they end on their own. */
+ *  curl (or the wait for it, or the edit after it) and an uncurl are busy:
+ *  they end on their own. */
 export type BoardPhase =
   "start" | "bend" | "swing" | "curl" | "uncurl" | "curled";
 
@@ -104,8 +139,8 @@ type Segment =
   /** Plays forward from `from` (s) at `startMs`; past the swing's start it
    *  repeats the swing's one cycle. Curls at `curlAt` (ms), if set. */
   | { kind: "loop"; startMs: number; from: number; curlAt: number | null }
-  /** In the curl, from `from` (s) at `startMs`: forward to its end, or
-   *  backward to its start and then into the swing. */
+  /** In the curl or the edit, from `from` (s) at `startMs`: forward to the
+   *  edit's end, or backward to the curl's start and then into the swing. */
   | { kind: "curl"; startMs: number; from: number; rate: 1 | -1 };
 
 export class BoardClock {
@@ -126,8 +161,8 @@ export class BoardClock {
     this.timing = timing;
   }
 
-  private get curlEnd(): number {
-    return this.timing.curlStart + this.timing.curlDuration;
+  private get end(): number {
+    return storyEnd(this.timing);
   }
 
   /** The segment in force at `now`, after the ends that have passed. */
@@ -147,7 +182,7 @@ export class BoardClock {
           rate: 1,
         };
       } else if (segment.kind === "curl") {
-        const ends = segment.rate === 1 ? this.curlEnd : curlStart;
+        const ends = segment.rate === 1 ? this.end : curlStart;
         const endMs = segment.startMs + Math.abs(ends - segment.from) * 1000;
         if (now < endMs) return segment;
         this.segment =
@@ -188,7 +223,7 @@ export class BoardClock {
     if (this.atStart) return "start";
     switch (segment.kind) {
       case "hold":
-        return segment.time >= this.curlEnd ? "curled" : "start";
+        return segment.time >= this.end ? "curled" : "start";
       case "loop":
         if (segment.curlAt !== null) return "curl";
         return this.elapsed(segment, now) < this.timing.swingStart
@@ -229,7 +264,7 @@ export class BoardClock {
       // is a jump, so it is shown at once
       this.segment =
         place === "curled"
-          ? { kind: "hold", time: this.curlEnd }
+          ? { kind: "hold", time: this.end }
           : {
               kind: "loop",
               startMs: now,
