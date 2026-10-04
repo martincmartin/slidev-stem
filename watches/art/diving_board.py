@@ -524,7 +524,7 @@ def board_faces(near_edge: list[Point], offset: Point, thickness: float) -> Boar
     """The board with its near top edge on `near_edge`. Its far edge is the near
     edge moved by `offset`, and the thickness is below the near edge. On the
     board the offset is the plank's width, going back; on the hairspring it is
-    the ribbon's height, going up, and the thickness is 0."""
+    the ribbon's height, going down, and the thickness is 0."""
     normals: list[Point] = []
     for index in range(len(near_edge)):
         before = near_edge[max(index - 1, 0)]
@@ -749,10 +749,12 @@ def curl_poses(
     """Curl a board into the rest spring, starting at the supplied deflection."""
     curl_frames = timeline.frames(timeline.curl)
     start = resample_by_length(beam_centreline(design, tip_angle), CURL_POINTS)
-    # the board's near edge becomes the ribbon's bottom edge, and its far edge
-    # (the plank's width, going back) the ribbon's top edge (its height, going up)
-    spiral = [(x, y + RIBBON_BOTTOM) for x, y in spring_rest(CURL_POINTS)]
-    ribbon_offset = (0.0, -(RIBBON_BOTTOM + RIBBON_TOP))
+    # the board's near edge becomes the ribbon's top edge, the one nearer the
+    # viewer, and its far edge (the plank's width, going back) the ribbon's
+    # bottom edge (its height, going down): the plank turns edge-on to the view
+    # and opens again, and no edge changes sides
+    spiral = [(x, y - RIBBON_TOP) for x, y in spring_rest(CURL_POINTS)]
+    ribbon_offset = (0.0, RIBBON_BOTTOM + RIBBON_TOP)
     plank_x, plank_y = design.plank_offset
     curl = []
     for index in range(curl_frames + 1):
@@ -824,7 +826,7 @@ def best_outline_point(board: Board, score: Callable[[Point], float]) -> Point:
 
 def visible_rest_edge(board: Board) -> list[Point]:
     """The board edge that becomes the ribbon edge closest to the viewer."""
-    return list(reversed(board.top[1]))
+    return list(board.top[0])
 
 
 def best_edge_point(board: Board, score: Callable[[Point], float]) -> Point:

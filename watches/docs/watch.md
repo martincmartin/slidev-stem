@@ -312,9 +312,10 @@ The swing never damps, on purpose.
   `art/diving_board.py`: change them there when the spring or its view changes.
   The spring is a ribbon (a wall 8 units high), and the tilt shows it as two
   copies of its curve, one a little above the other, joined by a vertical line
-  at each end. The board's near edge becomes the ribbon's bottom edge, and its
-  far edge (the plank's width, going back) becomes the top edge (the ribbon's
-  height, going up): the top face turns into the wall. The thickness under the
+  at each end. The board's near edge becomes the ribbon's top edge, the one
+  nearer the viewer, and its far edge (the plank's width, going back) becomes
+  the bottom edge (the ribbon's height, going down). The plank turns edge-on to
+  the view and opens again: no edge changes sides. The thickness under the
   near edge shrinks to nothing. The ribbon's height and the pivot are copied
   from `springHeights` and the hairspring view (`RIBBON_BOTTOM` and
   `RIBBON_TOP` in the script: 6.1 px below the spring's centre line and 6.1 px

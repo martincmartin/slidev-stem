@@ -93,6 +93,25 @@ the candle's flame is 1.6 s, its two wax drips 3.1 s and 4.3 s, the water
 clock's drip 1 s. The unequal, prime-ish durations are deliberate: the four
 cards do not pulse in unison.
 
+## Think in 3D, not in 2D
+
+Most of our illustrations are 2D projections of 3D worlds. This is true even
+of an SVG where the projection is not explicit: a flat diagram of a spring, a
+board or a pool still shows objects that have a near side and a far side, an
+up and a down. When you reason about one, for a change, a morph or an
+animation, place each part in 3D first, then project it. If you reason only
+about 2D shapes, the picture can break the 3D world. Two points of an
+outline can swap which one is near, for example, and the audience sees an
+Escher-style impossible change.
+
+How to apply: for each edge or face, name its 3D place (near or far, top or
+bottom, inside or outside) and keep that name through the whole change. An
+object may turn edge-on and open again, but it must not turn inside out. Check
+that the near edge at the start is still the near edge at the end.
+Example: the diving board that curls into the hairspring
+([`watches/docs/watch.md`](../watches/docs/watch.md)): the board's near edge
+becomes the ribbon's top edge, the one nearer the viewer, not its lower one.
+
 ## The page's theme paints the drawing
 
 Do not let an SVG keep its colours to itself. Put a `<style>` in the file that
