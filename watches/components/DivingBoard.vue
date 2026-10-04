@@ -10,7 +10,8 @@
 // The clock runs only while the slide is the one on screen: Slidev keeps a left
 // slide mounted and gives it its last click, so `playing` alone would keep it
 // running off-screen. Each entry into the playing state starts again from 0,
-// and going back a click is exact.
+// and going back a click is exact. A slide entered at a click after the board
+// (back from the next slide) starts with the curl over, at rest.
 // A page that does not run the clock (print and export, the overview) shows the
 // pose of its click: bent, or part-way through the curl (watch/board.ts).
 // `data-waitfor` makes `slidev export` wait until the SVG is in place and posed.
@@ -125,7 +126,13 @@ function apply(): void {
   if (!board) return;
   board.pauseAnimations();
   curlAt = Infinity;
-  if (running.value) {
+  if (running.value && props.curling && !props.visible) {
+    // Entered from the next slide, or reloaded, after the board's click: the
+    // curl is over, so show the spring at rest and do not play it again.
+    board.setCurrentTime(
+      timing(board, "curlStart") + timing(board, "curlDuration"),
+    );
+  } else if (running.value) {
     board.setCurrentTime(0);
     startedAt = performance.now();
     if (props.curling) curlAt = nextBottom(board, startedAt);
