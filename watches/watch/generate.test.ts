@@ -162,6 +162,20 @@ test("slide 3's subject is the balance wheel and the spring, not the roller or t
   for (const mesh of partMeshes("balance")) assert.ok(wheel.meshes.has(mesh));
 });
 
+test("slide 3's flash is what it adds to slide 2: the wheel, its screws and the staff, not the spring", () => {
+  const find = (name: string) =>
+    scene.subjects.find((candidate) => candidate.name === name);
+  const added = find("balance wheel");
+  const wheel = find("balance wheel and hairspring");
+  const spring = find("hairspring and stud");
+  assert.ok(added && wheel && spring);
+  assert.ok(added.meshes.size > 0);
+  for (const mesh of wheel.meshes) {
+    assert.equal(added.meshes.has(mesh), !spring.meshes.has(mesh));
+  }
+  for (const mesh of partMeshes("balance")) assert.ok(added.meshes.has(mesh));
+});
+
 test("four evenly spaced radial screws touch the balance rim and turn with it", () => {
   const [body, ...marks] = partMeshes("balance");
   const heads = marks.filter((mesh) => mesh.fill !== null);

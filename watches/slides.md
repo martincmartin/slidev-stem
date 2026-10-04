@@ -83,6 +83,7 @@ The hairspring and the balance wheel: the part of a watch that keeps time.
 watch: hairspring
 watchTilt: 20
 watchOnly: balance wheel and hairspring
+watchFlash: balance wheel
 ---
 
 # Balance Wheel
@@ -90,7 +91,7 @@ watchOnly: balance wheel and hairspring
 <!--
 The hairspring is only half of the oscillator. The other half is the balance wheel.
 
-The dashed rest shape fades out as the balance wheel fades in.
+The dashed rest shape fades out as the balance wheel fades in. When it is all in, the balance wheel flashes five times.
 -->
 
 ---

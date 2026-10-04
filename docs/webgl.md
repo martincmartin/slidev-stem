@@ -138,7 +138,8 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   WebGL, so its tests (`timeline.test.ts`) drive it with made-up times.
   `Stage` (`webgl/stage.ts`) holds the renderer, the model and the frame loop.
 - **A state can flash a subject during a change** (`StageState.flash`).
-  The flash and the first channel start together. It flashes only in a transition that changes a channel,
+  The flash and the first channel start together; in a swap, which moves no
+  camera, it starts when the swap ends. It flashes only in a transition that changes a channel,
   not in a state shown at once. A key press during the flash does not start
   it again. `Stage.show` (from `Timeline.show`) returns the seconds until the flash ends. The flash does not delay the channels.
   The caller passes a flash only on the step forward into its slide

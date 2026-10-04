@@ -1421,6 +1421,14 @@ export function generate(design: Design = DESIGN): Watch {
       ...balanceScrews,
     ]),
   };
+  // what slide 3 adds to slide 2's picture: the balance wheel, its screws and
+  // the staff. Slide 3 flashes it when it has faded in.
+  const wheelAdded: Subject = {
+    name: "balance wheel",
+    meshes: new Set(
+      [...wheel.meshes].filter((mesh) => !subject.meshes.has(mesh)),
+    ),
+  };
   const scene: Scene = {
     slide: [design.canvas.width, design.canvas.height],
     meshes,
@@ -1432,7 +1440,7 @@ export function generate(design: Design = DESIGN): Watch {
       middle,
       crownCentreX,
     ),
-    subjects: [subject, oscillator, wheel],
+    subjects: [subject, oscillator, wheel, wheelAdded],
   };
 
   return {

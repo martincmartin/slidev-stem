@@ -169,6 +169,8 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
 - `balance wheel and hairspring`: the balance, the spring with its collet and
   the balance staff, and the stud. Not the roller, the impulse jewel or the
   pallet fork. It holds `hairspring and stud`: slide 3 shows it.
+- `balance wheel`: what slide 3 adds to slide 2's picture: the balance, its
+  screws and the staff, not the spring. Slide 3 flashes it.
 
 - **The order of a change:** the camera moves (1.8 s), then the view tilts
   (1.5 s), then the rest fades (0.8 s); going back runs it in reverse. The
@@ -180,7 +182,8 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   (`Frame.fade` in `webgl/scene.ts`, `swap` in `webgl/timeline.ts`). Going back
   fades it out the same way.
   With `watchFlash`, the flash and camera move start together. The flash ends
-  during the tilt. The change from the cover to slide 2 takes 4.1 s.
+  during the tilt. In a swap there is no camera move: the flash starts when
+  the swap ends (slide 3). The change from the cover to slide 2 takes 4.1 s.
 - **A step animates, a jump does not** (`watch/navigation.ts`,
   [`navigation.md`](../../docs/navigation.md)). A step is one click, or the
   next or the previous slide. A jump (a reload, a link, the overview) shows

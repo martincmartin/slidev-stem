@@ -164,18 +164,33 @@ test("from a subject to one that holds it: the difference fades in alone, with t
   assert.equal(done.rest, 0);
   assert.equal(done.fading, null);
   assert.equal(timeline.phaseAt(FADE), null);
-  // and back again: the difference fades out alone, and does not flash
-  const flashSeconds = timeline.show(
-    state({ view: CLOSE, subject: small, flash: small }),
-    FADE,
-  );
-  assert.equal(flashSeconds, 0);
+  // and back again: the difference fades out alone
+  timeline.show(state({ view: CLOSE, subject: small }), FADE);
   assert.equal(timeline.flashingAt(FADE + 1), null);
   const shrinking = timeline.valuesAt(FADE + FADE / 2);
   assert.equal(shrinking.subject, small);
   assert.equal(shrinking.fading, large);
   assert.equal(timeline.valuesAt(2 * FADE).subject, small);
   assert.equal(timeline.valuesAt(2 * FADE).fading, null);
+});
+
+test("a swap flashes its subject when the swap ends, not before", () => {
+  const inner = mesh("inner");
+  const extra = mesh("extra");
+  const small: Subject = { name: "small", meshes: new Set([inner]) };
+  const large: Subject = { name: "large", meshes: new Set([inner, extra]) };
+  const added: Subject = { name: "added", meshes: new Set([extra]) };
+  const timeline = timelineAt(state({ view: CLOSE, subject: small }));
+  const flashSeconds = timeline.show(
+    state({ view: CLOSE, subject: large, flash: added }),
+    0,
+  );
+  assert.equal(flashSeconds, FADE_SECONDS + FLASH_SECONDS);
+  assert.equal(timeline.flashingAt(0), null);
+  assert.equal(timeline.flashingAt(FADE - 1), null);
+  assert.equal(timeline.flashingAt(FADE), added);
+  assert.equal(timeline.phaseAt(FADE + 1), "flash");
+  assert.equal(timeline.flashingAt(FADE + FLASH_SECONDS * 1000), null);
 });
 
 test("a state that changes nothing has no phase", () => {

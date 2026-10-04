@@ -8,7 +8,7 @@
 // the old subject; then the stage goes towards the new one. Between two
 // subjects where one holds the other, and no view or tilt changes, the
 // difference fades in or out alone, with the rest of the scene still out (a
-// SWAP; it does not flash). A new state starts
+// SWAP). A new state starts
 // from what is on the screen now, so a change during a transition does not
 // jump.
 //
@@ -19,7 +19,8 @@
 // its own inks. The flash and the first channel start together. The caller
 // names a flash only on the step forward into its slide
 // (../../docs/navigation.md): the timeline does not know which way a change
-// goes.
+// goes. A swap does not move the stage, so its flash starts when the swap ends,
+// and plays on the part that has just faded in.
 
 import type { Subject, View } from "./scene.ts";
 
@@ -263,15 +264,16 @@ export class Timeline {
     for (const channel of order) {
       add(phaseOf(channel, reached, target, start, state.subject));
     }
-    // a swap is a part joining or leaving, not a move of the stage: no flash
-    if (!state.flash || swapped || this.phases.length === 0) return 0;
+    if (!state.flash || this.phases.length === 0) return 0;
     // a flash of the same subject that is still running goes on: a click
     // during it does not start it again
     const flashStart =
       running?.subject === state.flash &&
       now < running.start + FLASH_SECONDS * 1000
         ? running.start
-        : now;
+        : swapped
+          ? start
+          : now;
     this.flash = { subject: state.flash, start: flashStart };
     return FLASH_SECONDS - (now - flashStart) / 1000;
   }
