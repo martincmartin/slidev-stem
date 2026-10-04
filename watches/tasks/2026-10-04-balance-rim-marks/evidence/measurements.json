@@ -1,0 +1,960 @@
+{
+  "sampling": {
+    "fps": 60,
+    "duration_s": 1,
+    "separation_s": 0.1,
+    "pairs": 55,
+    "device_scale": 2,
+    "venue": "TV 55in @7m",
+    "flare": 0
+  },
+  "browsers": {
+    "chromium": {
+      "plain/cover": {
+        "area_csspx2_at_3": {
+          "mean": 20.54090909090909,
+          "min": 0.0,
+          "max": 163.5
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 16.695454545454545,
+          "min": 0.0,
+          "max": 145.5
+        },
+        "peak": {
+          "mean": 2.3698849412191447,
+          "min": 1.0239160379712327,
+          "max": 7.823629112558474
+        },
+        "projection": {
+          "name": "plain",
+          "view": "cover",
+          "swing": -150,
+          "centre": [
+            736.6458610700748,
+            169.7258218802903
+          ],
+          "scale": 1,
+          "tilt": 0,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendor": "Google Inc. (Google)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "meshes": 44,
+            "triangles": 21078,
+            "lineSegments": 17171,
+            "contextsLost": 0
+          }
+        }
+      },
+      "plain/slide3": {
+        "area_csspx2_at_3": {
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "peak": {
+          "mean": 1.2116378663319143,
+          "min": 1.09092488059853,
+          "max": 1.3702028873654517
+        },
+        "projection": {
+          "name": "plain",
+          "view": "slide3",
+          "swing": -150,
+          "centre": [
+            275,
+            285.1612538390805
+          ],
+          "scale": 4.464285714285714,
+          "tilt": 20,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendor": "Google Inc. (Google)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "meshes": 44,
+            "triangles": 21078,
+            "lineSegments": 17171,
+            "contextsLost": 0
+          }
+        }
+      },
+      "screws-4/cover": {
+        "area_csspx2_at_3": {
+          "mean": 263.28636363636366,
+          "min": 151.25,
+          "max": 414.25
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 225.8318181818182,
+          "min": 126.5,
+          "max": 357.5
+        },
+        "peak": {
+          "mean": 9.316086154997022,
+          "min": 9.037272186449327,
+          "max": 10.370416965938311
+        },
+        "projection": {
+          "name": "screws-4",
+          "view": "cover",
+          "swing": -150,
+          "centre": [
+            736.6458610700748,
+            169.7258218802903
+          ],
+          "scale": 1,
+          "tilt": 0,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendor": "Google Inc. (Google)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "meshes": 52,
+            "triangles": 21798,
+            "lineSegments": 17727,
+            "contextsLost": 0
+          }
+        }
+      },
+      "screws-4/slide3": {
+        "area_csspx2_at_3": {
+          "mean": 2658.25,
+          "min": 2254.75,
+          "max": 2818.75
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 2380.25,
+          "min": 2007.0,
+          "max": 2548.75
+        },
+        "peak": {
+          "mean": 10.328126309248509,
+          "min": 10.151814417043836,
+          "max": 10.393494880029854
+        },
+        "projection": {
+          "name": "screws-4",
+          "view": "slide3",
+          "swing": -150,
+          "centre": [
+            275,
+            285.1612538390805
+          ],
+          "scale": 4.464285714285714,
+          "tilt": 20,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendor": "Google Inc. (Google)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "meshes": 52,
+            "triangles": 21798,
+            "lineSegments": 17727,
+            "contextsLost": 0
+          }
+        }
+      },
+      "screws-6/cover": {
+        "area_csspx2_at_3": {
+          "mean": 385.59090909090907,
+          "min": 241.75,
+          "max": 516.5
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 331.4409090909091,
+          "min": 201.75,
+          "max": 449.5
+        },
+        "peak": {
+          "mean": 9.317364493049363,
+          "min": 9.0730365458266,
+          "max": 10.370721164271362
+        },
+        "projection": {
+          "name": "screws-6",
+          "view": "cover",
+          "swing": -150,
+          "centre": [
+            736.6458610700748,
+            169.7258218802903
+          ],
+          "scale": 1,
+          "tilt": 0,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendor": "Google Inc. (Google)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "meshes": 56,
+            "triangles": 22158,
+            "lineSegments": 18005,
+            "contextsLost": 0
+          }
+        }
+      },
+      "screws-6/slide3": {
+        "area_csspx2_at_3": {
+          "mean": 3983.0227272727275,
+          "min": 3520.75,
+          "max": 4162.0
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 3562.7454545454543,
+          "min": 3095.0,
+          "max": 3735.0
+        },
+        "peak": {
+          "mean": 10.351016645780383,
+          "min": 10.151479112536938,
+          "max": 10.39359219338065
+        },
+        "projection": {
+          "name": "screws-6",
+          "view": "slide3",
+          "swing": -150,
+          "centre": [
+            275,
+            285.1612538390805
+          ],
+          "scale": 4.464285714285714,
+          "tilt": 20,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendor": "Google Inc. (Google)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "meshes": 56,
+            "triangles": 22158,
+            "lineSegments": 18005,
+            "contextsLost": 0
+          }
+        }
+      },
+      "screws-8/cover": {
+        "area_csspx2_at_3": {
+          "mean": 352.04545454545456,
+          "min": 0.0,
+          "max": 513.0
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 293.8863636363636,
+          "min": 0.0,
+          "max": 444.75
+        },
+        "peak": {
+          "mean": 8.357467149206515,
+          "min": 1.7832209177368268,
+          "max": 9.57162339204906
+        },
+        "projection": {
+          "name": "screws-8",
+          "view": "cover",
+          "swing": -150,
+          "centre": [
+            736.6458610700748,
+            169.7258218802903
+          ],
+          "scale": 1,
+          "tilt": 0,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendor": "Google Inc. (Google)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "meshes": 60,
+            "triangles": 22518,
+            "lineSegments": 18283,
+            "contextsLost": 0
+          }
+        }
+      },
+      "screws-8/slide3": {
+        "area_csspx2_at_3": {
+          "mean": 4077.1136363636365,
+          "min": 678.25,
+          "max": 5516.25
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 3598.609090909091,
+          "min": 415.75,
+          "max": 4926.0
+        },
+        "peak": {
+          "mean": 9.995819879295237,
+          "min": 5.331005891700391,
+          "max": 10.393499522299939
+        },
+        "projection": {
+          "name": "screws-8",
+          "view": "slide3",
+          "swing": -150,
+          "centre": [
+            275,
+            285.1612538390805
+          ],
+          "scale": 4.464285714285714,
+          "tilt": 20,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendor": "Google Inc. (Google)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "meshes": 60,
+            "triangles": 22518,
+            "lineSegments": 18283,
+            "contextsLost": 0
+          }
+        }
+      },
+      "weights-4/cover": {
+        "area_csspx2_at_3": {
+          "mean": 356.2181818181818,
+          "min": 269.75,
+          "max": 503.25
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 295.7,
+          "min": 218.75,
+          "max": 423.25
+        },
+        "peak": {
+          "mean": 8.501200607059259,
+          "min": 8.145656999577641,
+          "max": 10.354443045251994
+        },
+        "projection": {
+          "name": "weights-4",
+          "view": "cover",
+          "swing": -150,
+          "centre": [
+            736.6458610700748,
+            169.7258218802903
+          ],
+          "scale": 1,
+          "tilt": 0,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendor": "Google Inc. (Google)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "meshes": 48,
+            "triangles": 21798,
+            "lineSegments": 17723,
+            "contextsLost": 0
+          }
+        }
+      },
+      "weights-4/slide3": {
+        "area_csspx2_at_3": {
+          "mean": 3006.3545454545456,
+          "min": 2713.25,
+          "max": 3096.5
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 2676.581818181818,
+          "min": 2392.75,
+          "max": 2777.0
+        },
+        "peak": {
+          "mean": 10.33414839238977,
+          "min": 10.296767913656819,
+          "max": 10.376626112825965
+        },
+        "projection": {
+          "name": "weights-4",
+          "view": "slide3",
+          "swing": -150,
+          "centre": [
+            275,
+            285.1612538390805
+          ],
+          "scale": 4.464285714285714,
+          "tilt": 20,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendor": "Google Inc. (Google)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "meshes": 48,
+            "triangles": 21798,
+            "lineSegments": 17723,
+            "contextsLost": 0
+          }
+        }
+      },
+      "weights-6/cover": {
+        "area_csspx2_at_3": {
+          "mean": 525.15,
+          "min": 419.5,
+          "max": 644.0
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 436.7772727272727,
+          "min": 347.5,
+          "max": 544.25
+        },
+        "peak": {
+          "mean": 8.59275817704148,
+          "min": 8.183336612365062,
+          "max": 9.774312028553432
+        },
+        "projection": {
+          "name": "weights-6",
+          "view": "cover",
+          "swing": -150,
+          "centre": [
+            736.6458610700748,
+            169.7258218802903
+          ],
+          "scale": 1,
+          "tilt": 0,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendor": "Google Inc. (Google)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "meshes": 50,
+            "triangles": 22158,
+            "lineSegments": 17999,
+            "contextsLost": 0
+          }
+        }
+      },
+      "weights-6/slide3": {
+        "area_csspx2_at_3": {
+          "mean": 4499.895454545454,
+          "min": 4109.0,
+          "max": 4582.5
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 4007.95,
+          "min": 3631.75,
+          "max": 4086.25
+        },
+        "peak": {
+          "mean": 10.335278401719295,
+          "min": 10.298894513075911,
+          "max": 10.378634429821474
+        },
+        "projection": {
+          "name": "weights-6",
+          "view": "slide3",
+          "swing": -150,
+          "centre": [
+            275,
+            285.1612538390805
+          ],
+          "scale": 4.464285714285714,
+          "tilt": 20,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+            "vendor": "Google Inc. (Google)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "meshes": 50,
+            "triangles": 22158,
+            "lineSegments": 17999,
+            "contextsLost": 0
+          }
+        }
+      }
+    },
+    "firefox": {
+      "plain/cover": {
+        "area_csspx2_at_3": {
+          "mean": 20.54090909090909,
+          "min": 0.0,
+          "max": 163.5
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 16.695454545454545,
+          "min": 0.0,
+          "max": 145.5
+        },
+        "peak": {
+          "mean": 2.3697488118634316,
+          "min": 1.0239160379712327,
+          "max": 7.823629112558474
+        },
+        "projection": {
+          "name": "plain",
+          "view": "cover",
+          "swing": -150,
+          "centre": [
+            736.6458610700748,
+            169.7258218802903
+          ],
+          "scale": 1,
+          "tilt": 0,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "Apple M1, or similar",
+            "vendor": "Apple",
+            "version": "WebGL 2.0",
+            "meshes": 44,
+            "triangles": 21078,
+            "lineSegments": 17171,
+            "contextsLost": 0
+          }
+        }
+      },
+      "plain/slide3": {
+        "area_csspx2_at_3": {
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "peak": {
+          "mean": 1.1803469134018354,
+          "min": 1.0134849123767788,
+          "max": 1.3000690583035437
+        },
+        "projection": {
+          "name": "plain",
+          "view": "slide3",
+          "swing": -150,
+          "centre": [
+            275,
+            285.1612538390805
+          ],
+          "scale": 4.464285714285714,
+          "tilt": 20,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "Apple M1, or similar",
+            "vendor": "Apple",
+            "version": "WebGL 2.0",
+            "meshes": 44,
+            "triangles": 21078,
+            "lineSegments": 17171,
+            "contextsLost": 0
+          }
+        }
+      },
+      "screws-4/cover": {
+        "area_csspx2_at_3": {
+          "mean": 263.28636363636366,
+          "min": 151.25,
+          "max": 414.25
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 225.81363636363636,
+          "min": 126.5,
+          "max": 357.5
+        },
+        "peak": {
+          "mean": 9.316086154997022,
+          "min": 9.037272186449327,
+          "max": 10.370416965938311
+        },
+        "projection": {
+          "name": "screws-4",
+          "view": "cover",
+          "swing": -150,
+          "centre": [
+            736.6458610700748,
+            169.7258218802903
+          ],
+          "scale": 1,
+          "tilt": 0,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "Apple M1, or similar",
+            "vendor": "Apple",
+            "version": "WebGL 2.0",
+            "meshes": 52,
+            "triangles": 21798,
+            "lineSegments": 17727,
+            "contextsLost": 0
+          }
+        }
+      },
+      "screws-4/slide3": {
+        "area_csspx2_at_3": {
+          "mean": 2658.268181818182,
+          "min": 2254.0,
+          "max": 2818.0
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 2380.3727272727274,
+          "min": 2006.25,
+          "max": 2548.5
+        },
+        "peak": {
+          "mean": 10.328126309248509,
+          "min": 10.151814417043836,
+          "max": 10.393494880029854
+        },
+        "projection": {
+          "name": "screws-4",
+          "view": "slide3",
+          "swing": -150,
+          "centre": [
+            275,
+            285.1612538390805
+          ],
+          "scale": 4.464285714285714,
+          "tilt": 20,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "Apple M1, or similar",
+            "vendor": "Apple",
+            "version": "WebGL 2.0",
+            "meshes": 52,
+            "triangles": 21798,
+            "lineSegments": 17727,
+            "contextsLost": 0
+          }
+        }
+      },
+      "screws-6/cover": {
+        "area_csspx2_at_3": {
+          "mean": 385.6,
+          "min": 241.75,
+          "max": 516.5
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 331.44545454545454,
+          "min": 201.75,
+          "max": 449.5
+        },
+        "peak": {
+          "mean": 9.317362790012417,
+          "min": 9.0730365458266,
+          "max": 10.370721164271362
+        },
+        "projection": {
+          "name": "screws-6",
+          "view": "cover",
+          "swing": -150,
+          "centre": [
+            736.6458610700748,
+            169.7258218802903
+          ],
+          "scale": 1,
+          "tilt": 0,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "Apple M1, or similar",
+            "vendor": "Apple",
+            "version": "WebGL 2.0",
+            "meshes": 56,
+            "triangles": 22158,
+            "lineSegments": 18005,
+            "contextsLost": 0
+          }
+        }
+      },
+      "screws-6/slide3": {
+        "area_csspx2_at_3": {
+          "mean": 3983.1,
+          "min": 3520.25,
+          "max": 4162.0
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 3562.8545454545456,
+          "min": 3094.0,
+          "max": 3735.5
+        },
+        "peak": {
+          "mean": 10.351016645780383,
+          "min": 10.151479112536938,
+          "max": 10.39359219338065
+        },
+        "projection": {
+          "name": "screws-6",
+          "view": "slide3",
+          "swing": -150,
+          "centre": [
+            275,
+            285.1612538390805
+          ],
+          "scale": 4.464285714285714,
+          "tilt": 20,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "Apple M1, or similar",
+            "vendor": "Apple",
+            "version": "WebGL 2.0",
+            "meshes": 56,
+            "triangles": 22158,
+            "lineSegments": 18005,
+            "contextsLost": 0
+          }
+        }
+      },
+      "screws-8/cover": {
+        "area_csspx2_at_3": {
+          "mean": 352.0590909090909,
+          "min": 0.0,
+          "max": 513.0
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 293.8954545454545,
+          "min": 0.0,
+          "max": 444.75
+        },
+        "peak": {
+          "mean": 8.357467149206515,
+          "min": 1.7832209177368268,
+          "max": 9.57162339204906
+        },
+        "projection": {
+          "name": "screws-8",
+          "view": "cover",
+          "swing": -150,
+          "centre": [
+            736.6458610700748,
+            169.7258218802903
+          ],
+          "scale": 1,
+          "tilt": 0,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "Apple M1, or similar",
+            "vendor": "Apple",
+            "version": "WebGL 2.0",
+            "meshes": 60,
+            "triangles": 22518,
+            "lineSegments": 18283,
+            "contextsLost": 0
+          }
+        }
+      },
+      "screws-8/slide3": {
+        "area_csspx2_at_3": {
+          "mean": 4077.159090909091,
+          "min": 677.75,
+          "max": 5515.25
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 3598.809090909091,
+          "min": 418.0,
+          "max": 4926.25
+        },
+        "peak": {
+          "mean": 9.995821762798922,
+          "min": 5.3311094844031865,
+          "max": 10.393499522299939
+        },
+        "projection": {
+          "name": "screws-8",
+          "view": "slide3",
+          "swing": -150,
+          "centre": [
+            275,
+            285.1612538390805
+          ],
+          "scale": 4.464285714285714,
+          "tilt": 20,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "Apple M1, or similar",
+            "vendor": "Apple",
+            "version": "WebGL 2.0",
+            "meshes": 60,
+            "triangles": 22518,
+            "lineSegments": 18283,
+            "contextsLost": 0
+          }
+        }
+      },
+      "weights-4/cover": {
+        "area_csspx2_at_3": {
+          "mean": 356.2,
+          "min": 269.75,
+          "max": 503.25
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 295.6818181818182,
+          "min": 218.75,
+          "max": 423.25
+        },
+        "peak": {
+          "mean": 8.501200607059259,
+          "min": 8.145656999577641,
+          "max": 10.354443045251994
+        },
+        "projection": {
+          "name": "weights-4",
+          "view": "cover",
+          "swing": -150,
+          "centre": [
+            736.6458610700748,
+            169.7258218802903
+          ],
+          "scale": 1,
+          "tilt": 0,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "Apple M1, or similar",
+            "vendor": "Apple",
+            "version": "WebGL 2.0",
+            "meshes": 48,
+            "triangles": 21798,
+            "lineSegments": 17723,
+            "contextsLost": 0
+          }
+        }
+      },
+      "weights-4/slide3": {
+        "area_csspx2_at_3": {
+          "mean": 3006.3136363636363,
+          "min": 2713.25,
+          "max": 3096.5
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 2676.5409090909093,
+          "min": 2392.75,
+          "max": 2777.0
+        },
+        "peak": {
+          "mean": 10.33414839238977,
+          "min": 10.296767913656819,
+          "max": 10.376626112825965
+        },
+        "projection": {
+          "name": "weights-4",
+          "view": "slide3",
+          "swing": -150,
+          "centre": [
+            275,
+            285.1612538390805
+          ],
+          "scale": 4.464285714285714,
+          "tilt": 20,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "Apple M1, or similar",
+            "vendor": "Apple",
+            "version": "WebGL 2.0",
+            "meshes": 48,
+            "triangles": 21798,
+            "lineSegments": 17723,
+            "contextsLost": 0
+          }
+        }
+      },
+      "weights-6/cover": {
+        "area_csspx2_at_3": {
+          "mean": 525.1545454545454,
+          "min": 419.5,
+          "max": 644.0
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 436.77272727272725,
+          "min": 347.5,
+          "max": 544.25
+        },
+        "peak": {
+          "mean": 8.59275782306083,
+          "min": 8.183336612365062,
+          "max": 9.774292559617695
+        },
+        "projection": {
+          "name": "weights-6",
+          "view": "cover",
+          "swing": -150,
+          "centre": [
+            736.6458610700748,
+            169.7258218802903
+          ],
+          "scale": 1,
+          "tilt": 0,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "Apple M1, or similar",
+            "vendor": "Apple",
+            "version": "WebGL 2.0",
+            "meshes": 50,
+            "triangles": 22158,
+            "lineSegments": 17999,
+            "contextsLost": 0
+          }
+        }
+      },
+      "weights-6/slide3": {
+        "area_csspx2_at_3": {
+          "mean": 4499.859090909091,
+          "min": 4108.75,
+          "max": 4582.5
+        },
+        "area_csspx2_at_3_flare_005": {
+          "mean": 4007.9363636363637,
+          "min": 3632.0,
+          "max": 4086.25
+        },
+        "peak": {
+          "mean": 10.335278401719295,
+          "min": 10.298894513075911,
+          "max": 10.378634429821474
+        },
+        "projection": {
+          "name": "weights-6",
+          "view": "slide3",
+          "swing": -150,
+          "centre": [
+            275,
+            285.1612538390805
+          ],
+          "scale": 4.464285714285714,
+          "tilt": 20,
+          "radius": 56,
+          "top": -13,
+          "info": {
+            "renderer": "Apple M1, or similar",
+            "vendor": "Apple",
+            "version": "WebGL 2.0",
+            "meshes": 50,
+            "triangles": 22158,
+            "lineSegments": 17999,
+            "contextsLost": 0
+          }
+        }
+      }
+    }
+  },
+  "errors": [],
+  "outside_requests": [],
+  "colour_contrast": {
+    "paper": 10.393670372931224,
+    "knockout": 8.004821163391664,
+    "frame": 2.096746798936858
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "chromium": {
+    "compared_frames": 122,
+    "mismatches": []
+  },
+  "firefox": {
+    "compared_frames": 122,
+    "mismatches": []
+  },
+  "errors": [],
+  "outside_requests": []
+}

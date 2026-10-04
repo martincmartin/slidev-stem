@@ -1,0 +1,12 @@
+{
+  "chromium": {
+    "renders": 12,
+    "errors": [],
+    "outside_requests": []
+  },
+  "firefox": {
+    "renders": 12,
+    "errors": [],
+    "outside_requests": []
+  }
+}

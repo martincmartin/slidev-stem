@@ -5,6 +5,8 @@ timekeepers, the cover watch and the diving board.
 **Read before** you change a drawing, or claim that one is legible. How to
 read the metrics is in [`stem/docs/legibility.md`](../../docs/legibility.md).
 **Tasks:**
+[`2026-10-04-balance-rim-marks`](../tasks/2026-10-04-balance-rim-marks/README.md)
+(the selected radial screws and rim motion),
 [`2026-09-20-animation-style`](../tasks/2026-09-20-animation-style/README.md)
 (the timekeepers, §14),
 [`2026-09-29-webgl-watch`](../tasks/2026-09-29-webgl-watch/PLAN.md) (the
@@ -56,19 +58,35 @@ but it stops being this drawing style (the animation-style task, §14).
 ## The cover watch
 
 The watch is drawn live in WebGL, so `barroom.py` and `motion.py` measure PNG
-stills of it (`pnpm art:stills DIR` writes them). At `TV 55in @7m`, measured
-2026-10-01, on the cover at tilt 0, 980 × 552 px at 2 device px for each CSS
-px:
+stills of it (`pnpm art:stills DIR` writes them).
+Measured 2026-10-04 at `TV 55in @7m`, with the selected rim screws.
+The cover uses tilt $0^\circ$ and a $980 \times 552$ CSS px canvas.
+Each CSS pixel uses two device pixels:
 
 ```
 drawing   ink%    hold    p90    Fmax     dPeak   px2 >=3:1
-cover      6.6    4.11   7.86   0.132     10.01      3744.5
+cover      6.5    4.12   7.90   0.133     10.29      3879.0
 ```
 
 It clears the gate. `dPeak` is the change between two frames one second apart:
 the balance at each end of its swing, and the escapement one step on. One
 second is half the balance's 2 s period. `motion.py`'s default (30 s) is a
 whole number of periods, so the escapement would look still.
+
+## Balance rim motion
+
+Measured 2026-10-04 at `TV 55in @7m`, from 55 frame pairs separated by 100 ms:
+
+| View    | Mean CSS px² changing by at least 3:1 | With ambient flare $F=0.05$ |
+| ------- | ------------------------------------: | --------------------------: |
+| Cover   |                                   258 |                         221 |
+| Slide 3 |                                 2,626 |                       2,351 |
+
+The score covers the projected rim band and excludes the arms and hairspring.
+The cover score includes some nearby mechanism motion in that band.
+These values measure visible change, not human recognition of a mark.
+The [task](../tasks/2026-10-04-balance-rim-marks/README.md) holds the frame captures, exact values, method, and limits.
+The installed model is checked against the selected proposal in both browsers.
 
 ## The diving board
 

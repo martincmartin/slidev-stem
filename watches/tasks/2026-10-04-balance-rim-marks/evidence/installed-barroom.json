@@ -1,0 +1,34 @@
+{
+  "design_venue": "TV 55in @7m",
+  "floor": 3.0,
+  "drawings": [
+    {
+      "path": "watches/tasks/2026-10-04-balance-rim-marks/evidence/installed-stills/cover.png",
+      "label": "cover",
+      "ink_percent": 6.4792683377698905,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.976868374374478,
+          "p90": 10.375298350729588,
+          "fmax": 0.19456116557121272
+        },
+        "TV 55in @5m": {
+          "hold": 4.846991322104759,
+          "p90": 9.834757781569932,
+          "fmax": 0.18664963245391847
+        },
+        "TV 55in @7m": {
+          "hold": 4.121260053885023,
+          "p90": 7.893027314085179,
+          "fmax": 0.1332633912563324
+        },
+        "proj 2m @6m": {
+          "hold": 4.94733589697171,
+          "p90": 10.327760322240445,
+          "fmax": 0.19279866814613345
+        }
+      }
+    }
+  ]
+}

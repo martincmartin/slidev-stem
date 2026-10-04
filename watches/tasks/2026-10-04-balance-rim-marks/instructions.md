@@ -11,6 +11,22 @@ From the user, 2026-10-04:
 Then: "Please open a task for the balance rim marks, and include an
 instructions.md and PLAN.md."
 
+Clarification from the user, 2026-10-04:
+
+> It doesn't matter what the ETA 6497's balance looks like. The goal of being
+> similar to it is just for the gross layout, e.g. mainspring near the bottom,
+> balance assembly near the top. The details of screws vs smooth weights should
+> have no bearing on our decision.
+
+Choose rim marks by visible motion, legibility, and drawing style. Use the
+ETA 6497 reference only for the gross layout.
+
+Selection from the user, 2026-10-04:
+
+> Let's go with four radial weights.
+
+This initial selection was superseded by the correction below.
+
 ## Scope
 
 - Make the balance's rim visibly turn, on the cover (the whole watch, scale 1)
@@ -20,3 +36,10 @@ instructions.md and PLAN.md."
 - Keep the house style: line art, the colour jobs of `../../../docs/theme.md`,
   the floors of `../../../docs/legibility.md`.
 - Do not commit without the user's approval.
+
+## Corrected selection, 2026-10-04
+
+> Actually, I want the four screws, not the four weights
+
+Install four radial screw heads with outward face slots.
+Keep the established camera target, zoom, and timing.

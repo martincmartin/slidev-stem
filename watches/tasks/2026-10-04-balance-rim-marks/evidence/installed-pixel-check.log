@@ -1,0 +1,15 @@
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 21 modules transformed.
+
+(!) outDir /var/folders/t6/ckqzvjtj3_3f6y1nbj6gnvqr0000gn/T/rim-installed-cbvlgtdf is not inside project root and will not be emptied.
+Use --emptyOutDir to override.
+
+rendering chunks...
+computing gzip size...
+../../../../../../var/folders/t6/ckqzvjtj3_3f6y1nbj6gnvqr0000gn/T/rim-installed-cbvlgtdf/index.html                 0.35 kB │ gzip:  0.26 kB
+../../../../../../var/folders/t6/ckqzvjtj3_3f6y1nbj6gnvqr0000gn/T/rim-installed-cbvlgtdf/assets/index-BwDtl7Hh.js  78.77 kB │ gzip: 28.86 kB
+
+✓ built in 33ms
+chromium: 122 frames, 0 mismatches
+firefox: 122 frames, 0 mismatches

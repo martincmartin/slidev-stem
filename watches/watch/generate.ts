@@ -68,6 +68,20 @@ const STAFF_RADIUS = 3;
 const BALANCE_RIM = 8;
 const BALANCE_HUB = 10;
 const BALANCE_ARM_WIDTH = 6;
+/** The balance's radial screws. See docs/watch.md: Balance rim motion. */
+interface BalanceScrews {
+  readonly count: number;
+  readonly radius: number;
+  readonly protrusion: number;
+  readonly phase: number;
+}
+
+const BALANCE_SCREWS: BalanceScrews = Object.freeze({
+  count: 4,
+  radius: 4,
+  protrusion: 4.8,
+  phase: 30,
+});
 /** Clearance between moving oscillator layers and beneath the balance. */
 const OSCILLATOR_CLEARANCE = 2;
 const ROLLER_THICKNESS = 2;
@@ -921,6 +935,8 @@ function barrelSolids(kit: Kit): void {
 }
 
 interface BalanceSolids {
+  /** The wheel's rim, arms, and hub as one solid. */
+  wheel: Solid;
   /** The hairspring's coil. */
   spring: Solid;
   collet: Solid;
@@ -937,9 +953,9 @@ function balanceSolids(kit: Kit): BalanceSolids {
   const { balance: balanceGroup, springBase } = groups;
   const balanceDesign = design.balance;
   const radius = balanceDesign.radius;
-  // the rim, the three arms and the hub are one piece, with no line where
-  // they meet: the rim has no marks, so only the arms show that it turns
-  solids.add(
+  // The rim, arms, and hub are one piece, with no lines at their joins.
+  // The radial screws show that the rim turns with the arms.
+  const wheel = solids.add(
     balancePart,
     "body",
     balanceGroup,
@@ -1024,7 +1040,77 @@ function balanceSolids(kit: Kit): BalanceSolids {
     ringsOf([circlePath(jewelCentre[0], jewelCentre[1], JEWEL_RADIUS), null]),
     inkFill,
   );
-  return { spring: springSolid, collet, restSpring, springShape };
+  return { wheel, spring: springSolid, collet, restSpring, springShape };
+}
+
+/** Radial screw heads with slots on their outward faces. */
+function balanceScrewMeshes(
+  balance: Design["balance"],
+  rimHeights: Heights,
+  group: Group,
+  paint: Paint,
+  screws: BalanceScrews,
+): Mesh[] {
+  const meshes: Mesh[] = [];
+  for (let index = 0; index < screws.count; index++) {
+    const angle = radians(
+      balance.pinDirection + screws.phase + (360 * index) / screws.count,
+    );
+    const cosine = Math.cos(angle);
+    const sine = Math.sin(angle);
+    const info = {
+      name: `balance screw ${String(index + 1)}`,
+      part: "balance",
+      group,
+      fill: paint.knockout,
+      lineOrder: rimHeights.top,
+      inDrawing: false,
+    };
+    const head = extrude(
+      ringsOf([disc(screws.radius), paint.line(2.5)]),
+      balance.radius - 1,
+      balance.radius + screws.protrusion,
+      info,
+    );
+    const middle = (rimHeights.bottom + rimHeights.top) / 2;
+    const placement = Float32Array.from([
+      -sine,
+      cosine,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      cosine,
+      sine,
+      0,
+      0,
+      0,
+      0,
+      middle,
+      1,
+    ]);
+    meshes.push(transformMesh(head, placement));
+    const slot = extrude(
+      [
+        polygonRing(
+          [
+            [-screws.radius * 0.65, 0],
+            [screws.radius * 0.65, 0],
+          ],
+          paint.line(2),
+          false,
+        ),
+      ],
+      balance.radius + screws.protrusion,
+      balance.radius + screws.protrusion,
+      { ...info, name: `${info.name} slot`, fill: null },
+      { decal: true },
+    );
+    meshes.push(transformMesh(slot, placement));
+  }
+  return meshes;
 }
 
 /** The pallet fork. */
@@ -1216,6 +1302,7 @@ export function generate(design: Design = DESIGN): Watch {
   trainSolids(kit);
   barrelSolids(kit);
   const {
+    wheel: balanceSolid,
     spring: springSolid,
     collet,
     restSpring,
@@ -1272,6 +1359,14 @@ export function generate(design: Design = DESIGN): Watch {
   // ---- the movement's meshes ----
   const movementMeshes = solidMeshes(solids, heights, springSolid);
   meshes.push(...movementMeshes.values());
+  const balanceScrews = balanceScrewMeshes(
+    design.balance,
+    heightOf(balanceSolid),
+    tree.groups.balance,
+    paint,
+    BALANCE_SCREWS,
+  );
+  meshes.push(...balanceScrews);
   const springMesh = lookup(movementMeshes, springSolid, "spring mesh");
   const springHeights = heightOf(springSolid);
   const colletMesh = lookup(movementMeshes, collet, "collet mesh");
@@ -1309,6 +1404,7 @@ export function generate(design: Design = DESIGN): Watch {
         .filter(([solid]) => oscillatorParts.has(solid.part))
         .map(([, mesh]) => mesh),
       stud.mesh,
+      ...balanceScrews,
     ]),
   };
   // the balance wheel with the hairspring and the balance staff (the staff is
@@ -1322,6 +1418,7 @@ export function generate(design: Design = DESIGN): Watch {
         .filter(([solid]) => wheelParts.has(solid.part))
         .map(([, mesh]) => mesh),
       stud.mesh,
+      ...balanceScrews,
     ]),
   };
   const scene: Scene = {

@@ -1,0 +1,64 @@
+{
+  "chromium": {
+    "compared_frames": 122,
+    "scores": {
+      "cover": {
+        "area": {
+          "mean": 258.4045454545454,
+          "min": 153.25,
+          "max": 405.0
+        },
+        "flare_area": {
+          "mean": 221.38636363636363,
+          "min": 130.5,
+          "max": 349.5
+        }
+      },
+      "slide3": {
+        "area": {
+          "mean": 2626.4045454545453,
+          "min": 2225.0,
+          "max": 2784.75
+        },
+        "flare_area": {
+          "mean": 2350.9727272727273,
+          "min": 1977.5,
+          "max": 2524.0
+        }
+      }
+    },
+    "mismatches": []
+  },
+  "firefox": {
+    "compared_frames": 122,
+    "scores": {
+      "cover": {
+        "area": {
+          "mean": 258.40909090909093,
+          "min": 153.25,
+          "max": 405.0
+        },
+        "flare_area": {
+          "mean": 221.37272727272727,
+          "min": 130.5,
+          "max": 349.5
+        }
+      },
+      "slide3": {
+        "area": {
+          "mean": 2626.35,
+          "min": 2225.0,
+          "max": 2783.75
+        },
+        "flare_area": {
+          "mean": 2351.0,
+          "min": 1977.5,
+          "max": 2523.75
+        }
+      }
+    },
+    "mismatches": []
+  },
+  "errors": [],
+  "outside_requests": []
+}

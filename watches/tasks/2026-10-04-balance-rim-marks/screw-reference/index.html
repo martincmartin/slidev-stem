@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Balance rim comparison</title>
+    <style>
+      body {
+        margin: 0;
+        background: #faf7f0;
+        color: #2a2520;
+        font:
+          17px Arial,
+          sans-serif;
+      }
+      header {
+        padding: 16px 24px;
+      }
+      select,
+      button {
+        font: inherit;
+        margin-right: 12px;
+      }
+      canvas {
+        display: block;
+        width: 980px;
+        height: 552px;
+      }
+      p {
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <select id="variant" aria-label="Rim marks"></select>
+      <select id="view" aria-label="View">
+        <option value="cover">Cover</option>
+        <option value="slide3">Slide 3</option>
+      </select>
+      <button id="play">Pause</button>
+      <p>The model uses the live watch's layout, scale, tilt, and motion.</p>
+    </header>
+    <canvas id="stage"></canvas>
+    <script type="module" src="./comparison.ts"></script>
+  </body>
+</html>

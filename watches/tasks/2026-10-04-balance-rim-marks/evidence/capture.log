@@ -1,0 +1,39 @@
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 17 modules transformed.
+
+(!) outDir /Users/martin/Develop/slidev/stem2/watches/tasks/2026-10-04-balance-rim-marks/site is not inside project root and will not be emptied.
+Use --emptyOutDir to override.
+
+rendering chunks...
+computing gzip size...
+tasks/2026-10-04-balance-rim-marks/site/index.html                 0.82 kB │ gzip:  0.50 kB
+tasks/2026-10-04-balance-rim-marks/site/assets/index-BkH5FrJv.js  65.24 kB │ gzip: 24.59 kB
+
+✓ built in 56ms
+chromium: plain/cover
+chromium: plain/slide3
+chromium: screws-4/cover
+chromium: screws-4/slide3
+chromium: screws-6/cover
+chromium: screws-6/slide3
+chromium: screws-8/cover
+chromium: screws-8/slide3
+chromium: weights-4/cover
+chromium: weights-4/slide3
+chromium: weights-6/cover
+chromium: weights-6/slide3
+chromium: captured 732 frames
+firefox: plain/cover
+firefox: plain/slide3
+firefox: screws-4/cover
+firefox: screws-4/slide3
+firefox: screws-6/cover
+firefox: screws-6/slide3
+firefox: screws-8/cover
+firefox: screws-8/slide3
+firefox: weights-4/cover
+firefox: weights-4/slide3
+firefox: weights-6/cover
+firefox: weights-6/slide3
+firefox: captured 732 frames

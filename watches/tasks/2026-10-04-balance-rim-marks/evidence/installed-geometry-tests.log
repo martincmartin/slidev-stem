@@ -1,0 +1,22 @@
+✔ each wheel is one mesh distance from the pinion it drives (0.477583ms)
+✔ each wheel has four corners for each tooth (0.149375ms)
+✔ a pinion is level with the wheel that drives it (1.478083ms)
+✔ the hands sit under the chapter ring's top and the ring is flush with the case (0.782625ms)
+✔ the spring is a ribbon on the balance, and the stud is not in the drawing (0.079167ms)
+✔ every mesh is finite, and every hidden-inside disc is a disc (5.033416ms)
+✔ the views: the cover is centred on the watch and the spring's view on the balance (0.117958ms)
+✔ the flashed subject includes the roller and oscillator, not the fork (0.123084ms)
+✔ slide 3's subject is the balance wheel and the spring, not the roller or the jewel, and it holds slide 2's (0.11075ms)
+✔ four evenly spaced weights touch the balance rim and turn with it (0.949958ms)
+✔ the lowered oscillator connects to the upper roller and jewel with clearance (0.766667ms)
+✔ slide 2 keeps only the spring, collet and stud when the mechanism fades (0.055708ms)
+✔ the lowered spring stays at slide 2's target through its tilt (0.05925ms)
+✔ the spring's height and the hairspring view's pivot are what art/diving_board.py copies (0.037833ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 177.60625

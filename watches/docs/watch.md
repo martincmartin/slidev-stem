@@ -8,6 +8,7 @@ measured budgets) and the diving board on slide 2.
 them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
+[`2026-10-04-balance-rim-marks`](../tasks/2026-10-04-balance-rim-marks/README.md) (radial screws that show the rim's swing),
 [`2026-10-04-rest-shape-final-review`](../tasks/2026-10-04-rest-shape-final-review/README.md) (final selection, cleanup, and review),
 [`selection-and-layering`](../tasks/2026-10-04-leader-path-comparison/selection-and-layering/README.md) (the selected leader and reference paint order),
 [`2026-09-24-cover-watch`](../tasks/2026-09-24-cover-watch/PLAN.md) (a skeleton
@@ -80,6 +81,9 @@ directions. `art/watch_design.py` holds the numbers, and `LAYOUT` the angles.
 The cover has the watch case on the right and the title on the left, as it did
 before: the layout changed only what is inside the case.
 
+Use the ETA reference for the gross layout.
+Choose individual part details for clear motion and fit with the drawing style.
+
 ## Oscillator geometry and framing
 
 The balance wheel sits below the hairspring. The roller sits above the spring.
@@ -110,6 +114,23 @@ target there is "off", and the board's layer fades its rest shape out in
 fades out, and from 4 to 3 nothing changes
 ([`navigation.md`](../../docs/navigation.md)). A printed page of slide 3 has
 no board.
+
+## Balance rim motion
+
+Four radial screws make the rim's swing visible on the cover and slide 3.
+Their heads point outward from the rim and turn with the balance group.
+Each head has a slot on its outward face.
+The rim, arms, and hub retain their continuous outline.
+
+`BALANCE_SCREWS` in `watch/generate.ts` holds the count, dimensions, and angular phase.
+`balanceScrewMeshes` centres them on the rim's assigned height.
+The screws use the subject's outline and pale face colours.
+Their line widths stay fixed on the screen as the view zooms.
+
+The screws belong to the oscillator flash and the balance-wheel subject.
+On slide 2, they fade with the balance, so only the spring, collet, and stud remain.
+On slide 3, they fade in with the wheel.
+The camera target, zoom, and mechanism timing remain unchanged.
 
 ## The frontmatter keys
 

@@ -159,6 +159,49 @@ test("slide 3's subject is the balance wheel and the spring, not the roller or t
     ["balance", "hairspring", "hairspring stud"].sort(),
   );
   for (const mesh of spring.meshes) assert.ok(wheel.meshes.has(mesh));
+  for (const mesh of partMeshes("balance")) assert.ok(wheel.meshes.has(mesh));
+});
+
+test("four evenly spaced radial screws touch the balance rim and turn with it", () => {
+  const [body, ...marks] = partMeshes("balance");
+  const heads = marks.filter((mesh) => mesh.fill !== null);
+  const slots = marks.filter((mesh) => mesh.fill === null);
+  assert.equal(slots.length, 4);
+  for (const slot of slots) assert.equal(slot.group, watch.groups.balance);
+  assert.ok(body);
+  assert.equal(heads.length, 4);
+  const [rimBottom, rimTop] = heights(body);
+  const centres = heads.map((head) => {
+    assert.equal(head.group, watch.groups.balance);
+    const [bottom, top] = heights(head);
+    assert.ok(Math.abs((bottom + top) / 2 - (rimBottom + rimTop) / 2) < 1e-5);
+    assert.ok(top > bottom);
+    const coordinates = (axis: number): number[] =>
+      Array.from({ length: head.triangles.length / 3 }, (_, index) =>
+        at(head.triangles, 3 * index + axis),
+      );
+    const xValues = coordinates(0);
+    const yValues = coordinates(1);
+    const x = (Math.min(...xValues) + Math.max(...xValues)) / 2;
+    const y = (Math.min(...yValues) + Math.max(...yValues)) / 2;
+    const radialDistances = Array.from(
+      { length: head.triangles.length / 3 },
+      (_, index) =>
+        Math.hypot(
+          at(head.triangles, 3 * index),
+          at(head.triangles, 3 * index + 1),
+        ),
+    );
+    assert.ok(Math.min(...radialDistances) < design.balance.radius);
+    assert.ok(Math.max(...radialDistances) > design.balance.radius);
+    return [x, y] as const;
+  });
+  const radius = Math.hypot(...at(centres, 0));
+  for (const [index, [x, y]] of centres.entries()) {
+    assert.ok(Math.abs(Math.hypot(x, y) - radius) < 1e-5);
+    const [nextX, nextY] = at(centres, (index + 1) % centres.length);
+    assert.ok(Math.abs(x * nextX + y * nextY) < 1e-3);
+  }
 });
 
 test("the lowered oscillator connects to the upper roller and jewel with clearance", () => {
