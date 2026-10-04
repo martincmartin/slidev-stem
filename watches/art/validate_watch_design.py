@@ -11,7 +11,7 @@ The steps:
 1-2. style and types: stem/tools/check_python.py on the art scripts (ruff
    format, which rewrites them in place, ruff check, mypy --strict, pyright);
 3. layout, as the viewer sees it (watch_geometry.py says how):
-   - the barrel is fixed at +60 degrees and the visible third-barrel gap
+   - the barrel is fixed at BARREL_ANGLE and the visible third-barrel gap
      is 12 +/- 1 px;
    - each wheel sits exactly one mesh distance from the pinion it drives;
    - every part is at least RING_CLEARANCE inside the chapter ring;

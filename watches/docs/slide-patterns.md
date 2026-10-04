@@ -97,6 +97,13 @@ classes and removes the `v-click` classes, and the dim rule stops working.
 A slide that shows the watch sets its view in the frontmatter, and slide 2
 ends with the diving board. Both are in [watch.md](watch.md).
 
+## Where things go on a slide
+
+**The main focus of a slide is on its left.** Put the picture there, and the
+callouts and text on the right. The watch's train is laid out left to right from
+the hairspring to the fourth wheel for this reason: see
+[watch.md](watch.md#the-layout-of-the-movement).
+
 ## Speaker notes
 
 The last HTML comment on a slide becomes the presenter note. The convention in this

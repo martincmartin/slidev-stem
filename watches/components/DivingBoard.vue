@@ -151,9 +151,11 @@ onBeforeUnmount(stop);
 .diving-board {
   position: absolute;
   /* the drawing is the whole slide's width, 980 x 452, from its left edge to
-     its bottom: its x 0 is the slide's x 380 (its viewBox starts at -380), so its
-     spiral's centre, (325, 176), is the hairspring's on the slide, (705, 276).
-     The ground and the pool run off the bottom and the right of the slide */
+     its bottom: its x 0 is the slide's x -50 (its viewBox starts at 50), so its
+     spiral's centre, (325, 176), is the hairspring's on the slide, (275, 276).
+     The ground and the pool run off the bottom of the slide, and the ground and
+     the stand off its left. The pool fades to the paper by 60% of the slide's
+     width (`fade_end` in art/diving_board.py) */
   left: 0;
   top: 100px;
   width: 980px;

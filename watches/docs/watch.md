@@ -25,7 +25,9 @@ the budgets),
 ruler that the diving board replaced),
 [`2026-09-30-flash`](../tasks/2026-09-30-flash/PLAN.md) (the balance flash),
 [`2026-10-01-raised-escapement`](../tasks/2026-10-01-raised-escapement/README.md)
-(the lower oscillator and upper roller).
+(the lower oscillator and upper roller),
+[`2026-10-03-pool-edge`](../tasks/2026-10-03-pool-edge/PLAN.md) (how the pool
+ends: a fade).
 
 ## The files
 
@@ -50,6 +52,26 @@ checks the Python and the layout (meshing, clearances), and writes
 `watch/design.json`. To move the wheels, run `art/search_watch_layout.py`
 first. `uv run ../tools/validate.py` does not run it: run it yourself after
 each change to the design.
+
+## The layout of the movement
+
+**The main focus of a slide is on its left.** The audience looks left first, so
+a slide's picture goes on the left and its callouts and text go on the right.
+Slide 2 follows it: the hairspring is at slide x 275 (`HAIRSPRING_TARGET` in
+`watch/generate.ts`), and the diving board is shifted left with it.
+
+Therefore the train runs from the hairspring to the fourth wheel from left to
+right, so that the image stays on the left of each slide and the callouts on
+the right. The centre wheel is at the watch's centre. The third wheel, fourth
+wheel, escape wheel, fork and balance are the mirror image of an ETA 6497's
+layout about the vertical line through the centre, then turned about the centre
+until the balance is at 11 o'clock. The barrel is at `BARREL_ANGLE`, as near
+5 o'clock as the third wheel allows: the third-barrel gap must stay 12 +/- 1 px.
+The hands still turn clockwise: the layout moves the arbors, not the turning
+directions. `art/watch_design.py` holds the numbers, and `LAYOUT` the angles.
+
+The cover has the watch case on the right and the title on the left, as it did
+before: the layout changed only what is inside the case.
 
 ## Oscillator geometry and framing
 
@@ -114,8 +136,8 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   acceleration where it starts. The rest of the mechanism stops with it.
 - **The mechanism's time only goes forward.** A resume swings on to the
   opposite extreme.
-- **Keep text out of the watch's way.** On slide 2 the hairspring is about 535
-  to 875 px across.
+- **Keep text out of the watch's way.** On slide 2 the hairspring is about 105
+  to 445 px across, on the left. Callouts go on the right.
 - **The cover's title fades as the watch flashes**: the `watch-zoom`
   transition, from the cover to slide 2 only. Slide 2's text comes in after
   the zoom: `global-bottom.vue` sets `--watch-text-delay` from `MOVE_SECONDS`
@@ -176,12 +198,30 @@ The ground and the stand are washes of muted (warm); the water is a wash of the
 art line (blue) at 0.6 with light ripples, and the pool's walls are a darker
 muted. The pool has no near wall, and the ground has no front: both go on in
 front, as if they ran far past the bottom of the slide, and the drawing is
-cropped there (it is 452 px tall, so its bottom is the slide's). The ground's
-left edge slants down and to the left as it comes forward, so the drawing is
-the slide's whole width (980 px, its viewBox starting at x -380): a narrower one
-would cut that edge in the middle of the slide. The board, the stand and the pool
-are where they are on the slide's right, and the board ends on the hairspring's
-rest shape, where the hairspring was. Nothing is hidden by paper (it is not an
+cropped there (it is 452 px tall, so its bottom is the slide's). The drawing is the
+slide's whole width (980 px, its viewBox starting at x 50, so the drawing's x 0
+is the slide's x -50). The ground and the stand run off the slide's left edge.
+
+**The pool and the ground fade to the paper at the right.** They are all paper
+at 60% of the slide's width (`fade_end` in the script), so the left of the
+slide holds the picture. The fade makes the pool seem to go on to the right. A
+pool that ended in a drawn wall would be about as wide as the board, and read
+as a small pool. The fade adds no hard edge in the middle of the slide, so it
+does not pull the eye from the picture. It is an alpha mask on the group of the
+pool, the ground and the stand. Over `FADE_LENGTH` px, the blend to the paper
+is smootherstep, $6t^5 - 15t^4 + 10t^3$. The edges that were compared, their
+measurements and a deck that shows them are in
+[`2026-10-03-pool-edge`](../tasks/2026-10-03-pool-edge/PLAN.md).
+
+- **Not an oversight: the ramp is not linear.** A linear ramp, in sRGB or in
+  linear light, shows a sharp band where it starts (a Mach band). Smootherstep
+  has zero slope and curvature at both ends.
+- **Not an oversight: 256 stops, at 5 decimals.** An SVG gradient is piecewise
+  linear. With the offsets rounded to 0.1, the fade showed about ten wide steps.
+
+The board ends on the
+hairspring's rest shape, at the hairspring's place on the left (`SLIDE_ORIGIN`
+and `SPRING_CENTRE` in the script). Nothing is hidden by paper (it is not an
 art colour): the ground is clipped round the stand's outline. The component sets `overflow: visible` on the SVG: the curling board rises above
 the drawing's top edge, into the slide title's space, and must not be cropped
 there. Ground and water

@@ -61,6 +61,14 @@ the hour hand hid part of the mainspring, so the user chose 2:35.
 
 Barroom at 2:35: hold 3.64, p90 6.90, Fmax 0.080.
 
+## Later change
+
+2026-10-03: the train after the centre wheel was mirrored about the vertical
+line and turned so that the balance is at 11 o'clock, and the barrel moved to
+112 degrees (the third-barrel gap stays 12 +/- 1 px). Slide 2's picture is on
+the left (`docs/watch.md`, "The layout of the movement"). The 150 degree turn
+above is now the layout's history only.
+
 ## Evidence
 
 - `out/before.svg`, `out/step1.svg`, `out/after.svg` and their PNGs (frame 0,

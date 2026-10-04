@@ -211,7 +211,7 @@ def layout_constraints(placement: Placement, spacing: float = 1.0) -> list[str]:
     """Fixed barrel position and the visible third-barrel clearance target."""
     problems = []
     if not math.isclose(placement.layout.barrel_angle, BARREL_ANGLE, abs_tol=1e-6):
-        problems.append(f"barrel: must be at {BARREL_ANGLE:g} degrees (5 o'clock)")
+        problems.append(f"barrel: must be at {BARREL_ANGLE:g} degrees")
     visible = regions(STACK, placement.arbor)
     gap = region_gap(visible[THIRD], visible[BARREL], spacing)
     if abs(gap - THIRD_BARREL_CLEARANCE) > THIRD_BARREL_TOLERANCE:

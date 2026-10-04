@@ -79,7 +79,7 @@ const STUD_OVERHANG = 1;
 const CROWN_ZOOM = 2;
 const HAIRSPRING_ZOOM = 250 / 56;
 /** Where the balance's arbor is on the slide in the hairspring view. */
-const HAIRSPRING_TARGET: Point2 = [705, 276];
+const HAIRSPRING_TARGET: Point2 = [275, 276];
 const SPRING_FRAMES = 25;
 
 // ---- parts and recipes ---------------------------------------------------------------

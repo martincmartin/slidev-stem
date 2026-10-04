@@ -189,7 +189,7 @@ test("the lowered spring stays at slide 2's target through its tilt", () => {
     arborY,
     (watch.springHeights.bottom + watch.springHeights.top) / 2,
   ]);
-  assert.ok(Math.abs(view.scale * arborX + view.shift[0] - 705) < 1e-9);
+  assert.ok(Math.abs(view.scale * arborX + view.shift[0] - 275) < 1e-9);
   assert.ok(Math.abs(view.scale * arborY + view.shift[1] - 276) < 1e-9);
 });
 

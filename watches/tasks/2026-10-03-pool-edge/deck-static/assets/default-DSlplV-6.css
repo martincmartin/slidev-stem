@@ -1,0 +1,1 @@
+.diving-board{opacity:0;pointer-events:none;width:980px;height:452px;transition:opacity .4s;position:absolute;top:100px;left:0}.diving-board-on{opacity:1}.diving-board svg{overflow:visible}@media (prefers-reduced-motion:reduce){.diving-board{transition:none}}

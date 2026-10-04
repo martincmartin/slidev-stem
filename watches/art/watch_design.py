@@ -212,22 +212,24 @@ class Layout:
     balance_distance: float  # from the escape arbor, along lever_angle
 
 
-# The drawing's layout. As in an ETA 6497, the barrel is at 5 o'clock and the
-# balance is across the dial from it, near the top. It leaves at least
+# The drawing's layout. The train runs from the centre wheel leftwards, so that
+# slide 2's hairspring is on the left of the slide (watches/docs/watch.md): the
+# balance is at 11 o'clock, as in an ETA 6497. The barrel is as near 5 o'clock
+# as the third wheel allows. It leaves at least
 # MIN_CLEARANCE between the visible parts of parts that do not mesh,
 # FORK_CLEARANCE round the fork and RING_CLEARANCE inside the chapter ring:
 # validate_watch_design.py checks all three.
-# The search also holds the barrel at 5 o'clock and keeps the visible
+# The search also holds the barrel at BARREL_ANGLE and keeps the visible
 # third-barrel gap within 1 px of 12 px.
-BARREL_ANGLE = 60.0
+BARREL_ANGLE = 112.0
 THIRD_BARREL_CLEARANCE = 12.0
 THIRD_BARREL_TOLERANCE = 1.0
 LAYOUT = Layout(
     barrel_angle=BARREL_ANGLE,
-    third_angle=191.0,
-    fourth_angle=243.5,
-    escape_angle=288.5,
-    lever_angle=353.5,
+    third_angle=-18.45,
+    fourth_angle=-70.95,
+    escape_angle=-115.95,
+    lever_angle=-180.95,
     fork_pivot_distance=40.0,
     balance_distance=110.0,
 )

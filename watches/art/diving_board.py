@@ -6,9 +6,10 @@ the board curls up into the hairspring at rest.
     uv run art/diving_board.py            # in watches/; writes the SVG
     uv run art/diving_board.py --check    # fail if the file on disk differs
 
-The picture is oblique: the ground is on the left, the pool on the right, and it
-runs off the right edge of the drawing. The viewer is above and in front, so the
-back of everything is up and to the right (`Oblique`).
+The picture is oblique: the ground is on the left, the pool on the right, and
+they fade to the paper by 60% of the slide's width (`fade_end`). The viewer is
+above and in front, so the back of everything is up and to the right
+(`Oblique`).
 
 The file is a SMIL animation with one timeline (`Timeline`, seconds):
 
@@ -166,10 +167,10 @@ FADE_SECONDS = 0.6  # of the pool and the stand: the page's transition
 # The hairspring at rest, as the hairspring view shows it (see the docstring).
 SPRING_RADII = (8.0, 38.0)
 SPRING_TURNS = 3.25
-SPRING_OUTER_ANGLE = 262.54867112413893  # degrees: the stud (watch/design.json)
+SPRING_OUTER_ANGLE = 210.00132887586108  # degrees: the stud (watch/design.json)
 SPRING_SCALE = 250 / 56  # the view's zoom (HAIRSPRING_ZOOM in watch/generate.ts)
-SLIDE_ORIGIN = (380.0, 100.0)  # where the slide shows the drawing's top left
-SPRING_CENTRE = (705.0 - SLIDE_ORIGIN[0], 276.0 - SLIDE_ORIGIN[1])  # HAIRSPRING_TARGET
+SLIDE_ORIGIN = (-50.0, 100.0)  # where the slide shows the drawing's top left
+SPRING_CENTRE = (275.0 - SLIDE_ORIGIN[0], 276.0 - SLIDE_ORIGIN[1])  # HAIRSPRING_TARGET
 SPRING_TILT = math.radians(20.0)  # `watchTilt` on slide 2: squeezes y
 # The spring is a ribbon, a wall as high as `SPRING_Z` (watch/generate.ts
 # `springHeights`), and the view's pivot is at `SPRING_PIVOT_Z`: a higher point
@@ -221,10 +222,10 @@ class Oblique:
 @dataclass(frozen=True)
 class BoardDesign:
     """Lengths in CSS px, one SVG unit to a px, as the slide shows them. The
-    slide puts the drawing's left at x 380 and its top at y 100."""
+    slide puts the drawing's x 0 at x -50 and its top at y 100."""
 
     width: int = 980  # the slide's: the ground runs off its bottom and slants left
-    view_left: int = -380  # the viewBox's left: the slide's left edge (`SLIDE_ORIGIN`)
+    view_left: int = 50  # the viewBox's left: the slide's left edge (`SLIDE_ORIGIN`)
     height: int = 452  # the slide's bottom: the pool goes on below it
     oblique: Oblique = Oblique()
     board_left: float = 70.0  # the front top edge: where the board starts
@@ -245,6 +246,11 @@ class BoardDesign:
     pool_x: float = 195.0  # the pool's left wall: two thirds of the board is over it
     coping: float = 14.0
     water_depth: float = 34.0  # the water's surface below the ground
+    # x: where the pool and the ground have faded to the paper: 60% of the
+    # slide's width from its left (`SLIDE_ORIGIN`), so the pool seems to go on to
+    # the right. A pool that ended in a drawn wall would be as wide as the board,
+    # and read as a small pool. Why a fade: tasks/2026-10-03-pool-edge/.
+    fade_end: float = 0.6 * 980 - SLIDE_ORIGIN[0]
     off_slide: float = (
         1400.0  # x: past the right of the drawing, at the pool's front too
     )
@@ -264,7 +270,24 @@ class BoardDesign:
 
 
 DESIGN = BoardDesign()
+
+
+FADE_LENGTH = 85.0  # px: the fade's length, ending at `fade_end`
+# The fade is a gradient of the mask's opacity: the blend of the pool with the
+# paper is smootherstep(t), t from 0 to 1 across the fade, which has zero slope and
+# curvature at both ends. A linear ramp (in sRGB or in linear light) has a sudden
+# change of slope at each end, which the eye exaggerates into a bright or dark band
+# (a Mach band). An SVG gradient is piecewise linear, so it has a stop every third
+# of a pixel. The offsets must be written with enough decimals: `number()` rounds
+# to 0.1, and the fade then had about ten wide steps. Measured: the render matches
+# the formula to 0.003 (tasks/2026-10-03-pool-edge/evidence/).
+FADE_STOPS = 256
 TIMELINE = Timeline()
+
+
+def smootherstep(fraction: float) -> float:
+    """0 to 1 with zero slope and curvature at both ends."""
+    return fraction**3 * (fraction * (fraction * 6 - 15) + 10)
 
 
 def smoothstep(fraction: float) -> float:
@@ -646,11 +669,31 @@ def set_markup(inks: Inks, design: BoardDesign) -> list[str]:
         oblique.project(design.stand_x[1], 0, design.stand_z[0]),
     ]
     everything = f"M{design.view_left} 0 H{design.view_left + design.width} V{design.height} H{design.view_left} Z"
+    fade_id = f"{CLASS_PREFIX}fade"
+    mask_id = f"{CLASS_PREFIX}fade-mask"
+    ground_clip_id = f"{CLASS_PREFIX}ground-clip"
+    fade_start = design.fade_end - FADE_LENGTH
+    kept_width = design.fade_end - design.view_left
     return [
         "<defs>",
-        f'<clipPath id="diving-board-ground-clip"><path clip-rule="evenodd" d="{everything} {path_data(stand_hull)}"/></clipPath>',
+        f'<linearGradient id="{fade_id}" gradientUnits="userSpaceOnUse" x1="{number(fade_start)}" x2="{number(design.fade_end)}" y1="0" y2="0">'
+        + "".join(
+            f'<stop offset="{index / FADE_STOPS:.5f}" stop-color="{inks.knockout.value}" stop-opacity="{1 - smootherstep(index / FADE_STOPS):.4f}"/>'
+            for index in range(FADE_STOPS + 1)
+        )
+        + "</linearGradient>",
+        # an alpha mask: only the opacity of what it holds counts
+        # the mask is only as big as the drawing: with a huge one, Chromium drew
+        # the fade in about ten wide steps
+        f'<mask id="{mask_id}" mask-type="alpha" maskUnits="userSpaceOnUse" x="{number(design.view_left)}" y="0" width="{number(kept_width)}" height="{number(design.height)}">'
+        # one rect: the gradient's first stop pads to the left of its start,
+        # so no seam shows where the full part meets the fade
+        + f'<rect x="{number(design.view_left)}" y="0" width="{number(kept_width)}" height="{number(design.height)}" fill="url(#{fade_id})"/></mask>',
+        f'<clipPath id="{ground_clip_id}"><path clip-rule="evenodd" d="{everything} {path_data(stand_hull)}"/></clipPath>',
         "</defs>",
         f'<g id="diving-board-set" class="{CLASS_PREFIX}set">',
+        # the pool, the ground and the stand, faded to the paper at the right
+        f'<g mask="url(#{mask_id})">',
         # the pool: the water is a wash of the art line, the walls are shaded
         f'<path d="{path_data(surface)}" {paint(fill=inks.line)} fill-opacity="{WATER_OPACITY}"/>',
         f'<path d="{path_data(left_wall)}" {wash} fill-opacity="{WALL_OPACITY}"/>',
@@ -664,7 +707,7 @@ def set_markup(inks: Inks, design: BoardDesign) -> list[str]:
         *(f'<path d="{ripple}"/>' for ripple in ripples),
         "</g>",
         # the ground, which the stand hides
-        '<g clip-path="url(#diving-board-ground-clip)">',
+        f'<g clip-path="url(#{ground_clip_id})">',
         f'<path d="{ground_top}" {wash} fill-opacity="{GROUND_OPACITY}"/>',
         f'<path d="{ground_top}" {outline}/>',
         "</g>",
@@ -677,6 +720,7 @@ def set_markup(inks: Inks, design: BoardDesign) -> list[str]:
         f'<path d="{path_data(stand_top)}"/>',
         f'<path d="{path_data(stand_front)}"/>',
         "</g>",
+        "</g>",  # the faded group
         "</g>",
     ]
 
