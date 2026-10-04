@@ -154,8 +154,9 @@ its own colours.
   coils into the wheel behind them, and pale lines on a dark fill read as a
   negative: both were drawn and rejected (the flash task).
 - **When.** During a camera move to the part, so that the audience can follow
-  the zoom. Only in a transition: a slide reached directly shows its
-  state with no flash.
+  the zoom. Only on the step forward into the slide: a slide reached by a jump,
+  or by a step back, shows its state with no flash
+  ([navigation.md](navigation.md), "Attention cue").
 - **Safety.** Two flashes a second is below the WCAG 2.3.1 limit of three.
 - **In WebGL**: `FLASH_INKS` in `watches/webgl/scene.ts`, the stage's flash
   phase and its timing constants in `watches/webgl/timeline.ts`, and a slide's

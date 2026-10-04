@@ -1,0 +1,4 @@
+/* Every slide's title is centred. The cover's is not (see slides.md). */
+.slidev-layout h1 {
+  text-align: center;
+}

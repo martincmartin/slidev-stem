@@ -25,12 +25,12 @@ export interface WatchState {
   settled: boolean;
 }
 
-function wrong(name: string, value: unknown, wanted: string): never {
+export function wrong(name: string, value: unknown, wanted: string): never {
   throw new Error(`${name}: ${JSON.stringify(value)} should be ${wanted}`);
 }
 
 /** A click number in the frontmatter, or `undefined` if the field is not there. */
-function clickOf(
+export function clickOf(
   frontmatter: Record<string, unknown>,
   name: string,
 ): number | undefined {

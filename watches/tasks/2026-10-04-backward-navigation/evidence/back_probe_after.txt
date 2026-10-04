@@ -1,0 +1,36 @@
+4 -> 3
+0: rest [0] stage rest 0.00 fading no
+1: rest [0] stage rest 0.00 fading no
+2: rest [0] stage rest 0.00 fading no
+3: rest [0] stage rest 0.00 fading no
+5: rest [0] stage rest 0.00 fading no
+10: rest [0] stage rest 0.00 fading no
+15: rest [0] stage rest 0.00 fading no
+20: rest [0] stage rest 0.00 fading no
+25: rest [0] stage rest 0.00 fading no
+30: rest [0] stage rest 0.00 fading no
+35: rest [0] stage rest 0.00 fading no
+40: rest [0] stage rest 0.00 fading no
+45: rest [0] stage rest 0.00 fading no
+50: rest [0] stage rest 0.00 fading no
+55: rest [0] stage rest 0.00 fading no
+60: rest [0] stage rest 0.00 fading no
+65: rest [0] stage rest 0.00 fading no
+3 -> 2 (click 4)
+0: rest [0.14] stage rest 0.98 fading yes
+1: rest [0.22] stage rest 0.96 fading yes
+2: rest [0.36] stage rest 0.91 fading yes
+3: rest [0.5] stage rest 0.84 fading yes
+5: rest [0.71] stage rest 0.61 fading yes
+10: rest [0.94] stage rest 0.06 fading yes
+15: rest [1] stage rest 0.00 fading no
+20: rest [1] stage rest 0.00 fading no
+25: rest [1] stage rest 0.00 fading no
+30: rest [1] stage rest 0.00 fading no
+35: rest [1] stage rest 0.00 fading no
+40: rest [1] stage rest 0.00 fading no
+45: rest [1] stage rest 0.00 fading no
+50: rest [1] stage rest 0.00 fading no
+55: rest [1] stage rest 0.00 fading no
+60: rest [1] stage rest 0.00 fading no
+65: rest [1] stage rest 0.00 fading no

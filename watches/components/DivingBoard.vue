@@ -1,23 +1,25 @@
 <script setup lang="ts">
-// The diving board of public/diving-board.svg, for a slide. The SVG is a SMIL
-// animation with one timeline (art/diving_board.py writes it). This component
-// owns the clock: the file is inlined, its animations are paused, and the
-// timeline is set by hand. `visible` fades the picture in; `playing` runs the
-// timeline from 0 (bend, hold, swing); `curling` fades the pool and the stand
-// at once, and curls the board at the next bottom of its swing, where it is
-// still (the SVG's `data-curl-start`). Until then the SVG's time stays inside
-// the swing's one cycle, so it can jump to the curl without a change of pose.
-// The clock runs only while the slide is the one on screen: Slidev keeps a left
-// slide mounted and gives it its last click, so `playing` alone would keep it
-// running off-screen. Each entry into the playing state starts again from 0,
-// and going back a click is exact. A slide entered at a click after the board
-// (back from the next slide) starts with the curl over, at rest.
-// A page that does not run the clock (print and export, the overview) shows the
-// pose of its click: bent, or part-way through the curl (watch/board.ts).
-// `data-waitfor` makes `slidev export` wait until the SVG is in place and posed.
-// The rest outline and its callout use this same clock. `restVisible` keeps
-// them on the slide after the moving board fades into the real spring.
-import { useNav, useSlideContext } from "@slidev/client";
+// The diving board of public/diving-board.svg. The SVG is a SMIL animation with
+// one timeline (art/diving_board.py writes it). This component owns the clock:
+// the file is inlined, its animations are paused, and the timeline is set by
+// hand, from `BoardClock` (watch/board.ts).
+//
+// There is one live board for the whole talk, in the watch's layer
+// (global-bottom.vue), as there is one live watch. It takes each slide's
+// target (`boardState` of the slide's frontmatter and click) and goes there
+// from what is on the screen: the picture and the rest shape fade in or out
+// (CSS transitions), and the clock bends, curls or uncurls the board. So a
+// move back is the move forward reversed, with no code for it
+// (../../docs/navigation.md). With `atOnce` (a jump), it shows the target with
+// no fade and no motion.
+//
+// `live` false: a page that does not run the clock (print and export, the
+// overview, the presenter's "next" pane: slide-bottom.vue). It shows the pose
+// of its click (`boardPoseTime`). `data-waitfor` makes `slidev export` wait
+// until the SVG is in place and posed.
+//
+// `data-phase` and `data-busy` on the host are for tools/navcheck.py
+// (watch/slide-state.ts).
 import {
   computed,
   nextTick,
@@ -27,132 +29,82 @@ import {
   useTemplateRef,
   watch,
 } from "vue";
-import { boardPoseTime } from "../watch/board.ts";
+import { BoardClock, boardPoseTime } from "../watch/board.ts";
+import type { BoardState, BoardTarget, BoardTiming } from "../watch/board.ts";
 
-const props = defineProps<{
-  visible: boolean;
-  playing: boolean;
-  curling: boolean;
-  restVisible: boolean;
-}>();
+const props = defineProps<{ target: BoardTarget; live: boolean }>();
 
-const { $renderContext, $page } = useSlideContext();
-const LIVE = ["slide", "presenter"];
-const { currentSlideNo, isPrintMode } = useNav();
-const running = computed(
-  () =>
-    props.playing &&
-    currentSlideNo.value === $page.value &&
-    LIVE.includes($renderContext.value) &&
-    !isPrintMode.value,
-);
 const CURLING_CLASS = "diving-board-curling";
+const BUSY_PHASES = new Set(["bend", "curl", "uncurl"]);
 
 const host = useTemplateRef<HTMLDivElement>("host");
 const markup = ref("");
+/** The state that the classes show; it changes when the target is applied. */
+const shown = ref<BoardState | undefined>(undefined);
+const instant = ref(false);
+let clock: BoardClock | null = null;
 let frame = 0;
-let startedAt = 0; // ms: the SVG's time 0
-let curlAt = Infinity; // ms: when the curl starts
 
 function svg(): SVGSVGElement | null {
   return host.value?.querySelector("svg") ?? null;
 }
 
-function timing(board: SVGSVGElement, name: string): number {
-  const seconds = Number(board.dataset[name]);
-  if (!Number.isFinite(seconds))
-    throw new Error(`diving-board.svg has no data-${name}`);
-  return seconds;
+function timingOf(board: SVGSVGElement): BoardTiming {
+  const read = (name: string): number => {
+    const seconds = Number(board.dataset[name]);
+    if (!Number.isFinite(seconds))
+      throw new Error(`diving-board.svg has no data-${name}`);
+    return seconds;
+  };
+  return {
+    swingStart: read("swingStart"),
+    swingPeriod: read("swingPeriod"),
+    curlStart: read("curlStart"),
+    curlDuration: read("curlDuration"),
+  };
 }
 
-/** The SVG's time for a page that does not run the clock. */
-function poseTime(board: SVGSVGElement): number {
-  return boardPoseTime(
-    {
-      swingStart: timing(board, "swingStart"),
-      curlStart: timing(board, "curlStart"),
-      curlDuration: timing(board, "curlDuration"),
-    },
-    props.playing,
-    props.curling,
-  );
-}
-
-/** The SVG's time for the clock's `now` (ms): inside the swing's cycle until
- *  the curl, then the curl's. */
-function svgTime(board: SVGSVGElement, now: number): number {
-  const swingStart = timing(board, "swingStart");
-  const period = timing(board, "swingPeriod");
-  if (now >= curlAt) return timing(board, "curlStart") + (now - curlAt) / 1000;
-  const elapsed = (now - startedAt) / 1000;
-  return elapsed < swingStart
-    ? elapsed
-    : swingStart + ((elapsed - swingStart) % period);
-}
-
-/** When the board is next at the bottom of its swing, as a time of the clock
- *  (ms): the swing starts at the bottom, and is there each period. */
-function nextBottom(board: SVGSVGElement, now: number): number {
-  const swingStart = timing(board, "swingStart");
-  const period = timing(board, "swingPeriod");
-  const elapsed = (now - startedAt) / 1000;
-  const cycles =
-    elapsed <= swingStart ? 0 : Math.ceil((elapsed - swingStart) / period);
-  return startedAt + (swingStart + cycles * period) * 1000;
-}
-
-function run(now: number): void {
-  const board = svg();
-  if (board) {
-    const curlEnd = timing(board, "curlStart") + timing(board, "curlDuration");
-    const time = svgTime(board, now);
-    board.setCurrentTime(Math.min(time, curlEnd));
-    if (time >= curlEnd) {
-      frame = 0;
-      return;
-    }
-  }
-  frame = requestAnimationFrame(run);
-}
-
-function stop(): void {
-  cancelAnimationFrame(frame);
+/** Set the SVG's time and the host's phase at `now`; go on while it moves. */
+function draw(now: number): void {
   frame = 0;
+  const board = svg();
+  if (!board || !clock || !host.value) return;
+  board.setCurrentTime(clock.time(now));
+  const phase = shown.value ? clock.phase(now) : "off";
+  host.value.dataset["phase"] = phase;
+  host.value.dataset["busy"] = String(BUSY_PHASES.has(phase));
+  if (shown.value && clock.moving(now)) frame = requestAnimationFrame(draw);
 }
 
-function apply(): void {
-  stop();
+function apply(target: BoardTarget): void {
   const board = svg();
-  if (!board) return;
+  if (!board) return; // onMounted applies the target when the SVG is in
   board.pauseAnimations();
-  curlAt = Infinity;
-  if (running.value && props.curling && !props.visible) {
-    // Entered from the next slide, or reloaded, after the board's click: the
-    // curl is over, so show the spring at rest and do not play it again.
-    board.setCurrentTime(
-      timing(board, "curlStart") + timing(board, "curlDuration"),
-    );
-  } else if (running.value) {
-    board.setCurrentTime(0);
-    startedAt = performance.now();
-    if (props.curling) curlAt = nextBottom(board, startedAt);
-    frame = requestAnimationFrame(run);
-  } else {
-    board.setCurrentTime(poseTime(board));
+  const state = target.state;
+  board.classList.toggle(CURLING_CLASS, state?.curling ?? false);
+  if (!props.live) {
+    shown.value = state;
+    if (state) board.setCurrentTime(boardPoseTime(timingOf(board), state));
+    board.setAttribute("data-posed", "");
+    return;
   }
-  board.setAttribute("data-posed", "");
-  showCurling();
-}
-
-function showCurling(): void {
-  svg()?.classList.toggle(CURLING_CLASS, props.curling);
-}
-
-function curl(): void {
-  const board = svg();
-  if (board && running.value && curlAt === Infinity)
-    curlAt = nextBottom(board, performance.now());
-  showCurling();
+  cancelAnimationFrame(frame);
+  clock ??= new BoardClock(timingOf(board));
+  const now = performance.now();
+  // a slide with no board leaves the clock where it is: its rest shape fades
+  // out in the pose that it had, and comes back in it
+  if (state) clock.show(state.place, now, target.atOnce);
+  if (target.atOnce) {
+    // no CSS transition for this change: on, and off again after it is drawn
+    instant.value = true;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        instant.value = false;
+      });
+    });
+  }
+  shown.value = state;
+  draw(now);
 }
 
 onMounted(async () => {
@@ -161,23 +113,24 @@ onMounted(async () => {
   if (!response.ok) throw new Error(`${source}: ${String(response.status)}`);
   markup.value = await response.text();
   await nextTick(); // v-html puts the SVG in the page
-  requestAnimationFrame(apply);
+  apply({ state: props.target.state, atOnce: true });
 });
-watch(running, apply);
 watch(
-  () => props.curling,
-  (curling) => {
-    if (curling && running.value) curl();
-    else apply();
+  () => props.target,
+  (target) => {
+    apply(target);
   },
 );
-watch(
-  () => props.playing,
-  () => {
-    if (!running.value) apply(); // a page that does not run the clock
-  },
-);
-onBeforeUnmount(stop);
+onBeforeUnmount(() => {
+  cancelAnimationFrame(frame);
+});
+
+const classes = computed(() => ({
+  "diving-board-on": shown.value !== undefined,
+  "diving-board-picture-on": shown.value?.picture ?? false,
+  "diving-board-rest-on": shown.value?.rest ?? false,
+  "diving-board-instant": instant.value,
+}));
 </script>
 
 <template>
@@ -185,12 +138,8 @@ onBeforeUnmount(stop);
   <div
     ref="host"
     class="diving-board"
-    data-waitfor="svg[data-posed]"
-    :class="{
-      'diving-board-on': visible || restVisible,
-      'diving-board-picture-on': visible,
-      'diving-board-rest-on': restVisible,
-    }"
+    :data-waitfor="live ? undefined : 'svg[data-posed]'"
+    :class="classes"
     aria-hidden="true"
     v-html="markup"
   />
@@ -210,18 +159,24 @@ onBeforeUnmount(stop);
   top: 100px;
   width: 980px;
   height: 452px;
-  opacity: 0;
-  transition: opacity 0.4s;
   pointer-events: none;
 }
-.diving-board-on {
-  opacity: 1;
-}
+/* Each layer fades on its own. The picture fades in 0.4 s, with the watch's
+   0.3 s fade at the clicks where one takes the other's place. The rest shape
+   fades with the watch's swap, when the balance wheel joins (`--watch-fade`,
+   which global-bottom.vue sets from FADE_SECONDS in webgl/timeline.ts). */
 .diving-board [data-layer="board"],
 .diving-board [data-layer="rest"],
 .diving-board [data-layer="rest-callout"] {
   opacity: 0;
   transition: opacity 0.4s;
+}
+.diving-board [data-layer="rest"],
+.diving-board [data-layer="rest-callout"] {
+  transition-duration: var(--watch-fade, 0.8s);
+  /* the stage's cubic ease-in-out (`ease` in webgl/timeline.ts), so that the
+     two fades cross at the same moment */
+  transition-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
 }
 .diving-board [data-layer="set"] {
   opacity: 0;
@@ -237,10 +192,10 @@ onBeforeUnmount(stop);
 .diving-board svg {
   overflow: visible;
 }
+.diving-board-instant [data-layer] {
+  transition: none !important;
+}
 @media (prefers-reduced-motion: reduce) {
-  .diving-board {
-    transition: none;
-  }
   .diving-board [data-layer="board"],
   .diving-board [data-layer="rest"],
   .diving-board [data-layer="rest-callout"] {

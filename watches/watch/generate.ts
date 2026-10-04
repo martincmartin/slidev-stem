@@ -1311,6 +1311,19 @@ export function generate(design: Design = DESIGN): Watch {
       stud.mesh,
     ]),
   };
+  // the balance wheel with the hairspring and the balance staff (the staff is
+  // part of the spring's `Part`), without the roller and the jewel: what slide
+  // 3 shows. It holds `subject`, so the balance fades in alone.
+  const wheelParts = new Set([parts.balance, parts.spring]);
+  const wheel: Subject = {
+    name: "balance wheel and hairspring",
+    meshes: new Set([
+      ...[...movementMeshes]
+        .filter(([solid]) => wheelParts.has(solid.part))
+        .map(([, mesh]) => mesh),
+      stud.mesh,
+    ]),
+  };
   const scene: Scene = {
     slide: [design.canvas.width, design.canvas.height],
     meshes,
@@ -1322,7 +1335,7 @@ export function generate(design: Design = DESIGN): Watch {
       middle,
       crownCentreX,
     ),
-    subjects: [subject, oscillator],
+    subjects: [subject, oscillator, wheel],
   };
 
   return {

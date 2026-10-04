@@ -159,6 +159,10 @@ export interface Frame {
   readonly keep?: ReadonlySet<Mesh>;
   /** The opacity of all other meshes, 0 to 1 (default 1). */
   readonly rest?: number;
+  /** Only these meshes (and those in `keep`) show at `rest` and above, and no
+   *  other mesh is drawn: a subject that grows into a larger one. Default: every
+   *  mesh. */
+  readonly fade?: ReadonlySet<Mesh>;
   /** Device px, whole numbers. */
   readonly size: readonly [number, number];
   /** Leave out the meshes with `inDrawing` false. */

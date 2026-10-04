@@ -30,7 +30,8 @@ Martin C. Martin
   place-content: center start;
   text-align: left;
 }
-.cover-watch h1 {
+.slidev-layout.cover-watch h1 {
+  text-align: left; /* the one title that is not centred: the watch is beside it */
   max-width: 480px; /* three lines; the widest, "What Every Nerd", is 464 px */
 }
 </style>
@@ -48,17 +49,13 @@ watchHide: 1
 watchSettle: 2
 watchShow: 3
 watchResume: 4
+board: 1
+boardCurl: 2
+boardHide: 3
 clicks: 4
 ---
 
-# Hairspring and Balance Wheel
-
-<DivingBoard
-  :visible="$clicks >= 1 && $clicks < 3"
-  :playing="$clicks >= 1"
-  :curling="$clicks >= 2"
-  :rest-visible="$clicks >= 1"
-/>
+# Hairspring
 
 <!--
 The _hairspring_ beats every 2 seconds, controlling the speed of the rest of the watch.
@@ -80,6 +77,20 @@ The hairspring and the balance wheel: the part of a watch that keeps time.
 [click] The board fades out and the real hairspring fades in, at rest, with the same shape.
 
 [click] The hairspring starts to swing again, as the board did. Its dashed rest shape stays still.
+-->
+
+---
+watch: hairspring
+watchTilt: 20
+watchOnly: balance wheel and hairspring
+---
+
+# Balance Wheel
+
+<!--
+The hairspring is only half of the oscillator. The other half is the balance wheel.
+
+The dashed rest shape fades out as the balance wheel fades in.
 -->
 
 ---

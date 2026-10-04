@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import type { Subject, View } from "./scene.ts";
+import type { Mesh, Subject, View } from "./scene.ts";
 import {
   FADE_SECONDS,
   FLASH_CYCLES,
@@ -45,6 +45,10 @@ const view = (name: string, scale: number): View => ({
 const WIDE = view("wide", 1);
 const CLOSE = view("close", 3);
 const FAR = view("far", 5);
+/** A mesh that the timeline only compares by identity. */
+function mesh(name: string): Mesh {
+  return { name } as unknown as Mesh;
+}
 const SPRING: Subject = { name: "spring", meshes: new Set() };
 const BALANCE: Subject = { name: "balance", meshes: new Set() };
 
@@ -76,6 +80,7 @@ test("the first state is shown at once, with no phase", () => {
     tilt: 20,
     rest: 0,
     subject: SPRING,
+    fading: null,
   });
   assert.equal(timeline.phaseAt(0), null);
 });
@@ -111,6 +116,7 @@ test("towards a subject: the view moves, then the camera tilts, then the rest fa
     tilt: 30,
     rest: 0,
     subject: SPRING,
+    fading: null,
   });
 });
 
@@ -139,6 +145,37 @@ test("from one subject to another: the rest fades in around the first, then the 
   assert.equal(timeline.valuesAt(FADE + MOVE).subject, BALANCE);
   assert.equal(timeline.valuesAt(FADE + MOVE - 1).subject, SPRING);
   assert.equal(timeline.valuesAt(FADE + MOVE + FADE).rest, 0);
+});
+
+test("from a subject to one that holds it: the difference fades in alone, with the rest still out", () => {
+  const inner = mesh("inner");
+  const extra = mesh("extra");
+  const small: Subject = { name: "small", meshes: new Set([inner]) };
+  const large: Subject = { name: "large", meshes: new Set([inner, extra]) };
+  const timeline = timelineAt(state({ view: CLOSE, subject: small }));
+  timeline.show(state({ view: CLOSE, subject: large }), 0);
+  assert.equal(timeline.phaseAt(0), "swap");
+  const growing = timeline.valuesAt(FADE / 2);
+  assert.equal(growing.subject, small);
+  assert.equal(growing.fading, large);
+  assert.ok(growing.rest > 0 && growing.rest < 1);
+  const done = timeline.valuesAt(FADE);
+  assert.equal(done.subject, large);
+  assert.equal(done.rest, 0);
+  assert.equal(done.fading, null);
+  assert.equal(timeline.phaseAt(FADE), null);
+  // and back again: the difference fades out alone, and does not flash
+  const flashSeconds = timeline.show(
+    state({ view: CLOSE, subject: small, flash: small }),
+    FADE,
+  );
+  assert.equal(flashSeconds, 0);
+  assert.equal(timeline.flashingAt(FADE + 1), null);
+  const shrinking = timeline.valuesAt(FADE + FADE / 2);
+  assert.equal(shrinking.subject, small);
+  assert.equal(shrinking.fading, large);
+  assert.equal(timeline.valuesAt(2 * FADE).subject, small);
+  assert.equal(timeline.valuesAt(2 * FADE).fading, null);
 });
 
 test("a state that changes nothing has no phase", () => {
@@ -243,4 +280,14 @@ test("a flash that has ended does not go on", () => {
     later,
   );
   assert.equal(seconds, FLASH_SECONDS);
+});
+
+test("text waits for the camera: first towards a subject, last away from it", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  timeline.show(state({ view: CLOSE, tilt: 20, subject: SPRING }), 1000);
+  assert.equal(timeline.viewEndAt(1000), 1000 + MOVE);
+  timeline.show(state({ view: WIDE }), 10_000);
+  assert.equal(timeline.viewEndAt(10_000), 10_000 + FADE + TILT + MOVE);
+  // after the move, or with no move, there is nothing to wait for
+  assert.equal(timeline.viewEndAt(20_000), 20_000);
 });

@@ -147,6 +147,20 @@ test("the flashed subject includes the roller and oscillator, not the fork", () 
   assert.ok(subject.meshes.has(watch.spring));
 });
 
+test("slide 3's subject is the balance wheel and the spring, not the roller or the jewel, and it holds slide 2's", () => {
+  const find = (name: string) =>
+    scene.subjects.find((candidate) => candidate.name === name);
+  const wheel = find("balance wheel and hairspring");
+  const spring = find("hairspring and stud");
+  assert.ok(wheel && spring);
+  const parts = new Set([...wheel.meshes].map((mesh) => mesh.part));
+  assert.deepEqual(
+    [...parts].sort(),
+    ["balance", "hairspring", "hairspring stud"].sort(),
+  );
+  for (const mesh of spring.meshes) assert.ok(wheel.meshes.has(mesh));
+});
+
 test("the lowered oscillator connects to the upper roller and jewel with clearance", () => {
   const [balanceBottom, balanceTop] = heights(at(partMeshes("balance"), 0));
   const [springBottom, springTop] = [

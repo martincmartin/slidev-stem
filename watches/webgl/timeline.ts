@@ -5,7 +5,10 @@
 // THE ORDER. Each change runs one channel at a time, eased: towards a subject
 // the camera moves, then the camera tilts, then the rest fades; away from it,
 // the reverse. From one subject to another, the rest first fades in around
-// the old subject; then the stage goes towards the new one. A new state starts
+// the old subject; then the stage goes towards the new one. Between two
+// subjects where one holds the other, and no view or tilt changes, the
+// difference fades in or out alone, with the rest of the scene still out (a
+// SWAP; it does not flash). A new state starts
 // from what is on the screen now, so a change during a transition does not
 // jump.
 //
@@ -13,7 +16,10 @@
 // flash: while the channels change, the subject is drawn in FLASH_INKS and in
 // its own inks, in turn, FLASH_CYCLES times. Only in a transition: a state
 // shown at once, or one that changes no channel, does not flash. It ends on
-// its own inks. The flash and the first channel start together.
+// its own inks. The flash and the first channel start together. The caller
+// names a flash only on the step forward into its slide
+// (../../docs/navigation.md): the timeline does not know which way a change
+// goes.
 
 import type { Subject, View } from "./scene.ts";
 
@@ -51,6 +57,9 @@ export interface Values {
   rest: number;
   /** What the fade keeps. It matters only while `rest` < 1. */
   subject: Subject | null;
+  /** While `rest` < 1, the only meshes that fade, besides `subject`'s (a swap);
+   *  `null`: every mesh does. */
+  fading: Subject | null;
 }
 
 type Channel = "view" | "rest" | "tilt";
@@ -71,6 +80,7 @@ type Phase = {
       /** A fade towards a subject: the subject that it keeps, from its start. */
       subject?: Subject;
     }
+  | { channel: "swap"; from: Subject; to: Subject }
 );
 
 export function ease(fraction: number): number {
@@ -124,7 +134,23 @@ function applyPhase(values: Values, phase: Phase, now: number): void {
       if (phase.subject) values.subject = phase.subject;
       values.rest = done ? phase.to : mix(phase.from, phase.to, eased);
       break;
+    case "swap": {
+      // the smaller subject stays; the larger one's other meshes fade
+      const growing = holds(phase.to, phase.from);
+      const [smaller, larger] = growing
+        ? [phase.from, phase.to]
+        : [phase.to, phase.from];
+      values.subject = done ? phase.to : smaller;
+      values.fading = done ? null : larger;
+      values.rest = done ? 0 : growing ? eased : 1 - eased;
+      break;
+    }
   }
+}
+
+/** Whether `outer` has every mesh of `inner`. */
+function holds(outer: Subject, inner: Subject): boolean {
+  return [...inner.meshes].every((mesh) => outer.meshes.has(mesh));
 }
 
 /** The phase that takes `channel` from `from` to `target`, or `null` if it is
@@ -183,6 +209,7 @@ export class Timeline {
       tilt: state.tilt,
       rest: state.subject ? 0 : 1,
       subject: state.subject,
+      fading: null,
     };
     const running = this.flash;
     this.flash = null;
@@ -195,6 +222,7 @@ export class Timeline {
     this.values = current;
     this.phases = [];
     let start = now;
+    let swapped = false;
     const add = (phase: Phase | null): void => {
       if (!phase) return;
       this.phases.push(phase);
@@ -203,6 +231,24 @@ export class Timeline {
     // where each channel is when the phases so far end
     const reached = { ...current };
     if (
+      state.subject !== null &&
+      current.subject !== null &&
+      current.subject !== state.subject &&
+      current.rest === 0 &&
+      current.view === state.view &&
+      current.tilt === state.tilt &&
+      (holds(state.subject, current.subject) ||
+        holds(current.subject, state.subject))
+    ) {
+      swapped = true;
+      add({
+        channel: "swap",
+        from: current.subject,
+        to: state.subject,
+        start,
+        seconds: FADE_SECONDS,
+      });
+    } else if (
       state.subject !== null &&
       current.subject !== state.subject &&
       current.rest < 1
@@ -217,7 +263,8 @@ export class Timeline {
     for (const channel of order) {
       add(phaseOf(channel, reached, target, start, state.subject));
     }
-    if (!state.flash || this.phases.length === 0) return 0;
+    // a swap is a part joining or leaving, not a move of the stage: no flash
+    if (!state.flash || swapped || this.phases.length === 0) return 0;
     // a flash of the same subject that is still running goes on: a click
     // during it does not start it again
     const flashStart =
@@ -242,6 +289,16 @@ export class Timeline {
     const values = { ...this.values };
     for (const phase of this.phases) applyPhase(values, phase, now);
     return values;
+  }
+
+  /** When the last camera move ends (ms), or `now` if none is still to come.
+   *  Text that must not cross a moving picture waits for it, in either
+   *  direction: towards a subject the camera moves first, away from it last. */
+  viewEndAt(now: number): number {
+    const ends = this.phases
+      .filter((phase) => phase.channel === "view")
+      .map((phase) => phase.start + phase.seconds * 1000);
+    return Math.max(now, ...ends);
   }
 
   /** What the timeline is moving at `now`: "flash", the name of a channel, or

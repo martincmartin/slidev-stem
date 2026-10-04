@@ -21,8 +21,18 @@ a slide's own `<style>` holds only its layout. The "Before clocks" slide in
 `slides.md` is the example: `layout: full`, `class: tk-timekeepers`, and a
 `<style>` block that lays out that class.
 
-Three rules for a slide:
+Five rules for a slide:
 
+- **A slide names what it shows at each click, never how to get there.** Put
+  it in the frontmatter (`watch…`, `board…`) or in `v-click`s. Going back then
+  needs no code: the layers move from what is on the screen
+  ([`navigation.md`](../../docs/navigation.md)). Do not write a script that
+  asks which way the viewer went, and do not put a copy of a shared picture
+  on each slide. `uv run ../tools/validate.py` walks the deck both ways and
+  fails on a cut or on a click that looks different when reached another way.
+- **Every slide's title is centred**, by `style.css` (a Slidev project file).
+  The cover's is the one exception: it sits left of the watch
+  (`.slidev-layout.cover-watch h1` in `slides.md`).
 - **Use a markdown `#` heading for the title.** The theme styles `h1` as the
   slide title. Inside a flex layout, set `margin: 0` on it.
 - **Never set a colour or a font on the slide.** Use `var(--palette-accent)` and the
@@ -95,7 +105,7 @@ classes and removes the `v-click` classes, and the dim rule stops working.
 ## The live watch and the diving board
 
 A slide that shows the watch sets its view in the frontmatter.
-Slide 2 uses the diving board to explain the spring.
+Slide 2 uses the diving board to explain the spring, and slide 3 fades its rest shape out as the balance wheel fades in.
 It is described in [watch.md](watch.md).
 
 ## Where things go on a slide

@@ -41,7 +41,7 @@ import pathlib
 import urllib.parse
 
 import browsers
-from playwright.async_api import Route, async_playwright
+from playwright.async_api import Page, Route, async_playwright
 from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 
 HOST = "deck.test"
@@ -81,10 +81,9 @@ WALK_LIMIT = 1000
 READY_TIMEOUT_MS = 15_000
 
 
-async def main(arguments: argparse.Namespace) -> int:
-    root = pathlib.Path(arguments.build)
-    blocked: list[str] = []
-    problems: list[str] = []
+async def serve_build(page: Page, root: pathlib.Path, blocked: list[str]) -> None:
+    """Serve the build in `root` to `page` at http://HOST/, from disk. Abort every
+    request to any other host, and add its URL to `blocked`."""
 
     async def route(request_route: Route) -> None:
         url = urllib.parse.urlparse(request_route.request.url)
@@ -102,6 +101,14 @@ async def main(arguments: argparse.Namespace) -> int:
         await request_route.fulfill(body=file.read_bytes(), content_type=content_type)
         return None
 
+    await page.route("**/*", route)
+
+
+async def main(arguments: argparse.Namespace) -> int:
+    root = pathlib.Path(arguments.build)
+    blocked: list[str] = []
+    problems: list[str] = []
+
     async with async_playwright() as playwright:
         browsers.install(playwright.chromium)
         browser = await playwright.chromium.launch()
@@ -109,7 +116,7 @@ async def main(arguments: argparse.Namespace) -> int:
             viewport={"width": 1960, "height": 1104},
             color_scheme=arguments.color_scheme,
         )
-        await page.route("**/*", route)
+        await serve_build(page, root, blocked)
         page.on("pageerror", lambda error: problems.append(f"page error: {error}"))
 
         async def load(path: str) -> bool:

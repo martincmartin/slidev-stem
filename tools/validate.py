@@ -19,7 +19,8 @@ What it checks comes from the uv project that holds the current directory:
     the talk sets the palette only for slide classes, within the gates; and a build of the deck (`pnpm build`,
     into a temporary directory), which offline_check.py --walk then steps
     through, slide by slide and click by click, with every outside request
-    blocked. Nothing outside the talk.
+    blocked, and navcheck.py walks forward and back (docs/navigation.md).
+    Nothing outside the talk.
   * a talk with TypeScript (scripts in its package.json): also `pnpm typecheck`,
     `pnpm lint` and `pnpm test`. A talk with WebGL art (the script `art:scene`)
     also has its scene written to a temporary file and checked by scenecheck.py;
@@ -211,6 +212,12 @@ def talk_checks(
             "offline",
             STEM,
             uv_run("tools/offline_check.py", str(deck), "--walk"),
+            shows_summary=True,
+        ),
+        Check(
+            "navigation",
+            STEM,
+            uv_run("tools/navcheck.py", str(deck)),
             shows_summary=True,
         ),
     ]

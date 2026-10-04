@@ -39,7 +39,9 @@
 // other meshes at opacity `rest`, as one image, as SVG's group opacity does:
 // the frame is drawn twice, with the rest and without it, and the two
 // pictures are mixed. So a fading part never shows its own hidden lines, and
-// what it hid shows through it as it fades.
+// what it hid shows through it as it fades. With `fade`, the picture "with the
+// rest" has only the meshes in `fade` and `keep`: a subject grows into a larger
+// one, and the meshes outside both stay out.
 //
 // Ownership: a renderer is the only user of its canvas's context, until
 // `dispose()`. It sets the GL state that it needs at the start of each frame,
@@ -1024,6 +1026,9 @@ export class Renderer {
     for (const mesh of keep) {
       check(this.geometry.has(mesh), `${mesh.name} is not in the scene`);
     }
+    for (const mesh of frame.fade ?? []) {
+      check(this.geometry.has(mesh), `${mesh.name} is not in the scene`);
+    }
     const rest = frame.rest ?? 1;
     check(rest >= 0 && rest <= 1, `rest ${String(rest)} is outside 0..1`);
     const shown = this.drawn.filter(
@@ -1043,11 +1048,15 @@ export class Renderer {
     this.setState();
     try {
       const kept = shown.filter(({ mesh }) => keep.has(mesh));
+      const fade = frame.fade;
+      const faded = fade
+        ? shown.filter(({ mesh }) => keep.has(mesh) || fade.has(mesh))
+        : shown;
       if (rest === 1 || rest === 0) {
         const target = this.draw(
           resources,
           0,
-          rest === 1 ? shown : kept,
+          rest === 1 ? faded : kept,
           picture,
         );
         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, target.framebuffer);
@@ -1066,7 +1075,7 @@ export class Renderer {
         );
         return;
       }
-      const withRest = this.draw(resources, 0, shown, picture);
+      const withRest = this.draw(resources, 0, faded, picture);
       const withoutRest = this.draw(resources, 1, kept, picture);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
       gl.viewport(0, 0, width, height);

@@ -141,6 +141,10 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   The flash and the first channel start together. It flashes only in a transition that changes a channel,
   not in a state shown at once. A key press during the flash does not start
   it again. `Stage.show` (from `Timeline.show`) returns the seconds until the flash ends. The flash does not delay the channels.
+  The caller passes a flash only on the step forward into its slide
+  ([navigation.md](navigation.md)); the timeline itself never asks which way
+  the viewer went. `viewEndAt` says when the camera's move ends, for text that
+  waits for it.
 - **A fade fades the rest as one picture**, as SVG's group opacity does: the
   fading parts never show their own hidden lines.
 - **Stills:** the export, the overview and the presenter's "next" pane show a

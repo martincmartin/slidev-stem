@@ -3,11 +3,21 @@
 // stage of webgl/stage.ts. Each slide names a view in its frontmatter
 // (`watch: hairspring`, `watchTilt: 45`, and see watch/state.ts); a slide
 // without one hides the layer. A click can change the state (`watchSettle`).
-// Print mode (export) has no live layer: slide-bottom.vue draws a still on each
-// page. `data-watch` on the canvas is the state it shows, for
-// art/print_check.py. Print mode comes from the page's nav: each printed page gets a fixed
-// nav of its own, which does not know it. The class slidev-layout gives the
-// layer the theme's palette variables and page colour.
+// Above the watch, the one live diving board (components/DivingBoard.vue),
+// which slide 2's frontmatter shows (`board`, and see watch/board.ts).
+//
+// A slide names targets, not moves (../docs/navigation.md). At each change of
+// slide or click, this decides the kind of move (watch/navigation.ts): a step
+// animates from what is on the screen, in either direction, and a jump shows
+// the target at once. A flash plays only on the step forward into its slide.
+// The new slide's text waits for the camera, in either direction
+// (`--watch-text-delay`, from the stage).
+//
+// Print mode (export) has no live layer: slide-bottom.vue draws a still and a
+// posed board on each page. `data-watch` on the canvas is the state it shows,
+// for art/print_check.py. Print mode comes from the page's nav: each printed
+// page gets a fixed nav of its own, which does not know it. The class
+// slidev-layout gives the layer the theme's palette variables and page colour.
 import { useNav } from "@slidev/client";
 import { injectionSlidevContext } from "@slidev/client/constants.ts";
 import {
@@ -15,21 +25,32 @@ import {
   inject,
   onBeforeUnmount,
   onMounted,
+  shallowRef,
   useTemplateRef,
   watch as onChange,
 } from "vue";
+import DivingBoard from "./components/DivingBoard.vue";
 import { Stage } from "./webgl/stage.ts";
-import { MOVE_SECONDS } from "./webgl/timeline.ts";
+import { FADE_SECONDS } from "./webgl/timeline.ts";
+import { boardState } from "./watch/board.ts";
+import type { BoardTarget } from "./watch/board.ts";
 import { WatchModel } from "./watch/model.ts";
 import type { WatchModelState } from "./watch/model.ts";
 import { WATCH, watchStills } from "./watch/instance.ts";
+import { moveOf } from "./watch/navigation.ts";
+import type { Move, Place } from "./watch/navigation.ts";
 import { themePalette } from "./watch/palette.ts";
+import { slideState } from "./watch/slide-state.ts";
+import type { SlideState } from "./watch/slide-state.ts";
 import { modelState, stageState, watchState } from "./watch/state.ts";
+import type { WatchState } from "./watch/state.ts";
 
 declare global {
   interface Window {
     /** For the measurement scripts. */
     watchStage?: Stage<WatchModelState>;
+    /** For tools/navcheck.py: ../docs/navigation.md, "The check". */
+    slideState?: () => SlideState;
   }
 }
 
@@ -42,9 +63,54 @@ const frontmatter = computed(
 const state = computed(() => watchState(frontmatter.value, slidev.nav.clicks));
 const name = computed(() => state.value?.view);
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
+const board = shallowRef<BoardTarget>({ state: undefined, atOnce: true });
 let stage: Stage<WatchModelState> | undefined;
 let hideTimer: ReturnType<typeof setTimeout> | undefined;
 let unmounted = false;
+/** The place and the watch state that the layer shows. */
+let place: Place | undefined;
+let shownWatch = "null";
+
+function showWatch(
+  now: WatchState | undefined,
+  move: Move,
+  intoSlide: boolean,
+): void {
+  const text = JSON.stringify(now ?? null);
+  if (text === shownWatch && move !== "jump") return;
+  const old = shownWatch;
+  shownWatch = text;
+  clearTimeout(hideTimer);
+  if (!now || !stage) {
+    hideTimer = setTimeout(() => stage?.stop(), 400); // after the layer's fade
+    return;
+  }
+  // a flash points to where the camera goes: only on the step forward into
+  // the slide that names it
+  const flash = move === "forward" && intoSlide ? now.flash : undefined;
+  const at = performance.now();
+  // a slide reached from a slide without the watch starts at its state
+  stage.show(
+    stageState(WATCH.scene, { ...now, flash }),
+    modelState(now),
+    move === "jump" || old === "null",
+  );
+  document.documentElement.style.setProperty(
+    "--watch-text-delay",
+    `${String((stage.viewEndAt(at) - at) / 1000)}s`,
+  );
+  stage.start();
+}
+
+function showBoard(clicks: number, move: Move): void {
+  const target = boardState(frontmatter.value, clicks);
+  if (
+    JSON.stringify(target) === JSON.stringify(board.value.state) &&
+    move !== "jump"
+  )
+    return;
+  board.value = { state: target, atOnce: move === "jump" };
+}
 
 onMounted(() => {
   if (!live || !canvas.value) return;
@@ -55,27 +121,23 @@ onMounted(() => {
     new WatchModel(WATCH),
   );
   window.watchStage = stage;
+  window.slideState = () => slideState(stage, canvas.value, shownWatch);
+  document.documentElement.style.setProperty(
+    "--watch-fade",
+    `${String(FADE_SECONDS)}s`,
+  );
   onChange(
-    () => JSON.stringify(state.value ?? null),
-    (_value, old) => {
-      clearTimeout(hideTimer);
-      const now = state.value;
-      if (!now) {
-        hideTimer = setTimeout(() => stage?.stop(), 400); // after the layer's fade
-        return;
-      }
-      // a slide reached from a slide without the watch starts at its state
-      stage?.show(
-        stageState(WATCH.scene, now),
-        modelState(now),
-        old === undefined || old === "null",
-      );
-      // the new slide's text comes in after the move
-      document.documentElement.style.setProperty(
-        "--watch-text-delay",
-        `${String(MOVE_SECONDS)}s`,
-      );
-      stage?.start();
+    () => JSON.stringify([slidev.nav.currentSlideNo, slidev.nav.clicks]),
+    () => {
+      const to = {
+        slide: slidev.nav.currentSlideNo,
+        clicks: slidev.nav.clicks,
+      };
+      const move = moveOf(place, to);
+      const intoSlide = place?.slide !== to.slide;
+      place = to;
+      showWatch(state.value, move, intoSlide);
+      showBoard(to.clicks, move);
     },
     { immediate: true },
   );
@@ -86,6 +148,7 @@ onBeforeUnmount(() => {
   stage?.dispose();
   stage = undefined;
   delete window.watchStage;
+  delete window.slideState;
 });
 
 // The presenter view draws the next slide's still in its "next" pane. Draw
@@ -127,6 +190,7 @@ onMounted(() => {
       class="watch-canvas"
       :data-watch="JSON.stringify(state ?? null)"
     />
+    <DivingBoard :target="board" :live="true" />
   </div>
 </template>
 

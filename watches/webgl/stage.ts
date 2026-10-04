@@ -100,6 +100,21 @@ export class Stage<ModelState> {
     return this.timeline.valuesAt(now);
   }
 
+  /** Whether a state has been shown yet. */
+  get hasState(): boolean {
+    return this.timeline.hasState;
+  }
+
+  /** Whether a channel moves or the flash runs at `now`. */
+  movingAt(now: number): boolean {
+    return this.timeline.phaseAt(now) !== null;
+  }
+
+  /** When the camera's last move ends (ms), or `now` if it does not move. */
+  viewEndAt(now: number): number {
+    return this.timeline.viewEndAt(now);
+  }
+
   /** What is moving at `now`: the flash, a channel, or the model's phase. */
   phaseAt(now: number): string {
     return this.timeline.phaseAt(now) ?? this.model.phase(now);
@@ -153,6 +168,7 @@ export class Stage<ModelState> {
       groupMatrices: this.model.frame(now, this.renderer),
       ...(values.subject ? { keep: values.subject.meshes } : {}),
       rest: values.rest,
+      ...(values.fading ? { fade: values.fading.meshes } : {}),
       ...(flashing
         ? { recolour: { meshes: flashing.meshes, inks: FLASH_INKS } }
         : {}),

@@ -1,0 +1,57 @@
+  1:0 -> 2:0: 3.4 s
+  2:0 -> 2:1: 1.6 s
+  2:1 -> 2:2: 0.5 s
+  2:2 -> 2:3: 1.2 s
+  2:3 -> 2:4: 0.6 s
+  2:4 -> 3:0: 1.6 s
+  3:0 -> 4:0: 1.0 s
+  4:0 -> 4:1: 0.5 s
+  4:1 -> 4:2: 0.5 s
+  4:2 -> 4:3: 0.5 s
+  4:3 -> 4:4: 0.5 s
+  4:4 -> 4:5: 0.5 s
+  4:5 -> 4:4: 0.5 s
+  4:4 -> 4:3: 0.5 s
+  4:3 -> 4:2: 0.5 s
+  4:2 -> 4:1: 0.5 s
+  4:1 -> 4:0: 0.5 s
+  4:0 -> 3:0: 1.6 s
+  3:0 -> 2:4: 1.4 s
+  2:4 -> 2:3: 0.6 s
+  2:3 -> 2:2: 1.0 s
+  2:2 -> 2:1: 0.5 s
+  2:1 -> 2:0: 1.1 s
+  2:0 -> 1:0: 4.8 s
+navcheck: 12 moves forward, 12 back
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL page error: Wake Lock permission request denied
+FAIL 3:0 -> 4:0 (ArrowRight): ends unlike a direct load of 4:0; subject 'balance wheel and hairspring', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 4:0 -> 4:1 (ArrowRight): ends unlike a direct load of 4:1; subject 'balance wheel and hairspring', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 4:1 -> 4:2 (ArrowRight): ends unlike a direct load of 4:2; subject 'balance wheel and hairspring', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 4:2 -> 4:3 (ArrowRight): ends unlike a direct load of 4:3; subject 'balance wheel and hairspring', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 4:3 -> 4:4 (ArrowRight): ends unlike a direct load of 4:4; subject 'balance wheel and hairspring', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 4:4 -> 4:5 (ArrowRight): ends unlike a direct load of 4:5; subject 'balance wheel and hairspring', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 4:5 -> 4:4 (ArrowLeft): ends unlike a direct load of 4:4; subject 'balance wheel and hairspring', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 4:4 -> 4:3 (ArrowLeft): ends unlike a direct load of 4:3; subject 'balance wheel and hairspring', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 4:3 -> 4:2 (ArrowLeft): ends unlike a direct load of 4:2; subject 'balance wheel and hairspring', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 4:2 -> 4:1 (ArrowLeft): ends unlike a direct load of 4:1; subject 'balance wheel and hairspring', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 4:1 -> 4:0 (ArrowLeft): ends unlike a direct load of 4:0; subject 'balance wheel and hairspring', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 4:0 -> 3:0 (ArrowLeft): rest shape went to 1.00 on its way from 0.00 to 0.00
+FAIL 4:0 -> 3:0 (ArrowLeft): rest callout went to 1.00 on its way from 0.00 to 0.00
+FAIL 3:0 -> 2:4 (ArrowLeft): rest shape went from 0.00 to 1.00 with 100% of it in the first frame, 6 ms after the press (a cut)
+FAIL 3:0 -> 2:4 (ArrowLeft): rest callout went from 0.00 to 1.00 with 100% of it in the first frame, 6 ms after the press (a cut)
+FAIL 2:3 -> 2:2 (ArrowLeft): ends unlike a direct load of 2:2; subject 'hairspring and stud', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 2:2 -> 2:1 (ArrowLeft): ends unlike a direct load of 2:1; subject 'hairspring and stud', not None, tilt 20, not None, view 'hairspring', not None
+FAIL 2:0 -> 1:0 (ArrowLeft): ends unlike a direct load of 1:0; subject 'hairspring and stud', not 'none'

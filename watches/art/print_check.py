@@ -20,6 +20,8 @@ The diving board (components/DivingBoard.vue) is checked the same way: the
 printed page must show the board when the live slide does, curling when it
 curls, and its SVG clock must be at the pose of its click: the bottom of the
 swing, or inside the curl. The live board bounces, so its time is not compared.
+The live board is the watch layer's (global-bottom.vue), and a printed page's
+is the page's own (slide-bottom.vue). A page with no board shows none.
 
 --browser runs it in Firefox or in Playwright's WebKit, which is not Safari
 itself. Install them once: `uv run python -m playwright install firefox webkit`.
@@ -121,18 +123,27 @@ def still_loaded(page: Page, slide: int) -> bool:
     return loaded
 
 
-def board_pose(page: Page, slide: int) -> dict[str, float | bool] | None:
-    """The diving board on `slide`: whether it shows, whether it curls, and its
-    SVG clock with the times of the file. `None` if the slide has no board."""
+LIVE_BOARD = ".watch-layer .diving-board"
+
+
+def printed_board(slide: int) -> str:
+    """The selector of the board on a printed page of `slide`."""
+    return f'[data-slidev-no="{slide}"] .diving-board'
+
+
+def board_pose(page: Page, selector: str) -> dict[str, float | bool] | None:
+    """The diving board that `selector` finds: whether it shows (the picture or
+    the rest shape), whether it curls, and its SVG clock with the times of the
+    file. `None` if there is no board."""
     pose: dict[str, float | bool] | None = page.evaluate(
-        """slide => {
-            const host = document.querySelector(
-                `[data-slidev-no="${slide}"] .diving-board`);
+        """selector => {
+            const host = document.querySelector(selector);
             const board = host?.querySelector('svg');
             if (!host || !board) return null;
             const times = board.dataset;
             return {
-                shown: host.classList.contains('diving-board-on'),
+                shown: host.classList.contains('diving-board-picture-on')
+                    || host.classList.contains('diving-board-rest-on'),
                 curling: board.classList.contains('diving-board-curling'),
                 time: board.getCurrentTime(),
                 swingStart: Number(times.swingStart),
@@ -140,7 +151,7 @@ def board_pose(page: Page, slide: int) -> dict[str, float | bool] | None:
                 curlDuration: Number(times.curlDuration),
             };
         }""",
-        slide,
+        selector,
     )
     return pose
 
@@ -150,7 +161,8 @@ def board_problems(
 ) -> list[str]:
     """What is wrong with a printed page's board, compared with the live one."""
     if live is None or printed is None:
-        return [] if live is printed else ["only one of the two pages has the board"]
+        shown = (live or printed or {}).get("shown", False)
+        return ["only one of the two pages shows the board"] if shown else []
     problems = [
         f"the board's {name} is {printed[name]}, live {live[name]}"
         for name in ("shown", "curling")
@@ -205,7 +217,8 @@ def check(deck: Path, engine: str) -> int:
             problems.extend(
                 f"slide {slide}, click {click}: {problem}"
                 for problem in board_problems(
-                    board_pose(live, slide), board_pose(printed, slide)
+                    board_pose(live, LIVE_BOARD),
+                    board_pose(printed, printed_board(slide)),
                 )
             )
             if shown != "null":
