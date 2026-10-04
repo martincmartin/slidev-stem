@@ -1,0 +1,24 @@
+[Slidev] Try the new browser exporter!
+You can use the browser exporter instead by starting the dev server as normal and visit localhost:<port>/export
+
+12:28:45 PM [vite] (client) Re-optimizing dependencies because vite config has changed
+
+
+  ●■▲
+  Slidev  v53.0.0 (global)
+
+  theme       slidev-theme-ledger
+  css engine  unocss
+  entry       /Users/martin/Develop/slidev/stem2/watches/slides.md
+12:28:46 PM [vite] (client) [console.error] Failed to patch FloatingVue TypeError: Cannot read properties of undefined (reading 'Popper')
+    at app.component (http://localhost:12445/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=d707ef14:27:42)
+    at Object.install (http://localhost:12445/node_modules/.pnpm/floating-vue@5.4.0_@nuxt+kit@3.21.11_vue@3.5.43_typescript@6.0.3_/node_modules/floating-vue/dist/floating-vue.mjs?v=d707ef14:1683:9)
+    at Object.use (http://localhost:12445/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=d707ef14:3706:13)
+    at Object.install (http://localhost:12445/node_modules/.pnpm/@shikijs+vitepress-twoslash@4.4.3_@nuxt+kit@3.21.11_typescript@6.0.3/node_modules/@shikijs/vitepress-twoslash/dist/client.mjs?v=d707ef14:43:6)
+    at Object.use (http://localhost:12445/node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=d707ef14:3706:13)
+    at setupMain (http://localhost:12445/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.1.0_@nuxt+kit@3.21.11_@oxc-project_68acb28e1e37efaab055258a07ced06d/node_modules/@slidev/client/setup/main.ts?v=d707ef14:30:6)
+    at main (http://localhost:12445/@fs/Users/martin/Develop/slidev/stem2/watches/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.1.0_@nuxt+kit@3.21.11_@oxc-project_68acb28e1e37efaab055258a07ced06d/node_modules/@slidev/client/main.ts:7:8)
+    at http://localhost:12445/@fs/Users/martin/Develop/slidev/stem2/watches/node_modules/.pnpm/@slidev+client@53.0.0_@modelcontextprotocol+server@2.1.0_@nuxt+kit@3.21.11_@oxc-project_68acb28e1e37efaab055258a07ced06d/node_modules/@slidev/client/main.ts:10:1
+12:28:47 PM [vite] (client) dependency optimized: earcut
+  ✓ exported to ../../../../../../tmp/rest-shape-final-export
+

@@ -1,0 +1,26 @@
+{
+  "chromium-slide-2": {
+    "max_contact_error_px": 0.5962553132583818,
+    "limit_px": 1
+  },
+  "chromium-slide-3": {
+    "max_contact_error_px": 0.5266174940332776,
+    "limit_px": 1
+  },
+  "chromium-slide-4": {
+    "max_contact_error_px": 1.0492680576425795,
+    "limit_px": 2
+  },
+  "firefox-slide-2": {
+    "max_contact_error_px": 0.5959818658860302,
+    "limit_px": 1
+  },
+  "firefox-slide-3": {
+    "max_contact_error_px": 0.526664266326233,
+    "limit_px": 1
+  },
+  "firefox-slide-4": {
+    "max_contact_error_px": 1.0517323389262523,
+    "limit_px": 2
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "design_venue": "TV 55in @7m",
+  "floor": 3.0,
+  "drawings": [
+    {
+      "path": "watches/tasks/2026-10-04-leader-path-comparison/weight-tuning/evidence/leader-optimized-board.svg",
+      "label": "leader-optimized-boar",
+      "ink_percent": 0.07314430196857505,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.94911131994066,
+          "p90": 4.949317418730725,
+          "fmax": 0.19294504523277284
+        },
+        "TV 55in @5m": {
+          "hold": 4.329318358620901,
+          "p90": 4.949317418730725,
+          "fmax": 0.15042967200279234
+        },
+        "TV 55in @7m": {
+          "hold": 3.582698505565485,
+          "p90": 4.84526693495863,
+          "fmax": 0.07968193888664245
+        },
+        "proj 2m @6m": {
+          "hold": 4.805846522113695,
+          "p90": 4.949317418730726,
+          "fmax": 0.18409209251403807
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-04-leader-path-comparison/weight-tuning/evidence/leader-optimized-spring.svg",
+      "label": "leader-optimized-spri",
+      "ink_percent": 0.1609626151345494,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.949145234009345,
+          "p90": 4.949317418730725,
+          "fmax": 0.19294708371162417
+        },
+        "TV 55in @5m": {
+          "hold": 4.408805336853489,
+          "p90": 4.949317418730725,
+          "fmax": 0.1565504014492035
+        },
+        "TV 55in @7m": {
+          "hold": 3.7071171338654874,
+          "p90": 4.8452697769234785,
+          "fmax": 0.0934505581855774
+        },
+        "proj 2m @6m": {
+          "hold": 4.82687369031675,
+          "p90": 4.949317418730726,
+          "fmax": 0.18542436361312867
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-04-leader-path-comparison/weight-tuning/evidence/leader-original-board.svg",
+      "label": "leader-original-board",
+      "ink_percent": 0.4366647101318404,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.949154261405291,
+          "p90": 4.949317418730725,
+          "fmax": 0.1929476201534271
+        },
+        "TV 55in @5m": {
+          "hold": 4.430642423306233,
+          "p90": 4.949317418730725,
+          "fmax": 0.1581934869289398
+        },
+        "TV 55in @7m": {
+          "hold": 3.736381084572787,
+          "p90": 4.848889969219846,
+          "fmax": 0.09655582308769226
+        },
+        "proj 2m @6m": {
+          "hold": 4.833072973499415,
+          "p90": 4.949317418730726,
+          "fmax": 0.18581492900848384
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-04-leader-path-comparison/weight-tuning/evidence/leader-original-spring.svg",
+      "label": "leader-original-sprin",
+      "ink_percent": 0.16017247607007407,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.949153685051245,
+          "p90": 4.949317418730725,
+          "fmax": 0.19294758439064025
+        },
+        "TV 55in @5m": {
+          "hold": 4.419799597178386,
+          "p90": 4.949221348967939,
+          "fmax": 0.1573796689510345
+        },
+        "TV 55in @7m": {
+          "hold": 3.7102448351989405,
+          "p90": 4.845265660784396,
+          "fmax": 0.09378472566604615
+        },
+        "proj 2m @6m": {
+          "hold": 4.831360214523286,
+          "p90": 4.9493170174002445,
+          "fmax": 0.18570712208747864
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-04-leader-path-comparison/weight-tuning/evidence/leader-strong-board.svg",
+      "label": "leader-strong-board",
+      "ink_percent": 0.07320074047318041,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.94910871624893,
+          "p90": 4.949317418730725,
+          "fmax": 0.19294488430023193
+        },
+        "TV 55in @5m": {
+          "hold": 4.319382153205767,
+          "p90": 4.949317418730725,
+          "fmax": 0.14964877367019658
+        },
+        "TV 55in @7m": {
+          "hold": 3.5710413020106753,
+          "p90": 4.845267021941722,
+          "fmax": 0.07834287285804749
+        },
+        "proj 2m @6m": {
+          "hold": 4.805644194637572,
+          "p90": 4.949317418730726,
+          "fmax": 0.18407921791076656
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-04-leader-path-comparison/weight-tuning/evidence/leader-strong-spring.svg",
+      "label": "leader-strong-spring",
+      "ink_percent": 0.15531876467401118,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.948978814595983,
+          "p90": 4.949317418730725,
+          "fmax": 0.19293708801269532
+        },
+        "TV 55in @5m": {
+          "hold": 4.039751366952754,
+          "p90": 4.949317418730725,
+          "fmax": 0.1260953485965729
+        },
+        "TV 55in @7m": {
+          "hold": 3.228146014654611,
+          "p90": 4.845278732189416,
+          "fmax": 0.03462481498718262
+        },
+        "proj 2m @6m": {
+          "hold": 4.716027452041272,
+          "p90": 4.949317418730726,
+          "fmax": 0.17826747894287112
+        }
+      }
+    }
+  ]
+}

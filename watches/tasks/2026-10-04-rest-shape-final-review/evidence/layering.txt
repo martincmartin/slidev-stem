@@ -1,0 +1,2 @@
+chromium-slide-2: no solid reference pixels covered in any phase
+firefox-slide-2: no solid reference pixels covered in any phase

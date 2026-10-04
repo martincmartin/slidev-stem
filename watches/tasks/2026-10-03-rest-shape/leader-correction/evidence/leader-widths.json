@@ -1,0 +1,230 @@
+{
+  "design_venue": "TV 55in @7m",
+  "floor": 3.0,
+  "drawings": [
+    {
+      "path": "watches/tasks/2026-10-03-rest-shape/leader-correction/evidence/leader-board-2px.svg",
+      "label": "leader-board-2px",
+      "ink_percent": 0.038208867617843596,
+      "passes_gate": false,
+      "venues": {
+        "laptop": {
+          "hold": 4.4957532153243855,
+          "p90": 4.948978878077192,
+          "fmax": 0.16299777030944826
+        },
+        "TV 55in @5m": {
+          "hold": 2.9588631693701304,
+          "p90": 4.0903166883560305,
+          "fmax": 0.0
+        },
+        "TV 55in @7m": {
+          "hold": 2.4697658014354875,
+          "p90": 3.1264173448992048,
+          "fmax": 0.0
+        },
+        "proj 2m @6m": {
+          "hold": 3.462512651159194,
+          "p90": 4.72188890242065,
+          "fmax": 0.06544264554977416
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-03-rest-shape/leader-correction/evidence/leader-spring-2px.svg",
+      "label": "leader-spring-2px",
+      "ink_percent": 0.07765938233700559,
+      "passes_gate": false,
+      "venues": {
+        "laptop": {
+          "hold": 4.0159762631213045,
+          "p90": 4.948978948217682,
+          "fmax": 0.12394146323204037
+        },
+        "TV 55in @5m": {
+          "hold": 2.267618057886138,
+          "p90": 3.986552178544043,
+          "fmax": 0.0
+        },
+        "TV 55in @7m": {
+          "hold": 2.0372887025303923,
+          "p90": 2.976440763408332,
+          "fmax": 0.0
+        },
+        "proj 2m @6m": {
+          "hold": 2.6162248383144204,
+          "p90": 4.714194021915813,
+          "fmax": 0.0
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-03-rest-shape/leader-correction/evidence/leader-board-2.5px.svg",
+      "label": "leader-board-2.5px",
+      "ink_percent": 0.05130260068629222,
+      "passes_gate": false,
+      "venues": {
+        "laptop": {
+          "hold": 4.556744410602704,
+          "p90": 4.94919266176469,
+          "fmax": 0.16737356185913088
+        },
+        "TV 55in @5m": {
+          "hold": 3.132570942824409,
+          "p90": 4.499945690632617,
+          "fmax": 0.020733743906021118
+        },
+        "TV 55in @7m": {
+          "hold": 2.651811189293679,
+          "p90": 3.6938880219364183,
+          "fmax": 0.0
+        },
+        "proj 2m @6m": {
+          "hold": 3.6350231379029467,
+          "p90": 4.858197651818103,
+          "fmax": 0.0855868220329285
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-03-rest-shape/leader-correction/evidence/leader-spring-2.5px.svg",
+      "label": "leader-spring-2.5px",
+      "ink_percent": 0.11648907350550838,
+      "passes_gate": false,
+      "venues": {
+        "laptop": {
+          "hold": 4.556744455333716,
+          "p90": 4.9491920068147595,
+          "fmax": 0.16737356185913088
+        },
+        "TV 55in @5m": {
+          "hold": 3.132650082689585,
+          "p90": 4.500009658738988,
+          "fmax": 0.02074611783027649
+        },
+        "TV 55in @7m": {
+          "hold": 2.651919146482531,
+          "p90": 3.693875663241512,
+          "fmax": 0.0
+        },
+        "proj 2m @6m": {
+          "hold": 3.635046927205347,
+          "p90": 4.8582282966625785,
+          "fmax": 0.08559004068374637
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-03-rest-shape/leader-correction/evidence/leader-board-3px.svg",
+      "label": "leader-board-3px",
+      "ink_percent": 0.05587411955932815,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.948978814595983,
+          "p90": 4.949317418730725,
+          "fmax": 0.19293708801269532
+        },
+        "TV 55in @5m": {
+          "hold": 4.039763384888314,
+          "p90": 4.869148744291526,
+          "fmax": 0.12609679698944093
+        },
+        "TV 55in @7m": {
+          "hold": 3.2245700563952004,
+          "p90": 4.3046275656151085,
+          "fmax": 0.0341209352016449
+        },
+        "proj 2m @6m": {
+          "hold": 4.71602778181878,
+          "p90": 4.947196267905787,
+          "fmax": 0.178267514705658
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-03-rest-shape/leader-correction/evidence/leader-spring-3px.svg",
+      "label": "leader-spring-3px",
+      "ink_percent": 0.11648907350550838,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.948978814595983,
+          "p90": 4.949317418730725,
+          "fmax": 0.19293708801269532
+        },
+        "TV 55in @5m": {
+          "hold": 4.039777619459841,
+          "p90": 4.869165901297883,
+          "fmax": 0.12609853148460387
+        },
+        "TV 55in @7m": {
+          "hold": 3.2246363788449313,
+          "p90": 4.304716102517808,
+          "fmax": 0.03413100242614746
+        },
+        "proj 2m @6m": {
+          "hold": 4.7160282501174,
+          "p90": 4.9471967591592945,
+          "fmax": 0.17826755046844484
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-03-rest-shape/leader-correction/evidence/leader-board-4px.svg",
+      "label": "leader-board-4px",
+      "ink_percent": 0.07314430196857505,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.94911131994066,
+          "p90": 4.949317418730725,
+          "fmax": 0.19294504523277284
+        },
+        "TV 55in @5m": {
+          "hold": 4.329318358620901,
+          "p90": 4.949317418730725,
+          "fmax": 0.15042967200279234
+        },
+        "TV 55in @7m": {
+          "hold": 3.582698505565485,
+          "p90": 4.84526693495863,
+          "fmax": 0.07968193888664245
+        },
+        "proj 2m @6m": {
+          "hold": 4.805846522113695,
+          "p90": 4.949317418730726,
+          "fmax": 0.18409209251403807
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-03-rest-shape/leader-correction/evidence/leader-spring-4px.svg",
+      "label": "leader-spring-4px",
+      "ink_percent": 0.15531876467401118,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.948978814595983,
+          "p90": 4.949317418730725,
+          "fmax": 0.19293708801269532
+        },
+        "TV 55in @5m": {
+          "hold": 4.039751366952754,
+          "p90": 4.949317418730725,
+          "fmax": 0.1260953485965729
+        },
+        "TV 55in @7m": {
+          "hold": 3.228146014654611,
+          "p90": 4.845278732189416,
+          "fmax": 0.03462481498718262
+        },
+        "proj 2m @6m": {
+          "hold": 4.716027452041272,
+          "p90": 4.949317418730726,
+          "fmax": 0.17826747894287112
+        }
+      }
+    }
+  ]
+}

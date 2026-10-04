@@ -1,0 +1,36 @@
+--    watches/, a talk
+ok    ruff format  (9 files already formatted)
+ok    ruff check
+ok    mypy --strict
+ok    pyright
+ok    prettier
+ok    doccheck
+FAIL  typecheck
+      slide-bottom.vue(13,39): error TS2339: Property '$clicks' does not exist on type '{ $frontmatter: Record<string, unknown>; $renderContext: Ref<string, string>; $page: Ref<number, number>; }'.
+      $ vue-tsc --noEmit
+      [ELIFECYCLE] Command failed with exit code 2.
+FAIL  lint
+
+      /Users/martin/Develop/slidev/stem2/watches/slide-bottom.vue
+        16:55  error  Unsafe argument of type error typed assigned to a parameter of type `number`  @typescript-eslint/no-unsafe-argument
+        16:63  error  Unsafe member access .value on a type that cannot be resolved                 @typescript-eslint/no-unsafe-member-access
+
+      ✖ 2 problems (2 errors, 0 warnings)
+
+      $ eslint .
+      [ELIFECYCLE] Command failed with exit code 1.
+ok    test
+ok    artcheck
+ok    barroom
+ok    motion
+ok    scenecheck
+ok    generated
+ok    stills
+ok    barroom (png)
+ok    motion (png)
+ok    palette
+ok    talk setup
+ok    build
+ok    offline  (outside requests: 0)
+
+2 of 21 checks failed (typecheck, lint)

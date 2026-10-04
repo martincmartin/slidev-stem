@@ -1,0 +1,174 @@
+{
+  "design_venue": "TV 55in @7m",
+  "floor": 3.0,
+  "drawings": [
+    {
+      "path": "watches/tasks/2026-10-04-leader-path-comparison/selection-and-layering/evidence/leader-optimized-board.svg",
+      "label": "leader-optimized-boar",
+      "ink_percent": 0.07314430196857505,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.94911131994066,
+          "p90": 4.949317418730725,
+          "fmax": 0.19294504523277284
+        },
+        "TV 55in @5m": {
+          "hold": 4.329318358620901,
+          "p90": 4.949317418730725,
+          "fmax": 0.15042967200279234
+        },
+        "TV 55in @7m": {
+          "hold": 3.582698505565485,
+          "p90": 4.84526693495863,
+          "fmax": 0.07968193888664245
+        },
+        "proj 2m @6m": {
+          "hold": 4.805846522113695,
+          "p90": 4.949317418730726,
+          "fmax": 0.18409209251403807
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-04-leader-path-comparison/selection-and-layering/evidence/leader-optimized-spring.svg",
+      "label": "leader-optimized-spri",
+      "ink_percent": 0.1609626151345494,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.949145234009345,
+          "p90": 4.949317418730725,
+          "fmax": 0.19294708371162417
+        },
+        "TV 55in @5m": {
+          "hold": 4.408805336853489,
+          "p90": 4.949317418730725,
+          "fmax": 0.1565504014492035
+        },
+        "TV 55in @7m": {
+          "hold": 3.7071171338654874,
+          "p90": 4.8452697769234785,
+          "fmax": 0.0934505581855774
+        },
+        "proj 2m @6m": {
+          "hold": 4.82687369031675,
+          "p90": 4.949317418730726,
+          "fmax": 0.18542436361312867
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-04-leader-path-comparison/selection-and-layering/evidence/leader-no-bend-board.svg",
+      "label": "leader-no-bend-board",
+      "ink_percent": 0.07314430196857505,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.94911131994066,
+          "p90": 4.949317418730725,
+          "fmax": 0.19294504523277284
+        },
+        "TV 55in @5m": {
+          "hold": 4.329318358620901,
+          "p90": 4.949317418730725,
+          "fmax": 0.15042967200279234
+        },
+        "TV 55in @7m": {
+          "hold": 3.582698505565485,
+          "p90": 4.84526693495863,
+          "fmax": 0.07968193888664245
+        },
+        "proj 2m @6m": {
+          "hold": 4.805846522113695,
+          "p90": 4.949317418730726,
+          "fmax": 0.18409209251403807
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-04-leader-path-comparison/selection-and-layering/evidence/leader-no-bend-spring.svg",
+      "label": "leader-no-bend-spring",
+      "ink_percent": 0.16519550297995303,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 4.949143961337322,
+          "p90": 4.949317418730725,
+          "fmax": 0.19294699430465698
+        },
+        "TV 55in @5m": {
+          "hold": 4.400297425564812,
+          "p90": 4.949279035256098,
+          "fmax": 0.15590586662292477
+        },
+        "TV 55in @7m": {
+          "hold": 3.6878416131484686,
+          "p90": 4.84526731839595,
+          "fmax": 0.09137828350067138
+        },
+        "proj 2m @6m": {
+          "hold": 4.8252783986212195,
+          "p90": 4.949317304922351,
+          "fmax": 0.18532369136810306
+        }
+      }
+    },
+    {
+      "path": "watches/public/diving-board.svg",
+      "label": "diving-board",
+      "ink_percent": 20.139741737402925,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 3.3693749236258754,
+          "p90": 4.432558363924452,
+          "fmax": 0.049589252471923834
+        },
+        "TV 55in @5m": {
+          "hold": 3.3693789364248756,
+          "p90": 3.493359504959941,
+          "fmax": 0.04958978891372682
+        },
+        "TV 55in @7m": {
+          "hold": 3.3693802721994137,
+          "p90": 3.3693802784252056,
+          "fmax": 0.04958996772766114
+        },
+        "proj 2m @6m": {
+          "hold": 3.3693776246913285,
+          "p90": 3.804751904075753,
+          "fmax": 0.049589610099792486
+        }
+      }
+    },
+    {
+      "path": "watches/public/diving-board-no-bend.svg",
+      "label": "diving-board-no-bend",
+      "ink_percent": 20.128115405454217,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 3.3693749236258754,
+          "p90": 4.426316518933845,
+          "fmax": 0.049589252471923834
+        },
+        "TV 55in @5m": {
+          "hold": 3.3693789364248756,
+          "p90": 3.486778934737452,
+          "fmax": 0.04958978891372682
+        },
+        "TV 55in @7m": {
+          "hold": 3.3693802721994137,
+          "p90": 3.3693802721994137,
+          "fmax": 0.04958996772766114
+        },
+        "proj 2m @6m": {
+          "hold": 3.3693776246913285,
+          "p90": 3.804751904075753,
+          "fmax": 0.049589610099792486
+        }
+      }
+    }
+  ]
+}

@@ -12,7 +12,3 @@ the two lists in step.
 | [watch.md](watch.md)                   | the live watch (files, design, frontmatter keys, zoom line widths, budgets) and the diving board                   |
 | [measurements.md](measurements.md)     | what the timekeepers, the cover watch and the diving board measure at the back row                                 |
 | [rough-slides.md](rough-slides.md)     | the talk's outline, as working notes. Check each claim before it goes on a slide                                   |
-
-The browser-tab icon is `art/favicon.py`: edit its pixel maps and run it. It is
-drawn pixel by pixel, not scaled down from the cover, on purpose.
-`art/favicon.py --check` fails if the file on disk differs.

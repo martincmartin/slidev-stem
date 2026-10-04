@@ -1,0 +1,230 @@
+{
+  "chromium": {
+    "snapshots": [
+      {
+        "click": 0,
+        "same": true,
+        "time": 0,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "0.503197",
+        "single": false
+      },
+      {
+        "click": 1,
+        "same": true,
+        "time": 2.4000000953674316,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "0.985255",
+        "single": false
+      },
+      {
+        "click": 2,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      },
+      {
+        "click": 3,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      },
+      {
+        "click": 4,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      },
+      {
+        "click": 3,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      },
+      {
+        "click": 2,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      },
+      {
+        "click": 1,
+        "same": true,
+        "time": 2.4000000953674316,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": false
+      },
+      {
+        "click": 0,
+        "same": true,
+        "time": 0,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "0.242142",
+        "single": false
+      },
+      {
+        "click": 4,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "0.940124",
+        "single": true
+      },
+      {
+        "click": 2,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      },
+      {
+        "click": 3,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      }
+    ],
+    "outside": [],
+    "errors": []
+  },
+  "firefox": {
+    "snapshots": [
+      {
+        "click": 0,
+        "same": true,
+        "time": 0,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "0.240606",
+        "single": false
+      },
+      {
+        "click": 1,
+        "same": true,
+        "time": 2.4000000953674316,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "0.890152",
+        "single": false
+      },
+      {
+        "click": 2,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      },
+      {
+        "click": 3,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      },
+      {
+        "click": 4,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      },
+      {
+        "click": 3,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      },
+      {
+        "click": 2,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      },
+      {
+        "click": 1,
+        "same": true,
+        "time": 2.4000000953674316,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": false
+      },
+      {
+        "click": 0,
+        "same": true,
+        "time": 0,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "0.215903",
+        "single": false
+      },
+      {
+        "click": 4,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "0.894289",
+        "single": true
+      },
+      {
+        "click": 2,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      },
+      {
+        "click": 3,
+        "same": true,
+        "time": 5.800000190734863,
+        "swing": 2.4,
+        "end": 5.8,
+        "opacity": "1",
+        "single": true
+      }
+    ],
+    "outside": [],
+    "errors": []
+  }
+}

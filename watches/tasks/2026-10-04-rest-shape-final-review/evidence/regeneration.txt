@@ -1,0 +1,1 @@
+Saved source reproduces the selected SVG byte for byte.

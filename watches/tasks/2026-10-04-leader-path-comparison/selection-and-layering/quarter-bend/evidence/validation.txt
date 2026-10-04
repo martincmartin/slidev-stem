@@ -1,0 +1,24 @@
+--    watches/, a talk
+ok    ruff format  (9 files already formatted)
+ok    ruff check
+ok    mypy --strict
+ok    pyright
+ok    prettier
+ok    doccheck
+ok    typecheck
+ok    lint
+ok    test
+ok    artcheck
+ok    barroom
+ok    motion
+ok    scenecheck
+ok    generated
+ok    stills
+ok    barroom (png)
+ok    motion (png)
+ok    palette
+ok    talk setup
+ok    build
+ok    offline  (outside requests: 0)
+
+all 21 checks passed

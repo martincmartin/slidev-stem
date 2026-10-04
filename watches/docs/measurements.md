@@ -11,7 +11,17 @@ read the metrics is in [`stem/docs/legibility.md`](../../docs/legibility.md).
 watch), [`2026-09-30-flexing-ruler`](../tasks/2026-09-30-flexing-ruler/PLAN.md)
 (the ruler that the diving board replaced), and
 [`2026-10-01-raised-escapement`](../tasks/2026-10-01-raised-escapement/README.md)
-(the lower oscillator and its measurements).
+(the lower oscillator and its measurements), and
+[`2026-10-03-rest-shape`](../tasks/2026-10-03-rest-shape/README.md)
+(the board and spring rest outlines), and
+[`leader-correction`](../tasks/2026-10-03-rest-shape/leader-correction/README.md)
+(the leader's contrast), and
+[`2026-10-04-leader-path-comparison`](../tasks/2026-10-04-leader-path-comparison/README.md)
+(whole-path routing, the single curl edge, and the original-path comparison), and
+[`weight-tuning`](../tasks/2026-10-04-leader-path-comparison/weight-tuning/README.md)
+(the weight trials), and
+[`selection-and-layering`](../tasks/2026-10-04-leader-path-comparison/selection-and-layering/README.md)
+(the selected leader and reference paint order).
 
 **Measure again whenever the art changes**, and update this page. In `stem/`:
 
@@ -62,15 +72,44 @@ whole number of periods, so the escapement would look still.
 
 ## The diving board
 
-At `TV 55in @7m`, measured 2026-10-01, the SVG on its own clock (the page
+At `TV 55in @7m`, measured 2026-10-04, the SVG on its own clock (the page
 starts it on a click):
 
 ```
 drawing          ink%    hold    p90    Fmax     dPeak   px2 >=3:1
-diving-board     19.7    3.37    4.01   0.050      9.59        4552
+diving-board     20.1    3.37    3.37   0.050      8.97        3725.4
 ```
 
 It clears the gate. The hold is the water against the paper: the water is a
 wash of the art line at 0.6, the bottom of the water window in
 [`illustrations.md`](../../docs/illustrations.md). At 0.5 the hold was 2.65, and at
 0.3 it was 1.73: below the gate.
+
+## Rest outlines and callout
+
+Measured 2026-10-04 at `TV 55in @7m`, from isolated Chromium screenshots at the slide's size:
+
+| Reference and callout       | hold | p90  | Fmax  |
+| --------------------------- | ---- | ---- | ----- |
+| Slide 2, straight board     | 3.35 | 5.16 | 0.055 |
+| Slide 2, single spring edge | 3.35 | 5.12 | 0.055 |
+
+Both clear the 3:1 gate. These screenshots include the dashed ghost, leader, and label on the slide background.
+They exclude the moving subject, pool, and title.
+The reference paints above the subject, so shared portions remain visible.
+The task holds the source screenshots and machine-readable results.
+
+## Rest-shape leader alone
+
+Measured 2026-10-04 at `TV 55in @7m`, with each leader isolated on the slide background:
+
+| Leader                     | hold | p90  | Fmax  |
+| -------------------------- | ---- | ---- | ----- |
+| Slide 2, straight board    | 3.58 | 4.85 | 0.080 |
+| Slide 2, curled hairspring | 3.70 | 4.85 | 0.092 |
+
+The leader clears both the resolution floor and the 3:1 contrast gate.
+Its stroke width is set by `LeaderDesign` in `art/diving_board.py`.
+The [correction task](../tasks/2026-10-03-rest-shape/leader-correction/PLAN.md) compares the allowed widths.
+The earlier 2 px leader cleared the width floor but failed the blurred contrast gate when measured alone.
+The ghost, label, and live subject are absent from these isolated measurements.

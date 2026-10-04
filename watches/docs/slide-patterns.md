@@ -94,8 +94,9 @@ classes and removes the `v-click` classes, and the dim rule stops working.
 
 ## The live watch and the diving board
 
-A slide that shows the watch sets its view in the frontmatter, and slide 2
-ends with the diving board. Both are in [watch.md](watch.md).
+A slide that shows the watch sets its view in the frontmatter.
+Slide 2 uses the diving board to explain the spring.
+It is described in [watch.md](watch.md).
 
 ## Where things go on a slide
 

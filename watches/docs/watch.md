@@ -8,6 +8,8 @@ measured budgets) and the diving board on slide 2.
 them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
+[`2026-10-04-rest-shape-final-review`](../tasks/2026-10-04-rest-shape-final-review/README.md) (final selection, cleanup, and review),
+[`selection-and-layering`](../tasks/2026-10-04-leader-path-comparison/selection-and-layering/README.md) (the selected leader and reference paint order),
 [`2026-09-24-cover-watch`](../tasks/2026-09-24-cover-watch/PLAN.md) (a skeleton
 watch on the cover),
 [`2026-09-25-eta-6497-orientation`](../tasks/2026-09-25-eta-6497-orientation/PLAN.md)
@@ -27,7 +29,10 @@ ruler that the diving board replaced),
 [`2026-10-01-raised-escapement`](../tasks/2026-10-01-raised-escapement/README.md)
 (the lower oscillator and upper roller),
 [`2026-10-03-pool-edge`](../tasks/2026-10-03-pool-edge/PLAN.md) (how the pool
-ends: a fade).
+ends: a fade), and
+[`2026-10-03-rest-shape`](../tasks/2026-10-03-rest-shape/PLAN.md) (the rest outline and its callout), and
+[`leader-correction`](../tasks/2026-10-03-rest-shape/leader-correction/PLAN.md) (the leader's contrast), and
+[`2026-10-04-leader-path-comparison`](../tasks/2026-10-04-leader-path-comparison/PLAN.md) (whole-path routing, the single curl edge, and the original-path comparison).
 
 ## The files
 
@@ -232,8 +237,51 @@ pool of the wrong colours.
 | ----- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | `watchHide: 1` fades the watch; the component's `visible` fades the board in, and `playing` bends it, holds it, lets go and swings it at 1 Hz |
 | 2     | `curling` fades the pool and the stand, and the board winds into the spiral                                                                   |
-| 3     | the board fades out (`visible` goes false; the clock goes on, so it does not reset) and `watchShow` fades the watch in, at rest               |
+| 3     | the board fades out (`visible` goes false), the rest outline stays, and `watchShow` fades the watch in, at rest                               |
 | 4     | `watchResume`: the balance starts to swing again                                                                                              |
+
+The `Rest Shape` callout appears with the board at click 1.
+It uses the theme's IBM Plex Sans at weight 600.
+Dashed, unfilled outlines show the board at zero deflection.
+They stay fixed during the bend, hold, and swing.
+The full 3D outline helps the audience see the straight board's depth.
+At the actual curl start, the ghost becomes one open line along the edge that becomes the viewer-facing ribbon edge.
+Parallel thick dashed edges clutter the shallow view during the curl and on the final spring.
+The single line retains the rest shape with less clutter. This is a deliberate choice, not a missing edge.
+It curls on the board's clock into the spring ribbon's upper edge, closest to the viewer.
+
+Before the curl, the leader ends near the straight board's right tip.
+At the switch to one edge, optimization starts at that edge's closest point to the elbow.
+The generator then selects a path across the entire curl with dynamic programming.
+It integrates leader length, bend angle, and squared endpoint velocity perpendicular to the final segment.
+Each step uses the physical frame duration and the midpoint segment direction.
+Contacts lie on the exact cubic edge, sampled by rays from the elbow.
+The selected path is globally minimal on that sampled contact graph.
+The weights favor lower perpendicular speed and allow longer lines.
+Motion along the leader has no movement penalty.
+Stronger movement weighting can therefore increase rapid movement along the line.
+The [weight-tuning task](../tasks/2026-10-04-leader-path-comparison/weight-tuning/README.md) compares this tradeoff.
+`LeaderDesign` in `art/diving_board.py` holds the weights, angular sampling, and stroke width.
+The [quarter-bend task](../tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/README.md) records the selected bend coefficient.
+The label stays on the right.
+
+At clicks 3 and 4, `restVisible` keeps the curled ghost and callout visible while `visible` fades the moving board out.
+The ghost does not change during the crossfade because the two rest outlines match.
+The real spring swings against this fixed reference at click 4.
+The component stops its frame loop when the curl ends.
+A direct entry at click 3 or 4 shows the completed rest spring immediately.
+The ghost belongs to this slide's component. It disappears when the audience leaves the slide.
+The generator writes its paths, leader, and curl duration; do not edit the SVG by hand.
+
+The SVG draws the rest outline and callout after the board.
+The dashed reference therefore stays above the board during bending and curling.
+The slide paints above the WebGL watch layer, so the reference also stays above the live hairspring.
+The crossfade changes the subject below the reference; its stacking order stays fixed.
+The component selects visible layers with `data-layer` attributes.
+`uv run art/diving_board.py` writes the SVG; its `--check` verifies it.
+Run `uv run art/test_leader_path.py` for the mathematical path checks.
+`pnpm test` runs these checks with the TypeScript tests.
+The canonical validator runs both through this script.
 
 A click back from 2 returns to the bend from 0, and from 1 hides the board.
 The balance settles at click 2 (`watchSettle`), while the watch is hidden: a
@@ -277,9 +325,9 @@ The swing never damps, on purpose.
   sample points, not a line of segments, so no corner shows: the curl has 40
   points, within 0.06 px of the spring (`smooth_data` in `art/diving_board.py`). The segments grow, late, because the
   spiral is five times longer than the board.
-- **Not an oversight: the SVG is 640 KB because it is sampled** (30 frames a
+- **Not an oversight: the SVG is sampled** (30 frames a
   second of a path), from the first vibration mode of a fixed-end beam at
-  constant length.
+  constant length. The rest outline adds samples for the curl only.
 - **`art/diving_board.py --check`** fails if the SVG on disk differs. `pnpm
 art:generated` runs it with the `--check` of `watch_design.py` and
   `favicon.py`, and `validate.py` runs that script: a change to the theme or to
@@ -303,3 +351,9 @@ art:generated` runs it with the `--check` of `watch_design.py` and
   runs the clock, so the pose does not drift. `art:print` checks the board too:
   its classes against the live slide's, and its clock against the pose. The
   component's `data-waitfor` makes `slidev export` wait until the SVG is posed.
+
+## The browser-tab icon
+
+`art/favicon.py` owns the icon. Edit its pixel maps and run the script.
+It draws each pixel instead of scaling down the cover.
+Its `--check` fails if the file on disk differs.

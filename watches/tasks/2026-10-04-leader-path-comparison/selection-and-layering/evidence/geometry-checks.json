@@ -1,0 +1,8 @@
+{
+  "only_svg_paint_order_changed": true,
+  "reference_above_board": true,
+  "moving_geometry_unchanged": true,
+  "leader_unchanged": true,
+  "zero_bend_changes_only_leader": true,
+  "selected_and_zero_bend_slides": true
+}

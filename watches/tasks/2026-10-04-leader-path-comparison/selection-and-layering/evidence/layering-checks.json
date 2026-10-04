@@ -1,0 +1,130 @@
+{
+  "chromium-slide-2": {
+    "phases": [
+      {
+        "phase": "straight",
+        "solid_reference_pixels": 18418,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curl-early",
+        "solid_reference_pixels": 13131,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curl-late",
+        "solid_reference_pixels": 16226,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curled",
+        "solid_reference_pixels": 22450,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "spring",
+        "solid_reference_pixels": 22446,
+        "covered_pixels": 0
+      }
+    ],
+    "old_order_covered_pixels": 15021,
+    "errors": [],
+    "outside_requests": []
+  },
+  "chromium-slide-3": {
+    "phases": [
+      {
+        "phase": "straight",
+        "solid_reference_pixels": 18418,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curl-early",
+        "solid_reference_pixels": 12847,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curl-late",
+        "solid_reference_pixels": 16215,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curled",
+        "solid_reference_pixels": 22492,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "spring",
+        "solid_reference_pixels": 22491,
+        "covered_pixels": 0
+      }
+    ],
+    "old_order_covered_pixels": 15024,
+    "errors": [],
+    "outside_requests": []
+  },
+  "firefox-slide-2": {
+    "phases": [
+      {
+        "phase": "straight",
+        "solid_reference_pixels": 18481,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curl-early",
+        "solid_reference_pixels": 13147,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curl-late",
+        "solid_reference_pixels": 16198,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curled",
+        "solid_reference_pixels": 22524,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "spring",
+        "solid_reference_pixels": 22524,
+        "covered_pixels": 0
+      }
+    ],
+    "old_order_covered_pixels": 15096,
+    "errors": [],
+    "outside_requests": []
+  },
+  "firefox-slide-3": {
+    "phases": [
+      {
+        "phase": "straight",
+        "solid_reference_pixels": 18481,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curl-early",
+        "solid_reference_pixels": 12869,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curl-late",
+        "solid_reference_pixels": 16220,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curled",
+        "solid_reference_pixels": 22576,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "spring",
+        "solid_reference_pixels": 22576,
+        "covered_pixels": 0
+      }
+    ],
+    "old_order_covered_pixels": 15101,
+    "errors": [],
+    "outside_requests": []
+  }
+}

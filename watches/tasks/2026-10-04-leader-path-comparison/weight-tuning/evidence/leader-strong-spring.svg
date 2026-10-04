@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="452" viewBox="50 0 980 452" data-swing-start="2.4" data-swing-period="1" data-curl-start="3.4" data-curl-duration="2.4"><style>
+.diving-board-fill-art-knockout { fill: var(--palette-art-knockout, #D3DCE3); }
+.diving-board-stroke-art-knockout { stroke: var(--palette-art-knockout, #D3DCE3); }
+.diving-board-fill-muted { fill: var(--palette-muted, #736A60); }
+.diving-board-fill-art-line { fill: var(--palette-art-line, #143C6B); }
+.diving-board-stroke-art-line { stroke: var(--palette-art-line, #143C6B); }
+.diving-board-stroke-muted { stroke: var(--palette-muted, #736A60); }
+.diving-board-set { transition: opacity 0.6s; }
+.diving-board-curling .diving-board-set { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .diving-board-set { transition: none; } }
+</style>
+<rect x="50" y="0" width="980" height="452" fill="#FAF7F0" /><path id="diving-board-strong-movement-rest-leader" d="M640 150 L600 150 L468.1 150" fill="none" class="diving-board-stroke-muted" stroke="#736A60" stroke-width="4" stroke-linejoin="round">
+</path>
+</svg>
