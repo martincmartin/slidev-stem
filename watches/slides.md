@@ -84,14 +84,41 @@ watch: hairspring
 watchTilt: 20
 watchOnly: balance wheel and hairspring
 watchFlash: balance wheel
+class: balance-wheel
 ---
 
 # Balance Wheel
 
+<div class="bw-sentence">
+  <div>Add mass,<br>it swings slowly</div>
+  <div v-click>and steadily</div>
+</div>
+
+<style>
+/* The sentence is where slide 2's was, and looks the same: its left edge and
+   its first line's top are those of the board's sentence (DivingBoard.vue,
+   --label-x and --label-y), so the new words take the old words' place. */
+.slidev-layout.balance-wheel .bw-sentence {
+  position: absolute;
+  left: 610px;
+  top: 137px;
+  font-size: 35px;
+  font-weight: 600;
+  line-height: 2.1;
+  white-space: nowrap;
+}
+</style>
+
 <!--
-The hairspring is only half of the oscillator. The other half is the balance wheel.
+The hairspring is only half of the oscillator. The other half is the balance wheel. The spring decides how hard it pushes back. The wheel decides how much there is to push.
 
 The dashed rest shape fades out as the balance wheel fades in. When it is all in, the balance wheel flashes five times.
+
+Put a child on the end of the diving board: boing-boing-boing, fast. Put a heavy adult there: one slow, deep bounce. Same board, more mass, slower swing. A hairspring alone would flutter far too fast to count. The wheel slows it to a pace the gears can count. On the screen it is slowed down again: a real one swings four times a second.
+
+[click] Mass also makes it steady. Push an empty playground swing and it jerks around. Put a kid on it and your push just tops it up. A heavy wheel carries its own momentum. A bump to your wrist, or the small kick the watch gives it on each swing, barely changes its rhythm.
+
+IF ASKED: Why a wheel and not a disc? Mass at the rim counts most, like a figure skater who spins slower with her arms out. Old balances had screws on the rim. Watchmakers moved them in or out to make the watch run faster or slower. The swing also takes about the same time whether it is big or small. That comes from the spring and the mass together, and it is why a watch keeps time while its mainspring runs down.
 -->
 
 ---
