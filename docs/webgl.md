@@ -40,8 +40,8 @@ until a second talk needs it; then it moves to a house package in `stem/`.
 
 **A new talk with WebGL art** copies `webgl/`, `types/`, `tsconfig.json`,
 `eslint.config.js` and the scripts of `watches/package.json` (`typecheck`,
-`lint`, `test`, `art:scene`, `art:stills`, and `art:generated` if the talk
-writes files with scripts). `validate.py` runs the WebGL checks when it finds
+`lint`, `test`, `art:scene`, `art:stills`, `art:print`, and `art:generated` if
+the talk writes files with scripts). `validate.py` runs the WebGL checks when it finds
 the scripts. Keep the talk's names out of `webgl/`.
 
 **Geometry is made in TypeScript at load**, not ahead of time in Python. The
@@ -148,7 +148,9 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   PDF export is a bitmap at twice the slide's size: good for a projector, not
   for a zoomed-in PDF.
 - **Make a PDF before each talk** (`pnpm export`) as the fallback if the live
-  art fails.
+  art fails. It has one page for each click, not for each slide
+  (`--with-clicks`): the audience cannot tell a click from a new slide, so the
+  PDF must not either.
 
 ## Budgets
 
@@ -172,6 +174,13 @@ of [talks.md](talks.md):
   the back row sees the art, and sees it move. `art:stills` also runs the
   renderer's browser checks (`webgl/probe/checks.ts`): context loss,
   `dispose`, the fade, a dynamic mesh drawn last, and each input's contract.
+- `art/print_check.py` (`pnpm art:print DECK`, on the built deck): for each
+  slide and click, the state that the printed page's still shows must equal the
+  live slide's. It compares states, not pixels, and it opens a slide in print
+  mode, not Slidev's `/print` route (a build has none). `--browser firefox` or
+  `webkit` runs it in another engine. Copy it with the
+  layers; it reads the `data-watch` attribute that `global-bottom.vue` and
+  `slide-bottom.vue` write.
 
 A change to `webgl/` that must not change the picture: draw frames with
 `uv run art/pixel_regression.py OUT_DIR` before and after, and compare them
@@ -182,6 +191,11 @@ with `--compare BEFORE AFTER`. Two runs of the same code are byte-identical.
 - **Size the drawing from the canvas's bounding box**, not `clientWidth`:
   Slidev scales the slide with a CSS transform. A drawing sized from
   `clientWidth` was stretched 1.76× on the laptop and 2× on a projector.
+- **A still shows the art at the click of its page, not at click 0.** Each
+  printed page is one click of a slide. Take the click from that page, never
+  from a constant. Only the overview and the presenter's "next" pane show
+  click 0. A still that ignores the click makes the page disagree with itself:
+  the text is at click 3 and the art at click 0. `art:print` finds this.
 - **A still per printed page must share one renderer**: one WebGL context per
   page passes the browser's limit.
 - **A positioned still paints over the slide's text** unless the slide's layout

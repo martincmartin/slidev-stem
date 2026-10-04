@@ -11,6 +11,9 @@
 // slide mounted and gives it its last click, so `playing` alone would keep it
 // running off-screen. Each entry into the playing state starts again from 0,
 // and going back a click is exact.
+// A page that does not run the clock (print and export, the overview) shows the
+// pose of its click: bent, or part-way through the curl (watch/board.ts).
+// `data-waitfor` makes `slidev export` wait until the SVG is in place and posed.
 import { useNav, useSlideContext } from "@slidev/client";
 import {
   computed,
@@ -21,6 +24,7 @@ import {
   useTemplateRef,
   watch,
 } from "vue";
+import { boardPoseTime } from "../watch/board.ts";
 
 const props = defineProps<{
   visible: boolean;
@@ -30,12 +34,13 @@ const props = defineProps<{
 
 const { $renderContext, $page } = useSlideContext();
 const LIVE = ["slide", "presenter"];
-const { currentSlideNo } = useNav();
+const { currentSlideNo, isPrintMode } = useNav();
 const running = computed(
   () =>
     props.playing &&
     currentSlideNo.value === $page.value &&
-    LIVE.includes($renderContext.value),
+    LIVE.includes($renderContext.value) &&
+    !isPrintMode.value,
 );
 const CURLING_CLASS = "diving-board-curling";
 
@@ -54,6 +59,19 @@ function timing(board: SVGSVGElement, name: string): number {
   if (!Number.isFinite(seconds))
     throw new Error(`diving-board.svg has no data-${name}`);
   return seconds;
+}
+
+/** The SVG's time for a page that does not run the clock. */
+function poseTime(board: SVGSVGElement): number {
+  return boardPoseTime(
+    {
+      swingStart: timing(board, "swingStart"),
+      curlStart: timing(board, "curlStart"),
+      curlDuration: timing(board, "curlDuration"),
+    },
+    props.playing,
+    props.curling,
+  );
 }
 
 /** The SVG's time for the clock's `now` (ms): inside the swing's cycle until
@@ -95,13 +113,16 @@ function apply(): void {
   const board = svg();
   if (!board) return;
   board.pauseAnimations();
-  board.setCurrentTime(0);
   curlAt = Infinity;
   if (running.value) {
+    board.setCurrentTime(0);
     startedAt = performance.now();
     if (props.curling) curlAt = nextBottom(board, startedAt);
     frame = requestAnimationFrame(run);
+  } else {
+    board.setCurrentTime(poseTime(board));
   }
+  board.setAttribute("data-posed", "");
   showCurling();
 }
 
@@ -128,8 +149,14 @@ watch(running, apply);
 watch(
   () => props.curling,
   (curling) => {
-    if (curling) curl();
+    if (curling && running.value) curl();
     else apply();
+  },
+);
+watch(
+  () => props.playing,
+  () => {
+    if (!running.value) apply(); // a page that does not run the clock
   },
 );
 onBeforeUnmount(stop);
@@ -141,6 +168,7 @@ onBeforeUnmount(stop);
     ref="host"
     class="diving-board"
     :class="{ 'diving-board-on': visible }"
+    data-waitfor="svg[data-posed]"
     aria-hidden="true"
     v-html="markup"
   />

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="980" height="452" viewBox="50 0 980 452" data-swing-start="2.4" data-swing-period="1" data-curl-start="3.4">
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="452" viewBox="50 0 980 452" data-swing-start="2.4" data-swing-period="1" data-curl-start="3.4" data-curl-duration="2.4">
 <style>
 .diving-board-fill-art-knockout { fill: var(--palette-art-knockout, #D3DCE3); }
 .diving-board-stroke-art-knockout { stroke: var(--palette-art-knockout, #D3DCE3); }

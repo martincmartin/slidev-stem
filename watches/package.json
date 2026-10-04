@@ -18,7 +18,7 @@
     "preinstall": "pnpm --dir .. install --frozen-lockfile",
     "build": "slidev build",
     "dev": "slidev",
-    "export": "slidev export",
+    "export": "slidev export --with-clicks",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "vue-tsc --noEmit",
@@ -26,7 +26,8 @@
     "test": "node --test \"webgl/**/*.test.ts\" \"watch/**/*.test.ts\"",
     "art:scene": "node watch/dump.ts",
     "art:generated": "uv run art/diving_board.py --check && uv run art/watch_design.py --check && uv run art/favicon.py --check",
-    "art:stills": "uv run art/watch_stills.py"
+    "art:stills": "uv run art/watch_stills.py",
+    "art:print": "uv run art/print_check.py"
   },
   "dependencies": {
     "@slidev/cli": "^53.0.0",

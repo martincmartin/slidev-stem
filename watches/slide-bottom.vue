@@ -2,18 +2,21 @@
 // Under each slide that shows the watch, a marker, so one sibling rule can make
 // the slide see-through. Where the slide is not the live one (print and export,
 // the overview, the presenter's "next" pane), a still of its view, from one
-// renderer shared by the page. `data-waitfor` makes `slidev export` wait until
-// the still is drawn. A printed page's render context is "slide", so print mode
-// comes from the page's nav.
+// renderer shared by the page. The still shows the slide's state at the click
+// of this page (`$clicks`): an export has one page for each click. The global
+// nav is not that click: a printed page gets a fixed nav of its own. `data-waitfor`
+// makes `slidev export` wait until the still is drawn. A printed page's render
+// context is "slide", so print mode comes from the page's nav. `data-watch` is
+// the state that the still shows, for art/print_check.py.
 import { useNav, useSlideContext } from "@slidev/client";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref, watch as onChange } from "vue";
 import { WATCH, watchStills } from "./watch/instance.ts";
 import { watchState } from "./watch/state.ts";
 
-const { $frontmatter, $renderContext } = useSlideContext();
+const { $frontmatter, $renderContext, $clicks } = useSlideContext();
 const LIVE = ["slide", "presenter"];
 const { isPrintMode } = useNav();
-const state = computed(() => watchState($frontmatter, 0));
+const state = computed(() => watchState($frontmatter, $clicks.value));
 const needsStill = computed(
   () =>
     state.value !== undefined &&
@@ -21,20 +24,30 @@ const needsStill = computed(
 );
 const source = ref<string>();
 
-onMounted(async () => {
-  if (!needsStill.value || !state.value) return;
-  const ratio = window.devicePixelRatio || 1;
-  const [width, height] = WATCH.scene.slide;
-  source.value = await watchStills().of(state.value, [
-    Math.round(width * ratio),
-    Math.round(height * ratio),
-  ]);
-});
+onChange(
+  () => (needsStill.value ? state.value : undefined),
+  async (shown) => {
+    if (!shown) return;
+    const ratio = window.devicePixelRatio || 1;
+    const [width, height] = WATCH.scene.slide;
+    const picture = await watchStills().of(shown, [
+      Math.round(width * ratio),
+      Math.round(height * ratio),
+    ]);
+    if (state.value === shown) source.value = picture; // not a click that has passed
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
   <i v-if="state" class="watch-marker" aria-hidden="true" />
-  <div v-if="needsStill" class="watch-still" data-waitfor=".watch-still-image">
+  <div
+    v-if="needsStill"
+    class="watch-still"
+    :data-watch="JSON.stringify(state)"
+    data-waitfor=".watch-still-image"
+  >
     <img v-if="source" class="watch-still-image" :src="source" alt="" />
   </div>
 </template>

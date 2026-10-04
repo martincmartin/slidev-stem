@@ -256,7 +256,8 @@ The swing never damps, on purpose.
   The pool and the stand fade at once, through a class on the SVG root and a
   CSS transition in the file. While it waits, the component keeps the SVG's
   time inside the swing's one cycle, so the jump to the curl is between two
-  equal poses. The times are the root's `data-` attributes.
+  equal poses. The times are the root's `data-` attributes (`swing-start`,
+  `swing-period`, `curl-start`, `curl-duration`).
 - **The end of the curl is the hairspring at rest** (swing 0, the middle of its
   swing), at the hairspring's place and size on slide 2, with the view's tilt.
   Its numbers are copied from `watch/model.ts` and `watch/generate.ts` into
@@ -286,5 +287,19 @@ art:generated` runs it with the `--check` of `watch_design.py` and
 - **The SVG takes its colours from the theme** through namespaced classes
   ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "The page's
   theme paints the drawing").
-- **Print and export show no board still.** The overview thumbnail shows the
-  hairspring still under the board; this is known and left alone.
+- **The watch's still follows the click of its page.** `slide-bottom.vue` reads
+  the slide's `$clicks`, not the global nav (a printed page has a nav of its
+  own), and the PDF has a page for each click (`pnpm export`).
+  `pnpm art:print DECK` compares each page's state with the live slide's. It
+  runs in Chromium; `--browser firefox` and `--browser webkit` (Playwright's
+  WebKit, not Safari itself) pass too, as of 2026-10-04.
+  Why: [`tasks/2026-10-03-narrated-export/`](../../tasks/2026-10-03-narrated-export/PLAN.md),
+  "The watches talk: what the still forms need".
+- **The board is posed in print.** A page that does not run the clock (print,
+  export, the overview) sets the SVG's time to the pose of its click
+  (`watch/board.ts`): bent, at the bottom of the swing, at click 1, and half
+  way through the curl at click 2 (`CURL_SHOWN`). Half way, not the end: the
+  end is the hairspring at rest, the same picture as click 3's. Print mode never
+  runs the clock, so the pose does not drift. `art:print` checks the board too:
+  its classes against the live slide's, and its clock against the pose. The
+  component's `data-waitfor` makes `slidev export` wait until the SVG is posed.

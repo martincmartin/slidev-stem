@@ -26,7 +26,9 @@ What it checks comes from the uv project that holds the current directory:
     with the script `art:generated`, its generated files are checked against
     the scripts that write them; with the script `art:stills`, its PNG stills written to a temporary directory
     (with pairs.json, a list of [first, second] file names), and barroom.py run
-    on the PNGs and motion.py --png-pair on each pair.
+    on the PNGs and motion.py --png-pair on each pair; with the script
+    `art:print`, the built deck is also given to it, which compares each
+    printed page with the live slide at the same click.
 
 It only reports, unless you give --fix: then ruff and Prettier rewrite the
 files first. It runs every check, even after one fails, then prints a summary
@@ -176,6 +178,14 @@ def art_checks(directory: Path, work: Path) -> list[Check | Later]:
     return checks
 
 
+def print_checks(directory: Path, deck: Path) -> list[Check]:
+    """The check of a talk's export pages, for a talk with the script
+    `art:print`. It runs on the built deck, which it takes as its argument."""
+    if "art:print" not in scripts_of(directory):
+        return []
+    return [Check("print", directory, ("pnpm", "--silent", "art:print", str(deck)))]
+
+
 def talk_checks(
     directory: Path, deck: Path, work: Path, fix: bool
 ) -> list[Check | Later]:
@@ -196,6 +206,7 @@ def talk_checks(
         Check("palette", STEM, uv_run("tools/palette.py", "--talk", talk)),
         Check("talk setup", STEM, uv_run("tools/talkcheck.py", talk)),
         Check("build", directory, ("pnpm", "build", "--out", str(deck))),
+        *print_checks(directory, deck),
         Check(
             "offline",
             STEM,

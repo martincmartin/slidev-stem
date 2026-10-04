@@ -22,4 +22,7 @@ export function useSlideContext(): {
   $renderContext: Ref<string>;
   /** This slide's number (1-based). */
   $page: Ref<number>;
+  /** The click that this render of the slide shows: the page's own, in an
+   *  export with one page for each click. */
+  $clicks: Ref<number>;
 };

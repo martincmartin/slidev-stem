@@ -4,7 +4,8 @@
 // (`watch: hairspring`, `watchTilt: 45`, and see watch/state.ts); a slide
 // without one hides the layer. A click can change the state (`watchSettle`).
 // Print mode (export) has no live layer: slide-bottom.vue draws a still on each
-// page. Print mode comes from the page's nav: each printed page gets a fixed
+// page. `data-watch` on the canvas is the state it shows, for
+// art/print_check.py. Print mode comes from the page's nav: each printed page gets a fixed
 // nav of its own, which does not know it. The class slidev-layout gives the
 // layer the theme's palette variables and page colour.
 import { useNav } from "@slidev/client";
@@ -121,7 +122,11 @@ onMounted(() => {
     class="slidev-layout watch-layer"
     :class="{ 'watch-off': !name }"
   >
-    <canvas ref="canvas" class="watch-canvas" />
+    <canvas
+      ref="canvas"
+      class="watch-canvas"
+      :data-watch="JSON.stringify(state ?? null)"
+    />
   </div>
 </template>
 

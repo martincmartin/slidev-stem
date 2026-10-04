@@ -31,7 +31,7 @@ page waits for it. The root's data attributes give the page the times:
 `data-swing-start` and `data-swing-period` (the swing's cycle is the loop of
 `swing-start` to `swing-start + swing-period`) and `data-curl-start`, which is
 the end of that cycle: a page shows the swing at times inside the cycle, and the
-curl from `curl-start`. The pool and the stand fade when the root has the class
+curl from `curl-start`, for `data-curl-duration`. The pool and the stand fade when the root has the class
 `diving-board-curling` (a CSS transition in the file's <style>).
 
 The curl ends on the spring of watch/model.ts at swing 0, as the hairspring
@@ -783,7 +783,8 @@ def build(
         (
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{design.width}" height="{design.height}" '
             f'viewBox="{design.view_left} 0 {design.width} {design.height}" data-swing-start="{number(timeline.swing_start)}" '
-            f'data-swing-period="{number(timeline.period)}" data-curl-start="{number(timeline.curl_start)}">'
+            f'data-swing-period="{number(timeline.period)}" data-curl-start="{number(timeline.curl_start)}" '
+            f'data-curl-duration="{number(timeline.curl)}">'
         ),
         inks.style(),
         "<title>A diving board over the edge of a pool: it bends down, swings up and down, then curls into the hairspring</title>",
