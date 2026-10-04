@@ -12,6 +12,7 @@ lists in step. What is true of one talk only is in that talk's `docs/` (for
 | [webgl.md](webgl.md)                     | live 3D art: when to use it, the renderer and its contract, the house style in 3D, how slides drive it               |
 | [legibility.md](legibility.md)           | the venue, the resolution and contrast floors, room light, how to read the metrics, text sizes                       |
 | [talks.md](talks.md)                     | each talk as its own project: set up a clone, why, validation, upgrading a talk's packages                           |
+| [export.md](export.md)                   | the forms of a talk for readers (narrated mode, article, PDF, live figures): the plan, the traps; not built yet      |
 | [../tools/README.md](../tools/README.md) | each check, its commands, and which tool is the authority                                                            |
 
 **The one-paragraph version.** Each talk uses the house theme (now Ledger: a

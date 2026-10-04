@@ -1,0 +1,9 @@
+{
+  "name": "slidev-addon-narration",
+  "private": true,
+  "type": "module",
+  "keywords": ["slidev-addon", "slidev"],
+  "engines": {
+    "slidev": ">=53.0.0"
+  }
+}

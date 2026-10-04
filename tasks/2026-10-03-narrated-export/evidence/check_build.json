@@ -1,0 +1,11 @@
+{
+  "build_bytes": 3303769,
+  "narrated_current_part": "Here is a diving board. Push its end down and it pushes back",
+  "narrated_parts": 12,
+  "article_url": "/article?print=true",
+  "article_figures": 12,
+  "presenter_note_text": "2 s beat \u2192 sets speed of whole watch\n\n push \u2192 pushes back \u2192 overshoot. No fricti",
+  "console_errors": [
+    "Failed to patch FloatingVue TypeError: Cannot read properties of undefined (reading 'Popper')\n    at e.component (http://127.0.0.1:53831/assets/modules/shiki-D3"
+  ]
+}

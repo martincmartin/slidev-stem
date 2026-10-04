@@ -82,6 +82,7 @@ comments point to them.
 | change the WebGL renderer, the watch, or its frontmatter | `docs/webgl.md`                                              |
 | decide if something is big, thick or dark enough         | `docs/legibility.md`                                         |
 | upgrade, validate, tag or build a talk                   | `docs/talks.md`                                              |
+| export a talk for readers, or write speaker notes        | `docs/export.md`                                             |
 | work in a talk (slides, its art, its code)               | `<talk>/AGENTS.md`: the talk's own index into `<talk>/docs/` |
 
 ## Working in this repo

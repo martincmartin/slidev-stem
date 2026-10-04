@@ -128,6 +128,9 @@ sundial was war loot from Sicily; Pliny says Romans followed its wrong hours for
 - **`IF ASKED:` at the end** holds the material that is too good to delete and too
   long to say. A 15–20 minute talk in a bar has no room for it, and the questions
   afterwards do.
+- **A plan may move the spoken line out of the notes.** The notes would become
+  cues, and the full narration would go in a `<!-- narration -->` comment for
+  readers. Nothing is built yet: see [export.md](../../docs/export.md).
 
 ## Slide sizes and what fits
 

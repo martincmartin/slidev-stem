@@ -1,0 +1,5 @@
+# Regenerable: run the experiment again (see README.md).
+out/
+.vite-cache/
+# A symlink to the talk's node_modules (see README.md).
+node_modules

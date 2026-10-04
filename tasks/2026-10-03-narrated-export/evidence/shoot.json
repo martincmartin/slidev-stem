@@ -1,0 +1,13 @@
+{
+  "wheel_steps": 3,
+  "url_after_scroll": "/2?narration&clicks=1",
+  "article_url": "/article?print=true",
+  "article_figures": 12,
+  "article_seconds_to_load": 1.21,
+  "article_height_px": 6348,
+  "article_webgl_canvases": 0,
+  "article_pdf_bytes": 274080,
+  "console_errors": [
+    "Failed to patch FloatingVue TypeError: Cannot read properties of undefined (reading 'Popper')\n    at app.component (http://localhost:3131/@fs/Users/martin/Develop/slidev/stem/watches/node_modules/.pnp"
+  ]
+}
