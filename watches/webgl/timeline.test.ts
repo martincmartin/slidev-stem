@@ -49,8 +49,12 @@ const FAR = view("far", 5);
 function mesh(name: string): Mesh {
   return { name } as unknown as Mesh;
 }
-const SPRING: Subject = { name: "spring", meshes: new Set() };
-const BALANCE: Subject = { name: "balance", meshes: new Set() };
+// neither holds the other
+const SPRING: Subject = { name: "spring", meshes: new Set([mesh("spring")]) };
+const BALANCE: Subject = {
+  name: "balance",
+  meshes: new Set([mesh("balance")]),
+};
 
 function state(options: Partial<StageState> & { view: View }): StageState {
   return { tilt: 0, subject: null, flash: null, ...options };
@@ -172,6 +176,47 @@ test("from a subject to one that holds it: the difference fades in alone, with t
   assert.equal(shrinking.fading, large);
   assert.equal(timeline.valuesAt(2 * FADE).subject, small);
   assert.equal(timeline.valuesAt(2 * FADE).fading, null);
+});
+
+test("to a subject that holds the old one, in another view: the camera moves and tilts with the rest still out, then the difference fades in", () => {
+  const inner = mesh("inner");
+  const extra = mesh("extra");
+  const small: Subject = { name: "small", meshes: new Set([inner]) };
+  const large: Subject = { name: "large", meshes: new Set([inner, extra]) };
+  const timeline = timelineAt(state({ view: CLOSE, subject: small }));
+  timeline.show(state({ view: WIDE, tilt: 20, subject: large }), 0);
+  assert.equal(timeline.phaseAt(0), "view");
+  const moving = timeline.valuesAt(MOVE / 2);
+  assert.equal(moving.subject, small);
+  assert.equal(moving.rest, 0);
+  assert.equal(moving.fading, null);
+  assert.equal(timeline.viewEndAt(0), MOVE);
+  assert.equal(timeline.phaseAt(MOVE), "tilt");
+  assert.equal(timeline.valuesAt(MOVE + TILT / 2).rest, 0);
+  assert.equal(timeline.phaseAt(MOVE + TILT), "swap");
+  const growing = timeline.valuesAt(MOVE + TILT + FADE / 2);
+  assert.equal(growing.view, WIDE);
+  assert.equal(growing.tilt, 20);
+  assert.equal(growing.subject, small);
+  assert.equal(growing.fading, large);
+  assert.deepEqual(timeline.valuesAt(MOVE + TILT + FADE), {
+    view: WIDE,
+    tilt: 20,
+    rest: 0,
+    subject: large,
+    fading: null,
+  });
+  // and back again: the difference fades out, then the camera untilts and moves
+  const back = MOVE + TILT + FADE;
+  timeline.show(state({ view: CLOSE, subject: small }), back);
+  assert.equal(timeline.phaseAt(back), "swap");
+  assert.equal(timeline.phaseAt(back + FADE), "tilt");
+  assert.equal(timeline.valuesAt(back + FADE).subject, small);
+  assert.equal(timeline.valuesAt(back + FADE).rest, 0);
+  assert.equal(timeline.phaseAt(back + FADE + TILT), "view");
+  assert.equal(timeline.viewEndAt(back), back + FADE + TILT + MOVE);
+  assert.equal(timeline.phaseAt(back + FADE + TILT + MOVE), null);
+  assert.equal(timeline.valuesAt(back + FADE + TILT + MOVE).view, CLOSE);
 });
 
 test("a swap flashes its subject when the swap ends, not before", () => {

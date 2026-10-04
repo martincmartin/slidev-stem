@@ -115,6 +115,25 @@ fades out, and from 4 to 3 nothing changes
 ([`navigation.md`](../../docs/navigation.md)). A printed page of slide 3 has
 no board.
 
+## Slide 4: the escapement
+
+Slide 4 has `watch: escapement`, `watchTilt: 20` and `watchOnly: escapement`:
+the whole path from the escape wheel to the balance, except the escape
+wheel's pinion. Entering it, the camera zooms out with only slide 3's picture
+on the screen. Then the roller, the impulse jewel, the pallet fork and the
+escape wheel fade in. It is the opening's zoom in reverse, with the tilt kept.
+Going back, they fade out, and then the camera zooms in.
+
+- **The view fits the subject.** `fitView` in `watch/generate.ts` makes the
+  view from the reach of the subject's parts (with the balance's screws). It
+  fits them in `ESCAPEMENT_FRAME`, the left 60% of the slide under the
+  title, and keeps the main focus on the left. If the parts change, the view
+  follows them.
+- **The escape wheel's arbor stands on the wheel.** Each wheel's arbor runs up
+  from the top of its wheel, through its pinion, to `ARBOR_CAP` above the
+  pinion. With the pinion left out, the arbor still touches the wheel.
+- **No flash yet.**
+
 ## Balance rim motion
 
 Four radial screws make the rim's swing visible on the cover and slide 3.
@@ -151,7 +170,7 @@ clicks: 4
 
 | Key                                  | Meaning                                                                                                                                                                  |
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `watch: cover`                       | the view: `cover`, `hairspring` or `crown`; no key hides the watch                                                                                                       |
+| `watch: cover`                       | the view: `cover`, `hairspring`, `escapement` or `crown`; no key hides the watch                                                                                         |
 | `watchTilt: 20`                      | degrees, towards the viewer's side (default 0)                                                                                                                           |
 | `watchFlash: balance and hairspring` | the name of a subject: it flashes while the camera moves, on the step forward into the slide only ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash") |
 | `watchOnly: hairspring and stud`     | the name of a subject: the rest of the watch fades out                                                                                                                   |
@@ -171,16 +190,21 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   pallet fork. It holds `hairspring and stud`: slide 3 shows it.
 - `balance wheel`: what slide 3 adds to slide 2's picture: the balance, its
   screws and the staff, not the spring. Slide 3 flashes it.
+- `escapement`: `balance and hairspring`, the pallet fork, and the escape
+  wheel with its hub and arbor, not its pinion. It holds
+  `balance wheel and hairspring`: slide 4 shows it.
 
 - **The order of a change:** the camera moves (1.8 s), then the view tilts
   (1.5 s), then the rest fades (0.8 s); going back runs it in reverse. The
   tilt happens with the whole watch still in view. From one subject to
   another, the rest first fades back in around the old subject. Exception, a
-  swap: if one subject holds the other and the view and tilt are the same
-  (slide 2's `hairspring and stud` to slide 3's `balance wheel and hairspring`), only
-  the difference fades, in 0.8 s, and the rest of the watch stays out
-  (`Frame.fade` in `webgl/scene.ts`, `swap` in `webgl/timeline.ts`). Going back
-  fades it out the same way.
+  swap: if one subject holds the other, only the difference fades, in 0.8 s,
+  and the rest of the watch stays out (`Frame.fade` in `webgl/scene.ts`,
+  `swap` in `webgl/timeline.ts`). If the view or the tilt changes too, the
+  camera moves and tilts with the smaller subject on the screen, and then
+  the difference fades in (slide 3 to slide 4). Going back fades the
+  difference out first, and then moves the camera. Slide 2 to slide 3 is a
+  swap with no camera move.
   With `watchFlash`, the flash and camera move start together. The flash ends
   during the tilt. In a swap there is no camera move: the flash starts when
   the swap ends (slide 3). The change from the cover to slide 2 takes 4.1 s.

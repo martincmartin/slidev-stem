@@ -176,6 +176,53 @@ test("slide 3's flash is what it adds to slide 2: the wheel, its screws and the 
   for (const mesh of partMeshes("balance")) assert.ok(added.meshes.has(mesh));
 });
 
+test("slide 4's subject is the escapement: it holds slide 3's, and has the escape wheel and its arbor but not its pinion", () => {
+  const find = (name: string) =>
+    scene.subjects.find((candidate) => candidate.name === name);
+  const escapement = find("escapement");
+  const wheel = find("balance wheel and hairspring");
+  assert.ok(escapement && wheel);
+  for (const mesh of wheel.meshes) assert.ok(escapement.meshes.has(mesh));
+  const parts = new Set([...escapement.meshes].map((mesh) => mesh.part));
+  assert.deepEqual(
+    [...parts].sort(),
+    [
+      "balance",
+      "escape wheel",
+      "hairspring",
+      "hairspring stud",
+      "impulse jewel",
+      "pallet fork",
+      "roller",
+    ].sort(),
+  );
+  for (const part of parts) {
+    if (part === "escape wheel") continue;
+    for (const mesh of partMeshes(part)) assert.ok(escapement.meshes.has(mesh));
+  }
+  // the wheel, its hub and its arbor, in the drawing's order; the third is
+  // the pinion
+  const [body, hub, pinion, arbor] = partMeshes("escape wheel");
+  assert.ok(body && hub && pinion && arbor);
+  assert.ok(escapement.meshes.has(body));
+  assert.ok(escapement.meshes.has(hub));
+  assert.ok(!escapement.meshes.has(pinion));
+  assert.ok(escapement.meshes.has(arbor));
+  // the arbor stands on the wheel: without the pinion it does not float
+  assert.equal(heights(arbor)[0], heights(body)[1]);
+  assert.ok(heights(arbor)[1] > heights(pinion)[1]);
+});
+
+test("the escapement view is wider than the hairspring view", () => {
+  const view = (name: string) =>
+    scene.views.find((candidate) => candidate.name === name);
+  const escapement = view("escapement");
+  const hairspring = view("hairspring");
+  assert.ok(escapement && hairspring);
+  assert.ok(escapement.scale < hairspring.scale);
+  assert.ok(escapement.scale > 1);
+});
+
 test("four evenly spaced radial screws touch the balance rim and turn with it", () => {
   const [body, ...marks] = partMeshes("balance");
   const heads = marks.filter((mesh) => mesh.fill !== null);

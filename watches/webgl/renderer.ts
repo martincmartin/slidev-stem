@@ -33,7 +33,7 @@
 // is depth order only if `lineOrder` follows the depth of the view.
 //
 // Hidden inside: a mesh is not drawn inside its discs, in world x and y, at
-// any height.
+// any height, in a picture that draws a mesh of the disc's group (`Disc.by`).
 //
 // A fade (`keep` and `rest` of the frame) shows the meshes in `keep`, and the
 // other meshes at opacity `rest`, as one image, as SVG's group opacity does:
@@ -53,6 +53,7 @@
 import type {
   Colour,
   Frame,
+  Group,
   Ink,
   Mesh,
   MeshGeometry,
@@ -383,7 +384,6 @@ interface Resources {
 /** What the renderer computes once for each mesh, from the scene. */
 interface DrawnMesh {
   mesh: Mesh;
-  discs: Float32Array;
 }
 
 /** What one picture needs: the camera, where each mesh is, and its inks. */
@@ -477,6 +477,8 @@ export class Renderer {
   >();
   /** In the order of their lines. */
   private readonly drawn: DrawnMesh[];
+  /** The discs of the mesh being drawn: x, y, radius each. */
+  private readonly discScratch = new Float32Array(3 * MAX_DISCS);
   /** The geometry that each mesh has now: its own, or the last that
    *  `updateMesh` gave it. */
   private readonly geometry = new Map<Mesh, MeshGeometry>();
@@ -755,11 +757,7 @@ export class Renderer {
   }
 
   private prepare(mesh: Mesh): DrawnMesh {
-    const discs = new Float32Array(3 * MAX_DISCS);
-    for (const [index, disc] of mesh.hiddenInside.entries()) {
-      discs.set([...disc.centre, disc.radius], 3 * index);
-    }
-    return { mesh, discs };
+    return { mesh };
   }
 
   /** The map of inks that `mesh` is drawn with in `picture`, or `null`: its
@@ -1153,18 +1151,32 @@ export class Renderer {
     gl.disable(gl.BLEND);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LESS);
-    this.drawFaces(resources, meshes, picture);
+    // a disc hides only while the part that covers it is drawn
+    const groups = new Set(meshes.map(({ mesh }) => mesh.group));
+    this.drawFaces(resources, meshes, picture, groups);
     // The lines read the depth texture: it must not be attached while they do.
     this.attachDepth(target, false);
-    this.drawLines(resources, meshes, picture, target);
+    this.drawLines(resources, meshes, picture, target, groups);
     this.attachDepth(target, true);
     return target;
   }
 
-  private setDiscs(program: Program, drawn: DrawnMesh): void {
+  /** The discs of `drawn` whose group is in `groups`. */
+  private setDiscs(
+    program: Program,
+    drawn: DrawnMesh,
+    groups: ReadonlySet<Group | null>,
+  ): void {
     const gl = this.gl;
-    gl.uniform3fv(uniform(program, "discs"), drawn.discs);
-    gl.uniform1i(uniform(program, "discCount"), drawn.mesh.hiddenInside.length);
+    const discs = this.discScratch;
+    let count = 0;
+    for (const disc of drawn.mesh.hiddenInside) {
+      if (!groups.has(disc.by)) continue;
+      discs.set([...disc.centre, disc.radius], 3 * count);
+      count++;
+    }
+    gl.uniform3fv(uniform(program, "discs"), discs);
+    gl.uniform1i(uniform(program, "discCount"), count);
   }
 
   private meshResourcesOf(resources: Resources, mesh: Mesh): MeshResources {
@@ -1177,6 +1189,7 @@ export class Renderer {
     resources: Resources,
     meshes: DrawnMesh[],
     picture: Picture,
+    groups: ReadonlySet<Group | null>,
   ): void {
     const gl = this.gl;
     const program = resources.fill;
@@ -1199,7 +1212,7 @@ export class Renderer {
         modelOf(picture, drawn.mesh),
       );
       gl.uniform4fv(uniform(program, "color"), colour);
-      this.setDiscs(program, drawn);
+      this.setDiscs(program, drawn, groups);
       gl.bindVertexArray(made.faces);
       gl.drawArrays(gl.TRIANGLES, 0, made.triangleVertices);
     }
@@ -1211,6 +1224,7 @@ export class Renderer {
     meshes: DrawnMesh[],
     picture: Picture,
     target: Target,
+    groups: ReadonlySet<Group | null>,
   ): void {
     const gl = this.gl;
     const program = resources.line;
@@ -1253,7 +1267,7 @@ export class Renderer {
         uniform(program, "inks"),
         this.inkUniform(this.inkMap(picture, drawn.mesh)),
       );
-      this.setDiscs(program, drawn);
+      this.setDiscs(program, drawn, groups);
       gl.bindVertexArray(made.segments);
       gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, made.lineCount);
     }

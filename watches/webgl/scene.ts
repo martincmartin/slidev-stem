@@ -91,6 +91,10 @@ export interface SilhouetteEdge {
 export interface Disc {
   readonly centre: readonly [number, number];
   readonly radius: number;
+  /** The group of the part that covers the disc. The disc hides only in a
+   *  picture that draws a mesh of this group: when that part has faded out,
+   *  what was under it shows. */
+  readonly by: Group;
 }
 
 /** Its matrix comes with each frame. */
@@ -268,6 +272,10 @@ export function checkScene(scene: Scene): void {
       check(
         disc.radius > 0,
         `${mesh.name}: a disc of radius ${String(disc.radius)}`,
+      );
+      check(
+        groups.has(disc.by),
+        `${mesh.name}: a disc's group is not in the scene`,
       );
     }
     checkFinite([mesh.lineOrder], `${mesh.name}'s line order`);

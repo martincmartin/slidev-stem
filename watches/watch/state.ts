@@ -1,7 +1,7 @@
 // A slide's frontmatter, at a number of clicks, as a state for the watch's
 // stage. The frontmatter names things; `stageState` turns the names into the
 // scene's objects, once, at this boundary.
-//   watch: a view (cover, hairspring, crown); none hides the watch
+//   watch: a view (cover, hairspring, escapement, crown); none hides the watch
 //   watchTilt: degrees (default 0)
 //   watchOnly: a subject ("hairspring and stud"): the rest of the watch fades
 //   watchFlash: a subject ("balance and hairspring") that flashes while the

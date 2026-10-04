@@ -50,7 +50,9 @@ import {
 
 // ---- what the art says (the 2D drawing's numbers) ------------------------------------
 /** Heights of the train's meshing: a pinion is level with the wheel that
- *  drives it, and an arbor's end rises this far above its pinion. */
+ *  drives it, and an arbor's end rises this far above its pinion. The arbor
+ *  runs up from its wheel, through the pinion, so that a view without the
+ *  pinion (slide 4's escape wheel) shows no floating arbor. */
 const ARBOR_CAP = 3;
 const WASH_OPACITY = 0.18;
 const STRAP_THICKNESS = 4;
@@ -94,6 +96,14 @@ const CROWN_ZOOM = 2;
 const HAIRSPRING_ZOOM = 250 / 56;
 /** Where the balance's arbor is on the slide in the hairspring view. */
 const HAIRSPRING_TARGET: Point2 = [275, 276];
+/** Where the escapement view fits the escapement on the slide: the left 60 %,
+ *  under the title (docs/watch.md, "Slide 4: the escapement"). */
+const ESCAPEMENT_FRAME: PlanBox = Object.freeze({
+  left: 30,
+  top: 110,
+  right: 560,
+  bottom: 530,
+});
 const SPRING_FRAMES = 25;
 
 // ---- parts and recipes ---------------------------------------------------------------
@@ -175,6 +185,25 @@ interface Solid {
 interface Heights {
   bottom: number;
   top: number;
+}
+
+/** A box on the slide, in px. */
+interface PlanBox {
+  readonly left: number;
+  readonly top: number;
+  readonly right: number;
+  readonly bottom: number;
+}
+
+/** The smallest box that holds each circle, at any time. */
+function boxOf(circles: readonly { pivot: Point2; reach: number }[]): PlanBox {
+  if (circles.length === 0) throw new Error("a box of nothing");
+  return {
+    left: Math.min(...circles.map(({ pivot, reach }) => pivot[0] - reach)),
+    top: Math.min(...circles.map(({ pivot, reach }) => pivot[1] - reach)),
+    right: Math.max(...circles.map(({ pivot, reach }) => pivot[0] + reach)),
+    bottom: Math.max(...circles.map(({ pivot, reach }) => pivot[1] + reach)),
+  };
 }
 
 function contourRing(contour: Contour, style: LineStyle | null): Ring {
@@ -430,9 +459,10 @@ function makeParts({ barrel, centre, third, fourth, escape }: Train): Parts {
 // ---- clip discs ------------------------------------------------------------------------
 /** A lower wheel is hidden inside the root circle of each round part above it
  *  that overlaps it. */
-function clipDiscs(design: Design): Map<Wheel, Disc[]> {
+function clipDiscs(design: Design, groups: WatchGroups): Map<Wheel, Disc[]> {
   interface Round {
     wheel: Wheel | null;
+    group: Group;
     arbor: Point2;
     inner: number;
     outer: number;
@@ -442,12 +472,18 @@ function clipDiscs(design: Design): Map<Wheel, Disc[]> {
     entry === "balance"
       ? {
           wheel: null,
+          group: groups.balance,
           arbor: design.balance.arbor,
           inner: design.balance.radius,
           outer: design.balance.radius,
         }
       : {
           wheel: entry,
+          group: lookup(
+            groups.wheels,
+            entry,
+            `group for the ${entry.name} wheel`,
+          ),
           arbor: entry.arbor,
           inner: entry.inner,
           outer: entry.outer,
@@ -474,6 +510,7 @@ function clipDiscs(design: Design): Map<Wheel, Disc[]> {
             watchCentre[1] + upper.arbor[1],
           ],
           radius: upper.inner,
+          by: upper.group,
         })),
     );
   }
@@ -1290,7 +1327,11 @@ export function generate(design: Design = DESIGN): Watch {
     lookup(parts.wheels, wheel, `part for the ${wheel.name} wheel`);
 
   // ---- the solids of the movement, in the drawing's order ----
-  const list = new SolidList(tree.origins, watchCentre, clipDiscs(design));
+  const list = new SolidList(
+    tree.origins,
+    watchCentre,
+    clipDiscs(design, tree.groups),
+  );
   const kit: Kit = {
     design,
     paint,
@@ -1429,18 +1470,50 @@ export function generate(design: Design = DESIGN): Watch {
       [...wheel.meshes].filter((mesh) => !subject.meshes.has(mesh)),
     ),
   };
+  // the escapement: the oscillator, the pallet fork, and the escape wheel
+  // with its arbor but not its pinion (a wheel's "other" solid): what slide 4
+  // shows. It holds `wheel`, so the camera moves first, then the rest of it
+  // fades in.
+  const escapePart = partOf(train.escape);
+  const escapementParts = new Set([...oscillatorParts, parts.fork, escapePart]);
+  const escapementSolids = [...movementMeshes.keys()].filter(
+    (solid) =>
+      escapementParts.has(solid.part) &&
+      !(solid.part === escapePart && solid.role === "other"),
+  );
+  const escapement: Subject = {
+    name: "escapement",
+    meshes: new Set([
+      ...escapementSolids.map((solid) =>
+        lookup(movementMeshes, solid, `mesh of ${solid.name}`),
+      ),
+      stud.mesh,
+      ...balanceScrews,
+    ]),
+  };
+  const escapementBox = boxOf([
+    ...escapementSolids,
+    {
+      pivot: balanceSolid.pivot,
+      reach: design.balance.radius + BALANCE_SCREWS.protrusion,
+    },
+  ]);
+  const springMiddle = (springHeights.bottom + springHeights.top) / 2;
   const scene: Scene = {
     slide: [design.canvas.width, design.canvas.height],
     meshes,
     groups: tree.all,
-    views: views(
-      design,
-      (lowest + highest) / 2,
-      (springHeights.bottom + springHeights.top) / 2,
-      middle,
-      crownCentreX,
-    ),
-    subjects: [subject, oscillator, wheel, wheelAdded],
+    views: [
+      ...views(
+        design,
+        (lowest + highest) / 2,
+        springMiddle,
+        middle,
+        crownCentreX,
+      ),
+      fitView("escapement", escapementBox, ESCAPEMENT_FRAME, springMiddle),
+    ],
+    subjects: [subject, oscillator, wheel, wheelAdded, escapement],
   };
 
   return {
@@ -1507,6 +1580,33 @@ function views(
       pivot: [centreX + crownCentreX, centreY, caseMiddle],
     },
   ];
+}
+
+/** The view that fits `box` in `frame`, as large as it can, centred, and tilts
+ *  about the box's centre at the height `middle`. */
+function fitView(
+  name: string,
+  box: PlanBox,
+  frame: PlanBox,
+  middle: number,
+): View {
+  const scale = Math.min(
+    (frame.right - frame.left) / (box.right - box.left),
+    (frame.bottom - frame.top) / (box.bottom - box.top),
+  );
+  const centre: Point2 = [
+    (box.left + box.right) / 2,
+    (box.top + box.bottom) / 2,
+  ];
+  return {
+    name,
+    scale,
+    shift: [
+      (frame.left + frame.right) / 2 - scale * centre[0],
+      (frame.top + frame.bottom) / 2 - scale * centre[1],
+    ],
+    pivot: [centre[0], centre[1], middle],
+  };
 }
 
 // ---- heights ---------------------------------------------------------------------------------
@@ -1747,7 +1847,7 @@ function trainHeights(
   }
   const pinion = pinionOf.get(owner);
   if (pinion === undefined) return [bodyHeights.bottom, bodyHeights.top]; // the hub
-  return [heightOf(pinion).top, heightOf(pinion).top + ARBOR_CAP];
+  return [bodyHeights.top, heightOf(pinion).top + ARBOR_CAP];
 }
 
 function bodyByWheel(

@@ -121,7 +121,9 @@ test("checkScene takes a good scene, and names what is wrong with a bad one", ()
       /a disc of radius/,
       {
         ...GOOD,
-        meshes: [{ ...MESH, hiddenInside: [{ centre: [0, 0], radius: 0 }] }],
+        meshes: [
+          { ...MESH, hiddenInside: [{ centre: [0, 0], radius: 0, by: ROOT }] },
+        ],
       },
     ],
     [

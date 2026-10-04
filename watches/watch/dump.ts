@@ -61,7 +61,11 @@ export function sceneData(
       lineStyles: uniqueStyles(mesh),
       lines: mesh.lines.length,
       silhouetteEdges: mesh.silhouetteEdges.length,
-      hiddenInside: mesh.hiddenInside,
+      hiddenInside: mesh.hiddenInside.map((disc) => ({
+        centre: disc.centre,
+        radius: disc.radius,
+        by: indexOf(groupIndex, disc.by),
+      })),
       lineOrder: mesh.lineOrder,
       inDrawing: mesh.inDrawing,
       dynamic: mesh.dynamic,

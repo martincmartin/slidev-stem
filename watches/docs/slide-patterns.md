@@ -106,6 +106,7 @@ classes and removes the `v-click` classes, and the dim rule stops working.
 
 A slide that shows the watch sets its view in the frontmatter.
 Slide 2 uses the diving board to explain the spring, and slide 3 fades its rest shape out as the balance wheel fades in.
+Slide 4 zooms out, and then the rest of the escapement fades in.
 It is described in [watch.md](watch.md).
 
 ## Where things go on a slide

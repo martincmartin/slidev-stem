@@ -120,7 +120,10 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
 - **Faces:** flat fills, no lighting, no textures. A curved surface reads
   through its silhouette lines.
 - **Clip discs:** a part can be hidden inside a disc, at every height (in the
-  watch, each lower wheel inside the root circle of the wheel above it).
+  watch, each lower wheel inside the root circle of the wheel above it). A
+  disc names the group of the part that covers it (`Disc.by`). It hides only
+  in a picture that draws a mesh of that group, so when the covering part
+  fades out, the whole part under it shows.
 - **Curved surfaces:** make them fine enough that the silhouette does not jump
   as the view turns. For a cylinder of screen radius $R$ px with $N$ facets,
   the jump is about $R\pi^2/2N^2$. For $R = 200$ px, 64 facets give 0.24 px.

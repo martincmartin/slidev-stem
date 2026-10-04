@@ -6,9 +6,11 @@
 // the camera moves, then the camera tilts, then the rest fades; away from it,
 // the reverse. From one subject to another, the rest first fades in around
 // the old subject; then the stage goes towards the new one. Between two
-// subjects where one holds the other, and no view or tilt changes, the
-// difference fades in or out alone, with the rest of the scene still out (a
-// SWAP). A new state starts
+// subjects where one holds the other, the difference fades in or out alone,
+// with the rest of the scene still out (a SWAP). If the view or the tilt
+// changes too, the camera moves with the smaller subject on the screen: to the
+// larger subject, the camera moves and tilts, then the swap; back, the swap,
+// then the camera untilts and moves. A new state starts
 // from what is on the screen now, so a change during a transition does not
 // jump.
 //
@@ -236,19 +238,23 @@ export class Timeline {
       current.subject !== null &&
       current.subject !== state.subject &&
       current.rest === 0 &&
-      current.view === state.view &&
-      current.tilt === state.tilt &&
       (holds(state.subject, current.subject) ||
         holds(current.subject, state.subject))
     ) {
       swapped = true;
-      add({
-        channel: "swap",
-        from: current.subject,
-        to: state.subject,
-        start,
-        seconds: FADE_SECONDS,
-      });
+      const swap = (from: Subject, to: Subject): void => {
+        add({ channel: "swap", from, to, start, seconds: FADE_SECONDS });
+      };
+      // the camera moves with the smaller subject on the screen
+      const growing = holds(state.subject, current.subject);
+      if (!growing) swap(current.subject, state.subject);
+      const camera: Channel[] = growing ? ["view", "tilt"] : ["tilt", "view"];
+      for (const channel of camera) {
+        add(phaseOf(channel, reached, target, start, null));
+      }
+      reached.view = target.view;
+      reached.tilt = target.tilt;
+      if (growing) swap(current.subject, state.subject);
     } else if (
       state.subject !== null &&
       current.subject !== state.subject &&

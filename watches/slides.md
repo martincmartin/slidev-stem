@@ -122,6 +122,18 @@ IF ASKED: Why a wheel and not a disc? Mass at the rim counts most, like a figure
 -->
 
 ---
+watch: escapement
+watchTilt: 20
+watchOnly: escapement
+---
+
+# Escapement
+
+<!--
+The camera zooms out, with only the balance wheel and the hairspring on the screen. Then the roller, its impulse jewel, the pallet fork and the escape wheel fade in.
+-->
+
+---
 layout: full
 class: tk-timekeepers
 # hide: true
