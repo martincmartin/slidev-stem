@@ -6,29 +6,41 @@
 // the still is drawn. A printed page's render context is "slide", so print mode
 // comes from the page's nav.
 import { useNav, useSlideContext } from "@slidev/client";
-import { computed, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { WATCH, watchStills } from "./watch/instance.ts";
 import { watchState } from "./watch/state.ts";
 
-const { $frontmatter, $renderContext } = useSlideContext();
+const { $frontmatter, $renderContext, $clicks } = useSlideContext();
 const LIVE = ["slide", "presenter"];
 const { isPrintMode } = useNav();
-const state = computed(() => watchState($frontmatter, 0));
+const state = computed(() => watchState($frontmatter, $clicks.value));
 const needsStill = computed(
   () =>
     state.value !== undefined &&
     (isPrintMode.value || !LIVE.includes($renderContext.value)),
 );
 const source = ref<string>();
+let requestVersion = 0;
 
-onMounted(async () => {
-  if (!needsStill.value || !state.value) return;
-  const ratio = window.devicePixelRatio || 1;
-  const [width, height] = WATCH.scene.slide;
-  source.value = await watchStills().of(state.value, [
-    Math.round(width * ratio),
-    Math.round(height * ratio),
-  ]);
+watch(
+  [needsStill, state],
+  async ([needed, current]) => {
+    const request = ++requestVersion;
+    source.value = undefined;
+    if (!needed || !current) return;
+    const ratio = window.devicePixelRatio || 1;
+    const [width, height] = WATCH.scene.slide;
+    const picture = await watchStills().of(current, [
+      Math.round(width * ratio),
+      Math.round(height * ratio),
+    ]);
+    // A newer click can arrive while the canvas image is being encoded.
+    if (request === requestVersion) source.value = picture;
+  },
+  { immediate: true },
+);
+onBeforeUnmount(() => {
+  requestVersion++;
 });
 </script>
 

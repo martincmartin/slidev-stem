@@ -1,0 +1,51 @@
+{
+  "name": "watches",
+  "type": "module",
+  "private": true,
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "26.10.0",
+      "onFail": "download"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.6.0",
+      "onFail": "download"
+    }
+  },
+  "scripts": {
+    "preinstall": "pnpm --dir .. install --frozen-lockfile",
+    "build": "slidev build",
+    "dev": "slidev",
+    "export": "slidev export",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "vue-tsc --noEmit",
+    "lint": "eslint .",
+    "test": "node --test \"webgl/**/*.test.ts\" \"watch/**/*.test.ts\" && uv run art/test_leader_path.py",
+    "art:scene": "node watch/dump.ts",
+    "art:generated": "uv run art/diving_board.py --check && uv run art/watch_design.py --check && uv run art/favicon.py --check",
+    "art:stills": "uv run art/watch_stills.py"
+  },
+  "dependencies": {
+    "@slidev/cli": "^53.0.0",
+    "earcut": "^3.2.4",
+    "slidev-theme-ledger": "link:../themes/ledger",
+    "vue": "^3.5.43"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.3",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.11.1",
+    "globals": "^17.12.0",
+    "playwright-chromium": "1.63.0",
+    "prettier": "^3.9.9",
+    "prettier-plugin-slidev": "^1.0.5",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.71.0",
+    "vue-tsc": "^3.3.11"
+  }
+}

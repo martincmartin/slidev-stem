@@ -1,0 +1,171 @@
+$ slidev build --out tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck
+
+
+  ●■▲
+  Slidev  v53.0.0 (global)
+
+  theme       slidev-theme-ledger
+  css engine  unocss
+  entry       /Users/martin/Develop/slidev/stem2/watches/slides.md
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 496 modules transformed.
+rendering chunks...
+computing gzip size...
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/index.html                                                     1.02 kB │ gzip:  0.48 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Size3-Regular-CTq5MqoE.woff                       4.42 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Size4-Regular-Dl5lxZxV.woff2                      4.92 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Size2-Regular-Dy4dx90m.woff2                      5.20 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Size1-Regular-mCD8mA8B.woff2                      5.46 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-mono-vietnamese-600-normal-iLQfcSjf.woff       5.71 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-mono-cyrillic-ext-600-normal-9HEixskS.woff     5.79 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Size4-Regular-BF-4gkZK.woff                       5.98 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Size2-Regular-oD1tc_U0.woff                       6.18 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/fraunces-vietnamese-600-normal-BjlAJixd.woff2           6.28 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-vietnamese-400-normal-fK1oJ5dG.woff       6.39 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Size1-Regular-C195tn64.woff                       6.49 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-vietnamese-600-normal-DgdngZtN.woff       6.58 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-vietnamese-500-normal-BEb3_waV.woff       6.58 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Caligraphic-Regular-Di6jR-x-.woff2                6.90 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Caligraphic-Bold-Dq_IR9rO.woff2                   6.91 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-mono-vietnamese-600-normal-D2EvbN8M.woff2      6.93 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-mono-cyrillic-600-normal-fLZuRloM.woff         7.26 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Size3-Regular-DgpXs0kz.ttf                        7.58 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Caligraphic-Regular-CTRA-rTL.woff                 7.65 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-mono-cyrillic-ext-600-normal-V-xxqcpd.woff2    7.69 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Caligraphic-Bold-BEiXGLvX.woff                    7.71 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/fraunces-vietnamese-600-normal-DlAl5EAR.woff            7.93 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-vietnamese-400-normal-DG4YqDda.woff2      8.20 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-vietnamese-500-normal-e4dixQRQ.woff2      8.41 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-vietnamese-600-normal-DpPYBSTl.woff2      8.46 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-greek-400-normal-D9ESIMu3.woff            8.76 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-greek-500-normal-CuWXN6rf.woff            9.14 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-greek-600-normal-D-CqTdkO.woff            9.22 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-mono-cyrillic-600-normal-CTOM6hUh.woff2        9.35 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Script-Regular-D3wIWfF6.woff2                     9.64 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-greek-400-normal-_efipK4i.woff2           9.94 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-cyrillic-ext-400-normal-Dsrv2Tcn.woff    10.28 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_SansSerif-Regular-DDBCnlJ7.woff2                 10.34 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Size4-Regular-DWFBv043.ttf                       10.36 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-greek-600-normal-DzTrcv_p.woff2          10.36 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-greek-500-normal-JMMifIXV.woff2          10.37 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Script-Regular-D5yQViql.woff                     10.58 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-cyrillic-ext-500-normal-DB5PtV2g.woff    10.59 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-cyrillic-ext-600-normal-Bz0x94Yp.woff    10.61 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Fraktur-Regular-CTYiF6lA.woff2                   11.31 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Fraktur-Bold-CL6g_b3V.woff2                      11.34 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Size2-Regular-B7gKUWhC.ttf                       11.50 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-mono-latin-ext-600-normal-DmB0ttJJ.woff       11.83 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_SansSerif-Italic-C3H0VqGB.woff2                  12.02 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-cyrillic-ext-400-normal-g30qAdWV.woff2   12.14 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_SansSerif-Bold-D1sUS0GD.woff2                    12.21 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Size1-Regular-Dbsnue_I.ttf                       12.22 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-cyrillic-ext-600-normal-DUMzJB7m.woff2   12.30 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-cyrillic-ext-500-normal-Cs5J6C77.woff2   12.30 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_SansSerif-Regular-CS6fqUqJ.woff                  12.31 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Caligraphic-Regular-wX97UBjC.ttf                 12.34 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Caligraphic-Bold-ATXxdsX0.ttf                    12.36 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Fraktur-Regular-Dxdc4cR9.woff                    13.20 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-mono-latin-600-normal-DWFSQ4vo.woff           13.20 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Fraktur-Bold-BsDP51OF.woff                       13.29 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-cyrillic-400-normal-BTotfTJu.woff        13.51 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2                13.56 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-cyrillic-500-normal-ByOcLdNv.woff        13.85 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-cyrillic-600-normal-BGq0mW3O.woff        13.88 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_SansSerif-Italic-DN2j7dab.woff                   14.11 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-mono-latin-ext-600-normal-D38SheWl.woff2      14.32 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-latin-ext-400-normal-RBey6euL.woff       14.36 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_SansSerif-Bold-DbIhKOiC.woff                     14.40 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-latin-ext-500-normal-D0aIdm-b.woff       14.73 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-latin-ext-600-normal-DIrixKbi.woff       14.77 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-cyrillic-400-normal-DZqxrq2p.woff2       14.80 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-cyrillic-500-normal-CocWQlwt.woff2       15.00 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-cyrillic-600-normal-71GNu3SW.woff2       15.04 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-mono-latin-600-normal-BgSNZQsw.woff2          15.62 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-latin-ext-400-normal-C5H60-Va.woff2      15.98 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Typewriter-Regular-C0xS9mPB.woff                 16.02 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Math-BoldItalic-CZnvNsCZ.woff2                   16.40 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Math-Italic-t53AETM-.woff2                       16.44 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-latin-ext-600-normal-DOrvGEcy.woff2      16.44 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-latin-ext-500-normal-DakdToA3.woff2      16.45 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Script-Regular-C5JkGWo-.ttf                      16.64 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Main-BoldItalic-DxDJ3AOS.woff2                   16.78 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Main-Italic-NWA7e6Wa.woff2                       16.98 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/fraunces-latin-ext-600-normal-BtzmzP0X.woff2           17.33 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/fraunces-latin-600-normal-BFCDtZfi.woff2               18.09 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Math-BoldItalic-iY-2wyZ7.woff                    18.66 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Math-Italic-DA0__PXp.woff                        18.74 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Main-BoldItalic-SpSLRI95.woff                    19.41 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_SansSerif-Regular-BNo7hRIc.ttf                   19.43 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Fraktur-Regular-CB_wures.ttf                     19.57 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Fraktur-Bold-BdnERNNW.ttf                        19.58 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Main-Italic-BMLOBm91.woff                        19.67 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-latin-400-normal-CYLoc0-x.woff           22.10 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_SansSerif-Italic-YYjJ1zSn.ttf                    22.36 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/fraunces-latin-ext-600-normal-B0Dy4lqi.woff            22.36 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/fraunces-latin-600-normal-DL5QCzvS.woff                22.51 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-latin-400-normal-CDDApCn2.woff2          22.58 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-latin-600-normal-Cu4Hd6ag.woff           23.87 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-latin-500-normal-BgVn5rGT.woff           23.91 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-latin-500-normal-6ng42L7E.woff2          24.18 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/ibm-plex-sans-latin-600-normal-CuJfVYMP.woff2          24.25 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_SansSerif-Bold-CFMepnvq.ttf                      24.50 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Main-Bold-Cx986IdX.woff2                         25.32 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Main-Regular-B22Nviop.woff2                      26.27 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf                  27.55 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_AMS-Regular-BQhdFMY1.woff2                       28.07 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Main-Bold-Jm3AIy58.woff                          29.91 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Main-Regular-Dr94JaBh.woff                       30.77 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Math-BoldItalic-B3XSjfu4.ttf                     31.19 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Math-Italic-flOr_0UB.ttf                         31.30 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Main-BoldItalic-DzxPMmG6.ttf                     32.96 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_AMS-Regular-DMm9YOAa.woff                        33.51 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Main-Italic-3WenGoN9.ttf                         33.58 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Main-Bold-waoOVXN0.ttf                           51.33 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_Main-Regular-ypZvNtVU.ttf                        53.58 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/KaTeX_AMS-Regular-DRggAlZN.ttf                         63.63 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/logo-BYkHSa_O.png                                      94.32 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/play-D_7yfuao.css                                       0.06 kB │ gzip:  0.08 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/DrawingControls-Dhbx0szf.css                            0.07 kB │ gzip:  0.08 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/NoteDisplay-DCBzjb4F.css                                0.09 kB │ gzip:  0.10 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/md-BW-eA_ai.css                                         0.12 kB │ gzip:  0.11 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/overview-rVmd7b1Q.css                                   0.13 kB │ gzip:  0.09 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/404-EmReZpw2.css                                        0.15 kB │ gzip:  0.12 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/entry-Bo1emqdH.css                                      0.32 kB │ gzip:  0.21 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/default-BPs_u-jn.css                                    0.75 kB │ gzip:  0.27 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/SlideWrapper-DrUxJNpg.css                               1.52 kB │ gzip:  0.52 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/shortcuts-I6UCYuoZ.css                                  1.56 kB │ gzip:  0.66 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/md-DgiB_b0V.css                                         1.66 kB │ gzip:  0.62 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/presenter-Umfe74_D.css                                  3.38 kB │ gzip:  0.72 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/modules/shiki-BrmBd2_v.css                             15.67 kB │ gzip:  2.92 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/index-DnDdLcpZ.css                                    128.41 kB │ gzip: 26.59 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/IconButton-D14yYRFB.js                           0.58 kB │ gzip:  0.39 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/DrawingLayer-CN98gGT1.js                         0.59 kB │ gzip:  0.41 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/md-WZLxr2b-.js                                          0.64 kB │ gzip:  0.42 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/md-D5DsjYLM.js                                          0.66 kB │ gzip:  0.43 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/md-BOAKk86V.js                                          0.67 kB │ gzip:  0.47 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/Modal-Dtu9eo1A.js                                0.71 kB │ gzip:  0.47 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/rolldown-runtime-hePW80VL.js                            0.71 kB │ gzip:  0.42 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/entry-D-Ln_RWz.js                                0.91 kB │ gzip:  0.45 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/404-CMDbOtsV.js                                  1.11 kB │ gzip:  0.66 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/modules/unplugin-icons-DVM2HPx2.js                      1.65 kB │ gzip:  0.79 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/notes-edit-CvQtwLK4.js                           2.10 kB │ gzip:  1.13 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/NoteEditable-DX8QweUm.js                         2.23 kB │ gzip:  1.17 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/md-CYdKLpm1.js                                          2.31 kB │ gzip:  1.18 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/default-CzrzE7UH.js                                     2.44 kB │ gzip:  1.23 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/modules/file-saver-BpWusTEB.js                          2.69 kB │ gzip:  1.29 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/TimerBar-BDXpzy09.js                             2.72 kB │ gzip:  1.20 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/notes-H3Vw4DsA.js                                3.26 kB │ gzip:  1.50 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/play-GLN49YOc.js                                 5.06 kB │ gzip:  2.28 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/DrawingControls-BXrVRbiL.js                      5.41 kB │ gzip:  2.11 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/NoteDisplay-Bl-tb7Pa.js                          6.02 kB │ gzip:  2.63 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/overview-DjuhLq18.js                             9.27 kB │ gzip:  4.02 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/presenter-CK-12bJ8.js                           10.36 kB │ gzip:  3.99 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/client-g_64eWsP.js                                     20.49 kB │ gzip:  7.07 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/slidev/shortcuts-DJoUwI4r.js                           65.50 kB │ gzip: 23.32 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/SlideWrapper-BpqI2iZ7.js                               78.02 kB │ gzip: 29.20 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/modules/vue-CYRGhSbZ.js                                83.42 kB │ gzip: 31.03 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/index-4fz-ZzTZ.js                                     119.40 kB │ gzip: 43.04 kB
+tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/deck/assets/modules/shiki-BfJ6CqqC.js                             222.38 kB │ gzip: 79.00 kB
+
+✓ built in 1.56s

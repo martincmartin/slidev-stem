@@ -1,0 +1,62 @@
+{
+  "design_venue": "TV 55in @7m",
+  "floor": 3.0,
+  "drawings": [
+    {
+      "path": "watches/tasks/2026-10-03-rest-shape/evidence/rest-board-only-chromium.png",
+      "label": "rest-board-only-chrom",
+      "ink_percent": 0.914624001774623,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 5.256419888067653,
+          "p90": 5.295286919600927,
+          "fmax": 0.22500815391540527
+        },
+        "TV 55in @5m": {
+          "hold": 3.970803535436829,
+          "p90": 5.221068758083924,
+          "fmax": 0.12815117239952084
+        },
+        "TV 55in @7m": {
+          "hold": 3.076212866879086,
+          "p90": 4.699341072491751,
+          "fmax": 0.012986201047897338
+        },
+        "proj 2m @6m": {
+          "hold": 4.783769638969002,
+          "p90": 5.293337962280862,
+          "fmax": 0.1954509615898132
+        }
+      }
+    },
+    {
+      "path": "watches/tasks/2026-10-03-rest-shape/evidence/rest-spring-only-chromium.png",
+      "label": "rest-spring-only-chro",
+      "ink_percent": 2.010176353149956,
+      "passes_gate": true,
+      "venues": {
+        "laptop": {
+          "hold": 5.210992966295477,
+          "p90": 5.295286569164564,
+          "fmax": 0.22240024209022524
+        },
+        "TV 55in @5m": {
+          "hold": 3.801100899772808,
+          "p90": 5.231532645421594,
+          "fmax": 0.11047074794769285
+        },
+        "TV 55in @7m": {
+          "hold": 3.0145120609558274,
+          "p90": 4.723315128151938,
+          "fmax": 0.00252336859703064
+        },
+        "proj 2m @6m": {
+          "hold": 4.55237227978538,
+          "p90": 5.293645398505555,
+          "fmax": 0.17874226570129392
+        }
+      }
+    }
+  ]
+}

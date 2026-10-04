@@ -11,6 +11,8 @@
 // slide mounted and gives it its last click, so `playing` alone would keep it
 // running off-screen. Each entry into the playing state starts again from 0,
 // and going back a click is exact.
+// The rest outline and its callout use this same curl clock. `restVisible`
+// keeps them on the slide after the moving board fades into the real spring.
 import { useNav, useSlideContext } from "@slidev/client";
 import {
   computed,
@@ -26,14 +28,19 @@ const props = defineProps<{
   visible: boolean;
   playing: boolean;
   curling: boolean;
+  restVisible: boolean;
 }>();
 
 const { $renderContext, $page } = useSlideContext();
 const LIVE = ["slide", "presenter"];
-const { currentSlideNo } = useNav();
+const { currentSlideNo, isPrintMode } = useNav();
+const staticView = computed(
+  () => isPrintMode.value || !LIVE.includes($renderContext.value),
+);
 const running = computed(
   () =>
     props.playing &&
+    !staticView.value &&
     currentSlideNo.value === $page.value &&
     LIVE.includes($renderContext.value),
 );
@@ -81,7 +88,15 @@ function nextBottom(board: SVGSVGElement, now: number): number {
 
 function run(now: number): void {
   const board = svg();
-  if (board) board.setCurrentTime(svgTime(board, now));
+  if (board) {
+    const curlEnd = timing(board, "curlStart") + timing(board, "curlDuration");
+    const time = svgTime(board, now);
+    board.setCurrentTime(Math.min(time, curlEnd));
+    if (time >= curlEnd) {
+      frame = 0;
+      return;
+    }
+  }
   frame = requestAnimationFrame(run);
 }
 
@@ -97,12 +112,25 @@ function apply(): void {
   board.pauseAnimations();
   board.setCurrentTime(0);
   curlAt = Infinity;
+  showCurling();
+  // A direct entry or a click back from the next slide must show the
+  // completed rest spring when the real spring is already visible.
+  if (props.curling && (!props.visible || staticView.value)) {
+    board.setCurrentTime(
+      timing(board, "curlStart") + timing(board, "curlDuration"),
+    );
+    return;
+  }
+  if (staticView.value && props.playing) {
+    // A still shows the held deflection, before the free swing begins.
+    board.setCurrentTime(timing(board, "swingStart"));
+    return;
+  }
   if (running.value) {
     startedAt = performance.now();
     if (props.curling) curlAt = nextBottom(board, startedAt);
     frame = requestAnimationFrame(run);
   }
-  showCurling();
 }
 
 function showCurling(): void {
@@ -117,18 +145,31 @@ function curl(): void {
 }
 
 onMounted(async () => {
-  const response = await fetch("/diving-board.svg");
-  if (!response.ok)
-    throw new Error(`diving-board.svg: ${String(response.status)}`);
+  const source = "/diving-board.svg";
+  const response = await fetch(source);
+  if (!response.ok) throw new Error(`${source}: ${String(response.status)}`);
   markup.value = await response.text();
   await nextTick(); // v-html puts the SVG in the page
   requestAnimationFrame(apply);
 });
 watch(running, apply);
+watch(staticView, apply);
+watch(
+  () => props.playing,
+  () => {
+    if (staticView.value) apply();
+  },
+);
+watch(
+  () => props.visible,
+  (visible) => {
+    if (staticView.value || (!visible && props.curling)) apply();
+  },
+);
 watch(
   () => props.curling,
   (curling) => {
-    if (curling) curl();
+    if (curling && !staticView.value) curl();
     else apply();
   },
 );
@@ -140,7 +181,12 @@ onBeforeUnmount(stop);
   <div
     ref="host"
     class="diving-board"
-    :class="{ 'diving-board-on': visible }"
+    data-waitfor="svg"
+    :class="{
+      'diving-board-on': visible || restVisible,
+      'diving-board-picture-on': visible,
+      'diving-board-rest-on': restVisible,
+    }"
     aria-hidden="true"
     v-html="markup"
   />
@@ -167,6 +213,21 @@ onBeforeUnmount(stop);
 .diving-board-on {
   opacity: 1;
 }
+.diving-board [data-layer="board"],
+.diving-board [data-layer="rest"],
+.diving-board [data-layer="rest-callout"] {
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.diving-board [data-layer="set"] {
+  opacity: 0;
+}
+.diving-board-picture-on [data-layer="board"],
+.diving-board-picture-on svg:not(.diving-board-curling) [data-layer="set"],
+.diving-board-rest-on [data-layer="rest"],
+.diving-board-rest-on [data-layer="rest-callout"] {
+  opacity: 1;
+}
 /* the curling board rises above the drawing's top edge, into the title's
    space: do not crop it to the SVG's box (the slide crops the rest) */
 .diving-board svg {
@@ -174,6 +235,11 @@ onBeforeUnmount(stop);
 }
 @media (prefers-reduced-motion: reduce) {
   .diving-board {
+    transition: none;
+  }
+  .diving-board [data-layer="board"],
+  .diving-board [data-layer="rest"],
+  .diving-board [data-layer="rest-callout"] {
     transition: none;
   }
 }

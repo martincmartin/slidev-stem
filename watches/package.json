@@ -23,7 +23,7 @@
     "format:check": "prettier --check .",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint .",
-    "test": "node --test \"webgl/**/*.test.ts\" \"watch/**/*.test.ts\"",
+    "test": "node --test \"webgl/**/*.test.ts\" \"watch/**/*.test.ts\" && uv run art/test_leader_path.py",
     "art:scene": "node watch/dump.ts",
     "art:generated": "uv run art/diving_board.py --check && uv run art/watch_design.py --check && uv run art/favicon.py --check",
     "art:stills": "uv run art/watch_stills.py"

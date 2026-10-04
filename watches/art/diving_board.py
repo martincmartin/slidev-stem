@@ -54,14 +54,19 @@ import math
 import pathlib
 import re
 import sys
+from collections.abc import Callable, Iterator, Sequence
 from dataclasses import dataclass
 from itertools import pairwise
+
+import numpy as np
+from numpy.typing import NDArray
 
 TALK = pathlib.Path(__file__).resolve().parents[1]  # watches/
 OUTPUT = TALK / "public" / "diving-board.svg"
 
 Point = tuple[float, float]
 Point3 = tuple[float, float, float]
+Bezier = tuple[Point, Point, Point, Point]
 
 THEME_CSS = TALK / "node_modules" / "slidev-theme-ledger" / "styles" / "ledger.css"
 CLASS_PREFIX = "diving-board-"  # a <style> in an inlined SVG is the page's
@@ -335,6 +340,38 @@ def tangents(run: list[Point]) -> list[Point]:
     return [first, *result, (-last[0], -last[1])]
 
 
+def bezier_segments(run: list[Point]) -> Iterator[Bezier]:
+    """Curve segments with the same tangent and handle rules as the SVG."""
+    directions = tangents(run)
+    for position, (start, end) in enumerate(pairwise(run)):
+        start_direction = directions[position]
+        end_direction = directions[position + 1]
+        turn = math.acos(
+            min(
+                1.0,
+                start_direction[0] * end_direction[0]
+                + start_direction[1] * end_direction[1],
+            )
+        )
+        handle = (
+            math.hypot(end[0] - start[0], end[1] - start[1])
+            / 3
+            * (1 + turn * turn / 16)
+        )
+        yield (
+            start,
+            (
+                start[0] + start_direction[0] * handle,
+                start[1] + start_direction[1] * handle,
+            ),
+            (
+                end[0] - end_direction[0] * handle,
+                end[1] - end_direction[1] * handle,
+            ),
+            end,
+        )
+
+
 def smooth_data(runs: list[list[Point]], *, closed: bool) -> str:
     """Smooth curves through points, as one path. Each run is a curve: a cubic
     Bezier between each pair of points, with the tangents of `tangents`, and
@@ -349,36 +386,10 @@ def smooth_data(runs: list[list[Point]], *, closed: bool) -> str:
         parts.append(
             ("M" if index == 0 else "L") + f"{number(first[0])} {number(first[1])}"
         )
-        directions = tangents(run)
-        for position, (start, end) in enumerate(pairwise(run)):
-            start_direction = directions[position]
-            end_direction = directions[position + 1]
-            turn = math.acos(
-                min(
-                    1.0,
-                    start_direction[0] * end_direction[0]
-                    + start_direction[1] * end_direction[1],
-                )
-            )
-            handle = (
-                math.hypot(end[0] - start[0], end[1] - start[1])
-                / 3
-                * (1 + turn * turn / 16)
-            )
-            controls = [
-                (
-                    start[0] + start_direction[0] * handle,
-                    start[1] + start_direction[1] * handle,
-                ),
-                (
-                    end[0] - end_direction[0] * handle,
-                    end[1] - end_direction[1] * handle,
-                ),
-                end,
-            ]
-            parts.append(
-                "C" + " ".join(f"{number(x)} {number(y)}" for x, y in controls)
-            )
+        parts.extend(
+            "C" + " ".join(f"{number(x)} {number(y)}" for x, y in segment[1:])
+            for segment in bezier_segments(run)
+        )
     return " ".join(parts) + (" Z" if closed else "")
 
 
@@ -601,7 +612,9 @@ def quad(oblique: Oblique, *corners: Point3) -> list[Point]:
     return [oblique.project(*corner) for corner in corners]
 
 
-def set_markup(inks: Inks, design: BoardDesign) -> list[str]:
+def set_markup(
+    inks: Inks, design: BoardDesign, id_prefix: str = CLASS_PREFIX
+) -> list[str]:
     """The ground, the pool and the stand: what fades before the curl. The pool
     goes on in front, past the bottom of the drawing, as if its near wall were
     far below the slide: it has none."""
@@ -669,9 +682,9 @@ def set_markup(inks: Inks, design: BoardDesign) -> list[str]:
         oblique.project(design.stand_x[1], 0, design.stand_z[0]),
     ]
     everything = f"M{design.view_left} 0 H{design.view_left + design.width} V{design.height} H{design.view_left} Z"
-    fade_id = f"{CLASS_PREFIX}fade"
-    mask_id = f"{CLASS_PREFIX}fade-mask"
-    ground_clip_id = f"{CLASS_PREFIX}ground-clip"
+    fade_id = f"{id_prefix}fade"
+    mask_id = f"{id_prefix}fade-mask"
+    ground_clip_id = f"{id_prefix}ground-clip"
     fade_start = design.fade_end - FADE_LENGTH
     kept_width = design.fade_end - design.view_left
     return [
@@ -691,7 +704,7 @@ def set_markup(inks: Inks, design: BoardDesign) -> list[str]:
         + f'<rect x="{number(design.view_left)}" y="0" width="{number(kept_width)}" height="{number(design.height)}" fill="url(#{fade_id})"/></mask>',
         f'<clipPath id="{ground_clip_id}"><path clip-rule="evenodd" d="{everything} {path_data(stand_hull)}"/></clipPath>',
         "</defs>",
-        f'<g id="diving-board-set" class="{CLASS_PREFIX}set">',
+        f'<g id="{id_prefix}set" data-layer="set" class="{CLASS_PREFIX}set">',
         # the pool, the ground and the stand, faded to the paper at the right
         f'<g mask="url(#{mask_id})">',
         # the pool: the water is a wash of the art line, the walls are shaded
@@ -730,29 +743,12 @@ def solidity_in_curl(fraction: float) -> float:
     return 1 - smoothstep(min(fraction / 0.45, 1.0))
 
 
-def build(
-    inks: Inks, design: BoardDesign = DESIGN, timeline: Timeline = TIMELINE
-) -> str:
-    bend_frames = timeline.frames(timeline.bend)
-    swing_frames = timeline.frames(timeline.period)
+def curl_poses(
+    design: BoardDesign, timeline: Timeline, tip_angle: float
+) -> list[Board]:
+    """Curl a board into the rest spring, starting at the supplied deflection."""
     curl_frames = timeline.frames(timeline.curl)
-
-    def straight_board(angle: float) -> Board:
-        return board_faces(
-            beam_centreline(design, angle), design.plank_offset, design.thickness
-        )
-
-    bend = [
-        straight_board(design.swing_angle * smoothstep(index / bend_frames))
-        for index in range(bend_frames + 1)
-    ]
-    swing = [
-        straight_board(
-            design.swing_angle * math.cos(2 * math.pi * index / swing_frames)
-        )
-        for index in range(swing_frames + 1)
-    ]
-    start = resample_by_length(beam_centreline(design, design.swing_angle), CURL_POINTS)
+    start = resample_by_length(beam_centreline(design, tip_angle), CURL_POINTS)
     # the board's near edge becomes the ribbon's bottom edge, and its far edge
     # (the plank's width, going back) the ribbon's top edge (its height, going up)
     spiral = [(x, y + RIBBON_BOTTOM) for x, y in spring_rest(CURL_POINTS)]
@@ -773,6 +769,420 @@ def build(
                 design.thickness * solidity_in_curl(fraction),
             )
         )
+    return curl
+
+
+def cubic_point(segment: Bezier, fraction: float) -> Point:
+    """Evaluate a cubic Bezier at a fraction from zero to one."""
+    weights = (
+        (1 - fraction) ** 3,
+        3 * (1 - fraction) ** 2 * fraction,
+        3 * (1 - fraction) * fraction**2,
+        fraction**3,
+    )
+    return (
+        sum(point[0] * weight for point, weight in zip(segment, weights, strict=True)),
+        sum(point[1] * weight for point, weight in zip(segment, weights, strict=True)),
+    )
+
+
+def squared_distance(first: Point, second: Point) -> float:
+    return (first[0] - second[0]) ** 2 + (first[1] - second[1]) ** 2
+
+
+def best_curve_point(segment: Bezier, score: Callable[[Point], float]) -> Point:
+    """Sample the short curve, then refine the best sample's interval."""
+    samples = 16
+    best_index = min(
+        range(samples + 1),
+        key=lambda index: score(cubic_point(segment, index / samples)),
+    )
+    lower = max(0, best_index - 1) / samples
+    upper = min(samples, best_index + 1) / samples
+    for _ in range(24):
+        left = lower + (upper - lower) / 3
+        right = upper - (upper - lower) / 3
+        if score(cubic_point(segment, left)) < score(cubic_point(segment, right)):
+            upper = right
+        else:
+            lower = left
+    candidates = (
+        segment[0],
+        segment[-1],
+        cubic_point(segment, (lower + upper) / 2),
+    )
+    return min(candidates, key=score)
+
+
+def best_outline_point(board: Board, score: Callable[[Point], float]) -> Point:
+    """The best point on the ghost's curved edges and straight joins."""
+    return min(
+        (best_curve_point(segment, score) for segment in outline_segments(board)),
+        key=score,
+    )
+
+
+def visible_rest_edge(board: Board) -> list[Point]:
+    """The board edge that becomes the ribbon edge closest to the viewer."""
+    return list(reversed(board.top[1]))
+
+
+def best_edge_point(board: Board, score: Callable[[Point], float]) -> Point:
+    """The best point on the single edge retained by the curled ghost."""
+    return min(
+        (
+            best_curve_point(segment, score)
+            for segment in bezier_segments(visible_rest_edge(board))
+        ),
+        key=score,
+    )
+
+
+@dataclass(frozen=True)
+class LeaderDesign:
+    """Leader geometry and costs in CSS px, radians, and seconds.
+
+    Length weight is dimensionless. Bend weight is px/radian, and normal
+    velocity weight is seconds squared/px. Integrated path cost is px-seconds.
+    """
+
+    start: Point = (640.0, 150.0)
+    elbow: Point = (600.0, 150.0)
+    length_weight: float = 0.75
+    bend_weight: float = 15.0
+    normal_velocity_weight: float = 0.006
+    stroke_width: float = 4.0
+    contact_samples: int = 512
+
+
+LEADER_DESIGN = LeaderDesign()
+
+
+def leader_bend(point: Point, design: LeaderDesign) -> float:
+    incoming = (design.elbow[0] - design.start[0], design.elbow[1] - design.start[1])
+    outgoing = (point[0] - design.elbow[0], point[1] - design.elbow[1])
+    return math.atan2(
+        abs(incoming[0] * outgoing[1] - incoming[1] * outgoing[0]),
+        incoming[0] * outgoing[0] + incoming[1] * outgoing[1],
+    )
+
+
+def leader_cost(point: Point, design: LeaderDesign) -> float:
+    """The static cost per second; the fixed first segment adds no choice."""
+    return design.length_weight * math.sqrt(
+        squared_distance(point, design.elbow)
+    ) + design.bend_weight * leader_bend(point, design)
+
+
+def outline_segments(board: Board) -> Iterator[Bezier]:
+    """Cubic edges of both rest faces, including their straight joins."""
+    for runs in (board.front, board.top):
+        for index, run in enumerate(runs):
+            yield from bezier_segments(run)
+            following = runs[(index + 1) % len(runs)]
+            yield (run[-1], run[-1], following[0], following[0])
+
+
+@dataclass(frozen=True)
+class CurveInterval:
+    """A short cubic interval used to bracket a ray intersection."""
+
+    segment: Bezier
+    lower: float
+    upper: float
+
+
+def ray_contact(interval: CurveInterval, elbow: Point, direction: Point) -> Point:
+    """Refine an intersection bracket; the returned point is on the cubic."""
+
+    def cross(fraction: float) -> float:
+        point = cubic_point(interval.segment, fraction)
+        return (point[0] - elbow[0]) * direction[1] - (point[1] - elbow[1]) * direction[
+            0
+        ]
+
+    lower, upper = interval.lower, interval.upper
+    lower_cross = cross(lower)
+    upper_cross = cross(upper)
+    if lower_cross == 0:
+        return cubic_point(interval.segment, lower)
+    if upper_cross == 0:
+        return cubic_point(interval.segment, upper)
+    for _ in range(24):
+        middle = (lower + upper) / 2
+        middle_cross = cross(middle)
+        if lower_cross * middle_cross <= 0:
+            upper = middle
+        else:
+            lower, lower_cross = middle, middle_cross
+    return cubic_point(interval.segment, (lower + upper) / 2)
+
+
+def leader_contacts(poses: list[Board], design: LeaderDesign) -> list[list[Point]]:
+    """Sample the visible rest edge using first intersections from the elbow.
+
+    Angles cover the complete curl, not a separately moving grid per frame.
+    Include the initial and straight directions, plus each pose's static optimum.
+    """
+    intervals = [
+        [
+            CurveInterval(segment, index / 8, (index + 1) / 8)
+            for segment in bezier_segments(visible_rest_edge(pose))
+            for index in range(8)
+        ]
+        for pose in poses
+    ]
+    incoming = math.atan2(
+        design.elbow[1] - design.start[1], design.elbow[0] - design.start[0]
+    )
+
+    def angle(point: Point) -> float:
+        relative = math.atan2(point[1] - design.elbow[1], point[0] - design.elbow[0])
+        return math.atan2(math.sin(relative - incoming), math.cos(relative - incoming))
+
+    initial = best_edge_point(
+        poses[0], lambda point: squared_distance(point, design.elbow)
+    )
+    bounds = [
+        angle(cubic_point(interval.segment, fraction))
+        for frame in intervals
+        for interval in frame
+        for fraction in (interval.lower, interval.upper)
+    ]
+    angles = sorted(
+        {
+            *np.linspace(min(bounds), max(bounds), design.contact_samples).tolist(),
+            0.0,
+            angle(initial),
+        }
+    )
+    contacts: list[list[Point]] = [[initial]]
+    for pose, frame in zip(poses[1:], intervals[1:], strict=True):
+        starts = (
+            np.array(
+                [cubic_point(interval.segment, interval.lower) for interval in frame]
+            )
+            - design.elbow
+        )
+        ends = (
+            np.array(
+                [cubic_point(interval.segment, interval.upper) for interval in frame]
+            )
+            - design.elbow
+        )
+        candidates: list[Point] = []
+        for offset in angles:
+            direction = (math.cos(incoming + offset), math.sin(incoming + offset))
+            first_cross = starts[:, 0] * direction[1] - starts[:, 1] * direction[0]
+            last_cross = ends[:, 0] * direction[1] - ends[:, 1] * direction[0]
+            intersections = [
+                ray_contact(frame[int(index)], design.elbow, direction)
+                for index in np.flatnonzero(first_cross * last_cross <= 0)
+            ]
+            forward = [
+                point
+                for point in intersections
+                if (point[0] - design.elbow[0]) * direction[0]
+                + (point[1] - design.elbow[1]) * direction[1]
+                > 0
+            ]
+            if forward:
+                candidates.append(
+                    min(
+                        forward, key=lambda point: squared_distance(point, design.elbow)
+                    )
+                )
+        candidates.append(
+            best_edge_point(pose, lambda point: leader_cost(point, design))
+        )
+        contacts.append(candidates)
+    return contacts
+
+
+def leader_step_costs(
+    previous: Sequence[Point],
+    current: Sequence[Point],
+    design: LeaderDesign,
+    seconds: float,
+) -> NDArray[np.float64]:
+    """Integrated edge costs using midpoint perpendicular velocity.
+
+    Each matrix entry joins one preceding contact to one current contact.
+    The cross product uses endpoint velocity and the midpoint unit leader vector.
+    """
+    if not math.isfinite(seconds) or seconds <= 0:
+        raise ValueError("Leader frame duration must be finite and positive.")
+    before = np.array(previous)[:, None, :] - design.elbow
+    after = np.array(current)[None, :, :] - design.elbow
+    midpoint = (before + after) / 2
+    radius = np.linalg.norm(midpoint, axis=2)
+    travel = after - before
+    cross = travel[:, :, 0] * midpoint[:, :, 1] - travel[:, :, 1] * midpoint[:, :, 0]
+    normal_squared = np.zeros(radius.shape)
+    np.divide(cross**2, seconds**2 * radius**2, out=normal_squared, where=radius > 0)
+    static_before = np.array([leader_cost(point, design) for point in previous])[
+        :, None
+    ]
+    static_after = np.array([leader_cost(point, design) for point in current])[None, :]
+    integrated: NDArray[np.float64] = seconds * (
+        (static_before + static_after) / 2
+        + design.normal_velocity_weight * normal_squared
+    )
+
+    valid = (
+        (radius > 0)
+        & (np.linalg.norm(before, axis=2) > 0)
+        & (np.linalg.norm(after, axis=2) > 0)
+    )
+    integrated[~valid] = np.inf
+    return integrated
+
+
+def minimum_leader_path(
+    contacts: Sequence[Sequence[Point]], design: LeaderDesign, duration: float
+) -> list[Point]:
+    """Find the global minimum on the sampled contact graph, then backtrack."""
+    if len(contacts) < 2 or any(not frame for frame in contacts):
+        raise ValueError("Leader paths need at least two nonempty contact frames.")
+    if len(contacts[0]) != 1:
+        raise ValueError("The initial leader contact must be fixed.")
+    if (
+        design.length_weight < 0
+        or design.bend_weight < 0
+        or design.normal_velocity_weight < 0
+    ):
+        raise ValueError("Leader cost weights must be nonnegative.")
+    if any(
+        not math.isfinite(weight)
+        for weight in (
+            design.length_weight,
+            design.bend_weight,
+            design.normal_velocity_weight,
+        )
+    ):
+        raise ValueError("Leader cost weights must be finite.")
+    seconds = duration / (len(contacts) - 1)
+    costs = np.zeros(1)
+    parents: list[NDArray[np.intp]] = []
+    for before, after in pairwise(contacts):
+        choices = costs[:, None] + leader_step_costs(before, after, design, seconds)
+        parent = np.argmin(choices, axis=0)
+        costs = choices[parent, np.arange(len(after))]
+        parents.append(parent)
+    selected = int(np.argmin(costs))
+    if not math.isfinite(float(costs[selected])):
+        raise ValueError("No finite leader path connects the sampled contacts.")
+    anchors = [contacts[-1][selected]]
+    for frame, parent in zip(reversed(contacts[:-1]), reversed(parents), strict=True):
+        selected = int(parent[selected])
+        anchors.append(frame[selected])
+    return list(reversed(anchors))
+
+
+def leader_anchors(
+    poses: list[Board], design: LeaderDesign, duration: float
+) -> list[Point]:
+    """Choose a full contact path on the callout-facing rest outline."""
+    if design.contact_samples < 2 or len(poses) < 2:
+        raise ValueError("Leader sampling needs at least two angles and poses.")
+    return minimum_leader_path(leader_contacts(poses, design), design, duration)
+
+
+def rest_markup(
+    inks: Inks,
+    poses: list[Board],
+    timeline: Timeline,
+    leader_design: LeaderDesign,
+    anchors: list[Point],
+    id_prefix: str,
+) -> list[str]:
+    """A rest outline and its callout. Only the curl changes their geometry."""
+    lines = [
+        (
+            f'<g id="{id_prefix}rest" data-layer="rest" fill="none" {paint(stroke=inks.context)} '
+            'stroke-width="4" stroke-dasharray="8 6" stroke-linejoin="round">'
+        ),
+    ]
+    # The volume cue helps before curling. The shallow spring view makes
+    # parallel dashed edges cluttered; retain the viewer-facing ribbon edge.
+    lines.extend(
+        (
+            '<g data-rest-phase="outline">',
+            f'<set attributeName="visibility" to="hidden" begin="{number(timeline.curl_start)}s" fill="freeze"/>',
+        )
+    )
+    for face, name in enumerate(("front", "top")):
+        path = poses[0].paths()[face]
+        lines.append(f'<path id="{id_prefix}rest-{name}" d="{path}">')
+        lines.append("</path>")
+    edge_frames = [
+        smooth_data([visible_rest_edge(pose)], closed=False) for pose in poses
+    ]
+    lines.extend(
+        (
+            "</g>",
+            f'<path id="{id_prefix}rest-edge" data-rest-phase="edge" visibility="hidden" d="{edge_frames[0]}">',
+            f'<set attributeName="visibility" to="visible" begin="{number(timeline.curl_start)}s" fill="freeze"/>',
+            animate("d", edge_frames, timeline.curl_start, timeline.curl),
+            "</path>",
+        )
+    )
+    lines.append("</g>")
+    leaders = [
+        polyline_data([leader_design.start, leader_design.elbow, anchor])
+        for anchor in anchors
+    ]
+    initial = best_outline_point(
+        poses[0], lambda point: squared_distance(point, leader_design.start)
+    )
+    initial_leader = polyline_data([leader_design.start, leader_design.elbow, initial])
+    lines.extend(
+        (
+            f'<g id="{id_prefix}rest-callout" data-layer="rest-callout">',
+            (
+                f'<path id="{id_prefix}rest-leader" d="{initial_leader}" fill="none" '
+                f'{paint(stroke=inks.context)} stroke-width="{number(leader_design.stroke_width)}" stroke-linejoin="round">'
+            ),
+            animate("d", leaders, timeline.curl_start, timeline.curl),
+            "</path>",
+            (
+                f'<text x="660" y="160" {paint(fill=inks.context)} '
+                'font-family="IBM Plex Sans" font-weight="600" font-size="29">Rest Shape</text>'
+            ),
+            "</g>",
+        )
+    )
+    return lines
+
+
+def build(
+    inks: Inks,
+    design: BoardDesign = DESIGN,
+    timeline: Timeline = TIMELINE,
+    leader_design: LeaderDesign = LEADER_DESIGN,
+) -> str:
+    bend_frames = timeline.frames(timeline.bend)
+    swing_frames = timeline.frames(timeline.period)
+
+    def straight_board(angle: float) -> Board:
+        return board_faces(
+            beam_centreline(design, angle), design.plank_offset, design.thickness
+        )
+
+    bend = [
+        straight_board(design.swing_angle * smoothstep(index / bend_frames))
+        for index in range(bend_frames + 1)
+    ]
+    swing = [
+        straight_board(
+            design.swing_angle * math.cos(2 * math.pi * index / swing_frames)
+        )
+        for index in range(swing_frames + 1)
+    ]
+    curl = curl_poses(design, timeline, design.swing_angle)
+    rest_poses = curl_poses(design, timeline, 0.0)
+    anchors = leader_anchors(rest_poses, leader_design, timeline.curl)
+    id_prefix = CLASS_PREFIX
 
     clips = [
         (timeline.rest, timeline.bend, bend, False),
@@ -783,20 +1193,26 @@ def build(
         (
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{design.width}" height="{design.height}" '
             f'viewBox="{design.view_left} 0 {design.width} {design.height}" data-swing-start="{number(timeline.swing_start)}" '
-            f'data-swing-period="{number(timeline.period)}" data-curl-start="{number(timeline.curl_start)}">'
+            f'data-swing-period="{number(timeline.period)}" data-curl-start="{number(timeline.curl_start)}" '
+            f'data-curl-duration="{number(timeline.curl)}">'
         ),
         inks.style(),
         "<title>A diving board over the edge of a pool: it bends down, swings up and down, then curls into the hairspring</title>",
-        *set_markup(inks, design),
-        f'<g id="diving-board-board" {paint(fill=inks.knockout, stroke=inks.line)} stroke-width="3" stroke-linejoin="round">',
+        *set_markup(inks, design, id_prefix),
+        f'<g id="{id_prefix}board" data-layer="board" {paint(fill=inks.knockout, stroke=inks.line)} stroke-width="3" stroke-linejoin="round">',
     ]
     for face, name in enumerate(("front", "top", "end")):
-        lines.append(f'<path id="diving-board-{name}" d="{bend[0].paths()[face]}">')
+        lines.append(f'<path id="{id_prefix}{name}" d="{bend[0].paths()[face]}">')
         for begin, duration, poses, repeat in clips:
             frames = [pose.paths()[face] for pose in poses]
             lines.append("  " + animate("d", frames, begin, duration, repeat=repeat))
         lines.append("</path>")
-    lines += ["</g>", "</svg>"]
+    lines.append("</g>")
+    # Paint the rest reference last so the board cannot cover its dashes.
+    lines.extend(
+        rest_markup(inks, rest_poses, timeline, leader_design, anchors, id_prefix)
+    )
+    lines.append("</svg>")
     return "\n".join(lines) + "\n"
 
 
@@ -808,7 +1224,8 @@ def main() -> int:
         "--check", action="store_true", help="fail if the file on disk differs"
     )
     arguments = parser.parse_args()
-    text = build(Inks.from_theme())
+    inks = Inks.from_theme()
+    text = build(inks)
     if arguments.check:
         if not OUTPUT.exists() or OUTPUT.read_bytes() != text.encode("utf-8"):
             print(
@@ -816,9 +1233,9 @@ def main() -> int:
                 file=sys.stderr,
             )
             return 1
-        return 0
-    OUTPUT.write_bytes(text.encode("utf-8"))
-    print(f"wrote {OUTPUT} ({len(text)} bytes)")
+    else:
+        OUTPUT.write_bytes(text.encode("utf-8"))
+        print(f"wrote {OUTPUT} ({len(text)} bytes)")
     return 0
 
 

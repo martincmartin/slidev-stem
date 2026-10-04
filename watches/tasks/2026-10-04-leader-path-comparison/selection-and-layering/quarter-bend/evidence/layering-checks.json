@@ -1,0 +1,66 @@
+{
+  "chromium-slide-2": {
+    "phases": [
+      {
+        "phase": "straight",
+        "solid_reference_pixels": 18418,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curl-early",
+        "solid_reference_pixels": 12906,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curl-late",
+        "solid_reference_pixels": 16176,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curled",
+        "solid_reference_pixels": 22478,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "spring",
+        "solid_reference_pixels": 22476,
+        "covered_pixels": 0
+      }
+    ],
+    "old_order_covered_pixels": 15025,
+    "errors": [],
+    "outside_requests": []
+  },
+  "firefox-slide-2": {
+    "phases": [
+      {
+        "phase": "straight",
+        "solid_reference_pixels": 18481,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curl-early",
+        "solid_reference_pixels": 12956,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curl-late",
+        "solid_reference_pixels": 16175,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "curled",
+        "solid_reference_pixels": 22571,
+        "covered_pixels": 0
+      },
+      {
+        "phase": "spring",
+        "solid_reference_pixels": 22572,
+        "covered_pixels": 0
+      }
+    ],
+    "old_order_covered_pixels": 15099,
+    "errors": [],
+    "outside_requests": []
+  }
+}

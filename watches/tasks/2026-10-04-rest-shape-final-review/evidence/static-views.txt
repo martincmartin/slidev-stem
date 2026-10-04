@@ -1,0 +1,1 @@
+Both browsers pass forward, reverse, and rapid same-instance static click changes.

@@ -1,0 +1,10 @@
+{
+  "moving_paths_unchanged": true,
+  "pool_paths_unchanged": true,
+  "original_leader_unchanged": true,
+  "single_edge_matches_viewer_facing_upper_edge": true,
+  "distinct_svg_ids": true,
+  "strong_comparison_same_ghost": true,
+  "short_pre_curl_leaders_unchanged": true,
+  "curl_frames": 73
+}
