@@ -121,6 +121,10 @@ reason next to it.
   `watch-zoom`, because its title fades while the watch flashes
   ([watch.md](watch.md)).
 
+For other ways that text can appear, move and stay on a screen, see
+[text-display-deep-research-report.md](../../docs/text-display-deep-research-report.md).
+It is background, not rules.
+
 ## The live watch and the diving board
 
 A slide that shows the watch sets its view in the frontmatter.

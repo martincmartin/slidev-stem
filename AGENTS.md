@@ -84,6 +84,7 @@ comments point to them.
 | decide if something is big, thick or dark enough                                 | `docs/legibility.md`                                         |
 | upgrade, validate, tag or build a talk                                           | `docs/talks.md`                                              |
 | export a talk for readers, or write speaker notes                                | `docs/export.md`                                             |
+| design how body text is placed, revealed, moved or styled on slides              | `docs/text-display-deep-research-report.md` (background)     |
 | work in a talk (slides, its art, its code)                                       | `<talk>/AGENTS.md`: the talk's own index into `<talk>/docs/` |
 
 ## Working in this repo
