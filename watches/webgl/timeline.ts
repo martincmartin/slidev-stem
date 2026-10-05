@@ -12,7 +12,9 @@
 // larger subject, the camera moves and tilts, then the swap; back, the swap,
 // then the camera untilts and moves. A new state starts
 // from what is on the screen now, so a change during a transition does not
-// jump.
+// jump. A change during a swap first finishes the swap's fade, to the subject
+// that the new state needs: the smaller one if the new subject is inside it,
+// else the larger one. Then the stage goes on from that subject.
 //
 // A FLASH (docs/illustrations.md, "Flash"). A state can name a subject to
 // flash: while the channels change, the subject is drawn in FLASH_INKS and in
@@ -83,7 +85,14 @@ type Phase = {
       /** A fade towards a subject: the subject that it keeps, from its start. */
       subject?: Subject;
     }
-  | { channel: "swap"; from: Subject; to: Subject }
+  | {
+      channel: "swap";
+      smaller: Subject;
+      larger: Subject;
+      /** The difference's opacity: 0 shows `smaller`, 1 shows `larger`. */
+      from: number;
+      to: number;
+    }
 );
 
 export function ease(fraction: number): number {
@@ -137,17 +146,16 @@ function applyPhase(values: Values, phase: Phase, now: number): void {
       if (phase.subject) values.subject = phase.subject;
       values.rest = done ? phase.to : mix(phase.from, phase.to, eased);
       break;
-    case "swap": {
+    case "swap":
       // the smaller subject stays; the larger one's other meshes fade
-      const growing = holds(phase.to, phase.from);
-      const [smaller, larger] = growing
-        ? [phase.from, phase.to]
-        : [phase.to, phase.from];
-      values.subject = done ? phase.to : smaller;
-      values.fading = done ? null : larger;
-      values.rest = done ? 0 : growing ? eased : 1 - eased;
+      values.subject = done
+        ? phase.to === 1
+          ? phase.larger
+          : phase.smaller
+        : phase.smaller;
+      values.fading = done ? null : phase.larger;
+      values.rest = done ? 0 : mix(phase.from, phase.to, eased);
       break;
-    }
   }
 }
 
@@ -233,32 +241,64 @@ export class Timeline {
     };
     // where each channel is when the phases so far end
     const reached = { ...current };
+    if (current.fading !== null && current.subject !== null) {
+      // a swap was cut short: finish its fade, to the end that the new state
+      // needs. Without this, `fading` would stay, and only the swap's larger
+      // subject would ever be drawn again.
+      const smaller = current.subject;
+      const larger = current.fading;
+      const toSmaller = state.subject !== null && holds(smaller, state.subject);
+      swapped = true;
+      add({
+        channel: "swap",
+        smaller,
+        larger,
+        from: current.rest,
+        to: toSmaller ? 0 : 1,
+        start,
+        seconds: FADE_SECONDS,
+      });
+      reached.subject = toSmaller ? smaller : larger;
+      reached.rest = 0;
+      reached.fading = null;
+    }
     if (
       state.subject !== null &&
-      current.subject !== null &&
-      current.subject !== state.subject &&
-      current.rest === 0 &&
-      (holds(state.subject, current.subject) ||
-        holds(current.subject, state.subject))
+      reached.subject !== null &&
+      reached.subject !== state.subject &&
+      reached.rest === 0 &&
+      (holds(state.subject, reached.subject) ||
+        holds(reached.subject, state.subject))
     ) {
       swapped = true;
-      const swap = (from: Subject, to: Subject): void => {
-        add({ channel: "swap", from, to, start, seconds: FADE_SECONDS });
+      const from = reached.subject;
+      const to = state.subject;
+      const growing = holds(to, from);
+      const swap = (): void => {
+        add({
+          channel: "swap",
+          smaller: growing ? from : to,
+          larger: growing ? to : from,
+          from: growing ? 0 : 1,
+          to: growing ? 1 : 0,
+          start,
+          seconds: FADE_SECONDS,
+        });
       };
       // the camera moves with the smaller subject on the screen
-      const growing = holds(state.subject, current.subject);
-      if (!growing) swap(current.subject, state.subject);
+      if (!growing) swap();
       const camera: Channel[] = growing ? ["view", "tilt"] : ["tilt", "view"];
       for (const channel of camera) {
         add(phaseOf(channel, reached, target, start, null));
       }
       reached.view = target.view;
       reached.tilt = target.tilt;
-      if (growing) swap(current.subject, state.subject);
+      if (growing) swap();
+      reached.subject = to;
     } else if (
       state.subject !== null &&
-      current.subject !== state.subject &&
-      current.rest < 1
+      reached.subject !== state.subject &&
+      reached.rest < 1
     ) {
       add(phaseOf("rest", reached, { ...target, rest: 1 }, start, null));
       reached.rest = 1;

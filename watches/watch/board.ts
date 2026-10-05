@@ -4,13 +4,14 @@
 // drive the clock with made-up times.
 //
 // A SLIDE NAMES TARGETS, NOT MOVES (../../docs/navigation.md). `boardState`
-// turns a slide's frontmatter and click into a target: whether the picture and
-// the rest shape show, and where the board is: flat (`start`), swinging
-// (`swing`) or curled into the spring (`curled`). The clock goes from where it
+// turns a slide's frontmatter and click into a target: whether the board
+// shows, and where it is: flat (`start`), swinging (`swing`) or curled into the
+// spring (`curled`). The clock goes from where it
 // is to the target, in either direction:
 //   start -> swing: play from 0: bend, hold, let go, then swing for ever
 //   swing -> curled: wait for the next bottom of the swing, then curl, then
-//     edit the callout's sentence
+//     edit the callout's sentence. At the curl's end the picture fades out
+//     and the watch fades in (`pictureShown`): no click between them
 //   curled -> swing: undo the edit and uncurl (both played backwards) to the
 //     bottom of the swing, then swing
 //   -> start: the picture fades out; the clock holds its pose, and the next
@@ -33,6 +34,11 @@ export interface BoardTiming {
   editDuration: number;
 }
 
+/** The end of the curl (s). */
+function curlEnd(timing: BoardTiming): number {
+  return timing.curlStart + timing.curlDuration;
+}
+
 /** The edit's steps, in reading order: strike "Bend", write "Wind", strike
  *  "straight", write "rest". Each takes an equal share of the edit. */
 export const EDIT_STEPS = 4;
@@ -50,7 +56,7 @@ export function editStep(
     );
   }
   const length = timing.editDuration / EDIT_STEPS;
-  const start = timing.curlStart + timing.curlDuration + index * length;
+  const start = curlEnd(timing) + index * length;
   const fraction = Math.min(Math.max((time - start) / length, 0), 1);
   return fraction * fraction * (3 - 2 * fraction);
 }
@@ -59,12 +65,14 @@ export type BoardPlace = "start" | "swing" | "curled";
 
 /** What the board shows at a slide's click. */
 export interface BoardState {
-  /** The board, the pool and the stand. */
-  picture: boolean;
-  /** The dashed rest outline and its callout. */
+  /** The dashed rest outline and its callout; the picture (the board, the
+   *  pool and the stand) too, until the curl ends (`pictureShown`). */
   rest: boolean;
   /** The pool and the stand fade, and the board curls. */
   curling: boolean;
+  /** This click is the one at which the board curls: a page that does not
+   *  run the clock shows it part way through the curl. */
+  curlsHere: boolean;
   place: BoardPlace;
 }
 
@@ -78,8 +86,8 @@ export interface BoardTarget {
 /** The board's state at `clicks`, or `undefined` if the slide has no `board`.
  *  The keys are click numbers:
  *    board: the board and the rest shape fade in, and the board plays
- *    boardCurl: the pool and the stand fade, and the board curls
- *    boardHide: the board fades; the rest shape stays to the slide's end */
+ *    boardCurl: the pool and the stand fade, and the board curls; at the
+ *      curl's end the board fades, and the rest shape stays to the slide's end */
 export function boardState(
   frontmatter: Record<string, unknown>,
   clicks: number,
@@ -87,42 +95,52 @@ export function boardState(
   const showAt = clickOf(frontmatter, "board");
   if (showAt === undefined) return undefined;
   const curlAt = clickOf(frontmatter, "boardCurl");
-  const hideAt = clickOf(frontmatter, "boardHide");
   if (curlAt !== undefined && curlAt <= showAt) {
     return wrong("boardCurl", curlAt, "a click after board");
-  }
-  if (hideAt !== undefined && hideAt <= (curlAt ?? showAt)) {
-    return wrong("boardHide", hideAt, "a click after boardCurl and board");
   }
   const shown = clicks >= showAt;
   const curling = curlAt !== undefined && clicks >= curlAt;
   return {
-    picture: shown && (hideAt === undefined || clicks < hideAt),
     rest: shown,
     curling,
+    curlsHere: clicks === curlAt,
     place: !shown ? "start" : curling ? "curled" : "swing",
   };
 }
 
+/** Whether the board's picture (the board, the pool and the stand) shows at
+ *  the SVG's `time` (s): while the board shows, until its curl ends. While it
+ *  shows, it covers the watch. A threshold on the clock, not a click, so going
+ *  back crosses it in the reverse order: the edit is undone, then the picture
+ *  fades in, then the board uncurls. */
+export function pictureShown(
+  timing: BoardTiming,
+  state: BoardState,
+  time: number,
+): boolean {
+  return state.rest && time < curlEnd(timing);
+}
+
 /** How far through the curl a page shows it: the board is a spiral that has
- *  not yet wound in to the hairspring, so the page differs from the next click's
- *  (the hairspring at rest). */
+ *  not yet wound in to the hairspring, so the page differs from the next
+ *  click's (the hairspring at rest). */
 export const CURL_SHOWN = 0.5;
 
 /** The end of the curl and of the edit after it (s): the board curled, and
  *  the sentence edited. */
 export function storyEnd(timing: BoardTiming): number {
-  return timing.curlStart + timing.curlDuration + timing.editDuration;
+  return curlEnd(timing) + timing.editDuration;
 }
 
 /** The SVG's time (s) for a page that does not run the clock: print and
  *  export, the overview, the presenter's "next" pane. Before the board plays,
- *  the picture is faded out, so time 0. While the board shows, the curl is
- *  part done; once only the rest shape shows, the curl and the edit are done. */
+ *  the picture is faded out, so time 0. At the curl's click, the curl is part
+ *  done; after it, the curl and the edit are done, and only the rest shape
+ *  shows. */
 export function boardPoseTime(timing: BoardTiming, state: BoardState): number {
   if (state.place === "start") return 0;
   if (!state.curling) return timing.swingStart;
-  return state.picture
+  return state.curlsHere
     ? timing.curlStart + CURL_SHOWN * timing.curlDuration
     : storyEnd(timing);
 }

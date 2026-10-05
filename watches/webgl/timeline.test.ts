@@ -219,6 +219,58 @@ test("to a subject that holds the old one, in another view: the camera moves and
   assert.equal(timeline.valuesAt(back + FADE + TILT + MOVE).view, CLOSE);
 });
 
+test("a swap cut short by a state with no subject fades the difference in, then the rest", () => {
+  // slide 4 to 3, and on to the cover before the swap ends
+  const inner = mesh("inner");
+  const extra = mesh("extra");
+  const small: Subject = { name: "small", meshes: new Set([inner]) };
+  const large: Subject = { name: "large", meshes: new Set([inner, extra]) };
+  const timeline = timelineAt(state({ view: CLOSE, subject: large }));
+  timeline.show(state({ view: CLOSE, subject: small }), 0);
+  const cut = timeline.valuesAt(FADE / 2);
+  assert.equal(cut.fading, large);
+  timeline.show(state({ view: WIDE }), FADE / 2);
+  // no jump where it is cut
+  assert.equal(timeline.valuesAt(FADE / 2).rest, cut.rest);
+  assert.equal(timeline.phaseAt(FADE / 2), "swap");
+  const swapped = FADE / 2 + FADE;
+  assert.deepEqual(timeline.valuesAt(swapped), {
+    view: CLOSE,
+    tilt: 0,
+    rest: 0,
+    subject: large,
+    fading: null,
+  });
+  assert.equal(timeline.phaseAt(swapped), "rest");
+  // the whole watch, not only the swap's subjects
+  assert.deepEqual(timeline.valuesAt(swapped + FADE + MOVE), {
+    view: WIDE,
+    tilt: 0,
+    rest: 1,
+    subject: large,
+    fading: null,
+  });
+});
+
+test("a swap cut short by a state inside its smaller subject fades the difference out", () => {
+  const inner = mesh("inner");
+  const extra = mesh("extra");
+  const small: Subject = { name: "small", meshes: new Set([inner]) };
+  const large: Subject = { name: "large", meshes: new Set([inner, extra]) };
+  const timeline = timelineAt(state({ view: CLOSE, subject: small }));
+  timeline.show(state({ view: CLOSE, subject: large }), 0);
+  timeline.show(state({ view: CLOSE, subject: small }), FADE / 2);
+  assert.equal(timeline.phaseAt(FADE / 2), "swap");
+  assert.deepEqual(timeline.valuesAt(FADE / 2 + FADE), {
+    view: CLOSE,
+    tilt: 0,
+    rest: 0,
+    subject: small,
+    fading: null,
+  });
+  assert.equal(timeline.phaseAt(FADE / 2 + FADE), null);
+});
+
 test("a swap flashes its subject when the swap ends, not before", () => {
   const inner = mesh("inner");
   const extra = mesh("extra");

@@ -10,6 +10,7 @@ import {
   CURL_SHOWN,
   EDIT_STEPS,
   editStep,
+  pictureShown,
   storyEnd,
 } from "./board.ts";
 import type { BoardState, BoardTiming } from "./board.ts";
@@ -25,7 +26,7 @@ const TIMING: BoardTiming = {
 const CURL_END = TIMING.curlStart + TIMING.curlDuration;
 const END = storyEnd(TIMING);
 // slide 2's keys
-const SLIDE = { board: 1, boardCurl: 2, boardHide: 3 };
+const SLIDE = { board: 1, boardCurl: 2 };
 
 function stateAt(clicks: number): BoardState {
   const state = boardState(SLIDE, clicks);
@@ -37,39 +38,47 @@ test("a slide without `board` has no board", () => {
   assert.equal(boardState({}, 2), undefined);
 });
 
-test("slide 2's targets: off, swinging, curling, then only the rest shape", () => {
+test("slide 2's targets: off, swinging, curling, then curled", () => {
   assert.deepEqual(stateAt(0), {
-    picture: false,
     rest: false,
     curling: false,
+    curlsHere: false,
     place: "start",
   });
   assert.deepEqual(stateAt(1), {
-    picture: true,
     rest: true,
     curling: false,
+    curlsHere: false,
     place: "swing",
   });
   assert.deepEqual(stateAt(2), {
-    picture: true,
     rest: true,
     curling: true,
+    curlsHere: true,
     place: "curled",
   });
-  assert.deepEqual(stateAt(4), {
-    picture: false,
+  assert.deepEqual(stateAt(3), {
     rest: true,
     curling: true,
+    curlsHere: false,
     place: "curled",
   });
 });
 
+test("the picture shows from the board's click until the curl ends", () => {
+  assert.equal(pictureShown(TIMING, stateAt(0), 0), false);
+  assert.equal(pictureShown(TIMING, stateAt(1), TIMING.swingStart), true);
+  // on the clock, not the click: going back, it shows again only when the
+  // clock is back in the curl
+  for (const clicks of [1, 2, 3]) {
+    assert.equal(pictureShown(TIMING, stateAt(clicks), CURL_END - 0.01), true);
+    assert.equal(pictureShown(TIMING, stateAt(clicks), CURL_END), false);
+    assert.equal(pictureShown(TIMING, stateAt(clicks), END), false);
+  }
+});
+
 test("the keys must come in order", () => {
   assert.throws(() => boardState({ board: 2, boardCurl: 1 }, 0), /boardCurl/);
-  assert.throws(
-    () => boardState({ board: 1, boardCurl: 3, boardHide: 2 }, 0),
-    /boardHide/,
-  );
   assert.throws(() => boardState({ board: "one" }, 0), /board/);
 });
 
@@ -78,9 +87,9 @@ test("a page's pose: 0, the bottom of the swing, part of the way through the cur
   assert.equal(boardPoseTime(TIMING, stateAt(1)), TIMING.swingStart);
   const time = boardPoseTime(TIMING, stateAt(2));
   assert.equal(time, TIMING.curlStart + CURL_SHOWN * TIMING.curlDuration);
-  // only the rest shape and its callout: curled, and the sentence edited
+  // after the curl's click, only the rest shape and its callout: curled, and
+  // the sentence edited
   assert.equal(boardPoseTime(TIMING, stateAt(3)), END);
-  assert.equal(boardPoseTime(TIMING, stateAt(4)), END);
 });
 
 test("the edit: after the curl, one step after another, in reading order", () => {

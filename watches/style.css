@@ -2,3 +2,24 @@
 .slidev-layout h1 {
   text-align: center;
 }
+
+/* TEXT FADES: text fades out, and new text fades in only when the old text is
+   gone (docs/slide-patterns.md, "Text fades"). --text-fade is the length of
+   each fade. The board's sentence (components/DivingBoard.vue) uses it too.
+   `transition: text-fade`: the old slide's text fades out; the new slide's
+   waits for it, and for the camera (--watch-text-delay, from
+   global-bottom.vue), then fades in. */
+:root {
+  --text-fade: 0.4s;
+}
+.text-fade-leave-active {
+  transition: opacity var(--text-fade) ease-in;
+}
+.text-fade-enter-active {
+  transition: opacity var(--text-fade) ease-out
+    max(var(--text-fade), var(--watch-text-delay, 0s));
+}
+.text-fade-leave-to,
+.text-fade-enter-from {
+  opacity: 0;
+}

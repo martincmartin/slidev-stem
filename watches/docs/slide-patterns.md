@@ -102,6 +102,25 @@ in the slide's `<style>` uses them: it dims each `slidev-vclick-prior` card whil
 to that element. When a `:class` binding changes, Vue rewrites the element's
 classes and removes the `v-click` classes, and the dim rule stops working.
 
+## Text fades
+
+**In this talk, text fades out and fades in. It does not cut.** New text fades
+in only after the old text has faded out, so two texts are never on the screen
+at the same place. Make an exception only for a good reason, and write the
+reason next to it.
+
+- **Between slides:** `transition: text-fade`, the default of every slide (in
+  the headmatter of `slides.md`). The old slide's text fades out in
+  `--text-fade`. The new slide's text waits for that, and for the camera
+  (`--watch-text-delay`), and then fades in. Both are in `style.css`.
+- **Text in the watch's layer** (the board's sentence) is not on a slide, so a
+  slide transition does not fade it. It fades in `--text-fade`, and it fades
+  in only after `--text-fade`
+  ([watch.md](watch.md#the-diving-board)).
+- **Not an oversight:** the cover's move to slide 2 has its own transition,
+  `watch-zoom`, because its title fades while the watch flashes
+  ([watch.md](watch.md)).
+
 ## The live watch and the diving board
 
 A slide that shows the watch sets its view in the frontmatter.

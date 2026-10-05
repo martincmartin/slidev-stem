@@ -10,6 +10,8 @@
 // the state that the still shows, for art/print_check.py. The diving board is
 // posed the same way, at its pose for this page's click (components/
 // DivingBoard.vue with `live` false); the live board is in global-bottom.vue.
+// While the posed board's picture shows, it covers the still, as the live
+// board covers the live watch.
 import { useNav, useSlideContext } from "@slidev/client";
 import { computed, ref, watch as onChange } from "vue";
 import DivingBoard from "./components/DivingBoard.vue";
@@ -32,6 +34,9 @@ const board = computed(() =>
     : undefined,
 );
 const source = ref<string>();
+/** The posed board's last `cover`; it holds only while the board is there. */
+const cover = ref(false);
+const covered = computed(() => board.value !== undefined && cover.value);
 
 onChange(
   () => (needsStill.value ? state.value : undefined),
@@ -55,10 +60,16 @@ onChange(
   <div
     v-if="needsStill"
     class="watch-still"
+    :class="{ 'watch-still-covered': covered }"
     :data-watch="JSON.stringify(state)"
     data-waitfor=".watch-still-image"
   >
     <img v-if="source" class="watch-still-image" :src="source" alt="" />
   </div>
-  <DivingBoard v-if="board" :target="board" :live="false" />
+  <DivingBoard
+    v-if="board"
+    :target="board"
+    :live="false"
+    @cover="(covers: boolean) => (cover = covers)"
+  />
 </template>

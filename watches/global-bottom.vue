@@ -4,7 +4,10 @@
 // (`watch: hairspring`, `watchTilt: 45`, and see watch/state.ts); a slide
 // without one hides the layer. A click can change the state (`watchSettle`).
 // Above the watch, the one live diving board (components/DivingBoard.vue),
-// which slide 2's frontmatter shows (`board`, and see watch/board.ts).
+// which slide 2's frontmatter shows (`board`, and see watch/board.ts). While
+// the board's picture shows, it covers the watch: the canvas fades out, and the
+// stage stops. The board's clock decides when (its `cover` event), so the
+// hairspring takes the board's place when the curl ends, with no click.
 //
 // A slide names targets, not moves (../docs/navigation.md). At each change of
 // slide or click, this decides the kind of move (watch/navigation.ts): a step
@@ -25,6 +28,7 @@ import {
   inject,
   onBeforeUnmount,
   onMounted,
+  ref,
   shallowRef,
   useTemplateRef,
   watch as onChange,
@@ -62,10 +66,16 @@ const frontmatter = computed(
 );
 const state = computed(() => watchState(frontmatter.value, slidev.nav.clicks));
 const name = computed(() => state.value?.view);
+/** The diving board's picture covers the watch. */
+const covered = ref(false);
+const hidden = computed(() => !name.value || covered.value);
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 const board = shallowRef<BoardTarget>({ state: undefined, atOnce: true });
 let stage: Stage<WatchModelState> | undefined;
+/** Set while the canvas fades out: then the stage goes out of sight. */
 let hideTimer: ReturnType<typeof setTimeout> | undefined;
+/** The last state given to the stage. */
+let stageTarget: WatchState | undefined;
 let unmounted = false;
 /** The place and the watch state that the layer shows. */
 let place: Place | undefined;
@@ -80,26 +90,59 @@ function showWatch(
   if (text === shownWatch && move !== "jump") return;
   const old = shownWatch;
   shownWatch = text;
-  clearTimeout(hideTimer);
   if (!now || !stage) {
-    hideTimer = setTimeout(() => stage?.stop(), 400); // after the layer's fade
+    run();
     return;
   }
   // a flash points to where the camera goes: only on the step forward into
   // the slide that names it
   const flash = move === "forward" && intoSlide ? now.flash : undefined;
   const at = performance.now();
+  // a watch that is fading out or hidden first reaches its last target at
+  // once: it comes back from its slide's state, not from a move cut short
+  if (hideTimer !== undefined || hidden.value) goOutOfSight();
   // a slide reached from a slide without the watch starts at its state
   stage.show(
     stageState(WATCH.scene, { ...now, flash }),
     modelState(now),
     move === "jump" || old === "null",
   );
+  stageTarget = now;
   document.documentElement.style.setProperty(
     "--watch-text-delay",
     `${String((stage.viewEndAt(at) - at) / 1000)}s`,
   );
-  stage.start();
+  run();
+}
+
+/** Draw while the watch shows. Once it hides, after the canvas's fade, go
+ *  out of sight. */
+function run(): void {
+  if (hidden.value) {
+    // a click while it fades does not restart the fade's timer
+    hideTimer ??= setTimeout(goOutOfSight, 400); // after the canvas's fade
+  } else {
+    clearTimeout(hideTimer);
+    hideTimer = undefined;
+    stage?.start();
+  }
+}
+
+/** Go to the last target at once, and stop drawing: a move that nobody sees
+ *  has no reason to go on. So the watch comes back in the state of its click,
+ *  however fast the clicks came: a camera move that the board covers ends
+ *  under it, not when the board fades. */
+function goOutOfSight(): void {
+  clearTimeout(hideTimer);
+  hideTimer = undefined;
+  if (stageTarget && stage) {
+    stage.show(
+      stageState(WATCH.scene, stageTarget),
+      modelState(stageTarget),
+      true,
+    );
+  }
+  stage?.stop();
 }
 
 function showBoard(clicks: number, move: Move): void {
@@ -141,6 +184,7 @@ onMounted(() => {
     },
     { immediate: true },
   );
+  onChange(covered, run);
 });
 onBeforeUnmount(() => {
   unmounted = true;
@@ -183,14 +227,18 @@ onMounted(() => {
   <div
     v-if="live"
     class="slidev-layout watch-layer"
-    :class="{ 'watch-off': !name }"
+    :class="{ 'watch-off': hidden }"
   >
     <canvas
       ref="canvas"
       class="watch-canvas"
       :data-watch="JSON.stringify(state ?? null)"
     />
-    <DivingBoard :target="board" :live="true" />
+    <DivingBoard
+      :target="board"
+      :live="true"
+      @cover="(covers: boolean) => (covered = covers)"
+    />
   </div>
 </template>
 
@@ -202,8 +250,8 @@ onMounted(() => {
   transition: opacity 0.3s;
 }
 /* Only the canvas fades. The layer keeps painting the paper: a slide with a
-   `watch:` is see-through (see .watch-marker below), and when the watch hides
-   at a click (`watchHide`) the slide is still that slide, so the layer is its
+   `watch:` is see-through (see .watch-marker below), and when the diving board
+   covers the watch the slide is still that slide, so the layer is its
    background. */
 .watch-canvas {
   position: absolute;
@@ -227,6 +275,9 @@ onMounted(() => {
 .watch-still {
   position: absolute;
   inset: 0;
+}
+.watch-still-covered {
+  visibility: hidden;
 }
 .watch-still img {
   width: 100%;

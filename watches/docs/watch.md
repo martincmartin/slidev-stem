@@ -161,11 +161,9 @@ watch: hairspring
 watchFlash: balance and hairspring # flashes while the camera moves
 watchOnly: hairspring and stud # the rest of the watch fades out
 watchTilt: 20 # degrees: shows that the spring is a ribbon
-watchHide: 1 # at click 1 the watch fades out, still swinging
-watchSettle: 2 # the balance comes to rest while the watch is hidden
-watchShow: 3 # at click 3 it fades back in, at rest
-watchResume: 4 # at click 4 it starts to swing again
-clicks: 4
+watchSettle: 2 # the balance comes to rest while the diving board covers it
+watchResume: 3 # at click 3 it starts to swing again
+clicks: 3
 ```
 
 | Key                                  | Meaning                                                                                                                                                                  |
@@ -175,9 +173,7 @@ clicks: 4
 | `watchFlash: balance and hairspring` | the name of a subject: it flashes while the camera moves, on the step forward into the slide only ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash") |
 | `watchOnly: hairspring and stud`     | the name of a subject: the rest of the watch fades out                                                                                                                   |
 | `watchSettle: 1`                     | at this click, the balance waits for its next extreme and then comes to rest                                                                                             |
-| `watchResume: 4`                     | at this click, a settled balance starts to swing again (it needs `watchSettle` before it)                                                                                |
-| `watchHide: 2`                       | at this click, the watch fades out, as on a slide with no `watch`                                                                                                        |
-| `watchShow: 3`                       | at this click, a hidden watch fades back in, in the state of that click: a settled balance is at rest, with no settling (it needs `watchHide` before it)                 |
+| `watchResume: 3`                     | at this click, a settled balance starts to swing again (it needs `watchSettle` before it)                                                                                |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
 at load with the key's name. The subjects are made in `watch/generate.ts`:
@@ -204,7 +200,11 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   camera moves and tilts with the smaller subject on the screen, and then
   the difference fades in (slide 3 to slide 4). Going back fades the
   difference out first, and then moves the camera. Slide 2 to slide 3 is a
-  swap with no camera move.
+  swap with no camera move. A change during a swap (a fast click) first
+  finishes the swap's fade, to the smaller subject if the new subject is
+  inside it, else to the larger one; then the stage goes on from there. The
+  navigation check waits for each step to end, so it does not cut a swap
+  short: `webgl/timeline.test.ts` tests this.
   With `watchFlash`, the flash and camera move start together. The flash ends
   during the tilt. In a swap there is no camera move: the flash starts when
   the swap ends (slide 3). The change from the cover to slide 2 takes 4.1 s.
@@ -236,9 +236,9 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
 - **A click that changes the watch needs a `[click]` line** in the speaker
   notes, as for any click.
 - **The watch's layer paints the paper behind a `watch:` slide**, because that
-  slide is see-through. When the watch hides (no `watch:`, or `watchHide`), only
-  the canvas fades; the layer stays. Fading the whole layer left the page's
-  white behind slide 2 after its `watchHide` click.
+  slide is see-through. When the watch hides (no `watch:`, or the diving board
+  covers it), only the canvas fades; the layer stays. Fading the whole layer
+  left the page's white behind slide 2 while the watch was hidden.
 - **The slide's text paints over the watch** because the slide's layout is
   positioned. A slide with its own layout must keep that.
 
@@ -320,19 +320,39 @@ pool of the wrong colours.
 
 ```yaml
 board: 1 # the board and the rest shape fade in; the board bends, holds, lets go and swings at 1 Hz
-boardCurl: 2 # the pool and the stand fade, and the board winds into the spiral
-boardHide: 3 # the board fades out; the rest shape stays to the slide's end
+boardCurl: 2 # the pool and the stand fade, the board winds into the spiral, then fades out
 ```
 
 `watch/board.ts` checks the keys (`boardState`), as `watch/state.ts` checks the
 watch's: each is a click number, in this order.
 
-| Click | The slide                                                                                                |
-| ----- | -------------------------------------------------------------------------------------------------------- |
-| 1     | `watchHide: 1` fades the watch; `board: 1` fades the board in, and it bends, holds, lets go, swings      |
-| 2     | `boardCurl: 2` fades the pool and the stand, the board winds into the spiral, and the sentence is edited |
-| 3     | `boardHide: 3` fades the board out, the rest outline stays, and `watchShow` fades the watch in           |
-| 4     | `watchResume`: the balance starts to swing again                                                         |
+| Click | The slide                                                                                                                                                  |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `board: 1` fades the board in over the watch, and it bends, holds, lets go, swings                                                                         |
+| 2     | `boardCurl: 2` fades the pool and the stand, and the board winds into the spiral. Then the board fades out, the watch fades in, and the sentence is edited |
+| 3     | `watchResume`: the balance starts to swing again                                                                                                           |
+
+**The board covers the watch while its picture shows.** The picture (the
+board, the pool and the stand) shows from the board's click until the board's
+clock passes the end of the curl (`pictureShown` in `watch/board.ts`). The
+board's component emits `cover`, and the layer under it hides the watch:
+`global-bottom.vue` fades the canvas out and stops the stage, and
+`slide-bottom.vue` hides the still.
+
+**A hidden watch goes to its target at once.** When the canvas has faded out
+(its 0.3 s fade, with a margin: 400 ms), the stage jumps to the last state that
+it was given, and stops. If the watch's state changes while the canvas fades
+out or is hidden, the stage first makes that jump, and then moves to the new
+state as usual. So the watch comes back in the state of its click, however
+fast the clicks came: a camera move from the cover that the board covers at
+click 1 ends under the board, and slide 3's swap starts from slide 2's view.
+A move that nobody sees has no reason to go on. So the swap needs no click and no key: it
+happens when the curl ends, which only the board's clock knows (the curl waits
+for the next bottom of the swing). Going back, the clock crosses the same time
+in the reverse order: the edit is undone, the board fades in over the
+hairspring, and the board uncurls. The swap runs with the edit: it fades two
+pictures of the same shape, so it moves nothing. Why:
+[`2026-10-04-board-handoff`](../tasks/2026-10-04-board-handoff/PLAN.md).
 
 The callout appears with the board at click 1: a leader and the sentence
 "Bend it away / from straight, / it pushes back", in ink. After the curl, on
@@ -346,7 +366,10 @@ dashed outline has become. Each step is a quarter of `Timeline.edit` in
   SVG.** All else being equal, use the simplest tool for the job, and HTML is
   simpler than SVG for text: the browser lays it out, so a strike is its
   word's width, with no font metrics in the generator. It fades with the
-  leader (`data-layer="rest-callout"`).
+  leader (`data-layer="rest-callout"`), as text does: in `--text-fade`, and
+  it fades in only after `--text-fade`, when the text that it replaces is gone
+  ([slide-patterns.md](slide-patterns.md#text-fades)). So slide 3's sentence,
+  in the same place, never shows on top of it.
 - **The leader points to the line "from straight,".** Its baseline starts at
   `LeaderDesign.label`, which the SVG's root gives the page (`data-label-x`,
   `data-label-y`). The leader joins "straight" to the straight outline, and,
@@ -383,11 +406,11 @@ The [weight-tuning task](../tasks/2026-10-04-leader-path-comparison/weight-tunin
 The [quarter-bend task](../tasks/2026-10-04-leader-path-comparison/selection-and-layering/quarter-bend/README.md) records the selected bend coefficient.
 The sentence stays on the right.
 
-At clicks 3 and 4, the rest shape stays while `boardHide` fades the moving board out.
+When the curl ends, the rest shape stays while the moving board fades out.
 The ghost does not change during the crossfade because the two rest outlines match.
-The real spring swings against this fixed reference at click 4.
+The real spring swings against this fixed reference at click 3.
 The component stops its frame loop when the clock holds still.
-A jump to click 3 or 4 (a reload, a link) shows the completed rest spring at once.
+A jump to click 2 or 3 (a reload, a link) shows the completed rest spring at once.
 The ghost fades out when the audience leaves slide 2, with the balance's swap on slide 3.
 The generator writes its paths, leader, and curl duration; do not edit the SVG by hand.
 
@@ -408,15 +431,15 @@ took, to the bottom of the swing, and the swing goes on. The pool and the stand
 fade in at once. A click back from 1 fades the board out in its pose; the next
 click 1 bends it from 0 again. `BoardClock` in `watch/board.ts` holds these
 moves, and `watch/board.test.ts` tests them.
-The balance settles at click 2 (`watchSettle`), while the watch is hidden: a
-hidden watch gets no new state, so at click 3 it appears at rest (`place`, at
-once). At click 4 the clock's `resume` starts it: the cubic from rest to the
+The balance settles at click 2 (`watchSettle`), while the board covers the
+watch. The watch is out of sight, so the stage puts the balance at rest at
+once (below), and the hairspring is at rest when it appears. At click 3 the clock's `resume` starts it: the cubic from rest to the
 opposite extreme, which is the settle mirrored, so there is no jump in angle,
-speed or acceleration where it meets the free swing. A click back from 4 to 3
+speed or acceleration where it meets the free swing. A click back from 3 to 2
 settles it again. The board's end and the hairspring at rest are the same
-shape: laid over each other (a screenshot of slide 2 at click 3, and the
-board's last frame) they agree to about a pixel, except for the real spring's
-stud and collet.
+shape: laid over each other (a screenshot of slide 2 at click 2 after the
+curl, and the board's last frame) they agree to about a pixel, except for the
+real spring's stud and collet.
 The swing never damps, on purpose.
 
 - **The component runs the clock, not the SVG.** A self-playing `<img>` cannot
@@ -477,9 +500,10 @@ art:generated` runs it with the `--check` of `watch_design.py` and
   export, the overview) sets the SVG's time to the pose of its click
   (`boardPoseTime` in `watch/board.ts`; the posed board is `slide-bottom.vue`'s): bent, at the bottom of the swing, at click 1, and half
   way through the curl at click 2 (`CURL_SHOWN`), with the sentence not yet
-  edited. Half way, not the end: the end is the hairspring at rest, the same
-  picture as click 3's. At clicks 3 and 4, once the board is hidden, the pose
-  is the end of the edit: the curled outline and the edited sentence. Print mode never
+  edited, and the board covers the still. Half way, not the end: the end is
+  the hairspring at rest, the same picture as click 3's. At click 3, after the
+  curl's click (`curlsHere`), the pose is the end of the edit: the curled
+  outline, the edited sentence, and the still. Print mode never
   runs the clock, so the pose does not drift. `art:print` checks the board too:
   its classes against the live slide's, and its clock against the pose. The
   component's `data-waitfor` makes `slidev export` wait until the SVG is posed.

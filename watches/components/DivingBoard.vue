@@ -13,6 +13,10 @@
 // (../../docs/navigation.md). With `atOnce` (a jump), it shows the target with
 // no fade and no motion.
 //
+// The picture shows until the clock passes the curl's end (`pictureShown`).
+// While it shows, it covers the watch: the component emits `cover`, and the
+// layer under it hides the watch.
+//
 // `live` false: a page that does not run the clock (print and export, the
 // overview, the presenter's "next" pane: slide-bottom.vue). It shows the pose
 // of its click (`boardPoseTime`). `data-waitfor` makes `slidev export` wait
@@ -44,10 +48,15 @@ import {
   boardPoseTime,
   EDIT_STEPS,
   editStep,
+  pictureShown,
 } from "../watch/board.ts";
 import type { BoardState, BoardTarget, BoardTiming } from "../watch/board.ts";
 
 const props = defineProps<{ target: BoardTarget; live: boolean }>();
+const emit = defineEmits<{
+  /** Whether the board's picture shows, and so covers the watch. */
+  cover: [covers: boolean];
+}>();
 
 const CURLING_CLASS = "diving-board-curling";
 const BUSY_PHASES = new Set(["bend", "curl", "uncurl"]);
@@ -56,6 +65,8 @@ const host = useTemplateRef<HTMLDivElement>("host");
 const markup = ref("");
 /** The state that the classes show; it changes when the target is applied. */
 const shown = ref<BoardState | undefined>(undefined);
+/** Whether the picture shows at the clock's time. */
+const picture = ref(false);
 const instant = ref(false);
 let clock: BoardClock | null = null;
 let frame = 0;
@@ -94,14 +105,16 @@ function placeSentence(board: SVGSVGElement): void {
   host.value?.style.setProperty("--label-y", `${String(y)}px`);
 }
 
-/** Draw the edit of the sentence as it is at the SVG's `time` (s). */
-function drawEdit(timing: BoardTiming, time: number): void {
+/** Draw what depends on the SVG's `time` (s) and not on the SVG: the edit
+ *  of the sentence, and whether the picture shows. */
+function drawAt(timing: BoardTiming, time: number): void {
   for (let index = 0; index < EDIT_STEPS; index++) {
     host.value?.style.setProperty(
       `--edit-${String(index)}`,
       String(editStep(timing, time, index)),
     );
   }
+  picture.value = shown.value ? pictureShown(timing, shown.value, time) : false;
 }
 
 /** Set the SVG's time and the host's phase at `now`; go on while it moves. */
@@ -111,7 +124,7 @@ function draw(now: number): void {
   if (!board || !clock || !host.value) return;
   const time = clock.time(now);
   board.setCurrentTime(time);
-  drawEdit(timingOf(board), time);
+  drawAt(timingOf(board), time);
   const phase = shown.value ? clock.phase(now) : "off";
   host.value.dataset["phase"] = phase;
   host.value.dataset["busy"] = String(BUSY_PHASES.has(phase));
@@ -126,12 +139,10 @@ function apply(target: BoardTarget): void {
   board.classList.toggle(CURLING_CLASS, state?.curling ?? false);
   if (!props.live) {
     shown.value = state;
-    if (state) {
-      const timing = timingOf(board);
-      const time = boardPoseTime(timing, state);
-      board.setCurrentTime(time);
-      drawEdit(timing, time);
-    }
+    const timing = timingOf(board);
+    const time = state ? boardPoseTime(timing, state) : 0;
+    board.setCurrentTime(time);
+    drawAt(timing, time);
     board.setAttribute("data-posed", "");
     return;
   }
@@ -170,13 +181,20 @@ watch(
     apply(target);
   },
 );
+watch(
+  picture,
+  (covers) => {
+    emit("cover", covers);
+  },
+  { immediate: true },
+);
 onBeforeUnmount(() => {
   cancelAnimationFrame(frame);
 });
 
 const classes = computed(() => ({
   "diving-board-on": shown.value !== undefined,
-  "diving-board-picture-on": shown.value?.picture ?? false,
+  "diving-board-picture-on": picture.value,
   "diving-board-rest-on": shown.value?.rest ?? false,
   "diving-board-instant": instant.value,
 }));
@@ -221,19 +239,26 @@ const classes = computed(() => ({
 /* Each layer fades on its own. The picture fades in 0.4 s, with the watch's
    0.3 s fade at the clicks where one takes the other's place. The rest shape
    fades with the watch's swap, when the balance wheel joins (`--watch-fade`,
-   which global-bottom.vue sets from FADE_SECONDS in webgl/timeline.ts). */
+   which global-bottom.vue sets from FADE_SECONDS in webgl/timeline.ts). The
+   callout is text: it fades as text does (--text-fade, in style.css), and
+   fades in only after the text that it replaces has faded out. */
 .diving-board [data-layer="board"],
 .diving-board [data-layer="rest"],
 .diving-board [data-layer="rest-callout"] {
   opacity: 0;
   transition: opacity 0.4s;
 }
-.diving-board [data-layer="rest"],
-.diving-board [data-layer="rest-callout"] {
+.diving-board [data-layer="rest"] {
   transition-duration: var(--watch-fade, 0.8s);
   /* the stage's cubic ease-in-out (`ease` in webgl/timeline.ts), so that the
      two fades cross at the same moment */
   transition-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+}
+.diving-board [data-layer="rest-callout"] {
+  transition-duration: var(--text-fade);
+}
+.diving-board-rest-on [data-layer="rest-callout"] {
+  transition-delay: var(--text-fade);
 }
 .diving-board [data-layer="set"] {
   opacity: 0;

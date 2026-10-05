@@ -8,10 +8,6 @@
 //     camera moves, when the slide is reached by a transition
 //   watchSettle: the click at which the balance settles at rest
 //   watchResume: the click at which a settled balance starts to swing again
-//   watchHide: the click at which the watch fades out, as on a slide without
-//     a `watch`; the slide shows something else from then on
-//   watchShow: the click at which a hidden watch fades back in, in the state
-//     that the click gives it (a settled balance is at rest, not settling)
 
 import type { Scene } from "../webgl/scene.ts";
 import type { StageState } from "../webgl/timeline.ts";
@@ -67,22 +63,12 @@ export function watchState(
   }
   const settleAt = clickOf(frontmatter, "watchSettle");
   const resumeAt = clickOf(frontmatter, "watchResume");
-  const hideAt = clickOf(frontmatter, "watchHide");
-  const showAt = clickOf(frontmatter, "watchShow");
   if (
     resumeAt !== undefined &&
     (settleAt === undefined || resumeAt <= settleAt)
   ) {
     return wrong("watchResume", resumeAt, "a click after watchSettle");
   }
-  if (showAt !== undefined && (hideAt === undefined || showAt <= hideAt)) {
-    return wrong("watchShow", showAt, "a click after watchHide");
-  }
-  const hidden =
-    hideAt !== undefined &&
-    clicks >= hideAt &&
-    (showAt === undefined || clicks < showAt);
-  if (hidden) return undefined;
   return {
     view,
     tilt,

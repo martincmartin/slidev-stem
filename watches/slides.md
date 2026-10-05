@@ -8,6 +8,8 @@ favicon: /favicon.ico
 # `transition` in it becomes the default of every slide. The cover must have
 # the only watch-zoom transition, so the headmatter is a first slide of its
 # own, with no content, and hidden; the cover is the second block.
+# text-fade: the old text fades out before the new text fades in (style.css).
+transition: text-fade
 hide: true
 ---
 
@@ -45,14 +47,11 @@ watch: hairspring
 watchFlash: balance and hairspring
 watchOnly: hairspring and stud
 watchTilt: 20
-watchHide: 1
 watchSettle: 2
-watchShow: 3
-watchResume: 4
+watchResume: 3
 board: 1
 boardCurl: 2
-boardHide: 3
-clicks: 4
+clicks: 3
 ---
 
 # Hairspring
@@ -72,9 +71,7 @@ The hairspring and the balance wheel: the part of a watch that keeps time.
 
 [click] The hairspring fades. A diving board takes its place: it bends down, and when it lets go it bounces up and down, once a second. The dashed outline is its rest shape, and the words on the right say it: bend it away from straight, it pushes back. The restoring force brings it back toward that shape, but it overshoots. With no friction it would bounce at the same height for ever. This is why a hairspring swings: it is a springboard.
 
-[click] The pool and the stand fade. The rest outline becomes a single dashed line. The board and that line curl into the hairspring, at rest in its middle position. Then the words are edited: "Bend" becomes "Wind", and "straight" becomes "rest". Wind it away from rest, it pushes back.
-
-[click] The board fades out and the real hairspring fades in, at rest, with the same shape.
+[click] The pool and the stand fade. The rest outline becomes a single dashed line. The board and that line curl into the hairspring, at rest in its middle position. As soon as it is curled, the board fades out and the real hairspring fades in, at rest, with the same shape. Then the words are edited: "Bend" becomes "Wind", and "straight" becomes "rest". Wind it away from rest, it pushes back.
 
 [click] The hairspring starts to swing again, as the board did. Its dashed rest shape stays still.
 -->
