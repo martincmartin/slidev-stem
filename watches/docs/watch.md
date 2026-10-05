@@ -229,10 +229,10 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   Forward, the camera moves first (1.8 s); back to the cover it moves last,
   so the cover's title waits 4.1 s.
 - **The first block of `slides.md` is a hidden slide with no content.** Slidev
-  takes the headmatter from the first slide's frontmatter, and a `transition`
-  there becomes the default of every slide. The cover has the only
-  `watch-zoom`, so the headmatter has its own block, with `hide: true`. Do not
-  merge it with the cover's block.
+  takes the headmatter from the first slide's frontmatter, and its
+  `transition` is both the default of every slide and that slide's own. The
+  default is `text-fade` and the cover's is `watch-zoom`, so the headmatter has
+  its own block, with `hide: true`. Do not merge it with the cover's block.
 - **A click that changes the watch needs a `[click]` line** in the speaker
   notes, as for any click.
 - **The watch's layer paints the paper behind a `watch:` slide**, because that

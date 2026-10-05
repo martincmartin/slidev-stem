@@ -4,10 +4,11 @@ theme: ledger
 title: What Every Nerd Should Know About Watches
 # art/favicon.py writes it; without this line Slidev links its own icon on a CDN
 favicon: /favicon.ico
-# Slidev takes the headmatter from the first slide's frontmatter, and a
-# `transition` in it becomes the default of every slide. The cover must have
-# the only watch-zoom transition, so the headmatter is a first slide of its
-# own, with no content, and hidden; the cover is the second block.
+# Slidev takes the headmatter from the first slide's frontmatter. Its
+# `transition` is the default of every slide and also that slide's own. The
+# default is text-fade, but the cover's transition is watch-zoom, and one
+# block cannot set both. So the headmatter is a first slide of its own, with
+# no content, and hidden; the cover is the second block.
 # text-fade: the old text fades out before the new text fades in (style.css).
 transition: text-fade
 hide: true
@@ -22,7 +23,7 @@ watch: cover
 transition: watch-zoom
 ---
 
-# What Every Nerd Should Know About Watches
+# What Every Nerd Should Know About Mechanical Watches
 
 Martin C. Martin
 
@@ -55,6 +56,10 @@ clicks: 3
 ---
 
 # Hairspring
+
+<!--
+  Should I mention *why* the hairspring?  It's more accurate than previous methods, plus easier to transport and use at sea than a pendulum.
+-->
 
 <!--
 The _hairspring_ beats every 2 seconds, controlling the speed of the rest of the watch.
@@ -128,6 +133,20 @@ watchOnly: escapement
 
 <!--
 The camera zooms out, with only the balance wheel and the hairspring on the screen. Then the roller, its impulse jewel, the pallet fork and the escape wheel fade in.
+-->
+
+<!--
+The escapement turns back-and-forth motion into rotation in one direction.  (It also gives a "boost" to the hairspring, should I mention that?  Does that explain a significant part of its design?  If I do, I think its a separate section at the end of the slide: first explain how the jewel kicks the fork which lets the escape wheel turn; once that's done, then you can talk about the counter-kick to the hairspring.)
+- Need to say, and somehow indicate visually, that "something" is applyign force (torque) to the escape wheel.
+- The escapment lets the escape wheel advance once each way.
+- This is where the "tick tock" sound comes from!
+- The teeth are trapped by the pallet stones.  The pallet allows the teeth to "escape", hence the name "escapement."
+
+First, the gears are trying to run forward because the mainspring is applying torque.
+
+Second, the escapement normally prevents them from doing so. The pallet stones lock the escape wheel.
+
+Third, the balance periodically gives permission for one tiny advance. During that event some energy also travels the other way, from the gear train through the escapement into the balance.
 -->
 
 ---
