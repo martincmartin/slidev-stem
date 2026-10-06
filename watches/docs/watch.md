@@ -97,7 +97,7 @@ The hairspring view keeps its on-slide target and zoom when the oscillator heigh
 Its camera pivot uses the spring's midpoint in height. Thus the spring stays at its target as the view tilts.
 `watch/generate.ts` holds the target and zoom.
 
-On slide 2, the roller flashes with the oscillator during the zoom and tilt.
+On slide 2, the roller flashes with the oscillator before the zoom.
 Then it fades with the balance, jewel, staff, fork, and other mechanism parts.
 Only the hairspring, collet, and stud remain visible, so the roller does not cover the coils.
 The subject sets in `watch/generate.ts` control this fade.
@@ -207,7 +207,7 @@ A slide asks for a view of the watch in its frontmatter. A slide with no
 
 ```yaml
 watch: hairspring
-watchFlash: balance and hairspring # flashes while the camera moves
+watchFlash: balance and hairspring # flashes before the camera moves
 watchOnly: hairspring and stud # the rest of the watch fades out
 watchTilt: 20 # degrees: shows that the spring is a ribbon
 watchSettle: 2 # the balance comes to rest while the diving board covers it
@@ -215,14 +215,14 @@ watchResume: 3 # at click 3 it starts to swing again
 clicks: 3
 ```
 
-| Key                                  | Meaning                                                                                                                                                                  |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `watch: cover`                       | the view: `cover`, `hairspring`, `escapement` or `crown`; no key hides the watch                                                                                         |
-| `watchTilt: 20`                      | degrees, towards the viewer's side (default 0)                                                                                                                           |
-| `watchFlash: balance and hairspring` | the name of a subject: it flashes while the camera moves, on the step forward into the slide only ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash") |
-| `watchOnly: hairspring and stud`     | the name of a subject: the rest of the watch fades out                                                                                                                   |
-| `watchSettle: 1`                     | at this click, the balance waits for its next extreme and then comes to rest                                                                                             |
-| `watchResume: 3`                     | at this click, a settled balance starts to swing again (it needs `watchSettle` before it)                                                                                |
+| Key                                  | Meaning                                                                                                                                                                   |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `watch: cover`                       | the view: `cover`, `hairspring`, `escapement` or `crown`; no key hides the watch                                                                                          |
+| `watchTilt: 20`                      | degrees, towards the viewer's side (default 0)                                                                                                                            |
+| `watchFlash: balance and hairspring` | the name of a subject: it flashes before the camera moves, on the step forward into the slide only ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash") |
+| `watchOnly: hairspring and stud`     | the name of a subject: the rest of the watch fades out                                                                                                                    |
+| `watchSettle: 1`                     | at this click, the balance waits for its next extreme and then comes to rest                                                                                              |
+| `watchResume: 3`                     | at this click, a settled balance starts to swing again (it needs `watchSettle` before it)                                                                                 |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
 at load with the key's name. The subjects are made in `watch/generate.ts`:
@@ -254,9 +254,11 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   inside it, else to the larger one; then the stage goes on from there. The
   navigation check waits for each step to end, so it does not cut a swap
   short: `webgl/timeline.test.ts` tests this.
-  With `watchFlash`, the flash and camera move start together. The flash ends
-  during the tilt. In a swap there is no camera move: the flash starts when
-  the swap ends (slide 3). The change from the cover to slide 2 takes 4.1 s.
+  **Flashing and zooming must not happen together: the combined motion is too
+  visually busy and confusing. Start the zoom as soon as the last flash ends.**
+  With `watchFlash`, the flash finishes before the camera moves, tilts, and fades.
+  In a swap, the flash starts when the swap ends (slide 3).
+  `webgl/timeline.ts` holds the flash count and all durations.
 - **A step animates, a jump does not** (`watch/navigation.ts`,
   [`navigation.md`](../../docs/navigation.md)). A step is one click, or the
   next or the previous slide. A jump (a reload, a link, the overview) shows
@@ -275,8 +277,8 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   transition, between the cover and slide 2 only. The new slide's text comes
   in after the camera's move, in either direction: `global-bottom.vue` sets
   `--watch-text-delay` from the stage (`viewEndAt` in `webgl/timeline.ts`).
-  Forward, the camera moves first (1.8 s); back to the cover it moves last,
-  so the cover's title waits 4.1 s.
+  Forward, the text waits for the flash and camera move. Back to the cover,
+  it waits for the fade, tilt, and camera move.
 - **The first block of `slides.md` is a hidden slide with no content.** Slidev
   takes the headmatter from the first slide's frontmatter, and its
   `transition` is both the default of every slide and that slide's own. The
