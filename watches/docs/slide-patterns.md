@@ -30,11 +30,13 @@ Five rules for a slide:
   asks which way the viewer went, and do not put a copy of a shared picture
   on each slide. `uv run ../tools/validate.py` walks the deck both ways and
   fails on a cut or on a click that looks different when reached another way.
-- **Every slide's title is centred**, by `style.css` (a Slidev project file).
-  The cover's is the one exception: it sits left of the watch
-  (`.slidev-layout.cover-watch h1` in `slides.md`).
+- **Every slide's title and subtitle are centred**, by `style.css` (a Slidev
+  project file). The cover's are the one exception: they sit left of the
+  watch (`.slidev-layout.cover-watch h1` in `slides.md`).
 - **Use a markdown `#` heading for the title.** The theme styles `h1` as the
-  slide title. Inside a flex layout, set `margin: 0` on it.
+  slide title. Inside a flex layout, set `margin: 0` on it. A paragraph right
+  after the title is its subtitle: the theme styles `h1 + p`, as Slidev's
+  default theme does. The cover's subtitle is the speaker's name.
 - **Never set a colour or a font on the slide.** Use `var(--palette-accent)` and the
   other variables for colour. In a component, use `@apply font-serif` or
   `@apply font-mono` for type. If a slide needs a colour that the palette does
@@ -129,13 +131,16 @@ It is background, not rules.
 
 A slide that shows the watch sets its view in the frontmatter.
 Slide 2 uses the diving board to explain the spring, and slide 3 fades its rest shape out as the balance wheel fades in.
-Slide 4 zooms out, and then the rest of the escapement fades in.
+Slide 4 zooms out, and then the rest of the escapement fades in. Its
+callouts point to parts of the watch, one at each click.
 It is described in [watch.md](watch.md).
 
 ## Where things go on a slide
 
 **The main focus of a slide is on its left.** Put the picture there, and the
-callouts and text on the right. The watch's train is laid out left to right from
+callouts and text on the right. When the picture needs the slide's whole
+height (slide 4), it starts at the left edge, and the callouts go in the room
+on its right and in its gaps. The watch's train is laid out left to right from
 the hairspring to the fourth wheel for this reason: see
 [watch.md](watch.md#the-layout-of-the-movement).
 

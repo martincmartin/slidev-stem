@@ -25,6 +25,7 @@ import type {
   Mesh,
   Scene,
   Subject,
+  Vec3,
   View,
 } from "../webgl/scene.ts";
 import { INKS } from "../webgl/scene.ts";
@@ -87,7 +88,9 @@ const BALANCE_SCREWS: BalanceScrews = Object.freeze({
 /** Clearance between moving oscillator layers and beneath the balance. */
 const OSCILLATOR_CLEARANCE = 2;
 const ROLLER_THICKNESS = 2;
-const JEWEL_RADIUS = 6;
+export const JEWEL_RADIUS = 6;
+/** The circle on the pallet fork's pivot. */
+export const FORK_PIVOT_RADIUS = 4;
 /** The stud: a block around the spring's outer end. */
 const STUD_REACH: [number, number] = [-2, 5];
 const STUD_WIDTH = 5;
@@ -96,14 +99,21 @@ const CROWN_ZOOM = 2;
 const HAIRSPRING_ZOOM = 250 / 56;
 /** Where the balance's arbor is on the slide in the hairspring view. */
 const HAIRSPRING_TARGET: Point2 = [275, 276];
-/** Where the escapement view fits the escapement on the slide: the left 60 %,
- *  under the title (docs/watch.md, "Slide 4: the escapement"). */
+/** The escapement view's zoom and left edge (docs/watch.md, "Slide 4: the
+ *  escapement"). The escapement is as large as fits in this frame, from its
+ *  left edge. The frame is wider than the escapement, so its height sets the
+ *  zoom, and the callouts use the room on the right. Its top and bottom do
+ *  not place the escapement: ESCAPEMENT_ARBOR_Y does. */
 const ESCAPEMENT_FRAME: PlanBox = Object.freeze({
-  left: 30,
-  top: 110,
-  right: 560,
-  bottom: 530,
+  left: 16,
+  top: 128,
+  right: 964,
+  bottom: 548,
 });
+/** The subtitle's baseline on slide 4, in slide px, as measured in the
+ *  browser: the theme's title and subtitle (themes/ledger/styles/ledger.css)
+ *  put it there. Measure it again if they change. */
+const SUBTITLE_BASELINE = 110.7;
 const SPRING_FRAMES = 25;
 
 // ---- parts and recipes ---------------------------------------------------------------
@@ -182,7 +192,7 @@ interface Solid {
   inDrawing: boolean;
 }
 
-interface Heights {
+export interface Heights {
   bottom: number;
   top: number;
 }
@@ -276,6 +286,13 @@ export interface Watch {
   readonly springHeights: Heights;
   /** The chapter ring's height, on which the decals lie. */
   readonly ringTop: number;
+  /** The tops of the escape wheel, the fork and the impulse jewel: where
+   *  slide 4's callouts point (watch/callouts.ts). */
+  readonly escapementTops: {
+    readonly escape: number;
+    readonly fork: number;
+    readonly jewel: number;
+  };
 }
 
 // ---- paint ------------------------------------------------------------------------------
@@ -1173,7 +1190,7 @@ function forkSolids(kit: Kit): void {
     forkPart,
     "circle",
     forkGroup,
-    ringsOf([circlePath(0, 0, 4), line(2)]),
+    ringsOf([circlePath(0, 0, FORK_PIVOT_RADIUS), line(2)]),
     knockout,
   );
 }
@@ -1381,6 +1398,18 @@ export function generate(design: Design = DESIGN): Watch {
     return found;
   };
   const ringTop = heightOf(ringSolid).top;
+  const topOf = (owner: Part, role: Role): number => {
+    const found = solids.find(
+      (solid) => solid.part === owner && solid.role === role,
+    );
+    if (!found) throw new Error(`${owner.name} has no ${role}`);
+    return heightOf(found).top;
+  };
+  const escapementTops = {
+    escape: topOf(partOf(train.escape), "body"),
+    fork: topOf(parts.fork, "body"),
+    jewel: topOf(parts.jewel, "body"),
+  };
 
   // ---- the case, lugs, strap and crown ----
   const {
@@ -1511,7 +1540,15 @@ export function generate(design: Design = DESIGN): Watch {
         middle,
         crownCentreX,
       ),
-      fitView("escapement", escapementBox, ESCAPEMENT_FRAME, springMiddle),
+      fitView(
+        "escapement",
+        escapementBox,
+        ESCAPEMENT_FRAME,
+        // the hairspring's arbor, at the spring's height: halfway between
+        // the subtitle's baseline and the slide's bottom
+        [...balanceSolid.pivot, springMiddle],
+        (SUBTITLE_BASELINE + design.canvas.height) / 2,
+      ),
     ],
     subjects: [subject, oscillator, wheel, wheelAdded, escapement],
   };
@@ -1524,10 +1561,13 @@ export function generate(design: Design = DESIGN): Watch {
     springShape,
     springHeights,
     ringTop,
+    escapementTops,
   };
 }
 
-function forkOutlineLocal(
+/** The fork's outline in its group's frame: the design's (along, across)
+ *  turned to the fork's heading. */
+export function forkOutlineLocal(
   outline: readonly Point2[],
   heading: number,
 ): Point2[] {
@@ -1582,30 +1622,25 @@ function views(
   ];
 }
 
-/** The view that fits `box` in `frame`, as large as it can, centred, and tilts
- *  about the box's centre at the height `middle`. */
+/** The view that zooms `box` as large as it fits in `frame`, against the
+ *  frame's left edge, with the world point `pivot` at slide y `pivotY`. It
+ *  tilts about `pivot`, so the pivot stays at `pivotY` at every tilt. */
 function fitView(
   name: string,
   box: PlanBox,
   frame: PlanBox,
-  middle: number,
+  pivot: Vec3,
+  pivotY: number,
 ): View {
   const scale = Math.min(
     (frame.right - frame.left) / (box.right - box.left),
     (frame.bottom - frame.top) / (box.bottom - box.top),
   );
-  const centre: Point2 = [
-    (box.left + box.right) / 2,
-    (box.top + box.bottom) / 2,
-  ];
   return {
     name,
     scale,
-    shift: [
-      (frame.left + frame.right) / 2 - scale * centre[0],
-      (frame.top + frame.bottom) / 2 - scale * centre[1],
-    ],
-    pivot: [centre[0], centre[1], middle],
+    shift: [frame.left - scale * box.left, pivotY - scale * pivot[1]],
+    pivot,
   };
 }
 

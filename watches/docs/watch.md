@@ -51,6 +51,7 @@ ends: a fade), and
 | `global-bottom.vue`, `slide-bottom.vue`                  | the live canvas and the live diving board, and the kind of each move; the still and the posed board on each printed page                                              |
 | `watch/board.ts`, `components/DivingBoard.vue`           | the board's frontmatter to its target, and its clock (`BoardClock`); the component that inlines the SVG and sets its time                                             |
 | `watch/navigation.ts`, `slide-state.ts`                  | a step forward, a step back or a jump; `window.slideState()` for `tools/navcheck.py` ([`navigation.md`](../../docs/navigation.md))                                    |
+| `watch/callouts.ts`, `components/WatchCallout.vue`       | where slide 4's leaders end, on the slide (`escapementMarks`); a callout: a label, and a leader from one of its words                                                 |
 | `types/`                                                 | two small `.d.ts` files, mapped by `tsconfig.json` `paths` to `@slidev/client`. `vue-tsc` would otherwise check Slidev's own source, which fails our strict settings. |
 
 ## Changing the design
@@ -126,13 +127,61 @@ Going back, they fade out, and then the camera zooms in.
 
 - **The view fits the subject.** `fitView` in `watch/generate.ts` makes the
   view from the reach of the subject's parts (with the balance's screws). It
-  fits them in `ESCAPEMENT_FRAME`, the left 60% of the slide under the
-  title, and keeps the main focus on the left. If the parts change, the view
-  follows them.
+  fits them in `ESCAPEMENT_FRAME`, against the frame's left edge. The frame
+  is wider than the escapement, so its height sets the zoom: the balance
+  nearly fills the height under the subtitle. The callouts use the room on
+  the right and in the gaps. If the parts change, the view follows them.
+- **The hairspring's arbor is halfway between the subtitle's baseline and the
+  slide's bottom**, at the spring's height. The view tilts about that point,
+  so it stays there at any tilt. The baseline (`SUBTITLE_BASELINE`) is
+  measured in the browser: the theme's title and subtitle sizes set it, so
+  measure it again if they change.
 - **The escape wheel's arbor stands on the wheel.** Each wheel's arbor runs up
   from the top of its wheel, through its pinion, to `ARBOR_CAP` above the
   pinion. With the pinion left out, the arbor still touches the wheel.
 - **No flash yet.**
+
+### The callouts
+
+Three callouts appear, one at each click: "Force (unseen) pushes wheel",
+"Pallet blocks wheel" and "Jewel strikes pallet". Each is a
+`components/WatchCallout.vue` in `slides.md`: a label in ink, 28 px, weight
+600, and a straight leader. The first callout also draws the drive arrow.
+
+- **The leaders are ink, 4 px**, as the house's leaders are
+  ([`illustrations.md`](../../docs/illustrations.md), "Leaders"). Slide 2's
+  leader is muted only because the dashed rest shape that it points to is
+  muted. They pass the back-row gate
+  ([measurements.md](measurements.md#slide-4-leaders-alone)).
+- **The drive arrow is muted, 4 px:** muted is the art's colour for what
+  acts on the subject, and the arrow shows the force on the escape wheel.
+
+- **The slide places each label; the watch places each leader's end.**
+  `escapementMarks` in `watch/callouts.ts` computes the ends from the design
+  and the slide's view and tilt, with the renderer's own camera
+  (`viewProjection`). If the design or the view changes, the leaders follow.
+  The labels do not: check them after such a change.
+- **A leader starts at its word.** The slide marks the word with
+  `<span class="callout-word">`. The component measures where the browser
+  puts it, and the leader leaves the word's box on the side that faces its
+  end.
+- **The drive arrow** is an arc on the escape wheel's face, at its pinion's
+  radius, where the fourth wheel's teeth push. It is centred on the line to
+  the (hidden) fourth wheel and points the way the escape wheel turns.
+- **Not an oversight: the leaders do not follow the moving parts.** They end
+  at fixed poses. The jewel's leader ends at the jewel with the balance at
+  rest: the middle of the fork's mouth, where the jewel strikes. A leader
+  that followed the jewel would sweep across the balance.
+- **The pallet's leader ends on the fork's lower arm, at a point that the
+  fork covers at every angle of its swing** (`palletPoint`). The outlines of
+  the fork at its two banks overlap, and the overlap ends below the pivot in
+  a tip. The point is a quarter of the way down from the pivot's circle to
+  that tip (`PALLET_DEPTH`), in the middle of the overlap's width there.
+  Its clearance from every edge, the circle's included, is 90% of the
+  largest on the arm. Not an oversight: a leader to a pallet stone pointed at
+  empty space for half of each beat. A leader to the pivot, or to the point
+  of the arm farthest from every edge (just under the circle), looked like
+  it pointed at the pivot. Halfway down to the tip looked too low.
 
 ## Balance rim motion
 

@@ -133,3 +133,16 @@ Its stroke width is set by `LeaderDesign` in `art/diving_board.py`.
 The [correction task](../tasks/2026-10-03-rest-shape/leader-correction/PLAN.md) compares the allowed widths.
 The earlier 2 px leader cleared the width floor but failed the blurred contrast gate when measured alone.
 The ghost, label, and live subject are absent from these isolated measurements.
+
+## Slide 4 leaders alone
+
+Measured 2026-10-06 at `TV 55in @7m`, from a Chromium screenshot of slide 4 at
+click 3 (1960 × 1104) with only the three leaders shown (ink, 4 px):
+
+| Leaders        | hold | p90   | Fmax  |
+| -------------- | ---- | ----- | ----- |
+| Slide 4, three | 6.90 | 13.31 | 0.277 |
+
+They clear the 3:1 gate with room to spare: ink has more contrast than slide
+2's muted. The labels, the drive arrow and the watch were hidden; they have
+not been measured.

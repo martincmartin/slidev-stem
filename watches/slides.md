@@ -33,7 +33,8 @@ Martin C. Martin
   place-content: center start;
   text-align: left;
 }
-.slidev-layout.cover-watch h1 {
+.slidev-layout.cover-watch h1,
+.slidev-layout.cover-watch h1 + p {
   text-align: left; /* the one title that is not centred: the watch is beside it */
   max-width: 480px; /* three lines; the widest, "What Every Nerd", is 464 px */
 }
@@ -112,6 +113,10 @@ class: balance-wheel
 </style>
 
 <!--
+  "Modern mechanical consumer watches (Seiko, Citizen, Timex), after calibration, have error of 0.01% (i.e. 99.99% accurate)"
+-->
+
+<!--
 The hairspring is only half of the oscillator. The other half is the balance wheel. The spring decides how hard it pushes back. The wheel decides how much there is to push.
 
 The dashed rest shape fades out as the balance wheel fades in. When it is all in, the balance wheel flashes five times.
@@ -131,6 +136,32 @@ watchOnly: escapement
 
 # Escapement
 
+From back-and-forth motion to one direction
+
+<script setup>
+import { useSlideContext } from "@slidev/client";
+import { escapementMarks } from "./watch/callouts.ts";
+import { WATCH } from "./watch/instance.ts";
+// where the leaders end: points of the watch, in this slide's view
+const marks = escapementMarks(WATCH, useSlideContext().$frontmatter);
+</script>
+
+<WatchCallout v-click :to="marks.escape" :stop="marks.escapeRadius / 2" :arrow="marks.drive" :left="680" :top="136">Force (unseen)<br>pushes <span class="callout-word">wheel</span></WatchCallout>
+
+<WatchCallout v-click :to="marks.pallet" :left="470" :top="470"><span class="callout-word">Pallet</span> blocks wheel</WatchCallout>
+
+<WatchCallout v-click :to="marks.jewel" :stop="marks.jewelRadius + 4" :left="330" :top="136"><span class="callout-word">Jewel</span> strikes pallet</WatchCallout>
+
+<!--
+"Force (unseen) trying to turn wheel"
+
+"Pallet blocks wheel"
+
+"Jewel strikes pallet"
+
+"Pallet strikes Jewel"
+-->
+
 <!--
 The camera zooms out, with only the balance wheel and the hairspring on the screen. Then the roller, its impulse jewel, the pallet fork and the escape wheel fade in.
 -->
@@ -142,11 +173,11 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 - This is where the "tick tock" sound comes from!
 - The teeth are trapped by the pallet stones.  The pallet allows the teeth to "escape", hence the name "escapement."
 
-First, the gears are trying to run forward because the mainspring is applying torque.
+[click] First, the gears are trying to run forward because the mainspring is applying torque.
 
-Second, the escapement normally prevents them from doing so. The pallet stones lock the escape wheel.
+[click] Second, the escapement normally prevents them from doing so. The pallet stones lock the escape wheel.
 
-Third, the balance periodically gives permission for one tiny advance. During that event some energy also travels the other way, from the gear train through the escapement into the balance.
+[click] Third, the balance periodically gives permission for one tiny advance. During that event some energy also travels the other way, from the gear train through the escapement into the balance.
 -->
 
 ---

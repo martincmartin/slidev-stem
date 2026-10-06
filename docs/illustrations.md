@@ -88,6 +88,19 @@ The hierarchy _is_ the style. A 2.25 or a 3.5 blurs the steps, and the drawing
 stops reading as deliberate. `artcheck.py` enforces the ladder, within 5%. The
 floor of 2 px comes from the back row ([legibility.md](legibility.md)).
 
+**Leaders are 4 px, in every talk.** A leader is the line from a callout's
+label to the part that it names. All leaders have one width, so that the
+audience reads each one as the same kind of mark. The width is 4 px because a
+2 px leader in muted failed the back row's blurred-contrast gate (the
+[`leader-correction`](../watches/tasks/2026-10-03-rest-shape/leader-correction/PLAN.md)
+task). A leader is in ink, the colour of its label, so the label and its
+leader read as one note over the drawing. Not art-line: in the drawing's
+colour, a leader reads as a part of the drawing. One exception: a leader may
+take the colour of a reference mark that it names (slide 2 of `watches`
+points to a muted rest shape, in muted). The widths are set in
+`watches/art/diving_board.py` (`LeaderDesign`) and
+`watches/components/WatchCallout.vue`; keep them equal.
+
 **Motion.** One loop per subject, running forever, with a fixed duration per
 subject, so two drawings side by side are never compared at different points
 in their cycle:

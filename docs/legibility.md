@@ -156,6 +156,7 @@ frame height, which on a 552 px canvas is ≈ 18 px.
 | element                       | size  | note                                                   |
 | ----------------------------- | ----- | ------------------------------------------------------ |
 | slide title                   | 37 px | serif, 600                                             |
+| slide subtitle                | 22 px | sans, 400, muted: the paragraph right after the title  |
 | card stat (the one number)    | 37 px | mono, 600, accent                                      |
 | card name                     | 29 px | serif, 600                                             |
 | card problem line             | 20 px | 600 — counts as "large text" for contrast purposes     |
