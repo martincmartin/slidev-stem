@@ -285,7 +285,7 @@ onMounted(() => {
   display: block;
 }
 /* `transition: watch-zoom`: the old slide's text fades while the watch
-   flashes and the camera starts its move; the new slide's text comes in after
+   flashes. The camera then moves; the new slide's text comes in after
    the move. The script sets --watch-text-delay from the stage's times. */
 .watch-zoom-leave-active {
   transition: opacity 0.9s ease-in;

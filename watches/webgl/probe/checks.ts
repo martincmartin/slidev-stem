@@ -601,7 +601,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
     },
   ],
   [
-    "a flash runs during the channels, on and off, and only in a transition",
+    "a flash runs before the channels, on and off, and only in a transition",
     (own) => {
       const test = makeScene();
       const [subject] = test.scene.subjects;
@@ -638,12 +638,16 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
       }
       const end = before + FLASH_SECONDS * 1000;
       check(
-        stage.phaseAt(after + 10) === "rest",
-        "the fade did not start with the flash",
+        stage.phaseAt(after + 10) === "flash",
+        "the flash did not start before the fade",
       );
       check(
-        stage.valuesAt(end - 20).rest === 0,
-        "the fade did not finish during the flash",
+        stage.valuesAt(end - 20).rest === 1,
+        "the fade started before the flash ended",
+      );
+      check(
+        stage.phaseAt(after + FLASH_SECONDS * 1000) === "rest",
+        "the fade did not start when the flash ended",
       );
       check(
         stage.flashingAt(after + FLASH_SECONDS * 1000) === null,

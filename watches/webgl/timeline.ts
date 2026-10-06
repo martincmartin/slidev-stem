@@ -17,10 +17,10 @@
 // else the larger one. Then the stage goes on from that subject.
 //
 // A FLASH (docs/illustrations.md, "Flash"). A state can name a subject to
-// flash: while the channels change, the subject is drawn in FLASH_INKS and in
+// flash: before the channels change, the subject is drawn in FLASH_INKS and in
 // its own inks, in turn, FLASH_CYCLES times. Only in a transition: a state
 // shown at once, or one that changes no channel, does not flash. It ends on
-// its own inks. The flash and the first channel start together. The caller
+// its own inks. The first channel starts as soon as the flash ends. The caller
 // names a flash only on the step forward into its slide
 // (../../docs/navigation.md): the timeline does not know which way a change
 // goes. A swap does not move the stage, so its flash starts when the swap ends,
@@ -51,7 +51,7 @@ export interface StageState {
   tilt: number;
   /** The rest of the scene fades away from this; `null`: nothing fades. */
   subject: Subject | null;
-  /** Flashed while the channels change, in a transition; `null`: none. */
+  /** Flashed before the channels change, or after a swap; `null`: none. */
   flash: Subject | null;
 }
 
@@ -202,7 +202,7 @@ export class Timeline {
   private values: Values | null = null;
   /** One after another. */
   private phases: Phase[] = [];
-  /** The flash alongside the phases, and when it starts (ms). */
+  /** The flash and when it starts (ms). */
   private flash: { subject: Subject; start: number } | null = null;
 
   /** Whether a state has been shown yet. Until then, there is nothing to
@@ -212,7 +212,8 @@ export class Timeline {
   }
 
   /** Go to a state at `now` (ms): at once, or one channel at a time from where
-   *  the channels are now, alongside the state's flash. Returns the seconds until
+   *  the channels are now, after the state's flash (before it for a swap).
+   *  Returns the seconds until
    *  the flash ends, or 0 if there is none. */
   show(state: StageState, now: number, instantly = false): number {
     const target: Values = {
@@ -321,6 +322,10 @@ export class Timeline {
           ? start
           : now;
     this.flash = { subject: state.flash, start: flashStart };
+    if (!swapped) {
+      const delay = flashStart + FLASH_SECONDS * 1000 - now;
+      for (const phase of this.phases) phase.start += delay;
+    }
     return FLASH_SECONDS - (now - flashStart) / 1000;
   }
 

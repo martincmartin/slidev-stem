@@ -79,7 +79,7 @@ export class Stage<ModelState> {
   }
 
   /** Go to a slide's state: at once, or one channel at a time from where the
-   *  camera and the fade are now, alongside the state's flash (the timeline's).
+   *  camera and the fade are now. The timeline controls the flash order.
    *  Returns the seconds until the flash ends, or 0 if there is none. */
   show(state: StageState, modelState: ModelState, instantly = false): number {
     check(!this.disposed, "the stage is disposed");
