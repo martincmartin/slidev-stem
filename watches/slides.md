@@ -92,9 +92,18 @@ class: balance-wheel
 
 # Balance Wheel
 
-<div class="bw-sentence">
+<div v-click.hide="2" class="bw-sentence bw-explanation">
   <div>Add mass,<br>it swings slowly</div>
-  <div v-click>and steadily</div>
+  <div v-click="1">and steadily</div>
+</div>
+
+<div v-click="2" class="bw-sentence bw-accuracy">
+  <div class="bw-calibrated">Calibrated, it can be</div>
+  <div class="bw-percent">99.99% accurate</div>
+  <div class="bw-daily">
+    <div>Out of 86,400 sec/day</div>
+    <div>Accurate to ~ 9 sec/day</div>
+  </div>
 </div>
 
 <style>
@@ -110,11 +119,26 @@ class: balance-wheel
   line-height: 2.1;
   white-space: nowrap;
 }
+.slidev-layout.balance-wheel .bw-sentence.slidev-vclick-target {
+  transition: opacity var(--text-fade);
+}
+/* In either direction, the incoming block waits for the outgoing block. */
+.slidev-layout.balance-wheel .bw-sentence:not(.slidev-vclick-hidden) {
+  transition-delay: var(--text-fade);
+}
+.slidev-layout.balance-wheel .bw-accuracy {
+  font-size: 28px;
+  line-height: 1.5;
+}
+.slidev-layout.balance-wheel .bw-percent {
+  margin-top: 12px;
+  font-size: 40px;
+}
+.slidev-layout.balance-wheel .bw-daily {
+  margin-top: 28px;
+  font-size: 26px;
+}
 </style>
-
-<!--
-  "Modern mechanical consumer watches (Seiko, Citizen, Timex), after calibration, have error of 0.01% (i.e. 99.99% accurate)"
--->
 
 <!--
 The hairspring is only half of the oscillator. The other half is the balance wheel. The spring decides how hard it pushes back. The wheel decides how much there is to push.
@@ -124,6 +148,8 @@ The dashed rest shape fades out as the balance wheel fades in. When it is all in
 Put a child on the end of the diving board: boing-boing-boing, fast. Put a heavy adult there: one slow, deep bounce. Same board, more mass, slower swing. A hairspring alone would flutter far too fast to count. The wheel slows it to a pace the gears can count. On the screen it is slowed down again: a real one swings four times a second.
 
 [click] Mass also makes it steady. Push an empty playground swing and it jerks around. Put a kid on it and your push just tops it up. A heavy wheel carries its own momentum. A bump to your wrist, or the small kick the watch gives it on each swing, barely changes its rhythm.
+
+[click] A calibrated mechanical watch can be about 99.99% accurate. Out of 86,400 seconds in a day, that is about nine seconds gained or lost. This is an achievable rate, not a guarantee for every watch. It is an average over the day.
 
 IF ASKED: Why a wheel and not a disc? Mass at the rim counts most, like a figure skater who spins slower with her arms out. Old balances had screws on the rim. Watchmakers moved them in or out to make the watch run faster or slower. The swing also takes about the same time whether it is big or small. That comes from the spring and the mass together, and it is why a watch keeps time while its mainspring runs down.
 -->

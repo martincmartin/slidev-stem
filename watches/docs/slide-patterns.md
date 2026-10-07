@@ -142,6 +142,8 @@ It is background, not rules.
 
 A slide that shows the watch sets its view in the frontmatter.
 Slide 2 uses the diving board to explain the spring, and slide 3 fades its rest shape out as the balance wheel fades in.
+On slide 3, click 1 adds "and steadily". Click 2 replaces the explanation with the calibrated-watch accuracy comparison.
+The outgoing text fades out before the incoming text fades in, in both directions.
 Slide 4 zooms out, and then the rest of the escapement fades in. Its
 callouts point to parts of the watch, one at each click. At its second click
 the escape wheel spins alone, and at the third the pallet comes back and
