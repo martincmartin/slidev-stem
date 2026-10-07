@@ -1,6 +1,6 @@
 # Ledger — the house Slidev theme
 
-The look of every STEM talk in this repo: warm cream, deep blue, warm brown,
+The look of every STEM talk in this repo: warm cream, deep blue, burnt orange,
 with Fraunces titles and IBM Plex body text.
 
 ```yaml

@@ -104,7 +104,7 @@ the subject share it), and the second.
    subject. These are the house's colour-blindness checks, and they limit the
    second's hue: a warm accent beside a green second fails (see "Adding a
    colour"). A blue second has no such limit. A lightness gap from the accent
-   is preferred; light themes cannot reach it.
+   is preferred. On light paper both must be dark, so the gap is hard to reach.
 10. **The washes** follow, one for each line colour that has faces (see "The
     pairs"). Usual recipes:
     - `--palette-subject-wash`: the paper, tinted toward the subject's hue at
@@ -307,7 +307,7 @@ Three traps:
 
 ## The current theme: Ledger
 
-Warm cream, deep blue, warm brown, with Fraunces titles and IBM Plex text. The
+Warm cream, deep blue, burnt orange, with Fraunces titles and IBM Plex text. The
 values are in `themes/ledger/styles/ledger.css`; `uv run tools/palette.py`
 prints them with each gate. The theme package and its rules are in
 [`themes/ledger/README.md`](../themes/ledger/README.md). As examples, its
@@ -321,11 +321,11 @@ values on 2026-10-07:
 | ink          | <span style="display:inline-block;width:1.5em;height:1.5em;background:#2A2520;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#2A2520` | a near-black brown    |
 | muted        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#736A60;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#736A60` | a warm grey-brown     |
 | accent       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#1F5FA8;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#1F5FA8` | a mid blue            |
-| second       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#9A6238;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#9A6238` | a caramel brown       |
+| second       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#B5601E;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#B5601E` | a burnt orange        |
 | subject      | <span style="display:inline-block;width:1.5em;height:1.5em;background:#143C6B;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#143C6B` | a dark navy blue      |
 | subject-wash | <span style="display:inline-block;width:1.5em;height:1.5em;background:#D3DCE3;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#D3DCE3` | a very pale blue-grey |
 | muted-wash   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#E2DED6;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#E2DED6` | a pale warm grey      |
-| second-wash  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#E6D8CA;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#E6D8CA` | a pale beige          |
+| second-wash  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#ECD8C4;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#ECD8C4` | a pale apricot        |
 
 Water is the subject colour, ground is muted, and the ground's wash is muted's.
 
@@ -343,15 +343,12 @@ background. A light deck takes them in; a dark deck turns each one into a
 bright rectangle aimed at the audience. If the talks turn out to be led by
 photos instead, a dark theme could win.
 
-**Its thin margins:**
+**Its thinnest margin:**
 
 - **muted on the panel is 4.58:1 against a gate of 4.5.** It is the thinnest
   value in the palette and the first text colour to fail as the room gets
   brighter. Never make muted text smaller than 17 px, and never put muted text
   on the border (3.78:1). If a caption must be smaller, make it ink.
-- **accent/second lightness is 1.28×, not 1.4×.** On a light field, both must
-  be dark to have contrast, so they separate by hue (ΔE 75, also for
-  colour-blind viewers). Hue is what fades first in a bright room.
 
 **Consequences of a light theme:**
 

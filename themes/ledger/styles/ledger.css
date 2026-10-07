@@ -12,7 +12,7 @@
   --palette-ink: #2a2520; /* a near-black warm brown */
   --palette-muted: #736a60; /* a warm grey-brown */
   --palette-accent: #1f5fa8; /* a mid blue */
-  --palette-second: #9a6238; /* a caramel brown */
+  --palette-second: #b5601e; /* a burnt orange */
   --palette-panel: #f2eee4; /* a light cream */
   --palette-border: #e0d9ca; /* a light beige */
 
@@ -30,7 +30,7 @@
     var(--palette-muted) 18%,
     var(--palette-background)
   );
-  /* a pale beige, at the subject wash's contrast */
+  /* a pale apricot, at the subject wash's contrast */
   --palette-second-wash: color-mix(
     in srgb,
     var(--palette-second) 20.8%,

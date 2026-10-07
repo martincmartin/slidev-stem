@@ -18,7 +18,7 @@ lists in step. What is true of one talk only is in that talk's `docs/` (for
 | [../tools/README.md](../tools/README.md)                                     | each check, its commands, and which tool is the authority                                                                               |
 
 **The one-paragraph version.** Each talk uses the house theme (now Ledger: a
-light field, a deep blue accent, a warm brown second), and its illustrations
+light field, a deep blue accent, a burnt orange second), and its illustrations
 follow one grammar, "Line, weighted": four stroke weights, the theme's art
 colours, and files that state the size a slide shows them at. Art that turns
 in 3D or moves by rules is drawn live in WebGL, in the same grammar. Every

@@ -300,3 +300,5 @@ evidence/
 The `t*/` art folders are recoloured copies of the four base SVGs, which hard-code
 three colours (`#e0b25a` accent, `#6f6a60` structure, `#f0e9dc` ink). `gen2.py`
 regenerates them; do not hand-edit.
+
+2026-10-07: Ledger's second is now `#B5601E`, a burnt orange (it was `#9A6238`, a caramel brown), so that the flash and slide 4's keywords read as orange. It passes every gate, and now also the preferred accent/second lightness gap (1.43×).

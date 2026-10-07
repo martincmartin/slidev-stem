@@ -51,8 +51,8 @@ const PROBE_PALETTE: Palette = {
   muted: "#736A60",
   mutedWash: "#E2DED6",
   ink: "#2A2520",
-  second: "#9A6238",
-  secondWash: "#E6D8CA",
+  second: "#B5601E",
+  secondWash: "#ECD8C4",
 };
 
 const canvas = document.getElementById("stage");

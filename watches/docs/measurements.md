@@ -138,16 +138,16 @@ The ghost, label, and live subject are absent from these isolated measurements.
 
 Measured 2026-10-07 at `TV 55in @7m`, from a Chromium screenshot of slide 4 at
 click 6 (1960 × 1104), with the balance at rest and only the three leaders
-shown (the second, 4 px):
+shown (the second, `#B5601E`, 4 px):
 
 | Leaders        | hold | p90  | Fmax  |
 | -------------- | ---- | ---- | ----- |
-| Slide 4, three | 3.60 | 4.60 | 0.081 |
+| Slide 4, three | 3.33 | 4.14 | 0.049 |
 
-They clear the 3:1 gate, about as much as slide 2's muted leader (3.58). In
-ink they held 6.90, with Fmax 0.277: the second costs contrast and room-light
-headroom, for a leader that the audience can tell from its label's other words
-and from the subject's lines
+They clear the 3:1 gate, with less room-light headroom than slide 2's muted
+leader (Fmax 0.080). In ink they held 6.90, with Fmax 0.277: the second costs
+contrast and room-light headroom, for a leader that the audience can tell from
+its label's other words and from the subject's lines
 ([`2026-10-07-theme-colour-system`](../../tasks/2026-10-07-theme-colour-system/PLAN.md),
 §4.10). The labels, the drive arrow and the watch were hidden; they have not
 been measured.
