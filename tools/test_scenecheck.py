@@ -5,8 +5,9 @@ import pytest
 import scenecheck
 
 INKS = [
-    {"name": "line", "variable": "--palette-art-line"},
-    {"name": "detail", "variable": "--palette-ink"},
+    {"name": "subject", "variable": "--palette-subject"},
+    {"name": "ink", "variable": "--palette-ink"},
+    {"name": "mutedWash", "variable": "--palette-muted-wash"},
 ]
 
 
@@ -58,11 +59,18 @@ def test_a_nan_width_or_fill_opacity_fails() -> None:
     assert "not a finite number" in whats(scene({"ink": 0, "opacity": nan}))[0]
 
 
-@pytest.mark.parametrize("ink", [-1, 2, "0", None, 0.0, True])
+def test_a_face_is_its_wash_solid_and_a_line_colour_fill_is_a_substance() -> None:
+    assert whats(scene({"ink": 2, "opacity": 1.0})) == []
+    assert "a face is solid" in whats(scene({"ink": 2, "opacity": 0.18}))[0]
+    assert whats(scene({"ink": 0, "opacity": 0.6})) == []
+    assert "a face is its wash" in whats(scene({"ink": 0, "opacity": 0.18}))[0]
+
+
+@pytest.mark.parametrize("ink", [-1, 3, "0", None, 0.0, True])
 def test_an_ink_that_is_not_an_index_of_the_scene_fails(ink: object) -> None:
     found = whats(scene(None, {"ink": ink, "width": 2.0, "opacity": 1.0}))
     assert len(found) == 1
-    assert "not one of the scene's 2" in found[0]
+    assert "not one of the scene's 3" in found[0]
 
 
 def test_the_command_line_reader_rejects_nan() -> None:

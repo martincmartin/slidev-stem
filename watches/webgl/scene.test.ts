@@ -4,7 +4,7 @@ import { extrude, polygonRing } from "./mesh.ts";
 import { FLASH_INKS, INKS, checkPalette, checkScene, hexRgb } from "./scene.ts";
 import type { Group, Ink, Mesh, Palette, Scene } from "./scene.ts";
 
-const STYLE = { ink: INKS.line, opacity: 1, width: 2 };
+const STYLE = { ink: INKS.subject, opacity: 1, width: 2 };
 const ROOT: Group = { name: "root", parent: null };
 
 function box(name: string): Mesh {
@@ -26,7 +26,7 @@ function box(name: string): Mesh {
       name,
       part: name,
       group: ROOT,
-      fill: { ink: INKS.knockout, opacity: 0.5 },
+      fill: { ink: INKS.subjectWash, opacity: 0.5 },
     },
   );
 }
@@ -49,19 +49,27 @@ test("a colour is #rrggbb", () => {
 
 const PALETTE: Palette = {
   paper: "#FAF7F0",
-  line: "#143C6B",
-  frame: "#736A60",
-  detail: "#2A2520",
-  knockout: "#D3DCE3",
+  subject: "#143C6B",
+  subjectWash: "#D3DCE3",
+  muted: "#736A60",
+  mutedWash: "#E2DED6",
+  ink: "#2A2520",
   second: "#9A6238",
-  secondKnockout: "#E6D8CA",
+  secondWash: "#E6D8CA",
 };
 
 test("checkPalette wants a #rrggbb colour for the paper and for each ink", () => {
   assert.doesNotThrow(() => {
     checkPalette(PALETTE);
   });
-  for (const key of ["paper", "line", "frame", "detail", "knockout"] as const) {
+  for (const key of [
+    "paper",
+    "subject",
+    "subjectWash",
+    "muted",
+    "mutedWash",
+    "ink",
+  ] as const) {
     assert.throws(
       () => {
         checkPalette({ ...PALETTE, [key]: "pale blue" });
@@ -96,14 +104,14 @@ test("checkScene takes a good scene, and names what is wrong with a bad one", ()
       /not one of INKS/,
       {
         ...GOOD,
-        meshes: [{ ...MESH, fill: { ink: { name: "line" }, opacity: 0.5 } }],
+        meshes: [{ ...MESH, fill: { ink: { name: "subject" }, opacity: 0.5 } }],
       },
     ],
     [
       /opacity/,
       {
         ...GOOD,
-        meshes: [{ ...MESH, fill: { ink: INKS.knockout, opacity: 2 } }],
+        meshes: [{ ...MESH, fill: { ink: INKS.subjectWash, opacity: 2 } }],
       },
     ],
     [
@@ -186,12 +194,9 @@ test("checkScene takes a good scene, and names what is wrong with a bad one", ()
 });
 
 test("a flash draws each ink that a scene uses in a flash ink", () => {
-  const flashInks: ReadonlySet<Ink> = new Set([
-    INKS.second,
-    INKS.secondKnockout,
-  ]);
+  const flashInks: ReadonlySet<Ink> = new Set([INKS.second, INKS.secondWash]);
   const sceneInks = Object.values(INKS).filter((ink) => !flashInks.has(ink));
   assert.deepEqual(new Set(FLASH_INKS.keys()), new Set(sceneInks));
   for (const ink of FLASH_INKS.values()) assert.ok(flashInks.has(ink));
-  assert.equal(FLASH_INKS.get(INKS.knockout), INKS.secondKnockout);
+  assert.equal(FLASH_INKS.get(INKS.subjectWash), INKS.secondWash);
 });

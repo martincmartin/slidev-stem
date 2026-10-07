@@ -36,8 +36,9 @@ THREE KINDS OF CHECK, and they fail for three different reasons.
 OPACITY IS PART OF LEGIBILITY, so it is checked too. A 3 px line at
 `stroke-opacity="0.3"` is wide enough to resolve and too faint to see: the deep
 blue needs 0.55 on the panel to hold 3:1, the muted brown 0.77. Anything fainter
-is a WASH -- fine to draw, because it is doing a job for the front three rows,
-but the drawing has to still read when it is gone. Those come out as notes with
+is FAINT -- fine to draw, because it is doing a job for the front three rows,
+but the drawing has to still read when it is gone. (A wash, a face colour near
+the paper, is faint too, by design.) Those come out as notes with
 the number rather than failures, because faintness can be the intent and
 thinness never is.
 
@@ -80,7 +81,7 @@ def marks(
     """
     # An attribute that is ANIMATED is not the attribute the viewer sees. A contour
     # that starts at opacity="0" and animates to 1 is fully opaque for most of the
-    # cycle; reading the static value called it a wash. Ignore any attribute an
+    # cycle; reading the static value called it faint. Ignore any attribute an
     # <animate> child targets, and let tools/motion.py judge what moves.
     animated = {
         child.attrib.get("attributeName", "")
@@ -181,8 +182,10 @@ def check_file(file: pathlib.Path) -> tuple[list[str], list[str]]:
 
     fails.extend(
         f"colour {colour} is not in the drawing palette "
-        f"({', '.join(str(ink) for ink in sorted(lib.ART_INK))}) -- see docs/illustrations.md"
-        for colour in sorted(lib.colours_in(raw) - set(lib.ART_INK) - {lib.ART_FIELD})
+        f"({', '.join(str(ink) for ink in sorted(lib.ART_INK))}), a paper, or a "
+        f"variation of a wash -- see docs/illustrations.md"
+        for colour in sorted(lib.colours_in(raw) - set(lib.ART_INK) - lib.PAPERS)
+        if lib.wash_variation(colour) is None
     )
 
     for stroke in sorted(set(lib.strokes_in(raw))):
@@ -214,13 +217,13 @@ def check_file(file: pathlib.Path) -> tuple[list[str], list[str]]:
         if alpha >= 0.999 or need is None:
             continue
         effective = lib.contrast(colour.blend(lib.ART_FIELD, alpha), lib.ART_FIELD)
-        # A hair under the floor is rounding, not a wash: 0.55 of the deep blue
+        # A hair under the floor is rounding, not faint: 0.55 of the deep blue
         # lands at 2.99:1. Only complain when it is actually faint.
         if effective < lib.CONTRAST_FLOOR * 0.99:
             notes.append(
                 f"{kind} {colour} at {alpha:g} reads {effective:.2f}:1 on the panel, "
                 f"under {lib.CONTRAST_FLOOR:.0f}:1 (needs {need:.2f}). "
-                f"A wash: the drawing must read without it"
+                f"Faint: the drawing must read without it"
             )
 
     # ---- notes: true but not disqualifying -------------------------------

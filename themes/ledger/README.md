@@ -29,9 +29,10 @@ theme adds none yet.
 
 ## Rules
 
-- **The palette is set here and nowhere else.** The roles, their gates and
-  why Ledger meets them are in [`docs/theme.md`](../../docs/theme.md) at the
-  repo root. `tools/lib.py` there reads the values from `styles/ledger.css`,
+- **The palette is set here and nowhere else.** How to make a theme, the
+  roles, their gates and why Ledger meets them are in
+  [`docs/theme.md`](../../docs/theme.md) at the repo root. A value is a hex
+  colour, `var()` of another role, or `color-mix()` of those. `tools/lib.py` there reads the values from `styles/ledger.css`,
   and `uv run tools/palette.py` measures them against their gates. A talk may
   change a role only for a slide class (`.slidev-layout.<class>`); `palette.py
 --talk <talk>` fails on any other rule.

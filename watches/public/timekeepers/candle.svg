@@ -10,7 +10,7 @@
   </clipPath>
 </defs>
 <g clip-path="url(#candle-burn-clip)">
-  <rect x="100" y="52" width="40" height="124" stroke="#143C6B" stroke-width="6" fill="#143C6B" fill-opacity="0.08"/>
+  <rect x="100" y="52" width="40" height="124" stroke="#143C6B" stroke-width="6" fill="#D3DCE3"/>
   <g stroke="#143C6B" stroke-opacity="0.55" stroke-width="4">
     <line x1="100" y1="72" x2="140" y2="72"/>
     <line x1="100" y1="92" x2="140" y2="92"/>

@@ -11,7 +11,7 @@ Stdlib only. The thresholds live in `lib.py`; this file only applies them. The
 palette values come from the theme's CSS (`lib.THEME_CSS`), the one place they
 are set.
 
-WHY YOU WOULD RUN THIS. Sooner or later a slide wants a colour the seven roles do
+WHY YOU WOULD RUN THIS. Sooner or later a slide wants a colour the roles do
 not cover -- a third series in a chart, a highlight on a diagram, "just this one
 red". The honest answer is usually to reuse a role, and this tells you what the
 new colour would actually cost if you do not: what it contrasts at against the
@@ -46,9 +46,11 @@ def show_palette() -> bool:
     palette = lib.LEDGER
     print(f"Ledger, from {lib.display_path(lib.THEME_CSS)}\n")
     for role, value in palette.items():
-        print(f"  {lib.PALETTE_PREFIX}{role:<11} {value}")
+        recipe = lib.THEME_RECIPES[role]
+        made = "" if recipe.upper() == str(value) else f"   = {recipe}"
+        print(f"  {lib.PALETTE_PREFIX}{role:<20} {value}{made}")
 
-    print("\ncontrast gates\n")
+    print("\ngates\n")
     passed = show_gates(palette)
 
     print("\nroom light: contrast at additive ambient flare\n")
@@ -82,39 +84,42 @@ def show_palette() -> bool:
     return passed
 
 
+def gate_line(gate: lib.Gate, palette: lib.Palette) -> str:
+    passed = gate.passes(palette)
+    verdict = rule(passed) if gate.required or passed else "note"
+    measured = gate.value(palette)
+    shown = (
+        f"{measured:>6.2f}:1"
+        if gate.measure is lib.Measure.CONTRAST
+        else f"{gate.measure.value} {measured:>4.0f}"
+    )
+    return (
+        f"  {verdict} {gate.role:<12} vs {gate.against:<12} {shown:>10}  "
+        f"({gate.limit}{'' if gate.required else ' preferred'})   {gate.why}"
+    )
+
+
 def show_gates(palette: lib.Palette) -> bool:
-    """Print every gate of `palette`. True if all pass."""
-    passes = []
+    """Print every gate of `palette`. True if every required gate passes."""
+    passed = True
     for gate in lib.GATES:
-        ratio = lib.contrast(palette[gate.role], palette[gate.against])
-        passed = ratio >= gate.minimum
-        passes.append(passed)
+        print(gate_line(gate, palette))
+        passed = passed and (gate.passes(palette) or not gate.required)
+    for hue_gate in lib.HUE_GATES:
+        ok = hue_gate.passes(palette)
+        _, chroma, hue = lib.lch(palette[hue_gate.role])
         print(
-            f"  {rule(passed)} {gate.role:<7} vs {gate.against:<11} {ratio:>6.2f}:1  "
-            f"(>= {gate.minimum})   {gate.why}"
+            f"  {rule(ok)} {hue_gate.role:<12} hue {hue:>5.0f}, chroma {chroma:>4.0f}   "
+            f"(hue {hue_gate.low:g}-{hue_gate.high:g}, chroma >= {hue_gate.min_chroma:g}"
+            + (
+                f"; or chroma < {hue_gate.grey_below:g}"
+                if hue_gate.grey_below is not None
+                else ""
+            )
+            + f")   {hue_gate.why}"
         )
-
-    difference = lib.de76(palette["accent"], palette["ink"])
-    passes.append(difference >= lib.ACCENT_VS_INK_DE)
-    print(
-        f"  {rule(difference >= lib.ACCENT_VS_INK_DE)} accent  vs ink         "
-        f"dE {difference:>5.0f}    (>= {lib.ACCENT_VS_INK_DE})   emphasis must read as emphasis"
-    )
-
-    colour_blind = lib.cvd(palette["accent"], palette["second"])
-    passes.append(colour_blind >= lib.CVD_DE)
-    print(
-        f"  {rule(colour_blind >= lib.CVD_DE)} accent  vs second      dE {colour_blind:>5.0f}    "
-        f"(>= {lib.CVD_DE})   worst of deuter/protan"
-    )
-
-    # the lightness ratio is WCAG contrast, read as lightness alone
-    lightness = lib.contrast(palette["accent"], palette["second"])
-    print(
-        f"  {'ok  ' if lightness >= 1.4 else 'note'} accent  vs second      "
-        f"{lightness:>5.2f}x   (>= 1.4 preferred)   hue fails before lightness does"
-    )
-    return all(passes)
+        passed = passed and ok
+    return passed
 
 
 def show_talks(talks: list[pathlib.Path]) -> bool:
@@ -122,7 +127,7 @@ def show_talks(talks: list[pathlib.Path]) -> bool:
     class, or if such a slide's palette fails a gate."""
     css_name = lib.display_path(lib.THEME_CSS)
     print(f"\nthe theme sets the palette ({css_name}); a slide class may override it\n")
-    found = lib.talk_palette_declarations(talks, lib.LEDGER)
+    found = lib.talk_palette_declarations(talks, lib.THEME_RECIPES)
     for declaration, fault in found.faults:
         print(
             f"  FAIL {declaration.path}:{declaration.line} sets "
@@ -133,7 +138,7 @@ def show_talks(talks: list[pathlib.Path]) -> bool:
         first = override.declarations[0]
         roles = ", ".join(declaration.role for declaration in override.declarations)
         print(f"\n  {override.selector} ({first.path}:{first.line}) sets {roles}\n")
-        passed = show_gates(override.palette(lib.LEDGER)) and passed
+        passed = show_gates(override.palette(lib.THEME_RECIPES)) and passed
     if not found.faults and not found.overrides:
         print(
             f"  ok   no talk declares a {lib.PALETTE_PREFIX}* variable "
@@ -155,49 +160,33 @@ def show_candidate(candidate: lib.Colour, role: str | None = None) -> None:
         )
 
     print("\n  against the marks it will sit next to")
-    for other in ("ink", "accent", "second", "muted"):
+    for other in ("ink", "accent", "second", "muted", "subject"):
         print(
             f"    vs {other:<11} {palette[other]}  dE76 {lib.de76(candidate, palette[other]):>5.0f}"
             f"   colour-blind dE {lib.cvd(candidate, palette[other]):>5.0f}"
             f"   lightness {lib.contrast(candidate, palette[other]):.2f}x"
         )
 
-    roles = [role] if role else [gate.role for gate in lib.GATES]
+    # as a replacement: the theme with the candidate in the role, and each
+    # recipe made from that role made again
+    roles = [role] if role else list(dict.fromkeys(gate.role for gate in lib.GATES))
     print("\n  as a replacement for each role")
-    seen = set()
     for replaced in roles:
-        if replaced in seen:
-            continue
-        seen.add(replaced)
+        if replaced not in lib.THEME_RECIPES:
+            sys.exit(f"{replaced} is not a role of the theme")
+        replaced_palette = lib.resolve(lib.THEME_RECIPES | {replaced: str(candidate)})
         for gate in lib.GATES:
-            if gate.role != replaced:
-                continue
-            ratio = lib.contrast(candidate, palette[gate.against])
-            print(
-                f"    {rule(ratio >= gate.minimum)} as {replaced:<7} vs {gate.against:<11} "
-                f"{ratio:>6.2f}:1 (>= {gate.minimum})"
-            )
-        if replaced == "accent":
-            difference = lib.de76(candidate, palette["ink"])
-            colour_blind = lib.cvd(candidate, palette["second"])
-            print(
-                f"    {rule(difference >= lib.ACCENT_VS_INK_DE)} as accent  vs ink        "
-                f"dE {difference:>5.0f} (>= {lib.ACCENT_VS_INK_DE})"
-            )
-            print(
-                f"    {rule(colour_blind >= lib.CVD_DE)} as accent  vs second     "
-                f"dE {colour_blind:>5.0f} (>= {lib.CVD_DE}, colour-blind)"
-            )
-        if replaced == "second":
-            colour_blind = lib.cvd(candidate, palette["accent"])
-            print(
-                f"    {rule(colour_blind >= lib.CVD_DE)} as second  vs accent     "
-                f"dE {colour_blind:>5.0f} (>= {lib.CVD_DE}, colour-blind)"
-            )
+            if replaced in (gate.role, gate.against):
+                print(
+                    "  "
+                    + gate_line(gate, replaced_palette).replace(
+                        "  ", f"  as {replaced}: ", 1
+                    )
+                )
 
     print(
         "\n  Before adding a colour, check docs/theme.md -- the usual right answer\n"
-        "  is to reuse a role. Seven is already more than most slides need."
+        "  is to reuse a role."
     )
 
 

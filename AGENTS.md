@@ -77,7 +77,7 @@ comments point to them.
 
 | Before you…                                                                      | Read                                                         |
 | -------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| choose, compare, measure or add a colour                                         | `docs/theme.md`                                              |
+| choose, compare, measure or add a colour, or make a theme                        | `docs/theme.md`                                              |
 | draw or change any illustration (SVG)                                            | `docs/illustrations.md`                                      |
 | change the WebGL renderer, the watch, or its frontmatter                         | `docs/webgl.md`                                              |
 | add a click, a slide transition, or anything that moves between clicks or slides | `docs/navigation.md`                                         |

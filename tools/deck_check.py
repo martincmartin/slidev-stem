@@ -74,7 +74,7 @@ from playwright.sync_api import (
 SLIDE_SECONDS = 4.0
 LOST_FRAME = 25.0  # ms
 MISSED_AT_120 = 12.5  # ms: 1.5 frames at 120 Hz
-_LINE = lib.LEDGER["art-line"]
+_LINE = lib.LEDGER["subject"]
 LINE = (_LINE.red, _LINE.green, _LINE.blue)  # the art's line colour
 NATIVE = {"chromium": ["--window-size=1728,1117"], "firefox": ["-kiosk"]}
 PROJECTOR: ViewportSize = {"width": 1920, "height": 1080}

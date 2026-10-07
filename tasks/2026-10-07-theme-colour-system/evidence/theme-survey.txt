@@ -1,0 +1,93 @@
+1. L* C* h per role (C* < 5 reads as grey; C* > 20 reads as a colour)
+
+theme                       bg L C panel C   ink L C   muted L C h   accent L C h   second L C h
+Kraft & Ink                 90  13      17    14   9    40  15  78     35  22 236     46  68  45
+Campfire                    12   4       6    94   6    69  11  75     78  69  75     71  31 225
+Harbor                      22  15      12    94   5    77   9 189     82  69  81     73  29 241
+Letterpress                 98   3       6    11   5    41   9  77     44  72  42     37  21 216
+Fen                         97   3       5    15   3    46   5 261     37  36 270     51  33 121
+Ledger                      97   4       5    15   4    45   7  76     40  45 279     47  38  61
+Ash & Claret                97   1       1    13   3    45   5 318     25  37  12     52   6 254
+Fieldnotes                  97   5       7    17   6    43  16  81     37  27 256     50  34 117
+Registry                    97   1       2    14   3    46   4 272     31  38 280     43  44  15
+Night Ledger                12   3       4    91   3    62   5  88     71  30 263     59  38  70
+Copper Circuit              14   3       3    95   6    64   4  98     66  58  56     68  33 182
+Golden Hour Lab             96  12      11    22   8    44   1 256     72  67  69     55  55  27
+Marmalade                   15   5       5    97   7    64   6  74     66  63  61     78  38 144
+After-Hours Observatory     12   8       7    95   9    61   3 110     80  64  76     71  32 264
+Neon Aperitif               15   2       1    98   7    65   4  79     66  64  41     80  35 213
+Coffee + Code               20   8       8    97   8    69   8  71     72  64  74     72  36 146
+Retro Future Lounge         17   7       6    96  15    66   7 100     71  64  54     59  28 198
+Electric Terracotta         92   9       9    19   6    41   3 344     52  56  42     39  49 297
+Atomic Cocktail             22  14      13    95  16    71  11 115     78  62  77     73  29 241
+Blackboard Social           20   7       6    95  10    69   7 109     74  54  67     79  27 214
+Beacon                      10  17      15   100   0    62   6 269     82  65  80     75  27 260
+Conservatory                14  20      17   100   0    64   8 271     82  65  80     78  38 144
+Blueprint                   11  19      17   100   0    63   7 268     78  33 220     77  68  78
+
+2. The house gates per theme (FAIL marks a miss)
+
+Kraft & Ink              FAIL ink/panel 10.56<12.0, warn/panel 3.49<3.5, muted/panel 4.46<4.5
+Campfire                 ok
+Harbor                   FAIL ink/bg 10.50<12.0
+Letterpress              ok
+Fen                      FAIL muted/panel 4.47<4.5
+Ledger                   ok
+Ash & Claret             ok
+Fieldnotes               ok
+Registry                 ok
+Night Ledger             FAIL ink/panel 11.83<12.0
+Copper Circuit           FAIL ink/panel 11.54<12.0
+Golden Hour Lab          FAIL ink/bg 11.44<12.0, ink/panel 10.27<12.0, accent/panel 1.79<4.5, warn/panel 3.08<3.5
+Marmalade                FAIL ink/panel 11.90<12.0
+After-Hours Observatory  ok
+Neon Aperitif            FAIL ink/panel 11.85<12.0
+Coffee + Code            FAIL ink/panel 10.22<12.0
+Retro Future Lounge      FAIL ink/panel 10.94<12.0
+Electric Terracotta      FAIL ink/bg 11.16<12.0, ink/panel 10.05<12.0, accent/panel 3.07<4.5
+Atomic Cocktail          FAIL ink/bg 10.83<12.0, ink/panel 9.16<12.0
+Blackboard Social        FAIL ink/bg 11.59<12.0, ink/panel 9.79<12.0
+Beacon                   ok
+Conservatory             ok
+Blueprint                ok
+
+3. The most chroma each hue can have at the lightness a contrast target needs
+
+light: on Ledger's panel #F2EEE4; the colour is darker than the paper
+ hue name            at 3.5:1  at 4.5:1  at 9.6:1
+   0 magenta-red           82        74        49
+  30 red                   92        83        55
+  60 orange                71        64        41
+  90 yellow                58        52        34
+ 120 yellow-green          65        58        38
+ 150 green                 58        52        34
+ 180 teal                  36        33        22
+ 210 cyan                  31        28        18
+ 240 sky                   34        30        20
+ 270 blue                  49        44        29
+ 300 violet                85        99        78
+ 330 purple               102        91        61
+
+dark: on Beacon's panel; the colour is lighter than the paper
+ hue name            at 3.5:1  at 4.5:1  at 9.6:1
+   0 magenta-red           83        72        22
+  30 red                   93        73        21
+  60 orange                71        79        27
+  90 yellow                59        65        86
+ 120 yellow-green          65        72        96
+ 150 green                 58        64        85
+ 180 teal                  37        40        54
+ 210 cyan                  31        34        45
+ 240 sky                   34        37        26
+ 270 blue                  50        55        22
+ 300 violet                84        71        25
+ 330 purple               102       109        34
+
+4. Ledger's pairs, gated or not
+
+art-line vs muted      dE  43.4  CVD dE  43.3  contrast 2.10
+art-line vs ink        dE  37.1  CVD dE  38.3  contrast 1.36
+second vs art-line     dE  69.3  CVD dE  63.7  contrast 2.21
+accent vs ink          dE  55.4  CVD dE  57.4  contrast 2.36
+accent vs second       dE  78.9  CVD dE  75.4  contrast 1.28
+(10,0,0) vs black      dE   2.8  CVD dE   0.5  contrast 1.01

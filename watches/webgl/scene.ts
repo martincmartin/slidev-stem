@@ -12,11 +12,18 @@ import { check, checkFinite } from "./checked.ts";
 
 export type Vec3 = readonly [number, number, number];
 
-/** The house's art colours, by their jobs (docs/illustrations.md): four that
- *  a scene draws with, and two that a flash draws with. This is the one list
- *  of them: `INKS` and `Palette` must each cover it. */
+/** The house's art colours, by their jobs (docs/illustrations.md, and the
+ *  roles in docs/theme.md): the five that a scene draws with, and the two
+ *  that a flash draws with. This is the one list of them: `INKS` and
+ *  `Palette` must each cover it. */
 export type InkName =
-  "line" | "frame" | "detail" | "knockout" | "second" | "secondKnockout";
+  | "subject"
+  | "subjectWash"
+  | "muted"
+  | "mutedWash"
+  | "ink"
+  | "second"
+  | "secondWash";
 
 /** A colour by its job, not its value. A scene's fills and lines point to one
  *  of `INKS`; a `Palette` says which colour each ink is when a renderer
@@ -27,27 +34,31 @@ export interface Ink {
 }
 
 export const INKS = {
-  /** Primary line work: the subject's own structure. */
-  line: { name: "line" },
-  /** Secondary structure: the frame, the case, what holds the subject. */
-  frame: { name: "frame" },
-  /** Tertiary detail: tick marks, at half opacity. */
-  detail: { name: "detail" },
-  /** A pale face that must read as lit, not as bare paper. */
-  knockout: { name: "knockout" },
-  /** A flash's lines: the second accent. */
+  /** The subject's lines: its structure, and what moves. */
+  subject: { name: "subject" },
+  /** The subject's faces: solid, near the paper. */
+  subjectWash: { name: "subjectWash" },
+  /** What holds the subject: the frame, the case. */
+  muted: { name: "muted" },
+  /** The faces of what holds the subject. */
+  mutedWash: { name: "mutedWash" },
+  /** Detail: tick marks, at half opacity. */
+  ink: { name: "ink" },
+  /** A flash's lines: "look here". */
   second: { name: "second" },
-  /** A flash's faces: a pale second, as knockout is a pale line. */
-  secondKnockout: { name: "secondKnockout" },
+  /** A flash's faces. */
+  secondWash: { name: "secondWash" },
 } as const satisfies Readonly<Record<InkName, Ink>>;
 
 /** A flash (docs/illustrations.md, "Flash"): each ink of a flashed part, and
- *  the ink that it is drawn in while the flash is on. */
+ *  the ink that it is drawn in while the flash is on. Each line goes to the
+ *  second, and each wash to the second's wash. */
 export const FLASH_INKS: ReadonlyMap<Ink, Ink> = new Map<Ink, Ink>([
-  [INKS.line, INKS.second],
-  [INKS.frame, INKS.second],
-  [INKS.detail, INKS.second],
-  [INKS.knockout, INKS.secondKnockout],
+  [INKS.subject, INKS.second],
+  [INKS.muted, INKS.second],
+  [INKS.ink, INKS.second],
+  [INKS.subjectWash, INKS.secondWash],
+  [INKS.mutedWash, INKS.secondWash],
 ]);
 
 /** `#rrggbb` for the paper (what the scene is drawn on, and what a fill's

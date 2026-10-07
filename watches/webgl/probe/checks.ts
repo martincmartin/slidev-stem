@@ -47,15 +47,16 @@ declare global {
 
 const SIZE: [number, number] = [200, 100];
 const CHECK_SECONDS = 10;
-const STYLE = { ink: INKS.line, opacity: 1, width: 3 };
+const STYLE = { ink: INKS.subject, opacity: 1, width: 3 };
 const PALETTE: Palette = {
   paper: "#FAF7F0",
-  line: "#143C6B",
-  frame: "#736A60",
-  detail: "#2A2520",
-  knockout: "#E3E8EC",
+  subject: "#143C6B",
+  subjectWash: "#E3E8EC",
+  muted: "#736A60",
+  mutedWash: "#E2DED6",
+  ink: "#2A2520",
   second: "#9A6238",
-  secondKnockout: "#E6D8CA",
+  secondWash: "#E6D8CA",
 };
 
 function square(left: number, top: number, side: number): Point2[] {
@@ -94,7 +95,7 @@ function makeScene(): {
       name,
       part: name,
       group,
-      fill: { ink: INKS.knockout, opacity: 1 },
+      fill: { ink: INKS.subjectWash, opacity: 1 },
       lineOrder: bottom + 10,
     });
   const back = box("back", 20, 0);
@@ -552,7 +553,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
       const test = makeScene();
       const target = canvas();
       const drawn = own(renderer(target, test.scene));
-      const [red, green, blue] = hexRgb(PALETTE.secondKnockout).map((value) =>
+      const [red, green, blue] = hexRgb(PALETTE.secondWash).map((value) =>
         Math.round(value * 255),
       );
       const flashFill = (picture: Uint8Array): number => {

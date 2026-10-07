@@ -1,6 +1,9 @@
 <script setup lang="ts">
 // A callout over the watch: a label, and a straight leader from one word of
-// the label to a point of the picture. The slide places the label (`left`,
+// the label to a point of the picture. The leader and the label are ink. With
+// `keyword`, the word and its leader are in the second instead: the leader
+// then points at what that word names ("Pallet"), not at the whole label
+// ("Pallet blocks wheel"). stem/docs/illustrations.md, "Leaders". The slide places the label (`left`,
 // `top`, its top left corner in slide px) and marks the word with
 // `<span class="callout-word">`; the leader leaves the word's box on the side
 // that faces `to`, and stops `stop` px short of it. With `clear` (closed
@@ -33,6 +36,7 @@ const props = withDefaults(
     clear?: readonly (readonly Point2[])[];
     bent?: boolean;
     showLeader?: boolean;
+    keyword?: boolean;
   }>(),
   {
     stop: 0,
@@ -40,6 +44,7 @@ const props = withDefaults(
     clear: () => [],
     bent: false,
     showLeader: true,
+    keyword: false,
   },
 );
 
@@ -150,7 +155,13 @@ const arrowPaths = computed(() => {
 
 <template>
   <div class="callout">
-    <svg class="callout-art" width="1" height="1" aria-hidden="true">
+    <svg
+      class="callout-art"
+      :class="{ 'callout-keyword': keyword }"
+      width="1"
+      height="1"
+      aria-hidden="true"
+    >
       <path
         v-if="leader"
         class="callout-leader"
@@ -165,6 +176,7 @@ const arrowPaths = computed(() => {
     <div
       ref="label"
       class="callout-label"
+      :class="{ 'callout-keyword': keyword }"
       :style="{ left: `${String(left)}px`, top: `${String(top)}px` }"
     >
       <slot />
@@ -173,10 +185,11 @@ const arrowPaths = computed(() => {
 </template>
 
 <style scoped>
-/* The leader is in ink, at 4 px, the width of every leader (stem/docs/
-   illustrations.md, "Leaders"). The arrow shows a force that acts on the
-   watch: muted, the art's colour for what acts on the subject, at 4 px
-   (docs/watch.md, "The callouts"). */
+/* The leader is in ink, the colour of its label, at 4 px, the width of every
+   leader (stem/docs/illustrations.md, "Leaders"). A keyword callout draws its
+   word and its leader in the second, the art's colour for "look here". The
+   arrow shows a force that acts on the watch: muted, the art's colour for
+   what acts on the subject, at 4 px (docs/watch.md, "The callouts"). */
 .callout {
   position: absolute;
   inset: 0;
@@ -216,5 +229,11 @@ const arrowPaths = computed(() => {
   font-weight: 600;
   line-height: 1.2;
   white-space: nowrap;
+}
+.callout-keyword .callout-leader {
+  stroke: var(--palette-second);
+}
+.callout-label.callout-keyword :slotted(.callout-word) {
+  color: var(--palette-second);
 }
 </style>

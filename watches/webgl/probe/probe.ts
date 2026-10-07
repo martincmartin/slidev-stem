@@ -46,12 +46,13 @@ declare global {
 // is. They keep the reference pictures the same from run to run.
 const PROBE_PALETTE: Palette = {
   paper: "#FAF7F0",
-  line: "#143C6B",
-  frame: "#736A60",
-  detail: "#2A2520",
-  knockout: "#D3DCE3",
+  subject: "#143C6B",
+  subjectWash: "#D3DCE3",
+  muted: "#736A60",
+  mutedWash: "#E2DED6",
+  ink: "#2A2520",
   second: "#9A6238",
-  secondKnockout: "#E6D8CA",
+  secondWash: "#E6D8CA",
 };
 
 const canvas = document.getElementById("stage");

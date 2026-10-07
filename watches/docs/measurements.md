@@ -99,7 +99,7 @@ diving-board     21.6    3.37    3.37   0.050      8.96        3216
 ```
 
 It clears the gate. The hold is the water against the paper: the water is a
-wash of the art line at 0.6, the bottom of the water window in
+substance, the water colour at 0.6, the bottom of the water window in
 [`illustrations.md`](../../docs/illustrations.md). At 0.5 the hold was 2.65, and at
 0.3 it was 1.73: below the gate.
 
@@ -136,13 +136,18 @@ The ghost, label, and live subject are absent from these isolated measurements.
 
 ## Slide 4 leaders alone
 
-Measured 2026-10-06 at `TV 55in @7m`, from a Chromium screenshot of slide 4 at
-click 3 (1960 × 1104) with only the three leaders shown (ink, 4 px):
+Measured 2026-10-07 at `TV 55in @7m`, from a Chromium screenshot of slide 4 at
+click 6 (1960 × 1104), with the balance at rest and only the three leaders
+shown (the second, 4 px):
 
-| Leaders        | hold | p90   | Fmax  |
-| -------------- | ---- | ----- | ----- |
-| Slide 4, three | 6.90 | 13.31 | 0.277 |
+| Leaders        | hold | p90  | Fmax  |
+| -------------- | ---- | ---- | ----- |
+| Slide 4, three | 3.60 | 4.60 | 0.081 |
 
-They clear the 3:1 gate with room to spare: ink has more contrast than slide
-2's muted. The labels, the drive arrow and the watch were hidden; they have
-not been measured.
+They clear the 3:1 gate, about as much as slide 2's muted leader (3.58). In
+ink they held 6.90, with Fmax 0.277: the second costs contrast and room-light
+headroom, for a leader that the audience can tell from its label's other words
+and from the subject's lines
+([`2026-10-07-theme-colour-system`](../../tasks/2026-10-07-theme-colour-system/PLAN.md),
+§4.10). The labels, the drive arrow and the watch were hidden; they have not
+been measured.

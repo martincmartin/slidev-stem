@@ -75,14 +75,16 @@ it assumes, and throws with a message when an assumption is false:
 The 3D art follows the grammar of [illustrations.md](illustrations.md), with
 these additions.
 
-- **Colours:** the four art colours, and only those, for lines and fills. A
-  wash (the case, the strap) is an ink at an opacity over the paper; the
-  renderer blends it into an opaque fill. `tools/scenecheck.py` checks the
-  scene.
+- **Colours:** the art colours, and only those, for lines and fills. A face
+  (the case, the strap, a wheel) is its wash, solid. A fill in a line colour
+  (the impulse jewel) is at 0.60–1.0; the renderer blends a fill below 1 with
+  the paper into an opaque fill. `tools/scenecheck.py` checks the scene.
 - **A scene holds inks, not colours.** An `Ink` is one of the objects in
-  `INKS` (`webgl/scene.ts`): `line`, `frame`, `detail` and `knockout` for the
-  scene, and `second` and `secondKnockout` for a flash. Each is an art role of
-  the theme ([theme.md](theme.md), "The roles"). `new
+  `INKS` (`webgl/scene.ts`): `subject`, `subjectWash`, `muted`, `mutedWash`
+  and `ink` for the scene, and `second` and `secondWash` for a flash. Each is
+  an art role of the theme ([theme.md](theme.md), "The roles"). A role may be
+  a recipe (`color-mix()`): `watch/palette.ts` has the browser paint each one
+  and reads back its `#rrggbb`. `new
 Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   `#rrggbb` for each ink) and turns the inks into colours once, when it
   starts. `InkName` is the one list of the inks: `Palette` is a `Record` over

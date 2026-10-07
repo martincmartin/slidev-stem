@@ -50,16 +50,17 @@ them here when the spring changes.
 COLOURS. The page's theme paints the drawing. Each mark has a class, and a
 <style> in the file gives each class `var(--palette-<role>, <hex>)`, so an
 inlined SVG takes the colours of the slide it is on, including a slide's own
-`class:`. Each mark also keeps the hex as its attribute: the house tools
-(artcheck, barroom, motion) read and render the file on its own, where the
-fallback paints the same pixels. The hex values are read from the theme that
-the talk links, so `--check` fails when the theme changes.
+`class:`. A lit or shaded face is its wash moved toward its line or toward
+the paper, as `color-mix()` of the roles (a `Shade`). Each mark also keeps the
+hex as its attribute: the house tools (artcheck, barroom, motion) read and
+render the file on its own, where the fallback paints the same pixels. The hex
+values are read from the theme that the talk links (art/theme.py), so
+`--check` fails when the theme changes.
 """
 
 import argparse
 import math
 import pathlib
-import re
 import sys
 from collections.abc import Callable, Iterator, Sequence
 from dataclasses import dataclass
@@ -67,6 +68,7 @@ from itertools import pairwise
 
 import numpy as np
 from numpy.typing import NDArray
+from theme import mix, theme_palette
 
 TALK = pathlib.Path(__file__).resolve().parents[1]  # watches/
 OUTPUT = TALK / "public" / "diving-board.svg"
@@ -75,7 +77,6 @@ Point = tuple[float, float]
 Point3 = tuple[float, float, float]
 Bezier = tuple[Point, Point, Point, Point]
 
-THEME_CSS = TALK / "node_modules" / "slidev-theme-ledger" / "styles" / "ledger.css"
 CLASS_PREFIX = "diving-board-"  # a <style> in an inlined SVG is the page's
 
 
@@ -94,54 +95,111 @@ class Ink:
         return f".{self.class_name(name)} {{ {name}: var(--palette-{self.role}, {self.value}); }}"
 
 
-def paint(*, fill: Ink | None = None, stroke: Ink | None = None) -> str:
+@dataclass(frozen=True)
+class Shade:
+    """One face's variation of a wash: the wash moved toward another ink by
+    `share` (its line, to shade the face; the paper, to light it). It is
+    `color-mix()` of the two roles, so it follows a slide's theme
+    (stem/docs/illustrations.md, "Washes")."""
+
+    wash: Ink
+    toward: Ink
+    share: float
+
+    @property
+    def value(self) -> str:
+        return mix(self.toward.value, self.wash.value, self.share)
+
+    def class_name(self, name: str) -> str:
+        percent = round(self.share * 100)
+        return f"{CLASS_PREFIX}{name}-{self.wash.role}-{self.toward.role}-{percent}"
+
+    def rule(self, name: str) -> str:
+        toward = f"var(--palette-{self.toward.role}, {self.toward.value})"
+        wash = f"var(--palette-{self.wash.role}, {self.wash.value})"
+        return (
+            f".{self.class_name(name)} {{ {name}: "
+            f"color-mix(in srgb, {toward} {round(self.share * 100)}%, {wash}); }}"
+        )
+
+
+def paint(*, fill: Ink | Shade | None = None, stroke: Ink | None = None) -> str:
     """The attributes of a mark painted in these inks: a class for the page's
     palette, and the hex for a viewer without it."""
-    painted = [(name, ink) for name, ink in (("fill", fill), ("stroke", stroke)) if ink]
+    painted: list[tuple[str, Ink | Shade]] = [
+        (name, ink) for name, ink in (("fill", fill), ("stroke", stroke)) if ink
+    ]
     classes = " ".join(ink.class_name(name) for name, ink in painted)
     return f'class="{classes}" ' + " ".join(
         f'{name}="{ink.value}"' for name, ink in painted
     )
 
 
-def theme_inks(path: pathlib.Path) -> dict[str, Ink]:
-    """Every `--palette-<role>: #hex` that the theme's CSS sets, by role."""
-    source = re.sub(r"/\*.*?\*/", "", path.read_text(), flags=re.DOTALL)
-    return {
-        role: Ink(role, value.upper())
-        for role, value in re.findall(
-            r"--palette-([\w-]+)\s*:\s*(#[0-9A-Fa-f]{6})\s*;", source
-        )
-    }
+# How far each face of the set moves from the ground's wash: toward the
+# ground's line to shade it, toward the paper to light it.
+WALL_SHADE = 0.15  # the pool's walls, in shade
+STAND_SIDE_SHADE = 0.07  # the stand's right side, turned from the light
+LIT = 0.22  # the ground and the stand's top, facing the light
 
 
 @dataclass(frozen=True)
 class Inks:
-    """The drawing's three inks (stem/docs/illustrations.md)."""
+    """The drawing's inks (stem/docs/illustrations.md, "Colour")."""
 
-    line: Ink  # the subject: the board; and the water, as a wash
-    context: Ink  # what holds it: the ground, the stand and the pool's walls, as washes
-    knockout: Ink  # a pale face: the board's
+    subject: Ink  # the board's lines
+    subject_wash: Ink  # the board's faces; the ripples on the water
+    muted: Ink  # the rest shape and its leader: a reference mark
+    water: Ink  # the pool's water: a substance, at WATER_OPACITY
+    ground: Ink  # the lines of the ground, the stand and the pool's walls
+    ground_wash: Ink  # their faces
+    paper: Ink  # what a lit face moves toward
 
     @classmethod
-    def from_theme(cls, path: pathlib.Path = THEME_CSS) -> Inks:
-        inks = theme_inks(path)
-        roles = ("art-line", "muted", "art-knockout")
-        missing = [role for role in roles if role not in inks]
+    def from_theme(cls, css: pathlib.Path | None = None) -> Inks:
+        palette = theme_palette(css)
+        roles = (
+            "subject",
+            "subject-wash",
+            "muted",
+            "water",
+            "ground",
+            "ground-wash",
+            "background",
+        )
+        missing = [role for role in roles if role not in palette]
         if missing:
-            raise SystemExit(f"{path} sets no --palette-{', --palette-'.join(missing)}")
-        return cls(*(inks[role] for role in roles))
+            raise SystemExit(
+                f"the theme sets no --palette-{', --palette-'.join(missing)}"
+            )
+        return cls(*(Ink(role, palette[role]) for role in roles))
+
+    @property
+    def wall(self) -> Shade:
+        return Shade(self.ground_wash, self.ground, WALL_SHADE)
+
+    @property
+    def stand_side(self) -> Shade:
+        return Shade(self.ground_wash, self.ground, STAND_SIDE_SHADE)
+
+    @property
+    def lit(self) -> Shade:
+        return Shade(self.ground_wash, self.paper, LIT)
 
     def style(self) -> str:
         """The <style> that paints each mark from the page's palette, and fades
         the pool and the stand when a page asks."""
         rules = [
-            self.knockout.rule("fill"),
-            self.knockout.rule("stroke"),
-            self.context.rule("fill"),
-            self.line.rule("fill"),
-            self.line.rule("stroke"),
-            self.context.rule("stroke"),
+            self.subject_wash.rule("fill"),
+            self.subject_wash.rule("stroke"),
+            self.subject.rule("stroke"),
+            self.muted.rule("stroke"),
+            self.water.rule("fill"),
+            self.water.rule("stroke"),
+            self.ground.rule("stroke"),
+            self.ground_wash.rule("fill"),
+            self.wall.rule("fill"),
+            self.stand_side.rule("fill"),
+            self.lit.rule("fill"),
             f".{CLASS_PREFIX}set {{ transition: opacity {FADE_SECONDS}s; }}",
             f".{CLASS_PREFIX}curling .{CLASS_PREFIX}set {{ opacity: 0; }}",
             f"@media (prefers-reduced-motion: reduce) {{ .{CLASS_PREFIX}set {{ transition: none; }} }}",
@@ -156,9 +214,7 @@ SEGMENTS = 24  # the board's centre line is this many straight segments
 CURL_POINTS = (
     40  # a smooth curve through this many points: within 0.06 px of the spring
 )
-WATER_OPACITY = 0.6  # of the art line: more than a wash of context, which is faint
-WALL_OPACITY = 0.3  # of muted: the pool's walls, in shade
-GROUND_OPACITY = 0.14  # of muted
+WATER_OPACITY = 0.6  # the water is a substance: its colour, see-through
 WAVES = (  # x, z of a ripple
     (330, 140),
     (430, 185),
@@ -661,8 +717,7 @@ def set_markup(
     stand_front, stand_top, stand_right = box(
         oblique, design.stand_x, (0, stand_top_y), design.stand_z
     )
-    outline = f'fill="none" {paint(stroke=inks.context)} stroke-width="3" stroke-linejoin="round"'
-    wash = paint(fill=inks.context)
+    outline = f'fill="none" {paint(stroke=inks.ground)} stroke-width="3" stroke-linejoin="round"'
     stand_hull = [
         oblique.project(design.stand_x[0], 0, design.stand_z[0]),
         oblique.project(design.stand_x[0], stand_top_y, design.stand_z[0]),
@@ -684,27 +739,27 @@ def set_markup(
         f'<g id="{id_prefix}set" data-layer="set" class="{CLASS_PREFIX}set">',
         # the pool, the ground and the stand, cut at the right
         f'<g clip-path="url(#{pool_clip_id})">',
-        # the pool: the water is a wash of the art line, the walls are shaded
-        f'<path d="{path_data(surface)}" {paint(fill=inks.line)} fill-opacity="{WATER_OPACITY}"/>',
-        f'<path d="{path_data(left_wall)}" {wash} fill-opacity="{WALL_OPACITY}"/>',
-        f'<path d="{path_data(far_wall)}" {wash} fill-opacity="{WALL_OPACITY}"/>',
-        f'<g fill="none" {paint(stroke=inks.context)} stroke-width="2" stroke-linejoin="round">',
+        # the pool: the water is a substance, the walls are shaded
+        f'<path d="{path_data(surface)}" {paint(fill=inks.water)} fill-opacity="{WATER_OPACITY}"/>',
+        f'<path d="{path_data(left_wall)}" {paint(fill=inks.wall)}/>',
+        f'<path d="{path_data(far_wall)}" {paint(fill=inks.wall)}/>',
+        f'<g fill="none" {paint(stroke=inks.ground)} stroke-width="2" stroke-linejoin="round">',
         f'<path d="{path_data(left_wall)}"/>',
         f'<path d="{path_data(far_wall)}"/>',
         "</g>",
-        f'<path d="{polyline_data(surface_edge)}" fill="none" {paint(stroke=inks.line)} stroke-width="2" stroke-opacity="0.7" stroke-linejoin="round"/>',
-        f'<g fill="none" {paint(stroke=inks.knockout)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round">',
+        f'<path d="{polyline_data(surface_edge)}" fill="none" {paint(stroke=inks.water)} stroke-width="2" stroke-opacity="0.7" stroke-linejoin="round"/>',
+        f'<g fill="none" {paint(stroke=inks.subject_wash)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round">',
         *(f'<path d="{ripple}"/>' for ripple in ripples),
         "</g>",
         # the ground, which the stand hides
         f'<g clip-path="url(#{ground_clip_id})">',
-        f'<path d="{ground_top}" {wash} fill-opacity="{GROUND_OPACITY}"/>',
+        f'<path d="{ground_top}" {paint(fill=inks.lit)}/>',
         f'<path d="{ground_top}" {outline}/>',
         "</g>",
         # the stand
-        f'<path d="{path_data(stand_right)}" {wash} fill-opacity="{GROUND_OPACITY + 0.1}"/>',
-        f'<path d="{path_data(stand_top)}" {wash} fill-opacity="{GROUND_OPACITY}"/>',
-        f'<path d="{path_data(stand_front)}" {wash} fill-opacity="{GROUND_OPACITY + 0.05}"/>',
+        f'<path d="{path_data(stand_right)}" {paint(fill=inks.stand_side)}/>',
+        f'<path d="{path_data(stand_top)}" {paint(fill=inks.lit)}/>',
+        f'<path d="{path_data(stand_front)}" {paint(fill=inks.ground_wash)}/>',
         f"<g {outline}>",
         f'<path d="{path_data(stand_right)}"/>',
         f'<path d="{path_data(stand_top)}"/>',
@@ -1082,7 +1137,7 @@ def rest_markup(
     geometry. The callout's sentence is the page's (see the docstring)."""
     lines = [
         (
-            f'<g id="{id_prefix}rest" data-layer="rest" fill="none" {paint(stroke=inks.context)} '
+            f'<g id="{id_prefix}rest" data-layer="rest" fill="none" {paint(stroke=inks.muted)} '
             'stroke-width="4" stroke-dasharray="8 6" stroke-linejoin="round">'
         ),
     ]
@@ -1124,7 +1179,7 @@ def rest_markup(
             f'<g id="{id_prefix}rest-callout" data-layer="rest-callout">',
             (
                 f'<path id="{id_prefix}rest-leader" d="{initial_leader}" fill="none" '
-                f'{paint(stroke=inks.context)} stroke-width="{number(leader_design.stroke_width)}" stroke-linejoin="round">'
+                f'{paint(stroke=inks.muted)} stroke-width="{number(leader_design.stroke_width)}" stroke-linejoin="round">'
             ),
             animate("d", leaders, timeline.curl_start, timeline.curl),
             "</path>",
@@ -1179,7 +1234,7 @@ def build(
         inks.style(),
         "<title>A diving board over the edge of a pool: it bends down, swings up and down, then curls into the hairspring</title>",
         *set_markup(inks, design, id_prefix),
-        f'<g id="{id_prefix}board" data-layer="board" {paint(fill=inks.knockout, stroke=inks.line)} stroke-width="3" stroke-linejoin="round">',
+        f'<g id="{id_prefix}board" data-layer="board" {paint(fill=inks.subject_wash, stroke=inks.subject)} stroke-width="3" stroke-linejoin="round">',
     ]
     for face, name in enumerate(("front", "top", "end")):
         lines.append(f'<path id="{id_prefix}{name}" d="{bend[0].paths()[face]}">')

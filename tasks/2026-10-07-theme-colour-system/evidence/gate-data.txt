@@ -1,0 +1,243 @@
+
+subject
+  Campfire                 #FFCD8F
+  Letterpress              #771400
+  Ledger                   #023C72
+  Ash & Claret             #6C1D31
+  Fieldnotes               #003E5A
+  Registry                 #003B72
+  After-Hours Observatory  #FFCD8C
+  Beacon                   #FFCE7E
+  Conservatory             #FFDBA4
+  Blueprint                #80E8FF
+
+subject C*
+  Campfire                 38.81
+  Letterpress              55.13
+  Ledger                   36.26
+  Ash & Claret             37.06
+  Fieldnotes               22.53
+  Registry                 36.93
+  After-Hours Observatory  40.16
+  Beacon                   46.74
+  Conservatory             32.08
+  Blueprint                31.74
+  min / max                22.53 / 55.13
+
+subject/muted dE
+  Campfire                 32.22
+  Letterpress              50.43
+  Ledger                   47.40
+  Ash & Claret             39.67
+  Fieldnotes               43.07
+  Registry                 39.19
+  After-Hours Observatory  44.95
+  Beacon                   57.54
+  Conservatory             46.85
+  Blueprint                36.76
+  min / max                32.22 / 57.54
+
+subject/ink dE
+  Campfire                 33.76
+  Letterpress              52.43
+  Ledger                   41.47
+  Ash & Claret             37.18
+  Fieldnotes               28.27
+  Registry                 35.74
+  After-Hours Observatory  33.21
+  Beacon                   48.96
+  Conservatory             33.86
+  Blueprint                34.38
+  min / max                28.27 / 52.43
+
+second/subject CVD
+  Campfire                 54.32
+  Letterpress              40.76
+  Ledger                   68.16
+  Ash & Claret             31.03
+  Fieldnotes               59.21
+  Registry                 40.43
+  After-Hours Observatory  68.90
+  Beacon                   70.42
+  Conservatory             7.96
+  Blueprint                80.52
+  min / max                7.96 / 80.52
+
+subject on its wash
+  Campfire                 7.95
+  Letterpress              8.00
+  Ledger                   7.96
+  Ash & Claret             8.02
+  Fieldnotes               8.00
+  Registry                 8.06
+  After-Hours Observatory  8.06
+  Beacon                   8.04
+  Conservatory             8.03
+  Blueprint                8.06
+  min / max                7.95 / 8.06
+
+second on its wash
+  Campfire                 5.29
+  Letterpress              5.21
+  Ledger                   3.62
+  Ash & Claret             2.95
+  Fieldnotes               3.11
+  Registry                 4.16
+  After-Hours Observatory  5.34
+  Beacon                   6.05
+  Conservatory             5.96
+  Blueprint                6.18
+  min / max                2.95 / 6.18
+
+muted on its wash
+  Campfire                 4.94
+  Letterpress              4.58
+  Ledger                   3.95
+  Ash & Claret             3.97
+  Fieldnotes               4.14
+  Registry                 3.88
+  After-Hours Observatory  4.08
+  Beacon                   4.38
+  Conservatory             4.16
+  Blueprint                4.30
+  min / max                3.88 / 4.94
+
+subject-wash on panel
+  Campfire                 1.21
+  Letterpress              1.20
+  Ledger                   1.20
+  Ash & Claret             1.20
+  Fieldnotes               1.20
+  Registry                 1.20
+  After-Hours Observatory  1.20
+  Beacon                   1.19
+  Conservatory             1.20
+  Blueprint                1.20
+  min / max                1.19 / 1.21
+
+second-wash on panel
+  Campfire                 1.21
+  Letterpress              1.21
+  Ledger                   1.20
+  Ash & Claret             1.19
+  Fieldnotes               1.20
+  Registry                 1.20
+  After-Hours Observatory  1.20
+  Beacon                   1.18
+  Conservatory             1.19
+  Blueprint                1.19
+  min / max                1.18 / 1.21
+
+muted-wash on panel
+  Campfire                 1.19
+  Letterpress              1.17
+  Ledger                   1.16
+  Ash & Claret             1.16
+  Fieldnotes               1.16
+  Registry                 1.17
+  After-Hours Observatory  1.14
+  Beacon                   1.09
+  Conservatory             1.11
+  Blueprint                1.09
+  min / max                1.09 / 1.19
+
+
+2. Every gate on every candidate (NEW: PLAN.md §4.8)
+
+Kraft & Ink: 6 miss(es)
+  ink on panel: 10.56 against 12 (short by 1.44)
+  second on panel: 3.49 against 3.5 (short by 0.01)
+  muted on panel: 4.46 against 4.5 (short by 0.04)
+  NEW subject vs ink dE: 24.78 against 30 (short by 5.22)
+  second on its wash: 2.94 against 3 (short by 0.06)
+  NEW muted-wash on panel: 1.11 against 1.12 (short by 0.01)
+
+Campfire: passes every gate
+
+Harbor: 1 miss(es)
+  ink on background: 10.50 against 12 (short by 1.50)
+
+Letterpress: passes every gate
+
+Fen: 2 miss(es)
+  muted on panel: 4.47 against 4.5 (short by 0.03)
+  NEW subject vs ink dE: 28.39 against 30 (short by 1.61)
+
+Ledger: passes every gate
+
+Ash & Claret: 1 miss(es)
+  second on its wash: 2.95 against 3 (short by 0.05)
+
+Fieldnotes: 1 miss(es)
+  NEW subject vs ink dE: 28.27 against 30 (short by 1.73)
+
+Registry: passes every gate
+
+Night Ledger: 2 miss(es)
+  ink on panel: 11.83 against 12 (short by 0.17)
+  NEW subject vs ink dE: 28.61 against 30 (short by 1.39)
+
+Copper Circuit: 3 miss(es)
+  ink on panel: 11.54 against 12 (short by 0.46)
+  NEW subject vs ink dE: 17.24 against 30 (short by 12.76)
+  NEW second vs subject CVD dE: 18.44 against 25 (short by 6.56)
+
+Golden Hour Lab: 5 miss(es)
+  ink on background: 11.44 against 12 (short by 0.56)
+  ink on panel: 10.27 against 12 (short by 1.73)
+  accent on panel: 1.79 against 4.5 (short by 2.71)
+  second on panel: 3.08 against 3.5 (short by 0.42)
+  second on its wash: 2.56 against 3 (short by 0.44)
+
+Marmalade: 4 miss(es)
+  ink on panel: 11.90 against 12 (short by 0.10)
+  NEW subject vs muted dE: 28.54 against 30 (short by 1.46)
+  NEW subject vs ink dE: 16.29 against 30 (short by 13.71)
+  NEW second vs subject CVD dE: 12.55 against 25 (short by 12.45)
+
+After-Hours Observatory: passes every gate
+
+Neon Aperitif: 4 miss(es)
+  ink on panel: 11.85 against 12 (short by 0.15)
+  NEW subject vs muted dE: 27.38 against 30 (short by 2.62)
+  NEW subject vs ink dE: 13.70 against 30 (short by 16.30)
+  NEW second vs subject CVD dE: 22.92 against 25 (short by 2.08)
+
+Coffee + Code: 4 miss(es)
+  ink on panel: 10.22 against 12 (short by 1.78)
+  NEW subject vs muted dE: 25.56 against 30 (short by 4.44)
+  NEW subject vs ink dE: 4.52 against 30 (short by 25.48)
+  NEW second vs subject CVD dE: 24.65 against 25 (short by 0.35)
+
+Retro Future Lounge: 3 miss(es)
+  ink on panel: 10.94 against 12 (short by 1.06)
+  NEW subject vs muted dE: 27.45 against 30 (short by 2.55)
+  NEW subject vs ink dE: 9.94 against 30 (short by 20.06)
+
+Electric Terracotta: 3 miss(es)
+  ink on background: 11.16 against 12 (short by 0.84)
+  ink on panel: 10.05 against 12 (short by 1.95)
+  accent on panel: 3.07 against 4.5 (short by 1.43)
+
+Atomic Cocktail: 4 miss(es)
+  ink on background: 10.83 against 12 (short by 1.17)
+  ink on panel: 9.16 against 12 (short by 2.84)
+  NEW subject vs muted dE: 26.71 against 30 (short by 3.29)
+  NEW subject vs ink dE: 9.73 against 30 (short by 20.27)
+
+Blackboard Social: 5 miss(es)
+  ink on background: 11.59 against 12 (short by 0.41)
+  ink on panel: 9.79 against 12 (short by 2.21)
+  NEW subject vs muted dE: 26.75 against 30 (short by 3.25)
+  NEW subject vs ink dE: 4.96 against 30 (short by 25.04)
+  NEW second vs subject CVD dE: 23.84 against 25 (short by 1.16)
+
+Beacon: 1 miss(es)
+  NEW muted-wash on panel: 1.09 against 1.12 (short by 0.03)
+
+Conservatory: 2 miss(es)
+  NEW second vs subject CVD dE: 7.96 against 25 (short by 17.04)
+  NEW muted-wash on panel: 1.11 against 1.12 (short by 0.01)
+
+Blueprint: 1 miss(es)
+  NEW muted-wash on panel: 1.09 against 1.12 (short by 0.03)

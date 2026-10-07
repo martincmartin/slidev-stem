@@ -22,59 +22,23 @@ at 16 px, with no hands. The colours are the cover's, from the talk's theme.
 import argparse
 import io
 import pathlib
-import re
 import sys
 
 from PIL import Image
+from theme import theme_palette
 from watch_design import TALK
 
-
-def theme_palette(talk: pathlib.Path = TALK) -> dict[str, str]:
-    """The --palette-* variables of the talk's theme, as {role: "#RRGGBB"}.
-    The theme is the `theme:` line in the headmatter of the talk's slides.md.
-    A favicon is a file, so it takes its colours when it is made; the live
-    watch reads them in the browser (watch/palette.ts)."""
-    slides = talk / "slides.md"
-    headmatter = re.match(r"---\n(.*?)\n---", slides.read_text(), re.DOTALL)
-    theme = (
-        re.search(r"(?m)^theme:\s*(\S+)", headmatter.group(1)) if headmatter else None
-    )
-    if theme is None:
-        raise SystemExit(f"no `theme:` line in the headmatter of {slides}")
-    name = theme.group(1)
-    css = (talk.parent / "themes" / name / "styles" / f"{name}.css").read_text()
-    return {
-        role: value.strip().upper()
-        for role, value in re.findall(r"--palette-([\w-]+)\s*:\s*([^;]+);", css)
-    }
-
-
 PALETTE = theme_palette()
-LINE = PALETTE["art-line"]  # the wheels, the hands' pivot, the hour ticks
+LINE = PALETTE["subject"]  # the wheels, the hands' pivot, the hour ticks
 FRAME = PALETTE["muted"]  # the case, the strap, the crown; the hands
-KNOCKOUT = PALETTE["art-knockout"]  # the chapter ring; the balance wheel's face
-
-CASE_OPACITY = 0.18  # the cover's case and strap: FRAME at this opacity
-
-
-def blend(colour: str, background: str, alpha: float) -> str:
-    """`colour` at opacity `alpha` over `background`, as SVG paints it."""
-    channels = [
-        round(int(back, 16) + alpha * (int(front, 16) - int(back, 16)))
-        for front, back in zip(
-            (colour[1:3], colour[3:5], colour[5:7]),
-            (background[1:3], background[3:5], background[5:7]),
-            strict=True,
-        )
-    ]
-    return "#" + "".join(f"{channel:02X}" for channel in channels)
-
+FRAME_WASH = PALETTE["muted-wash"]  # the case's and the strap's faces
+SUBJECT_WASH = PALETTE["subject-wash"]  # the chapter ring; the balance wheel's face
 
 FACE = PALETTE["background"]  # the dial shows the slide through it
 LEGEND = {  # one character per pixel; "." is transparent
     "c": FRAME,  # case, strap and crown outlines
-    "f": blend(FRAME, FACE, CASE_OPACITY),  # case and strap fill
-    "k": KNOCKOUT,  # chapter ring; the balance wheel's face
+    "f": FRAME_WASH,  # case and strap fill
+    "k": SUBJECT_WASH,  # chapter ring; the balance wheel's face
     "w": FACE,
     "b": LINE,  # wheels, the hands' pivot, the hour ticks
     "h": FRAME,  # hands

@@ -56,7 +56,6 @@ import {
  *  runs up from its wheel, through the pinion, so that a view without the
  *  pinion (slide 4's escape wheel) shows no floating arbor. */
 const ARBOR_CAP = 3;
-const WASH_OPACITY = 0.18;
 const STRAP_THICKNESS = 4;
 /** From the watch centre: off the slide up to a tilt of about 75 degrees. */
 const STRAP_LENGTH = 1100;
@@ -304,24 +303,28 @@ export interface Watch {
 // ---- paint ------------------------------------------------------------------------------
 /** The inks as the fills and line styles that the shapes use. */
 interface Paint {
-  knockout: Colour;
-  ink: Colour;
-  frame: Colour;
-  wash: Colour;
-  /** An ink line. */
+  /** The subject's faces. */
+  subjectWash: Colour;
+  /** A small dark part of the subject, solid: the jewel, the seconds hand. */
+  subjectFill: Colour;
+  /** Muted, solid: the hands. */
+  mutedFill: Colour;
+  /** The faces of what holds the subject: the case, the strap. */
+  mutedWash: Colour;
+  /** A line in the subject colour. */
   line: (width: number) => LineStyle;
-  /** A line in the frame's colour. */
-  frameLine: (width: number) => LineStyle;
+  /** A line in muted. */
+  mutedLine: (width: number) => LineStyle;
 }
 
 function paintOf(): Paint {
   return {
-    knockout: { ink: INKS.knockout, opacity: 1 },
-    ink: { ink: INKS.line, opacity: 1 },
-    frame: { ink: INKS.frame, opacity: 1 },
-    wash: { ink: INKS.frame, opacity: WASH_OPACITY },
-    line: (width) => ({ ink: INKS.line, opacity: 1, width }),
-    frameLine: (width) => ({ ink: INKS.frame, opacity: 1, width }),
+    subjectWash: { ink: INKS.subjectWash, opacity: 1 },
+    subjectFill: { ink: INKS.subject, opacity: 1 },
+    mutedFill: { ink: INKS.muted, opacity: 1 },
+    mutedWash: { ink: INKS.mutedWash, opacity: 1 },
+    line: (width) => ({ ink: INKS.subject, opacity: 1, width }),
+    mutedLine: (width) => ({ ink: INKS.muted, opacity: 1, width }),
   };
 }
 
@@ -588,7 +591,7 @@ function caseOf(
   ringTop: number,
   movementBottom: number,
 ): CaseMeshes {
-  const { wash, frameLine } = paint;
+  const { mutedWash, mutedLine } = paint;
   const { caseRadius, bezelRadius } = design.case;
   const caseDepth = 2 * (CROWN_RADIUS + CROWN_CLEARANCE);
   const caseBottom = Math.min(
@@ -600,8 +603,8 @@ function caseOf(
   meshes.push(
     extrude(
       ringsOf(
-        [circlePath(0, 0, caseRadius), frameLine(4)],
-        [circlePath(0, 0, bezelRadius), frameLine(3)],
+        [circlePath(0, 0, caseRadius), mutedLine(4)],
+        [circlePath(0, 0, bezelRadius), mutedLine(3)],
       ),
       caseBottom,
       ringTop,
@@ -609,7 +612,7 @@ function caseOf(
         name: "case band",
         part: "case band",
         group: root,
-        fill: wash,
+        fill: mutedWash,
         lineOrder: ringTop,
       },
     ),
@@ -631,14 +634,14 @@ function caseOf(
       .close();
     meshes.push(
       extrude(
-        ringsOf([strapPath, frameLine(3)]),
+        ringsOf([strapPath, mutedLine(3)]),
         middle - STRAP_THICKNESS / 2,
         middle + STRAP_THICKNESS / 2,
         {
           name: `strap ${String(level)}`,
           part: "strap",
           group: root,
-          fill: wash,
+          fill: mutedWash,
           lineOrder: middle + STRAP_THICKNESS / 2,
         },
       ),
@@ -661,11 +664,11 @@ function caseOf(
         .lineTo(right, far)
         .close();
       meshes.push(
-        extrude(ringsOf([lug, frameLine(3)]), caseBottom, ringTop, {
+        extrude(ringsOf([lug, mutedLine(3)]), caseBottom, ringTop, {
           name: `lug ${String(level)}`,
           part: "lug",
           group: root,
-          fill: wash,
+          fill: mutedWash,
           lineOrder: ringTop,
         }),
       );
@@ -676,14 +679,14 @@ function caseOf(
   // above), at the case's mid-height; the 2D rectangle is 248..270 by -17..17
   const crownLeft = caseRadius - 2;
   const crownMesh = extrude(
-    ringsOf([circlePath(0, 0, CROWN_RADIUS), frameLine(3)]),
+    ringsOf([circlePath(0, 0, CROWN_RADIUS), mutedLine(3)]),
     crownLeft,
     crownLeft + CROWN_LENGTH,
     {
       name: "crown",
       part: "crown",
       group: root,
-      fill: wash,
+      fill: mutedWash,
       lineOrder: middle + CROWN_RADIUS,
     },
   );
@@ -742,7 +745,7 @@ function studMesh(
       name: "hairspring stud (added)",
       part: "hairspring stud",
       group: root,
-      fill: paint.knockout,
+      fill: paint.subjectWash,
       lineOrder: top,
       inDrawing: false,
     }),
@@ -780,7 +783,7 @@ function decalMeshes(paint: Paint, root: Group, ringTop: number): Mesh[] {
       { decal: true },
     );
   return [
-    decal(minuteTicks, { ink: INKS.detail, opacity: 0.5, width: 2 }),
+    decal(minuteTicks, { ink: INKS.ink, opacity: 0.5, width: 2 }),
     decal(hourMarks, paint.line(4)),
   ];
 }
@@ -880,7 +883,7 @@ class SolidList {
  *  third, centre. */
 function trainSolids(kit: Kit): void {
   const { design, paint, train, parts, groups, solids } = kit;
-  const { knockout, line } = paint;
+  const { subjectWash, line } = paint;
   const { centre, third, fourth, escape } = train;
   interface Drawing {
     rim: number;
@@ -931,13 +934,13 @@ function trainSolids(kit: Kit): void {
       [outline, line(fine ? 2 : 2.5)],
       ...(gaps ? ([[gaps, line(2)]] as [Path, LineStyle][]) : []),
     );
-    solids.add(owner, "body", group, bodyRings, knockout);
+    solids.add(owner, "body", group, bodyRings, subjectWash);
     solids.add(
       owner,
       "circle",
       group,
       ringsOf([circlePath(0, 0, 4), line(2)]),
-      knockout,
+      subjectWash,
     );
     if (wheel.pinionRadius === null || wheel.pinionPhase === null) {
       throw new Error(`the ${wheel.name} wheel has no pinion`);
@@ -950,14 +953,14 @@ function trainSolids(kit: Kit): void {
         pinionOutline(wheel.leaves, wheel.pinionRadius, wheel.pinionPhase),
         line(2),
       ]),
-      knockout,
+      subjectWash,
     );
     solids.add(
       owner,
       "circle",
       group,
       ringsOf([circlePath(0, 0, 3), line(2)]),
-      knockout,
+      subjectWash,
     );
   }
 }
@@ -965,7 +968,7 @@ function trainSolids(kit: Kit): void {
 /** The barrel, in front: its lid is cut away to show the mainspring. */
 function barrelSolids(kit: Kit): void {
   const { paint, train, parts, groups, solids } = kit;
-  const { knockout, line } = paint;
+  const { subjectWash, line } = paint;
   const { barrel } = train;
   const owner = lookup(parts.wheels, barrel, "barrel part");
   const group = lookup(groups.wheels, barrel, "barrel group");
@@ -978,7 +981,7 @@ function barrelSolids(kit: Kit): void {
       [gear(barrel.teeth, barrel.pitchRadius, barrel.toothPhase), line(2.5)],
       [disc(lid), line(2)],
     ),
-    knockout,
+    subjectWash,
   );
   solids.add(
     owner,
@@ -988,10 +991,10 @@ function barrelSolids(kit: Kit): void {
       spiralCurve(19, barrel.pitchRadius - 16, 300, 300 + 360 * 3.5, 14),
       line(2),
     ]),
-    knockout,
+    subjectWash,
     { ribbon: true },
   );
-  solids.add(owner, "circle", group, ringsOf([disc(15), line(3)]), knockout);
+  solids.add(owner, "circle", group, ringsOf([disc(15), line(3)]), subjectWash);
 }
 
 interface BalanceSolids {
@@ -1008,7 +1011,7 @@ interface BalanceSolids {
 /** The balance, its hairspring and collet, and the impulse jewel. */
 function balanceSolids(kit: Kit): BalanceSolids {
   const { design, paint, parts, groups, solids } = kit;
-  const { knockout, ink: inkFill, line } = paint;
+  const { subjectWash, subjectFill, line } = paint;
   const { balance: balancePart, spring: springPart, jewel: jewelPart } = parts;
   const { balance: balanceGroup, springBase } = groups;
   const balanceDesign = design.balance;
@@ -1032,7 +1035,7 @@ function balanceSolids(kit: Kit): BalanceSolids {
         line(2.5),
       ],
     ),
-    knockout,
+    subjectWash,
   );
 
   const springShape: Spring = {
@@ -1052,7 +1055,7 @@ function balanceSolids(kit: Kit): BalanceSolids {
     "stroke",
     springBase,
     [smoothRing(restSpring, line(2), false)],
-    knockout,
+    subjectWash,
     {
       ribbon: true,
       // the largest reach over the swing
@@ -1074,7 +1077,7 @@ function balanceSolids(kit: Kit): BalanceSolids {
     "circle",
     balanceGroup,
     ringsOf([disc(at(SPRING_RADII, 0)), line(2)]),
-    knockout,
+    subjectWash,
     { inDrawing: false },
   );
 
@@ -1085,7 +1088,7 @@ function balanceSolids(kit: Kit): BalanceSolids {
     "body",
     balanceGroup,
     ringsOf([disc(balanceDesign.impulsePinRadius + JEWEL_RADIUS), line(2.5)]),
-    knockout,
+    subjectWash,
   );
 
   // the impulse jewel, on the roller: it turns with the balance
@@ -1106,7 +1109,7 @@ function balanceSolids(kit: Kit): BalanceSolids {
       ),
       null,
     ]),
-    inkFill,
+    subjectFill,
   );
   return { wheel, spring: springSolid, collet, restSpring, springShape };
 }
@@ -1130,7 +1133,7 @@ function balanceScrewMeshes(
       name: `balance screw ${String(index + 1)}`,
       part: "balance",
       group,
-      fill: paint.knockout,
+      fill: paint.subjectWash,
       lineOrder: rimHeights.top,
       inDrawing: false,
     };
@@ -1184,7 +1187,7 @@ function balanceScrewMeshes(
 /** The pallet fork. */
 function forkSolids(kit: Kit): void {
   const { design, paint, parts, groups, solids } = kit;
-  const { knockout, line } = paint;
+  const { subjectWash, line } = paint;
   const { fork: forkPart } = parts;
   const { fork: forkGroup } = groups;
   const forkDesign = design.fork;
@@ -1198,14 +1201,14 @@ function forkSolids(kit: Kit): void {
         line(2.5),
       ),
     ],
-    knockout,
+    subjectWash,
   );
   solids.add(
     forkPart,
     "circle",
     forkGroup,
     ringsOf([circlePath(0, 0, FORK_PIVOT_RADIUS), line(2)]),
-    knockout,
+    subjectWash,
   );
 }
 
@@ -1213,7 +1216,7 @@ function forkSolids(kit: Kit): void {
  *  Returns the chapter ring. */
 function dialSolids(kit: Kit): Solid {
   const { design, paint, parts, groups, solids } = kit;
-  const { knockout, ink: inkFill, frame: frameFill, frameLine, line } = paint;
+  const { subjectWash, subjectFill, mutedFill, mutedLine, line } = paint;
   const {
     root,
     seconds: secondsGroup,
@@ -1243,14 +1246,14 @@ function dialSolids(kit: Kit): Solid {
       }),
       line(2),
     ]),
-    frameFill,
+    mutedFill,
   );
   solids.add(
     secondsPart,
     "circle",
     secondsGroup,
     ringsOf([circlePath(0, 0, 2.5), null]),
-    inkFill,
+    subjectFill,
   );
 
   // the chapter ring: what is left of the dial
@@ -1260,10 +1263,10 @@ function dialSolids(kit: Kit): Solid {
     "body",
     root,
     ringsOf(
-      [circlePath(0, 0, bezelRadius), frameLine(3)],
-      [circlePath(0, 0, ringRadius), frameLine(2)],
+      [circlePath(0, 0, bezelRadius), mutedLine(3)],
+      [circlePath(0, 0, ringRadius), mutedLine(2)],
     ),
-    knockout,
+    subjectWash,
   );
 
   // the hands, at 2:35
@@ -1286,7 +1289,7 @@ function dialSolids(kit: Kit): Solid {
       ),
       line(3),
     ]),
-    frameFill,
+    mutedFill,
   );
   solids.add(
     minutePart,
@@ -1306,14 +1309,14 @@ function dialSolids(kit: Kit): Solid {
       ),
       line(3),
     ]),
-    frameFill,
+    mutedFill,
   );
   solids.add(
     pivotPart,
     "body",
     root,
     ringsOf([circlePath(0, 0, 3.5), line(2)]),
-    knockout,
+    subjectWash,
   );
   return ringSolid;
 }
@@ -1322,7 +1325,7 @@ function dialSolids(kit: Kit): Solid {
  *  inner coil. It must come last: the heights place it after the others. */
 function staffSolid(kit: Kit): Solid {
   const { design, paint, parts, groups, solids } = kit;
-  const { knockout, line } = paint;
+  const { subjectWash, line } = paint;
   const { watchCentre } = design;
   const balanceDesign = design.balance;
   const staffPart = parts.spring; // the balance staff belongs to the hairspring's part
@@ -1335,7 +1338,7 @@ function staffSolid(kit: Kit): Solid {
       circlePath(balanceDesign.arbor[0], balanceDesign.arbor[1], STAFF_RADIUS),
       line(2),
     ]),
-    knockout,
+    subjectWash,
     {
       pivot: [
         watchCentre[0] + balanceDesign.arbor[0],

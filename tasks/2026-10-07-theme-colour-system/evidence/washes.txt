@@ -1,0 +1,35 @@
+1. A 0.18 wash of muted, in each candidate theme
+
+theme                    background dark  on bg on panel muted on it
+Kraft & Ink              #EFE1CA           1.26     1.25        4.01
+Campfire                 #241E1A    dark   1.39     1.39        4.94
+Harbor                   #0E3B3E    dark   1.44     1.47        4.52
+Letterpress              #FCF8F3           1.29     1.27        4.58
+Fen                      #F7F5EF           1.25     1.24        3.85
+Ledger                   #FAF7F0           1.25     1.25        3.95
+Ash & Claret             #F7F5F4           1.26     1.25        3.97
+Fieldnotes               #F8F5EC           1.27     1.25        4.14
+Registry                 #F7F6F4           1.26     1.24        3.88
+Night Ledger             #1E2024    dark   1.33     1.34        4.12
+Copper Circuit           #202522    dark   1.35     1.34        4.11
+Golden Hour Lab          #FFF4DD           1.26     1.25        4.06
+Marmalade                #2B2420    dark   1.35     1.33        4.13
+After-Hours Observatory  #17202A    dark   1.32     1.32        4.08
+Neon Aperitif            #262629    dark   1.35     1.34        4.14
+Coffee + Code            #3B2D29    dark   1.39     1.36        4.02
+Retro Future Lounge      #1E2B32    dark   1.36     1.34        4.06
+Electric Terracotta      #F6E7D8           1.26     1.25        4.09
+Atomic Cocktail          #173B3A    dark   1.39     1.36        4.01
+Blackboard Social        #26332D    dark   1.38     1.35        3.97
+Beacon                   #0F1C33    dark   1.32     1.32        4.38
+Conservatory             #14243F    dark   1.35     1.33        4.16
+Blueprint                #101E38    dark   1.33     1.32        4.30
+
+light themes: 9, 1.25-1.29 on the background
+dark themes:  14, 1.32-1.44 on the background
+Ledger's case face (muted at 0.18 over the background): #E2DED6
+
+2. Ledger's solid faces, as a blend of their line into the background
+
+art-knockout         #D3DCE3  from art-line #143C6B: blend by channel R 0.170, G 0.144, B 0.098
+art-second-knockout  #E6D8CA  from second #9A6238: blend by channel R 0.208, G 0.208, B 0.207

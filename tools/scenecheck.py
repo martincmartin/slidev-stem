@@ -13,13 +13,13 @@ The scene holds no colours. Each fill and line has an ink, and the dump says
 which theme variable (`--palette-ink`, ...) gives each ink its colour, so the
 check holds for any theme:
 
-  * every fill and every line is in one of the four art inks: an ink whose
-    variable is one of the four art roles (`lib.ART_ROLES`);
+  * every fill and every line is in an art ink: an ink whose variable is one
+    of the art roles (`lib.ART_ROLES`);
   * every line width is on the stroke ladder (2, 2.5, 3 and 4 CSS px, within
     5%): line widths in a scene are CSS px on the screen, at every zoom;
   * opacities follow the docs: a line is solid, except a line of the detail
-    ink, which is at 0.5; a fill is the subject (0.60-1.0) or a wash
-    (0.07-0.18), and nothing between.
+    ink, which is at 0.5; a face is a wash, solid; a fill in a line colour is
+    a substance or a small dark part, at 0.60-1.0.
 
 Stdlib only, with `lib.py`. It exits non-zero on a failure.
 """
@@ -95,17 +95,23 @@ def ink_finding(mesh: str, kind: str, ink: Ink) -> Finding | None:
 def fill_findings(mesh: str, fill: dict[str, object], inks: list[Ink]) -> list[Finding]:
     if problem := malformed(mesh, "fill", fill, ("opacity",), len(inks)):
         return [problem]
-    found = [ink_finding(mesh, "fill", inks[int(str(fill["ink"]))])]
+    ink = inks[int(str(fill["ink"]))]
+    found = [ink_finding(mesh, "fill", ink)]
     opacity = float(str(fill["opacity"]))
-    low, high = lib.WASH_OPACITY
-    is_wash = low - OPACITY_TOLERANCE <= opacity <= high + OPACITY_TOLERANCE
-    is_subject = lib.SUBJECT_MIN_OPACITY - OPACITY_TOLERANCE <= opacity <= 1
-    if not (is_wash or is_subject):
+    if ink.role in lib.WASH_PAIRS:
+        if abs(opacity - 1) > OPACITY_TOLERANCE:
+            found.append(
+                Finding(
+                    mesh,
+                    f"fill opacity {opacity:g} of a wash should be 1: a face is solid",
+                )
+            )
+    elif not lib.SUBJECT_MIN_OPACITY - OPACITY_TOLERANCE <= opacity <= 1:
         found.append(
             Finding(
                 mesh,
-                f"fill opacity {opacity:g} is neither a wash ({low:g}-{high:g}) "
-                f"nor the subject ({lib.SUBJECT_MIN_OPACITY:g}-1)",
+                f"fill opacity {opacity:g} of a line colour is not a substance "
+                f"({lib.SUBJECT_MIN_OPACITY:g}-1); a face is its wash",
             )
         )
     return [finding for finding in found if finding]
@@ -202,8 +208,7 @@ def main() -> int:
             print(f"FAIL  {finding.mesh}: {finding.what}")
         print(
             f"{count} mesh(es), {len(findings)} finding(s). Grammar: strokes "
-            f"{lib.STROKE_LADDER} CSS px, four inks, washes "
-            f"{lib.WASH_OPACITY[0]:g}-{lib.WASH_OPACITY[1]:g}."
+            f"{lib.STROKE_LADDER} CSS px, the art inks, solid washes."
         )
     return 1 if findings else 0
 

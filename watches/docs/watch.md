@@ -46,7 +46,8 @@ ruler that the diving board replaced),
 | `webgl/probe/`                                           | a page with one canvas and `window.watchProbe.render(options)`, for the pixel and fade checks; `checks.ts`: `window.webglChecks()`, the renderer's browser checks     |
 | `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand. `art/watch_design.py --check` compares what the file means, not its bytes (`pnpm format` rewrites its spacing)  |
 | `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights, views and subjects                                                                                          |
-| `watch/palette.ts`                                       | which theme variable colours each ink; `themePalette()` reads them from the page                                                                                      |
+| `watch/palette.ts`                                       | which theme variable colours each ink; `themePalette()` reads them from the page, and the browser works out a recipe (`color-mix()`)                                  |
+| `art/theme.py`                                           | the theme's palette for the scripts that write files (`diving_board.py`, `favicon.py`): it works out each recipe as the browser does                                  |
 | `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism, the balance's settle and the train's free spin; frontmatter to state; the watch's stills; the shared instance                                          |
 | `global-bottom.vue`, `slide-bottom.vue`                  | the live canvas and the live diving board, and the kind of each move; the still and the posed board on each printed page                                              |
 | `watch/board.ts`, `components/DivingBoard.vue`           | the board's frontmatter to its target, and its clock (`BoardClock`); the component that inlines the SVG and sets its time                                             |
@@ -151,11 +152,13 @@ Three callouts appear, one at each click: "Wheel driven by hidden gear",
 `components/WatchCallout.vue` in `slides.md`: a label in ink, 28 px, weight
 600, and a leader. The first callout also draws the drive arrow.
 
-- **The leaders are ink, 4 px**, as the house's leaders are
-  ([`illustrations.md`](../../docs/illustrations.md), "Leaders"). Slide 2's
-  leader is muted only because the dashed rest shape that it points to is
-  muted. They pass the back-row gate
-  ([measurements.md](measurements.md#slide-4-leaders-alone)).
+- **These are keyword callouts** (`keyword`): each leader points at what one
+  word names ("Pallet"), not at the whole label ("Pallet blocks wheel"). So
+  the word and its leader are in the second, 4 px, and the rest of the label
+  is ink ([`illustrations.md`](../../docs/illustrations.md), "Leaders"). The
+  leaders pass the back-row gate
+  ([measurements.md](measurements.md#slide-4-leaders-alone)). Slide 2's
+  leader is a reference mark's: muted, as the dashed rest shape is.
 - **The drive arrow is muted, 4 px:** muted is the art's colour for what
   acts on the subject, and the arrow shows the force on the escape wheel.
 
@@ -400,9 +403,12 @@ script, not the SVG. It is a straight diving board over the edge of a pool,
 which stands for the hairspring without its coils: the talk says why a spring
 swings, and the spiral would distract. Ground on the left, pool on the right.
 The board is over the pool for two thirds of its length.
-The ground and the stand are washes of muted (warm); the water is a wash of the
-art line (blue) at 0.6 with light ripples, and the pool's walls are a darker
-muted. The pool has no near wall, and the ground has no front: both go on in
+The ground, the stand and the pool's walls are faces in the ground's wash
+(warm): lit faces are the wash moved toward the paper, and shaded ones (the
+walls, the stand's side) toward the ground's line. The water is a substance:
+the water colour (blue) at 0.6, with light ripples. Water and ground are
+material roles of the theme, so a theme cannot swap their colours by
+accident ([theme.md](../../docs/theme.md), "The pairs"). The pool has no near wall, and the ground has no front: both go on in
 front, as if they ran far past the bottom of the slide, and the drawing is
 cropped there (it is 452 px tall, so its bottom is the slide's). The drawing is the
 slide's whole width (980 px, its viewBox starting at x 50, so the drawing's x 0

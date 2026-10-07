@@ -111,6 +111,59 @@ def test_css_palette_rejects_a_value_that_is_not_a_colour(tmp_path: Path) -> Non
         lib.css_palette(css)
 
 
+# ---- recipes ------------------------------------------------------------------------
+def test_a_recipe_is_a_role_or_a_mix_of_roles() -> None:
+    palette = lib.resolve(
+        {
+            "paper": "#FFFFFF",
+            "line": "#000000",
+            "same": "var(--palette-line)",
+            "wash": "color-mix(in srgb, var(--palette-line) 20%, var(--palette-paper))",
+            "other-way": "color-mix(in srgb, var(--palette-paper), #000000 20%)",
+            "half": "color-mix(in srgb, var(--palette-paper), var(--palette-line))",
+        }
+    )
+    assert palette["same"] == Colour(0, 0, 0)
+    assert palette["wash"] == palette["other-way"] == Colour(204, 204, 204)
+    assert palette["half"] == Colour(128, 128, 128)
+
+
+def test_ledger_washes_are_their_recipes() -> None:
+    muted, paper = lib.LEDGER["muted"], lib.LEDGER["background"]
+    assert lib.LEDGER["muted-wash"] == muted.blend(paper, 0.18)
+    assert lib.LEDGER["ground-wash"] == lib.LEDGER["muted-wash"]
+    assert lib.LEDGER["water"] == lib.LEDGER["subject"]
+
+
+@pytest.mark.parametrize(
+    ("recipes", "message"),
+    [
+        ({"a": "var(--palette-b)", "b": "var(--palette-a)"}, "refer to each other"),
+        ({"a": "var(--palette-missing)"}, "not a role"),
+        ({"a": "color-mix(in srgb, #000000)"}, "two colours"),
+        ({"a": "color-mix(in oklch, #000000, #FFFFFF)"}, "6-digit"),
+    ],
+)
+def test_a_bad_recipe_is_an_error(recipes: dict[str, str], message: str) -> None:
+    with pytest.raises(ValueError, match=message):
+        lib.resolve(recipes)
+
+
+def test_a_wash_variation_is_a_wash_moved_toward_its_line_or_the_paper() -> None:
+    wash, muted = lib.LEDGER["muted-wash"], lib.LEDGER["muted"]
+    shaded = muted.blend(wash, 0.1)
+    lit = lib.LEDGER["background"].blend(wash, 0.2)
+    assert lib.wash_variation(shaded) == "muted-wash"
+    assert lib.wash_variation(lit) == "muted-wash"
+    assert lib.wash_variation(Colour(0xC0, 0x45, 0x1C)) is None
+
+
+def test_the_hue_gates_tell_water_from_mud() -> None:
+    water = next(gate for gate in lib.HUE_GATES if gate.role == "water")
+    assert water.passes(lib.LEDGER)
+    assert not water.passes(lib.LEDGER | {"water": lib.LEDGER["second"]})
+
+
 # ---- sizes -------------------------------------------------------------------------
 @pytest.mark.parametrize(
     ("text", "number"),
@@ -153,7 +206,7 @@ def test_shown_size_is_none_when_the_root_does_not_say(source: str) -> None:
 
 # ---- the palette in a talk's files ----------------------------------------------------
 def declarations(talk: Path) -> lib.PaletteDeclarations:
-    return lib.talk_palette_declarations([talk], lib.LEDGER)
+    return lib.talk_palette_declarations([talk], lib.THEME_RECIPES)
 
 
 OVERRIDE = ".slidev-layout.warm { --palette-ink: #112233; }\n"
@@ -165,7 +218,20 @@ def test_a_slide_class_may_set_a_role(tmp_path: Path) -> None:
     found = declarations(tmp_path)
     assert found.faults == []
     assert [rule.selector for rule in found.overrides] == [".slidev-layout.warm"]
-    assert found.overrides[0].palette(lib.LEDGER)["ink"] == Colour(0x11, 0x22, 0x33)
+    assert found.overrides[0].palette(lib.THEME_RECIPES)["ink"] == Colour(
+        0x11, 0x22, 0x33
+    )
+
+
+def test_a_slide_class_that_sets_a_role_changes_its_recipes_too(tmp_path: Path) -> None:
+    write(
+        tmp_path / "slides.md",
+        "---\n---\n<style>\n.slidev-layout.blue { --palette-muted: #2040A0; }\n</style>\n",
+    )
+    palette = declarations(tmp_path).overrides[0].palette(lib.THEME_RECIPES)
+    assert palette["muted-wash"] == Colour(0x20, 0x40, 0xA0).blend(
+        lib.LEDGER["background"], 0.18
+    )
 
 
 @pytest.mark.parametrize(

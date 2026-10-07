@@ -1,0 +1,17 @@
+best worst-case CVD separation from ink, subject, accent, second and muted
+(above 20 unmistakable, 10-20 clear, below 10 risky: tools/lib.py, cvd)
+
+#243600  h 121 C  32  worst  23.0  contrast 12.25  (ink 24, subject 62, accent 79, second 23, muted 33)
+#1E3600  h 125 C  33  worst  22.8  contrast 12.40  (ink 23, subject 62, accent 79, second 23, muted 33)
+#2A3600  h 115 C  32  worst  22.8  contrast 12.07  (ink 25, subject 63, accent 79, second 23, muted 33)
+#2A002A  h 328 C  32  worst  22.7  contrast 17.34  (ink 23, subject 25, accent 45, second 65, muted 45)
+#303600  h 110 C  31  worst  22.6  contrast 11.87  (ink 26, subject 63, accent 80, second 23, muted 33)
+#300030  h 328 C  36  worst  22.4  contrast 16.80  (ink 24, subject 22, accent 42, second 67, muted 45)
+#183600  h 129 C  35  worst  22.1  contrast 12.53  (ink 22, subject 62, accent 79, second 23, muted 33)
+#90608A  h 330 C  31  worst  21.8  contrast 4.64  (ink 38, subject 22, accent 26, second 50, muted 22)
+#300630  h 328 C  32  worst  21.6  contrast 16.43  (ink 22, subject 22, accent 42, second 65, muted 43)
+#123600  h 132 C  36  worst  21.5  contrast 12.64  (ink 21, subject 62, accent 79, second 23, muted 33)
+#003C00  h 137 C  42  worst  21.4  contrast 11.92  (ink 23, subject 64, accent 81, second 21, muted 32)
+#063C00  h 136 C  41  worst  21.3  contrast 11.87  (ink 24, subject 64, accent 81, second 21, muted 32)
+
+second itself #9A6238: ink 38, subject 64, accent 75, muted 22; contrast 4.70

@@ -73,6 +73,17 @@ class Colour:
         )
 
     @property
+    def channels(self) -> tuple[int, int, int]:
+        return (self.red, self.green, self.blue)
+
+    def distance(self, other: Colour) -> int:
+        """The largest difference of one 8-bit channel."""
+        return max(
+            abs(mine - theirs)
+            for mine, theirs in zip(self.channels, other.channels, strict=True)
+        )
+
+    @property
     def luminance(self) -> float:
         """WCAG relative luminance."""
         red, green, blue = self.linear
@@ -98,6 +109,10 @@ class Colour:
 
 
 Palette = dict[str, Colour]  # role -> colour; the roles are the CSS names
+# role -> its CSS value: a #rrggbb colour, `var()` of another role, or
+# `color-mix(in srgb, ...)` of those. A recipe follows its roles, so a slide
+# class that changes a role changes what is made from it too.
+Recipes = dict[str, str]
 
 # --------------------------------------------------------------------------
 # The theme: Ledger. Chosen 2026-09-19. docs/theme.md is the prose version.
@@ -108,9 +123,9 @@ THEME_SELECTOR = ".slidev-layout"  # the rule in THEME_CSS that holds the palett
 PALETTE_PREFIX = "--palette-"  # every theme fills the same roles: --palette-ink, ...
 
 
-def css_palette(path: pathlib.Path = THEME_CSS) -> Palette | None:
+def css_recipes(path: pathlib.Path = THEME_CSS) -> Recipes | None:
     """The PALETTE_PREFIX variables that the THEME_SELECTOR rule in `path` sets,
-    as {role: colour}. None if there is no such rule."""
+    as {role: CSS value}. None if there is no such rule."""
     source = re.sub(r"/\*.*?\*/", "", path.read_text(), flags=re.DOTALL)
     block = re.search(
         r"(?m)^\s*" + re.escape(THEME_SELECTOR) + r"\s*\{([^}]*)\}", source
@@ -118,40 +133,203 @@ def css_palette(path: pathlib.Path = THEME_CSS) -> Palette | None:
     if not block:
         return None
     return {
-        role: Colour.from_hex(value)
+        role: re.sub(r"\s*\)", ")", re.sub(r"\(\s*", "(", " ".join(value.split())))
         for role, value in re.findall(
             re.escape(PALETTE_PREFIX) + r"([\w-]+)\s*:\s*([^;]+);", block.group(1)
         )
     }
 
 
-_palette = css_palette()
-if not _palette:
+def _arguments(text: str) -> list[str]:
+    """The comma-separated arguments of a CSS function's body, split only at
+    the top level: `var(--a), b` is two."""
+    parts, depth, current = [], 0, ""
+    for character in text:
+        if character == "," and depth == 0:
+            parts.append(current.strip())
+            current = ""
+            continue
+        depth += {"(": 1, ")": -1}.get(character, 0)
+        current += character
+    parts.append(current.strip())
+    return parts
+
+
+def _mix_part(text: str) -> tuple[str, float | None]:
+    """A `color-mix()` colour and its percentage, if it has one."""
+    found = re.fullmatch(r"(.+?)\s+([0-9.]+)%", text)
+    return (found.group(1), float(found.group(2)) / 100) if found else (text, None)
+
+
+def resolve(recipes: Recipes) -> Palette:
+    """Each role's colour. A `color-mix()` mixes the 8-bit channels, as
+    `Colour.blend` does and as the browser does in sRGB."""
+    palette: Palette = {}
+
+    def colour_of_value(text: str, chain: tuple[str, ...]) -> Colour:
+        text = text.strip()
+        if re.fullmatch(r"#[0-9A-Fa-f]{6}", text):
+            return Colour.from_hex(text)
+        if found := re.fullmatch(
+            r"var\(\s*" + re.escape(PALETTE_PREFIX) + r"([\w-]+)\s*\)", text
+        ):
+            return colour_of_role(found.group(1), chain)
+        if found := re.fullmatch(
+            r"color-mix\(\s*in srgb\s*,(.*)\)", text, flags=re.DOTALL
+        ):
+            arguments = _arguments(found.group(1))
+            if len(arguments) != 2:
+                raise ValueError(f"{text!r}: color-mix() needs two colours")
+            (first, first_share), (second, second_share) = map(_mix_part, arguments)
+            share = (
+                first_share
+                if first_share is not None
+                else 1 - second_share
+                if second_share is not None
+                else 0.5
+            )
+            return colour_of_value(first, chain).blend(
+                colour_of_value(second, chain), share
+            )
+        raise ValueError(
+            f"{text!r} is not a 6-digit hex colour, var() of a role, "
+            "or color-mix(in srgb, ...) of those"
+        )
+
+    def colour_of_role(name: str, chain: tuple[str, ...]) -> Colour:
+        if name in chain:
+            raise ValueError(
+                f"the roles refer to each other: {' -> '.join((*chain, name))}"
+            )
+        if name not in recipes:
+            raise ValueError(f"{PALETTE_PREFIX}{name} is not a role of the theme")
+        if name not in palette:
+            palette[name] = colour_of_value(recipes[name], (*chain, name))
+        return palette[name]
+
+    for name in recipes:
+        colour_of_role(name, ())
+    return {name: palette[name] for name in recipes}
+
+
+def css_palette(path: pathlib.Path = THEME_CSS) -> Palette | None:
+    """The colours of the palette that `path` sets. None if it sets none."""
+    recipes = css_recipes(path)
+    return None if recipes is None else resolve(recipes)
+
+
+_recipes = css_recipes()
+if not _recipes:
     raise SystemExit(
         f"no `{THEME_SELECTOR} {{ {PALETTE_PREFIX}... }}` rule in {THEME_CSS}"
     )
-LEDGER: Palette = _palette
+THEME_RECIPES: Recipes = _recipes
+LEDGER: Palette = resolve(THEME_RECIPES)
+
+# Each wash and the line colour that it is the face for (docs/theme.md, "The
+# pairs"). A drawing's variation of a face is its wash mixed toward its line or
+# toward the paper.
+WASH_PAIRS = {
+    "subject-wash": "subject",
+    "muted-wash": "muted",
+    "second-wash": "second",
+    "ground-wash": "ground",
+}
+
+
+def lch(colour: Colour) -> tuple[float, float, float]:
+    """CIE L*C*h: lightness (0-100), chroma (how much colour shows: under about
+    5 reads as grey) and hue in degrees."""
+    light, a, b = lab(colour.linear)
+    return light, math.hypot(a, b), math.degrees(math.atan2(b, a)) % 360
+
+
+class Measure(Enum):
+    """What a gate measures between two colours."""
+
+    CONTRAST = "contrast"  # WCAG contrast ratio
+    DE = "dE"  # CIE76 colour difference, normal vision
+    CVD = "CVD dE"  # the same, worst of deuteranopia and protanopia
 
 
 @dataclass(frozen=True)
 class Gate:
-    """`role` must reach `minimum` contrast against `against`. Both are palette
-    roles: the CSS names, checked against the theme when this file loads."""
+    """`role` measured against `against` must be at least `minimum` and at most
+    `maximum` (each optional). Both are palette roles: the CSS names, checked
+    against the theme when this file loads. A gate that is not `required` is a
+    preference: it is reported, and it does not fail."""
 
     role: str
     against: str
-    minimum: float
+    measure: Measure
     why: str
+    minimum: float | None = None
+    maximum: float | None = None
+    required: bool = True
+
+    def value(self, palette: Palette) -> float:
+        first, second = palette[self.role], palette[self.against]
+        if self.measure is Measure.CONTRAST:
+            return contrast(first, second)
+        if self.measure is Measure.DE:
+            return de76(first, second)
+        return cvd(first, second)
+
+    def passes(self, palette: Palette) -> bool:
+        measured = self.value(palette)
+        return (self.minimum is None or measured >= self.minimum) and (
+            self.maximum is None or measured <= self.maximum
+        )
+
+    @property
+    def limit(self) -> str:
+        """The threshold, for a report: ">= 3" or "<= 1.5"."""
+        parts = [f">= {self.minimum:g}"] if self.minimum is not None else []
+        parts += [f"<= {self.maximum:g}"] if self.maximum is not None else []
+        return " and ".join(parts)
 
 
-# Contrast gates, all measured against the surface the mark actually sits on --
+@dataclass(frozen=True)
+class HueGate:
+    """A material's colour must read as that material: a hue in `low`-`high`
+    degrees with at least `min_chroma`, or (if `grey_below` is set) a near
+    grey, with less chroma than that."""
+
+    role: str
+    low: float
+    high: float
+    min_chroma: float
+    why: str
+    grey_below: float | None = None
+
+    def passes(self, palette: Palette) -> bool:
+        _, chroma, hue = lch(palette[self.role])
+        if self.grey_below is not None and chroma < self.grey_below:
+            return True
+        return self.low <= hue <= self.high and chroma >= self.min_chroma
+
+
+# The gates, all measured against the surface the mark actually sits on --
 # which is the PANEL for anything on a card, not the slide background. That
-# distinction was a real defect once (theme archive, insight 8).
+# distinction was a real defect once (theme archive, insight 8). The numbers
+# and their reasons are in docs/theme.md and in the tasks it links.
 GATES = [
-    Gate("ink", "background", 12.0, "headroom to degrade from; Ledger has 14.2"),
-    Gate("ink", "panel", 12.0, "the same text on a card"),
-    Gate("accent", "panel", 4.5, "the 37px stat number"),
-    Gate("second", "panel", 3.5, "20px bold counts as large text: 3:1 plus margin"),
+    Gate(
+        "ink",
+        "background",
+        Measure.CONTRAST,
+        "headroom to degrade from; Ledger has 14.2",
+        12.0,
+    ),
+    Gate("ink", "panel", Measure.CONTRAST, "the same text on a card", 12.0),
+    Gate("accent", "panel", Measure.CONTRAST, "the 37px stat number", 4.5),
+    Gate(
+        "second",
+        "panel",
+        Measure.CONTRAST,
+        "20px bold counts as large text: 3:1 plus margin",
+        3.5,
+    ),
     # 4.5 is WCAG AA for normal text, and 17px body IS normal text (the large-text
     # relaxation starts at 18px, or 14px bold). The theme archive's table states
     # this gate as 4.6 and gives no derivation; Ledger's muted measures 4.578 on
@@ -159,23 +337,89 @@ GATES = [
     # The standard is the defensible number, so 4.5 is what is enforced here --
     # and the real finding is recorded in docs/theme.md: muted-on-panel has 1.7%
     # of margin and is the thinnest thing in the palette. Do not shrink it.
-    Gate("muted", "panel", 4.5, "17px body is normal text, so WCAG AA applies"),
+    Gate(
+        "muted",
+        "panel",
+        Measure.CONTRAST,
+        "17px body is normal text, so WCAG AA applies",
+        4.5,
+    ),
+    Gate(
+        "accent",
+        "ink",
+        Measure.DE,
+        "emphasis must read as emphasis, not as darker ink",
+        35,
+    ),
+    Gate("accent", "second", Measure.CVD, "worst of deuteranopia and protanopia", 25),
+    Gate(
+        "accent",
+        "second",
+        Measure.CONTRAST,
+        "hue fails before lightness does",
+        1.4,
+        required=False,
+    ),
+    # The drawings' own pairs (tasks/2026-10-07-theme-colour-system, §4.8).
+    Gate(
+        "subject", "muted", Measure.DE, "the subject must not look like its context", 30
+    ),
+    Gate(
+        "subject",
+        "ink",
+        Measure.DE,
+        "the subject must not look like a scale or a leader",
+        30,
+    ),
     Gate(
         "second",
-        "art-second-knockout",
-        3.0,
-        "a flash's line on its fill: the drawing's structure must stay at the floor",
+        "subject",
+        Measure.CVD,
+        "a flash and a keyword callout must show for every viewer",
+        25,
+    ),
+    *(
+        gate
+        for wash, line in WASH_PAIRS.items()
+        for gate in (
+            Gate(
+                line,
+                wash,
+                Measure.CONTRAST,
+                "a line on its own face: the floor for a drawn mark",
+                3.0,
+            ),
+            Gate(
+                wash,
+                "panel",
+                Measure.CONTRAST,
+                "a face, not bare paper: the faintest face that reads",
+                1.12,
+            ),
+            Gate(
+                wash,
+                "background",
+                Measure.CONTRAST,
+                "a face near the paper, so it does not compete with the lines",
+                maximum=1.5,
+            ),
+        )
     ),
 ]
-_unknown_roles = {role for gate in GATES for role in (gate.role, gate.against)} - set(
-    LEDGER
-)
+HUE_GATES = [
+    HueGate("water", 190, 300, 15, "water reads as water: cyan to blue-violet"),
+    HueGate("ground", 20, 110, 0, "ground reads as earth, or as stone", grey_below=10),
+]
+_unknown_roles = (
+    {role for gate in GATES for role in (gate.role, gate.against)}
+    | {gate.role for gate in HUE_GATES}
+    | set(WASH_PAIRS)
+    | set(WASH_PAIRS.values())
+) - set(LEDGER)
 if _unknown_roles:
     raise SystemExit(
-        f"GATES names roles that {THEME_CSS} does not set: {sorted(_unknown_roles)}"
+        f"the gates name roles that {THEME_CSS} does not set: {sorted(_unknown_roles)}"
     )
-ACCENT_VS_INK_DE = 35  # emphasis must read as emphasis, not as darker ink
-CVD_DE = 25  # accent vs second, under deuteranopia AND protanopia
 CONTRAST_FLOOR = 3.0  # WCAG non-text: the floor a drawn mark must hold
 
 # --------------------------------------------------------------------------
@@ -227,27 +471,49 @@ STROKE_LADDER = [2.0, 2.5, 3.0, 4.0]
 LADDER_TOLERANCE = 0.05
 ASPECT_TOLERANCE = 0.01  # width:height vs the viewBox's, so nothing is squashed
 
-# Every colour a Line-weighted drawing is allowed to use, and its job. The
-# values come from the theme: two are the drawings' own variables, two are
-# palette colours.
+# Every colour a Line-weighted drawing is allowed to use, and its job
+# (docs/illustrations.md, "Colour"). The values come from the theme.
 ART_ROLES = {
-    "art-line": (
-        "primary line work: the subject's own structure. Also as a 0.07-0.08 fill."
-    ),
-    "muted": ("secondary structure: the stand, the frame, the thing holding it up."),
-    "ink": "tertiary detail: tick marks, smoke. Usually at 0.5 stroke-opacity.",
-    "art-knockout": (
-        "knockout: a pale face that has to read as lit, not as empty paper."
-    ),
+    "subject": "the subject's lines: its structure, and the thing that moves",
+    "subject-wash": "the subject's faces: a solid face near the paper, read as lit",
+    "muted": "context: what holds or acts on the subject (the stand, the case)",
+    "muted-wash": "the context's faces",
+    "ink": "detail: tick marks, smoke. Usually at 0.5 stroke-opacity.",
+    "water": "water, where it meets another material (the pool)",
+    "ground": "ground and stone, where they meet another material",
+    "ground-wash": "the ground's faces",
 }
 ART_INK = {LEDGER[role]: job for role, job in ART_ROLES.items()}
 DETAIL_ROLE = "ink"  # the role whose lines are at DETAIL_LINE_OPACITY
 ART_FIELD = LEDGER["panel"]  # illustrations sit on a card, not on the slide
+PAPERS = frozenset({LEDGER["background"], LEDGER["panel"]})
 
-# Opacities, from docs/illustrations.md. The subject is drawn at 0.60-1.0; what
-# holds it is a wash, 0.07-0.18. A line is solid, except the detail colour's:
-# it is at half opacity.
-WASH_OPACITY = (0.07, 0.18)
+
+def wash_variation(colour: Colour, palette: Palette = LEDGER) -> str | None:
+    """The wash that `colour` is a variation of, or None: a wash mixed toward
+    its line or toward a paper (a lit or a shaded face; docs/illustrations.md,
+    "Washes"). Within one 8-bit step, for rounding."""
+    for wash, line in WASH_PAIRS.items():
+        base = palette[wash]
+        for target in (palette[line], palette["background"], palette["panel"]):
+            if target == base:
+                continue
+            # the share of `target` that gives the channel which moves most
+            widest = max(
+                range(3),
+                key=lambda index: abs(target.channels[index] - base.channels[index]),
+            )
+            share = (colour.channels[widest] - base.channels[widest]) / (
+                target.channels[widest] - base.channels[widest]
+            )
+            if 0 <= share <= 1 and abs(target.blend(base, share).distance(colour)) <= 1:
+                return wash
+    return None
+
+
+# Opacities, from docs/illustrations.md. A face is its wash, solid. A fill in a
+# line colour is a substance or a small dark part, at 0.60-1.0. A line is
+# solid, except the detail colour's: it is at half opacity.
 SUBJECT_MIN_OPACITY = 0.60
 DETAIL_LINE_OPACITY = 0.5
 
@@ -433,7 +699,7 @@ def min_opacity(
     """The least opacity at which `foreground` on `background` still holds the
     contrast floor.
 
-    Anything fainter is a wash: visible to the front three rows and gone at the
+    Anything fainter is faint: visible to the front three rows and gone at the
     back. That is a legitimate thing to draw -- but the drawing has to read
     without it. See docs/legibility.md.
     """
@@ -511,12 +777,13 @@ class SlideOverride:
     selector: str
     declarations: tuple[Declaration, ...]
 
-    def palette(self, theme: Palette) -> Palette:
-        """`theme`, with this rule's roles replaced: what those slides show."""
-        return theme | {
-            declaration.role: Colour.from_hex(declaration.value)
-            for declaration in self.declarations
-        }
+    def palette(self, theme: Recipes) -> Palette:
+        """`theme`, with this rule's roles replaced: what those slides show. A
+        recipe of the theme that uses a replaced role follows it, as in CSS."""
+        return resolve(
+            theme
+            | {declaration.role: declaration.value for declaration in self.declarations}
+        )
 
 
 @dataclass(frozen=True)
@@ -565,7 +832,7 @@ def talk_source_files(talk: pathlib.Path) -> list[pathlib.Path]:
 
 
 def talk_palette_declarations(
-    talks: Iterable[pathlib.Path], theme: Palette
+    talks: Iterable[pathlib.Path], theme: Recipes
 ) -> PaletteDeclarations:
     """Every PALETTE_PREFIX declaration in the source files of `talks` (talk
     directories; see `talk_source_files`). The theme sets the palette. A talk
@@ -638,7 +905,7 @@ def strokes_in(source: str) -> list[float]:
 if __name__ == "__main__":
     print(f"Ledger, and the floor at {DESIGN_VENUE.label}\n")
     for role, colour in LEDGER.items():
-        print(f"  {PALETTE_PREFIX}{role:<11} {colour}   L={colour.luminance:.4f}")
+        print(f"  {PALETTE_PREFIX}{role:<20} {colour}   L={colour.luminance:.4f}")
     print(
         f"\n  stroke ladder {STROKE_LADDER} CSS px as shown (within {LADDER_TOLERANCE:.0%})"
     )
