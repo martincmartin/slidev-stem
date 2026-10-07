@@ -284,8 +284,20 @@ function hexColour(hex: string, alpha = 1): Rgba {
   return [red, green, blue, alpha];
 }
 
-/** The colour of each ink, as the renderer resolved it when it started. */
+/** The colour of each ink, as the renderer resolved it from its palette. */
 type InkColours = ReadonlyMap<Ink, Rgba>;
+
+/** The paper and each ink of a palette, as the renderer draws them. Throws
+ *  unless each colour is `#rrggbb`. */
+function paletteColours(palette: Palette): { paper: Rgba; inks: InkColours } {
+  checkPalette(palette);
+  return {
+    paper: hexColour(palette.paper),
+    inks: new Map(
+      Object.values(INKS).map((ink) => [ink, hexColour(palette[ink.name])]),
+    ),
+  };
+}
 
 function inkColour(inks: InkColours, ink: Ink): Rgba {
   const colour = inks.get(ink);
@@ -466,10 +478,10 @@ export class Renderer {
   readonly scene: Scene;
   contextsLost = 0;
   private readonly gl: WebGL2RenderingContext;
-  private readonly paper: Rgba;
-  /** Each ink of the scene, resolved once: a change to the palette that the
-   *  caller gave does not reach this renderer. */
-  private readonly inks: InkColours;
+  private paper: Rgba;
+  /** Each ink of the scene, resolved from the palette that the constructor
+   *  or `setPalette` gave. */
+  private inks: InkColours;
   /** The `inks` uniform for each map of inks (the identity map: `null`). */
   private readonly inkUniforms = new Map<
     ReadonlyMap<Ink, Ink> | null,
@@ -489,7 +501,7 @@ export class Renderer {
 
   /** Checks the scene and its palette, and takes the canvas's WebGL2
    *  context. The canvas must not have another renderer until that one's
-   *  `dispose()`. The palette is read here, once. */
+   *  `dispose()`. The palette is read here, and again at `setPalette`. */
   constructor(
     canvas: HTMLCanvasElement,
     scene: Scene,
@@ -501,7 +513,7 @@ export class Renderer {
       "another renderer draws on this canvas: dispose it first",
     );
     checkScene(scene);
-    checkPalette(palette);
+    const colours = paletteColours(palette);
     for (const mesh of scene.meshes) {
       check(
         mesh.hiddenInside.length <= MAX_DISCS,
@@ -510,10 +522,8 @@ export class Renderer {
     }
     this.canvas = canvas;
     this.scene = scene;
-    this.paper = hexColour(palette.paper);
-    this.inks = new Map(
-      Object.values(INKS).map((ink) => [ink, hexColour(palette[ink.name])]),
-    );
+    this.paper = colours.paper;
+    this.inks = colours.inks;
     // Lines are drawn in increasing lineOrder, then in scene order.
     this.drawn = [...scene.meshes]
       .sort((first, second) => first.lineOrder - second.lineOrder)
@@ -561,6 +571,17 @@ export class Renderer {
   private readonly onContextRestored = (): void => {
     this.resources = this.initialise();
   };
+
+  /** Draw in `palette`'s colours from the next `render`. No colour is in a
+   *  GL buffer: a fill is mixed with the paper at each draw, and the paper is
+   *  each frame's clear colour. So only the ink uniforms are made again. */
+  setPalette(palette: Palette): void {
+    check(!this.disposed, "the renderer is disposed");
+    const colours = paletteColours(palette);
+    this.paper = colours.paper;
+    this.inks = colours.inks;
+    this.inkUniforms.clear();
+  }
 
   /** Delete every GL object that this renderer made, and let the canvas take
    *  a new renderer. Afterwards `render` and `updateMesh` throw. Calling it

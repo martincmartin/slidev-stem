@@ -58,6 +58,17 @@ const PALETTE: Palette = {
   second: "#9A6238",
   secondWash: "#E6D8CA",
 };
+/** Another palette, with another paper: Campfire's, as an example. */
+const DARK: Palette = {
+  paper: "#241E1A",
+  subject: "#FFCC8F",
+  subjectWash: "#3D3731",
+  muted: "#B5A594",
+  mutedWash: "#4A403A",
+  ink: "#F6EEE3",
+  second: "#54BCD6",
+  secondWash: "#2D3A3C",
+};
 
 function square(left: number, top: number, side: number): Point2[] {
   return [
@@ -377,6 +388,33 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
     },
   ],
   [
+    "setPalette: the next frame is in the new colours, and back again",
+    (own) => {
+      const test = makeScene();
+      const target = canvas();
+      const drawn = own(renderer(target, test.scene));
+      drawn.render(frameOf(test));
+      const before = pixels(target);
+      drawn.setPalette(DARK);
+      drawn.render(frameOf(test));
+      const dark = pixels(target);
+      check(
+        dark[0] === 0x24 && dark[1] === 0x1e && dark[2] === 0x1a,
+        `the paper is ${String([...dark.slice(0, 3)])}, not the dark paper`,
+      );
+      drawn.setPalette(PALETTE);
+      drawn.render(frameOf(test));
+      same(pixels(target), before, "the first palette again");
+      throws(() => {
+        drawn.setPalette({ ...PALETTE, ink: "dark" });
+      }, /dark/);
+      drawn.dispose();
+      throws(() => {
+        drawn.setPalette(PALETTE);
+      }, /disposed/);
+    },
+  ],
+  [
     "the renderer refuses a frame or a mesh that breaks its contract",
     (own) => {
       const test = makeScene();
@@ -680,21 +718,23 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
     },
   ],
   [
-    "stills: one picture for each key, and dispose revokes their URLs",
+    "stills: one picture for each key and palette, and dispose revokes their URLs",
     async (own) => {
       const test = makeScene();
-      const stills = own(new Stills(test.scene, PALETTE));
+      const stills = own(new Stills(test.scene));
       let draws = 0;
       const draw = (drawn: Renderer): void => {
         draws++;
         drawn.render(frameOf(test));
       };
-      const url = await stills.of("a", draw);
+      const url = await stills.of("a", PALETTE, draw);
       check(
-        (await stills.of("a", draw)) === url,
+        (await stills.of("a", PALETTE, draw)) === url,
         "the same key gave another picture",
       );
-      check(draws === 1, `drawn ${String(draws)} times`);
+      const dark = await stills.of("a", DARK, draw);
+      check(dark !== url, "another palette gave the same picture");
+      check(draws === 2, `drawn ${String(draws)} times for two palettes`);
       check((await fetch(url)).ok, "the URL does not load");
       stills.dispose();
       stills.dispose();
@@ -705,7 +745,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
         loads = false;
       }
       check(!loads, "the URL still loads after dispose");
-      throws(() => stills.of("b", draw), /disposed/);
+      throws(() => stills.of("b", PALETTE, draw), /disposed/);
     },
   ],
 ];

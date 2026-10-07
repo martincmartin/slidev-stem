@@ -46,6 +46,12 @@ Five rules for a slide:
   [theme.md](../../docs/theme.md#one-slide-can-change-a-role)). `tools/palette.py` fails if a
   talk declares a `--palette-*` variable in a different rule, or if that
   slide's palette fails a gate.
+- **To see a slide in another palette, give it a palette class**
+  (`class: palette-campfire`; [theme.md](../../docs/theme.md#palette-classes-a-slide-in-another-palette)).
+  The watch and the diving board follow it. To compare palettes, import the
+  slide once for each, as `slides.md` does with slide 2: the Hairspring slide
+  is in `pages/hairspring.md`, and its previews follow it. The slide numbers
+  in these docs count the talk's own slides, not the previews.
 - **`layout: full` plus a class, not a custom layout.** It keeps each slide's layout
   next to its content, which has been worth more than the duplication costs — the
   slide you are reading is the slide you are editing.

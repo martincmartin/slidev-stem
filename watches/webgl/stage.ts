@@ -132,6 +132,12 @@ export class Stage<ModelState> {
     this.request = null;
   }
 
+  /** Draw in `palette`'s colours from the next frame. */
+  setPalette(palette: Palette): void {
+    check(!this.disposed, "the stage is disposed");
+    this.renderer.setPalette(palette);
+  }
+
   /** Stop, and free the renderer. Calling it again does nothing. */
   dispose(): void {
     this.stop();

@@ -111,6 +111,31 @@ def test_css_palette_rejects_a_value_that_is_not_a_colour(tmp_path: Path) -> Non
         lib.css_palette(css)
 
 
+def test_a_palette_class_changes_its_roles_and_their_recipes(tmp_path: Path) -> None:
+    css = write(
+        tmp_path / "palettes.css",
+        THEME
+        + ".slidev-layout.dark { --palette-accent: var(--palette-ink); }\n"
+        + ".slidev-layout.label { position: relative; }",
+    )
+    warm, dark = lib.css_palette_classes(css)
+    assert (warm.name, dark.name) == ("warm", "dark")
+    theme = {"ink": "#2A2520", "accent": "#c0451c", "same": "var(--palette-ink)"}
+    assert warm.palette(theme)["same"] == WHITE
+    assert dark.palette(theme)["accent"] == Colour(0x2A, 0x25, 0x20)
+
+
+def test_a_palette_class_may_set_only_the_themes_roles() -> None:
+    palette_class = lib.PaletteClass("odd", {"glow": "#FFFFFF"})
+    with pytest.raises(ValueError, match="glow"):
+        palette_class.palette({"ink": "#000000"})
+
+
+def test_the_house_palette_classes_set_only_the_themes_roles() -> None:
+    for palette_class in lib.css_palette_classes():
+        palette_class.palette(lib.THEME_RECIPES)
+
+
 # ---- recipes ------------------------------------------------------------------------
 def test_a_recipe_is_a_role_or_a_mix_of_roles() -> None:
     palette = lib.resolve(

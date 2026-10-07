@@ -1,0 +1,49 @@
+.slidev-layout.palette-campfire {
+  --palette-background: #241e1a;
+  --palette-panel: #332a24;
+  --palette-border: #4a3d34;
+  --palette-ink: #f6eee3;
+  --palette-muted: #b5a594;
+  --palette-accent: #ffb340;
+  --palette-second: #54bcd6;
+  --palette-subject: #ffcc8f;
+  --palette-subject-wash: #3d3731;
+  --palette-second-wash: #2d3a3c;
+  --palette-water: var(--palette-second);
+}
+  0 required gate(s) missed
+
+.slidev-layout.palette-marmalade {
+  --palette-background: #2b2420;
+  --palette-panel: #38302c;
+  --palette-border: #514944;
+  --palette-ink: #fff4e8;
+  --palette-muted: #a49b92;
+  --palette-accent: #e8883c;
+  --palette-second: #93d096;
+  --palette-subject: #ffd7bc;
+  --palette-subject-wash: #443c37;
+  --palette-second-wash: #3b3f33;
+  --palette-water: #85caf5;
+}
+  4 required gate(s) missed
+    ink vs panel: 11.90 (>= 12)
+    subject vs muted: 28.54 (>= 30)
+    subject vs ink: 16.29 (>= 30)
+    second vs subject: 12.55 (>= 25)
+
+.slidev-layout.palette-after-hours {
+  --palette-background: #17202a;
+  --palette-panel: #242c35;
+  --palette-border: #3f454b;
+  --palette-ink: #f6f0df;
+  --palette-muted: #94948f;
+  --palette-accent: #ffb84d;
+  --palette-second: #7fb3e8;
+  --palette-subject: #ffcc8c;
+  --palette-subject-wash: #3d3730;
+  --palette-second-wash: #29394b;
+  --palette-water: var(--palette-second);
+}
+  0 required gate(s) missed
+

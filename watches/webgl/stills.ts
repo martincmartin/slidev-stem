@@ -10,7 +10,6 @@ import type { Palette, Scene } from "./scene.ts";
 
 export class Stills {
   readonly scene: Scene;
-  readonly palette: Palette;
   /** Made at the first still. */
   private renderer: Renderer | null = null;
   private readonly pictures = new Map<string, Promise<string>>();
@@ -18,22 +17,31 @@ export class Stills {
   private readonly urls = new Set<string>();
   private disposed = false;
 
-  constructor(scene: Scene, palette: Palette) {
+  constructor(scene: Scene) {
     this.scene = scene;
-    this.palette = palette;
   }
 
-  /** A picture as an object URL. `key` says what the picture is: the same key
-   *  gives the same picture, drawn once. `draw` draws it with the renderer. */
-  of(key: string, draw: (renderer: Renderer) => void): Promise<string> {
+  /** A picture as an object URL, in `palette`'s colours. `key` says what the
+   *  picture is: the same key and palette give the same picture, drawn once.
+   *  `draw` draws it with the renderer. */
+  of(
+    key: string,
+    palette: Palette,
+    draw: (renderer: Renderer) => void,
+  ): Promise<string> {
     check(!this.disposed, "the stills are disposed");
-    const known = this.pictures.get(key);
+    const fullKey = JSON.stringify([key, palette]);
+    const known = this.pictures.get(fullKey);
     if (known) return known;
-    this.renderer ??= new Renderer(
-      document.createElement("canvas"),
-      this.scene,
-      this.palette,
-    );
+    if (this.renderer) {
+      this.renderer.setPalette(palette);
+    } else {
+      this.renderer = new Renderer(
+        document.createElement("canvas"),
+        this.scene,
+        palette,
+      );
+    }
     const renderer = this.renderer;
     draw(renderer);
     // Read the picture back at once, before anything else draws: toBlob
@@ -51,7 +59,7 @@ export class Stills {
         }
       }, "image/png");
     });
-    this.pictures.set(key, picture);
+    this.pictures.set(fullKey, picture);
     return picture;
   }
 

@@ -17,10 +17,10 @@ export class WatchStills {
   private readonly motion: Motion;
   private readonly stills: Stills;
 
-  constructor(watch: Watch, palette: Palette) {
+  constructor(watch: Watch) {
     this.watch = watch;
     this.motion = new Motion(watch);
-    this.stills = new Stills(watch.scene, palette);
+    this.stills = new Stills(watch.scene);
   }
 
   /** Free the renderer and revoke the stills' URLs. */
@@ -28,9 +28,13 @@ export class WatchStills {
     this.stills.dispose();
   }
 
-  /** A slide's state as a picture (an object URL), at the still time, or at
-   *  rest. `size` is in device px. */
-  of(state: WatchState, size: [number, number]): Promise<string> {
+  /** A slide's state as a picture (an object URL) in the slide's palette, at
+   *  the still time, or at rest. `size` is in device px. */
+  of(
+    state: WatchState,
+    size: [number, number],
+    palette: Palette,
+  ): Promise<string> {
     const { scene, design } = this.watch;
     const key = JSON.stringify([
       state.view,
@@ -39,7 +43,7 @@ export class WatchStills {
       state.settled,
       size,
     ]);
-    return this.stills.of(key, (renderer) => {
+    return this.stills.of(key, palette, (renderer) => {
       const { time, swing } = stillPose(
         design.timing,
         state.settled,

@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Is this colour allowed, and does the palette still pass its own gates?
 
-    .venv/bin/python3 tools/palette.py                  # the palette, every gate, pass/fail
+    .venv/bin/python3 tools/palette.py                  # the palette, every gate, pass/fail;
+                                                        # then each palette class's gates,
+                                                        # reported, not required
     .venv/bin/python3 tools/palette.py --talk watches   # only: does this talk set it?
                                                         # (only a slide class may)
     .venv/bin/python3 tools/palette.py "#C0451C"        # can I use this? measured in every role
@@ -38,8 +40,10 @@ import lib
 FLARES = (0.0, 0.05, 0.10, 0.15, 0.20)  # the room-light table's columns
 
 
-def rule(passed: bool) -> str:
-    return "ok  " if passed else "FAIL"
+def rule(passed: bool, binding: bool = True) -> str:
+    """The verdict of a check. A check that is not `binding` is reported as a
+    "miss", and does not fail the run."""
+    return "ok  " if passed else "FAIL" if binding else "miss"
 
 
 def show_palette() -> bool:
@@ -80,13 +84,34 @@ def show_palette() -> bool:
         + f"{0.30:>8.3f}"
     )
 
+    passed = show_palette_classes() and passed
     print(f"\n{'ALL GATES PASS' if passed else 'SOMETHING FAILS -- see above'}")
     return passed
 
 
-def gate_line(gate: lib.Gate, palette: lib.Palette) -> str:
+def show_palette_classes() -> bool:
+    """Print each palette class of the theme with its gates. A palette class is
+    a palette to look at, not the talk's theme, so a missed gate does not fail
+    (docs/theme.md, "Palette classes"). A role that the theme does not set
+    does."""
+    css_name = lib.display_path(lib.PALETTE_CLASSES_CSS)
+    print(f"\npalette classes, from {css_name}: their gates are reported, not required")
+    passed = True
+    for palette_class in lib.css_palette_classes():
+        print(f"\n  .{palette_class.name}\n")
+        try:
+            palette = palette_class.palette(lib.THEME_RECIPES)
+        except ValueError as error:
+            print(f"  FAIL {error}")
+            passed = False
+            continue
+        show_gates(palette, binding=False)
+    return passed
+
+
+def gate_line(gate: lib.Gate, palette: lib.Palette, binding: bool = True) -> str:
     passed = gate.passes(palette)
-    verdict = rule(passed) if gate.required or passed else "note"
+    verdict = rule(passed, binding) if gate.required or passed else "note"
     measured = gate.value(palette)
     shown = (
         f"{measured:>6.2f}:1"
@@ -99,17 +124,18 @@ def gate_line(gate: lib.Gate, palette: lib.Palette) -> str:
     )
 
 
-def show_gates(palette: lib.Palette) -> bool:
-    """Print every gate of `palette`. True if every required gate passes."""
+def show_gates(palette: lib.Palette, binding: bool = True) -> bool:
+    """Print every gate of `palette`. True if every required gate passes. If
+    not `binding`, a missed gate is a "miss", not a "FAIL"."""
     passed = True
     for gate in lib.GATES:
-        print(gate_line(gate, palette))
+        print(gate_line(gate, palette, binding))
         passed = passed and (gate.passes(palette) or not gate.required)
     for hue_gate in lib.HUE_GATES:
         ok = hue_gate.passes(palette)
         _, chroma, hue = lib.lch(palette[hue_gate.role])
         print(
-            f"  {rule(ok)} {hue_gate.role:<12} hue {hue:>5.0f}, chroma {chroma:>4.0f}   "
+            f"  {rule(ok, binding)} {hue_gate.role:<12} hue {hue:>5.0f}, chroma {chroma:>4.0f}   "
             f"(hue {hue_gate.low:g}-{hue_gate.high:g}, chroma >= {hue_gate.min_chroma:g}"
             + (
                 f"; or chroma < {hue_gate.grey_below:g}"

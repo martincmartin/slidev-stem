@@ -16,13 +16,14 @@ and in the talk's `package.json`:
 
 ## What it sets
 
-| file                | what                                                                                                                      |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `package.json`      | the font families for Slidev, with `provider: none` (no web-font service); light only                                     |
-| `styles/fonts.css`  | the self-hosted font weights, from Fontsource                                                                             |
-| `styles/ledger.css` | the ten `--palette-*` variables, background and ink on every slide; `h1`; the subtitle (`h1 + p`); `cover`                |
-| `vite.config.mts`   | lets a talk's dev server and `slidev export` serve the fonts, which `pnpm install` at the repo root puts outside the talk |
-| `styles/index.ts`   | Slidev's base layout styles, then the two files above                                                                     |
+| file                  | what                                                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `package.json`        | the font families for Slidev, with `provider: none` (no web-font service); light only                                     |
+| `styles/fonts.css`    | the self-hosted font weights, from Fontsource                                                                             |
+| `styles/ledger.css`   | the ten `--palette-*` variables, background and ink on every slide; `h1`; the subtitle (`h1 + p`); `cover`                |
+| `styles/palettes.css` | the palette classes (`class: palette-campfire`): other palettes for any slide; `palette-preview`                          |
+| `vite.config.mts`     | lets a talk's dev server and `slidev export` serve the fonts, which `pnpm install` at the repo root puts outside the talk |
+| `styles/index.ts`     | Slidev's base layout styles, `fonts.css`, `ledger.css`, `palettes.css`                                                    |
 
 Layouts come from Slidev's core (`default`, `cover`, `full` and 18 others). The
 theme adds none yet.

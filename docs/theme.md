@@ -2,10 +2,11 @@
 
 **Covers:** how to make a theme, step by step; the colour roles that every
 theme fills; the line colours and their washes; the gates each role must pass;
-how one slide changes a role; and how to add a colour. Then the current theme,
-Ledger, as the example.
-**Read before** you choose, compare, measure or add a colour, or make a new
-theme.
+how one slide changes a role; palette classes, which show a slide in another
+palette; and how to add a colour. Then the current theme, Ledger, as the
+example, and the top picks: Ledger and three dark palettes, side by side.
+**Read before** you choose, compare, measure or add a colour, make a new
+theme, or show a slide in another palette.
 **Tasks:**
 [`tasks/2026-10-07-theme-colour-system/`](../tasks/2026-10-07-theme-colour-system/PLAN.md)
 (this method, the washes, the material colours, the art's gates),
@@ -20,7 +21,9 @@ theme.
 [`watches/tasks/2026-09-30-flexing-ruler/`](../watches/tasks/2026-09-30-flexing-ruler/PLAN.md)
 (a slide class sets the palette),
 [`watches/tasks/2026-09-30-flash/`](../watches/tasks/2026-09-30-flash/PLAN.md)
-(`second` in the art: the flash, and its face).
+(`second` in the art: the flash, and its face),
+[`tasks/2026-10-07-palette-preview/`](../tasks/2026-10-07-palette-preview/PLAN.md)
+(palette classes; the watch takes the slide's palette).
 
 The theme is not final. It will be chosen again when a deck is more complete,
 and a dark theme may be tried. So the method, the roles and the gates below are
@@ -215,10 +218,63 @@ the role follows it: a slide that changes `--palette-muted` also changes
 talk sets a `--palette-*` variable in any other rule, in any of its source
 files (it skips only `docs/`, `tasks/`, `public/`, the READMEs and the
 dependencies), and it measures each such slide's palette against the gates.
-Drawings inlined in the slide follow the override. A layer for the whole talk
-does not: it is outside the slide's element (in `watches`, the WebGL watch and
-the diving board, in `global-bottom.vue`), and the WebGL watch reads the
-palette once, when the page loads.
+Drawings inlined in the slide follow the override.
+
+**A layer outside the slide must take the slide's palette itself.** It is not
+inside the slide's `.slidev-layout`, so the rule does not reach it. In
+`watches`, the watch and the diving board are such layers (`global-bottom.vue`,
+`slide-bottom.vue`). `slidePalette()` in `watches/watch/palette.ts` reads the
+`--palette-*` values from a hidden element with the slide's classes. The layer
+sets them on itself, and gives the WebGL renderer the colours. So any class
+that changes a role reaches the watch, not only a palette class.
+
+## Palette classes: a slide in another palette
+
+A palette class shows a slide in another whole palette: add it to the slide's
+`class:`.
+
+```yaml
+class: palette-campfire # with a layout class: `class: balance-wheel palette-campfire`
+```
+
+The house palette classes are in `themes/ledger/styles/palettes.css`, for
+every talk, light or dark. Each is a rule `.slidev-layout.palette-<name>` that
+sets the roles it changes. A role that it does not set keeps the theme's
+recipe, made from the class's roles. Values may be recipes, as in the theme.
+
+**They are palettes to look at, not the talk's theme.** `uv run
+tools/palette.py` prints each class's gates and marks a missed gate "miss".
+A miss does not fail the check. A role that the theme does not set does fail
+it. To make a palette class the talk's theme, it must pass every gate.
+
+**To preview a slide in several palettes,** import the slide once for each
+palette, and change only its class. A slide that is imported must be in its
+own file under `pages/`:
+
+```md
+---
+src: ./pages/hairspring.md
+class: palette-campfire palette-preview
+---
+```
+
+`palette-preview` puts the palette's name (the class's `--preview-name`) in
+the slide's lower right corner, at 12 px in muted: the presenter can find it,
+and the audience is not meant to notice it. It is below the 17 px floor of
+[legibility.md](legibility.md) on purpose. Leave it out on a slide that uses a
+palette for real.
+
+**To add a palette class,** choose its text roles by "Making a theme". Then
+`uv run tools/derive_palette.py <name> "<Display Name>" --background … --second …`
+derives the art roles by the same steps and prints the rule, with its
+`--preview-name`. Paste the rule into `palettes.css`, and run `uv run
+tools/palette.py` for its gates. On dark paper the subject is a pale version
+of the accent, which is seldom a water colour, so the tool gives water the
+second or a blue of its own. A misspelt class matches no rule, and the slide
+shows the theme's palette with no error.
+
+**Known limit:** at a move between two slides with different palettes, the
+watch's layer changes colour at once, while the old slide's text fades out.
 
 ## The gates
 
@@ -373,3 +429,37 @@ not a reason. The reason for Ledger is pasted content, above.
 One dark slide is fine and is recommended: **a full-bleed dark slide at the
 talk's turning point.** A dark _card_ inside a light slide reads as a
 rendering error. A dark _slide_ reads as a dark slide.
+
+## Top picks
+
+The shortlist for when the theme is chosen again: Ledger and three dark
+themes. The dark three are palette classes (see "Palette classes"), so any
+slide can show them. Campfire and After-Hours Observatory pass every gate.
+Marmalade misses four: ink on the panel, and its subject against muted, ink
+and the second. Its pale peach subject is close to its white ink. `uv run
+tools/palette.py` measures each one.
+
+The values are in `themes/ledger/styles/ledger.css` and
+`themes/ledger/styles/palettes.css`. As examples, their values on 2026-10-07.
+A role that is a recipe is shown as the colour that it gives, and the
+brackets say where it comes from. Water and ground are the pool on slide 2 of
+`watches`. On dark paper the subject is a pale accent, which is not a water
+colour, so water is the second where the second is a blue, and a blue of its
+own where it is not (`tools/derive_palette.py`).
+
+| Role         | Ledger                                                                                                                                                                                | Campfire                                                                                                                                                                               | Marmalade                                                                                                                                                                              | After-Hours Observatory                                                                                                                                                               |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| background   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#FAF7F0;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#FAF7F0`, a warm off-white                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#241E1A;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#241E1A`, a near-black espresso brown        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#2B2420;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#2B2420`, a near-black brown                 | <span style="display:inline-block;width:1.5em;height:1.5em;background:#17202A;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#17202A`, a near-black navy                 |
+| panel        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#F2EEE4;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#F2EEE4`, a light cream                     | <span style="display:inline-block;width:1.5em;height:1.5em;background:#332A24;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#332A24`, a dark brown                       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#38302C;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#38302C`, a dark brown                       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#242C35;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#242C35`, a dark slate blue                 |
+| border       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#E0D9CA;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#E0D9CA`, a light beige                     | <span style="display:inline-block;width:1.5em;height:1.5em;background:#4A3D34;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#4A3D34`, a mid-dark brown                   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#514944;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#514944`, a mid-dark grey-brown              | <span style="display:inline-block;width:1.5em;height:1.5em;background:#3F454B;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#3F454B`, a dark grey                       |
+| ink          | <span style="display:inline-block;width:1.5em;height:1.5em;background:#2A2520;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#2A2520`, a near-black brown                | <span style="display:inline-block;width:1.5em;height:1.5em;background:#F6EEE3;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#F6EEE3`, a warm off-white                   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#FFF4E8;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#FFF4E8`, a warm white                       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#F6F0DF;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#F6F0DF`, a warm off-white                  |
+| muted        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#736A60;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#736A60`, a warm grey-brown                 | <span style="display:inline-block;width:1.5em;height:1.5em;background:#B5A594;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#B5A594`, a warm grey-beige                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#A49B92;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#A49B92`, a warm grey                        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#94948F;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#94948F`, a neutral grey                    |
+| accent       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#1F5FA8;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#1F5FA8`, a mid blue                        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#FFB340;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#FFB340`, an amber                           | <span style="display:inline-block;width:1.5em;height:1.5em;background:#E8883C;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#E8883C`, an orange                          | <span style="display:inline-block;width:1.5em;height:1.5em;background:#FFB84D;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#FFB84D`, an amber                          |
+| second       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#B5601E;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#B5601E`, a burnt orange                    | <span style="display:inline-block;width:1.5em;height:1.5em;background:#54BCD6;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#54BCD6`, a sky cyan                         | <span style="display:inline-block;width:1.5em;height:1.5em;background:#93D096;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#93D096`, a mint green                       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#7FB3E8;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#7FB3E8`, a sky blue                        |
+| subject      | <span style="display:inline-block;width:1.5em;height:1.5em;background:#143C6B;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#143C6B`, a dark navy blue                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#FFCC8F;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#FFCC8F`, a pale amber                       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#FFD7BC;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#FFD7BC`, a pale peach                       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#FFCC8C;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#FFCC8C`, a pale amber                      |
+| subject-wash | <span style="display:inline-block;width:1.5em;height:1.5em;background:#D3DCE3;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#D3DCE3`, a very pale blue-grey             | <span style="display:inline-block;width:1.5em;height:1.5em;background:#3D3731;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#3D3731`, a dark warm grey                   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#443C37;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#443C37`, a dark warm grey                   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#3D3730;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#3D3730`, a dark warm grey                  |
+| muted-wash   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#E2DED6;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#E2DED6`, a pale warm grey                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#3E3630;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#3E3630`, a dark brown-grey                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#413935;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#413935`, a dark grey-brown                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#2E353C;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#2E353C`, a dark blue-grey                  |
+| second-wash  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#ECD8C4;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#ECD8C4`, a pale apricot                    | <span style="display:inline-block;width:1.5em;height:1.5em;background:#2D3A3C;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#2D3A3C`, a dark slate teal                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#3B3F33;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#3B3F33`, a dark olive grey                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#29394B;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#29394B`, a dark slate blue                 |
+| water        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#143C6B;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#143C6B`, a dark navy blue (the subject)    | <span style="display:inline-block;width:1.5em;height:1.5em;background:#54BCD6;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#54BCD6`, a sky cyan (the second)            | <span style="display:inline-block;width:1.5em;height:1.5em;background:#85CAF5;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#85CAF5`, a sky blue (its own)               | <span style="display:inline-block;width:1.5em;height:1.5em;background:#7FB3E8;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#7FB3E8`, a sky blue (the second)           |
+| ground       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#736A60;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#736A60`, a warm grey-brown (muted)         | <span style="display:inline-block;width:1.5em;height:1.5em;background:#B5A594;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#B5A594`, a warm grey-beige (muted)          | <span style="display:inline-block;width:1.5em;height:1.5em;background:#A49B92;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#A49B92`, a warm grey (muted)                | <span style="display:inline-block;width:1.5em;height:1.5em;background:#94948F;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#94948F`, a neutral grey (muted)            |
+| ground-wash  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#E2DED6;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#E2DED6`, a pale warm grey (the muted wash) | <span style="display:inline-block;width:1.5em;height:1.5em;background:#3E3630;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#3E3630`, a dark brown-grey (the muted wash) | <span style="display:inline-block;width:1.5em;height:1.5em;background:#413935;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#413935`, a dark grey-brown (the muted wash) | <span style="display:inline-block;width:1.5em;height:1.5em;background:#2E353C;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#2E353C`, a dark blue-grey (the muted wash) |

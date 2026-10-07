@@ -24,7 +24,10 @@
 // posed board on each page. `data-watch` on the canvas is the state it shows,
 // for art/print_check.py. Print mode comes from the page's nav: each printed
 // page gets a fixed nav of its own, which does not know it. The class
-// slidev-layout gives the layer the theme's palette variables and page colour.
+// slidev-layout gives the layer the theme's page colour. The layer is outside
+// the slide, so a slide class that changes the palette (a palette class,
+// ../docs/theme.md) does not reach it: the layer sets the slide's palette
+// variables on itself, and gives the stage the slide's colours.
 import { useNav } from "@slidev/client";
 import { injectionSlidevContext } from "@slidev/client/constants.ts";
 import {
@@ -49,7 +52,7 @@ import type { WatchModelState } from "./watch/model.ts";
 import { WATCH, watchStills } from "./watch/instance.ts";
 import { moveOf } from "./watch/navigation.ts";
 import type { Move, Place } from "./watch/navigation.ts";
-import { themePalette } from "./watch/palette.ts";
+import { slidePalette } from "./watch/palette.ts";
 import { slideState } from "./watch/slide-state.ts";
 import type { SlideState } from "./watch/slide-state.ts";
 import {
@@ -76,6 +79,8 @@ const frontmatter = computed(
   () => slidev.nav.currentSlideRoute.meta.slide?.frontmatter ?? {},
 );
 const state = computed(() => watchState(frontmatter.value, slidev.nav.clicks));
+/** The current slide's palette: the theme's, as the slide's classes change it. */
+const palette = computed(() => slidePalette(frontmatter.value["class"]));
 const name = computed(() => state.value?.view);
 /** The diving board's picture covers the watch. */
 const covered = ref(false);
@@ -192,7 +197,12 @@ function showBoard(clicks: number, move: Move): void {
 onMounted(() => {
   if (!live || !canvas.value) return;
   model.value = new WatchModel(WATCH);
-  stage = new Stage(canvas.value, WATCH.scene, themePalette(), model.value);
+  stage = new Stage(
+    canvas.value,
+    WATCH.scene,
+    palette.value.palette,
+    model.value,
+  );
   window.watchStage = stage;
   window.slideState = () => slideState(stage, canvas.value, shownWatch);
   document.documentElement.style.setProperty(
@@ -215,6 +225,9 @@ onMounted(() => {
     { immediate: true },
   );
   onChange(covered, run);
+  onChange(palette, (now) => {
+    stage?.setPalette(now.palette);
+  });
 });
 onBeforeUnmount(() => {
   unmounted = true;
@@ -236,15 +249,17 @@ onMounted(() => {
     Math.round(WATCH.scene.slide[0] * ratio),
     Math.round(WATCH.scene.slide[1] * ratio),
   ];
-  const pending = useNav()
-    .slides.value.map((route) =>
-      watchState(route.meta.slide?.frontmatter ?? {}, 0),
-    )
-    .filter((slide) => slide !== undefined);
+  const pending = useNav().slides.value.flatMap((route) => {
+    const slide = route.meta.slide?.frontmatter ?? {};
+    const shown = watchState(slide, 0);
+    return shown
+      ? [{ shown, palette: slidePalette(slide["class"]).palette }]
+      : [];
+  });
   const next = (): void => {
     const slide = pending.shift();
     if (!slide || unmounted) return;
-    void watchStills().of(slide, size);
+    void watchStills().of(slide.shown, size, slide.palette);
     requestIdleCallback(next);
   };
   setTimeout(() => {
@@ -258,6 +273,7 @@ onMounted(() => {
     v-if="live"
     class="slidev-layout watch-layer"
     :class="{ 'watch-off': hidden }"
+    :style="palette.variables"
   >
     <canvas
       ref="canvas"

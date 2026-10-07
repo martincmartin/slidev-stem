@@ -23,7 +23,8 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 | ---------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `lib.py`               | stdlib                   | the constants themselves; run it to print them                                                                                                           |
 | `browsers.py`          | playwright               | does this venv's Playwright have its browser; if not, install it (the tools that render call it)                                                         |
-| `palette.py`           | stdlib                   | does the palette pass its gates, does a talk set it; can I use this colour                                                                               |
+| `palette.py`           | stdlib                   | does the palette pass its gates, does a talk set it; can I use this colour; the palette classes' gates (reported)                                        |
+| `derive_palette.py`    | stdlib                   | a palette class's art roles, derived from its text roles, as a CSS rule                                                                                  |
 | `artcheck.py`          | stdlib                   | is this SVG valid, in-style, and thick enough at the size it is shown                                                                                    |
 | `scenecheck.py`        | stdlib                   | does a 3D scene (a talk's WebGL art) keep to the art inks, the stroke ladder and the opacities (a face is its wash, solid)                               |
 | `deck_check.py`        | playwright + PIL + numpy | does a talk's live WebGL art keep its frame rate, contexts and size in visible windows, the presenter view, the export (opens windows)                   |

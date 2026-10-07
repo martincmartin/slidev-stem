@@ -97,11 +97,14 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   pixels are the same as when the colours were in the buffers:
   `watches/art/pixel_regression.py` checks it.
 - **The page gives the palette.** The talk reads it from the theme's
-  `--palette-*` variables when the page loads (in `watches`,
-  `themePalette()` in `watch/palette.ts`, which says which variable gives each
-  ink). So a new theme reaches the art with no other step. The renderer does
-  not see a later change: to change colours while a talk runs, make a new
-  stage.
+  `--palette-*` variables, as the current slide's classes change them (in
+  `watches`, `slidePalette()` in `watch/palette.ts`, which says which variable
+  gives each ink). So a new theme, or a slide's palette class
+  ([theme.md](theme.md), "Palette classes"), reaches the art with no other
+  step. `Renderer.setPalette` (and `Stage.setPalette`) changes the colours
+  from the next frame: no colour is in a GL buffer, so only the ink uniforms
+  are made again. The stills share one renderer, and a still's palette is
+  part of its key.
 - **Not an oversight: `Ink` is an object with a typed name**, not an `enum` or
   a bare string. Node runs `.ts` files by removing types, so `enum` does not
   run (`erasableSyntaxOnly`), and a bare string would be a name to look up.

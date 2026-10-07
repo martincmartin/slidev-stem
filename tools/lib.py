@@ -123,21 +123,65 @@ THEME_SELECTOR = ".slidev-layout"  # the rule in THEME_CSS that holds the palett
 PALETTE_PREFIX = "--palette-"  # every theme fills the same roles: --palette-ink, ...
 
 
-def css_recipes(path: pathlib.Path = THEME_CSS) -> Recipes | None:
-    """The PALETTE_PREFIX variables that the THEME_SELECTOR rule in `path` sets,
-    as {role: CSS value}. None if there is no such rule."""
-    source = re.sub(r"/\*.*?\*/", "", path.read_text(), flags=re.DOTALL)
-    block = re.search(
-        r"(?m)^\s*" + re.escape(THEME_SELECTOR) + r"\s*\{([^}]*)\}", source
-    )
-    if not block:
-        return None
+def _block_recipes(block: str) -> Recipes:
+    """The PALETTE_PREFIX variables that the body of a CSS rule sets, as
+    {role: CSS value}, with the value's white space made plain."""
     return {
         role: re.sub(r"\s*\)", ")", re.sub(r"\(\s*", "(", " ".join(value.split())))
         for role, value in re.findall(
-            re.escape(PALETTE_PREFIX) + r"([\w-]+)\s*:\s*([^;]+);", block.group(1)
+            re.escape(PALETTE_PREFIX) + r"([\w-]+)\s*:\s*([^;]+);", block
         )
     }
+
+
+def _without_comments(path: pathlib.Path) -> str:
+    return re.sub(r"/\*.*?\*/", "", path.read_text(), flags=re.DOTALL)
+
+
+def css_recipes(path: pathlib.Path = THEME_CSS) -> Recipes | None:
+    """The PALETTE_PREFIX variables that the THEME_SELECTOR rule in `path` sets,
+    as {role: CSS value}. None if there is no such rule."""
+    block = re.search(
+        r"(?m)^\s*" + re.escape(THEME_SELECTOR) + r"\s*\{([^}]*)\}",
+        _without_comments(path),
+    )
+    return None if not block else _block_recipes(block.group(1))
+
+
+# The theme's palette classes: other palettes, which a slide shows with
+# `class: <name>` (docs/theme.md, "Palette classes").
+PALETTE_CLASSES_CSS = ROOT / "themes/ledger/styles/palettes.css"
+
+
+@dataclass(frozen=True)
+class PaletteClass:
+    """A rule `.slidev-layout.<name>` of PALETTE_CLASSES_CSS: the roles it sets.
+    A role that it does not set keeps the theme's recipe."""
+
+    name: str  # the class, for a report: "palette-campfire"
+    recipes: Recipes
+
+    def palette(self, theme: Recipes) -> Palette:
+        """What a slide with this class shows. Its roles must be the theme's."""
+        unknown = set(self.recipes) - set(theme)
+        if unknown:
+            raise ValueError(
+                f"{self.name} sets roles that the theme does not: {sorted(unknown)}"
+            )
+        return resolve(theme | self.recipes)
+
+
+def css_palette_classes(path: pathlib.Path = PALETTE_CLASSES_CSS) -> list[PaletteClass]:
+    """Each `.slidev-layout.<class>` rule of `path` that sets a role, in the
+    file's order. A rule that sets none (`palette-preview`) is not a palette."""
+    found = [
+        PaletteClass(rule.group(1), _block_recipes(rule.group(2)))
+        for rule in re.finditer(
+            r"(?m)^\s*" + re.escape(THEME_SELECTOR) + r"\.([\w-]+)\s*\{([^}]*)\}",
+            _without_comments(path),
+        )
+    ]
+    return [palette_class for palette_class in found if palette_class.recipes]
 
 
 def _arguments(text: str) -> list[str]:

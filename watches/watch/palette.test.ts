@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { INKS } from "../webgl/scene.ts";
-import { INK_VARIABLES, PAPER_VARIABLE, readPalette } from "./palette.ts";
+import {
+  INK_VARIABLES,
+  PAPER_VARIABLE,
+  readPalette,
+  readVariables,
+  slideClasses,
+} from "./palette.ts";
 
 const MUTED_WASH = "color-mix(in srgb, #736a60 18%, #faf7f0)";
 const THEME = new Map([
@@ -17,6 +23,7 @@ const THEME = new Map([
 
 const variables = (values: ReadonlyMap<string, string>) => ({
   getPropertyValue: (name: string) => values.get(name) ?? "",
+  [Symbol.iterator]: () => values.keys(),
 });
 
 /** What a browser would give: here only the one recipe needs working out. */
@@ -52,4 +59,34 @@ test("readPalette names a variable that the theme does not set", () => {
       name,
     );
   }
+});
+
+test("readVariables gives each of the theme's variables, and no other", () => {
+  const style = new Map([...THEME, ["color", "red"], ["--other", "1px"]]);
+  assert.deepEqual(readVariables(variables(style)), {
+    ...Object.fromEntries(THEME),
+    "--palette-background": "#faf7f0",
+  });
+});
+
+test("readVariables throws if the browser lists no paper", () => {
+  assert.throws(
+    () => readVariables(variables(new Map([["color", "red"]]))),
+    new RegExp(PAPER_VARIABLE),
+  );
+});
+
+test("slideClasses reads a string or a list of classes", () => {
+  assert.deepEqual(slideClasses(undefined), []);
+  assert.deepEqual(slideClasses("  wide  palette-campfire "), [
+    "wide",
+    "palette-campfire",
+  ]);
+  assert.deepEqual(slideClasses(["wide", "palette-x tall"]), [
+    "wide",
+    "palette-x",
+    "tall",
+  ]);
+  assert.throws(() => slideClasses({ wide: true }), /string/);
+  assert.throws(() => slideClasses([1]), /string/);
 });

@@ -1,0 +1,3 @@
+chromium ['--palette-x=#ff0000', '--palette-y=color-mix(in srgb, #ff0000 20%, white)']
+firefox ['--palette-x=#ff0000', '--palette-y=color-mix(in srgb, #ff0000 20%, white)']
+webkit ['--palette-y=color-mix(in srgb, #ff0000 20%, white)', '--palette-x=#ff0000']

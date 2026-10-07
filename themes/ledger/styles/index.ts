@@ -2,3 +2,4 @@
 import "@slidev/client/styles/layouts-base.css";
 import "./fonts.css";
 import "./ledger.css";
+import "./palettes.css";
