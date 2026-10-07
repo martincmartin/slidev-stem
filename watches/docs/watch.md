@@ -29,8 +29,7 @@ ruler that the diving board replaced),
 [`2026-09-30-flash`](../tasks/2026-09-30-flash/PLAN.md) (the balance flash),
 [`2026-10-01-raised-escapement`](../tasks/2026-10-01-raised-escapement/README.md)
 (the lower oscillator and upper roller),
-[`2026-10-03-pool-edge`](../tasks/2026-10-03-pool-edge/PLAN.md) (how the pool
-ends: a fade), and
+[`2026-10-03-pool-edge`](../tasks/2026-10-03-pool-edge/PLAN.md) (the pool-edge comparison), and
 [`2026-10-03-rest-shape`](../tasks/2026-10-03-rest-shape/PLAN.md) (the rest outline and its callout), and
 [`leader-correction`](../tasks/2026-10-03-rest-shape/leader-correction/PLAN.md) (the leader's contrast), and
 [`2026-10-04-leader-path-comparison`](../tasks/2026-10-04-leader-path-comparison/PLAN.md) (whole-path routing, the single curl edge, and the original-path comparison).
@@ -333,8 +332,8 @@ board from what is on the screen to each target, in either direction
 ([`navigation.md`](../../docs/navigation.md)). `art/diving_board.py` writes the SVG: edit the
 script, not the SVG. It is a straight diving board over the edge of a pool,
 which stands for the hairspring without its coils: the talk says why a spring
-swings, and the spiral would distract. Ground on the left, pool on the right,
-running off the slide. The board is over the pool for two thirds of its length.
+swings, and the spiral would distract. Ground on the left, pool on the right.
+The board is over the pool for two thirds of its length.
 The ground and the stand are washes of muted (warm); the water is a wash of the
 art line (blue) at 0.6 with light ripples, and the pool's walls are a darker
 muted. The pool has no near wall, and the ground has no front: both go on in
@@ -343,22 +342,11 @@ cropped there (it is 452 px tall, so its bottom is the slide's). The drawing is 
 slide's whole width (980 px, its viewBox starting at x 50, so the drawing's x 0
 is the slide's x -50). The ground and the stand run off the slide's left edge.
 
-**The pool and the ground fade to the paper at the right.** They are all paper
-at 60% of the slide's width (`fade_end` in the script), so the left of the
-slide holds the picture. The fade makes the pool seem to go on to the right. A
-pool that ended in a drawn wall would be about as wide as the board, and read
-as a small pool. The fade adds no hard edge in the middle of the slide, so it
-does not pull the eye from the picture. It is an alpha mask on the group of the
-pool, the ground and the stand. Over `FADE_LENGTH` px, the blend to the paper
-is smootherstep, $6t^5 - 15t^4 + 10t^3$. The edges that were compared, their
-measurements and a deck that shows them are in
-[`2026-10-03-pool-edge`](../tasks/2026-10-03-pool-edge/PLAN.md).
-
-- **Not an oversight: the ramp is not linear.** A linear ramp, in sRGB or in
-  linear light, shows a sharp band where it starts (a Mach band). Smootherstep
-  has zero slope and curvature at both ends.
-- **Not an oversight: 256 stops, at 5 decimals.** An SVG gradient is piecewise
-  linear. With the offsets rounded to 0.1, the fade showed about ten wide steps.
+**The pool and the ground end at a sharp vertical cut.**
+`pool_right` in `art/diving_board.py` sets the endpoint.
+A rectangular SVG clip cuts the pool, ground, and stand at that endpoint.
+It adds no wall or outline. The straight edge keeps the drawing separate from the text.
+The [pool-edge task](../tasks/2026-10-03-pool-edge/PLAN.md) holds the earlier comparisons and measurements.
 
 The board ends on the
 hairspring's rest shape, at the hairspring's place on the left (`SLIDE_ORIGIN`

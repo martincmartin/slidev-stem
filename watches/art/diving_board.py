@@ -7,7 +7,7 @@ the board curls up into the hairspring at rest.
     uv run art/diving_board.py --check    # fail if the file on disk differs
 
 The picture is oblique: the ground is on the left, the pool on the right, and
-they fade to the paper by 60% of the slide's width (`fade_end`). The viewer is
+they end at a vertical cut (`pool_right`). The viewer is
 above and in front, so the back of everything is up and to the right
 (`Oblique`).
 
@@ -259,11 +259,8 @@ class BoardDesign:
     pool_x: float = 195.0  # the pool's left wall: two thirds of the board is over it
     coping: float = 14.0
     water_depth: float = 34.0  # the water's surface below the ground
-    # x: where the pool and the ground have faded to the paper: 60% of the
-    # slide's width from its left (`SLIDE_ORIGIN`), so the pool seems to go on to
-    # the right. A pool that ended in a drawn wall would be as wide as the board,
-    # and read as a small pool. Why a fade: tasks/2026-10-03-pool-edge/.
-    fade_end: float = 0.6 * 980 - SLIDE_ORIGIN[0]
+    # x: the vertical cut through the pool and ground, measured from the slide origin.
+    pool_right: float = 0.6 * 980 - SLIDE_ORIGIN[0]
     off_slide: float = (
         1400.0  # x: past the right of the drawing, at the pool's front too
     )
@@ -285,22 +282,7 @@ class BoardDesign:
 DESIGN = BoardDesign()
 
 
-FADE_LENGTH = 85.0  # px: the fade's length, ending at `fade_end`
-# The fade is a gradient of the mask's opacity: the blend of the pool with the
-# paper is smootherstep(t), t from 0 to 1 across the fade, which has zero slope and
-# curvature at both ends. A linear ramp (in sRGB or in linear light) has a sudden
-# change of slope at each end, which the eye exaggerates into a bright or dark band
-# (a Mach band). An SVG gradient is piecewise linear, so it has a stop every third
-# of a pixel. The offsets must be written with enough decimals: `number()` rounds
-# to 0.1, and the fade then had about ten wide steps. Measured: the render matches
-# the formula to 0.003 (tasks/2026-10-03-pool-edge/evidence/).
-FADE_STOPS = 256
 TIMELINE = Timeline()
-
-
-def smootherstep(fraction: float) -> float:
-    """0 to 1 with zero slope and curvature at both ends."""
-    return fraction**3 * (fraction * (fraction * 6 - 15) + 10)
 
 
 def smoothstep(fraction: float) -> float:
@@ -690,31 +672,18 @@ def set_markup(
         oblique.project(design.stand_x[1], 0, design.stand_z[0]),
     ]
     everything = f"M{design.view_left} 0 H{design.view_left + design.width} V{design.height} H{design.view_left} Z"
-    fade_id = f"{id_prefix}fade"
-    mask_id = f"{id_prefix}fade-mask"
+    pool_clip_id = f"{id_prefix}pool-clip"
     ground_clip_id = f"{id_prefix}ground-clip"
-    fade_start = design.fade_end - FADE_LENGTH
-    kept_width = design.fade_end - design.view_left
+    kept_width = design.pool_right - design.view_left
     return [
         "<defs>",
-        f'<linearGradient id="{fade_id}" gradientUnits="userSpaceOnUse" x1="{number(fade_start)}" x2="{number(design.fade_end)}" y1="0" y2="0">'
-        + "".join(
-            f'<stop offset="{index / FADE_STOPS:.5f}" stop-color="{inks.knockout.value}" stop-opacity="{1 - smootherstep(index / FADE_STOPS):.4f}"/>'
-            for index in range(FADE_STOPS + 1)
-        )
-        + "</linearGradient>",
-        # an alpha mask: only the opacity of what it holds counts
-        # the mask is only as big as the drawing: with a huge one, Chromium drew
-        # the fade in about ten wide steps
-        f'<mask id="{mask_id}" mask-type="alpha" maskUnits="userSpaceOnUse" x="{number(design.view_left)}" y="0" width="{number(kept_width)}" height="{number(design.height)}">'
-        # one rect: the gradient's first stop pads to the left of its start,
-        # so no seam shows where the full part meets the fade
-        + f'<rect x="{number(design.view_left)}" y="0" width="{number(kept_width)}" height="{number(design.height)}" fill="url(#{fade_id})"/></mask>',
+        f'<clipPath id="{pool_clip_id}" clipPathUnits="userSpaceOnUse">'
+        + f'<rect x="{number(design.view_left)}" y="0" width="{number(kept_width)}" height="{number(design.height)}"/></clipPath>',
         f'<clipPath id="{ground_clip_id}"><path clip-rule="evenodd" d="{everything} {path_data(stand_hull)}"/></clipPath>',
         "</defs>",
         f'<g id="{id_prefix}set" data-layer="set" class="{CLASS_PREFIX}set">',
-        # the pool, the ground and the stand, faded to the paper at the right
-        f'<g mask="url(#{mask_id})">',
+        # the pool, the ground and the stand, cut at the right
+        f'<g clip-path="url(#{pool_clip_id})">',
         # the pool: the water is a wash of the art line, the walls are shaded
         f'<path d="{path_data(surface)}" {paint(fill=inks.line)} fill-opacity="{WATER_OPACITY}"/>',
         f'<path d="{path_data(left_wall)}" {wash} fill-opacity="{WALL_OPACITY}"/>',
@@ -741,7 +710,7 @@ def set_markup(
         f'<path d="{path_data(stand_top)}"/>',
         f'<path d="{path_data(stand_front)}"/>',
         "</g>",
-        "</g>",  # the faded group
+        "</g>",  # the clipped group
         "</g>",
     ]
 

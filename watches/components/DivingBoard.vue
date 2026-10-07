@@ -228,8 +228,8 @@ const classes = computed(() => ({
      its bottom: its x 0 is the slide's x -50 (its viewBox starts at 50), so its
      spiral's centre, (325, 176), is the hairspring's on the slide, (275, 276).
      The ground and the pool run off the bottom of the slide, and the ground and
-     the stand off its left. The pool fades to the paper by 60% of the slide's
-     width (`fade_end` in art/diving_board.py) */
+     the stand off its left. The pool ends at a vertical cut
+     (`pool_right` in art/diving_board.py) */
   left: 0;
   top: 100px;
   width: 980px;

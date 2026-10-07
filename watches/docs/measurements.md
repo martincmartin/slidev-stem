@@ -90,12 +90,12 @@ The installed model is checked against the selected proposal in both browsers.
 
 ## The diving board
 
-At `TV 55in @7m`, measured 2026-10-04, the SVG on its own clock (the page
-starts it on a click):
+Measured 2026-10-06 at `TV 55in @7m`, with the straight pool edge.
+The SVG runs on its own clock; the page starts it on a click:
 
 ```
 drawing          ink%    hold    p90    Fmax     dPeak   px2 >=3:1
-diving-board     20.1    3.37    3.37   0.050      8.97        3725.4
+diving-board     21.6    3.37    3.37   0.050      8.96        3216
 ```
 
 It clears the gate. The hold is the water against the paper: the water is a
