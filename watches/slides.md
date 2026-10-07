@@ -98,11 +98,12 @@ class: balance-wheel
 </div>
 
 <div v-click="2" class="bw-sentence bw-accuracy">
-  <div class="bw-calibrated">Calibrated, it can be</div>
-  <div class="bw-percent">99.99% accurate</div>
-  <div class="bw-daily">
-    <div>Out of 86,400 sec/day</div>
-    <div>Accurate to ~ 9 sec/day</div>
+  <div class="bw-calibrated font-serif">Well calibrated</div>
+  <div class="bw-percent">99.99% <span>accurate</span></div>
+  <div class="bw-unit">Seiko & Citizen</div>
+  <div v-click="3" class="bw-daily">
+    <div class="bw-unit">out of 86,400 sec a day</div>
+    <div class="bw-error">±9 sec a day</div>
   </div>
 </div>
 
@@ -126,17 +127,50 @@ class: balance-wheel
 .slidev-layout.balance-wheel .bw-sentence:not(.slidev-vclick-hidden) {
   transition-delay: var(--text-fade);
 }
+/* The accuracy uses the timekeeper card's type roles (TimekeeperCard.vue):
+   name, stat in the accent, unit in muted, and the catch in second. Each is
+   a little larger than on a card, because it has the column to itself. The
+   numbers are in the sans, not the card's mono: mono gives the decimal point
+   and each space a full digit's width, and "99 . 99%" reads as two numbers. */
 .slidev-layout.balance-wheel .bw-accuracy {
-  font-size: 28px;
-  line-height: 1.5;
+  line-height: 1.2;
+}
+.slidev-layout.balance-wheel .bw-calibrated {
+  font-size: 29px;
+  font-weight: 600;
+  color: var(--palette-ink);
 }
 .slidev-layout.balance-wheel .bw-percent {
-  margin-top: 12px;
-  font-size: 40px;
+  margin-top: 10px;
+  font-size: 48px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--palette-accent);
+}
+/* "accurate" shares the stat's line and baseline, in ink, so the accent
+   stays on the number alone. */
+.slidev-layout.balance-wheel .bw-percent span {
+  font-size: 29px;
+  font-weight: 500;
+  color: var(--palette-ink);
+}
+.slidev-layout.balance-wheel .bw-unit {
+  margin-top: 6px;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--palette-muted);
 }
 .slidev-layout.balance-wheel .bw-daily {
-  margin-top: 28px;
+  margin-top: 30px;
+}
+.slidev-layout.balance-wheel .bw-daily.slidev-vclick-target {
+  transition: opacity var(--text-fade);
+}
+.slidev-layout.balance-wheel .bw-error {
+  margin-top: 4px;
   font-size: 26px;
+  font-weight: 600;
+  color: var(--palette-second);
 }
 </style>
 
@@ -149,7 +183,9 @@ Put a child on the end of the diving board: boing-boing-boing, fast. Put a heavy
 
 [click] Mass also makes it steady. Push an empty playground swing and it jerks around. Put a kid on it and your push just tops it up. A heavy wheel carries its own momentum. A bump to your wrist, or the small kick the watch gives it on each swing, barely changes its rhythm.
 
-[click] A calibrated mechanical watch can be about 99.99% accurate. Out of 86,400 seconds in a day, that is about nine seconds gained or lost. This is an achievable rate, not a guarantee for every watch. It is an average over the day.
+[click] A well-calibrated mechanical watch, even an everyday Seiko or Citizen, can be about 99.99% accurate. That sounds perfect. (Pause.)
+
+[click] But there are 86,400 seconds in a day, so that is about nine seconds gained or lost each day. This is an achievable rate, not a guarantee for every watch. It is an average over the day.
 
 IF ASKED: Why a wheel and not a disc? Mass at the rim counts most, like a figure skater who spins slower with her arms out. Old balances had screws on the rim. Watchmakers moved them in or out to make the watch run faster or slower. The swing also takes about the same time whether it is big or small. That comes from the spring and the mass together, and it is why a watch keeps time while its mainspring runs down.
 -->

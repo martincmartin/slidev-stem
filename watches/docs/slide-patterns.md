@@ -144,7 +144,7 @@ It is background, not rules.
 
 A slide that shows the watch sets its view in the frontmatter.
 Slide 2 uses the diving board to explain the spring, and slide 3 fades its rest shape out as the balance wheel fades in.
-On slide 3, click 1 adds "and steadily". Click 2 replaces the explanation with the calibrated-watch accuracy comparison.
+On slide 3, click 1 adds "and steadily". Click 2 replaces the explanation with the accuracy of a calibrated watch (99.99%), in the timekeeper card's type roles. Click 3 adds what that is in seconds a day, so the audience takes in the percentage first.
 The outgoing text fades out before the incoming text fades in, in both directions.
 Slide 4 zooms out, and then the rest of the escapement fades in. Its
 callouts point to parts of the watch, one at each click. At its second click
