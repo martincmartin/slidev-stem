@@ -37,6 +37,27 @@ export function ring(outer: number, inner: number): Path {
   return circlePath(0, 0, outer).append(circlePath(0, 0, inner));
 }
 
+/** A D: a circle about `centre` cut by a straight flat, `flatOffset` from the
+ *  centre, facing the screen angle `facing`. */
+export function dShape(
+  centre: Point2,
+  radius: number,
+  flatOffset: number,
+  facing: number,
+): Path {
+  if (!(flatOffset >= 0 && flatOffset < radius)) {
+    throw new Error("a D's flat must cut the circle on its own side");
+  }
+  const half = (Math.acos(flatOffset / radius) * 180) / Math.PI;
+  const start = polar(radius, facing + half, centre);
+  const end = polar(radius, facing - half, centre);
+  // the long way round, clockwise, then the flat back to the start
+  return new Path()
+    .moveTo(...start)
+    .arcTo(radius, true, true, ...end)
+    .close();
+}
+
 export interface GearOptions {
   addendum?: number;
   dedendum?: number;

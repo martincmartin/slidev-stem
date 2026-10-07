@@ -101,6 +101,12 @@ points to a muted rest shape, in muted). The widths are set in
 `watches/art/diving_board.py` (`LeaderDesign`) and
 `watches/components/WatchCallout.vue`; keep them equal.
 
+**A leader is straight, or it bends once.** A bent leader leaves its word
+level, runs a fixed distance (`LeaderDesign` from `start` to `elbow`, and
+`ELBOW_RUN` in `WatchCallout.vue`; keep them equal), and then turns straight
+to the part, at one round-joined corner. Bend a leader when a straight one
+would cross another line of its label.
+
 **Motion.** One loop per subject, running forever, with a fixed duration per
 subject, so two drawings side by side are never compared at different points
 in their cycle:

@@ -89,6 +89,9 @@ Choose individual part details for clear motion and fit with the drawing style.
 
 The balance wheel sits below the hairspring. The roller sits above the spring.
 The jewel rises from the roller to meet the pallet fork at escape-wheel height.
+The jewel is a D, as in a Swiss lever: a circle with a flat that faces the fork.
+It is as wide as its circle, so it fits the fork's notch as a round jewel would.
+`JEWEL_RADIUS` and `JEWEL_FLAT_OFFSET` in `watch/generate.ts` hold its size.
 The staff connects the balance hub, collet, and roller. The spring's outer end attaches to the fixed stud.
 The case extends below the balance. The train and fork keep their meshing heights.
 `watch/generate.ts` computes these heights from the fork and the parts' thicknesses.
@@ -143,10 +146,10 @@ Going back, they fade out, and then the camera zooms in.
 
 ### The callouts
 
-Three callouts appear, one at each click: "Force (unseen) pushes wheel",
+Three callouts appear, one at each click: "Wheel driven by hidden gear",
 "Pallet blocks wheel" and "Jewel strikes pallet". Each is a
 `components/WatchCallout.vue` in `slides.md`: a label in ink, 28 px, weight
-600, and a straight leader. The first callout also draws the drive arrow.
+600, and a leader. The first callout also draws the drive arrow.
 
 - **The leaders are ink, 4 px**, as the house's leaders are
   ([`illustrations.md`](../../docs/illustrations.md), "Leaders"). Slide 2's
@@ -165,6 +168,10 @@ Three callouts appear, one at each click: "Force (unseen) pushes wheel",
   `<span class="callout-word">`. The component measures where the browser
   puts it, and the leader leaves the word's box on the side that faces its
   end.
+- **The first leader bends** (`bent`): "Wheel" has the label's second line
+  under it, which a straight leader to the wheel crossed. A bent leader leaves
+  the word level, on the side that faces its end, and turns after
+  `ELBOW_RUN`, as slide 2's leader does.
 - **The drive arrow** is an arc on the escape wheel's face, at its pinion's
   radius, where the fourth wheel's teeth push. It is centred on the line to
   the (hidden) fourth wheel and points the way the escape wheel turns.

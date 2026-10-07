@@ -156,7 +156,7 @@ and forward: at 4 the pallet's leader ends between corners A and B of the fork
 (palletTrial in watch/callouts.ts); at 5 the two leaders end 10 px outside
 their parts. -->
 
-<WatchCallout v-click="1" :to="marks.escape" :stop="$clicks === 5 ? 10 : marks.escapeRadius / 2" :clear="$clicks === 5 ? [marks.escapeTips] : []" :arrow="marks.drive" :left="680" :top="136">Force (unseen)<br>pushes <span class="callout-word">wheel</span></WatchCallout>
+<WatchCallout v-click="1" bent :to="marks.escape" :stop="$clicks === 5 ? 10 : marks.escapeRadius / 2" :clear="$clicks === 5 ? [marks.escapeTips] : []" :arrow="marks.drive" :left="680" :top="136"><span class="callout-word">Wheel</span> driven by<br>hidden gear</WatchCallout>
 
 <WatchCallout v-click="3" class="after-watch-fade" :to="$clicks === 4 || $clicks === 5 ? marks.palletMiddle : marks.pallet" :stop="$clicks === 5 ? 10 : 0" :clear="$clicks === 5 ? marks.forkOutlines : []" :left="470" :top="470"><span class="callout-word">Pallet</span> blocks wheel</WatchCallout>
 

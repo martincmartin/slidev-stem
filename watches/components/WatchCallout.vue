@@ -6,7 +6,10 @@
 // that faces `to`, and stops `stop` px short of it. With `clear` (closed
 // outlines, in slide px), it stops `stop` px short of where it first meets
 // one of them instead, so it ends outside them. `arrow` (none by default)
-// is a path drawn with the callout, from its tail to its head.
+// is a path drawn with the callout, from its tail to its head. A `bent`
+// leader leaves the word's side that faces `to`, runs level for ELBOW_RUN
+// px, and turns there to `to`: for a word with another line of the label
+// under or over it, which a straight leader would cross.
 //
 // The leader starts where the browser lays the word out, so the component
 // measures it, and again when the label's size changes (a font loads, or the
@@ -26,12 +29,16 @@ const props = withDefaults(
     stop?: number;
     arrow?: readonly Point2[];
     clear?: readonly (readonly Point2[])[];
+    bent?: boolean;
   }>(),
-  { stop: 0, arrow: () => [], clear: () => [] },
+  { stop: 0, arrow: () => [], clear: () => [], bent: false },
 );
 
 /** px between the word's box and the leader. */
 const GAP = 4;
+/** A bent leader's level run, in px: slide 2's (`LeaderDesign`, from `start`
+ *  to `elbow`, in art/diving_board.py). Keep them equal. */
+const ELBOW_RUN = 40;
 /** The arrow's head: its length and its half width, in px. */
 const HEAD_LENGTH = 16;
 const HEAD_HALF_WIDTH = 9;
@@ -74,21 +81,35 @@ const toward = (from: Point2, to: Point2, distance: number): Point2 => {
   ];
 };
 
-const leader = computed(() => {
-  if (!word.value) return undefined;
-  const [left, top, width, height] = word.value;
-  const centre: Point2 = [left + width / 2, top + height / 2];
+/** Where a straight leader from the word's centre to `to` leaves the word's
+ *  box, grown by GAP. */
+function straightStart(centre: Point2, width: number, height: number): Point2 {
   const [dx, dy] = [props.to[0] - centre[0], props.to[1] - centre[1]];
-  // where the line from the centre to `to` leaves the box, grown by GAP
   const reach = Math.min(
     dx === 0 ? Infinity : (width / 2 + GAP) / Math.abs(dx),
     dy === 0 ? Infinity : (height / 2 + GAP) / Math.abs(dy),
   );
-  const start: Point2 = [centre[0] + dx * reach, centre[1] + dy * reach];
-  const length = Math.hypot(props.to[0] - start[0], props.to[1] - start[1]);
-  const meets = firstCrossing(start, props.to, props.clear) ?? 1;
-  const end = toward(start, props.to, meets * length - props.stop);
-  return `M${start.join(" ")} L${end.join(" ")}`;
+  return [centre[0] + dx * reach, centre[1] + dy * reach];
+}
+
+const leader = computed(() => {
+  if (!word.value) return undefined;
+  const [left, top, width, height] = word.value;
+  const centre: Point2 = [left + width / 2, top + height / 2];
+  // a bent leader: level from the side of the word that faces `to`
+  const side = Math.sign(props.to[0] - centre[0]) || 1;
+  const corners: Point2[] = props.bent
+    ? [
+        [centre[0] + side * (width / 2 + GAP), centre[1]],
+        [centre[0] + side * (width / 2 + GAP + ELBOW_RUN), centre[1]],
+      ]
+    : [straightStart(centre, width, height)];
+  // the last straight part ends at `to`, or short of it
+  const from = at(corners, corners.length - 1);
+  const length = Math.hypot(props.to[0] - from[0], props.to[1] - from[1]);
+  const meets = firstCrossing(from, props.to, props.clear) ?? 1;
+  const end = toward(from, props.to, meets * length - props.stop);
+  return `M${[...corners, end].map((point) => point.join(" ")).join(" L")}`;
 });
 
 const arrowPaths = computed(() => {

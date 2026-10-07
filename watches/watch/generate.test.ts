@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import type { Mesh } from "../webgl/scene.ts";
 import type { Wheel } from "./design.ts";
-import { generate } from "./generate.ts";
+import { generate, JEWEL_FLAT_OFFSET, JEWEL_RADIUS } from "./generate.ts";
 
 const watch = generate();
 const { design, scene } = watch;
@@ -284,6 +284,27 @@ test("the lowered oscillator connects to the upper roller and jewel with clearan
   assert.equal(jewelBottom, rollerTop);
   assert.deepEqual([jewelBottom, jewelTop], [forkBottom, forkTop]);
   assert.ok(heights(at(partMeshes("case band"), 0))[0] <= balanceBottom - 2);
+});
+
+test("the impulse jewel is a D, its flat facing the fork, as wide as its circle", () => {
+  const jewel = at(partMeshes("impulse jewel"), 0);
+  const facing = (design.balance.pinDirection * Math.PI) / 180;
+  const along: number[] = [];
+  const across: number[] = [];
+  // in the balance's own frame: its arbor is the origin
+  for (let index = 0; index < jewel.triangles.length / 3; index++) {
+    const x = at(jewel.triangles, 3 * index);
+    const y = at(jewel.triangles, 3 * index + 1);
+    along.push(x * Math.cos(facing) + y * Math.sin(facing));
+    across.push(-x * Math.sin(facing) + y * Math.cos(facing));
+  }
+  const centre = design.balance.impulsePinRadius;
+  const near = (value: number, expected: number): boolean =>
+    Math.abs(value - expected) < 0.01;
+  assert.ok(near(Math.max(...along), centre + JEWEL_FLAT_OFFSET));
+  assert.ok(near(Math.min(...along), centre - JEWEL_RADIUS));
+  assert.ok(near(Math.max(...across), JEWEL_RADIUS));
+  assert.ok(near(Math.min(...across), -JEWEL_RADIUS));
 });
 
 test("slide 2 keeps only the spring, collet and stud when the mechanism fades", () => {

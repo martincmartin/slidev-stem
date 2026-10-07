@@ -40,6 +40,7 @@ import {
   clock,
   dagger,
   disc,
+  dShape,
   escapeOutline,
   gear,
   openings,
@@ -89,6 +90,9 @@ const BALANCE_SCREWS: BalanceScrews = Object.freeze({
 const OSCILLATOR_CLEARANCE = 2;
 const ROLLER_THICKNESS = 2;
 export const JEWEL_RADIUS = 6;
+/** The impulse jewel is a D, as in a Swiss lever: its flat faces the fork,
+ *  this far from its centre. */
+export const JEWEL_FLAT_OFFSET = JEWEL_RADIUS / 3;
 /** The subject of a free spin (watch/state.ts, `watchSpin`). */
 export const ESCAPE_WHEEL = "escape wheel";
 /** The circle on the pallet fork's pivot. */
@@ -1093,7 +1097,15 @@ function balanceSolids(kit: Kit): BalanceSolids {
     jewelPart,
     "body",
     balanceGroup,
-    ringsOf([circlePath(jewelCentre[0], jewelCentre[1], JEWEL_RADIUS), null]),
+    ringsOf([
+      dShape(
+        jewelCentre,
+        JEWEL_RADIUS,
+        JEWEL_FLAT_OFFSET,
+        balanceDesign.pinDirection,
+      ),
+      null,
+    ]),
     inkFill,
   );
   return { wheel, spring: springSolid, collet, restSpring, springShape };
