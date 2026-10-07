@@ -167,7 +167,11 @@ watchSpinSpeed: 135 # degrees a second
 # click 7: it swings again, and the leader fades out (docs/watch.md)
 watchSettle: 6
 watchResume: 7
-clicks: 7
+# from click 7: "tick" and "tock" at each strike of the jewel (docs/watch.md);
+# click 8 is a trial: the same words as comic bursts, to compare
+watchTickTock: 7
+watchTickTockBurst: 8
+clicks: 8
 ---
 
 # Escapement
@@ -185,13 +189,52 @@ const marks = escapementMarks(WATCH, useSlideContext().$frontmatter);
 <!-- Clicks 4 and 5 are trials of where a leader ends, to compare by going back
 and forward: at 4 the pallet's leader ends between corners A and B of the fork
 (palletTrial in watch/callouts.ts); at 5 the two leaders end 10 px outside
-their parts. -->
+their parts. Click 8 is a trial of the words at the strikes: comic bursts, to
+compare with click 7's plain words.
 
-<WatchCallout keyword v-click="1" bent :to="marks.escape" :stop="$clicks === 5 ? 10 : marks.escapeRadius / 2" :clear="$clicks === 5 ? [marks.escapeTips] : []" :arrow="marks.drive" :left="680" :top="136"><span class="callout-word">Wheel</span> driven by<br>hidden gear</WatchCallout>
+The newest callout is the focus: while the pallet's (clicks 3 to 5) and then
+the jewel's (click 6) is the newest, the callouts before it dim. At click 7
+the balance swings again, the jewel's leader fades, and all three come back.
+-->
 
-<WatchCallout keyword v-click="3" class="after-watch-fade" :to="$clicks === 4 || $clicks === 5 ? marks.palletMiddle : marks.pallet" :stop="$clicks === 5 ? 10 : 0" :clear="$clicks === 5 ? marks.forkOutlines : []" :left="470" :top="470"><span class="callout-word">Pallet</span> blocks wheel</WatchCallout>
+<div class="esc-callouts" :class="{ 'esc-focus-pallet': $clicks >= 3 && $clicks < 6, 'esc-focus-jewel': $clicks === 6 }">
+
+<WatchCallout keyword v-click="1" class="esc-wheel" bent :to="marks.escape" :stop="$clicks === 5 ? 10 : marks.escapeRadius / 2" :clear="$clicks === 5 ? [marks.escapeTips] : []" :arrow="marks.drive" :left="680" :top="136"><span class="callout-word">Wheel</span> driven by<br>hidden gear</WatchCallout>
+
+<WatchCallout keyword v-click="3" class="after-watch-fade esc-pallet" :to="$clicks === 4 || $clicks === 5 ? marks.palletMiddle : marks.pallet" :stop="$clicks === 5 ? 10 : 0" :clear="$clicks === 5 ? marks.forkOutlines : []" :left="470" :top="470"><span class="callout-word">Pallet</span> blocks wheel</WatchCallout>
 
 <WatchCallout keyword v-click="6" class="after-balance-rest" :to="marks.jewel" :show-leader="$clicks < 7" :left="330" :top="136"><span class="callout-word">Jewel</span> strikes pallet</WatchCallout>
+
+</div>
+
+<style>
+/* The callouts before the focus dim, to --esc-dim: less than the "Before
+   clocks" cards (0.35), so that a dimmed callout stays easy to read. The
+   dim waits for the new callout: at click 3 for the watch's swap
+   (after-watch-fade), at click 6 for the balance's rest
+   (after-balance-rest). Going back, the callouts come back at once. The
+   callout's own root carries its v-click classes, so the dim is on its
+   parts. */
+.esc-callouts {
+  --esc-dim: 0.5;
+}
+.esc-callouts :deep(.callout-art),
+.esc-callouts :deep(.callout-label) {
+  transition: opacity var(--text-fade);
+}
+.esc-focus-pallet .esc-wheel :deep(.callout-art),
+.esc-focus-pallet .esc-wheel :deep(.callout-label) {
+  opacity: var(--esc-dim);
+  transition-delay: var(--watch-fade, 0s);
+}
+.esc-focus-jewel .esc-wheel :deep(.callout-art),
+.esc-focus-jewel .esc-wheel :deep(.callout-label),
+.esc-focus-jewel .esc-pallet :deep(.callout-art),
+.esc-focus-jewel .esc-pallet :deep(.callout-label) {
+  opacity: var(--esc-dim);
+  transition-delay: var(--watch-rest-delay, 0s);
+}
+</style>
 
 <!--
 "Force (unseen) trying to turn wheel"
@@ -226,7 +269,9 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 
 [click] Third, the jewel. (The balance comes to rest, with the jewel in the fork's notch, under its leader.)
 
-[click] As the balance swings, it periodically gives permission for one tiny advance. During that event some energy also travels the other way, from the gear train through the escapement into the balance.
+[click] As the balance swings, it periodically gives permission for one tiny advance. (Each time the jewel strikes the fork, "tick" or "tock" appears beside it and drifts away.) During that event some energy also travels the other way, from the gear train through the escapement into the balance.
+
+[click] (Trial: the same words as 1960s Batman bursts, to compare with click 7.)
 -->
 
 ---

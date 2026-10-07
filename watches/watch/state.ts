@@ -12,6 +12,9 @@
 //     subject is the escape wheel (ESCAPE_WHEEL)
 //   watchSpinEnd: the click at which the rest comes back and stops it
 //   watchSpinSpeed: the spin's speed, degrees a second (default SPIN_SPEED)
+//   watchTickTock: the click from which the words "tick" and "tock" show at
+//     each strike of the jewel on the fork (`tickTockState`)
+//   watchTickTockBurst: the click from which they are comic bursts (a trial)
 
 import type { Scene } from "../webgl/scene.ts";
 import type { StageState } from "../webgl/timeline.ts";
@@ -110,6 +113,39 @@ export function watchState(
       (resumeAt === undefined || clicks < resumeAt),
     spin: spinning ? speed : null,
   };
+}
+
+/** How the words "tick" and "tock" show at each strike. */
+export interface TickTockState {
+  /** In comic bursts, the 1960s _Batman_ style: a trial, to compare with
+   *  the plain words. */
+  burst: boolean;
+}
+
+/** How the words "tick" and "tock" show at each strike, at `clicks`, or
+ *  `undefined` if they do not: from the slide's `watchTickTock` click on,
+ *  in bursts from its `watchTickTockBurst` click on. Throws if a field is
+ *  there but is not a click number, if the burst's click is not after the
+ *  words' click, or if the slide has no `watch`. */
+export function tickTockState(
+  frontmatter: Record<string, unknown>,
+  clicks: number,
+): TickTockState | undefined {
+  const from = clickOf(frontmatter, "watchTickTock");
+  const burstFrom = clickOf(frontmatter, "watchTickTockBurst");
+  if (burstFrom !== undefined && (from === undefined || burstFrom <= from)) {
+    return wrong(
+      "watchTickTockBurst",
+      burstFrom,
+      "a click after watchTickTock",
+    );
+  }
+  if (from === undefined) return undefined;
+  if (frontmatter["watch"] === undefined) {
+    return wrong("watchTickTock", from, "set only with watch");
+  }
+  if (clicks < from) return undefined;
+  return { burst: burstFrom !== undefined && clicks >= burstFrom };
 }
 
 /** The camera's and the fade's state, with the names turned into objects. */

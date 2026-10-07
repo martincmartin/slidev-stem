@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { ESCAPE_WHEEL } from "./generate.ts";
-import { SPIN_SPEED, watchState } from "./state.ts";
+import { SPIN_SPEED, tickTockState, watchState } from "./state.ts";
 
 test("a slide without watch has no state", () => {
   assert.equal(watchState({}, 0), undefined);
@@ -127,4 +127,33 @@ test("a field of the wrong kind throws, with its name", () => {
       `${field}: ${String(value)}`,
     );
   }
+});
+
+test("the words tick and tock show from watchTickTock on, in bursts from watchTickTockBurst", () => {
+  assert.equal(tickTockState({ watch: "escapement" }, 9), undefined);
+  const frontmatter = {
+    watch: "escapement",
+    watchTickTock: 7,
+    watchTickTockBurst: 8,
+  };
+  assert.equal(tickTockState(frontmatter, 6), undefined);
+  assert.deepEqual(tickTockState(frontmatter, 7), { burst: false });
+  assert.deepEqual(tickTockState(frontmatter, 8), { burst: true });
+  assert.throws(
+    () => tickTockState({ watch: "escapement", watchTickTock: "7" }, 7),
+    /watchTickTock/,
+  );
+  assert.throws(() => tickTockState({ watchTickTock: 7 }, 7), /watchTickTock/);
+  assert.throws(
+    () =>
+      tickTockState(
+        { watch: "escapement", watchTickTock: 7, watchTickTockBurst: 7 },
+        7,
+      ),
+    /watchTickTockBurst/,
+  );
+  assert.throws(
+    () => tickTockState({ watch: "escapement", watchTickTockBurst: 8 }, 8),
+    /watchTickTockBurst/,
+  );
 });

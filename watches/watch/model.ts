@@ -119,6 +119,36 @@ export function tickWindows(
   ];
 }
 
+/** A strike of the impulse jewel on the fork: the start of a tick window. */
+export interface StrikeTime {
+  /** Mechanism time, s. */
+  time: number;
+  /** Which of the period's two tick windows: 0 or 1. */
+  window: number;
+}
+
+/** The strikes after mechanism time `from` and up to `to` (s), in order;
+ *  none if `to` is not after `from`. */
+export function strikesBetween(
+  timing: Timing,
+  from: number,
+  to: number,
+): StrikeTime[] {
+  const starts = tickWindows(timing).map(([start]) => start * timing.period);
+  const found: StrikeTime[] = [];
+  for (
+    let period = Math.floor(from / timing.period);
+    period * timing.period <= to;
+    period++
+  ) {
+    starts.forEach((start, window) => {
+      const time = period * timing.period + start;
+      if (time > from && time <= to) found.push({ time, window });
+    });
+  }
+  return found;
+}
+
 /** A part of the train, which turns `step` degrees at each beat and holds
  *  still between beats, over `duration` seconds: a whole number of periods.
  *  In each tick window it waits for the fork to unlock the escape wheel, then
@@ -736,6 +766,31 @@ export class WatchModel implements Model<WatchModelState> {
    *  `null` if it is not going to rest. */
   untilRest(now: number): number | null {
     return this.clock.untilRest(now);
+  }
+
+  /** The jewel's strikes on the fork from `from` to `now` (ms), and the
+   *  mechanism's time at `now`, to pass as `from` next time. The strikes are
+   *  in order, each with the moment it happened (ms), found from the
+   *  mechanism's time at `from` and at `now`. None if `from` is `undefined`,
+   *  or if the mechanism's time went back (a jump to a slide). Call it with
+   *  `now` that only goes forward. */
+  strikes(
+    from: { now: number; time: number } | undefined,
+    now: number,
+  ): { strikes: { at: number; window: number }[]; time: number } {
+    const time = this.clock.time(now);
+    if (!from || !(time > from.time)) return { strikes: [], time };
+    const strikes = strikesBetween(
+      this.watch.design.timing,
+      from.time,
+      time,
+    ).map(({ time: strikeTime, window }) => ({
+      at:
+        from.now +
+        ((strikeTime - from.time) / (time - from.time)) * (now - from.now),
+      window,
+    }));
+    return { strikes, time };
   }
 
   phase(now: number): string {

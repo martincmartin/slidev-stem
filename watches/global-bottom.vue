@@ -8,6 +8,9 @@
 // the board's picture shows, it covers the watch: the canvas fades out, and the
 // stage stops. The board's clock decides when (its `cover` event), so the
 // hairspring takes the board's place when the curl ends, with no click.
+// Above both, the words "tick" and "tock" at each strike of the jewel
+// (components/TickTock.vue), from a slide's `watchTickTock` click: they follow
+// the model's clock.
 //
 // A slide names targets, not moves (../docs/navigation.md). At each change of
 // slide or click, this decides the kind of move (watch/navigation.ts): a step
@@ -35,9 +38,11 @@ import {
   watch as onChange,
 } from "vue";
 import DivingBoard from "./components/DivingBoard.vue";
+import TickTock from "./components/TickTock.vue";
 import { Stage } from "./webgl/stage.ts";
 import { FADE_SECONDS } from "./webgl/timeline.ts";
 import { boardState } from "./watch/board.ts";
+import { jewelStrikes } from "./watch/callouts.ts";
 import type { BoardTarget } from "./watch/board.ts";
 import { WatchModel } from "./watch/model.ts";
 import type { WatchModelState } from "./watch/model.ts";
@@ -47,7 +52,12 @@ import type { Move, Place } from "./watch/navigation.ts";
 import { themePalette } from "./watch/palette.ts";
 import { slideState } from "./watch/slide-state.ts";
 import type { SlideState } from "./watch/slide-state.ts";
-import { modelState, stageState, watchState } from "./watch/state.ts";
+import {
+  modelState,
+  stageState,
+  tickTockState,
+  watchState,
+} from "./watch/state.ts";
 import type { WatchState } from "./watch/state.ts";
 
 declare global {
@@ -73,8 +83,17 @@ const hidden = computed(() => !name.value || covered.value);
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 const board = shallowRef<BoardTarget>({ state: undefined, atOnce: true });
 let stage: Stage<WatchModelState> | undefined;
-/** The stage's model: it says when the balance comes to rest. */
-let model: WatchModel | undefined;
+/** The stage's model: it says when the balance comes to rest, and when the
+ *  jewel strikes. */
+const model = shallowRef<WatchModel>();
+/** How the words show at the jewel's strikes, and where it strikes, while the
+ *  slide shows them. */
+const tickTock = computed(() => {
+  const shown = tickTockState(frontmatter.value, slidev.nav.clicks);
+  return shown && !hidden.value
+    ? { ...shown, strikes: jewelStrikes(WATCH, frontmatter.value) }
+    : undefined;
+});
 /** Set while the canvas fades out: then the stage goes out of sight. */
 let hideTimer: ReturnType<typeof setTimeout> | undefined;
 /** The last state given to the stage. */
@@ -122,7 +141,7 @@ function showWatch(
 /** Set `--watch-rest-delay`: how long until the balance is at rest, or 0 if
  *  it is not going to rest. */
 function showRestDelay(): void {
-  const milliseconds = model?.untilRest(performance.now()) ?? 0;
+  const milliseconds = model.value?.untilRest(performance.now()) ?? 0;
   document.documentElement.style.setProperty(
     "--watch-rest-delay",
     `${String(milliseconds / 1000)}s`,
@@ -172,8 +191,8 @@ function showBoard(clicks: number, move: Move): void {
 
 onMounted(() => {
   if (!live || !canvas.value) return;
-  model = new WatchModel(WATCH);
-  stage = new Stage(canvas.value, WATCH.scene, themePalette(), model);
+  model.value = new WatchModel(WATCH);
+  stage = new Stage(canvas.value, WATCH.scene, themePalette(), model.value);
   window.watchStage = stage;
   window.slideState = () => slideState(stage, canvas.value, shownWatch);
   document.documentElement.style.setProperty(
@@ -250,6 +269,7 @@ onMounted(() => {
       :live="true"
       @cover="(covers: boolean) => (covered = covers)"
     />
+    <TickTock :model="model" :shown="tickTock" />
   </div>
 </template>
 

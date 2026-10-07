@@ -8,7 +8,14 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import { DESIGN } from "./design.ts";
-import { BalanceClock, stillPose } from "./model.ts";
+import { generate } from "./generate.ts";
+import {
+  BalanceClock,
+  stillPose,
+  strikesBetween,
+  tickWindows,
+  WatchModel,
+} from "./model.ts";
 
 const TIMING = DESIGN.timing;
 const STEP = 0.1; // ms
@@ -223,4 +230,46 @@ test("untilRest is when a settle reaches rest, and null for a free swing", () =>
   assert.equal(clock.untilRest(200), 100 + 2 * SETTLE_MS - 200);
   clock.resume(300);
   assert.equal(clock.untilRest(300), null);
+});
+
+test("a strike is the start of each tick window, after `from` and up to `to`", () => {
+  const [[first], [second]] = tickWindows(TIMING);
+  const starts = [first * TIMING.period, second * TIMING.period];
+  const period = TIMING.period;
+  assert.deepEqual(strikesBetween(TIMING, 0, period), [
+    { time: at(starts, 0), window: 0 },
+    { time: at(starts, 1), window: 1 },
+  ]);
+  // `from` is left out, `to` is in: a strike on a frame's edge counts once
+  assert.deepEqual(strikesBetween(TIMING, at(starts, 0), at(starts, 1)), [
+    { time: at(starts, 1), window: 1 },
+  ]);
+  assert.deepEqual(strikesBetween(TIMING, 3 * period, 3 * period + 0.4), []);
+  assert.deepEqual(
+    strikesBetween(TIMING, 5 * period + 1, 6 * period + 0.5).map(
+      (strike) => strike.window,
+    ),
+    [1, 0],
+  );
+  assert.deepEqual(strikesBetween(TIMING, 2, 1), []);
+});
+
+test("the model gives each strike the moment it happened, between two frames", () => {
+  const model = new WatchModel(generate(), 0);
+  const [[first]] = tickWindows(TIMING);
+  const strikeMs = first * TIMING.period * 1000;
+  const start = model.strikes(undefined, 0);
+  assert.deepEqual(start.strikes, []);
+  const before = model.strikes({ now: 0, time: start.time }, strikeMs - 10);
+  assert.deepEqual(before.strikes, []);
+  const after = model.strikes(
+    { now: strikeMs - 10, time: before.time },
+    strikeMs + 6,
+  );
+  assert.equal(after.strikes.length, 1);
+  assert.equal(at(after.strikes, 0).window, 0);
+  assert.ok(Math.abs(at(after.strikes, 0).at - strikeMs) < 1e-6);
+  // a jump puts the mechanism's time back: no strikes
+  model.show({ settled: false, spin: null }, 2000, true);
+  assert.deepEqual(model.strikes({ now: 1990, time: 1.99 }, 2010).strikes, []);
 });

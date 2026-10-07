@@ -130,6 +130,8 @@ reason next to it.
   slide transition does not fade it. It fades in `--text-fade`, and it fades
   in only after `--text-fade`
   ([watch.md](watch.md#the-diving-board)).
+- **Not an oversight: slide 4's "tick" and "tock" cut in**, because they
+  are a sound. They fade out ([watch.md](watch.md#tick-and-tock)).
 - **Not an oversight:** the cover's move to slide 2 has its own transition,
   `watch-zoom`, because its title fades while the watch flashes
   ([watch.md](watch.md)).

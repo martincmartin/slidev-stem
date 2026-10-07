@@ -7,10 +7,17 @@ import {
   escapementMarks,
   forkAtBanks,
   insidePolygon,
+  jewelStrikes,
   onSlide,
   palletPoint,
 } from "./callouts.ts";
-import { FORK_PIVOT_RADIUS, generate } from "./generate.ts";
+import {
+  FORK_PIVOT_RADIUS,
+  generate,
+  JEWEL_FLAT_OFFSET,
+  JEWEL_RADIUS,
+} from "./generate.ts";
+import { tickWindows } from "./model.ts";
 import { polar } from "./shapes.ts";
 
 const watch = generate();
@@ -107,4 +114,53 @@ test("the escapement view puts the hairspring's arbor halfway down from the subt
     const [, y] = onSlide(view, tilt, scene.slide, arbor);
     assert.ok(Math.abs(y - halfway) < 1e-3, `tilt ${String(tilt)}`);
   }
+});
+
+test("the two strikes are on either side of the fork's axis, and their words go out as mirror images", () => {
+  const strikes = jewelStrikes(watch, SLIDE_4);
+  const [upper, lower] = [...strikes].sort(
+    (first, second) => first.at[1] - second.at[1],
+  );
+  assert.ok(upper && lower);
+  // the fork's notch is right of the balance: the words lean left, away
+  // from the fork; the upper one goes up (NNW), the lower one down (SSW)
+  assert.ok(upper.away[0] < 0 && upper.away[1] < 0);
+  assert.ok(lower.away[0] < 0 && lower.away[1] > 0);
+  for (const strike of strikes) {
+    assert.ok(Math.abs(Math.hypot(...strike.away) - 1) < 1e-9);
+    // 22.5 degrees from straight up or down, give or take the view's tilt
+    const lean =
+      (Math.atan2(Math.abs(strike.away[0]), Math.abs(strike.away[1])) * 180) /
+      Math.PI;
+    assert.ok(Math.abs(lean - 22.5) < 3, String(lean));
+  }
+  // the jewel at rest is between the two strikes
+  assert.ok(upper.at[1] < marks.jewel[1] && marks.jewel[1] < lower.at[1]);
+});
+
+test("each window's strike is at the horn ahead of the jewel, not where it enters", () => {
+  assert.ok(view);
+  const { timing } = design;
+  const radius =
+    design.balance.impulsePinRadius + (JEWEL_FLAT_OFFSET - JEWEL_RADIUS) / 2;
+  const arbor: Point2 = [
+    design.watchCentre[0] + design.balance.arbor[0],
+    design.watchCentre[1] + design.balance.arbor[1],
+  ];
+  // the jewel on the slide at mechanism time `time`, as the model swings it
+  const jewelAt = (time: number): Point2 => {
+    const swing =
+      timing.amplitude * Math.cos((2 * Math.PI * time) / timing.period);
+    const [x, y] = polar(radius, design.balance.pinDirection + swing, arbor);
+    return onSlide(view, 20, scene.slide, [x, y, watch.escapementTops.jewel]);
+  };
+  const strikes = jewelStrikes(watch, SLIDE_4);
+  tickWindows(timing).forEach(([start], window) => {
+    const time = start * timing.period;
+    const [from, to] = [jewelAt(time), jewelAt(time + 0.01)];
+    const ahead = at(strikes, window).at;
+    const behind = at(strikes, 1 - window).at;
+    const moving = (to[1] - from[1]) * (ahead[1] - behind[1]);
+    assert.ok(moving > 0, `window ${String(window)}`);
+  });
 });

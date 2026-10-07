@@ -8,6 +8,7 @@ measured budgets) and the diving board on slide 2.
 them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
+[`2026-10-07-tick-tock-words`](../tasks/2026-10-07-tick-tock-words/PLAN.md) (the words at each strike),
 [`2026-10-06-validation-speed`](../../tasks/2026-10-06-validation-speed/PLAN.md) (print readiness and validation scheduling),
 [`2026-10-04-balance-rim-marks`](../tasks/2026-10-04-balance-rim-marks/README.md) (radial screws that show the rim's swing),
 [`2026-10-04-rest-shape-final-review`](../tasks/2026-10-04-rest-shape-final-review/README.md) (final selection, cleanup, and review),
@@ -53,6 +54,7 @@ ruler that the diving board replaced),
 | `watch/board.ts`, `components/DivingBoard.vue`           | the board's frontmatter to its target, and its clock (`BoardClock`); the component that inlines the SVG and sets its time                                             |
 | `watch/navigation.ts`, `slide-state.ts`                  | a step forward, a step back or a jump; `window.slideState()` for `tools/navcheck.py` ([`navigation.md`](../../docs/navigation.md))                                    |
 | `watch/callouts.ts`, `components/WatchCallout.vue`       | where slide 4's leaders end, on the slide (`escapementMarks`); a callout: a label, and a leader from one of its words                                                 |
+| `components/TickTock.vue`                                | the words "tick" and "tock" at each strike of the jewel, in the watch's layer; where they start (`jewelStrikes` in `watch/callouts.ts`)                               |
 | `types/`                                                 | two small `.d.ts` files, mapped by `tsconfig.json` `paths` to `@slidev/client`. `vue-tsc` would otherwise check Slidev's own source, which fails our strict settings. |
 
 ## Changing the design
@@ -159,6 +161,17 @@ Three callouts appear, one at each click: "Wheel driven by hidden gear",
   leaders pass the back-row gate
   ([measurements.md](measurements.md#slide-4-leaders-alone)). Slide 2's
   leader is a reference mark's: muted, as the dashed rest shape is.
+- **The newest callout is the focus; the ones before it dim** (to
+  `--esc-dim` in the slide's style: less than the "Before clocks" cards, so
+  that a dimmed callout stays easy to read). From click 3 the wheel's callout, with its
+  leader and the drive arrow, dims; at click 6 the pallet's dims too. At
+  click 7 the balance swings again, the jewel's leader fades out, and the
+  other two come back in `--text-fade`. Each dim waits for the callout that
+  takes the focus (`--watch-fade` at click 3, `--watch-rest-delay` at click
+  6), so the focus never moves to empty space. A class on a wrapper names
+  the focus at each click (`esc-focus-pallet`, `esc-focus-jewel`); the CSS
+  is in the slide. The dim is on the callout's parts, not its root, which
+  carries the `v-click` classes.
 - **The drive arrow is muted, 4 px:** muted is the art's colour for what
   acts on the subject, and the arrow shows the force on the escape wheel.
 
@@ -202,6 +215,49 @@ Three callouts appear, one at each click: "Wheel driven by hidden gear",
   empty space for half of each beat. A leader to the pivot, or to the point
   of the arm farthest from every edge (just under the circle), looked like
   it pointed at the pivot. Halfway down to the tip looked too low.
+
+### Tick and tock
+
+From click 7 (`watchTickTock: 7`), each time the jewel strikes the fork, a
+word appears beside the horn that it strikes: "tick" at the upper horn,
+"tock" at the lower one. The jewel enters the notch past one horn and
+strikes the other, ahead of it (`jewelStrikes` in `watch/callouts.ts`). It appears at once, and fades out in 0.8 s as it drifts 40 px
+away: the sound goes out from the strike. `components/TickTock.vue` holds
+the type, the times and the distances.
+
+- **Not an oversight: the words cut in.** All other text fades in
+  ([slide-patterns.md](slide-patterns.md#text-fades)). These are a sound.
+- **A strike is the start of a tick window**, when the jewel reaches the
+  fork (`strikesBetween` in `watch/model.ts`). There is one a second, so
+  each word is gone before the next appears.
+- **The words follow the model's clock, not a timer.** At each animation
+  frame, the component asks the model for the strikes since the last frame
+  (`WatchModel.strikes`), with the moment of each. A timer would drift
+  from the jewel.
+- **They drift as mirror images**: away from the fork's axis, leaning
+  22.5° away from the fork (`STRIKE_LEAN` in `watch/callouts.ts`), so NNW
+  and SSW on slide 4. The two strikes are mirror images about the axis,
+  so the two words read as one sound from the notch. If the design or the
+  view changes, the strikes and the ways follow.
+- **They live in the watch's layer**, because they need the model's clock.
+  A word that has started ends its fade after a click back or a change of
+  slide: the sound has been made. No new word starts then.
+- **They are lowercase, bold, with no quotes**: a sound, not a label or a
+  quotation. Ink, with an outline in the paper's colour, so they read over
+  the drawing.
+- **Click 8 is a trial**, to compare by going back and forward
+  (`watchTickTockBurst: 8`): the same words, times and drift, as 1960s
+  _Batman_ bursts in the theme's colours. Each is a spiked burst, outlined
+  in ink: the accent behind "TICK!" and the second behind "TOCK!", so the
+  two sounds differ in colour too. The words are capitals in the paper's
+  colour, outlined in ink, with an ink shadow. "TICK!" tilts one way and
+  "TOCK!" the other. A burst is larger than a word, so it starts farther from the
+  horn. It uses the theme's sans at 600: a heavier weight would need a new
+  import in the theme.
+- **`slideState`** reports how the words show (`tick-tock`, settled: off,
+  plain or burst). A word's opacity is the phase of the mechanism, so it
+  is not continuous.
+- **A printed page shows no words**: a still has no strikes.
 
 ### The free spin
 
@@ -285,6 +341,8 @@ clicks: 3
 | `watchSpin: 1`                       | at this click, the subject is the escape wheel alone, and it spins freely ([The free spin](#the-free-spin))                                                               |
 | `watchSpinEnd: 2`                    | at this click, the spin ends: the rest fades back in and the pallet stops the wheel (it needs `watchSpin` before it)                                                      |
 | `watchSpinSpeed: 90`                 | the spin's speed, in degrees a second of the escape wheel (default `SPIN_SPEED` in `watch/state.ts`); faster than the mechanism's 12                                      |
+| `watchTickTock: 7`                   | from this click, the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock))                                                           |
+| `watchTickTockBurst: 8`              | from this click, the words are comic bursts: a trial (it needs `watchTickTock` before it)                                                                                 |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
 at load with the key's name. The subjects are made in `watch/generate.ts`:

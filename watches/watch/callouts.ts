@@ -292,18 +292,98 @@ function worldOf(design: Design, [x, y]: Point2): Point2 {
   return [design.watchCentre[0] + x, design.watchCentre[1] + y];
 }
 
+/** Where the slide whose frontmatter is `frontmatter` shows a point of the
+ *  world's plan at height `z`, with its view and its tilt. Throws if the slide
+ *  shows no watch. */
+function slideProjection(
+  watch: Watch,
+  frontmatter: Record<string, unknown>,
+): { view: View; shown: (point: Point2, z: number) => Point2 } {
+  const state = watchState(frontmatter, 0);
+  if (!state) throw new Error("the escapement's callouts need a `watch:` view");
+  const { view, tilt } = stageState(watch.scene, state);
+  return {
+    view,
+    shown: (point, z) =>
+      onSlide(view, tilt, watch.scene.slide, [point[0], point[1], z]),
+  };
+}
+
+/** The impulse jewel's deepest point in the world's plan, with the balance
+ *  at `swing` degrees: the centre of the largest circle inside the D. The D
+ *  runs from JEWEL_RADIUS behind its centre to JEWEL_FLAT_OFFSET in front of
+ *  it, along pinDirection. */
+function jewelPoint(design: Design, swing: number): Point2 {
+  return polar(
+    design.balance.impulsePinRadius + (JEWEL_FLAT_OFFSET - JEWEL_RADIUS) / 2,
+    design.balance.pinDirection + swing,
+    worldOf(design, design.balance.arbor),
+  );
+}
+
+/** Degrees: how far the way a sound goes out from a strike leans away from
+ *  the fork, from straight out from the fork's axis. On slide 4 it makes the
+ *  upper word drift NNW and the lower one SSW. */
+const STRIKE_LEAN = 22.5;
+
+/** In slide px: where the impulse jewel strikes the fork, and the way a
+ *  sound goes out from there (a unit vector). */
+export interface Strike {
+  readonly at: Point2;
+  readonly away: Point2;
+}
+
+/** The jewel's strikes on the slide whose frontmatter is `frontmatter`, one
+ *  for each tick window (`StrikeTime.window` in model.ts), at the horn of
+ *  the fork that the jewel strikes. In window 0 the balance swings from
+ *  +pinArc to -pinArc: the jewel enters the notch past one horn and strikes
+ *  the other, ahead of it. So the strike is marked by the jewel's deepest
+ *  point at the window's end, -pinArc (and +pinArc in window 1). The
+ *  strikes are on the two sides of the fork's axis (the line from the
+ *  fork's pivot through the middle of the two). Each sound goes away from
+ *  that axis, leaning STRIKE_LEAN degrees away from the fork: the two ways
+ *  are mirror images, so the two words read as one sound from the fork's
+ *  notch. */
+export function jewelStrikes(
+  watch: Watch,
+  frontmatter: Record<string, unknown>,
+): [Strike, Strike] {
+  const { shown } = slideProjection(watch, frontmatter);
+  const { design, escapementTops: tops } = watch;
+  const { pinArc } = design.timing;
+  const points = [-pinArc, pinArc].map((swing) =>
+    shown(jewelPoint(design, swing), tops.jewel),
+  );
+  const [first, second] = points as [Point2, Point2];
+  const middle: Point2 = [
+    (first[0] + second[0]) / 2,
+    (first[1] + second[1]) / 2,
+  ];
+  const pivot = shown(worldOf(design, design.fork.pivot), tops.fork);
+  const unit = ([x, y]: Point2): Point2 => {
+    const length = Math.hypot(x, y);
+    return [x / length, y / length];
+  };
+  const fromFork = unit([middle[0] - pivot[0], middle[1] - pivot[1]]);
+  const lean = Math.tan(radians(STRIKE_LEAN));
+  const strike = (at: Point2): Strike => {
+    const out = unit([at[0] - middle[0], at[1] - middle[1]]);
+    return {
+      at,
+      away: unit([out[0] + lean * fromFork[0], out[1] + lean * fromFork[1]]),
+    };
+  };
+  return [strike(first), strike(second)];
+}
+
 /** The marks for the slide whose frontmatter is `frontmatter`: its view and
  *  its tilt. Throws if the slide shows no watch. */
 export function escapementMarks(
   watch: Watch,
   frontmatter: Record<string, unknown>,
 ): EscapementMarks {
-  const state = watchState(frontmatter, 0);
-  if (!state) throw new Error("the escapement's callouts need a `watch:` view");
-  const { view, tilt } = stageState(watch.scene, state);
+  const { view, shown } = slideProjection(watch, frontmatter);
   const { design, escapementTops: tops } = watch;
-  const shown = (point: Point2, z: number): Point2 =>
-    onSlide(view, tilt, watch.scene.slide, [point[0], point[1], z]);
   const world = (point: Point2): Point2 => worldOf(design, point);
   const [, , , fourth, escape] = design.wheels as [
     Wheel,
@@ -337,19 +417,12 @@ export function escapementMarks(
     ),
   );
 
-  // the D runs from JEWEL_RADIUS behind its centre to JEWEL_FLAT_OFFSET in
-  // front of it, along pinDirection
-  const jewel = polar(
-    design.balance.impulsePinRadius + (JEWEL_FLAT_OFFSET - JEWEL_RADIUS) / 2,
-    design.balance.pinDirection,
-    world(design.balance.arbor),
-  );
   return {
     escape: shown(escapeArbor, tops.escape),
     escapeRadius: escape.inner * view.scale,
     drive,
     pallet: shown(palletPoint(design), tops.fork),
-    jewel: shown(jewel, tops.jewel),
+    jewel: shown(jewelPoint(design, 0), tops.jewel),
     palletMiddle: shown(palletTrial(design).middle, tops.fork),
     forkOutlines: forkAtBanks(design).map((outline) =>
       outline.map((point) => shown(point, tops.fork)),
