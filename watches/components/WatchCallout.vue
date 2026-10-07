@@ -21,7 +21,14 @@
 // slide is shown). The slide decides when the callout appears (`v-click`):
 // do not bind `:class` on the root, as `v-click` puts its classes there.
 // docs/watch.md, "Slide 4: the escapement".
-import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  useTemplateRef,
+} from "vue";
 import { at } from "../webgl/checked.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import { firstCrossing } from "../watch/callouts.ts";
@@ -76,11 +83,17 @@ function measure(): void {
   ];
 }
 
+// Not an oversight: nothing here makes the browser compute the page's styles
+// (a size, or `document.fonts.ready`) at once. Vue runs each callout's
+// `v-click` just before its onMounted, so a later callout is not hidden yet:
+// styles computed now would show it, and it would fade out from shown when
+// the page loads. The observer's first call measures the word once the page
+// is laid out, before the first paint; the fonts are awaited after Vue's
+// flush, when every callout's `v-click` has run.
 onMounted(() => {
-  measure();
   observer = new ResizeObserver(measure);
   if (label.value) observer.observe(label.value);
-  void document.fonts.ready.then(measure);
+  void nextTick(() => document.fonts.ready.then(measure));
 });
 onBeforeUnmount(() => {
   observer?.disconnect();
