@@ -522,6 +522,29 @@ export class BalanceClock {
     }
   }
 
+  /** How long (ms) from `now` until the balance is at rest: 0 at rest, and
+   *  `null` if it is not going to rest. */
+  untilRest(now: number): number | null {
+    this.advance(now);
+    const milliseconds = this.settleSeconds * 1000;
+    const mode = this.mode;
+    const restAt = (start: number): number =>
+      Math.max(0, start + milliseconds - now);
+    switch (mode.kind) {
+      case "free":
+        return null;
+      case "waiting":
+        return restAt(mode.anchor + (mode.extreme - mode.from) * 1000);
+      case "settling":
+        return restAt(mode.start);
+      case "rest":
+        return 0;
+      case "resuming":
+        // on to the opposite extreme, then a settle from there
+        return mode.settleAfter ? restAt(mode.start + milliseconds) : null;
+    }
+  }
+
   /** At once: for a slide reached directly, and for stills. */
   place(settled: boolean, now: number): void {
     this.mode = settled
@@ -707,6 +730,12 @@ export class WatchModel implements Model<WatchModelState> {
     renderer.updateMesh(this.watch.spring, this.motion.springGeometry(swing));
     const beats = this.train.position(now, this.motion.beats(time));
     return this.motion.matrices(time, swing, beats);
+  }
+
+  /** How long (ms) from `now` until the balance is at rest: 0 at rest, and
+   *  `null` if it is not going to rest. */
+  untilRest(now: number): number | null {
+    return this.clock.untilRest(now);
   }
 
   phase(now: number): string {

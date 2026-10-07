@@ -12,6 +12,7 @@ import type { Design, Wheel } from "./design.ts";
 import {
   FORK_PIVOT_RADIUS,
   forkOutlineLocal,
+  JEWEL_FLAT_OFFSET,
   JEWEL_RADIUS,
 } from "./generate.ts";
 import type { Watch } from "./generate.ts";
@@ -41,10 +42,10 @@ export interface EscapementMarks {
   readonly drive: readonly Point2[];
   /** On the fork's lower arm, at `palletPoint`, on the fork's top. */
   readonly pallet: Point2;
-  /** The impulse jewel's centre, on its top, with the balance at rest: the
-   *  middle of the fork's mouth, where the jewel meets the fork. */
+  /** The impulse jewel's deepest point, on its top, with the balance at rest
+   *  (in the fork's mouth): the centre of the largest circle inside the D,
+   *  midway between its flat and the far side of its arc. */
   readonly jewel: Point2;
-  readonly jewelRadius: number;
   /** Trials (clicks 3 and 4): the pallet's leader ends at `palletTrial`'s
    *  middle; or the leaders end outside the fork at either bank
    *  (`forkOutlines`) and outside the escape wheel's tip circle
@@ -336,8 +337,10 @@ export function escapementMarks(
     ),
   );
 
+  // the D runs from JEWEL_RADIUS behind its centre to JEWEL_FLAT_OFFSET in
+  // front of it, along pinDirection
   const jewel = polar(
-    design.balance.impulsePinRadius,
+    design.balance.impulsePinRadius + (JEWEL_FLAT_OFFSET - JEWEL_RADIUS) / 2,
     design.balance.pinDirection,
     world(design.balance.arbor),
   );
@@ -347,7 +350,6 @@ export function escapementMarks(
     drive,
     pallet: shown(palletPoint(design), tops.fork),
     jewel: shown(jewel, tops.jewel),
-    jewelRadius: JEWEL_RADIUS * view.scale,
     palletMiddle: shown(palletTrial(design).middle, tops.fork),
     forkOutlines: forkAtBanks(design).map((outline) =>
       outline.map((point) => shown(point, tops.fork)),

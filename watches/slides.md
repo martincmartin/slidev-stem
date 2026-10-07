@@ -137,6 +137,11 @@ watchOnly: escapement
 watchSpin: 2
 watchSpinEnd: 3
 watchSpinSpeed: 135 # degrees a second
+# click 6: the balance comes to rest, with the jewel under its leader;
+# click 7: it swings again, and the leader fades out (docs/watch.md)
+watchSettle: 6
+watchResume: 7
+clicks: 7
 ---
 
 # Escapement
@@ -160,7 +165,7 @@ their parts. -->
 
 <WatchCallout v-click="3" class="after-watch-fade" :to="$clicks === 4 || $clicks === 5 ? marks.palletMiddle : marks.pallet" :stop="$clicks === 5 ? 10 : 0" :clear="$clicks === 5 ? marks.forkOutlines : []" :left="470" :top="470"><span class="callout-word">Pallet</span> blocks wheel</WatchCallout>
 
-<WatchCallout v-click="6" :to="marks.jewel" :stop="marks.jewelRadius + 4" :left="330" :top="136"><span class="callout-word">Jewel</span> strikes pallet</WatchCallout>
+<WatchCallout v-click="6" class="after-balance-rest" :to="marks.jewel" :show-leader="$clicks < 7" :left="330" :top="136"><span class="callout-word">Jewel</span> strikes pallet</WatchCallout>
 
 <!--
 "Force (unseen) trying to turn wheel"
@@ -193,7 +198,9 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 
 [click] (Trial: both leaders end 10 px outside their parts.)
 
-[click] Third, the balance periodically gives permission for one tiny advance. During that event some energy also travels the other way, from the gear train through the escapement into the balance.
+[click] Third, the jewel. (The balance comes to rest, with the jewel in the fork's notch, under its leader.)
+
+[click] As the balance swings, it periodically gives permission for one tiny advance. During that event some energy also travels the other way, from the gear train through the escapement into the balance.
 -->
 
 ---

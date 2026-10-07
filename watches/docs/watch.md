@@ -176,9 +176,19 @@ Three callouts appear, one at each click: "Wheel driven by hidden gear",
   radius, where the fourth wheel's teeth push. It is centred on the line to
   the (hidden) fourth wheel and points the way the escape wheel turns.
 - **Not an oversight: the leaders do not follow the moving parts.** They end
-  at fixed poses. The jewel's leader ends at the jewel with the balance at
-  rest: the middle of the fork's mouth, where the jewel strikes. A leader
-  that followed the jewel would sweep across the balance.
+  at fixed poses. The jewel's leader ends inside the jewel with the balance
+  at rest, in the fork's mouth, where the jewel strikes. It ends at the D's
+  deepest point: the centre of the largest circle inside it. A leader that
+  followed the jewel would sweep across the balance.
+- **The balance rests for the jewel's callout** (`watchSettle: 6`,
+  `watchResume: 7`). A swinging jewel is at its leader's end for only about
+  0.2 s of each swing. The callout appears only when the balance is at rest
+  (the class `after-balance-rest`), so its leader never points at an empty
+  notch. The settle waits for the end of a swing, so this is 0.8 to 1.8 s
+  after the click. At click 7 the balance swings again, and the viewer knows
+  which part to follow. The leader fades out (`showLeader`), because the
+  jewel leaves its end; the label stays. Going back to click 6, the leader
+  comes back when the balance is at rest again.
 - **The pallet's leader ends on the fork's lower arm, at a point that the
   fork covers at every angle of its swing** (`palletPoint`). The outlines of
   the fork at its two banks overlap, and the overlap ends below the pivot in
@@ -330,6 +340,10 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   `--watch-text-delay` from the stage (`viewEndAt` in `webgl/timeline.ts`).
   Forward, the text waits for the flash and camera move. Back to the cover,
   it waits for the fade, tilt, and camera move.
+- **A click's text can wait for the balance to rest.** `global-bottom.vue`
+  sets `--watch-rest-delay` from the model (`untilRest` in `watch/model.ts`)
+  at each change of state: the time until the balance is at rest, or 0 if it
+  is not going to rest.
 - **The first block of `slides.md` is a hidden slide with no content.** Slidev
   takes the headmatter from the first slide's frontmatter, and its
   `transition` is both the default of every slide and that slide's own. The

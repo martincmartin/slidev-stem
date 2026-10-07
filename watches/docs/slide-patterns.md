@@ -119,6 +119,13 @@ reason next to it.
   give the `v-click` element the class `after-watch-fade` (`style.css`). It
   fades in after the watch's swap fade (`--watch-fade`), so its leader never
   points at a part that is not there yet. Going back, it fades out at once.
+- **Text that points at the balance at rest, at the click that settles it**,
+  waits for the rest: give the `v-click` element the class
+  `after-balance-rest` (`style.css`). It fades in when the balance is at rest
+  (`--watch-rest-delay`), so its leader never points at a part that has not
+  stopped there yet. If the callout hides its leader at a later click
+  (`showLeader`), the leader comes back only at rest too. Going back, it
+  fades out at once.
 - **Text in the watch's layer** (the board's sentence) is not on a slide, so a
   slide transition does not fade it. It fades in `--text-fade`, and it fades
   in only after `--text-fade`

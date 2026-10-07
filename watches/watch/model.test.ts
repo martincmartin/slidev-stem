@@ -202,3 +202,25 @@ test("a free still is on the swing curve at its time", () => {
   assert.equal(pose.time, 0.37);
   assert.equal(pose.swing, new BalanceClock(TIMING, 0).swingAt(0.37));
 });
+
+test("untilRest is when a settle reaches rest, and null for a free swing", () => {
+  const free = new BalanceClock(TIMING, 0);
+  assert.equal(free.untilRest(300), null);
+  for (const requestAt of [0, 250, 999.9, 1740]) {
+    const clock = new BalanceClock(TIMING, 0);
+    clock.settle(requestAt);
+    const restAt = requestAt + (clock.untilRest(requestAt) ?? NaN);
+    assert.equal(restAt, Math.ceil(requestAt / 1000) * 1000 + SETTLE_MS);
+    assert.ok(Math.abs(clock.angle(restAt - 50)) > 0.1);
+    assert.equal(clock.untilRest(restAt), 0);
+    assert.equal(clock.angle(restAt + 1), 0);
+  }
+  // a settle asked for during a resume: on to the opposite extreme, then rest
+  const clock = new BalanceClock(TIMING, 0);
+  clock.place(true, 0);
+  clock.resume(100);
+  clock.settle(200);
+  assert.equal(clock.untilRest(200), 100 + 2 * SETTLE_MS - 200);
+  clock.resume(300);
+  assert.equal(clock.untilRest(300), null);
+});

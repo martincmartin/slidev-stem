@@ -14,7 +14,8 @@
 // animates from what is on the screen, in either direction, and a jump shows
 // the target at once. A flash plays only on the step forward into its slide.
 // The new slide's text waits for the camera, in either direction
-// (`--watch-text-delay`, from the stage).
+// (`--watch-text-delay`, from the stage). A click's text can wait for the
+// balance to come to rest (`--watch-rest-delay`, from the model).
 //
 // Print mode (export) has no live layer: slide-bottom.vue draws a still and a
 // posed board on each page. `data-watch` on the canvas is the state it shows,
@@ -72,6 +73,8 @@ const hidden = computed(() => !name.value || covered.value);
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 const board = shallowRef<BoardTarget>({ state: undefined, atOnce: true });
 let stage: Stage<WatchModelState> | undefined;
+/** The stage's model: it says when the balance comes to rest. */
+let model: WatchModel | undefined;
 /** Set while the canvas fades out: then the stage goes out of sight. */
 let hideTimer: ReturnType<typeof setTimeout> | undefined;
 /** The last state given to the stage. */
@@ -112,7 +115,18 @@ function showWatch(
     "--watch-text-delay",
     `${String((stage.viewEndAt(at) - at) / 1000)}s`,
   );
+  showRestDelay();
   run();
+}
+
+/** Set `--watch-rest-delay`: how long until the balance is at rest, or 0 if
+ *  it is not going to rest. */
+function showRestDelay(): void {
+  const milliseconds = model?.untilRest(performance.now()) ?? 0;
+  document.documentElement.style.setProperty(
+    "--watch-rest-delay",
+    `${String(milliseconds / 1000)}s`,
+  );
 }
 
 /** Draw while the watch shows. Once it hides, after the canvas's fade, go
@@ -141,6 +155,7 @@ function goOutOfSight(): void {
       modelState(stageTarget),
       true,
     );
+    showRestDelay();
   }
   stage?.stop();
 }
@@ -157,12 +172,8 @@ function showBoard(clicks: number, move: Move): void {
 
 onMounted(() => {
   if (!live || !canvas.value) return;
-  stage = new Stage(
-    canvas.value,
-    WATCH.scene,
-    themePalette(),
-    new WatchModel(WATCH),
-  );
+  model = new WatchModel(WATCH);
+  stage = new Stage(canvas.value, WATCH.scene, themePalette(), model);
   window.watchStage = stage;
   window.slideState = () => slideState(stage, canvas.value, shownWatch);
   document.documentElement.style.setProperty(

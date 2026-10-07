@@ -9,7 +9,9 @@
 // is a path drawn with the callout, from its tail to its head. A `bent`
 // leader leaves the word's side that faces `to`, runs level for ELBOW_RUN
 // px, and turns there to `to`: for a word with another line of the label
-// under or over it, which a straight leader would cross.
+// under or over it, which a straight leader would cross. With `showLeader`
+// false, the leader fades out and the label stays: for a part that moves
+// away from where the leader ends.
 //
 // The leader starts where the browser lays the word out, so the component
 // measures it, and again when the label's size changes (a font loads, or the
@@ -30,8 +32,15 @@ const props = withDefaults(
     arrow?: readonly Point2[];
     clear?: readonly (readonly Point2[])[];
     bent?: boolean;
+    showLeader?: boolean;
   }>(),
-  { stop: 0, arrow: () => [], clear: () => [], bent: false },
+  {
+    stop: 0,
+    arrow: () => [],
+    clear: () => [],
+    bent: false,
+    showLeader: true,
+  },
 );
 
 /** px between the word's box and the leader. */
@@ -142,7 +151,12 @@ const arrowPaths = computed(() => {
 <template>
   <div class="callout">
     <svg class="callout-art" width="1" height="1" aria-hidden="true">
-      <path v-if="leader" class="callout-leader" :d="leader" />
+      <path
+        v-if="leader"
+        class="callout-leader"
+        :class="{ 'callout-leader-hidden': !showLeader }"
+        :d="leader"
+      />
       <template v-if="arrowPaths">
         <path class="callout-arrow" :d="arrowPaths.shaft" />
         <path class="callout-head" :d="arrowPaths.head" />
@@ -183,6 +197,11 @@ const arrowPaths = computed(() => {
 .callout-leader {
   stroke: var(--palette-ink);
   stroke-width: 4;
+  /* it fades as text does (style.css, "TEXT FADES") */
+  transition: opacity var(--text-fade);
+}
+.callout-leader-hidden {
+  opacity: 0;
 }
 .callout-arrow {
   stroke: var(--palette-muted);
