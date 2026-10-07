@@ -3,7 +3,9 @@
 // the label to a point of the picture. The slide places the label (`left`,
 // `top`, its top left corner in slide px) and marks the word with
 // `<span class="callout-word">`; the leader leaves the word's box on the side
-// that faces `to`, and stops `stop` px short of it. `arrow` (none by default)
+// that faces `to`, and stops `stop` px short of it. With `clear` (closed
+// outlines, in slide px), it stops `stop` px short of where it first meets
+// one of them instead, so it ends outside them. `arrow` (none by default)
 // is a path drawn with the callout, from its tail to its head.
 //
 // The leader starts where the browser lays the word out, so the component
@@ -14,6 +16,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from "vue";
 import { at } from "../webgl/checked.ts";
 import type { Point2 } from "../webgl/mesh.ts";
+import { firstCrossing } from "../watch/callouts.ts";
 
 const props = withDefaults(
   defineProps<{
@@ -22,8 +25,9 @@ const props = withDefaults(
     top: number;
     stop?: number;
     arrow?: readonly Point2[];
+    clear?: readonly (readonly Point2[])[];
   }>(),
-  { stop: 0, arrow: () => [] },
+  { stop: 0, arrow: () => [], clear: () => [] },
 );
 
 /** px between the word's box and the leader. */
@@ -82,7 +86,8 @@ const leader = computed(() => {
   );
   const start: Point2 = [centre[0] + dx * reach, centre[1] + dy * reach];
   const length = Math.hypot(props.to[0] - start[0], props.to[1] - start[1]);
-  const end = toward(start, props.to, length - props.stop);
+  const meets = firstCrossing(start, props.to, props.clear) ?? 1;
+  const end = toward(start, props.to, meets * length - props.stop);
   return `M${start.join(" ")} L${end.join(" ")}`;
 });
 

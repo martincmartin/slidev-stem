@@ -132,11 +132,16 @@ IF ASKED: Why a wheel and not a disc? Mass at the rim counts most, like a figure
 watch: escapement
 watchTilt: 20
 watchOnly: escapement
+# click 2: the pallet and the balance fade, and the escape wheel spins freely;
+# click 3: they fade back in, and the pallet stops the wheel (docs/watch.md)
+watchSpin: 2
+watchSpinEnd: 3
+watchSpinSpeed: 135 # degrees a second
 ---
 
 # Escapement
 
-From back-and-forth motion to one direction
+From back-and-forth to turning in one direction
 
 <script setup>
 import { useSlideContext } from "@slidev/client";
@@ -146,11 +151,16 @@ import { WATCH } from "./watch/instance.ts";
 const marks = escapementMarks(WATCH, useSlideContext().$frontmatter);
 </script>
 
-<WatchCallout v-click :to="marks.escape" :stop="marks.escapeRadius / 2" :arrow="marks.drive" :left="680" :top="136">Force (unseen)<br>pushes <span class="callout-word">wheel</span></WatchCallout>
+<!-- Clicks 4 and 5 are trials of where a leader ends, to compare by going back
+and forward: at 4 the pallet's leader ends between corners A and B of the fork
+(palletTrial in watch/callouts.ts); at 5 the two leaders end 10 px outside
+their parts. -->
 
-<WatchCallout v-click :to="marks.pallet" :left="470" :top="470"><span class="callout-word">Pallet</span> blocks wheel</WatchCallout>
+<WatchCallout v-click="1" :to="marks.escape" :stop="$clicks === 5 ? 10 : marks.escapeRadius / 2" :clear="$clicks === 5 ? [marks.escapeTips] : []" :arrow="marks.drive" :left="680" :top="136">Force (unseen)<br>pushes <span class="callout-word">wheel</span></WatchCallout>
 
-<WatchCallout v-click :to="marks.jewel" :stop="marks.jewelRadius + 4" :left="330" :top="136"><span class="callout-word">Jewel</span> strikes pallet</WatchCallout>
+<WatchCallout v-click="3" class="after-watch-fade" :to="$clicks === 4 || $clicks === 5 ? marks.palletMiddle : marks.pallet" :stop="$clicks === 5 ? 10 : 0" :clear="$clicks === 5 ? marks.forkOutlines : []" :left="470" :top="470"><span class="callout-word">Pallet</span> blocks wheel</WatchCallout>
+
+<WatchCallout v-click="6" :to="marks.jewel" :stop="marks.jewelRadius + 4" :left="330" :top="136"><span class="callout-word">Jewel</span> strikes pallet</WatchCallout>
 
 <!--
 "Force (unseen) trying to turn wheel"
@@ -175,7 +185,13 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 
 [click] First, the gears are trying to run forward because the mainspring is applying torque.
 
+[click] The pallet and the balance fade away, and nothing holds the escape wheel back: it spins freely.
+
 [click] Second, the escapement normally prevents them from doing so. The pallet stones lock the escape wheel.
+
+[click] (Trial: the pallet's leader ends between corners A and B.)
+
+[click] (Trial: both leaders end 10 px outside their parts.)
 
 [click] Third, the balance periodically gives permission for one tiny advance. During that event some energy also travels the other way, from the gear train through the escapement into the balance.
 -->

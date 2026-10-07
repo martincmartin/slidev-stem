@@ -89,6 +89,8 @@ const BALANCE_SCREWS: BalanceScrews = Object.freeze({
 const OSCILLATOR_CLEARANCE = 2;
 const ROLLER_THICKNESS = 2;
 export const JEWEL_RADIUS = 6;
+/** The subject of a free spin (watch/state.ts, `watchSpin`). */
+export const ESCAPE_WHEEL = "escape wheel";
 /** The circle on the pallet fork's pivot. */
 export const FORK_PIVOT_RADIUS = 4;
 /** The stud: a block around the spring's outer end. */
@@ -1520,6 +1522,16 @@ export function generate(design: Design = DESIGN): Watch {
       ...balanceScrews,
     ]),
   };
+  // the escape wheel alone, as the escapement shows it: what a free spin
+  // shows. The escapement holds it, so the rest of the escapement fades alone.
+  const escapeWheel: Subject = {
+    name: ESCAPE_WHEEL,
+    meshes: new Set(
+      escapementSolids
+        .filter((solid) => solid.part === escapePart)
+        .map((solid) => lookup(movementMeshes, solid, `mesh of ${solid.name}`)),
+    ),
+  };
   const escapementBox = boxOf([
     ...escapementSolids,
     {
@@ -1550,7 +1562,7 @@ export function generate(design: Design = DESIGN): Watch {
         (SUBTITLE_BASELINE + design.canvas.height) / 2,
       ),
     ],
-    subjects: [subject, oscillator, wheel, wheelAdded, escapement],
+    subjects: [subject, oscillator, wheel, wheelAdded, escapement, escapeWheel],
   };
 
   return {

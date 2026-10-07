@@ -6,6 +6,7 @@ import { ribbonGeometry, smoothRing } from "../webgl/mesh.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import type { Renderer } from "../webgl/renderer.ts";
 import type { Model } from "../webgl/stage.ts";
+import { FADE_SECONDS } from "../webgl/timeline.ts";
 import type { Group, MeshGeometry } from "../webgl/scene.ts";
 import type { Timing, Wheel } from "./design.ts";
 import type { Watch, WatchGroups } from "./generate.ts";
@@ -220,46 +221,47 @@ function turnAt(x: number, y: number, degrees: number): Float32Array {
   ]);
 }
 
-/** The watch's motion at a mechanism time. */
+/** The watch's motion at a mechanism time. The train (the wheels and the
+ *  hands) turns with one position, in beats: each of its groups turns its own
+ *  degrees a beat. The mechanism steps it one beat at each tick (`beats`); a
+ *  `TrainClock` can give another position. */
 export class Motion {
   private readonly watch: Watch;
-  private readonly turning = new Map<Group, Keyframes>();
+  /** The train's position at a mechanism time, in beats. */
+  private readonly beat: Keyframes;
+  /** Degrees a beat, of each group that the train turns. */
+  private readonly steps = new Map<Group, number>();
+  private readonly forkTurning: Keyframes;
 
   constructor(watch: Watch) {
     this.watch = watch;
     const { design, groups } = watch;
     const { timing } = design;
-    const [barrel, centre, third, fourth, escape] = design.wheels as [
-      Wheel,
-      Wheel,
-      Wheel,
-      Wheel,
-      Wheel,
-    ];
-    for (const wheel of [barrel, centre, third, escape]) {
-      this.turning.set(
-        wheelGroup(groups, wheel),
-        stepper(timing, timing.period, wheel.step, true),
-      );
+    this.beat = stepper(timing, timing.period, 1, true);
+    for (const wheel of design.wheels) {
+      this.steps.set(wheelGroup(groups, wheel), wheel.step);
     }
-    // the fourth wheel and the seconds hand turn once a minute
-    const minute = stepper(timing, timing.fourthLoop, fourth.step, false);
-    this.turning.set(wheelGroup(groups, fourth), minute);
-    this.turning.set(groups.seconds, minute);
-    this.turning.set(groups.fork, forkFlips(timing));
-    this.turning.set(
-      groups.hour,
-      stepper(timing, timing.period, centre.step / timing.hourRatio, true),
-    );
-    this.turning.set(
-      groups.minute,
-      stepper(timing, timing.period, centre.step, true),
-    );
+    const [, centre, , fourth] = design.wheels as [Wheel, Wheel, Wheel, Wheel];
+    // the seconds hand is on the fourth wheel's arbor
+    this.steps.set(groups.seconds, fourth.step);
+    this.steps.set(groups.hour, centre.step / timing.hourRatio);
+    this.steps.set(groups.minute, centre.step);
+    this.forkTurning = forkFlips(timing);
+  }
+
+  /** The train's position at mechanism time `time`, in beats: a whole number
+   *  while the escape wheel is locked, and between two while it steps. */
+  beats(time: number): number {
+    return angleAt(this.beat, time);
   }
 
   /** The world matrix of every group at mechanism time `time`, with the
-   *  balance at `swing` degrees. */
-  matrices(time: number, swing: number): Map<Group, Float32Array> {
+   *  balance at `swing` degrees and the train at `beats`. */
+  matrices(
+    time: number,
+    swing: number,
+    beats = this.beats(time),
+  ): Map<Group, Float32Array> {
     const { design, groups } = this.watch;
     const [centreX, centreY] = design.watchCentre;
     const result = new Map<Group, Float32Array>();
@@ -267,24 +269,23 @@ export class Motion {
     const place = (group: Group, arbor: Point2, angle: number): void => {
       result.set(group, turnAt(centreX + arbor[0], centreY + arbor[1], angle));
     };
+    const turned = (group: Group): number => {
+      const step = this.steps.get(group);
+      if (step === undefined) throw new Error(`${group.name} has no step`);
+      return step * beats;
+    };
     for (const wheel of design.wheels) {
       const group = wheelGroup(groups, wheel);
-      place(group, wheel.arbor, this.angleOf(group, time));
+      place(group, wheel.arbor, turned(group));
     }
     place(groups.balance, design.balance.arbor, swing);
     place(groups.springBase, design.balance.arbor, 0);
-    place(groups.fork, design.fork.pivot, this.angleOf(groups.fork, time));
+    place(groups.fork, design.fork.pivot, angleAt(this.forkTurning, time));
     const [, centre, , fourth] = design.wheels as [Wheel, Wheel, Wheel, Wheel];
-    place(groups.seconds, fourth.arbor, this.angleOf(groups.seconds, time));
-    place(groups.hour, centre.arbor, this.angleOf(groups.hour, time));
-    place(groups.minute, centre.arbor, this.angleOf(groups.minute, time));
+    place(groups.seconds, fourth.arbor, turned(groups.seconds));
+    place(groups.hour, centre.arbor, turned(groups.hour));
+    place(groups.minute, centre.arbor, turned(groups.minute));
     return result;
-  }
-
-  private angleOf(group: Group, time: number): number {
-    const keyframes = this.turning.get(group);
-    if (!keyframes) throw new Error(`${group.name} has no keyframes`);
-    return angleAt(keyframes, time);
   }
 
   /** The spring's geometry with the balance at `swing` degrees. */
@@ -545,17 +546,143 @@ export function stillPose(
   };
 }
 
+// ---- the train's clock: the free spin -----------------------------------------------------------
+// The train's position, in beats (`Motion.beats`). Normally it follows the
+// mechanism, a whole number of teeth ahead: `lead` is an even number of beats
+// (a tooth of the escape wheel is two beats), so the pallet stones meet the
+// teeth as they did, and every wheel stays in mesh. During a free spin it
+// turns on its own, at a speed in beats a second, while only the escape wheel
+// shows (docs/watch.md, "The free spin"):
+//   - a spin starts when the rest of the escapement has faded out (the swap's
+//     FADE_SECONDS), and speeds up in SPIN_UP_SECONDS;
+//   - a stop keeps it spinning until the rest has faded back in, and then
+//     until the next tooth reaches the pallet: the lead reaches the next even
+//     number of beats. From then on it follows the mechanism again.
+// It only goes forward. Times: `now` in ms; speeds in beats a second.
+
+/** s: from still to the full speed of a spin. */
+export const SPIN_UP_SECONDS = 0.6;
+
+/** How far a spin has gone `seconds` after it started: its speed rises from 0
+ *  to `speed` as a smoothstep in SPIN_UP_SECONDS, then holds. */
+export function spinDistance(speed: number, seconds: number): number {
+  if (seconds <= 0) return 0;
+  if (seconds >= SPIN_UP_SECONDS) {
+    return speed * (seconds - SPIN_UP_SECONDS / 2);
+  }
+  const u = seconds / SPIN_UP_SECONDS;
+  return speed * SPIN_UP_SECONDS * (u * u * u - (u * u * u * u) / 2);
+}
+
+interface Locked {
+  kind: "locked";
+  /** Even: whole teeth ahead of the mechanism. */
+  lead: number;
+}
+interface Spinning {
+  kind: "spinning";
+  /** ms: when it starts to move. */
+  start: number;
+  speed: number;
+  lead: number;
+  /** The position where it started; set at the first frame after `start`. */
+  from: number | null;
+}
+interface Stopping {
+  kind: "stopping";
+  spin: Spinning;
+  /** ms: when the pallet is back, and can stop a tooth. */
+  blocked: number;
+  /** The lead at which it stops: the next tooth after `blocked`. */
+  target: number | null;
+}
+type TrainMode = Locked | Spinning | Stopping;
+
+export class TrainClock {
+  mode: TrainMode = { kind: "locked", lead: 0 };
+
+  /** Spin at `speed`, or follow the mechanism (`null`). `instantly`: a slide
+   *  reached directly, already at speed or locked. */
+  show(speed: number | null, now: number, instantly: boolean): void {
+    const mode = this.mode;
+    if (instantly) {
+      this.mode =
+        speed === null
+          ? { kind: "locked", lead: 0 }
+          : {
+              kind: "spinning",
+              start: now - SPIN_UP_SECONDS * 1000,
+              speed,
+              lead: 0,
+              from: null,
+            };
+    } else if (speed !== null) {
+      if (mode.kind === "locked") {
+        this.mode = {
+          kind: "spinning",
+          start: now + FADE_SECONDS * 1000,
+          speed,
+          lead: mode.lead,
+          from: null,
+        };
+      } else if (mode.kind === "stopping") {
+        this.mode = mode.spin; // it had not stopped yet: it spins on
+      }
+    } else if (mode.kind === "spinning") {
+      this.mode =
+        now < mode.start
+          ? { kind: "locked", lead: mode.lead } // it had not moved yet
+          : {
+              kind: "stopping",
+              spin: mode,
+              blocked: now + FADE_SECONDS * 1000,
+              target: null,
+            };
+    }
+  }
+
+  /** The train's position at `now`, when the mechanism's position is
+   *  `beats`. Call it with `now` that only goes forward. */
+  position(now: number, beats: number): number {
+    const mode = this.mode;
+    switch (mode.kind) {
+      case "locked":
+        return beats + mode.lead;
+      case "spinning":
+        return this.spun(mode, now, beats);
+      case "stopping": {
+        const spun = this.spun(mode.spin, now, beats);
+        if (now < mode.blocked) return spun;
+        const lead = spun - beats;
+        mode.target ??= 2 * Math.floor(lead / 2) + 2;
+        if (lead < mode.target) return spun;
+        this.mode = { kind: "locked", lead: mode.target };
+        return beats + mode.target;
+      }
+    }
+  }
+
+  private spun(spin: Spinning, now: number, beats: number): number {
+    if (now < spin.start) return beats + spin.lead;
+    spin.from ??= beats + spin.lead;
+    return spin.from + spinDistance(spin.speed, (now - spin.start) / 1000);
+  }
+}
+
 // ---- the watch's model for the stage ----------------------------------------------------------
 /** What a slide asks of the watch's motion. */
 export interface WatchModelState {
   /** The balance stops at rest. */
   settled: boolean;
+  /** Degrees a second: the escape wheel spins freely; `null`: it does not. */
+  spin: number | null;
 }
 
 export class WatchModel implements Model<WatchModelState> {
   private readonly watch: Watch;
   private readonly motion: Motion;
   private readonly clock: BalanceClock;
+  private readonly train = new TrainClock();
 
   constructor(watch: Watch, now = performance.now()) {
     this.watch = watch;
@@ -567,18 +694,42 @@ export class WatchModel implements Model<WatchModelState> {
     if (instantly) this.clock.place(state.settled, now);
     else if (state.settled) this.clock.settle(now);
     else this.clock.resume(now);
+    this.train.show(
+      state.spin === null ? null : spinBeats(this.watch, state.spin),
+      now,
+      instantly,
+    );
   }
 
   frame(now: number, renderer: Renderer): Map<Group, Float32Array> {
     const swing = this.clock.angle(now);
+    const time = this.clock.time(now);
     renderer.updateMesh(this.watch.spring, this.motion.springGeometry(swing));
-    return this.motion.matrices(this.clock.time(now), swing);
+    const beats = this.train.position(now, this.motion.beats(time));
+    return this.motion.matrices(time, swing, beats);
   }
 
   phase(now: number): string {
     this.clock.time(now); // moves the mode on
+    if (this.train.mode.kind !== "locked") {
+      return `train ${this.train.mode.kind}`;
+    }
     return this.clock.mode.kind === "free"
       ? "idle"
       : `balance ${this.clock.mode.kind}`;
   }
+}
+
+/** A spin of the escape wheel, `degrees` a second, in beats a second. It must
+ *  be faster than the mechanism's, or the next tooth would never catch up
+ *  with the pallet: the mechanism makes a beat each half period. */
+export function spinBeats(watch: Watch, degrees: number): number {
+  const escape = at(watch.design.wheels, watch.design.wheels.length - 1);
+  const beats = degrees / Math.abs(escape.step);
+  const mechanism = 2 / watch.design.timing.period;
+  check(
+    beats > mechanism,
+    `a spin of ${String(degrees)} deg/s is not faster than the mechanism's ${String(mechanism * Math.abs(escape.step))}`,
+  );
+  return beats;
 }

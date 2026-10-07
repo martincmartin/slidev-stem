@@ -25,3 +25,11 @@
 .text-fade-enter-from {
   opacity: 0;
 }
+
+/* A v-click that waits for the watch: it fades in only when the watch's swap
+   has faded the rest of the watch in (--watch-fade, set by global-bottom.vue),
+   so that it never points at a part that is not there yet. Going back it fades
+   out at once: the delay is on the way to the shown state only. */
+.after-watch-fade.slidev-vclick-target:not(.slidev-vclick-hidden) {
+  transition-delay: var(--watch-fade, 0s);
+}

@@ -21,6 +21,8 @@ import { stageState, watchState } from "./state.ts";
 /** Degrees: the length of the drive arrow's arc on the escape wheel. */
 const DRIVE_ARC = 90;
 const DRIVE_POINTS = 24;
+/** Points on the escape wheel's tip circle, for a leader that ends outside. */
+const TIP_POINTS = 120;
 /** How far the pallet's leader ends down the fork's lower arm: this fraction
  *  of the way from the pivot's circle to the tip of the overlap (`palletPoint`).
  *  Lower looked too far from the pivot; at the point farthest from every edge
@@ -43,6 +45,13 @@ export interface EscapementMarks {
    *  middle of the fork's mouth, where the jewel meets the fork. */
   readonly jewel: Point2;
   readonly jewelRadius: number;
+  /** Trials (clicks 3 and 4): the pallet's leader ends at `palletTrial`'s
+   *  middle; or the leaders end outside the fork at either bank
+   *  (`forkOutlines`) and outside the escape wheel's tip circle
+   *  (`escapeTips`). */
+  readonly palletMiddle: Point2;
+  readonly forkOutlines: readonly (readonly Point2[])[];
+  readonly escapeTips: readonly Point2[];
 }
 
 /** Where the view, at `tilt` degrees, shows a point of the world on a slide
@@ -92,6 +101,26 @@ function edgesOf(polygon: readonly Point2[]): [Point2, Point2][] {
   ]);
 }
 
+/** Where the segment a-b crosses the segment c-d, as the fraction of the way
+ *  from a to b; `undefined` if they do not cross. */
+function crossingAlong(
+  [a, b]: readonly [Point2, Point2],
+  [c, d]: readonly [Point2, Point2],
+): number | undefined {
+  const denominator =
+    (b[0] - a[0]) * (d[1] - c[1]) - (b[1] - a[1]) * (d[0] - c[0]);
+  if (denominator === 0) return undefined;
+  const along =
+    ((c[0] - a[0]) * (d[1] - c[1]) - (c[1] - a[1]) * (d[0] - c[0])) /
+    denominator;
+  const across =
+    ((c[0] - a[0]) * (b[1] - a[1]) - (c[1] - a[1]) * (b[0] - a[0])) /
+    denominator;
+  return along >= 0 && along <= 1 && across >= 0 && across <= 1
+    ? along
+    : undefined;
+}
+
 /** Where the edges of two polygons cross. */
 function crossings(
   first: readonly Point2[],
@@ -99,17 +128,9 @@ function crossings(
 ): Point2[] {
   const found: Point2[] = [];
   for (const [a, b] of edgesOf(first)) {
-    for (const [c, d] of edgesOf(second)) {
-      const denominator =
-        (b[0] - a[0]) * (d[1] - c[1]) - (b[1] - a[1]) * (d[0] - c[0]);
-      if (denominator === 0) continue;
-      const along =
-        ((c[0] - a[0]) * (d[1] - c[1]) - (c[1] - a[1]) * (d[0] - c[0])) /
-        denominator;
-      const across =
-        ((c[0] - a[0]) * (b[1] - a[1]) - (c[1] - a[1]) * (b[0] - a[0])) /
-        denominator;
-      if (along >= 0 && along <= 1 && across >= 0 && across <= 1) {
+    for (const edge of edgesOf(second)) {
+      const along = crossingAlong([a, b], edge);
+      if (along !== undefined) {
         found.push([
           a[0] + along * (b[0] - a[0]),
           a[1] + along * (b[1] - a[1]),
@@ -118,6 +139,22 @@ function crossings(
     }
   }
   return found;
+}
+
+/** Where the segment from `start` to `end` first meets one of `outlines`
+ *  (closed polygons), as the fraction of the way; `undefined` if it meets
+ *  none. */
+export function firstCrossing(
+  start: Point2,
+  end: Point2,
+  outlines: readonly (readonly Point2[])[],
+): number | undefined {
+  const found = outlines
+    .flatMap((outline) =>
+      edgesOf(outline).map((edge) => crossingAlong([start, end], edge)),
+    )
+    .filter((along) => along !== undefined);
+  return found.length > 0 ? Math.min(...found) : undefined;
 }
 
 /** The intervals of x where the line at `y` is inside the polygon. */
@@ -184,6 +221,71 @@ export function palletPoint(design: Design): Point2 {
   return [(nearest[0] + nearest[1]) / 2, y];
 }
 
+/** The trial ends of the pallet's leader (slide 4, clicks 3 and 4), in the
+ *  world's plan. On the fork's outline, the bottom is its lowest corner. B is
+ *  the corner before it, where the back of the arm turns gently up. A is the
+ *  first corner after it where the outline turns inward, sharply: where the
+ *  lower stone meets the arm. `middle` is halfway between A at its leftmost
+ *  and B at its rightmost, over the fork's swing. */
+export function palletTrial(design: Design): {
+  middle: Point2;
+  bottom: Point2;
+} {
+  const pivot = worldOf(design, design.fork.pivot);
+  const outline = forkOutlineLocal(
+    design.fork.outline,
+    design.fork.heading,
+  ).map(([x, y]): Point2 => [pivot[0] + x, pivot[1] + y]);
+  const count = outline.length;
+  const corner = (index: number): Point2 =>
+    at(outline, (index + count) % count);
+  /** Degrees; the sign says which way the outline turns. */
+  const turnAt = (index: number): number => {
+    const [before, here, after] = [
+      corner(index - 1),
+      corner(index),
+      corner(index + 1),
+    ];
+    const into = [here[0] - before[0], here[1] - before[1]];
+    const out = [after[0] - here[0], after[1] - here[1]];
+    return (
+      (Math.atan2(
+        at(into, 0) * at(out, 1) - at(into, 1) * at(out, 0),
+        at(into, 0) * at(out, 0) + at(into, 1) * at(out, 1),
+      ) *
+        180) /
+      Math.PI
+    );
+  };
+  const lowest = outline.reduce(
+    (best, point, index) => (point[1] > at(outline, best)[1] ? index : best),
+    0,
+  );
+  // the lowest corner turns outward: its sign is the sign of an outward turn
+  const outward = Math.sign(turnAt(lowest));
+  const bIndex = lowest - 1;
+  if (Math.abs(turnAt(bIndex)) > 45) throw new Error("B is not a gentle turn");
+  let aIndex = lowest + 1;
+  while (!(-outward * turnAt(aIndex) > 45)) {
+    aIndex++;
+    if (aIndex > lowest + count)
+      throw new Error("no inward turn after the bottom");
+  }
+  const banks = [design.timing.bank, -design.timing.bank];
+  const swung = (index: number): Point2[] =>
+    banks.map((bank) => turnedAbout(corner(index), bank, pivot));
+  const a = swung(aIndex).reduce((best, point) =>
+    point[0] < best[0] ? point : best,
+  );
+  const b = swung(bIndex).reduce((best, point) =>
+    point[0] > best[0] ? point : best,
+  );
+  return {
+    middle: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2],
+    bottom: corner(lowest),
+  };
+}
+
 /** A point of the design (from the watch centre) in the world. */
 function worldOf(design: Design, [x, y]: Point2): Point2 {
   return [design.watchCentre[0] + x, design.watchCentre[1] + y];
@@ -246,5 +348,15 @@ export function escapementMarks(
     pallet: shown(palletPoint(design), tops.fork),
     jewel: shown(jewel, tops.jewel),
     jewelRadius: JEWEL_RADIUS * view.scale,
+    palletMiddle: shown(palletTrial(design).middle, tops.fork),
+    forkOutlines: forkAtBanks(design).map((outline) =>
+      outline.map((point) => shown(point, tops.fork)),
+    ),
+    escapeTips: Array.from({ length: TIP_POINTS }, (_, index) =>
+      shown(
+        polar(escape.outer, (360 * index) / TIP_POINTS, escapeArbor),
+        tops.escape,
+      ),
+    ),
   };
 }

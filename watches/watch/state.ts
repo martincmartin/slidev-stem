@@ -8,10 +8,18 @@
 //     camera moves, when the slide is reached by a transition
 //   watchSettle: the click at which the balance settles at rest
 //   watchResume: the click at which a settled balance starts to swing again
+//   watchSpin: the click at which the escape wheel spins freely, alone: the
+//     subject is the escape wheel (ESCAPE_WHEEL)
+//   watchSpinEnd: the click at which the rest comes back and stops it
+//   watchSpinSpeed: the spin's speed, degrees a second (default SPIN_SPEED)
 
 import type { Scene } from "../webgl/scene.ts";
 import type { StageState } from "../webgl/timeline.ts";
+import { ESCAPE_WHEEL } from "./generate.ts";
 import type { WatchModelState } from "./model.ts";
+
+/** Degrees a second: a spin's speed when the slide does not give one. */
+export const SPIN_SPEED = 90;
 
 export interface WatchState {
   view: string;
@@ -19,6 +27,8 @@ export interface WatchState {
   only: string | undefined;
   flash: string | undefined;
   settled: boolean;
+  /** Degrees a second: the escape wheel spins freely; `null`: it does not. */
+  spin: number | null;
 }
 
 export function wrong(name: string, value: unknown, wanted: string): never {
@@ -69,15 +79,36 @@ export function watchState(
   ) {
     return wrong("watchResume", resumeAt, "a click after watchSettle");
   }
+  const spinAt = clickOf(frontmatter, "watchSpin");
+  const spinEndAt = clickOf(frontmatter, "watchSpinEnd");
+  if (
+    spinEndAt !== undefined &&
+    (spinAt === undefined || spinEndAt <= spinAt)
+  ) {
+    return wrong("watchSpinEnd", spinEndAt, "a click after watchSpin");
+  }
+  const speed = frontmatter["watchSpinSpeed"] ?? SPIN_SPEED;
+  if (typeof speed !== "number" || !(speed > 0) || !Number.isFinite(speed)) {
+    return wrong("watchSpinSpeed", speed, "a speed in degrees a second");
+  }
+  if (spinAt === undefined && frontmatter["watchSpinSpeed"] !== undefined) {
+    return wrong("watchSpinSpeed", speed, "set only with watchSpin");
+  }
+  const spinning =
+    spinAt !== undefined &&
+    clicks >= spinAt &&
+    (spinEndAt === undefined || clicks < spinEndAt);
   return {
     view,
     tilt,
-    only,
+    // a spinning wheel would pass through the pallet: it spins alone
+    only: spinning ? ESCAPE_WHEEL : only,
     flash,
     settled:
       settleAt !== undefined &&
       clicks >= settleAt &&
       (resumeAt === undefined || clicks < resumeAt),
+    spin: spinning ? speed : null,
   };
 }
 
@@ -100,5 +131,5 @@ export function stageState(scene: Scene, state: WatchState): StageState {
 }
 
 export function modelState(state: WatchState): WatchModelState {
-  return { settled: state.settled };
+  return { settled: state.settled, spin: state.spin };
 }

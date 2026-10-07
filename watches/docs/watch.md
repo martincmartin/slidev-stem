@@ -46,7 +46,7 @@ ruler that the diving board replaced),
 | `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand. `art/watch_design.py --check` compares what the file means, not its bytes (`pnpm format` rewrites its spacing)  |
 | `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights, views and subjects                                                                                          |
 | `watch/palette.ts`                                       | which theme variable colours each ink; `themePalette()` reads them from the page                                                                                      |
-| `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism and the balance's settle; frontmatter to state; the watch's stills; the shared instance                                                                 |
+| `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism, the balance's settle and the train's free spin; frontmatter to state; the watch's stills; the shared instance                                          |
 | `global-bottom.vue`, `slide-bottom.vue`                  | the live canvas and the live diving board, and the kind of each move; the still and the posed board on each printed page                                              |
 | `watch/board.ts`, `components/DivingBoard.vue`           | the board's frontmatter to its target, and its clock (`BoardClock`); the component that inlines the SVG and sets its time                                             |
 | `watch/navigation.ts`, `slide-state.ts`                  | a step forward, a step back or a jump; `window.slideState()` for `tools/navcheck.py` ([`navigation.md`](../../docs/navigation.md))                                    |
@@ -182,6 +182,45 @@ Three callouts appear, one at each click: "Force (unseen) pushes wheel",
   of the arm farthest from every edge (just under the circle), looked like
   it pointed at the pivot. Halfway down to the tip looked too low.
 
+### The free spin
+
+Click 1 shows the force's callout. At click 2 the pallet fork and the
+balance fade out, and the escape wheel spins on its own: the force turns it,
+and nothing holds it back. At click 3 they fade back in, and the pallet stops
+the wheel. The keys are `watchSpin`, `watchSpinEnd` and `watchSpinSpeed`
+(below).
+
+- **One thing at a time.** At click 3 the mechanism fades in first; the
+  pallet's callout fades in only when it is all there, so that its leader
+  never points at empty space. The callout has the class `after-watch-fade`
+  (`style.css`, and [slide-patterns.md](slide-patterns.md#text-fades)).
+
+- **The train has a position of its own, in beats** (`TrainClock` in
+  `watch/model.ts`). `Motion` turns every wheel and hand by its own degrees a
+  beat times that position. Normally the position follows the mechanism's
+  ticks, a whole number of teeth ahead: a tooth is two beats. So after a
+  spin, the stones meet the teeth as they did before it, and every wheel
+  stays in mesh, on this slide and every other.
+- **A spin starts when the rest has faded out** (the swap's `FADE_SECONDS`),
+  and speeds up in `SPIN_UP_SECONDS`. While the rest fades, the wheel does
+  not move, so it never turns through the stones.
+- **A stop keeps the wheel spinning until the rest is back, and then until
+  the next tooth reaches the pallet.** It stops there, a whole number of
+  teeth ahead of the mechanism, and ticks with it from then on. The stop
+  takes at most the fade, the time of one tooth and one tick.
+- **The train only goes forward**, as the mechanism's time does: a fast
+  click back during a stop spins on; a stop before the spin has started
+  leaves the wheel where it was. A jump shows a spin at full speed, or the
+  train in step with the mechanism (`watch/train.test.ts`).
+- **The model times the spin from the swap's fade.** At the click that
+  starts or ends a spin, a slide must change only the subject (no camera
+  move), so that the swap starts at once and takes `FADE_SECONDS`.
+  `watch/train.test.ts` fails if the swap's length changes.
+- **Not an oversight: one model, not a second wheel.** A second wheel that
+  always spins would need every view to hide it, and a cross-fade between two
+  wheels at one place, which the timeline does not have and which flickers in
+  the depth test.
+
 ## Balance rim motion
 
 Four radial screws make the rim's swing visible on the cover and slide 3.
@@ -222,6 +261,9 @@ clicks: 3
 | `watchOnly: hairspring and stud`     | the name of a subject: the rest of the watch fades out                                                                                                                    |
 | `watchSettle: 1`                     | at this click, the balance waits for its next extreme and then comes to rest                                                                                              |
 | `watchResume: 3`                     | at this click, a settled balance starts to swing again (it needs `watchSettle` before it)                                                                                 |
+| `watchSpin: 1`                       | at this click, the subject is the escape wheel alone, and it spins freely ([The free spin](#the-free-spin))                                                               |
+| `watchSpinEnd: 2`                    | at this click, the spin ends: the rest fades back in and the pallet stops the wheel (it needs `watchSpin` before it)                                                      |
+| `watchSpinSpeed: 90`                 | the spin's speed, in degrees a second of the escape wheel (default `SPIN_SPEED` in `watch/state.ts`); faster than the mechanism's 12                                      |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
 at load with the key's name. The subjects are made in `watch/generate.ts`:
@@ -237,6 +279,8 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
 - `escapement`: `balance and hairspring`, the pallet fork, and the escape
   wheel with its hub and arbor, not its pinion. It holds
   `balance wheel and hairspring`: slide 4 shows it.
+- `escape wheel` (`ESCAPE_WHEEL`): the escape wheel as `escapement` shows it.
+  A free spin shows it alone.
 
 - **The order of a change:** the camera moves (1.8 s), then the view tilts
   (1.5 s), then the rest fades (0.8 s); going back runs it in reverse. The

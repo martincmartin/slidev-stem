@@ -115,6 +115,10 @@ reason next to it.
   the headmatter of `slides.md`). The old slide's text fades out in
   `--text-fade`. The new slide's text waits for that, and for the camera
   (`--watch-text-delay`), and then fades in. Both are in `style.css`.
+- **Text that names a part that fades in at the same click** waits for it:
+  give the `v-click` element the class `after-watch-fade` (`style.css`). It
+  fades in after the watch's swap fade (`--watch-fade`), so its leader never
+  points at a part that is not there yet. Going back, it fades out at once.
 - **Text in the watch's layer** (the board's sentence) is not on a slide, so a
   slide transition does not fade it. It fades in `--text-fade`, and it fades
   in only after `--text-fade`
@@ -132,7 +136,9 @@ It is background, not rules.
 A slide that shows the watch sets its view in the frontmatter.
 Slide 2 uses the diving board to explain the spring, and slide 3 fades its rest shape out as the balance wheel fades in.
 Slide 4 zooms out, and then the rest of the escapement fades in. Its
-callouts point to parts of the watch, one at each click.
+callouts point to parts of the watch, one at each click. At its second click
+the escape wheel spins alone, and at the third the pallet comes back and
+stops it.
 It is described in [watch.md](watch.md).
 
 ## Where things go on a slide

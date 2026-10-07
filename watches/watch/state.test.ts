@@ -3,7 +3,8 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { watchState } from "./state.ts";
+import { ESCAPE_WHEEL } from "./generate.ts";
+import { SPIN_SPEED, watchState } from "./state.ts";
 
 test("a slide without watch has no state", () => {
   assert.equal(watchState({}, 0), undefined);
@@ -16,6 +17,7 @@ test("the fields and their defaults", () => {
     only: undefined,
     flash: undefined,
     settled: false,
+    spin: null,
   });
   const frontmatter = {
     watch: "hairspring",
@@ -31,7 +33,45 @@ test("the fields and their defaults", () => {
     only: "hairspring and stud",
     flash: "balance and hairspring",
     settled: true,
+    spin: null,
   });
+});
+
+test("the escape wheel spins alone from watchSpin until watchSpinEnd", () => {
+  const frontmatter = {
+    watch: "escapement",
+    watchOnly: "escapement",
+    watchSpin: 1,
+    watchSpinEnd: 2,
+    watchSpinSpeed: 120,
+  };
+  const at = (clicks: number) => watchState(frontmatter, clicks);
+  assert.deepEqual(
+    [0, 1, 2, 3].map((clicks) => [at(clicks)?.only, at(clicks)?.spin]),
+    [
+      ["escapement", null],
+      [ESCAPE_WHEEL, 120],
+      ["escapement", null],
+      ["escapement", null],
+    ],
+  );
+  // with no end, it spins to the slide's end, at the default speed
+  const open = { watch: "escapement", watchSpin: 1 };
+  assert.equal(watchState(open, 5)?.spin, SPIN_SPEED);
+});
+
+test("watchSpinEnd needs an earlier watchSpin, and a speed needs a spin", () => {
+  for (const [frontmatter, field] of [
+    [{ watchSpinEnd: 2 }, "watchSpinEnd"],
+    [{ watchSpin: 2, watchSpinEnd: 2 }, "watchSpinEnd"],
+    [{ watchSpinSpeed: 90 }, "watchSpinSpeed"],
+  ] as const) {
+    assert.throws(
+      () => watchState({ watch: "cover", ...frontmatter }, 0),
+      new RegExp(`^Error: ${field}:`),
+      JSON.stringify(frontmatter),
+    );
+  }
 });
 
 test("a settled balance resumes at watchResume", () => {
@@ -74,6 +114,12 @@ test("a field of the wrong kind throws, with its name", () => {
     ["watchResume", "3"],
     ["watchResume", -1],
     ["watchResume", 1.5],
+    ["watchSpin", "1"],
+    ["watchSpin", -1],
+    ["watchSpinEnd", 1.5],
+    ["watchSpinSpeed", 0],
+    ["watchSpinSpeed", -90],
+    ["watchSpinSpeed", "90"],
   ] as const) {
     assert.throws(
       () => watchState({ watch: "cover", [field]: value }, 0),
