@@ -1,0 +1,57 @@
+/* Ledger: the palette and the house type, on every slide.
+
+   The palette is set here and nowhere else. stem/tools/lib.py reads the ten
+   values from this rule, and `uv run tools/palette.py` (in stem/) measures
+   them against their gates. If you change a value, run it. The roles and
+   the gates that any theme must meet are in stem/docs/theme.md. */
+.slidev-layout {
+  --palette-background: #faf7f0;
+  --palette-ink: #2a2520;
+  --palette-muted: #736a60;
+  --palette-accent: #1f5fa8;
+  --palette-second: #9a6238;
+  --palette-panel: #f2eee4;
+  --palette-border: #e0d9ca;
+
+  /* The drawings' own colours (stem/docs/illustrations.md). The line colour is
+     the accent darkened: the accent is sized for a 37 px numeral, too light for
+     2-4 px lines. The knockout is a pale face that must read as lit. The
+     drawings' other two colours are muted and ink. */
+  --palette-art-line: #143c6b;
+  --palette-art-knockout: #d3dce3;
+  /* A flash's fill: a pale second, as the knockout is a pale line. Second over
+     the background at the opacity that gives the knockout's contrast. The
+     flash's lines are the second itself. */
+  --palette-art-second-knockout: #e6d8ca;
+
+  background: var(--palette-background);
+  color: var(--palette-ink);
+}
+
+/* Titles: Fraunces 600 in ink. 37 px is the title size in
+   stem/docs/legibility.md. */
+.slidev-layout h1 {
+  font-family: theme("fontFamily.serif");
+  font-weight: 600;
+  font-size: 37px;
+  line-height: 1.1;
+}
+
+/* A subtitle: the paragraph right after the title, as in Slidev's default
+   theme (its `h1 + p` rule). Muted, the role for secondary text; 22 px, the
+   subtitle size in stem/docs/legibility.md. */
+.slidev-layout h1 + p {
+  margin-top: -0.5rem;
+  font-size: 22px;
+  line-height: 1.3;
+  color: var(--palette-muted);
+}
+
+.slidev-layout.cover {
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+.slidev-layout.cover h1 {
+  font-size: 56px;
+}

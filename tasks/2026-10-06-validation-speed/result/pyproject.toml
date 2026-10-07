@@ -1,0 +1,61 @@
+# The house's Python: stem/tools/ and the scripts in stem/tasks/. It is not a
+# package. Each talk is a separate uv project, with its own pyproject.toml,
+# uv.lock and .venv; see "Given talks and versions" in AGENTS.md.
+#
+#   uv run tools/artcheck.py <path>        # run a tool; uv makes stem/.venv first
+#
+# The tools that render install Chromium the first time they run
+# (tools/browsers.py).
+
+[project]
+name = "stem-tools"
+version = "0"
+requires-python = "==3.14.*"
+dependencies = [
+  "numpy>=2.5.3",
+  "pillow>=12.3.0",
+  "playwright>=1.63.0",
+]
+
+[dependency-groups]
+# The style and type checkers that tools/check_python.py runs.
+dev = [
+  "mypy>=2.3.1",
+  "pyright>=1.1.414",
+  "pytest>=9.1.1",
+  "ruff>=0.16.9",
+]
+
+[tool.uv]
+package = false
+# Only an interpreter that uv installed: a Homebrew upgrade must not remove the
+# interpreter of a venv.
+python-preference = "only-managed"
+
+[tool.ruff]
+target-version = "py314"
+# A bare `ruff format` must not change a task: a finished task is frozen. (ruff
+# uses the nearest config for each file, so `include` cannot keep it out: a
+# task keeps its own copies of pyproject.toml.) tools/validate.py gives ruff
+# the paths in [tool.mypy] files.
+extend-exclude = ["tasks"]
+# Python only. Markdown is Prettier's (ruff would format its Python blocks).
+include = ["*.py", "*.pyi"]
+
+[tool.ruff.lint]
+# Beyond ruff's defaults: import order, newer syntax, likely bugs, simpler code,
+# comprehensions, pathlib, naming, performance, ruff's own. Not PL (the tools'
+# constants are deliberate), S (the subprocess calls) or D (the house's
+# docstring style). See tasks/2026-09-28-validate/PLAN.md.
+extend-select = ["I", "UP", "B", "SIM", "C4", "PTH", "N", "PERF", "RUF"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+files = ["tools"]
+
+[tool.pyright]
+pythonVersion = "3.14"
+include = ["tools"]
+venvPath = "."
+venv = ".venv"

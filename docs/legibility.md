@@ -100,6 +100,12 @@ way:**
 Fmax is the number to shop venues with, and the one to quote when someone asks
 whether a choice is safe.
 
+Full validation uses `barroom.py --gate-only` for SVGs and watch PNGs.
+This calculates the same design-venue median contrast and pass/fail result.
+It omits report values that do not determine failure.
+Run `barroom.py` without that option for measurements, comparisons, and room-light tolerance.
+The [validation-speed task](../tasks/2026-10-06-validation-speed/PLAN.md) records the equivalence checks.
+
 ## Reading the metrics
 
 `tools/barroom.py` reports `hold`, `p90` and `Fmax` for each drawing at each venue.

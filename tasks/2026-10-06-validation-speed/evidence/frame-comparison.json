@@ -1,0 +1,402 @@
+[
+  {
+    "frame": "candle-0.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "candle-0.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "candle-1.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "candle-1.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "candle-2.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "candle-2.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "candle-3.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "candle-3.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "candle-4.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "candle-4.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "candle-5.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "candle-5.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "candle-6.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "candle-6.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "candle-7.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "candle-7.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "diving-board-0.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "diving-board-0.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "diving-board-1.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "diving-board-1.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "diving-board-2.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "diving-board-2.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "diving-board-3.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "diving-board-3.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "diving-board-4.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "diving-board-4.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "diving-board-5.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "diving-board-5.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "diving-board-6.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "diving-board-6.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "diving-board-7.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "diving-board-7.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "hourglass-0.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "hourglass-0.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "hourglass-1.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "hourglass-1.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "hourglass-2.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "hourglass-2.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "hourglass-3.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "hourglass-3.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "hourglass-4.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "hourglass-4.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "hourglass-5.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "hourglass-5.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "hourglass-6.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "hourglass-6.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "hourglass-7.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "hourglass-7.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "sundial-0.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "sundial-0.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "sundial-1.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "sundial-1.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "sundial-2.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "sundial-2.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "sundial-3.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "sundial-3.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "sundial-4.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "sundial-4.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "sundial-5.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "sundial-5.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "sundial-6.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "sundial-6.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "sundial-7.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "sundial-7.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "water-clock-0.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "water-clock-0.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "water-clock-1.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "water-clock-1.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "water-clock-2.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "water-clock-2.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "water-clock-3.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "water-clock-3.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "water-clock-4.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "water-clock-4.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "water-clock-5.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "water-clock-5.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "water-clock-6.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "water-clock-6.png",
+    "engine": "firefox",
+    "identical": false
+  },
+  {
+    "frame": "water-clock-7.png",
+    "engine": "chromium",
+    "identical": true
+  },
+  {
+    "frame": "water-clock-7.png",
+    "engine": "firefox",
+    "identical": false
+  }
+]

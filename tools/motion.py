@@ -150,11 +150,6 @@ def plan_notes(sampling: SamplingPlan) -> list[str]:
     return notes
 
 
-def render_at(files: list[pathlib.Path], time: float) -> list[Image.Image]:
-    """barroom's harness, pinned to `time`: one crop per file."""
-    return barroom.render(files, time)[1]
-
-
 def delta(
     first: Image.Image, second: Image.Image, sigma: float, flare: float
 ) -> barroom.Plane:
@@ -233,22 +228,17 @@ def score(
     venue: lib.Venue,
     flare: float,
 ) -> dict[pathlib.Path, MotionScore]:
-    """Each animated drawing's score. Each needed time is rendered once for
-    every file; each file then uses its own times."""
-    all_times = sorted(
-        {
-            time
-            for sampling in plans.values()
-            if sampling
-            for pair in sampling.pairs
-            for time in pair
-        }
-    )
-    frames = {time: render_at(files, time) for time in all_times}
+    """Measure each drawing at its original times, with one browser session."""
+    requested = {
+        file: sorted({time for pair in sampling.pairs for time in pair})
+        for file, sampling in plans.items()
+        if sampling is not None
+    }
+    frames = barroom.render_samples(requested)
     sigma = venue.blur_sigma(barroom.DEVICE_SCALE)
     per_csspx = barroom.DEVICE_SCALE**2
     scores = {}
-    for index, file in enumerate(files):
+    for file in files:
         sampling = plans[file]
         if sampling is None:
             continue
@@ -256,7 +246,7 @@ def score(
         band_areas: dict[float, list[float]] = {band: [] for band in BANDS}
         for first_time, second_time in sampling.pairs:
             difference = delta(
-                frames[first_time][index], frames[second_time][index], sigma, flare
+                frames[file][first_time], frames[file][second_time], sigma, flare
             )
             peaks.append(float(difference.max()))
             p99s.append(float(np.percentile(difference, 99)))

@@ -35,9 +35,17 @@ measurements of its drawings. Building new content should never require opening
 # in stem/
 uv run tools/artcheck.py watches/public/    # every illustration: structure, style, legibility
 uv run tools/palette.py                     # the palette still passes its own gates
-# here, before a commit
-uv run ../tools/validate.py                 # every check of this talk
+# here; use quick mode for routine feedback
+uv run ../tools/validate.py                 # full mode; see the validation policy below
+uv run ../tools/validate.py --quick         # source, generated files, and build
+uv run ../tools/validate.py --jobs 1        # full validation with serial preparation
+uv run ../tools/validate.py --json          # results and elapsed times as JSON
 ```
+
+The [validation policy](../AGENTS.md#validate-before-you-commit) applies to this talk.
+During work, run full mode only after changes that could affect its results.
+Before a commit, require a successful full run.
+If the talk and its relevant inputs are unchanged since that run, reuse it.
 
 [`../tools/`](../tools/README.md) holds the checks that settle "is this good
 enough?" with arithmetic. They are stdlib-only unless they need to render. The ones that render install

@@ -1,0 +1,29 @@
+MOTION at TV 55in @7m, flare 0.00
+
+drawing                  dPeak    dP99   area CSS px^2 changing by    >=1.2    >=1.5    >=2.0    >=3.0
+diving-board              8.96    2.51                              11704     7567     5949     3216
+candle                   12.19    7.99                               1253      973      748      516
+hourglass                 6.45    6.45                                820      757      705      643
+sundial                   8.47    6.76                                313      268      236      196
+water-clock               7.59    6.39                               1936     1487     1158      660
+
+diving-board (980x452 = 442960 CSS px^2 in total): (0,1.2), (0.3,1.5), (0.6,1.8), (0.9,2.1)
+    longest animation 2.4s -> sampling 1.2s apart (opposite extremes of it)
+      1s animation does NOT cancel (1.20 periods) and is included in this row's numbers
+candle (122x97 = 11834 CSS px^2 in total): (0,6), (1.5,7.5), (3,9), (4.5,10.5)
+    longest animation 12s -> sampling 6s apart (opposite extremes of it)
+      1.5s animation cancels exactly (4 whole periods), so it is excluded
+      1.6s animation does NOT cancel (3.75 periods) and is included in this row's numbers
+      1.8s animation does NOT cancel (3.33 periods) and is included in this row's numbers
+      3.1s animation does NOT cancel (1.94 periods) and is included in this row's numbers
+      4.3s animation does NOT cancel (1.40 periods) and is included in this row's numbers
+hourglass (122x97 = 11834 CSS px^2 in total): (0,4.5), (1.125,5.625), (2.25,6.75), (3.375,7.875)
+    longest animation 9s -> sampling 4.5s apart (opposite extremes of it)
+      0.6s animation does NOT cancel (7.50 periods) and is included in this row's numbers
+sundial (122x97 = 11834 CSS px^2 in total): (0,5.5), (1.375,6.875), (2.75,8.25), (4.125,9.625)
+    longest animation 11s -> sampling 5.5s apart (opposite extremes of it)
+water-clock (122x97 = 11834 CSS px^2 in total): (0,4), (1,5), (2,6), (3,7)
+    longest animation 8s -> sampling 4s apart (opposite extremes of it)
+      1s animation cancels exactly (4 whole periods), so it is excluded
+no drawing animates only in marks below the floor.
+exit 0

@@ -6,7 +6,8 @@ each talk keeps its own versions, and how to upgrade a talk's packages.
 start a new talk.
 **Tasks:**
 [`tasks/2026-09-28-per-talk-dependencies/`](../tasks/2026-09-28-per-talk-dependencies/PLAN.md),
-[`tasks/2026-09-28-validate/`](../tasks/2026-09-28-validate/PLAN.md).
+[`tasks/2026-09-28-validate/`](../tasks/2026-09-28-validate/PLAN.md),
+[`tasks/2026-10-06-validation-speed/`](../tasks/2026-10-06-validation-speed/PLAN.md).
 
 Each talk is a separate project, with its own package versions. A talk that you
 gave is frozen. This page tells you why, and how to work in that setup. The rules
@@ -80,10 +81,28 @@ records the version that each given talk used.
 
 ## Check your work
 
-Before you commit, run `validate.py` in each project that you changed
-([`../AGENTS.md`](../AGENTS.md), "Validate before you commit", says what each
-run checks). A talk's run takes about 45 s. Each tool is in
+The validation policy is in [`../AGENTS.md`](../AGENTS.md#validate-before-you-commit).
+Full mode remains the default. Each tool and command is in
 [`../tools/README.md`](../tools/README.md).
+
+For routine edits, use `uv run ../tools/validate.py --quick` in the talk.
+This runs source checks, generated-file checks, and the build.
+It omits browser checks, rendered legibility, motion, print, and navigation.
+During work, run full mode only after changes that could affect its results.
+Before each commit, require a successful full run for each changed project.
+If the project has not changed since its last successful full run, reuse that result.
+This includes changes to shared tools, themes, dependencies, and configuration used by the project.
+Quick mode does not satisfy the full-validation requirement.
+
+Full validation retains settled navigation and the rapid offline walk.
+They use one browser with their original viewports and timing.
+The rapid walk can expose failures caused by interrupted animations.
+
+Full validation uses bounded parallel preparation. Navigation runs alone,
+so other browser checks cannot affect its frame samples.
+Use `--jobs 1` for serial preparation. `--fix` always uses one worker.
+Every check prints its elapsed time. `--json` gives machine-readable results.
+Timing measurements and their limits are in the validation-speed task.
 
 ## Upgrade a talk's packages
 

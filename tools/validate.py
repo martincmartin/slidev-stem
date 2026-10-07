@@ -1,44 +1,33 @@
 #!/usr/bin/env python3
-"""Validate what the current directory belongs to. Run it before you commit.
+"""Validate the current project. Full mode follows the policy in AGENTS.md.
 
-    uv run tools/validate.py              # in stem/: the shared files only
-    uv run ../tools/validate.py           # in a talk's directory: that talk only
-    uv run tools/validate.py --fix        # ruff formats and fixes first
+    uv run tools/validate.py                 # shared files, from stem/
+    uv run ../tools/validate.py              # one talk, from its directory
+    uv run ../tools/validate.py --quick      # source, generation, and build
+    uv run ../tools/validate.py --jobs 1     # full validation, serial preparation
+    uv run ../tools/validate.py --json       # results and timings as JSON
 
-What it checks comes from the uv project that holds the current directory:
+The project comes from the nearest pyproject.toml. No run checks other talks.
+The house run checks Python, formatting, tests, documentation, and palette gates.
+A talk run also checks its types, lint, tests, SVGs, generated art, and build.
+Scripts in package.json select optional scene, stills, and print checks.
+Legibility checks calculate the design-venue gate. Full reports remain available
+through barroom.py. Motion checks retain every sample in their original plans.
 
-  * stem/, the house: the four Python checks of check_python.py (ruff format,
-    ruff check, mypy --strict, pyright) on tools/; Prettier on the shared files
-    (`pnpm format:check`); pytest on the tests in tools/ (test_*.py); the doc
-    check (doccheck.py) on docs/, tools/, themes/, README.md and AGENTS.md; and
-    the palette's gates (palette.py). Nothing in a talk.
-  * a talk: the same four checks on the talk's own code, in the talk's uv
-    project, with its versions and its settings; Prettier on the talk; the doc
-    check on its docs/, README.md and AGENTS.md; artcheck.py,
-    barroom.py and motion.py on every SVG in its public/; palette.py's check that
-    the talk sets the palette only for slide classes, within the gates; and a build of the deck (`pnpm build`,
-    into a temporary directory), which offline_check.py --walk then steps
-    through, slide by slide and click by click, with every outside request
-    blocked, and navcheck.py walks forward and back (docs/navigation.md).
-    Nothing outside the talk.
-  * a talk with TypeScript (scripts in its package.json): also `pnpm typecheck`,
-    `pnpm lint` and `pnpm test`. A talk with WebGL art (the script `art:scene`)
-    also has its scene written to a temporary file and checked by scenecheck.py;
-    with the script `art:generated`, its generated files are checked against
-    the scripts that write them; with the script `art:stills`, its PNG stills written to a temporary directory
-    (with pairs.json, a list of [first, second] file names), and barroom.py run
-    on the PNGs and motion.py --png-pair on each pair; with the script
-    `art:print`, the built deck is also given to it, which compares each
-    printed page with the live slide at the same click.
+Independent preparation groups use the default worker limit below. Each group keeps
+its dependency order. Navigation runs alone after preparation. Its --offline
+mode checks startup, page errors, outside requests, and a complete deck walk.
+A deck without a state probe receives the ordinary offline walk instead.
 
-It only reports, unless you give --fix: then ruff and Prettier rewrite the
-files first. It runs every check, even after one fails, then prints a summary
-and exits non-zero if any check failed. Each Python command runs with
-`uv run --locked`, so a uv.lock that does not match its pyproject.toml fails
-too.
-
-Run it only in a talk in progress. A given talk is not checked again
-(AGENTS.md, "Given talks and versions").
+--quick omits rendered art, renderer browser checks, print, and navigation.
+Use quick mode for routine feedback. Run full mode only after changes that
+could affect its results. Before a commit, require a successful full run unless
+the project and its relevant inputs are unchanged since that run.
+--fix rewrites Python and formatted files,
+with one worker to prevent races. All other modes only report. Build and art
+outputs go to temporary directories. Python checks use uv run --locked.
+Every check runs after failures. The summary includes each check's elapsed time.
+See docs/talks.md and tasks/2026-10-06-validation-speed/PLAN.md.
 """
 
 import argparse
@@ -47,7 +36,9 @@ import shlex
 import sys
 import tempfile
 import textwrap
+import time
 from collections.abc import Callable, Sequence
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -72,6 +63,7 @@ def prettier(directory: Path, fix: bool) -> Check:
 
 # The Markdown that doccheck reads in each project, if it is there. Not tasks/:
 # a finished task is frozen, and its links may point at what has moved since.
+DEFAULT_WORKERS = 2
 DOC_PATHS = ("docs", "README.md", "AGENTS.md")
 HOUSE_DOC_PATHS = (*DOC_PATHS, "tools", "themes")
 
@@ -129,9 +121,8 @@ def typescript_checks(directory: Path) -> list[Check]:
     ]
 
 
-def art_checks(directory: Path, work: Path) -> list[Check | Later]:
-    """The checks of a talk's WebGL art: its scene, and its PNG stills. `work`
-    is an empty directory for what they write."""
+def generation_checks(directory: Path, work: Path) -> list[Check | Later]:
+    """Check scene data and generated files without browser rendering."""
     scripts = scripts_of(directory)
     checks: list[Check | Later] = []
     if "art:scene" in scripts:
@@ -146,6 +137,13 @@ def art_checks(directory: Path, work: Path) -> list[Check | Later]:
         checks.append(
             Check("generated", directory, ("pnpm", "--silent", "art:generated"))
         )
+    return checks
+
+
+def still_checks(directory: Path, work: Path) -> list[Check | Later]:
+    """Write watch frames, then check their legibility and motion."""
+    scripts = scripts_of(directory)
+    checks: list[Check | Later] = []
     if "art:stills" in scripts:
         stills = work / "stills"
         checks.append(
@@ -157,7 +155,11 @@ def art_checks(directory: Path, work: Path) -> list[Check | Later]:
                 lambda: Check(
                     "barroom (png)",
                     STEM,
-                    uv_run("tools/barroom.py", *map(str, sorted(stills.glob("*.png")))),
+                    uv_run(
+                        "tools/barroom.py",
+                        *map(str, sorted(stills.glob("*.png"))),
+                        "--gate-only",
+                    ),
                 ),
             )
         )
@@ -179,6 +181,11 @@ def art_checks(directory: Path, work: Path) -> list[Check | Later]:
     return checks
 
 
+def art_checks(directory: Path, work: Path) -> list[Check | Later]:
+    """Return the complete art sequence for callers that run it serially."""
+    return [*generation_checks(directory, work), *still_checks(directory, work)]
+
+
 def print_checks(directory: Path, deck: Path) -> list[Check]:
     """The check of a talk's export pages, for a talk with the script
     `art:print`. It runs on the built deck, which it takes as its argument."""
@@ -187,40 +194,146 @@ def print_checks(directory: Path, deck: Path) -> list[Check]:
     return [Check("print", directory, ("pnpm", "--silent", "art:print", str(deck)))]
 
 
-def talk_checks(
-    directory: Path, deck: Path, work: Path, fix: bool
-) -> list[Check | Later]:
-    """The checks of the talk in `directory`. The house tools run in stem/, on
-    the talk's files. The deck is built into `deck`, an empty directory; the
-    art's files are written into `work`, another."""
+def talk_groups(
+    directory: Path, deck: Path, work: Path, fix: bool, quick: bool
+) -> tuple[list[list[Check | Later]], list[Check | Later]]:
+    """Group independent work. Keep navigation outside the worker pool."""
     talk = str(lib.display_path(directory))
     public = str(lib.display_path(directory / "public"))
-    return [
+    source: list[Check | Later] = [
         *python_checks(directory, code_paths(directory), fix),
         prettier(directory, fix),
         doccheck(directory, DOC_PATHS),
         *typescript_checks(directory),
         Check("artcheck", STEM, uv_run("tools/artcheck.py", public)),
-        Check("barroom", STEM, uv_run("tools/barroom.py", public)),
-        Check("motion", STEM, uv_run("tools/motion.py", public)),
-        *art_checks(directory, work),
+        *generation_checks(directory, work),
         Check("palette", STEM, uv_run("tools/palette.py", "--talk", talk)),
         Check("talk setup", STEM, uv_run("tools/talkcheck.py", talk)),
-        Check("build", directory, ("pnpm", "build", "--out", str(deck))),
-        *print_checks(directory, deck),
+    ]
+    build: list[Check | Later] = [
+        Check("build", directory, ("pnpm", "build", "--out", str(deck)))
+    ]
+    if quick:
+        return [source, build], []
+    svg: list[Check | Later] = [
+        Check("barroom", STEM, uv_run("tools/barroom.py", public, "--gate-only")),
+        Check("motion", STEM, uv_run("tools/motion.py", public)),
+    ]
+    stills = still_checks(directory, work)
+    built_deck = [*build, *print_checks(directory, deck)]
+    # Start the longest preparation sequence first. With --fix, source
+    # rewrites must finish before any browser or build reads those files.
+    groups = (
+        [source, svg, stills, built_deck] if fix else [built_deck, source, svg, stills]
+    )
+    return groups, [
         Check(
-            "offline",
+            "navigation and offline",
             STEM,
-            uv_run("tools/offline_check.py", str(deck), "--walk"),
-            shows_summary=True,
-        ),
-        Check(
-            "navigation",
-            STEM,
-            uv_run("tools/navcheck.py", str(deck)),
+            uv_run("tools/navcheck.py", str(deck), "--offline"),
             shows_summary=True,
         ),
     ]
+
+
+@dataclass(frozen=True)
+class CheckResult:
+    label: str
+    passed: bool
+    seconds: float
+    message: str
+    output: str
+
+
+def run_group(checks: Sequence[Check | Later]) -> list[CheckResult]:
+    """Run one dependency sequence. Continue after failures."""
+    results = []
+    for item in checks:
+        started = time.perf_counter()
+        try:
+            check = item.make() if isinstance(item, Later) else item
+            result = run(check)
+            results.append(
+                CheckResult(
+                    check.label,
+                    result.returncode == 0,
+                    time.perf_counter() - started,
+                    ok_line(check, result)
+                    if result.returncode == 0
+                    else f"FAIL  {check.label}",
+                    (result.stdout + result.stderr).rstrip(),
+                )
+            )
+        except (OSError, ValueError) as error:
+            results.append(
+                CheckResult(
+                    item.label,
+                    False,
+                    time.perf_counter() - started,
+                    f"FAIL  {item.label}",
+                    f"could not run: {error}",
+                )
+            )
+    return results
+
+
+def report(
+    heading: str, results: Sequence[CheckResult], seconds: float, machine_json: bool
+) -> int:
+    failed = [result.label for result in results if not result.passed]
+    if machine_json:
+        from dataclasses import asdict
+
+        print(
+            json.dumps(
+                {
+                    "project": heading,
+                    "seconds": seconds,
+                    "passed": not failed,
+                    "checks": [asdict(result) for result in results],
+                },
+                indent=2,
+            )
+        )
+    else:
+        print(f"--    {heading}")
+        for result in results:
+            print(f"{result.message}  [{result.seconds:.2f} s]")
+            if not result.passed:
+                print(textwrap.indent(result.output, "      "))
+        if failed:
+            print(
+                f"\n{len(failed)} of {len(results)} checks failed ({', '.join(failed)})"
+            )
+        else:
+            print(f"\nall {len(results)} checks passed")
+        print(f"total: {seconds:.2f} s")
+    return 1 if failed else 0
+
+
+def run_groups(
+    heading: str,
+    groups: Sequence[Sequence[Check | Later]],
+    exclusive: Sequence[Check | Later] = (),
+    jobs: int = DEFAULT_WORKERS,
+    machine_json: bool = False,
+) -> int:
+    """Buffer results in group order. Run frame sampling after workers stop."""
+    if jobs < 1:
+        raise ValueError("jobs must be at least 1")
+    started = time.perf_counter()
+    results: list[CheckResult] = []
+    if not machine_json:
+        print(f"running {heading}: {jobs} worker(s); navigation runs alone", flush=True)
+    with ThreadPoolExecutor(max_workers=jobs) as workers:
+        for group_results in workers.map(run_group, groups):
+            results.extend(group_results)
+            if not machine_json:
+                print(f"finished {len(results)} checks", flush=True)
+    if exclusive and not machine_json:
+        print("running navigation and offline alone", flush=True)
+    results.extend(run_group(exclusive))
+    return report(heading, results, time.perf_counter() - started, machine_json)
 
 
 def main() -> int:
@@ -230,51 +343,54 @@ def main() -> int:
         action="store_true",
         help="let ruff and Prettier rewrite the files first, then check",
     )
+    parser.add_argument(
+        "--quick",
+        action="store_true",
+        help="source checks, generated files, and build; no browser or rendered-art checks",
+    )
+    parser.add_argument(
+        "--jobs",
+        type=int,
+        default=DEFAULT_WORKERS,
+        help=f"independent preparation workers (default: {DEFAULT_WORKERS}; use 1 for serial execution)",
+    )
+    parser.add_argument(
+        "--json", action="store_true", help="print timings and results as JSON"
+    )
     arguments = parser.parse_args()
+    if arguments.jobs < 1:
+        parser.error("--jobs must be at least 1")
     project = project_of(Path.cwd())
     with (
         tempfile.TemporaryDirectory(prefix="deck-") as deck,
         tempfile.TemporaryDirectory(prefix="art-") as work,
     ):
-        checks: Sequence[Check | Later]
         if project == STEM:
-            heading, checks = "stem/, the shared files", house_checks(arguments.fix)
+            heading = "stem/, the shared files"
+            groups: list[list[Check | Later]] = [list(house_checks(arguments.fix))]
+            exclusive: list[Check | Later] = []
         elif (project / "slides.md").is_file():
             heading = f"{lib.display_path(project)}/, a talk"
-            checks = talk_checks(project, Path(deck), Path(work), arguments.fix)
+            groups, exclusive = talk_groups(
+                project, Path(deck), Path(work), arguments.fix, arguments.quick
+            )
         else:
             sys.exit(f"{project} is neither stem/ nor a talk (it has no slides.md)")
-        return run_all(heading, checks)
+        if arguments.quick:
+            heading += " (quick: browser and rendered-art checks omitted)"
+        return run_groups(
+            heading,
+            groups,
+            exclusive,
+            1 if arguments.fix else arguments.jobs,
+            arguments.json,
+        )
 
 
 def run_all(heading: str, checks: Sequence[Check | Later]) -> int:
-    """Run every check, report each, and return the exit code."""
-    print(f"--    {heading}")
-    failed: list[str] = []
-    for item in checks:
-        if isinstance(item, Later):
-            try:
-                check = item.make()
-            except (OSError, ValueError) as error:  # what the check before it left
-                failed.append(item.label)
-                print(f"FAIL  {item.label}")
-                print(f"      could not be made: {error}")
-                continue
-        else:
-            check = item
-        result = run(check)
-        if result.returncode == 0:
-            print(ok_line(check, result))
-            continue
-        failed.append(check.label)
-        print(f"FAIL  {check.label}")
-        print(textwrap.indent((result.stdout + result.stderr).rstrip(), "      "))
-    if failed:
-        names = ", ".join(failed)
-        print(f"\n{len(failed)} of {len(checks)} checks failed ({names})")
-        return 1
-    print(f"\nall {len(checks)} checks passed")
-    return 0
+    """Run a serial sequence. Preserve the public entry point for callers."""
+    started = time.perf_counter()
+    return report(heading, run_group(checks), time.perf_counter() - started, False)
 
 
 if __name__ == "__main__":

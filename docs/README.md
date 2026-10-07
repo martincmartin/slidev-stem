@@ -23,8 +23,8 @@ follow one grammar, "Line, weighted": four stroke weights, the theme's art
 colours, and files that state the size a slide shows them at. Art that turns
 in 3D or moves by rules is drawn live in WebGL, in the same grammar. Every
 threshold comes from one question, _can the back row of a bar read this_, and
-`tools/` answers it with arithmetic. Before you commit, run
-`uv run ../tools/validate.py` in the talk's directory.
+`tools/` answers it with arithmetic. Use quick mode for routine feedback.
+Follow the [validation policy](../AGENTS.md#validate-before-you-commit) for full mode and reuse of an unchanged project's previous result.
 
 **Docs and tasks.** These docs give the current rules and a summary of why.
 The options, the evidence and the rejected alternatives behind each rule are

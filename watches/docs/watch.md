@@ -8,6 +8,7 @@ measured budgets) and the diving board on slide 2.
 them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
+[`2026-10-06-validation-speed`](../../tasks/2026-10-06-validation-speed/PLAN.md) (print readiness and validation scheduling),
 [`2026-10-04-balance-rim-marks`](../tasks/2026-10-04-balance-rim-marks/README.md) (radial screws that show the rim's swing),
 [`2026-10-04-rest-shape-final-review`](../tasks/2026-10-04-rest-shape-final-review/README.md) (final selection, cleanup, and review),
 [`selection-and-layering`](../tasks/2026-10-04-leader-path-comparison/selection-and-layering/README.md) (the selected leader and reference paint order),
@@ -588,7 +589,11 @@ art:generated` runs it with the `--check` of `watch_design.py` and
   curl's click (`curlsHere`), the pose is the end of the edit: the curled
   outline, the edited sentence, and the still. Print mode never
   runs the clock, so the pose does not drift. `art:print` checks the board too:
-  its classes against the live slide's, and its clock against the pose. The
+  its classes against the live slide's, and its clock against the pose.
+  The check waits for loaded and posed layers, and for decoded still images.
+  It captures the live curl click before the story ends, then checks the later completed pose.
+  Page readiness does not depend on agreement between live and printed states.
+  The
   component's `data-waitfor` makes `slidev export` wait until the SVG is posed.
 
 ## The browser-tab icon

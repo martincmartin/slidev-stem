@@ -1,0 +1,21 @@
+Ledger, and the floor at TV 55in @7m
+
+  --palette-background  #FAF7F0   L=0.9314
+  --palette-ink         #2A2520   L=0.0192
+  --palette-muted       #736A60   L=0.1480
+  --palette-accent      #1F5FA8   L=0.1130
+  --palette-second      #9A6238   L=0.1589
+  --palette-panel       #F2EEE4   L=0.8563
+  --palette-border      #E0D9CA   L=0.6974
+  --palette-art-line    #143C6B   L=0.0444
+  --palette-art-knockout #D3DCE3   L=0.7058
+  --palette-art-second-knockout #E6D8CA   L=0.7020
+
+  stroke ladder [2.0, 2.5, 3.0, 4.0] CSS px as shown (within 5%)
+  stroke floor  1.64 CSS px
+
+  laptop        1.98 arcmin/CSSpx, thinnest resolvable mark 0.51 CSS px
+  TV 55in @5m   0.86 arcmin/CSSpx, thinnest resolvable mark 1.17 CSS px
+  TV 55in @7m   0.61 arcmin/CSSpx, thinnest resolvable mark 1.64 CSS px   <- design for this one
+  proj 2m @6m   1.17 arcmin/CSSpx, thinnest resolvable mark 0.86 CSS px
+exit 0

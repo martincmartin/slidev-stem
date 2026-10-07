@@ -1,0 +1,25 @@
+{
+  "name": "stem-talks",
+  "private": true,
+  "type": "module",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "26.10.0",
+      "onFail": "download"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.6.0",
+      "onFail": "download"
+    }
+  },
+  "scripts": {
+    "format": "prettier --write docs themes tools \"*.{md,json,yaml}\"",
+    "format:check": "prettier --check docs themes tools \"*.{md,json,yaml}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.9.9",
+    "prettier-plugin-slidev": "^1.0.5"
+  }
+}

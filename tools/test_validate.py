@@ -90,3 +90,95 @@ def test_a_talk_without_the_script_has_no_print_check(tmp_path: Path) -> None:
     talk.mkdir()
     (talk / "package.json").write_text('{"scripts": {}}')
     assert validate.print_checks(talk, tmp_path / "deck") == []
+
+
+def test_worker_groups_keep_dependencies_and_navigation_runs_alone(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    import subprocess
+    import threading
+
+    first_started = threading.Event()
+    second_started = threading.Event()
+    finished: set[Check] = set()
+    producer = passing("producer")
+    independent = passing("independent")
+    navigation = passing("navigation")
+
+    def execute(check: Check) -> subprocess.CompletedProcess[str]:
+        if check is producer:
+            first_started.set()
+            assert second_started.wait(5)
+        elif check is independent:
+            second_started.set()
+            assert first_started.wait(5)
+        elif check is navigation:
+            assert producer in finished and independent in finished
+        finished.add(check)
+        return subprocess.CompletedProcess(check.command, 0, "", "")
+
+    def dependent() -> Check:
+        assert producer in finished
+        return passing("dependent")
+
+    monkeypatch.setattr(validate, "run", execute)
+    assert (
+        validate.run_groups(
+            "heading",
+            [[producer, Later("dependent", dependent)], [independent]],
+            [navigation],
+        )
+        == 0
+    )
+    output = capsys.readouterr().out
+    assert (
+        output.index("ok    producer")
+        < output.index("ok    dependent")
+        < output.index("ok    navigation")
+    )
+
+
+def test_parallel_failures_and_launch_errors_do_not_hide_other_checks(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    missing = Check("missing command", STEM, ("/definitely/absent/validation-command",))
+    assert (
+        validate.run_groups(
+            "heading", [[missing, passing("after missing")], [failing("failed")]]
+        )
+        == 1
+    )
+    output = capsys.readouterr().out
+    assert "ok    after missing" in output
+    assert "2 of 3 checks failed" in output
+
+
+def test_quick_mode_keeps_generation_and_build_but_omits_browser_checks(
+    tmp_path: Path,
+) -> None:
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    (talk / "package.json").write_text(
+        '{"scripts": {"art:generated": "x", "art:stills": "x", "art:print": "x"}}'
+    )
+    (talk / "pyproject.toml").write_text('[tool.mypy]\nfiles = ["art"]\n')
+    groups, exclusive = validate.talk_groups(
+        talk, tmp_path / "deck", tmp_path / "work", False, True
+    )
+    labels = [item.label for group in groups for item in group]
+    assert "generated" in labels and "build" in labels and "artcheck" in labels
+    assert not {"stills", "print", "motion", "barroom"}.intersection(labels)
+    assert not exclusive
+
+
+def test_json_report_exposes_timings_and_failures(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    import json
+
+    assert validate.run_groups("heading", [[failing("failed")]], machine_json=True) == 1
+    result = json.loads(capsys.readouterr().out)
+    assert result["passed"] is False
+    assert result["checks"][0]["seconds"] >= 0
+    assert result["checks"][0]["label"] == "failed"

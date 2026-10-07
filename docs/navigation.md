@@ -5,6 +5,10 @@ slide works with no extra code; the default for each kind of animation when
 the viewer goes back; and the check that finds a move that does not follow
 the rules.
 
+**Tasks:**
+[`validation-speed`](../tasks/2026-10-06-validation-speed/PLAN.md)
+(the combined navigation and offline walk).
+
 **Read before** you add a click, a slide transition, or anything that moves or
 fades between clicks or slides.
 
@@ -60,7 +64,13 @@ page shows its click's target, posed.
 
 `tools/navcheck.py` walks the built deck forward to its end and back, one key
 press at a time, and then loads each place directly. `uv run
-../tools/validate.py` runs it in a talk. It fails if:
+../tools/validate.py` runs it with `--offline`, after all other browser work ends.
+With `--offline`, it also retains the original rapid walk at the larger viewport.
+That walk presses every 500 ms and can interrupt long animations.
+Both walks use one browser. Their original viewports and timing remain.
+The combined check blocks outside requests and rejects page errors, startup failures,
+walks that do not move, and walks that exceed their limit.
+It also fails if:
 
 - a place after a move differs from the same place loaded directly (rule 0);
 - a number jumps outside the range between where it was and where it ends (a
@@ -77,6 +87,8 @@ It reads what the deck reports. A talk with layers defines
 | `continuous` | numbers that must move without a cut (an opacity, a scale, a tilt). Leave out one that is not on the screen |
 | `busy`       | true while a story animation or a camera move runs, so that the check waits for its end                     |
 
-A deck without `slideState` has nothing to check, and passes. Give each new
-layer its fields in the talk's `slideState`, in the same change as the layer.
+Without `--offline`, a deck without `slideState` passes with a note.
+With `--offline`, it receives the ordinary offline walk.
+Only headless screen wake-lock acquisition is stubbed; page errors still fail.
+Give each new layer its fields in the talk's `slideState`, in the same change as the layer.
 The watch talk's is `watches/watch/slide-state.ts`.

@@ -24,7 +24,8 @@ string, 'classes k/n' says how many of the n v-click elements still have
 Slidev's slidev-vclick-target class. --walk presses the right arrow from slide 1
 until the URL stops changing, at the end of the deck. So every slide and every
 click loads, and a request from any of them is caught. It prints how many steps
-it took and where it stopped. tools/validate.py uses it.
+it took and where it stopped. Full validation uses navcheck.py --offline;
+this tool remains available for screenshots and diagnostic walks.
 
 The check fails (exit 1) if any outside request was blocked, and also if the deck
 did not work: a page whose script threw an error (`pageerror`), a page that
@@ -39,12 +40,14 @@ import json
 import mimetypes
 import pathlib
 import urllib.parse
+from dataclasses import dataclass
 
 import browsers
 from playwright.async_api import Page, Route, async_playwright
 from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 
 HOST = "deck.test"
+OFFLINE_SIZE = (1960, 1104)
 INFO_JS = """() => {
   const e = [...document.querySelectorAll('.slidev-layout')].find(x => x.offsetParent !== null)
             || document.querySelector('.slidev-layout');
@@ -81,6 +84,21 @@ WALK_LIMIT = 1000
 READY_TIMEOUT_MS = 15_000
 
 
+@dataclass(frozen=True)
+class WalkLimits:
+    """Deadlines and bounds for one walk. Fixtures can use smaller limits."""
+
+    ready_timeout_ms: int = READY_TIMEOUT_MS
+    steps: int = WALK_LIMIT
+
+    def __post_init__(self) -> None:
+        if self.ready_timeout_ms < 1 or self.steps < 1:
+            raise ValueError("Walk limits must be positive.")
+
+
+DEFAULT_WALK_LIMITS = WalkLimits()
+
+
 async def serve_build(page: Page, root: pathlib.Path, blocked: list[str]) -> None:
     """Serve the build in `root` to `page` at http://HOST/, from disk. Abort every
     request to any other host, and add its URL to `blocked`."""
@@ -104,6 +122,25 @@ async def serve_build(page: Page, root: pathlib.Path, blocked: list[str]) -> Non
     await page.route("**/*", route)
 
 
+async def walk(
+    page: Page, problems: list[str], limits: WalkLimits = DEFAULT_WALK_LIMITS
+) -> list[str]:
+    """Walk a deck without a state probe. Fail if it cannot move or finish."""
+    await page.wait_for_timeout(1500)
+    steps = [page.url]
+    while len(steps) < limits.steps:
+        await page.keyboard.press("ArrowRight")
+        await page.wait_for_timeout(500)
+        if page.url == steps[-1]:
+            break
+        steps.append(page.url)
+    if len(steps) == 1:
+        problems.append("the walk did not move from slide 1")
+    elif len(steps) >= limits.steps:
+        problems.append(f"the walk did not end within {limits.steps} steps")
+    return steps
+
+
 async def main(arguments: argparse.Namespace) -> int:
     root = pathlib.Path(arguments.build)
     blocked: list[str] = []
@@ -113,7 +150,7 @@ async def main(arguments: argparse.Namespace) -> int:
         browsers.install(playwright.chromium)
         browser = await playwright.chromium.launch()
         page = await browser.new_page(
-            viewport={"width": 1960, "height": 1104},
+            viewport={"width": OFFLINE_SIZE[0], "height": OFFLINE_SIZE[1]},
             color_scheme=arguments.color_scheme,
         )
         await serve_build(page, root, blocked)
@@ -158,19 +195,8 @@ async def main(arguments: argparse.Namespace) -> int:
                 await page.keyboard.press(key)
                 await page.wait_for_timeout(500)
         if arguments.walk and await load("1"):
-            await page.wait_for_timeout(1500)
-            steps = [page.url]
-            while len(steps) < WALK_LIMIT:
-                await page.keyboard.press("ArrowRight")
-                await page.wait_for_timeout(500)
-                if page.url == steps[-1]:
-                    break
-                steps.append(page.url)
+            steps = await walk(page, problems)
             print(f"walked {len(steps)} steps, to {steps[-1].split(HOST)[1]}")
-            if len(steps) == 1:
-                problems.append("the walk did not move from slide 1")
-            elif len(steps) >= WALK_LIMIT:
-                problems.append(f"the walk did not end within {WALK_LIMIT} steps")
         await browser.close()
     print("outside requests:", len(blocked))
     for url_text in blocked:

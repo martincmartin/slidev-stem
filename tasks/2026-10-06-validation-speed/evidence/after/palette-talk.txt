@@ -1,0 +1,5 @@
+
+the theme sets the palette (themes/ledger/styles/ledger.css); a slide class may override it
+
+  ok   no talk declares a --palette-* variable (1 talk(s) checked)
+exit 0

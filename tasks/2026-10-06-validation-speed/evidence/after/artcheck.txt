@@ -1,0 +1,20 @@
+ok    watches/public/diving-board.svg
+      note: fill #736A60 at 0.3 reads 1.47:1 on the panel, under 3:1 (needs 0.77). A wash: the drawing must read without it
+      note: fill #736A60 at 0.14 reads 1.18:1 on the panel, under 3:1 (needs 0.77). A wash: the drawing must read without it
+      note: fill #736A60 at 0.24 reads 1.35:1 on the panel, under 3:1 (needs 0.77). A wash: the drawing must read without it
+      note: fill #736A60 at 0.19 reads 1.26:1 on the panel, under 3:1 (needs 0.77). A wash: the drawing must read without it
+ok    watches/public/timekeepers/candle.svg
+      note: fill #143C6B at 0.08 reads 1.14:1 on the panel, under 3:1 (needs 0.55). A wash: the drawing must read without it
+      note: fill #143C6B at 0.35 reads 1.91:1 on the panel, under 3:1 (needs 0.55). A wash: the drawing must read without it
+ok    watches/public/timekeepers/hourglass.svg
+ok    watches/public/timekeepers/sundial.svg
+      note: fill #736A60 at 0.18 reads 1.25:1 on the panel, under 3:1 (needs 0.77). A wash: the drawing must read without it
+      note: fill #143C6B at 0.07 reads 1.12:1 on the panel, under 3:1 (needs 0.55). A wash: the drawing must read without it
+      note: stroke #143C6B at 0.45 reads 2.37:1 on the panel, under 3:1 (needs 0.55). A wash: the drawing must read without it
+      note: stroke #2A2520 at 0.5 reads 2.97:1 on the panel, under 3:1 (needs 0.50). A wash: the drawing must read without it
+ok    watches/public/timekeepers/water-clock.svg
+      note: stroke #2A2520 at 0.5 reads 2.97:1 on the panel, under 3:1 (needs 0.50). A wash: the drawing must read without it
+
+5 file(s), 0 failing.
+Grammar: strokes [2.0, 2.5, 3.0, 4.0] CSS px as shown, floor 1.64 CSS px at TV 55in @7m.
+exit 0

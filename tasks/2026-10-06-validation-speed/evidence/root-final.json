@@ -1,0 +1,63 @@
+{
+  "project": "stem/, the shared files",
+  "seconds": 2.668899291980779,
+  "passed": true,
+  "checks": [
+    {
+      "label": "ruff format",
+      "passed": true,
+      "seconds": 0.024743666988797486,
+      "message": "ok    ruff format  (26 files already formatted)",
+      "output": "26 files already formatted"
+    },
+    {
+      "label": "ruff check",
+      "passed": true,
+      "seconds": 0.02393466600915417,
+      "message": "ok    ruff check",
+      "output": "All checks passed!"
+    },
+    {
+      "label": "mypy --strict",
+      "passed": true,
+      "seconds": 0.14281633400241844,
+      "message": "ok    mypy --strict",
+      "output": "Success: no issues found in 26 source files"
+    },
+    {
+      "label": "pyright",
+      "passed": true,
+      "seconds": 1.6119603340048343,
+      "message": "ok    pyright",
+      "output": "0 errors, 0 warnings, 0 informations"
+    },
+    {
+      "label": "prettier",
+      "passed": true,
+      "seconds": 0.41803241698653437,
+      "message": "ok    prettier",
+      "output": "Checking formatting...\nAll matched files use Prettier code style!\n$ prettier --check docs themes tools \"*.{md,json,yaml}\""
+    },
+    {
+      "label": "pytest",
+      "passed": true,
+      "seconds": 0.3327064169861842,
+      "message": "ok    pytest",
+      "output": "........................................................................ [ 50%]\n......................................................................   [100%]\n142 passed in 0.20s"
+    },
+    {
+      "label": "doccheck",
+      "passed": true,
+      "seconds": 0.0716995419934392,
+      "message": "ok    doccheck",
+      "output": "no findings in 13 Markdown files"
+    },
+    {
+      "label": "palette",
+      "passed": true,
+      "seconds": 0.04267033401993103,
+      "message": "ok    palette",
+      "output": "Ledger, from themes/ledger/styles/ledger.css\n\n  --palette-background  #FAF7F0\n  --palette-ink         #2A2520\n  --palette-muted       #736A60\n  --palette-accent      #1F5FA8\n  --palette-second      #9A6238\n  --palette-panel       #F2EEE4\n  --palette-border      #E0D9CA\n  --palette-art-line    #143C6B\n  --palette-art-knockout #D3DCE3\n  --palette-art-second-knockout #E6D8CA\n\ncontrast gates\n\n  ok   ink     vs background   14.18:1  (>= 12.0)   headroom to degrade from; Ledger has 14.2\n  ok   ink     vs panel        13.10:1  (>= 12.0)   the same text on a card\n  ok   accent  vs panel         5.56:1  (>= 4.5)   the 37px stat number\n  ok   second  vs panel         4.34:1  (>= 3.5)   20px bold counts as large text: 3:1 plus margin\n  ok   muted   vs panel         4.58:1  (>= 4.5)   17px body is normal text, so WCAG AA applies\n  ok   second  vs art-second-knockout   3.60:1  (>= 3.0)   a flash's line on its fill: the drawing's structure must stay at the floor\n  ok   accent  vs ink         dE    55    (>= 35)   emphasis must read as emphasis\n  ok   accent  vs second      dE    75    (>= 25)   worst of deuter/protan\n  note accent  vs second       1.28x   (>= 1.4 preferred)   hue fails before lightness does\n\nroom light: contrast at additive ambient flare\n\n  pair                        0.00    0.05    0.10    0.15    0.20    Fmax\n  ink vs background          14.18    8.65    6.39    5.16    4.39   0.300\n  ink vs panel               13.10    8.02    5.95    4.82    4.11   0.300\n  accent vs panel             5.56    4.49    3.83    3.37    3.05   0.209\n  second vs panel             4.34    3.69    3.26    2.94    2.71   0.140\n  muted vs panel              4.58    3.86    3.38    3.04    2.78   0.156\n  ceiling for ANY design     21.00   10.50    7.00    5.25    4.20   0.300\n\nALL GATES PASS"
+    }
+  ]
+}

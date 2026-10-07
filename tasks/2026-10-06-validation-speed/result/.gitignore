@@ -1,0 +1,41 @@
+# Repo-wide ignores for the STEM talks monorepo. Each talk directory also
+# carries its own .gitignore, so that it stays self-contained if it is ever
+# copied out; this file covers the whole repo and any talk that does not yet
+# have one of its own.
+
+# --- Node / Slidev ---
+node_modules
+dist
+.vite-inspect
+.remote-assets
+components.d.ts
+*.local
+
+# --- Source media ---
+# Raw downloads and camera files sit at a talk's top level and are NOT
+# committed: they are large, and only the encoded copies under public/ are
+# needed to build the deck. Keep the originals backed up outside the repo.
+/*/*.mp4
+/*/*.mov
+
+# --- Editor backups and autosaves ---
+*~
+\#*\#
+.\#*
+*.sw[po]
+
+# --- macOS ---
+.DS_Store
+
+# --- Python tooling ---
+.venv
+__pycache__/
+*.py[cod]
+
+# --- Tool scratch ---
+# tools/contact.py writes renders here. Regenerable, and no doc cites a path
+# under it.
+/out/
+
+# --- Machine-local tool state ---
+.claude/settings.local.json

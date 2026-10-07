@@ -202,8 +202,10 @@ the history.
 
 ## Before you ship
 
-In `watches/`: `pnpm format`, then `uv run ../tools/validate.py`. It runs every
-check of the talk, and builds the deck ([`stem/docs/talks.md`](../../docs/talks.md)).
+In `watches/`, run `pnpm format` after edits. Use `uv run ../tools/validate.py --quick` for routine feedback.
+Follow the [validation policy](../../AGENTS.md#validate-before-you-commit) to decide when to run full mode.
+Before a commit, require a successful full run. If the talk and its relevant inputs are unchanged since that run, reuse it.
+The [validation workflow](../../docs/talks.md#check-your-work) explains both modes.
 
 **A deck file must match a `.prettierrc` override** (`slides.md`,
 `slides-*.md`, `pages/*.md`). If you add a deck file with another name, add it

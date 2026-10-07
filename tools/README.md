@@ -5,7 +5,8 @@ This is the one place that lists the commands; the docs link here.
 **Read before** you run a check, change a tool, or add one.
 **Tasks:**
 [`tasks/2026-09-25-tools-cleanup/`](../tasks/2026-09-25-tools-cleanup/PLAN.md),
-[`tasks/2026-09-28-validate/`](../tasks/2026-09-28-validate/PLAN.md).
+[`tasks/2026-09-28-validate/`](../tasks/2026-09-28-validate/PLAN.md),
+[`tasks/2026-10-06-validation-speed/`](../tasks/2026-10-06-validation-speed/PLAN.md).
 
 These answer "is this good enough?" with arithmetic rather than opinion, for every
 STEM talk. The thresholds they enforce are the ones in [`../docs/`](../docs/README.md). Run them in
@@ -35,7 +36,7 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 | `talkcheck.py`         | stdlib, pnpm             | does a talk have its own `pnpm-workspace.yaml`, and does Prettier read each of its deck files with the Slidev parser                                     |
 | `check_python.py`      | ruff, mypy, pyright      | do these Python files pass the house's checks (default: every tool here)                                                                                 |
 | `doccheck.py`          | stdlib                   | do the docs' links and anchors resolve, does each `docs/` match its two indexes, does each named tool exist                                              |
-| `validate.py`          | all of the above         | does this project (stem/ or a talk) pass every check: run before a commit                                                                                |
+| `validate.py`          | all of the above         | does this project (stem/ or a talk) pass its checks; full or quick mode                                                                                  |
 | `flatten_pnpm_list.py` | stdlib                   | every resolved JS package, one `name@version` a line: diff before and after an upgrade                                                                   |
 | `compare_dist.py`      | stdlib                   | are two deck builds the same, apart from Vue scope ids and content hashes                                                                                |
 | `capture_outputs.sh`   | playwright               | every tool's output, saved, to compare before and after a change to a tool                                                                               |
@@ -44,6 +45,9 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 uv run tools/validate.py                                # every check of the shared files
 (cd watches && uv run ../tools/validate.py)             # every check of one talk, only
 uv run tools/validate.py --fix                          # ... after ruff formats and fixes
+(cd watches && uv run ../tools/validate.py --quick)     # source, generated files, and build
+(cd watches && uv run ../tools/validate.py --jobs 1)    # full checks, serial preparation
+(cd watches && uv run ../tools/validate.py --json)      # results and elapsed times as JSON
 uv run tools/lib.py                          # the framework, as numbers
 uv run tools/palette.py                      # every gate, pass/fail
 uv run tools/palette.py --talk watches       # only: does this talk set it outside a slide class?
@@ -54,10 +58,12 @@ uv run tools/contact.py watches/public/timekeepers --times 0.2 4 8 11.8
 uv run tools/barroom.py watches/public/ --save out/
 uv run tools/motion.py watches/public/   # every animated drawing in a talk
 uv run tools/barroom.py cover.png           # a PNG, at 2 device px a CSS px
+uv run tools/barroom.py watches/public/ --gate-only # only the design-venue failure gate
 uv run tools/motion.py --png-pair a.png b.png   # two frames of one animation
 uv run tools/scenecheck.py scene.json       # from a talk's `pnpm art:scene`
 uv run tools/offline_check.py <build dir> 1:0 2:5   # see its docstring
 uv run tools/offline_check.py <build dir> --walk    # every slide and click
+uv run tools/navcheck.py <build dir> --offline      # combined offline and navigation check
 uv run tools/navcheck.py <build dir>                # or a dev server's URL
 uv run tools/check_python.py      # after you change a tool
 tools/capture_outputs.sh /tmp/before watches  # before you change a tool; again after,
@@ -75,6 +81,37 @@ the first time they run, into Playwright's cache for your user, which every
 checkout shares (`browsers.py`). Each tool that checks art needs the paths
 to check: there is no default of "every talk", because a given talk is not checked
 again (`../AGENTS.md`, "Given talks and versions").
+
+## Validation modes
+
+Use quick mode for routine feedback.
+The [validation policy](../AGENTS.md#validate-before-you-commit) defines when full mode is required.
+Run full mode during work only after changes that could affect its results.
+Before a commit, reuse the last successful full run only if the project and its relevant inputs have not changed.
+`--quick` checks source files, generated files, and a build.
+It omits rendered art, browser checks, print, and navigation.
+
+Independent preparation groups use the worker limit in `validate.py`.
+Each group keeps its dependency order. Navigation runs alone after preparation.
+`--jobs 1` selects serial preparation; `--fix` always uses one worker.
+Results stay in group order and include elapsed times.
+`--json` prints the same results as one JSON object.
+
+Full validation uses `barroom.py --gate-only`.
+The failure calculation is unchanged; other venue reports are omitted.
+Identical decoded PNG pixels share one measurement.
+The default `barroom.py` report and its JSON output retain all measurements.
+
+`motion.py` reuses one browser and poses each SVG at its required sample times.
+The sampling plans and contrast calculations are unchanged.
+Frame capture waits for fonts and two paint frames instead of a fixed delay.
+
+`navcheck.py --offline` provides the full validation deck walk.
+It checks outside requests, startup, page errors, walk completion, and navigation.
+It retains both settled navigation and the original rapid offline walk.
+The rapid walk uses the original larger viewport and 500 ms cadence.
+Without a state probe, it performs the ordinary offline walk.
+`offline_check.py` remains available for screenshots and diagnostic walks.
 
 ## Which tool is the authority
 

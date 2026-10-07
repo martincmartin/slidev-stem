@@ -1,0 +1,9 @@
+{
+  "git_head": "798cf7aa481e7a6bded414f40a605f8a5c800a99",
+  "changes_committed": false,
+  "snapshot_excludes": [
+    "tasks",
+    "installed packages",
+    "caches"
+  ]
+}

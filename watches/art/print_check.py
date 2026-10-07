@@ -49,7 +49,6 @@ from playwright.sync_api import BrowserType, Page, Playwright, Route, sync_playw
 
 HOST = "deck.test"
 TIMEOUT_MS = 60_000
-SETTLE_MS = 800  # after a slide loads: the watch's state follows the click
 STEP_LIMIT = 1000  # no talk has this many steps
 BOARD_TIME_TOLERANCE_S = 0.05  # the SVG's clock reads a little after it is set
 
@@ -94,12 +93,44 @@ def show(page: Page, path: str, slide: int) -> None:
     page.goto(f"http://{HOST}/{path}")
     slide_selector = f'[data-slidev-no="{slide}"]'
     page.wait_for_selector(slide_selector, state="visible")
-    page.wait_for_function(  # a still is drawn after the page loads
-        """selector => [...document.querySelectorAll(selector + ' .watch-still')]
-            .every(still => still.querySelector('.watch-still-image'))""",
+    page.wait_for_function(
+        """selector => {
+            const slide = document.querySelector(selector);
+            return slide && [...slide.querySelectorAll('[data-waitfor]')].every(host => {
+                const target = host.querySelector(host.dataset.waitfor);
+                return target && (!(target instanceof HTMLImageElement)
+                    || (target.complete && target.naturalWidth > 0));
+            });
+        }""",
         arg=slide_selector,
     )
-    page.wait_for_timeout(SETTLE_MS)
+    paint(page)
+
+
+def paint(page: Page) -> None:
+    """Let Vue apply its changes and let the browser paint them."""
+    page.evaluate("""async () => {
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    }""")
+
+
+def live_ready(page: Page, finish_story: bool = False) -> None:
+    """Wait for loaded layers. Keep the curl click's intermediate picture."""
+    paint(page)
+    page.wait_for_function("""() => {
+        const host = document.querySelector('.watch-layer .diving-board');
+        const canvas = document.querySelector('.watch-canvas');
+        return window.slideState && canvas &&
+            window.slideState().settled.watch === canvas.getAttribute('data-watch') &&
+            host?.querySelector('svg') && host.dataset.phase !== undefined;
+    }""")
+    if finish_story:
+        page.wait_for_function("""() => {
+            const host = document.querySelector('.watch-layer .diving-board');
+            return !host?.querySelector('svg.diving-board-curling')
+                || host.dataset.busy !== 'true';
+        }""")
+    paint(page)
 
 
 def watch_state(page: Page, selector: str) -> str:
@@ -219,11 +250,13 @@ def check(deck: Path, engine: str) -> int:
             serve_from(deck, page, outside)
         with_watch = 0  # pages that show a watch: a check of none compares nothing
         show(live, "1", 1)
+        live_ready(live)
         urls = [live.url]
         while len(urls) < STEP_LIMIT:
             slide, click = clicks_of(urls[-1])
-            show(printed, f"{slide}?print=clicks&clicks={click}", slide)
             wanted = watch_state(live, ".watch-canvas")
+            live_pose = board_pose(live, LIVE_BOARD)
+            show(printed, f"{slide}?print=clicks&clicks={click}", slide)
             shown = watch_state(printed, f'[data-slidev-no="{slide}"] .watch-still')
             if shown != wanted:
                 problems.append(
@@ -233,7 +266,7 @@ def check(deck: Path, engine: str) -> int:
             problems.extend(
                 f"slide {slide}, click {click}: {problem}"
                 for problem in board_problems(
-                    board_pose(live, LIVE_BOARD),
+                    live_pose,
                     board_pose(printed, printed_board(slide)),
                 )
             )
@@ -244,7 +277,7 @@ def check(deck: Path, engine: str) -> int:
                         f"slide {slide}, click {click}: the still did not load"
                     )
             live.keyboard.press("ArrowRight")
-            live.wait_for_timeout(SETTLE_MS)
+            live_ready(live, finish_story=bool(live_pose and live_pose["curling"]))
             if live.url == urls[-1]:
                 break
             urls.append(live.url)

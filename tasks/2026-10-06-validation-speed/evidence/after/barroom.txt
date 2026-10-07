@@ -1,0 +1,16 @@
+drawing                 ink%                    laptop               TV 55in @5m               TV 55in @7m               proj 2m @6m
+                                 hold     p90     Fmax     hold     p90     Fmax     hold     p90     Fmax     hold     p90     Fmax
+diving-board            21.6     3.37    3.96   0.050      3.37    3.37   0.050      3.37    3.37   0.050      3.37    3.37   0.050 
+candle                   8.5     4.57    9.58   0.155      4.21    9.40   0.130      3.62    8.04   0.078      4.53    9.58   0.153 
+hourglass               20.2     4.57    9.58   0.155      4.57    7.97   0.155      4.42    6.74   0.145      4.57    9.07   0.155 
+sundial                 17.0     6.79    9.58   0.253      4.51    9.50   0.151      4.13    8.74   0.124      4.59    9.58   0.157 
+water-clock             26.6     7.49    9.58   0.271      5.73    9.32   0.215      5.39    8.13   0.201      6.30    9.56   0.237 
+
+gate: hold >= 3.0 at TV 55in @7m   (marked ! if it fails)
+all clear the gate. Above it, headroom stops deciding and taste takes over.
+
+Read `hold` with `p90`, never alone. Fmax is room light tolerated; 0.30 is the
+ceiling for any design. watches/docs/measurements.md has the timekeepers' numbers.
+
+wrote 8 images to OUT/barroom-images
+exit 0

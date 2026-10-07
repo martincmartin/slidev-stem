@@ -1,0 +1,86 @@
+[
+  {
+    "name": "probe passes",
+    "expected": 0,
+    "returncode": 0,
+    "stdout": "  1:0 -> 2:0: 0.6 s\n  2:0 -> 1:0: 0.6 s\nrapid offline walk: 2 positions\nnavcheck: 1 moves forward, 1 back\noutside requests: 0\n",
+    "stderr": ""
+  },
+  {
+    "name": "no-probe fallback passes",
+    "expected": 0,
+    "returncode": 0,
+    "stdout": "rapid offline walk: 2 positions\nnavcheck: 0 moves forward, 0 back\noutside requests: 0\n",
+    "stderr": ""
+  },
+  {
+    "name": "outside request fails",
+    "expected": 1,
+    "returncode": 1,
+    "stdout": "  1:0 -> 2:0: 0.6 s\n  2:0 -> 1:0: 0.6 s\nrapid offline walk: 2 positions\nnavcheck: 1 moves forward, 1 back\noutside requests: 4\nblocked https://outside.invalid/image.png\nblocked https://outside.invalid/image.png\nblocked https://outside.invalid/image.png\nblocked https://outside.invalid/image.png\n",
+    "stderr": ""
+  },
+  {
+    "name": "fallback outside request fails",
+    "expected": 1,
+    "returncode": 1,
+    "stdout": "rapid offline walk: 2 positions\nnavcheck: 0 moves forward, 0 back\noutside requests: 2\nblocked https://outside.invalid/image.png\nblocked https://outside.invalid/image.png\n",
+    "stderr": ""
+  },
+  {
+    "name": "page error fails",
+    "expected": 1,
+    "returncode": 1,
+    "stdout": "  1:0 -> 2:0: 0.6 s\n  2:0 -> 1:0: 0.6 s\nrapid offline walk: 2 positions\nnavcheck: 1 moves forward, 1 back\noutside requests: 0\nFAIL page error: intentional fixture error\nFAIL page error: intentional fixture error\nFAIL page error: intentional fixture error\nFAIL page error: intentional fixture error\n",
+    "stderr": ""
+  },
+  {
+    "name": "startup fails",
+    "expected": 1,
+    "returncode": 1,
+    "stdout": "navcheck: 0 moves forward, 0 back\noutside requests: 0\nFAIL deck readiness or navigation timed out: Page.wait_for_selector: Timeout 500ms exceeded.\nCall log:\n  - waiting for locator(\".slidev-layout\") to be visible\n\n",
+    "stderr": ""
+  },
+  {
+    "name": "no movement fails",
+    "expected": 1,
+    "returncode": 1,
+    "stdout": "rapid offline walk: 1 positions\nnavcheck: 0 moves forward, 0 back\noutside requests: 0\nFAIL the walk did not move from slide 1\nFAIL the walk did not move from slide 1\n",
+    "stderr": ""
+  },
+  {
+    "name": "fallback no movement fails",
+    "expected": 1,
+    "returncode": 1,
+    "stdout": "rapid offline walk: 1 positions\nnavcheck: 0 moves forward, 0 back\noutside requests: 0\nFAIL the walk did not move from slide 1\n",
+    "stderr": ""
+  },
+  {
+    "name": "probe walk limit fails",
+    "expected": 1,
+    "returncode": 1,
+    "stdout": "  1:0 -> 2:0: 0.6 s\n  2:0 -> 3:0: 0.6 s\n  3:0 -> 2:0: 0.6 s\n  2:0 -> 1:0: 0.6 s\nrapid offline walk: 3 positions\nnavcheck: 2 moves forward, 2 back\noutside requests: 0\nFAIL ArrowRight: the walk did not end within 3 steps\nFAIL ArrowLeft: the walk did not end within 3 steps\nFAIL the walk did not end within 3 steps\n",
+    "stderr": ""
+  },
+  {
+    "name": "fallback walk limit fails",
+    "expected": 1,
+    "returncode": 1,
+    "stdout": "rapid offline walk: 3 positions\nnavcheck: 0 moves forward, 0 back\noutside requests: 0\nFAIL the walk did not end within 3 steps\n",
+    "stderr": ""
+  },
+  {
+    "name": "rapid-only page error fails",
+    "expected": 1,
+    "returncode": 1,
+    "stdout": "  1:0 -> 2:0: 0.6 s\n  2:0 -> 1:0: 0.6 s\nrapid offline walk: 2 positions\nnavcheck: 1 moves forward, 1 back\noutside requests: 0\nFAIL page error: rapid press fixture error\n",
+    "stderr": ""
+  },
+  {
+    "name": "large-viewport outside request fails",
+    "expected": 1,
+    "returncode": 1,
+    "stdout": "  1:0 -> 2:0: 0.6 s\n  2:0 -> 1:0: 0.6 s\nrapid offline walk: 2 positions\nnavcheck: 1 moves forward, 1 back\noutside requests: 1\nblocked https://outside.invalid/large.png\n",
+    "stderr": ""
+  }
+]

@@ -6,7 +6,8 @@
 
 The rules are in docs/navigation.md. The deck must define `window.slideState()`,
 which returns `{settled, continuous, busy}` (docs/navigation.md, "The check").
-A deck without it has nothing to check, and passes with a note.
+Without --offline, a deck without it passes with a note. With --offline,
+a deck without it receives the ordinary rapid offline walk.
 
 The walk presses the right arrow from slide 1 to the end of the deck, then the
 left arrow back to slide 1. After each press it samples `slideState()` every
@@ -23,8 +24,10 @@ QUIET_MS. Then it loads each place (slide and click) directly. It fails if:
   and does not fail;
 - a move does not end within MOVE_TIMEOUT_MS, or the page throws an error.
 
-A build is served from disk with every outside request aborted, as
-offline_check.py does. tools/validate.py runs this check on a talk's build.
+A build is served from disk with every outside request aborted.
+With --offline, a separate rapid walk retains offline_check.py's viewport,
+500 ms cadence, and startup delay. It must move and end.
+The same browser runs both walks; page errors and outside requests fail both. tools/validate.py uses this combined check on a talk's build.
 """
 
 import argparse
@@ -36,8 +39,16 @@ from dataclasses import dataclass
 from typing import Any
 
 import browsers
-from offline_check import HOST, READY_TIMEOUT_MS, WALK_LIMIT, serve_build
+from offline_check import (
+    DEFAULT_WALK_LIMITS,
+    HOST,
+    OFFLINE_SIZE,
+    WalkLimits,
+    serve_build,
+    walk,
+)
 from playwright.async_api import Page, async_playwright
+from playwright.async_api import TimeoutError as PlaywrightTimeoutError
 
 # A move has ended when nothing is busy and no number has changed for this long.
 QUIET_MS = 600
@@ -182,6 +193,8 @@ async def press(page: Page, key: str, token: int) -> Move | None:
     await page.wait_for_timeout(100)  # frames before the press
     await page.keyboard.press(key)
     result = await sampling
+    if result is not None and result["timedOut"] and page.url == start:
+        raise PlaywrightTimeoutError("The key press did not produce a settled page.")
     if result is None or page.url == start:
         return None
     return Move(
@@ -200,7 +213,9 @@ async def press(page: Page, key: str, token: int) -> Move | None:
     )
 
 
-async def main(arguments: argparse.Namespace) -> int:
+async def main(
+    arguments: argparse.Namespace, limits: WalkLimits = DEFAULT_WALK_LIMITS
+) -> int:
     target: str = arguments.deck
     base = target.rstrip("/") if target.startswith("http") else f"http://{HOST}"
     blocked: list[str] = []
@@ -213,12 +228,18 @@ async def main(arguments: argparse.Namespace) -> int:
         if not target.startswith("http"):
             await serve_build(page, pathlib.Path(target), blocked)
         await page.add_init_script(PRESS_JS)
+        # Headless browsers cannot acquire a screen wake lock. Supply that
+        # browser service so real page errors remain failures.
+        await page.add_init_script("""Object.defineProperty(navigator, 'wakeLock', {
+            value: {request: async type => {
+                if (type !== 'screen') throw new TypeError('Invalid wake-lock type');
+                return {released: false, release: async () => {},
+                    addEventListener() {}, removeEventListener() {}};
+            }}
+        });""")
 
         def page_error(error: Exception) -> None:
-            # Slidev asks for a screen wake lock on a key press, and headless
-            # Chromium refuses it: the browser's limit, not the deck's error
-            if "Wake Lock" not in str(error):
-                problems.append(f"page error: {error}")
+            problems.append(f"page error: {error}")
 
         page.on("pageerror", page_error)
 
@@ -227,34 +248,74 @@ async def main(arguments: argparse.Namespace) -> int:
             query = "" if clicks == "0" else f"?clicks={clicks}"
             await page.goto(f"{base}/{slide}{query}")
             await page.wait_for_selector(
-                ".slidev-layout", state="visible", timeout=READY_TIMEOUT_MS
+                ".slidev-layout", state="visible", timeout=limits.ready_timeout_ms
             )
             return await sample(page, pressed=False)
 
-        first = await load("1:0")
-        if first is None:
-            print("navcheck: the deck has no window.slideState(): nothing to check")
-            await browser.close()
-            return 0
+        async def rapid_walk() -> None:
+            # Retain the original offline check's viewport and 500 ms cadence.
+            # These presses can interrupt animations; settled navigation cannot.
+            await page.set_viewport_size(
+                {"width": OFFLINE_SIZE[0], "height": OFFLINE_SIZE[1]}
+            )
+            await page.goto(f"{base}/1")
+            await page.wait_for_selector(
+                ".slidev-layout", state="visible", timeout=limits.ready_timeout_ms
+            )
+            steps = await walk(page, problems, limits)
+            print(f"rapid offline walk: {len(steps)} positions", flush=True)
+
         moves: list[Move] = []
-        tokens = itertools.count(1)
-        for key in ("ArrowRight", "ArrowLeft"):
-            while len(moves) < 2 * WALK_LIMIT:
-                move = await press(page, key, token=next(tokens))
-                if move is None:
-                    break
-                moves.append(move)
-                seconds = (move.samples[-1].time - move.press) / 1000
-                late = " (did not end)" if move.timed_out else ""
-                print(
-                    f"  {move.start} -> {move.end}: {seconds:.1f} s{late}", flush=True
-                )
         direct: dict[str, dict[str, Any]] = {}
-        for place in dict.fromkeys(move.end for move in moves):
-            loaded = await load(place)
-            if loaded is not None:
-                direct[place] = rounded(loaded["settled"])
-        await browser.close()
+        try:
+            first = await load("1:0")
+            if first is None:
+                if arguments.offline:
+                    await rapid_walk()
+                else:
+                    print(
+                        "navcheck: the deck has no window.slideState(): nothing to check"
+                    )
+            else:
+                if first["timedOut"]:
+                    problems.append("slide 1 did not settle within the move timeout")
+                tokens = itertools.count(1)
+                for key in ("ArrowRight", "ArrowLeft"):
+                    for _ in range(limits.steps - 1):
+                        move = await press(page, key, token=next(tokens))
+                        if move is None:
+                            break
+                        moves.append(move)
+                        seconds = (move.samples[-1].time - move.press) / 1000
+                        late = " (did not end)" if move.timed_out else ""
+                        print(
+                            f"  {move.start} -> {move.end}: {seconds:.1f} s{late}",
+                            flush=True,
+                        )
+                    else:
+                        problems.append(
+                            f"{key}: the walk did not end within {limits.steps} steps"
+                        )
+                if arguments.offline and not any(
+                    move.key == "ArrowRight" for move in moves
+                ):
+                    problems.append("the walk did not move from slide 1")
+                if moves and place_of(page.url) != "1:0":
+                    problems.append("the backward walk did not return to slide 1")
+                for place in dict.fromkeys(move.end for move in moves):
+                    loaded = await load(place)
+                    if loaded is None or loaded["timedOut"]:
+                        problems.append(
+                            f"{place}: direct load did not return a settled state"
+                        )
+                    else:
+                        direct[place] = rounded(loaded["settled"])
+                if arguments.offline:
+                    await rapid_walk()
+        except PlaywrightTimeoutError as error:
+            problems.append(f"deck readiness or navigation timed out: {error}")
+        finally:
+            await browser.close()
 
     for move in moves:
         found, noted = move_problems(move)
@@ -280,6 +341,7 @@ async def main(arguments: argparse.Namespace) -> int:
     print(f"navcheck: {forward} moves forward, {len(moves) - forward} back")
     for note in notes:
         print("note", note)
+    print(f"outside requests: {len(blocked)}")
     for url_text in blocked:
         print("blocked", url_text)
     for problem in problems:
@@ -291,5 +353,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
     parser.add_argument(
         "deck", help="the directory `slidev build --out` wrote, or a dev server's URL"
+    )
+    parser.add_argument(
+        "--offline",
+        action="store_true",
+        help="also require startup and a complete offline walk; fall back if no state probe exists",
     )
     raise SystemExit(asyncio.run(main(parser.parse_args())))

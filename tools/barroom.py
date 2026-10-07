@@ -6,6 +6,11 @@
     .venv/bin/python3 tools/barroom.py cover.png              # a picture, not an SVG
     .venv/bin/python3 tools/barroom.py a.svg b.svg --save /tmp/
     .venv/bin/python3 tools/barroom.py new.svg --json         # for another program
+    .venv/bin/python3 tools/barroom.py new.svg --gate-only    # validation gate only
+
+--gate-only calculates the design venue's median contrast and failure decision.
+It omits other venues, p90, and Fmax. Identical decoded PNG pixels share a score.
+The default report and its JSON schema retain all existing measurements.
 
 Needs playwright, Pillow and numpy. It installs Chromium if it is missing
 (`browsers.py`).
@@ -64,7 +69,8 @@ import json
 import math
 import pathlib
 import sys
-from collections.abc import Sequence
+from collections.abc import Iterator, Mapping, Sequence
+from contextlib import contextmanager
 from dataclasses import dataclass
 
 import browsers
@@ -72,6 +78,7 @@ import lib
 import numpy as np
 from numpy.typing import NDArray
 from PIL import Image
+from playwright.sync_api import Page, sync_playwright
 
 Linear = NDArray[np.float64]  # an H x W x 3 image in linear light
 Plane = NDArray[np.float64]  # an H x W array: luminance or contrast
@@ -217,42 +224,67 @@ def render(
     ]
 
 
-def render_svgs(
-    files: Sequence[pathlib.Path], time: float
-) -> tuple[Image.Image, list[Image.Image]]:
-    """Screenshot every SVG at the size its file states, on the panel, with its
-    animation pinned to `time`. -> (whole screenshot, one crop per file)."""
-    from playwright.sync_api import sync_playwright
-
+@contextmanager
+def svg_page(
+    files: Sequence[pathlib.Path], browser_name: str = "chromium"
+) -> Iterator[tuple[Page, list[lib.ShownSize]]]:
+    """Load SVGs once. Close the page and browser when the caller leaves."""
     shown = sizes(files)
+    if not shown:
+        raise ValueError("At least one SVG is required.")
     page_parts = [
         "<!doctype html><meta charset=utf-8>",
         f"<style>body{{margin:0;background:{lib.ART_FIELD};padding:0}}",
         "div{display:flex;align-items:flex-start}svg{display:block;flex:none}</style><div>",
+        *(
+            lib.namespace_ids(file.read_text(), str(index))
+            for index, file in enumerate(files)
+        ),
+        "</div>",
     ]
-    page_parts += [
-        lib.namespace_ids(file.read_text(), str(index))
-        for index, file in enumerate(files)
-    ]
-    page_parts.append(
-        '</div><script>document.querySelectorAll("svg").forEach(s=>{'
-        f"s.pauseAnimations();s.setCurrentTime({time});}});</script>"
-    )
     with sync_playwright() as playwright:
-        browsers.install(playwright.chromium)
-        browser = playwright.chromium.launch()
-        page = browser.new_page(
-            viewport={
-                "width": math.ceil(sum(size.width for size in shown)),
-                "height": math.ceil(max(size.height for size in shown)),
-            },
-            device_scale_factor=DEVICE_SCALE,
-        )
-        page.set_content("".join(page_parts), wait_until="load")
-        page.wait_for_timeout(600)
-        shot = page.screenshot(full_page=True)
-        browser.close()
-    raw = Image.open(io.BytesIO(shot))
+        match browser_name:
+            case "chromium":
+                engine = playwright.chromium
+            case "firefox":
+                engine = playwright.firefox
+            case _:
+                raise ValueError(f"Unsupported browser: {browser_name}")
+        browsers.install(engine)
+        browser = engine.launch()
+        try:
+            page = browser.new_page(
+                viewport={
+                    "width": math.ceil(sum(size.width for size in shown)),
+                    "height": math.ceil(max(size.height for size in shown)),
+                },
+                device_scale_factor=DEVICE_SCALE,
+            )
+            page.set_content("".join(page_parts), wait_until="load")
+            page.evaluate("document.fonts.ready")
+            yield page, shown
+        finally:
+            browser.close()
+
+
+def svg_frame(
+    page: Page, shown: Sequence[lib.ShownSize], times: Sequence[float]
+) -> tuple[Image.Image, list[Image.Image]]:
+    """Pose each SVG, wait for paint, and crop its stated display size."""
+    if len(shown) != len(times):
+        raise ValueError("Each SVG needs one sample time.")
+    page.evaluate(
+        """async times => {
+            document.querySelectorAll('svg').forEach((svg, index) => {
+                svg.pauseAnimations();
+                svg.setCurrentTime(times[index]);
+            });
+            await new Promise(resolve => requestAnimationFrame(() =>
+                requestAnimationFrame(resolve)));
+        }""",
+        list(times),
+    )
+    raw = Image.open(io.BytesIO(page.screenshot(full_page=True)))
     crops, left = [], 0.0
     for size in shown:
         crops.append(
@@ -267,6 +299,36 @@ def render_svgs(
         )
         left += size.width
     return raw, crops
+
+
+def render_svgs(
+    files: Sequence[pathlib.Path], time: float
+) -> tuple[Image.Image, list[Image.Image]]:
+    """Render the SVGs at one time, on their original card background."""
+    with svg_page(files) as (page, shown):
+        return svg_frame(page, shown, [time] * len(files))
+
+
+def render_samples(
+    samples: Mapping[pathlib.Path, Sequence[float]], browser_name: str = "chromium"
+) -> dict[pathlib.Path, dict[float, Image.Image]]:
+    """Render only requested times. One screenshot can pose each SVG differently."""
+    if not samples:
+        return {}
+    if any(not times for times in samples.values()):
+        raise ValueError("Each SVG needs at least one sample time.")
+    files = list(samples)
+    frames: dict[pathlib.Path, dict[float, Image.Image]] = {file: {} for file in files}
+    with svg_page(files, browser_name) as (page, shown):
+        for index in range(max(map(len, samples.values()))):
+            times = [
+                samples[file][min(index, len(samples[file]) - 1)] for file in files
+            ]
+            _, cards = svg_frame(page, shown, times)
+            for file, time, card in zip(files, times, cards, strict=True):
+                if index < len(samples[file]):
+                    frames[file][time] = card
+    return frames
 
 
 @dataclass(frozen=True)
@@ -299,6 +361,60 @@ def score(file: pathlib.Path, card: Image.Image) -> DrawingScore:
             hold(ink, blurred, 0.0), hold(ink, blurred, 0.0, 90), fmax(ink, blurred)
         )
     return DrawingScore(file, 100 * float(clean_ink.mean()), venues)
+
+
+@dataclass(frozen=True)
+class GateScore:
+    file: pathlib.Path
+    hold: float
+
+    @property
+    def passes_gate(self) -> bool:
+        return self.hold >= lib.CONTRAST_FLOOR
+
+
+def gate_scores(
+    files: Sequence[pathlib.Path], cards: Sequence[Image.Image]
+) -> list[GateScore]:
+    """Measure the existing gate. Reuse scores for identical decoded PNG pixels."""
+    cache: dict[tuple[tuple[int, int], bytes], float] = {}
+    results = []
+    for file, card in zip(files, cards, strict=True):
+        key = (card.size, card.tobytes()) if is_picture(file) else None
+        value = cache.get(key) if key is not None else None
+        if value is None:
+            ink, blurred = prep(card, lib.DESIGN_VENUE.blur_sigma(DEVICE_SCALE))
+            value = hold(ink, blurred, 0.0)
+            if key is not None:
+                cache[key] = value
+        results.append(GateScore(file, value))
+    return results
+
+
+def print_gates(scores: Sequence[GateScore], as_machine_json: bool) -> None:
+    if as_machine_json:
+        print(
+            json.dumps(
+                {
+                    "design_venue": lib.DESIGN_VENUE.label,
+                    "floor": lib.CONTRAST_FLOOR,
+                    "drawings": [
+                        {
+                            "path": str(lib.display_path(score.file)),
+                            "hold": score.hold,
+                            "passes_gate": score.passes_gate,
+                        }
+                        for score in scores
+                    ],
+                },
+                indent=2,
+            )
+        )
+        return
+    for score in scores:
+        status = "ok" if score.passes_gate else "FAIL"
+        print(f"{status}  {lib.display_path(score.file)}: hold {score.hold:.2f}")
+    print(f"gate: hold >= {lib.CONTRAST_FLOOR:.1f} at {lib.DESIGN_VENUE.label}")
 
 
 def print_table(scores: list[DrawingScore]) -> None:
@@ -420,12 +536,25 @@ def main() -> None:
         action="store_true",
         help="print the scores as JSON, for another program, not as a table",
     )
+    parser.add_argument(
+        "--gate-only",
+        action="store_true",
+        help="calculate only the design-venue failure gate",
+    )
     arguments = parser.parse_args()
+    if arguments.gate_only and arguments.save:
+        parser.error("--gate-only cannot be used with --save")
 
     files = lib.art_files(arguments.paths)
     if not files:
         sys.exit("no SVGs or PNGs found")
     raw, cards = render(files)
+    if arguments.gate_only:
+        gates = gate_scores(files, cards)
+        print_gates(gates, arguments.json)
+        if not all(gate.passes_gate for gate in gates):
+            sys.exit(1)
+        return
     scores = [score(file, card) for file, card in zip(files, cards, strict=True)]
     if arguments.json:
         print(as_json(scores))

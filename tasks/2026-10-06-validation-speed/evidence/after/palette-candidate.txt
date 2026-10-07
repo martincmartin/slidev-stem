@@ -1,0 +1,27 @@
+#6D839B  L=0.2185
+
+  against every surface it might sit on
+    vs background  #FAF7F0    3.65:1   Fmax 0.088
+    vs panel       #F2EEE4    3.38:1   Fmax 0.050
+    vs border      #E0D9CA    2.78:1   Fmax 0.000
+
+  against the marks it will sit next to
+    vs ink         #2A2520  dE76    44   colour-blind dE    44   lightness 3.88x
+    vs accent      #1F5FA8  dE76    34   colour-blind dE    34   lightness 1.65x
+    vs second      #9A6238  dE76    53   colour-blind dE    45   lightness 1.29x
+    vs muted       #736A60  dE76    24   colour-blind dE    24   lightness 1.36x
+
+  as a replacement for each role
+    FAIL as ink     vs background    3.65:1 (>= 12.0)
+    FAIL as ink     vs panel         3.38:1 (>= 12.0)
+    FAIL as accent  vs panel         3.38:1 (>= 4.5)
+    ok   as accent  vs ink        dE    44 (>= 35)
+    ok   as accent  vs second     dE    45 (>= 25, colour-blind)
+    FAIL as second  vs panel         3.38:1 (>= 3.5)
+    FAIL as second  vs art-second-knockout   2.80:1 (>= 3.0)
+    ok   as second  vs accent     dE    34 (>= 25, colour-blind)
+    FAIL as muted   vs panel         3.38:1 (>= 4.5)
+
+  Before adding a colour, check docs/theme.md -- the usual right answer
+  is to reuse a role. Seven is already more than most slides need.
+exit 0
