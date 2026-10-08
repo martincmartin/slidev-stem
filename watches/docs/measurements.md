@@ -59,13 +59,14 @@ but it stops being this drawing style (the animation-style task, §14).
 
 The watch is drawn live in WebGL, so `barroom.py` and `motion.py` measure PNG
 stills of it (`pnpm art:stills DIR` writes them).
-Measured 2026-10-08 at `TV 55in @7m`, with cycloidal train teeth and the selected rim screws.
+Measured 2026-10-08 at `TV 55in @7m`, with cycloidal train teeth, the selected
+rim screws.
 The cover uses tilt $0^\circ$ and a $980 \times 552$ CSS px canvas.
 Each CSS pixel uses two device pixels:
 
 ```
 drawing   ink%    hold    p90    Fmax     dPeak   px2 >=3:1
-cover      6.5    4.14   7.95   0.135     10.31      3790.5
+cover      6.5    4.15   7.90   0.136     10.31        3614
 ```
 
 It clears the gate. `dPeak` is the change between two frames one second apart:

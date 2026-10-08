@@ -20,7 +20,7 @@ from the theme, in the browser (watch/palette.ts).
 The escapement moves in slow motion, at a beat a second, tick and tock (a
 real watch beats six times a second); the hands keep real time. Why the
 watch is as it is: watches/tasks/2026-09-24-cover-watch/PLAN.md; why the
-movement is turned as it is, and why the hands show 2:35:
+movement is turned as it is:
 watches/tasks/2026-09-25-eta-6497-orientation/. Why it is in WebGL:
 watches/tasks/2026-09-28-webgl-planning/.
 """
@@ -423,7 +423,7 @@ def fork_outline(mouth: float, pivot_distance: float) -> list[Point]:
 # ---- the design file ---------------------------------------------------------------
 DESIGN_FILE = TALK / "watch" / "design.json"
 WATCH_CENTRE: Point = (798, 276)  # the cover's watch centre on the canvas
-HANDS = {"hour": 2, "minute": 35}  # 2:35: see the eta-6497-orientation task
+HANDS = {"hour": 5, "minute": 44}
 
 
 def design(layout: Layout = LAYOUT) -> dict[str, object]:

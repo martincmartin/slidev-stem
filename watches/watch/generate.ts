@@ -1329,7 +1329,7 @@ function forkSolids(kit: Kit): void {
   );
 }
 
-/** The seconds hand, the chapter ring, the hands (at 2:35) and their pivot.
+/** The seconds hand, the chapter ring, the hands and their pivot.
  *  Returns the chapter ring. */
 function dialSolids(kit: Kit): Solid {
   const { design, paint, parts, groups, solids } = kit;
@@ -1390,7 +1390,7 @@ function dialSolids(kit: Kit): Solid {
     subjectWash,
   );
 
-  // the hands, at 2:35
+  // the hands
   const hourTurn = (design.hands.hour + design.hands.minute / 60) * 30;
   solids.add(
     kit.pieces.make("hour hand"),
