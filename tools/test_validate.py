@@ -338,4 +338,28 @@ def test_print_and_navigation_are_reusable_only_with_a_record(tmp_path: Path) ->
             for item in [*exclusive, *(item for group in groups for item in group)]
             if isinstance(item, validate.Reusable)
         }
-        assert reusable == ({"print", "navigation and offline"} if expected else set())
+        assert reusable == ({"print", "navigation smoke"} if expected else set())
+
+
+def test_full_validation_uses_smoke_and_never_exhaustive_navigation(
+    tmp_path: Path,
+) -> None:
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    (talk / "package.json").write_text('{"scripts": {}}')
+    (talk / "pyproject.toml").write_text('[tool.mypy]\nfiles = ["art"]\n')
+    for record in (None, validate.PassRecord(tmp_path / "passes.json")):
+        for quick in (False, True):
+            groups, exclusive = validate.talk_groups(
+                talk, tmp_path / "deck", tmp_path / "work", False, quick, record
+            )
+            items = [*exclusive, *(item for group in groups for item in group)]
+            checks = [
+                item.check if isinstance(item, validate.Reusable) else item
+                for item in items
+                if isinstance(item, Check | validate.Reusable)
+            ]
+            assert not any("tools/navcheck.py" in check.command for check in checks)
+            assert any("tools/smokecheck.py" in check.command for check in checks) is (
+                not quick
+            )

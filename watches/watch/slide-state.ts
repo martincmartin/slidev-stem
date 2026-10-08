@@ -1,5 +1,5 @@
 // What the screen shows now, for tools/navcheck.py: the contract is in
-// ../docs/navigation.md, "The check". `settled` must be the same however a
+// ../docs/navigation.md, "Diagnostic: exhaustive navigation". `settled` must be the same however a
 // (slide, click) is reached; each `continuous` number must move without a cut;
 // `busy` is true while a story animation (the board's bend or curl) or a
 // camera move still runs, so the check waits for it.

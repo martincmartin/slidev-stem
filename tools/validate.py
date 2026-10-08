@@ -6,7 +6,7 @@
     uv run ../tools/validate.py --quick      # source, generation, and build
     uv run ../tools/validate.py --jobs 1     # full validation, serial preparation
     uv run ../tools/validate.py --json       # results and timings as JSON
-    uv run ../tools/validate.py --no-reuse   # run print and navigation again
+    uv run ../tools/validate.py --no-reuse   # run print and smoke navigation again
 
 The project comes from the nearest pyproject.toml. No run checks other talks.
 The house run checks Python, formatting, tests, documentation, and palette gates.
@@ -16,11 +16,11 @@ Legibility checks calculate the design-venue gate. Full reports remain available
 through barroom.py. Motion checks retain every sample in their original plans.
 
 Independent preparation groups use the default worker limit below. Each group keeps
-its dependency order. Navigation runs alone after preparation. Its --offline
-mode checks startup, page errors, outside requests, and a complete deck walk.
-A deck without a state probe receives the ordinary offline walk instead.
+its dependency order. Smoke navigation runs after preparation. It checks startup, page errors,
+outside requests, and completion. Exhaustive navigation is diagnostic only.
+Neither full nor quick validation runs navcheck.py.
 
-Full mode reuses a pass of print and of navigation from an earlier full run
+Full mode reuses a pass of print and of smoke navigation from an earlier full run
 while the built deck and the checkers are byte-identical (`deck_key`); the
 record is <project>/.validate/passes.json. Only passes are reused.
 
@@ -309,7 +309,7 @@ def talk_groups(
     record: PassRecord | None = None,
 ) -> tuple[list[list[Item]], list[Item]]:
     """Group independent work. Keep navigation outside the worker pool. With
-    `record`, a pass of print or navigation is reused while the deck and its
+    `record`, a pass of print or smoke navigation is reused while the deck and its
     checkers are unchanged."""
 
     def reusable(check: Check) -> Check | Reusable:
@@ -348,9 +348,9 @@ def talk_groups(
     return groups, [
         reusable(
             Check(
-                "navigation and offline",
+                "navigation smoke",
                 STEM,
-                uv_run("tools/navcheck.py", str(deck), "--offline"),
+                uv_run("tools/smokecheck.py", str(deck)),
                 shows_summary=True,
             )
         ),
@@ -469,14 +469,17 @@ def run_groups(
     started = time.perf_counter()
     results: list[CheckResult] = []
     if not machine_json:
-        print(f"running {heading}: {jobs} worker(s); navigation runs alone", flush=True)
+        print(
+            f"running {heading}: {jobs} worker(s); smoke navigation runs alone",
+            flush=True,
+        )
     with ThreadPoolExecutor(max_workers=jobs) as workers:
         for group_results in workers.map(run_group, groups):
             results.extend(group_results)
             if not machine_json:
                 print(f"finished {len(results)} checks", flush=True)
     if exclusive and not machine_json:
-        print("running navigation and offline alone", flush=True)
+        print("running smoke navigation alone", flush=True)
     results.extend(run_group(exclusive))
     return report(heading, results, time.perf_counter() - started, machine_json)
 
@@ -505,7 +508,7 @@ def main() -> int:
     parser.add_argument(
         "--no-reuse",
         action="store_true",
-        help="run print and navigation even if they passed with the same deck",
+        help="run print and smoke navigation even if they passed with the same deck",
     )
     arguments = parser.parse_args()
     if arguments.jobs < 1:

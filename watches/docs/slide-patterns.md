@@ -28,8 +28,8 @@ Five rules for a slide:
   needs no code: the layers move from what is on the screen
   ([`navigation.md`](../../docs/navigation.md)). Do not write a script that
   asks which way the viewer went, and do not put a copy of a shared picture
-  on each slide. `uv run ../tools/validate.py` walks the deck both ways and
-  fails on a cut or on a click that looks different when reached another way.
+  on each slide. `uv run ../tools/validate.py` performs a fast forward smoke walk.
+  Use exhaustive navigation only to investigate an actual or suspected problem.
 - **Every slide's title and subtitle are centred**, by `style.css` (a Slidev
   project file). The cover's are the one exception: they sit left of the
   watch (`.slidev-layout.cover-watch h1` in `slides.md`).

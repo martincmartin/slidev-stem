@@ -1,0 +1,80 @@
+/* Ledger: the palette and the house type, on every slide.
+
+   The palette is set here and nowhere else. stem/tools/lib.py reads the
+   values from this rule, and `uv run tools/palette.py` (in stem/) measures
+   them against their gates. If you change a value, run it. How to make a
+   theme, the roles and the gates that any theme must meet are in
+   stem/docs/theme.md. A value is a #rrggbb colour, `var()` of another role,
+   or `color-mix(in srgb, ...)` of those: a recipe that follows its roles,
+   also on a slide whose class changes one of them. */
+.slidev-layout {
+  --palette-background: #faf7f0; /* a warm off-white */
+  --palette-ink: #2a2520; /* a near-black warm brown */
+  --palette-muted: #736a60; /* a warm grey-brown */
+  --palette-accent: #1f5fa8; /* a mid blue */
+  --palette-second: #b5601e; /* a burnt orange */
+  --palette-panel: #f2eee4; /* a light cream */
+  --palette-border: #e0d9ca; /* a light beige */
+
+  /* The drawings' colours (stem/docs/illustrations.md). The subject is the
+     accent moved away from the paper: the accent is sized for a 37 px
+     numeral, too faint for 2-4 px lines. */
+  --palette-subject: #143c6b; /* a dark navy blue */
+  /* Each line colour that has faces has a wash: a solid face colour near the
+     paper. The subject's is tuned (greyer than any mix of the subject); the
+     others are their recipes. */
+  --palette-subject-wash: #d3dce3; /* a very pale blue-grey */
+  /* a pale warm grey */
+  --palette-muted-wash: color-mix(
+    in srgb,
+    var(--palette-muted) 18%,
+    var(--palette-background)
+  );
+  /* a pale apricot, at the subject wash's contrast */
+  --palette-second-wash: color-mix(
+    in srgb,
+    var(--palette-second) 20.8%,
+    var(--palette-background)
+  );
+
+  /* Materials whose colours tell them apart where they meet (the pool on
+     the Hairspring slide of watches). In Ledger they are other roles. */
+  --palette-water: var(--palette-subject);
+  --palette-ground: var(--palette-muted);
+  --palette-ground-wash: color-mix(
+    in srgb,
+    var(--palette-ground) 18%,
+    var(--palette-background)
+  );
+
+  background: var(--palette-background);
+  color: var(--palette-ink);
+}
+
+/* Titles: Fraunces 600 in ink. 37 px is the title size in
+   stem/docs/legibility.md. */
+.slidev-layout h1 {
+  font-family: theme("fontFamily.serif");
+  font-weight: 600;
+  font-size: 37px;
+  line-height: 1.1;
+}
+
+/* A subtitle: the paragraph right after the title, as in Slidev's default
+   theme (its `h1 + p` rule). Muted, the role for secondary text; 22 px, the
+   subtitle size in stem/docs/legibility.md. */
+.slidev-layout h1 + p {
+  margin-top: -0.5rem;
+  font-size: 22px;
+  line-height: 1.3;
+  color: var(--palette-muted);
+}
+
+.slidev-layout.cover {
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+.slidev-layout.cover h1 {
+  font-size: 56px;
+}

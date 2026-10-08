@@ -1,0 +1,53 @@
+# --- Node / Slidev (from the Slidev starter) ---
+node_modules
+dist
+.vite-inspect
+.remote-assets
+components.d.ts
+*.local
+# `pnpm export` writes the PDF here. Make it again before each talk.
+slides-export.pdf
+
+# --- Editor backups and autosaves ---
+# Emacs: `foo~` backups, `#foo#` autosaves, `.#foo` lock symlinks.
+# The first `#` must be escaped or git reads the line as a comment.
+*~
+\#*\#
+.\#*
+# Vim
+*.sw[po]
+
+# --- macOS ---
+.DS_Store
+
+# --- Python (tasks/*/tools) ---
+.venv
+__pycache__/
+*.py[cod]
+
+# --- Mutagen (file sync sessions) ---
+mutagen.yml
+mutagen.yml.lock
+
+# --- Machine-local tool state ---
+# .claude/settings.json is shared; settings.local.json holds personal
+# permission grants with absolute paths, so it stays out of the repo.
+.claude/settings.local.json
+# ../tools/validate.py's record of passes that it may reuse (../docs/talks.md)
+.validate/
+
+# Note: .vscode/ is intentionally NOT ignored — settings.json and
+# extensions.json are project config meant to be shared.
+
+# --- Task-archive scratch ---
+# Each tasks/<date>-<topic>/ archive keeps two output directories, and only one of
+# them is repo content:
+#   out/       whatever a tool last wrote. Regenerable by re-running the tool, and
+#              tens of MB of PNGs. Not committed -- the 2026-09-18 archive's out/
+#              is empty for the same reason.
+#   evidence/  the renders an argument in the README actually cites. Committed:
+#              the reasoning has to stay checkable without a working .venv.
+tasks/*/out/
+
+# Raw video intermediates -- see tasks/2026-09-20-animation-style/source-video/README.md
+tasks/2026-09-20-animation-style/source-video/*.mp4

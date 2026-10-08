@@ -1,0 +1,365 @@
+from pathlib import Path
+
+import pytest
+import validate
+from check_python import STEM, Check
+from validate import Later, run_all
+
+
+def passing(label: str) -> Check:
+    return Check(label, STEM, ("true",))
+
+
+def failing(label: str) -> Check:
+    return Check(label, STEM, ("false",))
+
+
+def test_every_check_runs_and_a_summary_is_printed(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    assert run_all("heading", [passing("one"), passing("two")]) == 0
+    assert "all 2 checks passed" in capsys.readouterr().out
+
+
+def test_a_failing_check_fails_the_run_but_the_next_one_still_runs(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    assert run_all("heading", [failing("one"), passing("two")]) == 1
+    output = capsys.readouterr().out
+    assert "FAIL  one" in output
+    assert "ok    two" in output
+    assert "1 of 2 checks failed (one)" in output
+
+
+def test_a_later_check_that_cannot_be_made_fails_by_name_and_the_rest_run(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    def make() -> Check:
+        raise FileNotFoundError("pairs.json")
+
+    checks: list[Check | Later] = [
+        failing("stills"),
+        Later("motion (png)", make),
+        passing("palette"),
+    ]
+    assert run_all("heading", checks) == 1
+    output = capsys.readouterr().out
+    assert "FAIL  motion (png)" in output
+    assert "pairs.json" in output
+    assert "ok    palette" in output
+    assert "2 of 3 checks failed (stills, motion (png))" in output
+
+
+def test_a_later_check_is_made_when_it_is_reached(
+    capsys: pytest.CaptureFixture[str], tmp_path: Path
+) -> None:
+    marker = tmp_path / "made"
+    first = Check("writes", STEM, ("touch", str(marker)))
+
+    def make() -> Check:
+        return passing("reads") if marker.exists() else failing("reads")
+
+    assert run_all("heading", [first, Later("reads", make)]) == 0
+    assert "all 2 checks passed" in capsys.readouterr().out
+
+
+def test_motion_is_a_later_check_in_a_talk_with_stills(tmp_path: Path) -> None:
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    (talk / "package.json").write_text('{"scripts": {"art:stills": "x"}}')
+    checks = validate.art_checks(talk, tmp_path / "work")
+    labels = [item.label for item in checks]
+    assert labels == ["stills", "barroom (png)", "motion (png)"]
+    assert [isinstance(item, Later) for item in checks] == [False, True, True]
+
+
+def test_print_is_checked_on_the_built_deck_in_a_talk_with_the_script(
+    tmp_path: Path,
+) -> None:
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    (talk / "package.json").write_text('{"scripts": {"art:print": "x"}}')
+    deck = tmp_path / "deck"
+    (check,) = validate.print_checks(talk, deck)
+    assert check.label == "print"
+    assert check.command == ("pnpm", "--silent", "art:print", str(deck))
+
+
+def test_a_talk_without_the_script_has_no_print_check(tmp_path: Path) -> None:
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    (talk / "package.json").write_text('{"scripts": {}}')
+    assert validate.print_checks(talk, tmp_path / "deck") == []
+
+
+def test_worker_groups_keep_dependencies_and_navigation_runs_alone(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    import subprocess
+    import threading
+
+    first_started = threading.Event()
+    second_started = threading.Event()
+    finished: set[Check] = set()
+    producer = passing("producer")
+    independent = passing("independent")
+    navigation = passing("navigation")
+
+    def execute(check: Check) -> subprocess.CompletedProcess[str]:
+        if check is producer:
+            first_started.set()
+            assert second_started.wait(5)
+        elif check is independent:
+            second_started.set()
+            assert first_started.wait(5)
+        elif check is navigation:
+            assert producer in finished and independent in finished
+        finished.add(check)
+        return subprocess.CompletedProcess(check.command, 0, "", "")
+
+    def dependent() -> Check:
+        assert producer in finished
+        return passing("dependent")
+
+    monkeypatch.setattr(validate, "run", execute)
+    assert (
+        validate.run_groups(
+            "heading",
+            [[producer, Later("dependent", dependent)], [independent]],
+            [navigation],
+        )
+        == 0
+    )
+    output = capsys.readouterr().out
+    assert (
+        output.index("ok    producer")
+        < output.index("ok    dependent")
+        < output.index("ok    navigation")
+    )
+
+
+def test_parallel_failures_and_launch_errors_do_not_hide_other_checks(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    missing = Check("missing command", STEM, ("/definitely/absent/validation-command",))
+    assert (
+        validate.run_groups(
+            "heading", [[missing, passing("after missing")], [failing("failed")]]
+        )
+        == 1
+    )
+    output = capsys.readouterr().out
+    assert "ok    after missing" in output
+    assert "2 of 3 checks failed" in output
+
+
+def test_quick_mode_keeps_generation_and_build_but_omits_browser_checks(
+    tmp_path: Path,
+) -> None:
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    (talk / "package.json").write_text(
+        '{"scripts": {"art:generated": "x", "art:stills": "x", "art:print": "x"}}'
+    )
+    (talk / "pyproject.toml").write_text('[tool.mypy]\nfiles = ["art"]\n')
+    groups, exclusive = validate.talk_groups(
+        talk, tmp_path / "deck", tmp_path / "work", False, True
+    )
+    labels = [item.label for group in groups for item in group]
+    assert "generated" in labels and "build" in labels and "artcheck" in labels
+    assert not {"stills", "print", "motion", "barroom"}.intersection(labels)
+    assert not exclusive
+
+
+def test_json_report_exposes_timings_and_failures(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    import json
+
+    assert validate.run_groups("heading", [[failing("failed")]], machine_json=True) == 1
+    result = json.loads(capsys.readouterr().out)
+    assert result["passed"] is False
+    assert result["checks"][0]["seconds"] >= 0
+    assert result["checks"][0]["label"] == "failed"
+
+
+def a_stem_and_a_talk(tmp_path: Path) -> tuple[Path, Path, Path]:
+    """A house with a tool, a talk with art and a package.json, and a deck."""
+    stem = tmp_path / "stem"
+    (stem / "tools").mkdir(parents=True)
+    (stem / "tools" / "navcheck.py").write_text("walk")
+    (stem / "uv.lock").write_text("playwright 1")
+    talk = stem / "talk"
+    (talk / "art").mkdir(parents=True)
+    (talk / "art" / "print_check.py").write_text("print")
+    (talk / "package.json").write_text("{}")
+    (talk / "docs").mkdir()
+    (talk / "docs" / "notes.md").write_text("notes")
+    deck = tmp_path / "deck"
+    (deck / "assets").mkdir(parents=True)
+    (deck / "index.html").write_text("<html>")
+    (deck / "assets" / "index.js").write_text("slides")
+    return stem, talk, deck
+
+
+def test_the_deck_key_changes_with_the_deck_and_the_checkers_only(
+    tmp_path: Path,
+) -> None:
+    stem, talk, deck = a_stem_and_a_talk(tmp_path)
+    key = validate.deck_key(stem, talk, deck)
+    (talk / "docs" / "notes.md").write_text("other notes")
+    assert validate.deck_key(stem, talk, deck) == key
+    for changed in (
+        deck / "assets" / "index.js",
+        stem / "tools" / "navcheck.py",
+        stem / "uv.lock",
+        talk / "art" / "print_check.py",
+        talk / "package.json",
+    ):
+        original = changed.read_text()
+        changed.write_text(original + " changed")
+        assert validate.deck_key(stem, talk, deck) != key, changed
+        changed.write_text(original)
+    assert validate.deck_key(stem, talk, deck) == key
+
+
+def test_the_deck_key_tells_a_moved_file_from_a_changed_one(tmp_path: Path) -> None:
+    stem, talk, deck = a_stem_and_a_talk(tmp_path)
+    key = validate.deck_key(stem, talk, deck)
+    (deck / "assets" / "index.js").rename(deck / "assets" / "other.js")
+    assert validate.deck_key(stem, talk, deck) != key
+
+
+def test_there_is_no_deck_key_without_a_built_deck(tmp_path: Path) -> None:
+    stem, talk, deck = a_stem_and_a_talk(tmp_path)
+    (deck / "index.html").unlink()
+    with pytest.raises(ValueError, match="no built deck"):
+        validate.deck_key(stem, talk, deck)
+
+
+def counting_runs(monkeypatch: pytest.MonkeyPatch, code: int) -> list[str]:
+    """Make `run` count the checks it runs, and exit with `code`."""
+    import subprocess
+
+    ran: list[str] = []
+
+    def execute(check: Check) -> subprocess.CompletedProcess[str]:
+        ran.append(check.label)
+        return subprocess.CompletedProcess(check.command, code, "", "")
+
+    monkeypatch.setattr(validate, "run", execute)
+    return ran
+
+
+def test_a_pass_is_reused_while_the_key_is_the_same(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
+) -> None:
+    ran = counting_runs(monkeypatch, 0)
+    record = validate.PassRecord(tmp_path / ".validate" / "passes.json")
+    key = "first"
+    item = validate.Reusable(passing("print"), lambda: key, record)
+    assert validate.run_groups("heading", [[item]], machine_json=True) == 0
+    assert ran == ["print"]
+    capsys.readouterr()
+    assert validate.run_groups("heading", [[item]], machine_json=True) == 0
+    assert ran == ["print"]
+    import json
+
+    (result,) = json.loads(capsys.readouterr().out)["checks"]
+    assert result["reused"] is True
+    key = "second"
+    assert validate.run_groups("heading", [[item]], machine_json=True) == 0
+    assert ran == ["print", "print"]
+
+
+def test_a_failure_is_not_recorded(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    ran = counting_runs(monkeypatch, 1)
+    record = validate.PassRecord(tmp_path / "passes.json")
+    item = validate.Reusable(failing("print"), lambda: "key", record)
+    for _ in range(2):
+        assert validate.run_groups("heading", [[item]], machine_json=True) == 1
+    assert ran == ["print", "print"]
+    assert record.passed_at("key", "print") is None
+
+
+def test_a_new_key_forgets_the_passes_of_the_old_one(tmp_path: Path) -> None:
+    record = validate.PassRecord(tmp_path / "passes.json")
+    record.record("old", "print")
+    record.record("old", "navigation")
+    record.record("new", "print")
+    assert record.passed_at("new", "print") is not None
+    assert record.passed_at("new", "navigation") is None
+    assert record.passed_at("old", "navigation") is None
+
+
+def test_an_unreadable_record_counts_as_empty(tmp_path: Path) -> None:
+    file = tmp_path / "passes.json"
+    for text in ("not json", "[]", '{"key": "key", "passed": []}'):
+        file.write_text(text)
+        assert validate.PassRecord(file).passed_at("key", "print") is None
+    validate.PassRecord(file).record("key", "print")
+    assert validate.PassRecord(file).passed_at("key", "print") is not None
+
+
+def test_a_reusable_check_without_a_deck_fails_by_name_and_is_run_again(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
+) -> None:
+    counting_runs(monkeypatch, 0)
+    stem, talk, deck = a_stem_and_a_talk(tmp_path)
+    (deck / "index.html").unlink()
+    record = validate.PassRecord(tmp_path / "passes.json")
+    item = validate.Reusable(
+        passing("print"), lambda: validate.deck_key(stem, talk, deck), record
+    )
+    assert validate.run_all("heading", [item]) == 1
+    output = capsys.readouterr().out
+    assert "FAIL  print" in output and "no built deck" in output
+
+
+def test_print_and_navigation_are_reusable_only_with_a_record(tmp_path: Path) -> None:
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    (talk / "package.json").write_text('{"scripts": {"art:print": "x"}}')
+    (talk / "pyproject.toml").write_text('[tool.mypy]\nfiles = ["art"]\n')
+    record = validate.PassRecord(tmp_path / "passes.json")
+    for given, expected in ((record, True), (None, False)):
+        groups, exclusive = validate.talk_groups(
+            talk, tmp_path / "deck", tmp_path / "work", False, False, given
+        )
+        reusable = {
+            item.label
+            for item in [*exclusive, *(item for group in groups for item in group)]
+            if isinstance(item, validate.Reusable)
+        }
+        assert reusable == ({"print", "navigation smoke"} if expected else set())
+
+
+def test_full_validation_uses_smoke_and_never_exhaustive_navigation(
+    tmp_path: Path,
+) -> None:
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    (talk / "package.json").write_text('{"scripts": {}}')
+    (talk / "pyproject.toml").write_text('[tool.mypy]\nfiles = ["art"]\n')
+    for record in (None, validate.PassRecord(tmp_path / "passes.json")):
+        for quick in (False, True):
+            groups, exclusive = validate.talk_groups(
+                talk, tmp_path / "deck", tmp_path / "work", False, quick, record
+            )
+            items = [*exclusive, *(item for group in groups for item in group)]
+            checks = [
+                item.check if isinstance(item, validate.Reusable) else item
+                for item in items
+                if isinstance(item, Check | validate.Reusable)
+            ]
+            assert not any("tools/navcheck.py" in check.command for check in checks)
+            assert any("tools/smokecheck.py" in check.command for check in checks) is (
+                not quick
+            )

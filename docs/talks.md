@@ -99,30 +99,27 @@ If all changes since the last successful full run are to docs only (`docs/`,
 and no check reads these files, except `doccheck` and Prettier, and quick mode
 runs both.
 
-**A full run reuses the passes of print and navigation that a change cannot
-affect.** These two checks take about 94% of a full run's time, and they read
-only the built deck and their own code. Two builds of the same source are
-byte-identical. A full run builds the deck, and computes a key (`deck_key` in
-`tools/validate.py`) from the deck's bytes, every `.py` file in `tools/` and the
-talk's `art/`, the talk's `package.json`, and each project's `uv.lock` and
-`.python-version`. If print or navigation passed with that key, the run reports
-it as `reused`, and does not run it again. The record is
-`<talk>/.validate/passes.json`; git ignores it. Only passes are recorded, and a
-pass with a new key replaces the record. `--no-reuse` runs both checks again.
+**Full validation reuses successful print and smoke navigation checks when their inputs are unchanged.**
+The key is computed by `deck_key` in `tools/validate.py`.
+It includes the built deck, checker code, and dependency pins.
+The record is `<talk>/.validate/passes.json`; git ignores it.
+Only successful checks are recorded. A new key replaces the previous record.
+`--no-reuse` runs print and smoke navigation again.
+It never invokes exhaustive navigation.
 
-A change to docs, a README or a comment in a `.ts` file leaves the deck
-byte-identical, so a full run after it takes about 15 s, not about 260 s. A comment in a Vue
-file or anywhere in `slides.md` changes the deck (Slidev and Vue keep the
-source), so print and navigation run again. Not an oversight: removing the
-comments before the key would also remove the speaker notes, which are part of
-the deck. The measurements are in the validation-reuse task.
+Docs and some source comments leave the built deck unchanged.
+Comments in Vue files or `slides.md` can change it because the build retains source and speaker notes.
+The [validation-reuse task](../tasks/2026-10-07-validation-reuse/README.md) records the key and build comparisons.
 
-Full validation retains settled navigation and the rapid offline walk.
-They use one browser with their original viewports and timing.
-The rapid walk can expose failures caused by interrupted animations.
+Full validation uses a fast forward smoke walk with outside requests blocked.
+It checks startup, page errors, navigation stalls, and the declared final position.
+It does not compare settled states or sample animation continuity.
 
-Full validation uses bounded parallel preparation. Navigation runs alone,
-so other browser checks cannot affect its frame samples.
+Exhaustive navigation is a diagnostic tool for an actual or suspected problem.
+No validation mode runs it. Do not run it routinely, including before commits
+or after ordinary navigation changes. See [navigation.md](navigation.md).
+
+Full validation uses bounded parallel preparation. Smoke navigation runs after preparation.
 Use `--jobs 1` for serial preparation. `--fix` always uses one worker.
 Every check prints its elapsed time. `--json` gives machine-readable results.
 Timing measurements and their limits are in the validation-speed task.

@@ -1,0 +1,45 @@
+/* Every slide's title and subtitle are centred. The cover's are not (see
+   slides.md). */
+.slidev-layout h1,
+.slidev-layout h1 + p {
+  text-align: center;
+}
+
+/* TEXT FADES: text fades out, and new text fades in only when the old text is
+   gone (docs/slide-patterns.md, "Text fades"). --text-fade is the length of
+   each fade. The board's sentence (components/DivingBoard.vue) uses it too.
+   `transition: text-fade`: the old slide's text fades out; the new slide's
+   waits for it, and for the camera (--watch-text-delay, from
+   global-bottom.vue), then fades in. */
+:root {
+  --text-fade: 0.4s;
+}
+.text-fade-leave-active {
+  transition: opacity var(--text-fade) ease-in;
+}
+.text-fade-enter-active {
+  transition: opacity var(--text-fade) ease-out
+    max(var(--text-fade), var(--watch-text-delay, 0s));
+}
+.text-fade-leave-to,
+.text-fade-enter-from {
+  opacity: 0;
+}
+
+/* A v-click that waits for the watch: it fades in only when the watch's swap
+   has faded the rest of the watch in (--watch-fade, set by global-bottom.vue),
+   so that it never points at a part that is not there yet. Going back it fades
+   out at once: the delay is on the way to the shown state only. */
+.after-watch-fade.slidev-vclick-target:not(.slidev-vclick-hidden) {
+  transition-delay: var(--watch-fade, 0s);
+}
+
+/* A v-click that waits for the balance to come to rest (`watchSettle` at the
+   same click): it fades in only then (--watch-rest-delay, set by
+   global-bottom.vue), so that its leader points at a part that has stopped
+   where the leader ends. Its leader, if hidden (`showLeader`) while the
+   balance swung, comes back only then too. Going back it fades out at once. */
+.after-balance-rest.slidev-vclick-target:not(.slidev-vclick-hidden),
+.after-balance-rest .callout-art .callout-leader:not(.callout-leader-hidden) {
+  transition-delay: var(--watch-rest-delay, 0s);
+}

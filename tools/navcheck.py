@@ -4,8 +4,11 @@
     uv run tools/navcheck.py /tmp/deck                     # a build (`slidev build --out`)
     uv run tools/navcheck.py http://localhost:3030         # a running dev server
 
+Diagnostic only: run this tool when a navigation problem is found or suspected.
+No validation mode runs it. Do not run it routinely.
+
 The rules are in docs/navigation.md. The deck must define `window.slideState()`,
-which returns `{settled, continuous, busy}` (docs/navigation.md, "The check").
+which returns `{settled, continuous, busy}` (docs/navigation.md, "Diagnostic: exhaustive navigation").
 Without --offline, a deck without it passes with a note. With --offline,
 a deck without it receives the ordinary rapid offline walk.
 
@@ -27,7 +30,7 @@ QUIET_MS. Then it loads each place (slide and click) directly. It fails if:
 A build is served from disk with every outside request aborted.
 With --offline, a separate rapid walk retains offline_check.py's viewport,
 500 ms cadence, and startup delay. It must move and end.
-The same browser runs both walks; page errors and outside requests fail both. tools/validate.py uses this combined check on a talk's build.
+The same browser runs both walks; page errors and outside requests fail both. This remains a diagnostic command; validation uses smokecheck.py.
 """
 
 import argparse

@@ -15,3 +15,6 @@ The options, the measurements and the decision are in [PLAN.md](PLAN.md).
 - The policy: `AGENTS.md` ("Validate before you commit"), `docs/talks.md`
   ("Check your work") and `tools/README.md`.
 - Timings of a full run before and after reuse: `evidence/runs.txt`.
+
+
+2026-10-07: [Smoke navigation](../../watches/tasks/2026-10-07-full-validation-profile/README.md) replaces exhaustive navigation in validation. Reuse now applies to print and smoke navigation. Exhaustive navigation is diagnostic only.

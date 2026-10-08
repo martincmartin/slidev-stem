@@ -1,0 +1,77 @@
+/* Palette classes: other palettes, for any slide of any talk. A slide with
+   `class: palette-campfire` shows that palette, and so does the watch under
+   it. Each sets the roles of ledger.css that it changes; a role that it does
+   not set keeps Ledger's recipe, made from this palette's roles.
+
+   They are palettes to look at, not the talk's theme: `uv run
+   tools/palette.py` (in stem/) reports their gates, and does not fail on
+   them. How to add one is in stem/docs/theme.md, "Palette classes". The three
+   dark ones below are candidates of watches/tasks/2026-09-18-theme-colors,
+   with the art roles derived in tasks/2026-10-07-palette-preview. */
+
+/* A preview: with `class: palette-campfire palette-preview`, the slide names
+   its palette in its lower right corner, small and muted: the presenter can
+   find it, and the audience is not meant to notice it. So it is below the
+   17 px floor of stem/docs/legibility.md, on purpose. A slide that uses a
+   palette for real leaves out palette-preview. */
+.slidev-layout.palette-preview {
+  position: relative; /* the corner of the slide, for the name */
+}
+.slidev-layout.palette-preview::after {
+  content: var(--preview-name);
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  font-size: 12px;
+  color: var(--palette-muted);
+  pointer-events: none;
+}
+
+/* Campfire: espresso, amber, sky cyan. Passes every gate. */
+.slidev-layout.palette-campfire {
+  --preview-name: "Campfire"; /* for .palette-preview, above */
+  --palette-background: #241e1a; /* a near-black espresso brown */
+  --palette-panel: #332a24; /* a dark brown */
+  --palette-border: #4a3d34; /* a mid-dark brown */
+  --palette-ink: #f6eee3; /* a warm off-white */
+  --palette-muted: #b5a594; /* a warm grey-beige */
+  --palette-accent: #ffb340; /* an amber */
+  --palette-second: #54bcd6; /* a sky cyan */
+  --palette-subject: #ffcc8f; /* a pale amber */
+  --palette-subject-wash: #3d3731; /* a dark warm grey */
+  --palette-second-wash: #2d3a3c; /* a dark slate teal */
+  --palette-water: var(--palette-second);
+}
+
+/* Marmalade: dark brown, orange, mint. Fails four gates: ink on panel, and
+   the subject (a pale peach) against muted, ink and the second. */
+.slidev-layout.palette-marmalade {
+  --preview-name: "Marmalade"; /* for .palette-preview, above */
+  --palette-background: #2b2420; /* a near-black brown */
+  --palette-panel: #38302c; /* a dark brown */
+  --palette-border: #514944; /* a mid-dark grey-brown */
+  --palette-ink: #fff4e8; /* a warm white */
+  --palette-muted: #a49b92; /* a warm grey */
+  --palette-accent: #e8883c; /* an orange */
+  --palette-second: #93d096; /* a mint green */
+  --palette-subject: #ffd7bc; /* a pale peach */
+  --palette-subject-wash: #443c37; /* a dark warm grey */
+  --palette-second-wash: #3b3f33; /* a dark olive grey */
+  --palette-water: #85caf5; /* a sky blue: the second is green */
+}
+
+/* After-Hours Observatory: navy, amber, sky blue. Passes every gate. */
+.slidev-layout.palette-after-hours {
+  --preview-name: "After-Hours Observatory"; /* for .palette-preview, above */
+  --palette-background: #17202a; /* a near-black navy */
+  --palette-panel: #242c35; /* a dark slate blue */
+  --palette-border: #3f454b; /* a dark grey */
+  --palette-ink: #f6f0df; /* a warm off-white */
+  --palette-muted: #94948f; /* a neutral grey */
+  --palette-accent: #ffb84d; /* an amber */
+  --palette-second: #7fb3e8; /* a sky blue */
+  --palette-subject: #ffcc8c; /* a pale amber */
+  --palette-subject-wash: #3d3730; /* a dark warm grey */
+  --palette-second-wash: #29394b; /* a dark slate blue */
+  --palette-water: var(--palette-second);
+}

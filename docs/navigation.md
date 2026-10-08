@@ -6,6 +6,8 @@ the viewer goes back; and the check that finds a move that does not follow
 the rules.
 
 **Tasks:**
+[`full-validation-profile`](../watches/tasks/2026-10-07-full-validation-profile/PLAN.md)
+(the fast smoke replacement and measured coverage costs),
 [`validation-speed`](../tasks/2026-10-06-validation-speed/PLAN.md)
 (the combined navigation and offline walk).
 
@@ -60,16 +62,32 @@ or the previous slide. Anything else (a reload, a link, the overview, a slide
 that is not a neighbour) is a jump, and shows the target at once. A printed
 page shows its click's target, posed.
 
-## The check
+## Validation: fast smoke navigation
 
-`tools/navcheck.py` walks the built deck forward to its end and back, one key
-press at a time, and then loads each place directly. `uv run
-../tools/validate.py` runs it with `--offline`, after all other browser work ends.
-With `--offline`, it also retains the original rapid walk at the larger viewport.
-That walk presses every 500 ms and can interrupt long animations.
-Both walks use one browser. Their original viewports and timing remain.
-The combined check blocks outside requests and rejects page errors, startup failures,
-walks that do not move, and walks that exceed their limit.
+Full validation runs `tools/smokecheck.py` on the built deck.
+Quick validation has no browser walk.
+The smoke check blocks outside requests and walks forward through each slide and click.
+It checks startup, page errors, each declared next position, and the declared final position.
+It rejects navigation stalls and walks that exceed their limit.
+It does not wait for animations or compare their settled states.
+
+The Ledger theme supplies `window.slideNavigation()` from
+`themes/ledger/setup/root.ts`. It returns the current slide and click,
+the current slide's click total, the last slide, and the next position.
+These values come from Slidev navigation. The smoke tool uses them to detect early stops.
+The observation periods and deadlines are in `tools/smokecheck.py`.
+Use `--browser firefox` for a Firefox smoke walk.
+
+## Diagnostic: exhaustive navigation
+
+Run `tools/navcheck.py` only when an actual navigation problem is found or suspected.
+No validation mode runs it. Do not run it routinely, including before commits
+or after ordinary navigation changes.
+
+The diagnostic walks forward and backward, waits for each animation to settle,
+and loads each position directly. With `--offline`, it also runs the original
+rapid offline walk with outside requests blocked.
+It rejects page errors, startup failures, and incomplete walks.
 It also fails if:
 
 - a place after a move differs from the same place loaded directly (rule 0);

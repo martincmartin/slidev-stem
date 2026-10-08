@@ -1,0 +1,48 @@
+<svg width="122" height="97" viewBox="0 0 240 190" xmlns="http://www.w3.org/2000/svg">
+<!-- The candle burns down under an animated clip, so the hour bands are eaten
+     by the flame instead of each needing its own animation. -->
+<defs>
+  <clipPath id="candle-burn-clip">
+    <rect x="94" y="56" width="52" height="120">
+      <animate attributeName="y" values="56;152" dur="12s" repeatCount="indefinite"/>
+      <animate attributeName="height" values="120;24" dur="12s" repeatCount="indefinite"/>
+    </rect>
+  </clipPath>
+</defs>
+<g clip-path="url(#candle-burn-clip)">
+  <rect x="100" y="52" width="40" height="124" stroke="#143C6B" stroke-width="6" fill="#D3DCE3"/>
+  <g stroke="#143C6B" stroke-opacity="0.55" stroke-width="4">
+    <line x1="100" y1="72" x2="140" y2="72"/>
+    <line x1="100" y1="92" x2="140" y2="92"/>
+    <line x1="100" y1="112" x2="140" y2="112"/>
+    <line x1="100" y1="132" x2="140" y2="132"/>
+    <line x1="100" y1="152" x2="140" y2="152"/>
+  </g>
+</g>
+<g>
+  <animateTransform attributeName="transform" type="translate" values="0 0;0 96" dur="12s" repeatCount="indefinite"/>
+  <path d="M22 44 C42 36 56 52 80 42" stroke="#736A60" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="14 10">
+    <animate attributeName="stroke-dashoffset" values="48;0" dur="1.5s" repeatCount="indefinite"/>
+  </path>
+  <path d="M30 70 C48 62 62 76 86 68" stroke="#736A60" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="14 10">
+    <animate attributeName="stroke-dashoffset" values="48;0" dur="1.8s" repeatCount="indefinite"/>
+  </path>
+  <ellipse cx="100" cy="58" rx="3.2" ry="4" opacity="0" fill="#143C6B" fill-opacity="0.35" stroke="#143C6B" stroke-width="4">
+    <animate attributeName="cy" values="58;58;80" keyTimes="0;0.22;1" dur="3.1s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="4;9.5;6" keyTimes="0;0.45;1" dur="3.1s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.18;0.82;1" dur="3.1s" repeatCount="indefinite"/>
+  </ellipse>
+  <ellipse cx="140" cy="58" rx="3.2" ry="4" opacity="0" fill="#143C6B" fill-opacity="0.35" stroke="#143C6B" stroke-width="4">
+    <animate attributeName="cy" values="58;58;76" keyTimes="0;0.28;1" dur="4.3s" repeatCount="indefinite"/>
+    <animate attributeName="ry" values="4;8.5;6" keyTimes="0;0.45;1" dur="4.3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.2;0.8;1" dur="4.3s" repeatCount="indefinite"/>
+  </ellipse>
+  <path d="M100 57 C107 52 113 57 120 54 C127 51 133 57 140 57" fill="none" stroke="#143C6B" stroke-width="6" stroke-linecap="round"/>
+  <line x1="120" y1="52" x2="120" y2="43" stroke="#2A2520" stroke-width="4" stroke-linecap="round"/>
+  <path d="M120 12 C130 24 133 34 120 44 C107 34 110 24 120 12 Z" fill="#143C6B">
+    <animate attributeName="d" values="M120 12 C130 24 133 34 120 44 C107 34 110 24 120 12 Z;M125 10 C132 24 132 35 120 44 C108 35 113 23 125 10 Z;M120 12 C130 24 133 34 120 44 C107 34 110 24 120 12 Z" dur="1.6s" repeatCount="indefinite"/>
+  </path>
+  <path d="M120 27 C125 32 126 37 120 42 C114 37 115 32 120 27 Z" fill="#2A2520" fill-opacity="0.7"/>
+</g>
+<rect x="80" y="176" width="80" height="8" rx="4" fill="#736A60"/>
+</svg>

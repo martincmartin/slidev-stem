@@ -24,7 +24,7 @@ string, 'classes k/n' says how many of the n v-click elements still have
 Slidev's slidev-vclick-target class. --walk presses the right arrow from slide 1
 until the URL stops changing, at the end of the deck. So every slide and every
 click loads, and a request from any of them is caught. It prints how many steps
-it took and where it stopped. Full validation uses navcheck.py --offline;
+it took and where it stopped. Full validation uses smokecheck.py;
 this tool remains available for screenshots and diagnostic walks.
 
 The check fails (exit 1) if any outside request was blocked, and also if the deck
