@@ -138,22 +138,22 @@ page ([webgl.md](webgl.md)). A value is a `#rrggbb` colour, `var()` of another
 role, or `color-mix(in srgb, …)` of those: a recipe. A recipe follows its
 roles, so a slide class that changes a role also changes what is made from it.
 
-| Variable                 | Job in text and layout                 | Job in the art                                                                                                                              |
-| ------------------------ | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--palette-background`   | the slide field                        | the paper of full-slide art and of the WebGL art                                                                                            |
-| `--palette-ink`          | body text, headings                    | scales and fine detail: ticks, graduations; usually at 0.5 (WebGL ink `ink`)                                                                |
-| `--palette-muted`        | captions, units, dates, secondary text | context: what holds or acts on the subject (a stand, a case, a clamp), as a line (WebGL ink `muted`)                                        |
-| `--palette-accent`       | the one emphasised thing on a slide    | not used: see `--palette-subject`                                                                                                           |
-| `--palette-second`       | the turn: the catch, the warning       | "look here": a flash's lines, and a keyword callout's word and leader ([illustrations.md](illustrations.md), "Leaders"; WebGL ink `second`) |
-| `--palette-panel`        | a card's fill                          | the paper of a card's art                                                                                                                   |
-| `--palette-border`       | a card's edge                          | not used                                                                                                                                    |
-| `--palette-subject`      | not used                               | the subject: its structure, and the thing that moves (WebGL ink `subject`)                                                                  |
-| `--palette-subject-wash` | not used                               | the subject's faces (WebGL ink `subjectWash`)                                                                                               |
-| `--palette-muted-wash`   | not used                               | the faces of the context (WebGL ink `mutedWash`)                                                                                            |
-| `--palette-second-wash`  | not used                               | a flash's faces (WebGL ink `secondWash`)                                                                                                    |
-| `--palette-water`        | not used                               | water, where it meets another material                                                                                                      |
-| `--palette-ground`       | not used                               | ground and stone, where they meet another material                                                                                          |
-| `--palette-ground-wash`  | not used                               | the faces of ground and stone                                                                                                               |
+| Variable                 | Job in text and layout                 | Job in the art                                                                                                                                             |
+| ------------------------ | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--palette-background`   | the slide field                        | the paper of full-slide art and of the WebGL art                                                                                                           |
+| `--palette-ink`          | body text, headings                    | scales and fine detail: ticks, graduations; usually at 0.5 (WebGL ink `ink`)                                                                               |
+| `--palette-muted`        | captions, units, dates, secondary text | context: what holds or acts on the subject (a stand, a case, a clamp), as a line (WebGL ink `muted`)                                                       |
+| `--palette-accent`       | the one emphasised thing on a slide    | not used: see `--palette-subject`                                                                                                                          |
+| `--palette-second`       | the turn: the catch, the warning       | "look here": a flash's lines, a keyword callout's word and leader, and a mark's fill ([illustrations.md](illustrations.md), "Leaders"; WebGL ink `second`) |
+| `--palette-panel`        | a card's fill                          | the paper of a card's art                                                                                                                                  |
+| `--palette-border`       | a card's edge                          | not used                                                                                                                                                   |
+| `--palette-subject`      | not used                               | the subject: its structure, and the thing that moves (WebGL ink `subject`)                                                                                 |
+| `--palette-subject-wash` | not used                               | the subject's faces (WebGL ink `subjectWash`)                                                                                                              |
+| `--palette-muted-wash`   | not used                               | the faces of the context (WebGL ink `mutedWash`)                                                                                                           |
+| `--palette-second-wash`  | not used                               | a flash's faces (WebGL ink `secondWash`)                                                                                                                   |
+| `--palette-water`        | not used                               | water, where it meets another material                                                                                                                     |
+| `--palette-ground`       | not used                               | ground and stone, where they meet another material                                                                                                         |
+| `--palette-ground-wash`  | not used                               | the faces of ground and stone                                                                                                                              |
 
 How a drawing uses these (faces, substances, strokes) is in
 [illustrations.md](illustrations.md).
@@ -168,10 +168,11 @@ card's one big number is the canonical use.
 
 **`second` is for the turn, not for decoration.** On the cards it carries the
 catch ("Freezes in winter"). Used as a second decorative accent, it is wasted.
-In the art its job is "look here": a flash, and a keyword callout's word and
-leader. The accent cannot do it there, because the subject is the accent's own
-hue. A flash and a keyword callout must not show at the same time: a flashed
-part would merge with a leader.
+In the art its job is "look here": a flash, a keyword callout's word and
+leader, and a mark on part of a part (the teeth on the Gears slide of
+`watches`). The accent cannot do it there, because the subject is the accent's
+own hue. A flash, a keyword callout and a mark must not show near each other
+at the same time: a flashed part or a mark would merge with a leader.
 
 ## The pairs: line colours and their washes
 

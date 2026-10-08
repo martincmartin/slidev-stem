@@ -68,6 +68,7 @@ export function sceneData(
       })),
       lineOrder: mesh.lineOrder,
       inDrawing: mesh.inDrawing,
+      overlay: mesh.overlay,
       dynamic: mesh.dynamic,
     })),
     views: scene.views,

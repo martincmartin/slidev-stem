@@ -138,6 +138,10 @@ export interface Mesh extends MeshGeometry {
   readonly lineOrder: number;
   /** `false` for a part that the 2D drawing did not have. */
   readonly inDrawing: boolean;
+  /** `true` for a mark on another mesh's surface: where its faces are at
+   *  the same place as the other mesh's, its own show. The renderer moves
+   *  its faces' depth a little toward the camera (a polygon offset). */
+  readonly overlay: boolean;
   /** `true` if `Renderer.updateMesh` may change its geometry. */
   readonly dynamic: boolean;
 }
@@ -153,6 +157,9 @@ export interface View {
 export interface Piece {
   readonly name: string;
   readonly meshes: ReadonlySet<Mesh>;
+  /** `false` for a piece that shows only where a slide names it, such as a
+   *  mark on another piece: `watch: all` leaves it out. */
+  readonly inAll: boolean;
 }
 
 export interface Scene {

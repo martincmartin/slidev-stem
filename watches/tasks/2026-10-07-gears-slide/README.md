@@ -26,3 +26,28 @@ The plan and the options are in [PLAN.md](PLAN.md).
   a slide sets and a `watchClicks` block changes: `watchAtRest`, `watchSpin`
   (a speed, or `false`) and `watchTickTock` (`plain`, `burst` or `false`).
   `watchTilt` can be in a block too.
+- 2026-10-08: step 6 ([PLAN.md](PLAN.md), "Step 6"). At a new click 1, four
+  teeth of the fourth wheel and the four leaves that they drive fade in, in
+  the second (`fourth wheel span`, `escape pinion span`); the mechanism comes
+  back at click 2.
+- 2026-10-08: step 6, the trial ([PLAN.md](PLAN.md), "The flash's colours,
+  as a trial"). Click 1 shows the span in the flash's colours, click 2 solid;
+  click 3 brings the mechanism back and the span goes; click 4 adds the
+  seconds hand.
+- 2026-10-08: step 6, the text ([PLAN.md](PLAN.md), "The text"): "Tooth
+  for tooth." "Bigger wheel, slower turn." "Twice the size, half the speed.
+  Exactly." One line a click (clicks 2 to 4) with the flash's colours; all
+  at once with the solid span (click 5). The mechanism comes back at click
+  6, and the seconds hand at click 7.
+- 2026-10-08: the text is now "Half of the small gear", "Quarter of the big
+  gear", "Twice the size, half the speed. Exactly.", one line a click
+  (clicks 2 to 4), and it stays up at click 5 ([PLAN.md](PLAN.md), the end
+  of "The text").
+- 2026-10-08: the user changed the text to "A quarter of the big gear", and
+  "Twice the size, half / the speed. Exactly." on two lines.
+- 2026-10-08: click 7 has the text "Once a minute. The second hand!", and
+  `watch: all` leaves out the span ([PLAN.md](PLAN.md), the last two
+  sections).
+- 2026-10-08: `scenecheck` allows the flash style for the trial
+  (`MARK_WASH_ROLE`), so the talk commits with both styles ([PLAN.md](PLAN.md),
+  "Commit with both styles").

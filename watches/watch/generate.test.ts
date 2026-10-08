@@ -3,6 +3,7 @@ import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import type { Wheel } from "./design.ts";
 import type { Mesh, Piece } from "../webgl/scene.ts";
+import { INKS } from "../webgl/scene.ts";
 import {
   fittedView,
   generate,
@@ -151,6 +152,7 @@ test("every mesh is in exactly one piece", () => {
 });
 
 test("each wheel of the train is three pieces: the wheel with its hub, the pinion and the arbor", () => {
+  // (the Gears slide's spans are pieces of their own, after these)
   for (const wheel of ["escape", "fourth", "third", "centre"]) {
     // the wheel, its hub, its pinion and its arbor, in the drawing's order
     const [body, hub, pinion, arbor] = partMeshes(`${wheel} wheel`);
@@ -162,6 +164,59 @@ test("each wheel of the train is three pieces: the wheel with its hub, the pinio
     assert.equal(heights(arbor)[0], heights(body)[1]);
     assert.ok(heights(arbor)[1] > heights(pinion)[1]);
   }
+});
+
+test("the Gears slide's spans are whole teeth of their gears, in the second, and turn with them", () => {
+  const fourth = design.wheels.find((wheel) => wheel.name === "fourth");
+  assert.ok(fourth);
+  // solid, with the gear's outline: a tooth and its leaf must not merge; and
+  // the trial in the flash's colours
+  const styles = [
+    ["span", INKS.second, INKS.subject],
+    ["span wash", INKS.secondWash, INKS.second],
+  ] as const;
+  // the wheel's body, and the pinion on the escape wheel's arbor
+  const gears = [
+    ["fourth wheel", at(partMeshes("fourth wheel"), 0), fourth.outer],
+    ["escape pinion", at(partMeshes("escape wheel"), 2), Infinity],
+  ] as const;
+  for (const [style, fill, outline] of styles)
+    for (const [gearName, gear, outer] of gears) {
+      const name = `${gearName} ${style}`;
+      const meshes = [...piece(name).meshes];
+      assert.equal(meshes.length, 1, name);
+      const span = at(meshes, 0);
+      assert.equal(span.group, gear.group, name);
+      assert.deepEqual(span.hiddenInside, gear.hiddenInside, name);
+      assert.equal(span.inDrawing, false, name);
+      const [bottom, top] = heights(span);
+      // the whole tooth, drawn over the gear's faces
+      assert.equal(span.overlay, true, name);
+      assert.deepEqual([bottom, top], heights(gear), name);
+      assert.equal(span.fill?.ink, fill, name);
+      for (const line of span.lines)
+        assert.equal(line.style.ink, outline, name);
+      const radii = Array.from(
+        { length: span.triangles.length / 3 },
+        (_, index) =>
+          Math.hypot(
+            at(span.triangles, 3 * index),
+            at(span.triangles, 3 * index + 1),
+          ),
+      );
+      const gearRadii = Array.from(
+        { length: gear.triangles.length / 3 },
+        (_, index) =>
+          Math.hypot(
+            at(gear.triangles, 3 * index),
+            at(gear.triangles, 3 * index + 1),
+          ),
+      );
+      assert.ok(
+        Math.max(...radii) <= Math.min(outer, Math.max(...gearRadii)) + 1e-4,
+        name,
+      );
+    }
 });
 
 test("the oscillator's pieces: the balance wheel holds its screws; the spring, collet and stud are one mesh each", () => {

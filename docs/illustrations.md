@@ -56,8 +56,12 @@ acts on it) and the muted wash (the context's faces); ink (scales and fine
 detail); and, where two materials meet, water, ground and the ground wash.
 The jobs and the variables are in [theme.md](theme.md), "The roles" and "The
 pairs". The values below are Ledger's, as examples. The second and its wash
-say "look here": a flash, and a keyword callout ("Flash" and "Leaders",
-below).
+say "look here": a flash, a keyword callout ("Flash" and "Leaders",
+below), and a mark: a few teeth of a gear, solid in the second, with the
+gear's own outline (`watches`, the Gears slide). While that slide compares
+two styles (a trial), a mark may also be in the flash's colours: faces in the
+second's wash, lines in the second. When the talk keeps one style, delete the
+other from `scenecheck` (`MARK_WASH_ROLE`).
 
 **Which colour, and at what opacity, is decided by the job, not by taste.**
 The thing that moves is its line colour at 0.60–1.0; the thing that contains

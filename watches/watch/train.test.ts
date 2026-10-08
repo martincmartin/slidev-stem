@@ -19,6 +19,7 @@ import {
   TrainClock,
 } from "./model.ts";
 import { moveWithBefore, stageState, watchState } from "./state.ts";
+import type { WatchState } from "./state.ts";
 
 const watch = generate();
 const { design, groups } = watch;
@@ -241,4 +242,27 @@ test("on the Gears slide, the gears spin from the start, and start to fade in as
   const after = timeline.valuesAt(spinStart + 1);
   assert.equal(after.keep.size, 0);
   assert.deepEqual(after.fade, gears.shown);
+});
+
+test("on the Gears slide, the span fades in while the gears turn on at full speed", () => {
+  const spanClick = 1;
+  const [plain, span] = [0, spanClick].map(
+    (click) => watchState(GEARS_SLIDE, click) ?? assert.fail("no watch"),
+  ) as [WatchState, WatchState];
+  assert.ok(plain.spin !== null && span.spin === plain.spin);
+  assert.ok(
+    stageAt(GEARS_SLIDE, spanClick).shown.size >
+      stageAt(GEARS_SLIDE, 0).shown.size,
+  );
+  const beats = mechanism();
+  const train = new TrainClock();
+  train.show(spinBeats(watch, plain.spin), 0, true);
+  train.show(spinBeats(watch, span.spin), 1000, false);
+  // the same distance in each second, before the click and after it
+  const second = (start: number): number =>
+    train.position(start + 1000, beats(start + 1000)) -
+    train.position(start, beats(start));
+  for (const start of [0, 500, 1000, 2000]) {
+    assert.ok(Math.abs(second(start) - spinBeats(watch, plain.spin)) < 1e-9);
+  }
 });

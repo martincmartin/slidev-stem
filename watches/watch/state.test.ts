@@ -153,7 +153,7 @@ test("watchClicks and watchView refuse what they cannot hold, with the key's nam
   }
 });
 
-test("a slide shows the meshes of its pieces, or all of them, in its named or fitted view", () => {
+test("a slide shows the meshes of its pieces, or all but the marks, in its named or fitted view", () => {
   const named = stageState(
     watch,
     watchState({ watch: ["stud"], watchView: "hairspring" }, 0) ??
@@ -165,7 +165,20 @@ test("a slide shows the meshes of its pieces, or all of them, in its named or fi
     watch,
     watchState({ watch: "all" }, 0) ?? assert.fail(),
   );
-  assert.equal(all.shown.size, watch.scene.meshes.length);
+  // every mesh but those of the pieces that only a slide that names them
+  // shows: the Gears slide's spans
+  const marks = watch.scene.pieces.filter((piece) => !piece.inAll);
+  assert.deepEqual(marks.map((piece) => piece.name).sort(), [
+    "escape pinion span",
+    "escape pinion span wash",
+    "fourth wheel span",
+    "fourth wheel span wash",
+  ]);
+  const markMeshes = new Set(marks.flatMap((piece) => [...piece.meshes]));
+  assert.deepEqual(
+    all.shown,
+    new Set(watch.scene.meshes.filter((mesh) => !markMeshes.has(mesh))),
+  );
   const fitted = stageState(
     watch,
     watchState({ watch: ["fourth wheel", "escape pinion"] }, 0) ??

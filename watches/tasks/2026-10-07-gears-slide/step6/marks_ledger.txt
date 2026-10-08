@@ -1,0 +1,27 @@
+{'background': '#FAF7F0', 'ink': '#2A2520', 'muted': '#736A60', 'accent': '#1F5FA8', 'second': '#B5601E', 'panel': '#F2EEE4', 'border': '#E0D9CA', 'subject': '#143C6B', 'subject-wash': '#D3DCE3', 'muted-wash': '#E2DED6', 'second-wash': '#ECD8C4', 'water': '#143C6B', 'ground': '#736A60', 'ground-wash': '#E2DED6'}
+
+candidate      L*    vs subject (dE / CVD)   vs subject-wash (dE / CVD)   vs paper contrast
+ink           15.1    37.1 /  38.3         72.8 /  72.6           14.2
+muted         45.4    43.4 /  43.3         43.6 /  43.5            5.0
+accent        40.1    20.3 /  21.0         62.7 /  62.6            6.0
+second        49.8    88.6 /  77.3         73.1 /  63.4            4.2
+subject       25.1     0.0 /   0.0         68.1 /  67.6           10.4
+second-wash   87.5    76.2 /  74.8         17.7 /  15.8            1.3
+muted-wash    88.6    73.0 /  72.3          9.1 /   8.6            1.3
+
+pair              dE    CVD dE   L* ratio
+ink     /muted         30.4   30.3   3.01
+ink     /accent        55.4   57.4   2.66
+ink     /second        64.1   49.2   3.31
+ink     /subject       37.1   38.3   1.67
+ink     /second-wash   72.9   72.3   5.81
+muted   /accent        52.3   53.4   1.13
+muted   /second        51.6   36.3   1.10
+muted   /subject       43.4   43.3   1.81
+muted   /second-wash   42.5   42.0   1.93
+accent  /second        97.8   89.1   1.24
+accent  /subject       20.3   21.0   1.60
+accent  /second-wash   74.4   73.6   2.18
+second  /subject       88.6   77.3   1.99
+second  /second-wash   59.2   52.0   1.75
+subject /second-wash   76.2   74.8   3.49

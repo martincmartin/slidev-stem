@@ -80,10 +80,13 @@ these additions.
 - **Colours:** the art colours, and only those, for lines and fills. A face
   (the case, the strap, a wheel) is its wash, solid. A fill in a line colour
   (the impulse jewel) is at 0.60–1.0; the renderer blends a fill below 1 with
-  the paper into an opaque fill. `tools/scenecheck.py` checks the scene.
+  the paper into an opaque fill. A mark on part of a part is a fill in the
+  second, solid, with the part's own outline (`watches`, the Gears slide's
+  teeth). `tools/scenecheck.py` checks the scene.
 - **A scene holds inks, not colours.** An `Ink` is one of the objects in
   `INKS` (`webgl/scene.ts`): `subject`, `subjectWash`, `muted`, `mutedWash`
-  and `ink` for the scene, and `second` and `secondWash` for a flash. Each is
+  and `ink` for the scene, `second` for a mark's fill, and `second` and
+  `secondWash` for a flash. Each is
   an art role of the theme ([theme.md](theme.md), "The roles"). A role may be
   a recipe (`color-mix()`): `watch/palette.ts` has the browser paint each one
   and reads back its `#rrggbb`. `new
@@ -126,6 +129,13 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   looks wrong when the view tilts.
 - **Faces:** flat fills, no lighting, no textures. A curved surface reads
   through its silhouette lines.
+- **An overlay** (`Mesh.overlay`) is a mark on another mesh's surface, at the
+  same place as its faces. The renderer draws its faces with a polygon offset
+  toward the camera, so its own show where the two are at the same place, and
+  do not flicker. Without the flag, two faces at the same place fight in the
+  depth test. Its lines are drawn in the usual order: give it the
+  `lineOrder` of the mesh it covers, and put it after that mesh, so its
+  lines cover the other's.
 - **Clip discs:** a part can be hidden inside a disc, at every height (in the
   watch, each lower wheel inside the root circle of the wheel above it). A
   disc names the group of the part that covers it (`Disc.by`). It hides only

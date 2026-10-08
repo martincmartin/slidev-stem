@@ -1,0 +1,40 @@
+
+=== ledger: paper #FAF7F0, subject #143C6B, subject-wash #D3DCE3
+solid tooth   hex      L*   vs subject dE/CVD   vs subj-wash dE/CVD
+  subject     #143C6B   25.1     0.0/  0.0         68.1/ 67.6
+  second      #B5601E   49.8    88.6/ 77.3         73.1/ 63.4
+  accent      #1F5FA8   40.1    20.3/ 21.0         62.7/ 62.6
+  ink         #2A2520   15.1    37.1/ 38.3         72.8/ 72.6
+  muted       #736A60   45.4    43.4/ 43.3         43.6/ 43.5
+  second-wash #ECD8C4   87.5    76.2/ 74.8         17.7/ 15.8
+  pairs (dE / CVD): subject+second 89/77, accent+second 98/89, subject+accent 20/21, ink+second 64/49, second+second-wash 59/52
+
+=== palette-campfire: paper #241E1A, subject #FFCC8F, subject-wash #3D3731
+solid tooth   hex      L*   vs subject dE/CVD   vs subj-wash dE/CVD
+  subject     #FFCC8F   85.2     0.0/  0.0         70.3/ 67.1
+  second      #54BCD6   71.4    69.2/ 53.9         59.8/ 55.9
+  accent      #FFB340   78.4    30.9/ 28.5         84.2/ 77.4
+  ink         #F6EEE3   94.4    33.7/ 30.9         71.0/ 71.0
+  muted       #B5A594   68.7    32.0/ 28.8         45.6/ 45.2
+  second-wash #2D3A3C   23.4    75.3/ 69.7          9.9/  6.6
+  pairs (dE / CVD): subject+second 69/54, accent+second 97/80, subject+accent 31/28, ink+second 43/31, second+second-wash 55/52
+
+=== palette-marmalade: paper #2B2420, subject #FFD7BC, subject-wash #443C37
+solid tooth   hex      L*   vs subject dE/CVD   vs subj-wash dE/CVD
+  subject     #FFD7BC   88.7     0.0/  0.0         64.7/ 62.7
+  second      #93D096   78.2    42.5/ 12.5         64.7/ 53.6
+  accent      #E8883C   65.8    47.6/ 40.7         70.2/ 56.2
+  ink         #FFF4E8   96.7    16.3/ 13.5         70.8/ 70.8
+  muted       #A49B92   64.5    28.5/ 25.4         38.6/ 38.5
+  second-wash #3B3F33   25.9    65.4/ 61.5          7.2/  2.0
+  pairs (dE / CVD): subject+second 43/13, accent+second 71/28, subject+accent 48/41, ink+second 41/24, second+second-wash 61/53
+
+=== palette-after-hours: paper #17202A, subject #FFCC8C, subject-wash #3D3730
+solid tooth   hex      L*   vs subject dE/CVD   vs subj-wash dE/CVD
+  subject     #FFCC8C   85.2     0.0/  0.0         70.7/ 67.5
+  second      #7FB3E8   71.3    73.1/ 68.4         60.7/ 61.8
+  accent      #FFB84D   79.7    25.0/ 23.1         81.4/ 75.4
+  ink         #F6F0DF   94.8    33.2/ 29.8         71.5/ 71.4
+  muted       #94948F   61.2    44.7/ 40.0         37.9/ 37.7
+  second-wash #29394B   23.4    81.4/ 76.8         18.6/ 18.1
+  pairs (dE / CVD): subject+second 73/68, accent+second 96/90, subject+accent 25/23, ink+second 47/46, second+second-wash 52/52

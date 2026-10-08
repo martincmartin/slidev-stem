@@ -121,10 +121,20 @@ function faceCubics(
   return cubics;
 }
 
-/** The closed outline of a wheel that drives a pinion: cycloidal teeth, half
- *  the pitch wide, with radial flanks. Its tip and root circles are the
- *  design's `outer` and `inner`. */
-export function wheelTeeth(wheel: Wheel, form: ToothForm = TOOTH_FORM): Path {
+/** A wheel tooth in its own frame, centre line +x: what each of a wheel's
+ *  teeth repeats. */
+interface ToothShape {
+  readonly rootRadius: number;
+  readonly tipRadius: number;
+  /** The corners of its lower side (y < 0), on the root and pitch circles. */
+  readonly lowerRoot: Point2;
+  readonly lowerPitch: Point2;
+  /** The face of its lower side, from the pitch circle to the tip. */
+  readonly face: readonly Cubic[];
+}
+
+/** A wheel's tooth: cycloidal, half the pitch wide, with radial flanks. */
+function wheelTooth(wheel: Wheel, form: ToothForm): ToothShape {
   checkToothForm(form);
   const pinionRadius = wheel.driven?.pinionRadius ?? null;
   if (pinionRadius === null) {
@@ -132,46 +142,101 @@ export function wheelTeeth(wheel: Wheel, form: ToothForm = TOOTH_FORM): Path {
   }
   // a tooth is half the pitch wide; in its own frame, its centre line is +x
   const halfDegrees = 90 / wheel.teeth;
-  const halfAngle = radians(halfDegrees);
   const rootRadius = wheel.pitchRadius - wheel.depth;
   const tipRadius = wheel.pitchRadius + wheel.depth;
-  const face = faceCubics(
-    wheel,
+  return {
+    rootRadius,
     tipRadius,
-    pinionRadius / 2,
-    halfAngle,
-    form.faceSegments,
-  );
+    lowerRoot: polar(rootRadius, -halfDegrees),
+    lowerPitch: polar(wheel.pitchRadius, -halfDegrees),
+    face: faceCubics(
+      wheel,
+      tipRadius,
+      pinionRadius / 2,
+      radians(halfDegrees),
+      form.faceSegments,
+    ),
+  };
+}
+
+/** Radians from screen angle 0 to the centre line of tooth `index`. */
+function toothCentre(wheel: Wheel, index: number): number {
+  return radians(wheel.toothPhase) + index * ((2 * Math.PI) / wheel.teeth);
+}
+
+/** Draws a tooth's flanks, faces and tip, from the root corner of its lower
+ *  side (where `path` is) to the root corner of its upper side. */
+function traceTooth(
+  path: Path,
+  tooth: ToothShape,
+  onScreen: (point: Point2) => Point2,
+): void {
+  const { face, lowerRoot, lowerPitch, tipRadius } = tooth;
   const tip = at(face, face.length - 1)[3];
-  const lowerRoot = polar(rootRadius, -halfDegrees);
-  const lowerPitch = polar(wheel.pitchRadius, -halfDegrees);
-  const toothRadians = (2 * Math.PI) / wheel.teeth;
+  path.lineTo(...onScreen(lowerPitch));
+  for (const [, first, second, end] of face) {
+    path.cubicTo(...onScreen(first), ...onScreen(second), ...onScreen(end));
+  }
+  path.arcTo(tipRadius, false, true, ...onScreen(mirrored(tip)));
+  for (const [start, first, second] of [...face].reverse()) {
+    path.cubicTo(
+      ...onScreen(mirrored(second)),
+      ...onScreen(mirrored(first)),
+      ...onScreen(mirrored(start)),
+    );
+  }
+  path.lineTo(...onScreen(mirrored(lowerRoot)));
+}
+
+/** The closed outline of a wheel that drives a pinion: cycloidal teeth, half
+ *  the pitch wide, with radial flanks. Its tip and root circles are the
+ *  design's `outer` and `inner`. */
+export function wheelTeeth(wheel: Wheel, form: ToothForm = TOOTH_FORM): Path {
+  const tooth = wheelTooth(wheel, form);
   const path = new Path();
   for (let index = 0; index < wheel.teeth; index++) {
-    const centre = radians(wheel.toothPhase) + index * toothRadians;
+    const centre = toothCentre(wheel, index);
     const onScreen = (point: Point2): Point2 => turned(point, centre);
-    if (index === 0) path.moveTo(...onScreen(lowerRoot));
-    path.lineTo(...onScreen(lowerPitch));
-    for (const [, first, second, end] of face) {
-      path.cubicTo(...onScreen(first), ...onScreen(second), ...onScreen(end));
-    }
-    path.arcTo(tipRadius, false, true, ...onScreen(mirrored(tip)));
-    for (const [start, first, second] of [...face].reverse()) {
-      path.cubicTo(
-        ...onScreen(mirrored(second)),
-        ...onScreen(mirrored(first)),
-        ...onScreen(mirrored(start)),
-      );
-    }
-    path.lineTo(...onScreen(mirrored(lowerRoot)));
+    if (index === 0) path.moveTo(...onScreen(tooth.lowerRoot));
+    traceTooth(path, tooth, onScreen);
     path.arcTo(
-      rootRadius,
+      tooth.rootRadius,
       false,
       true,
-      ...turned(lowerRoot, centre + toothRadians),
+      ...turned(tooth.lowerRoot, centre + (2 * Math.PI) / wheel.teeth),
     );
   }
   return path.close();
+}
+
+/** The teeth of `wheel` that `teeth` numbers (0 is at `toothPhase`, and the
+ *  numbers go clockwise), each a closed outline of its own: the tooth as
+ *  `wheelTeeth` draws it, closed along the root circle. */
+export function wheelToothShapes(
+  wheel: Wheel,
+  teeth: readonly number[],
+  form: ToothForm = TOOTH_FORM,
+): Path {
+  const tooth = wheelTooth(wheel, form);
+  const path = new Path();
+  for (const index of teeth) {
+    checkIndex(index, wheel.teeth, `the ${wheel.name} wheel's tooth`);
+    const centre = toothCentre(wheel, index);
+    const onScreen = (point: Point2): Point2 => turned(point, centre);
+    path.moveTo(...onScreen(tooth.lowerRoot));
+    traceTooth(path, tooth, onScreen);
+    path.arcTo(tooth.rootRadius, false, false, ...onScreen(tooth.lowerRoot));
+    path.close();
+  }
+  return path;
+}
+
+function checkIndex(index: number, count: number, what: string): void {
+  if (!(Number.isInteger(index) && index >= 0 && index < count)) {
+    throw new Error(
+      `${what} ${String(index)} is not one of 0 to ${String(count - 1)}`,
+    );
+  }
 }
 
 /** Degrees by which the pinion on `owner`'s arbor turns back, against its
@@ -192,9 +257,22 @@ export function pinionLead(owner: Wheel, form: ToothForm = TOOTH_FORM): number {
   return -Math.sign(owner.step) * lead;
 }
 
-/** The closed outline of the pinion on `owner`'s arbor: leaves with radial
- *  flanks and round ends, `form.leafWidth` modules wide. */
-export function pinionLeaves(owner: Wheel, form: ToothForm = TOOTH_FORM): Path {
+/** A pinion leaf in its own frame, centre line +x: what each of a
+ *  pinion's leaves repeats. */
+interface LeafShape {
+  readonly rootRadius: number;
+  /** The radius of its round end. */
+  readonly endRadius: number;
+  /** The corners of its lower side (y < 0), on the root and pitch circles. */
+  readonly lowerRoot: Point2;
+  readonly lowerPitch: Point2;
+  /** Radians from screen angle 0 to the centre line of leaf 0. */
+  readonly first: number;
+}
+
+/** A leaf of the pinion on `owner`'s arbor: radial flanks and a round end,
+ *  `form.leafWidth` modules wide. */
+function pinionLeaf(owner: Wheel, form: ToothForm): LeafShape {
   const radius = owner.pinionRadius;
   const phase = owner.pinionPhase;
   if (radius === null || phase === null) {
@@ -215,27 +293,155 @@ export function pinionLeaves(owner: Wheel, form: ToothForm = TOOTH_FORM): Path {
     );
   }
   const halfDegrees = (halfAngle * 180) / Math.PI;
-  const endRadius = radius * Math.sin(halfAngle);
-  const lowerRoot = polar(rootRadius, -halfDegrees);
-  const lowerPitch = polar(radius, -halfDegrees);
-  const leafRadians = (2 * Math.PI) / leaves;
-  const first = radians(phase + lead);
+  return {
+    rootRadius,
+    endRadius: radius * Math.sin(halfAngle),
+    lowerRoot: polar(rootRadius, -halfDegrees),
+    lowerPitch: polar(radius, -halfDegrees),
+    first: radians(phase + lead),
+  };
+}
+
+/** Draws a leaf's flanks and round end, from the root corner of its lower
+ *  side (where `path` is) to the root corner of its upper side. */
+function traceLeaf(
+  path: Path,
+  leaf: LeafShape,
+  onScreen: (point: Point2) => Point2,
+): void {
+  path.lineTo(...onScreen(leaf.lowerPitch));
+  // the round end: one half circle. Two quarter arcs would meet at a false
+  // corner, because path.ts takes an arc's end directions from its chords
+  path.arcTo(
+    leaf.endRadius,
+    false,
+    true,
+    ...onScreen(mirrored(leaf.lowerPitch)),
+  );
+  path.lineTo(...onScreen(mirrored(leaf.lowerRoot)));
+}
+
+/** The closed outline of the pinion on `owner`'s arbor: leaves with radial
+ *  flanks and round ends, `form.leafWidth` modules wide. */
+export function pinionLeaves(owner: Wheel, form: ToothForm = TOOTH_FORM): Path {
+  const leaf = pinionLeaf(owner, form);
+  const leafRadians = (2 * Math.PI) / owner.leaves;
   const path = new Path();
-  for (let index = 0; index < leaves; index++) {
-    const centre = first + index * leafRadians;
+  for (let index = 0; index < owner.leaves; index++) {
+    const centre = leaf.first + index * leafRadians;
     const onScreen = (point: Point2): Point2 => turned(point, centre);
-    if (index === 0) path.moveTo(...onScreen(lowerRoot));
-    path.lineTo(...onScreen(lowerPitch));
-    // the round end: one half circle. Two quarter arcs would meet at a false
-    // corner, because path.ts takes an arc's end directions from its chords
-    path.arcTo(endRadius, false, true, ...onScreen(mirrored(lowerPitch)));
-    path.lineTo(...onScreen(mirrored(lowerRoot)));
+    if (index === 0) path.moveTo(...onScreen(leaf.lowerRoot));
+    traceLeaf(path, leaf, onScreen);
     path.arcTo(
-      rootRadius,
+      leaf.rootRadius,
       false,
       true,
-      ...turned(lowerRoot, centre + leafRadians),
+      ...turned(leaf.lowerRoot, centre + leafRadians),
     );
   }
   return path.close();
+}
+
+/** The leaves of the pinion on `owner`'s arbor that `leaves` numbers (0 is
+ *  at `pinionPhase`, and the numbers go clockwise), each a closed outline of
+ *  its own: the leaf as `pinionLeaves` draws it, closed along the root
+ *  circle. */
+export function pinionLeafShapes(
+  owner: Wheel,
+  leaves: readonly number[],
+  form: ToothForm = TOOTH_FORM,
+): Path {
+  const leaf = pinionLeaf(owner, form);
+  const leafRadians = (2 * Math.PI) / owner.leaves;
+  const path = new Path();
+  for (const index of leaves) {
+    checkIndex(index, owner.leaves, `the ${owner.name} pinion's leaf`);
+    const centre = leaf.first + index * leafRadians;
+    const onScreen = (point: Point2): Point2 => turned(point, centre);
+    path.moveTo(...onScreen(leaf.lowerRoot));
+    traceLeaf(path, leaf, onScreen);
+    path.arcTo(leaf.rootRadius, false, false, ...onScreen(leaf.lowerRoot));
+    path.close();
+  }
+  return path;
+}
+
+/** Some teeth of a wheel that are next to each other, and the leaves of its
+ *  pinion that they drive: `leaves[index]` is the leaf that
+ *  `teeth[index]` drives. */
+export interface MeshedSpan {
+  readonly teeth: readonly number[];
+  readonly leaves: readonly number[];
+}
+
+/** `count` teeth of `wheel` that are next to each other, in the middle of
+ *  its mesh with the pinion that it drives when the train is at its start,
+ *  and the leaves that they drive. The ratio is whole, so each of these
+ *  teeth drives the same leaf at every turn. Throws if the wheel and the
+ *  pinion are not in mesh at the start. */
+export function meshedSpan(
+  wheel: Wheel,
+  count: number,
+  form: ToothForm = TOOTH_FORM,
+): MeshedSpan {
+  const owner = wheel.driven;
+  if (owner === null)
+    throw new Error(`the ${wheel.name} wheel drives no pinion`);
+  if (!(Number.isInteger(count) && count > 0 && count <= owner.leaves)) {
+    throw new Error(
+      `a span of ${String(count)} teeth: it should be 1 to the ${owner.name} pinion's ${String(owner.leaves)} leaves`,
+    );
+  }
+  const leaf = pinionLeaf(owner, form);
+  // where the two meet: on the line from the wheel's arbor to the pinion's
+  const meeting = Math.atan2(
+    owner.arbor[1] - wheel.arbor[1],
+    owner.arbor[0] - wheel.arbor[0],
+  );
+  /** How far `radians` is past the meeting line, in pitches, along the way
+   *  that a part with this step moves there; in -count/2 to count/2. */
+  const pastMeeting = (
+    radians: number,
+    line: number,
+    step: number,
+    pitches: number,
+  ): number => {
+    const turns = (Math.sign(step) * (radians - line)) / (2 * Math.PI);
+    return pitches * (turns - Math.round(turns));
+  };
+  const toothPast = (index: number): number =>
+    pastMeeting(toothCentre(wheel, index), meeting, wheel.step, wheel.teeth);
+  const leafPast = (index: number): number =>
+    pastMeeting(
+      leaf.first + (index * 2 * Math.PI) / owner.leaves,
+      meeting + Math.PI,
+      owner.step,
+      owner.leaves,
+    );
+  // a tooth drives the leaf half a pitch ahead of it; the middle of the
+  // span's pairs is on the meeting line
+  const byMiddle = [...Array(wheel.teeth).keys()].sort(
+    (first, second) =>
+      Math.abs(toothPast(first) + 0.25) - Math.abs(toothPast(second) + 0.25),
+  );
+  const nearest = byMiddle.slice(0, count);
+  const teeth = [...nearest].sort(
+    (first, second) => toothPast(first) - toothPast(second),
+  );
+  const leaves = teeth.map((tooth) => {
+    const ahead = toothPast(tooth) + 0.5;
+    const found = [...Array(owner.leaves).keys()].find((index) => {
+      const off = leafPast(index) - ahead;
+      return (
+        Math.abs(off - owner.leaves * Math.round(off / owner.leaves)) < 0.25
+      );
+    });
+    if (found === undefined) {
+      throw new Error(
+        `the ${wheel.name} wheel's tooth ${String(tooth)} drives no leaf of the ${owner.name} pinion at the start`,
+      );
+    }
+    return found;
+  });
+  return { teeth, leaves };
 }

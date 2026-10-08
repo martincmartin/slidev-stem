@@ -159,9 +159,13 @@ the escape wheel spins alone, and at the third the pallet comes back and
 stops it.
 The Gears slide follows it: the Escapement slide's picture fades out, the
 camera jumps, and the fourth wheel and the escape wheel's pinion fade in
-(`watchMoveWith: none`), turning freely (`watchSpin`). At its click, the
-rest of the Escapement slide's mechanism fades in around them, and the gears
-tick with it (`watchClicks`).
+(`watchMoveWith: none`), turning freely (`watchSpin`). At click 1,
+four teeth on each gear turn the second (the span), in the flash's colours,
+and clicks 2 to 4 add the text one line at a time. At click 5, the span is
+solid, and the text stays: two styles to compare. At click 6,
+the rest of the Escapement slide's mechanism fades in around them, the span
+and the text go, and the gears tick with it (`watchClicks`). At click 7, the
+seconds hand fades in, and then its text.
 It is described in [watch.md](watch.md).
 
 ## Where things go on a slide

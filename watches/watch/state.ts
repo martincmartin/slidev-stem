@@ -285,7 +285,9 @@ export function stageState(
   const meshesOf = (pieces: readonly Piece[]): ReadonlySet<Mesh> =>
     new Set(pieces.flatMap((piece) => [...piece.meshes]));
   const piecesOf = (names: readonly string[] | "all"): readonly Piece[] =>
-    names === "all" ? scene.pieces : piecesNamed("watch", names);
+    names === "all"
+      ? scene.pieces.filter((piece) => piece.inAll)
+      : piecesNamed("watch", names);
   const namedView = (name: string): View => {
     const found = scene.views.find((candidate) => candidate.name === name);
     if (!found) throw new Error(`watchView: no watch view "${name}"`);
@@ -298,10 +300,7 @@ export function stageState(
   return {
     view,
     tilt: state.tilt,
-    shown:
-      state.show === "all"
-        ? new Set(scene.meshes)
-        : meshesOf(piecesOf(state.show)),
+    shown: meshesOf(piecesOf(state.show)),
     flash: state.flash
       ? meshesOf(piecesNamed("watchFlash", state.flash))
       : null,

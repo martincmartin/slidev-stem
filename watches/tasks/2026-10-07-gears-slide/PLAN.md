@@ -254,3 +254,269 @@ settle waits for an extreme; the spin waits for the fade), as before.
 step into the slide, not a state at a click. The diving board's keys
 (`board`, `boardCurl`, `watch/board.ts`) are click numbers too; they are
 another layer, and are left for now.
+
+## Step 6 (2026-10-08): show that the teeth go by one for one
+
+**Request.** Before the rest of the mechanism comes back, show that the
+same number of teeth a second goes by on each gear: a tooth of one fits in a
+gap of the other. So the turns go as the numbers of teeth (16 to 8), and,
+with teeth of the same size, as the radii. Later request: the slide first
+shows the gears plain, and the marks come at a click of their own, before the
+click that brings the mechanism back.
+
+The numbers: the fourth wheel has 16 teeth and the escape pinion 8 leaves
+(`art/watch_design.py`). At 45 degrees a second of the pinion, one tooth
+goes through the mesh each second.
+
+### What to say
+
+Teeth a second, not speed at the rim: the audience can count teeth, and with
+teeth of the same size, the count is the size. Spoken: "Each tooth fits in a
+gap on the other side, so they go by one for one. The big one has 16, the
+little one 8: the little one turns twice for each turn of the big one."
+
+### Options for the picture
+
+1. One tooth marked on each gear.
+2. A count of the teeth that go through the mesh, on each side.
+3. A bike chain, spoken only.
+4. The rims rolled out as two lines of the same length.
+
+The user chose 1, and rejected 2, 3 and 4. The user then asked about two
+marks on each gear (opposite on the pinion, 90 degrees apart on the wheel),
+in one colour or two:
+
+| Option | For | Against |
+| --- | --- | --- |
+| A. One mark on each gear | simplest | shows the result, not the reason; an event each 8 s |
+| B. Two marks on each, one colour | an event each 4 s | the pinion looks the same after half a turn: it seems to turn in 4 s, a ratio of 4, which is wrong; no pairs |
+| C. Two marks on each, a colour for each pair | 4 teeth between the marks on each gear: half the pinion, a quarter of the wheel; the pinion's turn reads as 8 s | four marks, two colours |
+| D. Two marks on each, a colour for each gear | none | as B, and a colour more |
+| Span: the 4 teeth between, one colour | the same length of rim coloured on each gear; half and a quarter; colour meshes with colour for 4 s | more colour on the picture |
+
+### Which colours
+
+Measured with `tools/lib.py` (`de76`, `cvd`: the worse of deuteranopia and
+protanopia), in the four top-pick palettes of `stem/docs/theme.md`, as they
+were on 2026-10-08. The scripts and their output are in `step6/`
+(`marks_ledger.py`, `marks_palettes.py`). A mark is a solid tooth; it is seen
+against its neighbours' faces (subject-wash), and its outline is subject.
+
+| ΔE / CVD ΔE | Ledger | Campfire | After-Hours | Marmalade |
+| --- | --- | --- | --- | --- |
+| span: second vs the faces | 73 / 63 | 60 / 56 | 61 / 62 | 65 / 54 |
+| C: subject + second, the pair | 89 / 77 | 69 / 54 | 73 / 68 | 43 / 13 |
+| C: subject solid vs the faces | 68 / 68 | 70 / 67 | 71 / 68 | 65 / 63 |
+| C: accent + second, the pair | 98 / 89 | 97 / 80 | 96 / 90 | 71 / 28 |
+| accent vs subject | 20 / 21 | 31 / 28 | 25 / 23 | 48 / 41 |
+| second-wash vs the faces | 18 / 16 | 10 / 7 | 19 / 18 | 7 / 2 |
+
+- Ink is dark like the subject in Ledger, and pale like it in the dark
+  palettes; muted means "context". Neither is a mark.
+- The accent is not in the art (`theme.md`), and in the dark palettes it is
+  close to the subject: an accent mark looks like a subject mark.
+- A wash mark is too close to the faces in every palette.
+- C with subject and second fails for colour-blind viewers in Marmalade (13).
+
+Ranking: 1. the span in the second (it holds in every palette, and shows the
+reason); 2. C, subject and second; 3. C, accent and second. **Chosen: the
+span in the second.**
+
+### How it is drawn
+
+- **A thin solid on the gear's top face** (`GEAR_SPAN.thickness`, 0.05 px), in
+  the gear's group and with its clip discs. The renderer's faces use the
+  depth test with `LESS`, so a filled decal at the face's height would fight
+  with the face. 0.05 px is far above the depth buffer's step and far below
+  what shows as a gap. No change to the renderer.
+- **The outline stays the subject's.** The first render had the outline in
+  the second: a coloured tooth had no edge, and where it touched the coloured
+  leaf that it drives, the two merged.
+- **Which teeth** (`meshedSpan` in `watch/teeth.ts`): 4 teeth next to each
+  other, in the middle of the mesh at the train's start, and the leaves that
+  they drive (half a pitch ahead). The ratio is 2, so each tooth drives the
+  same leaf at every turn. `watch/teeth.test.ts` turns the pair through the
+  mesh and fails if a tooth of the span touches another leaf. It failed when
+  the pairing was made half a pitch wrong on purpose.
+- **Each tooth or leaf is its own closed outline**, closed along the root
+  circle. One outline for the 4 teeth would run along the root circle twice
+  in the gaps.
+- The refactor of `wheelTeeth` and `pinionLeaves` to share a tooth's shape
+  keeps their outlines byte-identical, and every other mesh and view of the
+  scene is unchanged (hashes compared before and after).
+
+### Clicks
+
+| Click | Shows | The gears |
+| --- | --- | --- |
+| 0 | the gears | turn freely |
+| 1 | and the spans | turn on, at the same speed |
+| 2 | and the rest of the mechanism; the spans stay | tick with it |
+
+The span's click changes only `watch`: the spin goes on with no pause
+(`TrainClock.show` keeps a spin at the same speed; `watch/train.test.ts`).
+The spans' place when the click comes depends on the train's position, so
+the first time that colour meets colour is 0 to 16 s after the click.
+
+`step6/clicks.png` shows the three clicks in Ledger, and
+`step6/palettes.png` the span in each palette over 8 s (rows: Ledger,
+Campfire, After-Hours, Marmalade).
+
+### The flash's colours, as a trial
+
+The user asked whether the span should be in the flash's colours: faces in
+the second's wash, outline in the second. Rendered in Ledger, Campfire and
+Marmalade, and in Marmalade as a deuteranope sees it
+(`step6/solid-vs-flash.png`: solid on the left, flash's colours on the
+right): the wash is close to the gear's faces (ΔE 18, 10, 19 and 7 in the
+four palettes; CVD 16, 7, 18 and 2), so the teeth show mostly through their
+2 to 2.5 px outline. In Campfire they are faint, and for a deuteranope in
+Marmalade they nearly go. A flash works because it changes for a moment; a
+mark must be found and followed while it turns. Recommended: solid.
+
+The user then asked for both on the slide, to compare, and for two more
+changes:
+
+| Click | Shows | The gears |
+| --- | --- | --- |
+| 0 | the gears | turn freely |
+| 1 | the span in the flash's colours (`… span wash`, a trial) | turn freely |
+| 2 | the span, solid | turn freely |
+| 3 | the gears and the rest of the mechanism; the span goes | tick with it |
+| 4 | and the seconds hand | tick with it |
+
+`tools/scenecheck.py` allows the second as a solid fill only, so full
+validation fails on the trial's pieces until one style is kept. The user
+also changed the spin to 90 degrees a second (the pinion once in 4 s).
+`step6/clicks-trial.png` shows the five clicks.
+
+Then, on the user's request: the trial covers the whole tooth (its walls
+too), not only its top; the solid style stays a layer on the top. The whole
+tooth is at the same place as the gear's faces, and two faces at one place
+fight in the depth test (`LESS`). Options: a polygon offset for the mark's
+faces (a flag on the mesh, `Mesh.overlay`); the outline pushed out a little
+(the teeth then overlap the leaves they drive, and the tip walls still meet);
+or drawing order with `LEQUAL` (it depends on two triangulations of one face
+giving the same depth to the last bit). Chosen: the polygon offset, a small
+change to the renderer, general, and with no change to the geometry. No
+flicker in the renders (`step6/whole-tooth.png`).
+
+Then, on the user's request, the solid style covers the whole tooth too
+(every face in the second; the outline stays the subject's). Both styles are
+overlays, so the thin layer and its thickness (`GEAR_SPAN.thickness`) are
+gone. `step6/both-whole.png`: click 1 (the flash's colours) and click 2
+(solid).
+
+### The text
+
+The user asked for text with the span, at a click or one line a click: from
+the idea that the colour shows (the teeth move at the same speed, so the
+bigger wheel turns more slowly) to the rule (the ratio of the speeds is
+exactly that of the sizes).
+
+A trap in the wording: the speeds go as the sizes upside down (pinion speed
+/ wheel speed = wheel size / pinion size). "The ratio of the speeds is the
+ratio of the sizes" reads backwards. "Twice … half" says the direction with
+no word for "inverse".
+
+Room: the right of the gears, about 350 px at 35 px type, so about 25
+characters a line.
+
+| Option | Lines | Words | Longest line (chars) | For | Against |
+| --- | --- | --- | --- | --- | --- |
+| A. Tooth for tooth | Tooth for tooth. / Bigger wheel, slower turn. / Twice the size, half the speed. Exactly. | 14 | 40 | short, a rhythm; one step a click; says the direction; ends on "exactly" | does not say why it is exact |
+| B. Read the colours | Four teeth each. / Half the pinion. A quarter of the wheel. / So the pinion turns twice as fast. Exactly. | 19 | 43 | closest to the picture | only 16:8; no general rule |
+| C. No slip | Teeth can't slip. / So both rims move together. / Half the size, twice the turns. Exactly. | 15 | 40 | why it is exact; sets up the seconds hand | slip is not in the picture; starts with a negative |
+| D. Count them | One tooth here, one tooth there. / 8 teeth: the pinion turns once. / 16 teeth: the wheel turns once. / 16 to 8: two turns to one. Exactly. | 26 | 35 | concrete, exact | longest, 4 clicks; the span is 4 teeth, not 8 or 16 |
+| E. Running track | Same pace. / Longer lap. / Twice the lap, half the laps. Exactly. | 11 | 38 | shortest, easy to remember | a metaphor that is not in the picture |
+| F. Ask first | Which one turns faster? / Same teeth each second… / …so the one with fewer teeth. Exactly twice as fast. | 18 | 52 | involves the audience | the answer is on the screen already |
+| G. One sentence | The teeth pass one for one, / so the big wheel turns slower, / by exactly the ratio of their sizes. | 19 | 36 | one thought, the general rule | part sentences on the screen; "ratio" abstract and in the trap |
+| H. Rim speed | Same speed at the rim. / Bigger rim, slower turn. / speed × size: the same on both | 16 | 30 | the law itself | jargon; a product is hard to hear |
+
+Ranking: A, B, C, D, E, F, G, H. **Chosen: A**, with C's "teeth cannot slip"
+in the speaker notes as the reason for "exactly". The text is in the ink:
+the second marks the span.
+
+The user then asked for the reveal to be a trial too, one for each style: with
+the flash's colours, one line a click; with the solid span, all the text
+with the colour. Whichever style is kept keeps its reveal.
+
+| Click | Shows | The gears |
+| --- | --- | --- |
+| 0 | the gears | turn freely |
+| 1 | the span in the flash's colours (a trial) | turn freely |
+| 2–4 | and the text, one line a click | turn freely |
+| 5 | the span, solid, and all the text at once (a trial) | turn freely |
+| 6 | the gears and the rest of the mechanism; the span and the text go | tick with it |
+| 7 | and the seconds hand | tick with it |
+
+The text is two blocks, one for each reveal, with the same words. At click
+5 the first block fades out, and then the second fades in (the text-fade
+rule), so the solid style's reveal shows as it would on its own. When one
+style is kept, one block goes. `step6/text-clicks.png` shows the eight
+clicks in Ledger.
+
+Then the user changed the first two lines: the audience does not know
+"pinion" from "wheel", and the lines now read the span: "Half of the small
+gear", "Quarter of the big gear", then "Twice the size, half the speed.
+Exactly." The same length of rim is half of one and a quarter of the other,
+so "twice the size" follows from what the audience sees. (The one-for-one
+idea is in the speaker notes.) The user also asked for the text to stay up
+at click 5: there was no technical reason for the second block, only to show
+the solid style's own reveal. One block now, lines at clicks 2 to 4, hidden
+at click 6. The span's colour still fades out and in at click 5.
+`step6/text-clicks-2.png` shows the eight clicks with these lines.
+
+### The second hand's text (click 7)
+
+The request: when the seconds hand fades in at click 7, text says that the big
+gear turns once a minute, so the hand on it is a second hand. The hand is the
+first part of the watch that a person reads. The first round of options said
+so in words. The user decided that the brown hand shows it, so the text need
+not say it. The user chose "second hand", the everyday word, not the
+watchmaker's "seconds hand".
+
+The room is the first text's place, which is empty from click 6: about 24
+characters a line at 35 px. In this watch, the hand ticks once a second
+(`design.json`: a 2 s period is two beats), and the fourth wheel turns once in
+60 s. Most real watches tick 5 to 8 times a second, so "a tick a second" is
+true of this watch only.
+
+| Option | Lines                                                       | For                                                      | Against                                            |
+| ------ | ----------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------- |
+| A      | Once a minute. / A second hand!                             | short; the same beat as "Exactly."                       | the room stays empty; nothing ties it to the ticks |
+| B      | The big gear turns / once a minute: / a second hand.        | uses "big gear" from the first text                      | at click 7 the escape wheel looks as big           |
+| C      | One tick a second. / One turn a minute. / A second hand.    | from what the audience sees to what it cannot wait for   | three short sentences; the tick rate is this watch's |
+| D      | Sixty ticks, / one turn: / a second hand.                   | short; counting                                          | the audience must find that a tick is a second     |
+| E      | Once a minute. / Exactly. / A second hand.                  | a callback: the gear ratio makes the time exact          | the same beat twice in a minute                    |
+| F      | The ticks set the pace, / the gears set the scale: / a second hand. | the whole system                                  | abstract; "scale" is vague; two lines nearly full  |
+| G      | Once a minute, / one tick at a time. / A second hand.       | one spoken sentence                                      | does not say that a tick is a second               |
+| H      | Every tick, one second. / Every turn, one minute.           | both rates, parallel                                     | no name; both lines nearly full                    |
+
+My ranking was C, E, G, A, H, D, B, F. The user chose A, with "The second
+hand!": "Once a minute. / The second hand!". The notes say the rest, and an IF
+ASKED line gives the tick rate of real watches. The text waits for the hand
+(`after-watch-fade`). The slide's fade rule is now in longhands
+(`transition-property`, `transition-duration`): the shorthand set the delay to
+0 and removed the wait. Measured in the built deck: the text is at opacity 0
+300 ms after the click, and fades in from `--watch-fade` (0.8 s).
+`step6/click7.png` shows click 7.
+
+### `watch: all` and the span
+
+The cover (`watch: all`) showed the span's colours. `all` was every mesh of the
+scene, and the span's meshes are in the scene. Now a piece has `inAll`, and the
+span's pieces have `inAll: false`: only a slide that names them shows them.
+`watch/state.test.ts` checks that `all` leaves out exactly the span's pieces.
+
+### Commit with both styles
+
+The user cannot choose the style yet, and wants to commit with both. Full
+validation must pass before a commit, and `scenecheck` rejected the flash
+style. The options were: allow it in `scenecheck` for the trial; exempt only
+the trial's meshes (tighter, but more code to add and delete later); or commit
+with the check failing. The user chose the first. `scenecheck` now accepts a
+mark in the flash's colours: a solid fill in the second's wash
+(`MARK_WASH_ROLE`), and lines in the second on that mesh only. A line in the
+second on any other mesh still fails. When the talk keeps one style, delete
+the other there.

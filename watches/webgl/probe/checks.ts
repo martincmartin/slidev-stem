@@ -126,8 +126,8 @@ function makeScene(): {
     groups: [group],
     views: [{ name: "all", scale: 1, shift: [0, 0], pivot: [0, 0, 0] }],
     pieces: [
-      { name: "front", meshes: new Set([front]) },
-      { name: "back", meshes: new Set([back]) },
+      { name: "front", meshes: new Set([front]), inAll: true },
+      { name: "back", meshes: new Set([back]), inAll: true },
     ],
   };
   return { scene, group, front, back, spring };

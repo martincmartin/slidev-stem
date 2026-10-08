@@ -49,7 +49,7 @@ ruler that the diving board replaced),
 | `webgl/probe/`                                           | a page with one canvas and `window.watchProbe.render(options)`, for the pixel and fade checks; `checks.ts`: `window.webglChecks()`, the renderer's browser checks      |
 | `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand. `art/watch_design.py --check` compares what the file means, not its bytes (`pnpm format` rewrites its spacing)   |
 | `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights, pieces and their extents, the named views, `fittedView`                                                      |
-| `watch/teeth.ts`, `teeth.test.ts`                        | the train's teeth: cycloidal wheel teeth and the pinion leaves they drive; tests that each pair meshes without overlap                                                 |
+| `watch/teeth.ts`, `teeth.test.ts`                        | the train's teeth: cycloidal wheel teeth and the pinion leaves they drive, also a few at a time (a span); tests that each pair meshes without overlap                  |
 | `watch/palette.ts`                                       | which theme variable colours each ink; `slidePalette()` reads them from the page, as a slide's classes change them, and the browser works out a recipe (`color-mix()`) |
 | `art/theme.py`                                           | the theme's palette for the scripts that write files (`diving_board.py`, `favicon.py`): it works out each recipe as the browser does                                   |
 | `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism, the balance's settle and the train's free spin; frontmatter to state; the watch's stills; the shared instance                                           |
@@ -115,6 +115,14 @@ The wheel always drives, so only that side must keep contact.
 It fails on overlap or a driving-side gap wider than the ink can cover.
 It also checks that each pinion leaf has four corners.
 Each round end uses one semicircular arc to prevent a false corner at its tip.
+
+`wheelToothShapes` and `pinionLeafShapes` draw some of the teeth or leaves,
+each a closed outline of its own, closed along the root circle.
+`meshedSpan` finds teeth next to each other in the middle of the mesh at the
+train's start, and the leaves that they drive. The ratio is whole, so a tooth
+drives the same leaf at every turn. `watch/teeth.test.ts` turns the pair
+through the mesh, and fails if a tooth of the span touches a leaf that is not
+its own.
 
 The escape wheel's club teeth are separate: they act on the pallet stones.
 `escapeOutline` in `watch/shapes.ts` makes them.
@@ -312,9 +320,19 @@ The pair meshes without overlap throughout its motion ([The teeth](#the-teeth)).
 
 The Gears slide shows the fourth wheel (its wheel, hub and arbor) and the
 escape wheel's pinion with its arbor: 16 teeth drive 8 leaves. It leaves out
-the fourth wheel's own pinion (which the third wheel drives) and the seconds
-hand (on the fourth wheel's arbor). It has no code: its frontmatter names the
-pieces, the tilt (20), `watchMoveWith: none` and the spin.
+the fourth wheel's own pinion (which the third wheel drives), and the seconds
+hand (on the fourth wheel's arbor) until its last click. It has no code: its
+frontmatter names the pieces, the tilt (20), `watchMoveWith: none` and the
+spin.
+
+| Click | What shows                                                                           | The gears    |
+| ----- | ------------------------------------------------------------------------------------ | ------------ |
+| 0     | the two gears                                                                        | turn freely  |
+| 1     | and the span, in the flash's colours (a trial): four teeth and the leaves they drive | turn freely  |
+| 2–4   | and the text, one line a click                                                       | turn freely  |
+| 5     | the span, solid (a trial); the text stays                                            | turn freely  |
+| 6     | the gears and the rest of the Escapement slide's mechanism; the span and text go     | tick with it |
+| 7     | and the seconds hand, and then its text                                              | tick with it |
 
 - **The step from the Escapement slide, and back, jumps the camera.** The
   audience has not seen these pieces, so their place in the watch does not
@@ -335,13 +353,60 @@ pieces, the tilt (20), `watchMoveWith: none` and the spin.
   of the fourth wheel. From the Escapement slide, the spin starts when the old
   picture has faded out, so the gears start to turn as they fade in.
 - The tilt shows the arbors as posts.
-- **At click 1, the rest of the Escapement slide's mechanism fades in**
+- **At clicks 1 to 5, the span shows: the same four teeth on each gear, in
+  the second.** The gears turn on, at the same speed. The teeth have the same pitch, so the four teeth are the
+  same length of rim on each gear: half the pinion, but a quarter of the
+  wheel. The span's teeth drive its leaves (`meshedSpan`), so once in each
+  turn of the wheel, colour meshes with colour for a quarter of that turn.
+  Between, the pinion's coloured half meets plain teeth. Where the spans are
+  in the mesh when the click comes depends on the train's position, so the
+  first pass can take up to one turn of the wheel.
+  - **Two styles, to compare (a trial; keep one).** Click 1 shows the flash's
+    colours (`fourth wheel span wash`, `escape pinion span wash`): faces in
+    the second's wash, outline in the second. Click 5 shows the span solid
+    in the second, with the gear's own outline (`fourth wheel span`,
+    `escape pinion span`). Measured, the wash is close to the gear's faces
+    in every palette (at most 19 ΔE), so the flash style shows mostly
+    through its thin outline. `tools/scenecheck.py` allows both styles while
+    the trial is open (`MARK_WASH_ROLE`); delete the rejected one there too.
+  - **A span is the whole tooth**: top, bottom and sides, as high as its
+    gear and at the same place as its faces, in its group, hidden where the
+    gear is. It is an overlay (`Mesh.overlay`), so its faces show over the
+    gear's.
+  - **The solid style's outline stays the subject's.** In the second, a
+    tooth and the leaf that it drives merged where they touch.
+  - **One colour, the second**: its art job is "look here". In each of the
+    four top-pick palettes it was at least 54 CVD ΔE from the gear's faces
+    (measured on 2026-10-08).
+    The span needs only to differ from the plain teeth, so it does not need
+    a second colour. Not an oversight: two marks on each gear in two colours
+    were measured, and are weaker in Marmalade. See the task.
+  - **No keyword callout on the gears while the span shows**: its word and
+    leader are in the second too, and would merge with the span.
+- **The text reads the span** (in `slides.md`, on the right of the gears),
+  one line a click (clicks 2 to 4): "Half of the small gear", "A quarter
+  of the big gear", "Twice the size, half the speed. Exactly." The same length
+  of rim is half of one gear and a quarter of the other, so the big gear is
+  twice the size; the rule follows. "Twice … half" says the direction of
+  the ratio (the speeds go as the sizes, upside down), and "exactly" holds
+  because teeth cannot slip. The words say "small gear" and "big gear", not
+  "pinion" and "wheel": the audience does not know those words. The text is
+  in the ink, not the second: the second marks the span. It stays up while
+  the span changes style at click 5.
+- **At click 6, the rest of the Escapement slide's mechanism fades in**
   (`watchClicks`): everything that the talk has explained so far. The camera
   frames the gears at every click (`watchView`), so it does not move: the
   escape wheel and the fork's right end show, and the rest is off the slide
-  on the left. The pallet is back, so the spin ends at the same click
+  on the left. The span and the text go. The pallet is back, so the spin ends at the same click
   (`watchSpin: false`): the gears stop at the next tooth, and then tick with
   the escape wheel.
+- **At click 7, the seconds hand fades in**, on the fourth wheel's arbor. The
+  fourth wheel turns once a minute as the mechanism ticks, so the hand keeps
+  real time. Then its text fades in, in the place of the first text: "Once
+  a minute. The second hand!" It waits for the hand (`after-watch-fade`).
+  The words say "second hand", the everyday word, not the watchmaker's
+  "seconds hand". The text does not say that the hand is the first part of
+  the watch that we read: the hand shows it.
 
 ## Balance rim motion
 
@@ -394,17 +459,19 @@ clicks: 3
 
 Each mesh of the watch belongs to one piece, with a name that a slide uses
 (`Scene.pieces`; each solid names its piece where `watch/generate.ts` draws
-it). `watch: all` shows every piece.
+it). `watch: all` shows every piece but the marks that only a slide that names
+them shows: the Gears slide's spans (`inAll: false`, `webgl/scene.ts`).
 
-| Pieces                                                                     | What they are                                     |
-| -------------------------------------------------------------------------- | ------------------------------------------------- |
-| `escape wheel`, `fourth wheel`, `third wheel`, `centre wheel`              | a train wheel with its hub                        |
-| `escape pinion`, `fourth pinion`, … ; `escape arbor`, `fourth arbor`, …    | its pinion; its arbor, which stands on the wheel  |
-| `barrel`, `mainspring`, `barrel arbor`                                     | the barrel                                        |
-| `balance wheel`, `balance staff`, `hairspring`, `collet`, `stud`           | the balance wheel with its screws, and the spring |
-| `roller`, `impulse jewel`, `pallet fork`                                   | the rest of the escapement                        |
-| `seconds hand`, `minute hand`, `hour hand`, `centre pivot`, `chapter ring` | the dial side                                     |
-| `case band`, `strap`, `lug`, `crown`                                       | the case                                          |
+| Pieces                                                                     | What they are                                                   |
+| -------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `escape wheel`, `fourth wheel`, `third wheel`, `centre wheel`              | a train wheel with its hub                                      |
+| `escape pinion`, `fourth pinion`, … ; `escape arbor`, `fourth arbor`, …    | its pinion; its arbor, which stands on the wheel                |
+| `barrel`, `mainspring`, `barrel arbor`                                     | the barrel                                                      |
+| `balance wheel`, `balance staff`, `hairspring`, `collet`, `stud`           | the balance wheel with its screws, and the spring               |
+| `roller`, `impulse jewel`, `pallet fork`                                   | the rest of the escapement                                      |
+| `fourth wheel span`, `escape pinion span`; `… span wash`                   | the Gears slide's span, solid; in the flash's colours (a trial) |
+| `seconds hand`, `minute hand`, `hour hand`, `centre pivot`, `chapter ring` | the dial side                                                   |
+| `case band`, `strap`, `lug`, `crown`                                       | the case                                                        |
 
 A new part of the model names its piece when it is drawn (`solids.add`), and
 a slide can show it at once. `watch/deck.test.ts` fails if a slide names a
@@ -431,7 +498,7 @@ Two keys say what shows:
   view fits what shows.
 
 **To add pieces without moving the camera, show more pieces and keep the
-frame**, at a click or on a new slide. On the Gears slide, click 1 shows more
+frame**, at a click or on a new slide. On the Gears slide, each click shows more or other pieces
 and the slide's `watchView` stays the gears. The Balance Wheel slide shows
 more than the Hairspring slide, and both name the view `hairspring`. To show
 fewer without moving the camera, do the same: the Escapement slide frames all
@@ -559,7 +626,7 @@ fourth wheel and the escape pinion.
 
 | Key                                 | Meaning                                                                                                                                                                                                                      |
 | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `watch: [hairspring, collet, stud]` | the pieces shown, or `all`; no key hides the watch. A list may hold lists (YAML aliases)                                                                                                                                     |
+| `watch: [hairspring, collet, stud]` | the pieces shown, or `all` (but the marks: [Pieces](#pieces)); no key hides the watch. A list may hold lists (YAML aliases)                                                                                                  |
 | `watchView: hairspring`             | what the camera frames: a named view (`cover`, `hairspring`, `crown`), or a list of pieces to fit; none: the [fitted view](#fitted-views) of what shows                                                                      |
 | `watchTilt: 20`                     | degrees, towards the viewer's side (default 0)                                                                                                                                                                               |
 | `watchAtRest: true`                 | the balance is at rest, and the mechanism with it; `false` (default): it swings. To rest, it waits for its next extreme                                                                                                      |

@@ -48,7 +48,13 @@ import {
   radians,
   spiralCurve,
 } from "./shapes.ts";
-import { pinionLeaves, wheelTeeth } from "./teeth.ts";
+import {
+  meshedSpan,
+  pinionLeafShapes,
+  pinionLeaves,
+  wheelTeeth,
+  wheelToothShapes,
+} from "./teeth.ts";
 
 // ---- what the art says (the 2D drawing's numbers) ------------------------------------
 /** Heights of the train's meshing: a pinion is level with the wheel that
@@ -85,6 +91,13 @@ const BALANCE_SCREWS: BalanceScrews = Object.freeze({
   protrusion: 4.8,
   phase: 30,
 });
+/** The span on the Gears slide: teeth of the fourth wheel next to each other,
+ *  and the escape pinion's leaves that they drive, in the second. */
+interface GearSpan {
+  readonly teeth: number;
+}
+
+const GEAR_SPAN: GearSpan = Object.freeze({ teeth: 4 });
 /** Clearance between moving oscillator layers and beneath the balance. */
 const OSCILLATOR_CLEARANCE = 2;
 const ROLLER_THICKNESS = 2;
@@ -314,6 +327,13 @@ interface Paint {
   line: (width: number) => LineStyle;
   /** A line in muted. */
   mutedLine: (width: number) => LineStyle;
+  /** The second, solid: a mark that says "look here" (the Gears slide's
+   *  span). */
+  secondFill: Colour;
+  /** The faces of a flashed part. */
+  secondWash: Colour;
+  /** A line in the second: a flashed part's. */
+  secondLine: (width: number) => LineStyle;
 }
 
 function paintOf(): Paint {
@@ -324,6 +344,9 @@ function paintOf(): Paint {
     mutedWash: { ink: INKS.mutedWash, opacity: 1 },
     line: (width) => ({ ink: INKS.subject, opacity: 1, width }),
     mutedLine: (width) => ({ ink: INKS.muted, opacity: 1, width }),
+    secondFill: { ink: INKS.second, opacity: 1 },
+    secondWash: { ink: INKS.secondWash, opacity: 1 },
+    secondLine: (width) => ({ ink: INKS.second, opacity: 1, width }),
   };
 }
 
@@ -833,14 +856,16 @@ interface Kit {
 interface BuiltPiece {
   readonly name: string;
   readonly meshes: Set<Mesh>;
+  readonly inAll: boolean;
 }
 
 /** The pieces, in the order in which they are made. */
 class PieceList {
   readonly pieces: BuiltPiece[] = [];
 
-  make(name: string): BuiltPiece {
-    const made: BuiltPiece = { name, meshes: new Set() };
+  /** `inAll: false` for a piece that `watch: all` leaves out (`Piece`). */
+  make(name: string, { inAll = true } = {}): BuiltPiece {
+    const made: BuiltPiece = { name, meshes: new Set(), inAll };
     this.pieces.push(made);
     return made;
   }
@@ -909,6 +934,15 @@ class SolidList {
   }
 }
 
+/** The width of the line round a wheel's teeth: fine teeth take the thinner
+ *  line. */
+function teethLine(wheel: Wheel): number {
+  return wheel.pitch < 9 ? 2 : 2.5;
+}
+
+/** The width of the line round a pinion's leaves. */
+const LEAVES_LINE = 2;
+
 /** The train's wheels but the barrel, back to front: escape wheel, fourth,
  *  third, centre. */
 function trainSolids(kit: Kit): void {
@@ -956,9 +990,8 @@ function trainSolids(kit: Kit): void {
             drawing.spokeWidth,
             wheel.toothPhase + 90 / wheel.spokes,
           );
-    const fine = wheel.pitch < 9; // fine teeth take the thinner line
     const bodyRings = ringsOf(
-      [outline, line(fine ? 2 : 2.5)],
+      [outline, line(teethLine(wheel))],
       ...(gaps ? ([[gaps, line(2)]] as [Path, LineStyle][]) : []),
     );
     // the wheel and its hub are one piece
@@ -977,7 +1010,7 @@ function trainSolids(kit: Kit): void {
       owner,
       "other",
       group,
-      ringsOf([pinionLeaves(wheel), line(2)]),
+      ringsOf([pinionLeaves(wheel), line(LEAVES_LINE)]),
       subjectWash,
     );
     solids.add(
@@ -1027,6 +1060,51 @@ function barrelSolids(kit: Kit): void {
     ringsOf([disc(15), line(3)]),
     subjectWash,
   );
+}
+
+/** How a span is painted. */
+interface SpanStyle {
+  /** What follows the gear's piece name in the span's piece name. */
+  readonly name: string;
+  readonly fill: Colour;
+  readonly line: (width: number) => LineStyle;
+}
+
+/** The Gears slide's span (`GEAR_SPAN`) in `style`: the fourth wheel's
+ *  teeth, on `teeth`, its body, and the escape pinion's leaves that they
+ *  drive, on `leaves`, the pinion. Each is the whole tooth or leaf, at the
+ *  same place as its gear's faces (an overlay); it turns with its gear and
+ *  is hidden where its gear is. The solid style's outline stays the
+ *  subject's: in the second, a tooth and the leaf that it drives would merge
+ *  where they touch. */
+function spanMeshes(
+  fourth: Wheel,
+  on: { teeth: Solid; leaves: Solid },
+  heightOf: (which: Solid) => Heights,
+  style: SpanStyle,
+  span: GearSpan,
+): { teeth: Mesh; leaves: Mesh } {
+  const escape = fourth.driven;
+  if (escape === null) throw new Error("the fourth wheel drives no pinion");
+  const { teeth, leaves } = meshedSpan(fourth, span.teeth);
+  const lying = (solid: Solid, outline: Path, width: number): Mesh => {
+    // the whole tooth, at the same place as the gear's faces: an overlay
+    const { bottom, top } = heightOf(solid);
+    return extrude(ringsOf([outline, style.line(width)]), bottom, top, {
+      name: `${solid.piece.name} ${style.name}`,
+      part: solid.part.name,
+      group: solid.group,
+      fill: style.fill,
+      hiddenInside: solid.discs,
+      lineOrder: top,
+      inDrawing: false,
+      overlay: true,
+    });
+  };
+  return {
+    teeth: lying(on.teeth, wheelToothShapes(fourth, teeth), teethLine(fourth)),
+    leaves: lying(on.leaves, pinionLeafShapes(escape, leaves), LEAVES_LINE),
+  };
 }
 
 interface BalanceSolids {
@@ -1462,13 +1540,15 @@ export function generate(design: Design = DESIGN): Watch {
     return found;
   };
   const ringTop = heightOf(ringSolid).top;
-  const topOf = (owner: Part, role: Role): number => {
+  const solidAt = (owner: Part, role: Role): Solid => {
     const found = solids.find(
       (solid) => solid.part === owner && solid.role === role,
     );
     if (!found) throw new Error(`${owner.name} has no ${role}`);
-    return heightOf(found).top;
+    return found;
   };
+  const topOf = (owner: Part, role: Role): number =>
+    heightOf(solidAt(owner, role)).top;
   const escapementTops = {
     escape: topOf(partOf(train.escape), "body"),
     fork: topOf(parts.fork, "body"),
@@ -1502,6 +1582,32 @@ export function generate(design: Design = DESIGN): Watch {
     BALANCE_SCREWS,
   );
   meshes.push(...balanceScrews);
+  const spanStyles: SpanStyle[] = [
+    { name: "span", fill: paint.secondFill, line: paint.line },
+    // a trial, to compare: the flash's colours
+    // (docs/watch.md, "The Gears slide")
+    {
+      name: "span wash",
+      fill: paint.secondWash,
+      line: paint.secondLine,
+    },
+  ];
+  const spans = spanStyles.map((style) => {
+    const span = spanMeshes(
+      train.fourth,
+      {
+        teeth: solidAt(partOf(train.fourth), "body"),
+        leaves: solidAt(partOf(train.escape), "other"),
+      },
+      heightOf,
+      style,
+      GEAR_SPAN,
+    );
+    // the pinion's span first: each wheel's teeth are painted over the
+    // pinion that it drives
+    meshes.push(span.leaves, span.teeth);
+    return { style, ...span };
+  });
   const springMesh = lookup(movementMeshes, springSolid, "spring mesh");
   const springHeights = heightOf(springSolid);
 
@@ -1522,6 +1628,15 @@ export function generate(design: Design = DESIGN): Watch {
   // the screws turn with the balance wheel: they are part of it
   for (const mesh of balanceScrews) balanceSolid.piece.meshes.add(mesh);
   kit.pieces.make("stud").meshes.add(stud.mesh);
+  // the spans are marks on the gears, for the Gears slide only: not in `all`
+  for (const { style, teeth, leaves } of spans) {
+    kit.pieces
+      .make(`fourth wheel ${style.name}`, { inAll: false })
+      .meshes.add(teeth);
+    kit.pieces
+      .make(`escape pinion ${style.name}`, { inAll: false })
+      .meshes.add(leaves);
+  }
   for (const mesh of decals) ringSolid.piece.meshes.add(mesh);
   const pieces: readonly Piece[] = kit.pieces.pieces;
   for (const piece of pieces) {

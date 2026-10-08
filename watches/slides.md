@@ -313,23 +313,34 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 
 ---
 watch: &gears [fourth wheel, fourth arbor, escape pinion, escape arbor]
-watchView: *gears # the camera stays when click 1 adds pieces
+watchView: *gears # the camera stays when a click adds pieces
 watchTilt: 20
 # the audience has not seen these pieces, so their place in the watch does
 # not matter: the Escapement slide's picture fades out, the camera jumps, and
 # this one fades in, both ways (docs/watch.md, "The Gears slide")
 watchMoveWith: none
-# the gears turn freely, from the start: the pinion once in 8 s (360 / 8 = 45
-# degrees a second), so the fourth wheel once in 16 s
-watchSpin: 45
+# the gears turn freely, from the start: the pinion once in 4 s (360 / 4 = 90
+# degrees a second), so the fourth wheel once in 8 s
+watchSpin: 90
+class: gears
 watchClicks:
-  # the rest of the Escapement slide's mechanism fades in, in this view
-  # (much of it off the slide on the left), and the pallet stops the spin:
-  # the gears tick with the escape wheel
+  # a span: four teeth of the wheel, and the four leaves that they drive.
+  # Four teeth are a quarter of the wheel and half the pinion. The gears
+  # turn on. Two styles, to compare (a trial): first the flash's colours
+  # (second-wash faces, second outline), while the text comes one line a
+  # click (clicks 2 to 4); then solid second with the gear's outline, with
+  # the text still up
   1:
+    watch: [*gears, fourth wheel span wash, escape pinion span wash]
+  5:
+    watch: [*gears, fourth wheel span, escape pinion span]
+  # the rest of the Escapement slide's mechanism fades in, in this view
+  # (much of it off the slide on the left), and the span goes. The pallet
+  # stops the spin: the gears tick with the escape wheel
+  6:
     watchSpin: false
     watch:
-      [
+      &mechanism [
         *gears,
         balance wheel,
         balance staff,
@@ -341,22 +352,69 @@ watchClicks:
         pallet fork,
         escape wheel,
       ]
-clicks: 1
+  # the seconds hand, on the fourth wheel's arbor: it turns once a minute,
+  # and the text says so after the hand has faded in
+  7:
+    watch: [*mechanism, seconds hand]
+clicks: 7
 ---
 
 # Gears
 
-Fast gear, meet slow gear.
+Fast gear, meet slow gear
+
+<div v-click.hide="6" class="gears-sentence">
+  <div v-click="2">Half of the small gear</div>
+  <div v-click="3">A quarter of the big gear</div>
+  <div v-click="4">Twice the size, half<br>the speed.  Exactly.</div>
+</div>
+
+<div v-click="7" class="gears-sentence after-watch-fade">
+  <div>Once a minute.</div>
+  <div>The second hand!</div>
+</div>
+
+<style>
+/* On the right of the gears, which the fitted view centres in the left 60%.
+   The second hand's text waits for the hand (after-watch-fade, style.css):
+   so the fade is in longhands, which keep that rule's delay. */
+.slidev-layout.gears .gears-sentence {
+  position: absolute;
+  left: 560px;
+  top: 165px;
+  font-size: 35px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.slidev-layout.gears .gears-sentence > div + div {
+  margin-top: 0.7em;
+}
+.slidev-layout.gears .gears-sentence.slidev-vclick-target,
+.slidev-layout.gears .gears-sentence > .slidev-vclick-target {
+  transition-property: opacity;
+  transition-duration: var(--text-fade);
+}
+</style>
 
 <!--
 The escapement fades out. The fourth wheel and the escape wheel's pinion fade in, and turn: the pinion twice for each turn of the wheel.
 
-- The teeth must be the same size, or they do not mesh.
-- Each tooth that passes on one wheel passes on the other: the same number of teeth a second.
-- So the ratio of the speeds is the ratio of the teeth: 16 to 8 here, so the pinion turns twice as fast.
-- Same-size teeth: the number of teeth is in proportion to the circumference, and so to the radius.
+[click] Four teeth on each gear are coloured: the same length of rim. They go through the mesh together, tooth for tooth, once each turn of the wheel. Four teeth are half the pinion, but a quarter of the wheel. Between, the pinion's coloured half comes round again on its own. (A trial: the colours of the flash. Wait for one pass before the next click.)
+
+[click] Half of the small gear: count them, four of its eight teeth.
+
+[click] A quarter of the big gear: the same four teeth, but four of its sixteen. The same length of rim, because the teeth must be the same size, or they do not mesh. Each tooth fits in one gap of the other gear, so the teeth go by one for one: both rims move at the same speed.
+
+[click] Twice the size, half the speed. Exactly: teeth cannot slip, as a belt can. So the big gear turns once for every two turns of the small one, for ever.
+
+[click] The same teeth, solid; the text stays. (A trial: compare with click 1, and keep one style.)
 
 [click] The rest of the escapement comes back, and the gears now advance one tick at a time: the escapement controls the whole train.
+
+[click] Put a hand on the big gear's arbor. The gear turns once a minute, so the hand is the second hand: the first part of the watch that we read. (The hand fades in first, then the text.)
+
+IF ASKED: This watch ticks once a second. Most real mechanical watches tick 5 to 8 times a second, so their second hands seem to sweep.
 
 IF ASKED: Strictly, the pitch must match: a tooth plus its gap on one wheel equals a tooth plus its gap on the other. One wheel can have wider teeth and narrower gaps.
 -->

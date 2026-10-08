@@ -10,11 +10,14 @@ import designFile from "./design.json" with { type: "json" };
 import { readDesign, type Wheel } from "./design.ts";
 import { FLATNESS, type Path } from "./path.ts";
 import {
+  meshedSpan,
   pinionLead,
+  pinionLeafShapes,
   pinionLeaves,
   TOOTH_FORM,
   turned,
   wheelTeeth,
+  wheelToothShapes,
   type ToothForm,
 } from "./teeth.ts";
 
@@ -164,6 +167,66 @@ test("every wheel meshes with its pinion: no overlap, and the driving flank keep
       );
     }
   }
+});
+
+/** The least distance between two closed outlines. */
+function distanceBetween(first: Point2[], second: Point2[]): number {
+  return Math.min(
+    ...first.map((point) => nearestOn(point, second)[0]),
+    ...second.map((point) => nearestOn(point, first)[0]),
+  );
+}
+
+test("a meshed span's teeth drive its leaves, and no other leaves, as it passes through the mesh", () => {
+  for (const [wheel, owner] of meshes) {
+    const span = meshedSpan(wheel, 4);
+    assert.equal(new Set(span.teeth).size, 4, wheel.name);
+    assert.equal(new Set(span.leaves).size, 4, wheel.name);
+    const toothBeats = 360 / wheel.teeth / Math.abs(wheel.step);
+    const teeth = span.teeth.map((tooth) =>
+      outline(wheelToothShapes(wheel, [tooth])),
+    );
+    const leaves = [...Array(owner.leaves).keys()].map((leaf) =>
+      outline(pinionLeafShapes(owner, [leaf])),
+    );
+    const driven = new Set<number>();
+    // from three teeth before the start to three after: the whole span passes
+    for (let sample = -SAMPLES; sample <= SAMPLES; sample++) {
+      const beats = (3 * toothBeats * sample) / SAMPLES;
+      for (const [index, tooth] of teeth.entries()) {
+        const toothNow = placed(tooth, wheel.step * beats, wheel.arbor);
+        for (const [leaf, points] of leaves.entries()) {
+          const leafNow = placed(points, owner.step * beats, owner.arbor);
+          if (distanceBetween(toothNow, leafNow) > MAX_CONTACT_GAP) continue;
+          const where = `${wheel.name} wheel's tooth ${String(at(span.teeth, index))} at ${beats.toFixed(3)} beats`;
+          assert.equal(leaf, at(span.leaves, index), where);
+          driven.add(index);
+        }
+      }
+    }
+    assert.equal(
+      driven.size,
+      4,
+      `${wheel.name}: a tooth of the span drove no leaf`,
+    );
+  }
+});
+
+test("a meshed span is the size of the pinion at most, and a shape's index is one of the wheel's", () => {
+  const [wheel, owner] = at(meshes, 0);
+  for (const count of [0, -1, 1.5, owner.leaves + 1]) {
+    assert.throws(() => meshedSpan(wheel, count), /span/);
+  }
+  assert.equal(meshedSpan(wheel, owner.leaves).teeth.length, owner.leaves);
+  for (const index of [-1, wheel.teeth, 0.5]) {
+    assert.throws(() => wheelToothShapes(wheel, [index]), /tooth/);
+  }
+  for (const index of [-1, owner.leaves, 0.5]) {
+    assert.throws(() => pinionLeafShapes(owner, [index]), /leaf/);
+  }
+  // one closed outline for each tooth or leaf
+  assert.equal(wheelToothShapes(wheel, [0, 1, 2]).contours().length, 3);
+  assert.equal(pinionLeafShapes(owner, [0, 1]).contours().length, 2);
 });
 
 test("a wheel's teeth reach its tip circle and its root circle", () => {

@@ -61,6 +61,7 @@ export interface MeshInfo {
   hiddenInside?: Disc[];
   lineOrder?: number;
   inDrawing?: boolean;
+  overlay?: boolean;
   dynamic?: boolean;
 }
 
@@ -275,6 +276,7 @@ function makeMesh(info: MeshInfo, triangles: number[], lines: Lines): Mesh {
     hiddenInside: info.hiddenInside ?? [],
     lineOrder: info.lineOrder ?? 0,
     inDrawing: info.inDrawing ?? true,
+    overlay: info.overlay ?? false,
     dynamic: info.dynamic ?? false,
   };
 }

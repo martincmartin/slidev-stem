@@ -78,6 +78,11 @@ import type { Matrix4 } from "./math.ts";
 const DEPTH_RANGE = 2000; // slide px: world depth maps to clip z = -depth / range
 const TOLERANCE = 0.25; // slide px of depth, for the centre-line test
 const MAX_DISCS = 4;
+/** The polygon offset of an overlay's faces (`Mesh.overlay`): toward the
+ *  camera by its slope and by two steps of the depth buffer, more than the
+ *  rounding between two triangulations of one face. */
+const OVERLAY_FACTOR = -1;
+const OVERLAY_UNITS = -2;
 
 /** Every ink, in the order of the shader's `inks` uniform. */
 const INK_ORDER: readonly Ink[] = Object.values(INKS);
@@ -1232,11 +1237,18 @@ export class Renderer {
         false,
         modelOf(picture, drawn.mesh),
       );
+      if (drawn.mesh.overlay) {
+        gl.enable(gl.POLYGON_OFFSET_FILL);
+        gl.polygonOffset(OVERLAY_FACTOR, OVERLAY_UNITS);
+      } else {
+        gl.disable(gl.POLYGON_OFFSET_FILL);
+      }
       gl.uniform4fv(uniform(program, "color"), colour);
       this.setDiscs(program, drawn, groups);
       gl.bindVertexArray(made.faces);
       gl.drawArrays(gl.TRIANGLES, 0, made.triangleVertices);
     }
+    gl.disable(gl.POLYGON_OFFSET_FILL);
     gl.bindVertexArray(null);
   }
 
