@@ -369,7 +369,7 @@ Fast gear, meet slow gear
 <div v-click.hide="6" class="gears-sentence">
   <div v-click="2">Half of the small gear</div>
   <div v-click="3">A quarter of the big gear</div>
-  <div v-click="4">Twice the size, half<br>the speed.  Exactly.</div>
+  <div v-click="4">Twice the radius, half<br>the speed.  Exactly.</div>
 </div>
 
 <div v-click="7" class="gears-sentence after-watch-fade">
