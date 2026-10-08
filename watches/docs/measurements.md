@@ -86,7 +86,7 @@ The score covers the projected rim band and excludes the arms and hairspring.
 The cover score includes some nearby mechanism motion in that band.
 These values measure visible change, not human recognition of a mark.
 The [task](../tasks/2026-10-04-balance-rim-marks/README.md) holds the frame captures, exact values, method, and limits.
-The installed model is checked against the selected proposal in both browsers.
+The installed model was checked against the selected proposal in Chromium and Firefox.
 
 ## The diving board
 

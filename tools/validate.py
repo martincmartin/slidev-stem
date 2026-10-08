@@ -120,7 +120,7 @@ def deck_key(stem: Path, project: Path, deck: Path) -> str:
     files that decide how it is checked. These are every `.py` file in the
     house's tools/ and the talk's art/, the talk's package.json (its
     scripts), and each project's uv.lock and .python-version (they pick
-    Playwright, and so Chromium). More than the checks read, so that a
+    Playwright, and so the browser engines). More than the checks read, so that a
     change can cost a run but cannot give a false pass."""
     if not (deck / "index.html").is_file():
         raise ValueError(f"no built deck in {deck}")
@@ -297,6 +297,19 @@ def print_checks(directory: Path, deck: Path) -> list[Check]:
     return [Check("print", directory, ("pnpm", "--silent", "art:print", str(deck)))]
 
 
+def privacy_checks(directory: Path, deck: Path) -> list[Check]:
+    """Check live art startup with privacy restrictions, if the talk supplies a check."""
+    if "art:privacy" not in scripts_of(directory):
+        return []
+    return [
+        Check(
+            "private browsing",
+            directory,
+            ("pnpm", "--silent", "art:privacy", str(deck)),
+        )
+    ]
+
+
 Item = Check | Later | Reusable
 
 
@@ -339,7 +352,11 @@ def talk_groups(
         Check("motion", STEM, uv_run("tools/motion.py", public)),
     ]
     stills: list[Item] = [*still_checks(directory, work)]
-    built_deck = [*build, *map(reusable, print_checks(directory, deck))]
+    built_deck = [
+        *build,
+        *map(reusable, print_checks(directory, deck)),
+        *map(reusable, privacy_checks(directory, deck)),
+    ]
     # Start the longest preparation sequence first. With --fix, source
     # rewrites must finish before any browser or build reads those files.
     groups = (
@@ -350,7 +367,13 @@ def talk_groups(
             Check(
                 "navigation smoke",
                 STEM,
-                uv_run("tools/smokecheck.py", str(deck)),
+                uv_run(
+                    "tools/smokecheck.py",
+                    str(deck),
+                    "--browser",
+                    "all",
+                    "--no-canvas-readback",
+                ),
                 shows_summary=True,
             )
         ),

@@ -88,8 +88,9 @@ these additions.
   and `ink` for the scene, `second` for a mark's fill, and `second` and
   `secondWash` for a flash. Each is
   an art role of the theme ([theme.md](theme.md), "The roles"). A role may be
-  a recipe (`color-mix()`): `watch/palette.ts` has the browser paint each one
-  and reads back its `#rrggbb`. `new
+  a recipe (`color-mix()`): `watch/palette.ts` resolves each one with computed
+  CSS style, converts it to sRGB, and makes its hexadecimal value. Canvas
+  pixel reads cannot give exact theme colours under fingerprinting protection. `new
 Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   `#rrggbb` for each ink) and turns the inks into colours once, when it
   starts. `InkName` is the one list of the inks: `Palette` is a `Record` over
@@ -208,6 +209,9 @@ of [talks.md](talks.md):
   the back row sees the art, and sees it move. `art:stills` also runs the
   renderer's browser checks (`webgl/probe/checks.ts`): context loss,
   `dispose`, the fade, a dynamic mesh drawn last, and each input's contract.
+- `art/privacy_check.py` (`pnpm art:privacy DECK`, on the built deck):
+  Chromium, Firefox, and WebKit must start the live watch with canvas pixel
+  reads blocked. This catches a palette error that can leave a slide blank.
 - `art/print_check.py` (`pnpm art:print DECK`, on the built deck): for each
   slide and click, the state that the printed page's still shows must equal the
   live slide's. It compares states, not pixels, and it opens a slide in print

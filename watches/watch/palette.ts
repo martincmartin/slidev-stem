@@ -89,30 +89,50 @@ export function slideClasses(slideClass: unknown): string[] {
   return list.flatMap((item) => item.split(/\s+/)).filter(Boolean);
 }
 
-/** The browser's `#rrggbb` for a CSS colour: it paints one pixel in it and
- *  reads the pixel back, so a recipe gives the colour that the screen shows.
- *  A value that is not a colour leaves the pixel clear, and that throws. */
-function browserHex(cssColour: string): string {
-  const canvas = document.createElement("canvas");
-  canvas.width = 1;
-  canvas.height = 1;
-  const context = canvas.getContext("2d", { willReadFrequently: true });
-  if (!context) throw new Error("no 2D canvas to read the theme's colours");
-  // a fillStyle that is not a colour is ignored, so start from clear
-  context.fillStyle = "rgb(0 0 0 / 0)";
-  context.fillStyle = cssColour;
-  context.fillRect(0, 0, 1, 1);
-  const [red = 0, green = 0, blue = 0, alpha = 0] = context.getImageData(
-    0,
-    0,
-    1,
-    1,
-  ).data;
-  check(
-    alpha === 255,
-    `the theme's value ${cssColour} is not an opaque colour`,
+/** Convert a computed `color(srgb ...)` to opaque, eight-bit sRGB.
+ *  Clamp channels outside the sRGB range, as an sRGB canvas does. */
+export function srgbHex(computedColour: string): string {
+  const match = /^color\(srgb\s+([^/]+?)(?:\s*\/\s*([^/]+))?\)$/.exec(
+    computedColour,
   );
-  return `#${[red, green, blue].map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
+  const channels = match?.[1]?.trim().split(/\s+/).map(Number) ?? [];
+  check(
+    channels.length === 3 && channels.every(Number.isFinite),
+    `the browser returned an invalid sRGB colour: ${computedColour}`,
+  );
+  check(
+    Number(match?.[2] ?? 1) === 1,
+    `the theme's value ${computedColour} is not an opaque colour`,
+  );
+  return `#${channels
+    .map((channel) =>
+      Math.round(Math.max(0, Math.min(1, channel)) * 255)
+        .toString(16)
+        .padStart(2, "0"),
+    )
+    .join("")}`;
+}
+
+/** Resolve a CSS recipe with computed style. Canvas reads can contain noise
+ *  in private browsing, so they cannot give the theme's exact colours. */
+function browserHex(cssColour: string): string {
+  const probe = document.createElement("span");
+  probe.hidden = true;
+  probe.style.setProperty(
+    "color",
+    `color(from ${cssColour} srgb r g b)`,
+    "important",
+  );
+  check(
+    probe.style.color !== "",
+    `the theme's value ${cssColour} is not a colour`,
+  );
+  document.body.append(probe);
+  try {
+    return srgbHex(getComputedStyle(probe).color);
+  } finally {
+    probe.remove();
+  }
 }
 
 /** The palette of a slide whose `class:` frontmatter is `slideClass`: the

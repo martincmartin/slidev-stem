@@ -13,7 +13,37 @@ another checkout deletes only the browsers that no recorded Playwright needs.
 
 import subprocess
 import sys
-from typing import Protocol
+from typing import Protocol, overload
+
+from playwright.async_api import BrowserType as AsyncBrowserType
+from playwright.async_api import Playwright as AsyncPlaywright
+from playwright.sync_api import BrowserType as SyncBrowserType
+from playwright.sync_api import Playwright as SyncPlaywright
+
+NAMES = ("chromium", "firefox", "webkit")
+
+
+@overload
+def select(playwright: AsyncPlaywright, name: str) -> AsyncBrowserType: ...
+
+
+@overload
+def select(playwright: SyncPlaywright, name: str) -> SyncBrowserType: ...
+
+
+def select(
+    playwright: AsyncPlaywright | SyncPlaywright, name: str
+) -> AsyncBrowserType | SyncBrowserType:
+    """Select an engine at the command-line boundary. Reject unknown names."""
+    match name:
+        case "chromium":
+            return playwright.chromium
+        case "firefox":
+            return playwright.firefox
+        case "webkit":
+            return playwright.webkit
+        case _:
+            raise ValueError(f"Unknown browser engine: {name}")
 
 
 class BrowserType(Protocol):

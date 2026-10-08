@@ -66,8 +66,10 @@ uv run tools/motion.py --png-pair a.png b.png   # two frames of one animation
 uv run tools/scenecheck.py scene.json       # from a talk's `pnpm art:scene`
 uv run tools/offline_check.py <build dir> 1:0 2:5   # see its docstring
 uv run tools/offline_check.py <build dir> --walk    # every slide and click
-uv run tools/smokecheck.py <build dir>              # full validation smoke walk
+uv run tools/smokecheck.py <build dir> --browser all --no-canvas-readback  # full validation
 uv run tools/smokecheck.py <build dir> --browser firefox
+uv run tools/smokecheck.py <build dir> --browser webkit --no-canvas-readback
+uv run tools/offline_check.py <build dir> --browser webkit 1:0
 uv run tools/navcheck.py <build dir> --offline      # suspected navigation problems only
 uv run tools/navcheck.py <build dir>                # diagnostic; also accepts a dev server URL
 uv run tools/check_python.py      # after you change a tool
@@ -81,7 +83,7 @@ pre-commit hook or CI. `barroom.py` fails if a drawing is below the gate, and
 JSON with `--json`: a program that reads the scores (such as a talk's validator)
 must use that, not their tables. All of them need Python 3.14: run them with `uv run`, which makes
 `stem/.venv` first. The
-"needs" column above lists the packages. The tools that render install Chromium
+"needs" column above lists the packages. The tools that render install their required browser engines
 the first time they run, into Playwright's cache for your user, which every
 checkout shares (`browsers.py`). Each tool that checks art needs the paths
 to check: there is no default of "every talk", because a given talk is not checked
@@ -100,7 +102,7 @@ Full mode reuses a pass of print and smoke navigation while the built deck and i
 It omits rendered art, browser checks, print, and navigation.
 
 Independent preparation groups use the worker limit in `validate.py`.
-Each group keeps its dependency order. Navigation runs alone after preparation.
+Each group keeps its dependency order. Navigation runs after preparation. Its three independent engine walks run together.
 `--jobs 1` selects serial preparation; `--fix` always uses one worker.
 Results stay in group order and include elapsed times.
 `--json` prints the same results as one JSON object.
@@ -114,8 +116,13 @@ The default `barroom.py` report and its JSON output retain all measurements.
 The sampling plans and contrast calculations are unchanged.
 Frame capture waits for fonts and two paint frames instead of a fixed delay.
 
-`smokecheck.py` provides the full validation deck walk.
+`smokecheck.py` provides the full validation deck walk in Chromium, Firefox,
+and WebKit. Each uses a fresh non-persistent context. Full validation blocks
+2D canvas pixel reads as a privacy regression check.
+See [browser support](../docs/talks.md#browser-support) for the requirements and limits.
 It checks startup, page errors, outside requests, navigation stalls, and completion.
+If a talk has an `art:privacy` script, full validation also runs its live-art
+startup check with canvas pixel reads blocked.
 The Ledger theme supplies the next and final positions from Slidev navigation.
 Quick validation has no browser walk.
 

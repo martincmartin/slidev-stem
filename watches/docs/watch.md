@@ -949,6 +949,19 @@ art:generated` runs it with the `--check` of `watch_design.py` and
   The
   component's `data-waitfor` makes `slidev export` wait until the SVG is posed.
 
+## Theme colours in private browsing
+
+`watch/palette.ts` resolves each theme colour through computed CSS style.
+It uses relative CSS colour syntax to obtain sRGB channels, then converts them
+to the renderer's byte values. It rejects invalid and transparent colours.
+
+Do not use canvas pixel reads for this conversion. Safari's fingerprinting
+protection can change their colour and alpha values. This can stop the deck
+before it draws the first slide. Full validation blocks these reads in each
+supported browser engine. `pnpm art:privacy DECK` checks that the live watch
+still starts in each engine. See [browser support](../../docs/talks.md#browser-support)
+for the requirements and test limits.
+
 ## The browser-tab icon
 
 `art/favicon.py` owns the icon. Edit its pixel maps and run the script.

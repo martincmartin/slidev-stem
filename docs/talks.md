@@ -49,7 +49,7 @@ packages, so a talk does not build without them. It also downloads Chromium for
 `slidev export`, from the talk's `playwright-chromium` package.
 
 The Python needs no setup step. `uv run` makes the project's `.venv` first. The
-tools that render install Chromium the first time they run
+tools that render install their required browser engines the first time they run
 (`tools/browsers.py`).
 
 Playwright keeps its browsers in one cache for your user
@@ -79,6 +79,31 @@ The house items (the theme, `tools/`, `docs/`, `.prettierrc`) have one live
 copy, which all talks use. You make every change to them yourself, so you can
 find the talks in progress that use an item before you change it. The tag
 records the version that each given talk used.
+
+## Browser support
+
+Talks support Chrome, Firefox, and Safari in regular and private or incognito
+windows. They must work offline with default privacy protections enabled.
+
+Full validation walks the built deck in Playwright Chromium, Firefox, and WebKit.
+The three independent walks run together after other checks finish.
+Each walk uses a fresh non-persistent browser context, with no saved cookies,
+storage, or permissions. These are
+[incognito-like contexts](https://playwright.dev/python/docs/browser-contexts).
+The walk also blocks 2D canvas pixel reads. The watches talk also checks that
+its live watch mounts in each engine under that restriction. A talk must not need those reads to
+resolve theme colours or start its live art.
+
+Playwright WebKit is an engine check. It is not the installed Safari browser,
+and its contexts do not reproduce all Safari private-window protections.
+For a Safari-specific failure or a change to privacy-sensitive APIs, also test
+Safari directly in regular and private windows when it is available.
+State which tests were run and identify any test that could not be run.
+Do not disable privacy protection to make a test pass.
+
+The renderer and print diagnostics accept `--browser webkit` where documented.
+The supported names are in `tools/browsers.py`; commands are in
+[the tools index](../tools/README.md).
 
 ## Check your work
 
@@ -111,7 +136,7 @@ Docs and some source comments leave the built deck unchanged.
 Comments in Vue files or `slides.md` can change it because the build retains source and speaker notes.
 The [validation-reuse task](../tasks/2026-10-07-validation-reuse/README.md) records the key and build comparisons.
 
-Full validation uses a fast forward smoke walk with outside requests blocked.
+Full validation uses a fast forward smoke walk in each supported engine, with outside requests blocked.
 It checks startup, page errors, navigation stalls, and the declared final position.
 It does not compare settled states or sample animation continuity.
 

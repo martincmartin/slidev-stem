@@ -66,7 +66,7 @@ page shows its click's target, posed.
 
 Full validation runs `tools/smokecheck.py` on the built deck.
 Quick validation has no browser walk.
-The smoke check blocks outside requests and walks forward through each slide and click.
+The smoke check blocks outside requests and walks forward through each slide and click in all three supported engines.
 It checks startup, page errors, each declared next position, and the declared final position.
 It rejects navigation stalls and walks that exceed their limit.
 It does not wait for animations or compare their settled states.
@@ -76,7 +76,11 @@ The Ledger theme supplies `window.slideNavigation()` from
 the current slide's click total, the last slide, and the next position.
 These values come from Slidev navigation. The smoke tool uses them to detect early stops.
 The observation periods and deadlines are in `tools/smokecheck.py`.
-Use `--browser firefox` for a Firefox smoke walk.
+Use `--browser firefox` or `--browser webkit` to select another engine.
+Full validation runs all three engines in fresh non-persistent contexts.
+It blocks 2D canvas pixel reads to test compatibility with privacy protection.
+This regression check does not reproduce every browser privacy policy.
+See [talks.md](talks.md#browser-support) for the browser requirements.
 
 ## Diagnostic: exhaustive navigation
 

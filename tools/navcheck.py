@@ -225,8 +225,9 @@ async def main(
     problems: list[str] = []
     notes: list[str] = []
     async with async_playwright() as playwright:
-        browsers.install(playwright.chromium)
-        browser = await playwright.chromium.launch()
+        browser_type = browsers.select(playwright, arguments.browser)
+        browsers.install(browser_type)
+        browser = await browser_type.launch()
         page = await browser.new_page(viewport={"width": 980, "height": 552})
         if not target.startswith("http"):
             await serve_build(page, pathlib.Path(target), blocked)
@@ -354,6 +355,7 @@ async def main(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
+    parser.add_argument("--browser", choices=browsers.NAMES, default="chromium")
     parser.add_argument(
         "deck", help="the directory `slidev build --out` wrote, or a dev server's URL"
     )

@@ -85,6 +85,16 @@ def test_print_is_checked_on_the_built_deck_in_a_talk_with_the_script(
     assert check.command == ("pnpm", "--silent", "art:print", str(deck))
 
 
+def test_privacy_check_is_selected_by_talk_script(tmp_path: Path) -> None:
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    (talk / "package.json").write_text('{"scripts": {"art:privacy": "x"}}')
+    deck = tmp_path / "deck"
+    (check,) = validate.privacy_checks(talk, deck)
+    assert check.label == "private browsing"
+    assert check.command == ("pnpm", "--silent", "art:privacy", str(deck))
+
+
 def test_a_talk_without_the_script_has_no_print_check(tmp_path: Path) -> None:
     talk = tmp_path / "talk"
     talk.mkdir()

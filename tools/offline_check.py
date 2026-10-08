@@ -105,6 +105,8 @@ async def serve_build(page: Page, root: pathlib.Path, blocked: list[str]) -> Non
 
     async def route(request_route: Route) -> None:
         url = urllib.parse.urlparse(request_route.request.url)
+        if url.scheme in ("blob", "data"):
+            return await request_route.continue_()
         if url.netloc != HOST:
             blocked.append(request_route.request.url)
             return await request_route.abort()
@@ -147,8 +149,9 @@ async def main(arguments: argparse.Namespace) -> int:
     problems: list[str] = []
 
     async with async_playwright() as playwright:
-        browsers.install(playwright.chromium)
-        browser = await playwright.chromium.launch()
+        browser_type = browsers.select(playwright, arguments.browser)
+        browsers.install(browser_type)
+        browser = await browser_type.launch()
         page = await browser.new_page(
             viewport={"width": OFFLINE_SIZE[0], "height": OFFLINE_SIZE[1]},
             color_scheme=arguments.color_scheme,
@@ -208,6 +211,7 @@ async def main(arguments: argparse.Namespace) -> int:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
+    parser.add_argument("--browser", choices=browsers.NAMES, default="chromium")
     parser.add_argument("build", help="the directory `slidev build --out` wrote")
     parser.add_argument("shots_at", nargs="*", help="slide:clicks, e.g. 2:5")
     parser.add_argument(

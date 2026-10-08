@@ -7,6 +7,7 @@ import {
   readPalette,
   readVariables,
   slideClasses,
+  srgbHex,
 } from "./palette.ts";
 
 const MUTED_WASH = "color-mix(in srgb, #736a60 18%, #faf7f0)";
@@ -29,6 +30,25 @@ const variables = (values: ReadonlyMap<string, string>) => ({
 /** What a browser would give: here only the one recipe needs working out. */
 const toHex = (value: string): string =>
   value === MUTED_WASH ? "#e2ded6" : value;
+
+test("computed sRGB colours preserve bytes and round recipes", () => {
+  assert.equal(srgbHex("color(srgb 0.078431 0.235294 0.419608)"), "#143c6b");
+  assert.equal(srgbHex("color(srgb 0.885098 0.869098 0.839529)"), "#e2ded6");
+  assert.equal(srgbHex("color(srgb -0.1 0.5 1.2 / 1)"), "#0080ff");
+  assert.equal(srgbHex("color(srgb 1e-2 0 1)"), "#0300ff");
+});
+
+test("computed sRGB colours reject transparency and invalid channels", () => {
+  assert.throws(() => srgbHex("color(srgb 1 0 0 / 0.5)"), /opaque/);
+  for (const value of [
+    "rgb(1, 2, 3)",
+    "color(srgb 0 1)",
+    "color(srgb none 0 1)",
+    "color(srgb 0 1 Infinity)",
+  ]) {
+    assert.throws(() => srgbHex(value), /invalid sRGB/);
+  }
+});
 
 test("every ink has its own theme variable", () => {
   const names = Object.values(INKS).map((ink) => ink.name);

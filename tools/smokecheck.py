@@ -3,8 +3,12 @@
 
     uv run tools/smokecheck.py /tmp/deck
     uv run tools/smokecheck.py /tmp/deck --browser firefox
+    uv run tools/smokecheck.py /tmp/deck --browser webkit --no-canvas-readback
 
-Full validation uses this check. Quick validation has no browser walk.
+Full validation uses this check in Chromium, Firefox, and WebKit, with
+--no-canvas-readback. Each walk uses a fresh non-persistent context.
+This is an incognito-like session, not a reproduction of every privacy policy.
+Quick validation has no browser walk.
 The Ledger theme supplies window.slideNavigation(), as specified in
 docs/navigation.md. Each press must reach its declared next position.
 The walk must reach the declared last slide and its final click.
@@ -106,19 +110,31 @@ async def walk(page: Page, limits: SmokeLimits) -> list[Position]:
     return positions
 
 
-async def check(deck: Path, engine: str, limits: SmokeLimits = DEFAULT_LIMITS) -> int:
+async def check(
+    deck: Path,
+    engine: str,
+    limits: SmokeLimits = DEFAULT_LIMITS,
+    *,
+    no_canvas_readback: bool = False,
+) -> int:
     problems: list[str] = []
     blocked: list[str] = []
     async with async_playwright() as playwright:
-        browser_type = (
-            playwright.chromium if engine == "chromium" else playwright.firefox
-        )
+        browser_type = browsers.select(playwright, engine)
         browsers.install(browser_type)
         browser = await browser_type.launch()
         try:
-            page = await browser.new_page(
+            # A new non-persistent context is an incognito-like session.
+            context = await browser.new_context(
                 viewport={"width": OFFLINE_SIZE[0], "height": OFFLINE_SIZE[1]}
             )
+            if no_canvas_readback:
+                await context.add_init_script("""
+                    CanvasRenderingContext2D.prototype.getImageData = function() {
+                        throw new Error('Canvas pixel read blocked by the privacy check');
+                    };
+                """)
+            page = await context.new_page()
             await serve_build(page, deck, blocked)
             page.on("pageerror", lambda error: problems.append(f"Page error: {error}"))
             try:
@@ -132,6 +148,9 @@ async def check(deck: Path, engine: str, limits: SmokeLimits = DEFAULT_LIMITS) -
                 )
                 positions = await walk(page, limits)
                 final = positions[-1]
+                print(
+                    f"Browser: {engine}; fresh non-persistent context; canvas reads blocked: {no_canvas_readback}"
+                )
                 print(
                     f"Smoke walk: {len(positions)} positions; final {final.slide}:{final.click}"
                 )
@@ -147,18 +166,47 @@ async def check(deck: Path, engine: str, limits: SmokeLimits = DEFAULT_LIMITS) -
     return 1 if blocked or problems else 0
 
 
+async def check_all(deck: Path, *, no_canvas_readback: bool = False) -> int:
+    """Walk all supported engines at once, with the same per-engine checks."""
+    results = await asyncio.gather(
+        *(
+            check(deck, engine, no_canvas_readback=no_canvas_readback)
+            for engine in browsers.NAMES
+        )
+    )
+    return int(any(results))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=__doc__.split("\n")[0] if __doc__ else "Smoke navigation"
     )
     parser.add_argument("deck", type=Path)
     parser.add_argument(
-        "--browser", choices=("chromium", "firefox"), default="chromium"
+        "--browser", choices=(*browsers.NAMES, "all"), default="chromium"
+    )
+    parser.add_argument(
+        "--no-canvas-readback",
+        action="store_true",
+        help="block 2D canvas pixel reads to check compatibility with privacy protection",
     )
     arguments = parser.parse_args()
     if not (arguments.deck / "index.html").is_file():
         parser.error("The deck has no index.html. Build it first.")
-    return asyncio.run(check(arguments.deck, arguments.browser))
+    if arguments.browser == "all":
+        return asyncio.run(
+            check_all(
+                arguments.deck,
+                no_canvas_readback=arguments.no_canvas_readback,
+            )
+        )
+    return asyncio.run(
+        check(
+            arguments.deck,
+            arguments.browser,
+            no_canvas_readback=arguments.no_canvas_readback,
+        )
+    )
 
 
 if __name__ == "__main__":
