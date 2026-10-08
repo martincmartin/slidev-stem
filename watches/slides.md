@@ -511,17 +511,19 @@ flash (after-watch, style.css): it reads what the picture has just shown. -->
   <div v-click="1" class="after-watch">60:1 gear ratio</div>
 </div>
 
-<div v-click.hide="4" class="gt-sentence">
-  <div v-click="2" class="after-watch">
+<!-- The stages stay at click 4, dimmed, above the minute hand's text: a
+recap for anyone who missed clicks 2 and 3. -->
+
+<div class="gt-sentence" :class="{ 'gt-recap': $clicks >= 4 }">
+  <div v-click="2" class="after-watch gt-stage">
     <div>Two stages:</div>
     <div>7.5:1</div>
   </div>
-  <div v-click="3" class="after-watch">8:1</div>
-</div>
-
-<div v-click="4" class="gt-sentence after-watch">
-  <div>Makes a full turn<br>once an hour.</div>
-  <div>The minute hand!</div>
+  <div v-click="3" class="after-watch gt-stage">8:1</div>
+  <div v-click="4" class="after-watch">
+    <div>Makes a full turn<br>once an hour.</div>
+    <div>The minute hand!</div>
+  </div>
 </div>
 
 <style>
@@ -554,6 +556,13 @@ flash (after-watch, style.css): it reads what the picture has just shown. -->
 .slidev-layout.gear-train .gt-sentence > .slidev-vclick-target {
   transition-property: opacity;
   transition-duration: var(--text-fade);
+}
+/* At click 4 the stages dim, as the Escapement slide's earlier callouts do
+   (--esc-dim), when the minute hand's text fades in: after the watch's
+   change (after-watch). */
+.slidev-layout.gear-train .gt-recap > .gt-stage {
+  opacity: 0.5;
+  transition-delay: var(--watch-end-delay, 0s);
 }
 </style>
 

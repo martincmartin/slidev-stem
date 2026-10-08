@@ -480,11 +480,18 @@ leaves: $7.5 \times 8 = 60$.
   (`design.hands`), so most of the minute hand is off the slide on the left.
 - **The text reads each click's picture**, on the right, where the Gears
   slide's text is: "60:1 gear ratio" at click 1; "Two stages:" and "7.5:1"
-  at click 2; "8:1" below them at click 3; and at click 4, "Makes a full turn
-  once an hour. The minute hand!", as the Gears slide says it of the second
-  hand. The ratios are those of the wheels that the click adds. Each text
-  comes after all the motion of its click, flash included (`after-watch`,
-  [slide-patterns.md](slide-patterns.md#text-fades)).
+  at click 2; "8:1" below them at click 3. The ratios are those of the wheels
+  that the click adds. At click 4, "Makes a full turn once an hour. The
+  minute hand!" comes below the stages, as the Gears slide says it of the
+  second hand. Each text comes after all the motion of its click, flash
+  included (`after-watch`, [slide-patterns.md](slide-patterns.md#text-fades)).
+- **At click 4 the stages stay, dimmed to 0.5**, as the Escapement slide's
+  earlier callouts are: a recap for anyone who missed clicks 2 and 3, while
+  the new text stays the focus. They dim when the new text fades in. The
+  five lines fill the right of the slide to just inside the picture band's
+  bottom, so there is no room for another line. At 0.5, the dimmed text is
+  about 3:1 against its outline, at the contrast floor
+  ([legibility.md](../../docs/legibility.md)).
 - **The title, the subtitle and the text have an outline in the paper's
   colour**, as the Escapement slide's "tick" and "tock" have, so they read
   over the ring and the one-step wheel.
