@@ -15,8 +15,13 @@ watchFlash:
   ]
 watchMoveWith: all
 watchTilt: 20
-watchSettle: 2
-watchResume: 3
+# click 2: the balance comes to rest while the diving board covers it;
+# click 3: it swings again (docs/watch.md, "The diving board")
+watchClicks:
+  2:
+    watchAtRest: true
+  3:
+    watchAtRest: false
 board: 1
 boardCurl: 2
 clicks: 3

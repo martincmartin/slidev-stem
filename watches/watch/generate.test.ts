@@ -211,6 +211,24 @@ test("a fitted view: the pieces fit the room under the subtitle, against its lef
   assert.ok(Math.abs(view.scale * left + view.shift[0] - 16) < 1e-9);
 });
 
+test("a fitted view narrower than 60% of the slide is centred in the slide's left 60%", () => {
+  const gears = [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+  ].map(piece);
+  const view = fittedView(watch, gears);
+  const box = gears
+    .map((each) => watch.extents.get(each)?.box)
+    .filter((each) => each !== undefined);
+  const left = view.scale * Math.min(...box.map((each) => each.left));
+  const right = view.scale * Math.max(...box.map((each) => each.right));
+  const width = watch.design.canvas.width;
+  assert.ok(right - left < 0.6 * width - 2 * 16);
+  assert.ok(Math.abs((left + right) / 2 + view.shift[0] - 0.3 * width) < 1e-9);
+});
+
 test("four evenly spaced radial screws touch the balance rim and turn with it", () => {
   const [body, ...marks] = partMeshes("balance");
   const heads = marks.filter((mesh) => mesh.fill !== null);

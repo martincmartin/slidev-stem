@@ -178,7 +178,7 @@ IF ASKED: Why a wheel and not a disc? Mass at the rim counts most, like a figure
 
 ---
 watch:
-  [
+  &escapement [
     balance wheel,
     balance staff,
     hairspring,
@@ -190,20 +190,28 @@ watch:
     escape wheel,
     escape arbor,
   ]
+watchView: *escapement # the camera stays when click 2 shows less
 watchTilt: 20
-# click 2: the pallet and the balance fade, and the escape wheel spins freely;
-# click 3: they fade back in, and the pallet stops the wheel (docs/watch.md)
-watchSpin: 2
-watchSpinEnd: 3
-watchSpinSpeed: 135 # degrees a second
-# click 4: the balance comes to rest, with the jewel under its leader;
-# click 5: it swings again, and the leader fades out (docs/watch.md)
-watchSettle: 4
-watchResume: 5
-# from click 5: "tick" and "tock" at each strike of the jewel (docs/watch.md);
-# click 6 is a trial: the same words as comic bursts, to compare
-watchTickTock: 5
-watchTickTockBurst: 6
+watchClicks:
+  # the pallet and the balance fade, and the escape wheel spins freely
+  2:
+    watch: [escape wheel, escape arbor]
+    watchSpin: 135 # degrees a second
+  # they fade back in, and the pallet stops the wheel (docs/watch.md)
+  3:
+    watch: *escapement
+    watchSpin: false
+  # the balance comes to rest, with the jewel under its leader
+  4:
+    watchAtRest: true
+  # it swings again, and the leader fades out; "tick" and "tock" show at
+  # each strike of the jewel (docs/watch.md)
+  5:
+    watchAtRest: false
+    watchTickTock: plain
+  # a trial: the same words as comic bursts, to compare
+  6:
+    watchTickTock: burst
 clicks: 6
 ---
 
@@ -304,12 +312,36 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 -->
 
 ---
-watch: [fourth wheel, fourth arbor, escape pinion, escape arbor]
+watch: &gears [fourth wheel, fourth arbor, escape pinion, escape arbor]
+watchView: *gears # the camera stays when click 1 adds pieces
 watchTilt: 20
 # the audience has not seen these pieces, so their place in the watch does
 # not matter: the Escapement slide's picture fades out, the camera jumps, and
 # this one fades in, both ways (docs/watch.md, "The Gears slide")
 watchMoveWith: none
+# the gears turn freely, from the start: the pinion once in 8 s (360 / 8 = 45
+# degrees a second), so the fourth wheel once in 16 s
+watchSpin: 45
+watchClicks:
+  # the rest of the Escapement slide's mechanism fades in, in this view
+  # (much of it off the slide on the left), and the pallet stops the spin:
+  # the gears tick with the escape wheel
+  1:
+    watchSpin: false
+    watch:
+      [
+        *gears,
+        balance wheel,
+        balance staff,
+        hairspring,
+        collet,
+        stud,
+        roller,
+        impulse jewel,
+        pallet fork,
+        escape wheel,
+      ]
+clicks: 1
 ---
 
 # Gears
@@ -317,12 +349,14 @@ watchMoveWith: none
 Fast gear, meet slow gear.
 
 <!--
-The escapement fades out. The fourth wheel and the escape wheel's pinion fade in.
+The escapement fades out. The fourth wheel and the escape wheel's pinion fade in, and turn: the pinion twice for each turn of the wheel.
 
 - The teeth must be the same size, or they do not mesh.
 - Each tooth that passes on one wheel passes on the other: the same number of teeth a second.
 - So the ratio of the speeds is the ratio of the teeth: 16 to 8 here, so the pinion turns twice as fast.
 - Same-size teeth: the number of teeth is in proportion to the circumference, and so to the radius.
+
+[click] The rest of the escapement comes back, and the gears now advance one tick at a time: the escapement controls the whole train.
 
 IF ASKED: Strictly, the pitch must match: a tooth plus its gap on one wheel equals a tooth plus its gap on the other. One wheel can have wider teeth and narrower gaps.
 -->

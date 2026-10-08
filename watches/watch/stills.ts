@@ -40,6 +40,7 @@ export class WatchStills {
       state.view,
       state.tilt,
       state.show,
+      state.fit,
       state.spin,
       state.settled,
       size,

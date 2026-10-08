@@ -104,13 +104,15 @@ const HAIRSPRING_ZOOM = 250 / 56;
 /** Where the balance's arbor is on the slide in the hairspring view. */
 const HAIRSPRING_TARGET: Point2 = [275, 276];
 /** A fitted view's room, in slide px (docs/watch.md, "Fitted views"): the
- *  shown pieces are as large as fit in this width and height, from this left
- *  edge, with their middle halfway between the subtitle's baseline and the
- *  slide's bottom. The main focus of a slide is on its left; the callouts use
- *  the room on the right. */
+ *  shown pieces are as large as fit in this width and height, with their
+ *  middle halfway between the subtitle's baseline and the slide's bottom.
+ *  Across, their middle is at the middle of the slide's left FIT_FOCUS, but
+ *  their left edge is never left of FIT_LEFT. The main focus of a slide is on
+ *  its left; the callouts use the room on the right. */
 const FIT_LEFT = 16;
 const FIT_WIDTH = 948;
 const FIT_HEIGHT = 420;
+const FIT_FOCUS = 0.6;
 /** The subtitle's baseline, in slide px, as measured in the
  *  browser: the theme's title and subtitle (themes/ledger/styles/ledger.css)
  *  put it there. Measure it again if they change. */
@@ -1642,9 +1644,10 @@ function views(
 }
 
 /** The view of `pieces` when a slide names no view (docs/watch.md, "Fitted
- *  views"): as large as they fit in FIT_WIDTH by FIT_HEIGHT, from FIT_LEFT,
- *  with their middle halfway between the subtitle's baseline and the slide's
- *  bottom. It tilts about their middle, at the middle of their heights. */
+ *  views"): as large as they fit in FIT_WIDTH by FIT_HEIGHT, centred in the
+ *  slide's left FIT_FOCUS but not left of FIT_LEFT, with their middle halfway
+ *  between the subtitle's baseline and the slide's bottom. It tilts about
+ *  their middle, at the middle of their heights. */
 export function fittedView(watch: Watch, pieces: readonly Piece[]): View {
   const { box, bottom, top } = extentOf(
     pieces.map((piece) =>
@@ -1659,11 +1662,16 @@ export function fittedView(watch: Watch, pieces: readonly Piece[]): View {
     (box.left + box.right) / 2,
     (box.top + box.bottom) / 2,
   ];
-  const middleY = (SUBTITLE_BASELINE + watch.design.canvas.height) / 2;
+  const { width, height } = watch.design.canvas;
+  const middleX = Math.max(
+    (FIT_FOCUS * width) / 2,
+    FIT_LEFT + (scale * (box.right - box.left)) / 2,
+  );
+  const middleY = (SUBTITLE_BASELINE + height) / 2;
   return {
     name: pieces.map((piece) => piece.name).join(", "),
     scale,
-    shift: [FIT_LEFT - scale * box.left, middleY - scale * middle[1]],
+    shift: [middleX - scale * middle[0], middleY - scale * middle[1]],
     pivot: [...middle, (bottom + top) / 2],
   };
 }

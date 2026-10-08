@@ -9,7 +9,7 @@ them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
 [`2026-10-07-watch-primitives`](../tasks/2026-10-07-watch-primitives/PLAN.md) (named pieces, fitted views, one rule for every move),
-[`2026-10-07-gears-slide`](../tasks/2026-10-07-gears-slide/PLAN.md) (the Gears slide),
+[`2026-10-07-gears-slide`](../tasks/2026-10-07-gears-slide/PLAN.md) (the Gears slide; the free spin for any slide; a narrow picture centred in the left 60%),
 [`2026-10-07-tick-tock-words`](../tasks/2026-10-07-tick-tock-words/PLAN.md) (the words at each strike),
 [`2026-10-06-validation-speed`](../../tasks/2026-10-06-validation-speed/PLAN.md) (print readiness and validation scheduling),
 [`2026-10-04-balance-rim-marks`](../tasks/2026-10-04-balance-rim-marks/README.md) (radial screws that show the rim's swing),
@@ -192,8 +192,8 @@ Three callouts appear, one at each click: "Wheel driven by hidden gear",
   at rest, in the fork's mouth, where the jewel strikes. It ends at the D's
   deepest point: the centre of the largest circle inside it. A leader that
   followed the jewel would sweep across the balance.
-- **The balance rests for the jewel's callout** (`watchSettle: 4`,
-  `watchResume: 5`). A swinging jewel is at its leader's end for only about
+- **The balance rests for the jewel's callout** (`watchAtRest: true` at
+  click 4, `false` at click 5). A swinging jewel is at its leader's end for only about
   0.2 s of each swing. The callout appears only when the balance is at rest
   (the class `after-balance-rest`), so its leader never points at an empty
   notch. The settle waits for the end of a swing, so this is 0.8 to 1.8 s
@@ -218,7 +218,7 @@ Three callouts appear, one at each click: "Wheel driven by hidden gear",
 
 ### Tick and tock
 
-From click 5 (`watchTickTock: 5`), each time the jewel strikes the fork, a
+From click 5 (`watchTickTock: plain`), each time the jewel strikes the fork, a
 word appears beside the horn that it strikes: "tick" at the upper horn,
 "tock" at the lower one. The jewel enters the notch past one horn and
 strikes the other, ahead of it (`jewelStrikes` in `watch/callouts.ts`). It appears at once, and fades out in 0.8 s as it drifts 40 px
@@ -246,7 +246,7 @@ the type, the times and the distances.
   quotation. Ink, with an outline in the paper's colour, so they read over
   the drawing.
 - **Click 6 is a trial**, to compare by going back and forward
-  (`watchTickTockBurst: 6`): the same words, times and drift, as 1960s
+  (`watchTickTock: burst`): the same words, times and drift, as 1960s
   _Batman_ bursts in the theme's colours. Each is a spiked burst, outlined
   in ink: the accent behind "TICK!" and the second behind "TOCK!", so the
   two sounds differ in colour too. The words are capitals in the paper's
@@ -259,44 +259,21 @@ the type, the times and the distances.
   is not continuous.
 - **A printed page shows no words**: a still has no strikes.
 
-### The free spin
+### The escape wheel spins alone
 
 Click 1 shows the force's callout. At click 2 the pallet fork and the
 balance fade out, and the escape wheel spins on its own: the force turns it,
 and nothing holds it back. At click 3 they fade back in, and the pallet stops
-the wheel. The keys are `watchSpin`, `watchSpinEnd` and `watchSpinSpeed`
-(below).
+the wheel. At click 2 the slide shows only the escape wheel and its arbor
+(`watchClicks`): a spinning wheel would pass through the pallet. The camera
+frames all the slide's pieces at every click (`watchView`), so it does not
+move ([What the camera frames](#what-the-camera-frames-and-what-shows)). How
+the spin starts and stops is in [The free spin](#the-free-spin).
 
 - **One thing at a time.** At click 3 the mechanism fades in first; the
   pallet's callout fades in only when it is all there, so that its leader
   never points at empty space. The callout has the class `after-watch-fade`
   (`style.css`, and [slide-patterns.md](slide-patterns.md#text-fades)).
-
-- **The train has a position of its own, in beats** (`TrainClock` in
-  `watch/model.ts`). `Motion` turns every wheel and hand by its own degrees a
-  beat times that position. Normally the position follows the mechanism's
-  ticks, a whole number of teeth ahead: a tooth is two beats. So after a
-  spin, the stones meet the teeth as they did before it, and every wheel
-  stays in mesh, on this slide and every other.
-- **A spin starts when the rest has faded out** (the fade's `FADE_SECONDS`),
-  and speeds up in `SPIN_UP_SECONDS`. While the rest fades, the wheel does
-  not move, so it never turns through the stones.
-- **A stop keeps the wheel spinning until the rest is back, and then until
-  the next tooth reaches the pallet.** It stops there, a whole number of
-  teeth ahead of the mechanism, and ticks with it from then on. The stop
-  takes at most the fade, the time of one tooth and one tick.
-- **The train only goes forward**, as the mechanism's time does: a fast
-  click back during a stop spins on; a stop before the spin has started
-  leaves the wheel where it was. A jump shows a spin at full speed, or the
-  train in step with the mechanism (`watch/train.test.ts`).
-- **The model times the spin from the fade.** A spin shows `SPIN_PIECES`
-  (`watch/state.ts`) in the slide's own view, so the camera does not move,
-  and the fade starts at once and takes `FADE_SECONDS`.
-  `watch/train.test.ts` fails if the fade's length changes.
-- **Not an oversight: one model, not a second wheel.** A second wheel that
-  always spins would need every view to hide it, and a cross-fade between two
-  wheels at one place, which the timeline does not have and which flickers in
-  the depth test.
 
 ## The Gears slide
 
@@ -304,7 +281,7 @@ The Gears slide shows the fourth wheel (its wheel, hub and arbor) and the
 escape wheel's pinion with its arbor: 16 teeth drive 8 leaves. It leaves out
 the fourth wheel's own pinion (which the third wheel drives) and the seconds
 hand (on the fourth wheel's arbor). It has no code: its frontmatter names the
-pieces, the tilt (20) and `watchMoveWith: none`.
+pieces, the tilt (20), `watchMoveWith: none` and the spin.
 
 - **The step from the Escapement slide, and back, jumps the camera.** The
   audience has not seen these pieces, so their place in the watch does not
@@ -314,9 +291,24 @@ pieces, the tilt (20) and `watchMoveWith: none`.
   waits for the old picture to go.
 - **The view fits the pair.** The pinion is above the fourth wheel in the
   movement's layout, and a view does not turn, so the pair is tall: its
-  height sets the zoom, and the callouts go on its right.
-- The tilt shows the arbors as posts. The mechanism runs: the pinion turns
-  twice for each turn of the fourth wheel.
+  height sets the zoom. It is narrower than 60% of the slide, so it is
+  centred in the slide's left 60% ([Fitted views](#fitted-views)), and the
+  callouts go on its right.
+- **The gears turn freely, from the start** (`watchSpin` on the slide; [The
+  free spin](#the-free-spin)). Nothing holds them back, so they turn
+  smoothly, not a tick at a time. Its value is the speed, in degrees a second
+  of the escape wheel: the slide's comment says how many seconds a turn of the
+  pinion and of the fourth wheel take. The pinion turns twice for each turn
+  of the fourth wheel. From the Escapement slide, the spin starts when the old
+  picture has faded out, so the gears start to turn as they fade in.
+- The tilt shows the arbors as posts.
+- **At click 1, the rest of the Escapement slide's mechanism fades in**
+  (`watchClicks`): everything that the talk has explained so far. The camera
+  frames the gears at every click (`watchView`), so it does not move: the
+  escape wheel and the fork's right end show, and the rest is off the slide
+  on the left. The pallet is back, so the spin ends at the same click
+  (`watchSpin: false`): the gears stop at the next tooth, and then tick with
+  the escape wheel.
 
 ## Balance rim motion
 
@@ -357,8 +349,11 @@ watchFlash: # flashes before the camera moves
   ]
 watchMoveWith: all # the whole watch is on the screen while the camera zooms in
 watchTilt: 20 # degrees: shows that the spring is a ribbon
-watchSettle: 2 # the balance comes to rest while the diving board covers it
-watchResume: 3 # at click 3 it starts to swing again
+watchClicks: # what changes at a click, from that click on
+  2:
+    watchAtRest: true # the balance comes to rest while the diving board covers it
+  3:
+    watchAtRest: false # it starts to swing again
 clicks: 3
 ```
 
@@ -382,13 +377,60 @@ A new part of the model names its piece when it is drawn (`solids.add`), and
 a slide can show it at once. `watch/deck.test.ts` fails if a slide names a
 piece or a view that does not exist.
 
+### A slide and a click say it the same way
+
+A slide gives the watch's state at click 0. A click changes it from that click
+on, with the same keys, in a block under `watchClicks`; a later block changes
+it again. A block holds only the keys that say a state (the first six in
+[The keys](#the-keys)); `watchFlash` and `watchMoveWith` are about the step
+into the slide, so they are on the slide only. A value says what is so, not
+what to do: `watchAtRest: true`, not "settle". So a block can repeat what is
+already so, and the layer decides how to get there (the settle waits for the
+end of a swing; a spin waits for the fade).
+
+### What the camera frames, and what shows
+
+Two keys say what shows:
+
+- **`watch`: what shows.**
+- **`watchView`: what the camera frames.** It is a named view, or a list of
+  pieces that the view fits ([Fitted views](#fitted-views)). Without it, the
+  view fits what shows.
+
+**To add pieces without moving the camera, show more pieces and keep the
+frame**, at a click or on a new slide. On the Gears slide, click 1 shows more
+and the slide's `watchView` stays the gears. The Balance Wheel slide shows
+more than the Hairspring slide, and both name the view `hairspring`. To show
+fewer without moving the camera, do the same: the Escapement slide frames all
+its pieces while click 2 shows the escape wheel alone.
+
+A list repeats less with YAML anchors and aliases: `watch: &gears [...]`
+names the list, and `*gears` uses it again. A list of pieces can hold lists,
+which are flattened, and a piece that is there twice shows once. So
+`[*gears, pallet fork]` is the gears and the fork. An anchor holds only
+within one slide's frontmatter.
+
+```yaml
+watch: &gears [fourth wheel, fourth arbor, escape pinion, escape arbor]
+watchView: *gears # the camera frames the gears at every click
+watchClicks:
+  1:
+    watch: [*gears, pallet fork, escape wheel] # more shows; the camera stays
+```
+
 ### Fitted views
 
-With no `watchView`, the view fits the slide's pieces (`fittedView` in
-`watch/generate.ts`): as large as they fit in `FIT_WIDTH` by `FIT_HEIGHT`,
-from `FIT_LEFT`, with their middle halfway between the subtitle's baseline
-and the slide's bottom. The main focus is on the left, and the callouts use
-the room on the right. The view tilts about the pieces' middle, so the middle
+When `watchView` is a list of pieces, or there is none, the view fits those
+pieces, or what shows (`fittedView` in `watch/generate.ts`): as large as they fit in `FIT_WIDTH` by `FIT_HEIGHT`,
+with their middle halfway between the subtitle's baseline and the slide's
+bottom. The main focus is on the left, and the callouts use the room on the
+right.
+
+**A picture that takes less than 60% of the slide's width is centred in the
+slide's left 60%** (`FIT_FOCUS`). A wider picture starts at `FIT_LEFT`. The
+middle is at whichever is further right, so a picture never comes nearer the
+left edge than `FIT_LEFT`, and no width makes it jump. (From 556 to 588 px
+wide, that keeps it 16 px from the edge, a little right of the centre.) The view tilts about the pieces' middle, so the middle
 stays there at any tilt. The baseline (`SUBTITLE_BASELINE`) is measured in
 the browser: the theme's title and subtitle sizes set it, so measure it again
 if they change. A piece's extent is where it reaches at any time: a turning
@@ -401,9 +443,10 @@ alone (an arbor, the balance staff) can run off the slide at a tilt: give it a
 named view or `watchTilt: 0`. Not an oversight: fitting the tilted extent was
 judged not worth its code (the [review](../tasks/2026-10-07-watch-primitives/review.md), F1).
 
-The named views (`cover`, `hairspring`, `crown`) are for pictures that must
-match other art: the cover's title, and the diving board, whose numbers are
-copied from the hairspring view.
+The named views (`cover`, `hairspring`, `crown`; `views()` in
+`watch/generate.ts`) are for pictures that must match other art: the cover's
+title, and the diving board, whose numbers are copied from the hairspring
+view (`art/diving_board.py`).
 
 ### The one rule
 
@@ -440,22 +483,58 @@ first, and the change starts when it ends (the Hairspring slide). A flash of
 pieces that fade in plays when they are in (the Balance Wheel slide).
 `webgl/timeline.ts` holds the flash count and all durations.
 
+### The free spin
+
+A slide can turn the train freely: smoothly and fast, not a tick at a time
+(`watchSpin`: a speed, or `false`). The
+Escapement slide spins the escape wheel alone; the Gears slide spins the
+fourth wheel and the escape pinion.
+
+- **The train has a position of its own, in beats** (`TrainClock` in
+  `watch/model.ts`). `Motion` turns every wheel and hand by its own degrees a
+  beat times that position. So a spin turns every wheel at its own speed, in
+  mesh, as the teeth say. Normally the position follows the mechanism's
+  ticks, a whole number of teeth ahead: a tooth of the escape wheel is two
+  beats. So after a spin, the stones meet the teeth as they did before it,
+  and every wheel stays in mesh, on that slide and every other.
+- **The clock does not know what shows.** The slide makes sure that nothing
+  that would hold the escape wheel back is on the screen while it spins:
+  `watch` leaves the pallet out at each click of the spin.
+  `watch/deck.test.ts` fails if a slide spins the train while the pallet fork
+  shows.
+- **A spin starts when the old picture has faded out** (`FADE_SECONDS` after
+  the click), and speeds up in `SPIN_UP_SECONDS`. While the pallet fades, the
+  wheel does not move, so it never turns through the stones.
+  `watch/train.test.ts` fails if the fade's length changes, on the
+  Escapement slide and on the step into the Gears slide.
+- **A stop keeps the wheel spinning for `FADE_SECONDS`, while the pallet
+  fades back in, and then until the next tooth reaches the pallet.** It stops
+  there, a whole number of teeth ahead of the mechanism, and ticks with it
+  from then on. The stop takes at most the fade, the time of one tooth and
+  one tick. So a spin must be faster than the mechanism (`spinBeats`): a
+  slower wheel's next tooth would never reach the pallet.
+- **The train only goes forward**, as the mechanism's time does: a fast
+  click back during a stop spins on; a stop before the spin has started
+  leaves the wheel where it was. A jump shows a spin at full speed, or the
+  train in step with the mechanism (`watch/train.test.ts`).
+- **Not an oversight: one model, not a second wheel.** A second wheel that
+  always spins would need every view to hide it, and a cross-fade between two
+  wheels at one place, which the timeline does not have and which flickers in
+  the depth test.
+
 ### The keys
 
-| Key                                 | Meaning                                                                                                                                    |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `watch: [hairspring, collet, stud]` | the pieces shown, or `all`; no key hides the watch                                                                                         |
-| `watchView: hairspring`             | a named view (`cover`, `hairspring`, `crown`); none: the [fitted view](#fitted-views)                                                      |
-| `watchTilt: 20`                     | degrees, towards the viewer's side (default 0)                                                                                             |
-| `watchFlash: [balance wheel]`       | pieces that flash, on the step forward into the slide only ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash")          |
-| `watchMoveWith: all`                | what is on the screen while the camera moves, on the step between this slide and the previous one: `common` (default), `all` or `none`     |
-| `watchSettle: 1`                    | at this click, the balance waits for its next extreme and then comes to rest                                                               |
-| `watchResume: 3`                    | at this click, a settled balance starts to swing again (it needs `watchSettle` before it)                                                  |
-| `watchSpin: 1`                      | at this click, the escape wheel is shown alone (`SPIN_PIECES`), in the slide's view, and it spins freely ([The free spin](#the-free-spin)) |
-| `watchSpinEnd: 2`                   | at this click, the spin ends: the rest fades back in and the pallet stops the wheel (it needs `watchSpin` before it)                       |
-| `watchSpinSpeed: 90`                | the spin's speed, in degrees a second of the escape wheel (default `SPIN_SPEED` in `watch/state.ts`); faster than the mechanism's 12       |
-| `watchTickTock: 7`                  | from this click, the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock))                            |
-| `watchTickTockBurst: 8`             | from this click, the words are comic bursts: a trial (it needs `watchTickTock` before it)                                                  |
+| Key                                 | Meaning                                                                                                                                                                                                                      |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `watch: [hairspring, collet, stud]` | the pieces shown, or `all`; no key hides the watch. A list may hold lists (YAML aliases)                                                                                                                                     |
+| `watchView: hairspring`             | what the camera frames: a named view (`cover`, `hairspring`, `crown`), or a list of pieces to fit; none: the [fitted view](#fitted-views) of what shows                                                                      |
+| `watchTilt: 20`                     | degrees, towards the viewer's side (default 0)                                                                                                                                                                               |
+| `watchAtRest: true`                 | the balance is at rest, and the mechanism with it; `false` (default): it swings. To rest, it waits for its next extreme                                                                                                      |
+| `watchSpin: 135`                    | the train spins freely, at this speed in degrees a second of the escape wheel, faster than the mechanism's 12 ([The free spin](#the-free-spin)); `false` (default): it follows the mechanism, and a spin stops at the pallet |
+| `watchTickTock: plain`              | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `burst`: as comic bursts, a trial; `false` (default): they do not                                                            |
+| `watchFlash: [balance wheel]`       | on the slide only: pieces that flash, on the step forward into the slide only ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash")                                                                         |
+| `watchMoveWith: all`                | on the slide only: what is on the screen while the camera moves, on the step between this slide and the previous one: `common` (default), `all` or `none`                                                                    |
+| `watchClicks: {1: {watch: […]}}`    | on the slide only: for a click, the values of the first six keys from that click on ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way))                                                                        |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
 at load with the key's name.
@@ -578,7 +657,7 @@ watch's: each is a click number, in this order.
 | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1     | `board: 1` fades the board in over the watch, and it bends, holds, lets go, swings                                                                         |
 | 2     | `boardCurl: 2` fades the pool and the stand, and the board winds into the spiral. Then the board fades out, the watch fades in, and the sentence is edited |
-| 3     | `watchResume`: the balance starts to swing again                                                                                                           |
+| 3     | `watchAtRest: false`: the balance starts to swing again                                                                                                    |
 
 **The board covers the watch while its picture shows.** The picture (the
 board, the pool and the stand) shows from the board's click until the board's
@@ -679,7 +758,7 @@ took, to the bottom of the swing, and the swing goes on. The pool and the stand
 fade in at once. A click back from 1 fades the board out in its pose; the next
 click 1 bends it from 0 again. `BoardClock` in `watch/board.ts` holds these
 moves, and `watch/board.test.ts` tests them.
-The balance settles at click 2 (`watchSettle`), while the board covers the
+The balance settles at click 2 (`watchAtRest: true`), while the board covers the
 watch. The watch is out of sight, so the stage puts the balance at rest at
 once (below), and the hairspring is at rest when it appears. At click 3 the clock's `resume` starts it: the cubic from rest to the
 opposite extreme, which is the settle mirrored, so there is no jump in angle,

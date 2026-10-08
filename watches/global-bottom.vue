@@ -2,14 +2,14 @@
 // One live watch under every slide, for the whole talk, drawn with WebGL by the
 // stage of webgl/stage.ts. Each slide names the pieces that it shows in its
 // frontmatter (`watch: [hairspring, collet, stud]`, `watchTilt: 20`, and see
-// watch/state.ts); a slide without `watch` hides the layer. A click can change the state (`watchSettle`).
+// watch/state.ts); a slide without `watch` hides the layer. A click can change the state (`watchClicks`).
 // Above the watch, the one live diving board (components/DivingBoard.vue),
 // which the Hairspring slide's frontmatter shows (`board`, and see watch/board.ts). While
 // the board's picture shows, it covers the watch: the canvas fades out, and the
 // stage stops. The board's clock decides when (its `cover` event), so the
 // hairspring takes the board's place when the curl ends, with no click.
 // Above both, the words "tick" and "tock" at each strike of the jewel
-// (components/TickTock.vue), from a slide's `watchTickTock` click: they follow
+// (components/TickTock.vue), where a slide's `watchTickTock` shows them: they follow
 // the model's clock.
 //
 // A slide names targets, not moves (../docs/navigation.md). At each change of

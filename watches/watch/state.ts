@@ -1,25 +1,28 @@
 // A slide's frontmatter, at a number of clicks, as a state for the watch's
 // stage. The frontmatter names things; `stageState` turns the names into the
-// scene's objects, once, at this boundary (docs/watch.md, "The frontmatter
-// keys").
+// scene's objects, once, at this boundary (docs/watch.md, "The keys").
+// A slide sets the state at click 0; a click changes it from that click on,
+// with the same keys, in a block under `watchClicks` (CLICK_KEYS):
 //   watch: the pieces shown ([hairspring, collet, stud]), or `all`; no key
-//     hides the watch
-//   watchView: a named view (cover, hairspring, crown); none: the view that
-//     fits the shown pieces (`fittedView`)
+//     on the slide hides the watch. A list of pieces may hold lists (YAML
+//     aliases: [*gears, pallet fork]); they are flattened
+//   watchView: what the camera frames: a named view (cover, hairspring,
+//     crown), or a list of pieces, which the view fits (`fittedView`); none:
+//     the view fits the pieces shown
 //   watchTilt: degrees (default 0)
+//   watchAtRest: true: the balance is at rest; false (default): it swings
+//   watchSpin: degrees a second of the escape wheel: the train spins freely
+//     (`TrainClock`); false (default): it follows the mechanism
+//   watchTickTock: plain or burst: the words "tick" and "tock" show at each
+//     strike of the jewel on the fork, plain or as comic bursts (a trial);
+//     false (default): they do not (`tickTockState`)
+// On the slide only, about the step into it:
 //   watchFlash: pieces that flash, when the slide is reached by a step
 //     forward
 //   watchMoveWith: what shows while the camera moves, on the step between
 //     this slide and the previous one, in either direction (`moveWithBefore`)
-//   watchSettle: the click at which the balance settles at rest
-//   watchResume: the click at which a settled balance starts to swing again
-//   watchSpin: the click at which the escape wheel spins freely, alone: the
-//     shown pieces are SPIN_PIECES, in the slide's view
-//   watchSpinEnd: the click at which the rest comes back and stops it
-//   watchSpinSpeed: the spin's speed, degrees a second (default SPIN_SPEED)
-//   watchTickTock: the click from which the words "tick" and "tock" show at
-//     each strike of the jewel on the fork (`tickTockState`)
-//   watchTickTockBurst: the click from which they are comic bursts (a trial)
+//   watchClicks: for a click, the keys that change from that click on
+//     ({1: {watch: [*gears, pallet fork], watchSpin: false}})
 
 import type { Mesh, Piece, View } from "../webgl/scene.ts";
 import type { MoveWith, StageState } from "../webgl/timeline.ts";
@@ -27,23 +30,21 @@ import { fittedView } from "./generate.ts";
 import type { Watch } from "./generate.ts";
 import type { WatchModelState } from "./model.ts";
 
-/** Degrees a second: a spin's speed when the slide does not give one. */
-export const SPIN_SPEED = 90;
-/** What a free spin shows: the escape wheel, as the Escapement slide shows
- *  it. A spinning wheel would pass through the pallet, so it spins alone. */
-export const SPIN_PIECES: readonly string[] = ["escape wheel", "escape arbor"];
 const MOVES_WITH: readonly MoveWith[] = ["common", "all", "none"];
 
 export interface WatchState {
-  /** A named view, or `null`: the view that fits the shown pieces. */
+  /** A named view, or `null`: the view that fits `fit`. */
   view: string | null;
   tilt: number;
-  /** The names of the slide's pieces, or "all": the view fits them, and
-   *  they show, except during a spin (`spin`). */
+  /** The names of the pieces shown at this click, or "all". */
   show: readonly string[] | "all";
+  /** The names of the pieces that the fitted view fits, or "all": the
+   *  `watchView` list, or else the pieces shown. */
+  fit: readonly string[] | "all";
   flash: readonly string[] | undefined;
   settled: boolean;
-  /** Degrees a second: the escape wheel spins freely; `null`: it does not. */
+  /** Degrees a second of the escape wheel: the train spins freely; `null`:
+   *  it follows the mechanism. */
   spin: number | null;
 }
 
@@ -64,16 +65,154 @@ export function clickOf(
   return click;
 }
 
-/** A list of piece names, or throws with the key's name. */
+/** A list of piece names, flattened (it may hold lists: YAML aliases), each
+ *  name once, or throws with the key's name. */
 function namesOf(name: string, value: unknown): readonly string[] {
+  const flat: unknown[] = Array.isArray(value) ? value.flat(Infinity) : [];
   if (
-    !Array.isArray(value) ||
-    value.length === 0 ||
-    !value.every((item) => typeof item === "string" && item !== "")
+    flat.length === 0 ||
+    !flat.every((item) => typeof item === "string" && item !== "")
   ) {
     return wrong(name, value, "a list of pieces");
   }
-  return value as string[];
+  return [...new Set(flat as string[])];
+}
+
+/** The pieces shown: a list of pieces, or `all`. */
+function shownOf(name: string, value: unknown): readonly string[] | "all" {
+  return value === "all" ? "all" : namesOf(name, value);
+}
+
+/** What the camera frames: a named view, or the pieces that it fits. */
+function viewOf(
+  name: string,
+  value: unknown,
+): { view: string } | { fit: readonly string[] } {
+  if (typeof value === "string" && value !== "") return { view: value };
+  if (Array.isArray(value)) return { fit: namesOf(name, value) };
+  return wrong(name, value, "the name of a view, or a list of pieces");
+}
+
+function tiltOf(name: string, value: unknown): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return wrong(name, value, "a number of degrees");
+  }
+  return value;
+}
+
+function atRestOf(name: string, value: unknown): boolean {
+  if (typeof value !== "boolean") return wrong(name, value, "true or false");
+  return value;
+}
+
+/** Degrees a second, or `null`: the train follows the mechanism. */
+function spinOf(name: string, value: unknown): number | null {
+  if (value === false) return null;
+  if (typeof value !== "number" || !(value > 0) || !Number.isFinite(value)) {
+    return wrong(name, value, "a speed in degrees a second, or false");
+  }
+  return value;
+}
+
+/** How the words "tick" and "tock" show at each strike. */
+export interface TickTockState {
+  /** In comic bursts, the 1960s _Batman_ style: a trial, to compare with
+   *  the plain words. */
+  burst: boolean;
+}
+
+function tickTockOf(name: string, value: unknown): TickTockState | undefined {
+  if (value === false) return undefined;
+  if (value !== "plain" && value !== "burst") {
+    return wrong(name, value, "plain, or burst, or false");
+  }
+  return { burst: value === "burst" };
+}
+
+/** The keys that a slide sets for click 0 and a `watchClicks` block changes,
+ *  each with how to read its value. */
+const CLICK_KEYS = {
+  watch: shownOf,
+  watchView: viewOf,
+  watchTilt: tiltOf,
+  watchAtRest: atRestOf,
+  watchSpin: spinOf,
+  watchTickTock: tickTockOf,
+} as const;
+type ClickKey = keyof typeof CLICK_KEYS;
+type ClickValues = { [Key in ClickKey]?: ReturnType<(typeof CLICK_KEYS)[Key]> };
+
+function isClickKey(name: string): name is ClickKey {
+  return Object.hasOwn(CLICK_KEYS, name);
+}
+
+/** The keys of `values` that a click can change, read; `name` prefixes the
+ *  key's name in an error. Throws if a key is not one of them, unless
+ *  `others` (the slide's own frontmatter holds other keys too). */
+function readClickKeys(
+  name: string,
+  values: Record<string, unknown>,
+  others: boolean,
+): ClickValues {
+  const read: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(values)) {
+    if (isClickKey(key)) {
+      read[key] = CLICK_KEYS[key](`${name}${key}`, value);
+    } else if (!others) {
+      return wrong(
+        name.slice(0, -1),
+        key,
+        Object.keys(CLICK_KEYS).join(", or "),
+      );
+    }
+  }
+  return read;
+}
+
+/** The slide's click keys at `clicks`: the slide's own, changed by each
+ *  `watchClicks` block whose click has come, in click order. Each block is
+ *  read, also before its click. Throws if a key of the map is not a click
+ *  number, a block holds a key that a click cannot change or a value of the
+ *  wrong kind, or the slide sets a click key without `watch`. */
+function atClick(
+  frontmatter: Record<string, unknown>,
+  clicks: number,
+): ClickValues {
+  const state = readClickKeys("", frontmatter, true);
+  const blocks = frontmatter["watchClicks"];
+  if (state.watch === undefined) {
+    const stray = Object.keys(frontmatter).find(
+      (key) => isClickKey(key) || key === "watchClicks",
+    );
+    if (stray !== undefined) {
+      return wrong(stray, frontmatter[stray], "set only with watch");
+    }
+  }
+  if (blocks === undefined) return state;
+  const isMap = (value: unknown): value is Record<string, unknown> =>
+    typeof value === "object" && value !== null && !Array.isArray(value);
+  if (!isMap(blocks)) {
+    return wrong("watchClicks", blocks, "a map from a click to keys");
+  }
+  const changes = Object.entries(blocks).map(([key, block]) => {
+    const click = Number(key);
+    if (!Number.isInteger(click) || click < 0 || String(click) !== key) {
+      return wrong("watchClicks", key, "a click number");
+    }
+    if (!isMap(block) || Object.keys(block).length === 0) {
+      return wrong(`watchClicks.${key}`, block, "a map of keys");
+    }
+    return {
+      click,
+      values: readClickKeys(`watchClicks.${key}.`, block, false),
+    };
+  });
+  changes.sort((first, second) => first.click - second.click);
+  for (const { click, values } of changes) {
+    if (click > clicks) break;
+    Object.assign(state, values);
+  }
+  return state;
 }
 
 /** What shows while the camera moves on the step between this slide and the
@@ -94,98 +233,38 @@ export function moveWithBefore(frontmatter: Record<string, unknown>): MoveWith {
   return found;
 }
 
-/** The slide's watch state, or `undefined` if the slide has no `watch`.
- *  Throws if a field is there but is not what the list above says. */
+/** The slide's watch state at `clicks`, or `undefined` if the slide has
+ *  no `watch`. Throws if a field is there but is not what the list above
+ *  says. */
 export function watchState(
   frontmatter: Record<string, unknown>,
   clicks: number,
 ): WatchState | undefined {
   moveWithBefore(frontmatter); // it throws on a wrong `watchMoveWith`
-  const shown = frontmatter["watch"];
-  if (shown === undefined) return undefined;
-  const show = shown === "all" ? "all" : namesOf("watch", shown);
-  const view = frontmatter["watchView"] ?? null;
-  if (view !== null && (typeof view !== "string" || view === "")) {
-    return wrong("watchView", view, "the name of a view");
-  }
-  const tilt = frontmatter["watchTilt"] ?? 0;
-  if (typeof tilt !== "number" || !Number.isFinite(tilt)) {
-    return wrong("watchTilt", tilt, "a number of degrees");
-  }
+  const now = atClick(frontmatter, clicks);
+  if (now.watch === undefined) return undefined;
+  const show = now.watch;
+  const framed = now.watchView ?? { fit: show };
   const flashed = frontmatter["watchFlash"];
-  const flash =
-    flashed === undefined ? undefined : namesOf("watchFlash", flashed);
-  const settleAt = clickOf(frontmatter, "watchSettle");
-  const resumeAt = clickOf(frontmatter, "watchResume");
-  if (
-    resumeAt !== undefined &&
-    (settleAt === undefined || resumeAt <= settleAt)
-  ) {
-    return wrong("watchResume", resumeAt, "a click after watchSettle");
-  }
-  const spinAt = clickOf(frontmatter, "watchSpin");
-  const spinEndAt = clickOf(frontmatter, "watchSpinEnd");
-  if (
-    spinEndAt !== undefined &&
-    (spinAt === undefined || spinEndAt <= spinAt)
-  ) {
-    return wrong("watchSpinEnd", spinEndAt, "a click after watchSpin");
-  }
-  const speed = frontmatter["watchSpinSpeed"] ?? SPIN_SPEED;
-  if (typeof speed !== "number" || !(speed > 0) || !Number.isFinite(speed)) {
-    return wrong("watchSpinSpeed", speed, "a speed in degrees a second");
-  }
-  if (spinAt === undefined && frontmatter["watchSpinSpeed"] !== undefined) {
-    return wrong("watchSpinSpeed", speed, "set only with watchSpin");
-  }
-  const spinning =
-    spinAt !== undefined &&
-    clicks >= spinAt &&
-    (spinEndAt === undefined || clicks < spinEndAt);
   return {
-    view,
-    tilt,
+    view: "view" in framed ? framed.view : null,
+    tilt: now.watchTilt ?? 0,
     show,
-    flash,
-    settled:
-      settleAt !== undefined &&
-      clicks >= settleAt &&
-      (resumeAt === undefined || clicks < resumeAt),
-    spin: spinning ? speed : null,
+    fit: "fit" in framed ? framed.fit : show,
+    flash: flashed === undefined ? undefined : namesOf("watchFlash", flashed),
+    settled: now.watchAtRest ?? false,
+    spin: now.watchSpin ?? null,
   };
 }
 
-/** How the words "tick" and "tock" show at each strike. */
-export interface TickTockState {
-  /** In comic bursts, the 1960s _Batman_ style: a trial, to compare with
-   *  the plain words. */
-  burst: boolean;
-}
-
 /** How the words "tick" and "tock" show at each strike, at `clicks`, or
- *  `undefined` if they do not: from the slide's `watchTickTock` click on,
- *  in bursts from its `watchTickTockBurst` click on. Throws if a field is
- *  there but is not a click number, if the burst's click is not after the
- *  words' click, or if the slide has no `watch`. */
+ *  `undefined` if they do not (`watchTickTock`). Throws as `watchState`
+ *  does. */
 export function tickTockState(
   frontmatter: Record<string, unknown>,
   clicks: number,
 ): TickTockState | undefined {
-  const from = clickOf(frontmatter, "watchTickTock");
-  const burstFrom = clickOf(frontmatter, "watchTickTockBurst");
-  if (burstFrom !== undefined && (from === undefined || burstFrom <= from)) {
-    return wrong(
-      "watchTickTockBurst",
-      burstFrom,
-      "a click after watchTickTock",
-    );
-  }
-  if (from === undefined) return undefined;
-  if (frontmatter["watch"] === undefined) {
-    return wrong("watchTickTock", from, "set only with watch");
-  }
-  if (clicks < from) return undefined;
-  return { burst: burstFrom !== undefined && clicks >= burstFrom };
+  return atClick(frontmatter, clicks).watchTickTock;
 }
 
 /** The camera's and the fade's state, with the names turned into objects.
@@ -205,25 +284,24 @@ export function stageState(
     });
   const meshesOf = (pieces: readonly Piece[]): ReadonlySet<Mesh> =>
     new Set(pieces.flatMap((piece) => [...piece.meshes]));
-  const pieces =
-    state.show === "all" ? scene.pieces : piecesNamed("watch", state.show);
+  const piecesOf = (names: readonly string[] | "all"): readonly Piece[] =>
+    names === "all" ? scene.pieces : piecesNamed("watch", names);
   const namedView = (name: string): View => {
     const found = scene.views.find((candidate) => candidate.name === name);
     if (!found) throw new Error(`watchView: no watch view "${name}"`);
     return found;
   };
-  // the fitted view fits the slide's pieces, also while a spin shows fewer
   const view =
-    state.view === null ? fittedView(watch, pieces) : namedView(state.view);
+    state.view === null
+      ? fittedView(watch, piecesOf(state.fit))
+      : namedView(state.view);
   return {
     view,
     tilt: state.tilt,
     shown:
-      state.spin !== null
-        ? meshesOf(piecesNamed("watchSpin", SPIN_PIECES))
-        : state.show === "all"
-          ? new Set(scene.meshes)
-          : meshesOf(pieces),
+      state.show === "all"
+        ? new Set(scene.meshes)
+        : meshesOf(piecesOf(state.show)),
     flash: state.flash
       ? meshesOf(piecesNamed("watchFlash", state.flash))
       : null,

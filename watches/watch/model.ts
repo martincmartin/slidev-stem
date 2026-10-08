@@ -604,13 +604,15 @@ export function stillPose(
 // mechanism, a whole number of teeth ahead: `lead` is an even number of beats
 // (a tooth of the escape wheel is two beats), so the pallet stones meet the
 // teeth as they did, and every wheel stays in mesh. During a free spin it
-// turns on its own, at a speed in beats a second, while only the escape wheel
-// shows (docs/watch.md, "The free spin"):
-//   - a spin starts when the rest of the escapement has faded out (the
-//     fade's FADE_SECONDS), and speeds up in SPIN_UP_SECONDS;
-//   - a stop keeps it spinning until the rest has faded back in, and then
-//     until the next tooth reaches the pallet: the lead reaches the next even
-//     number of beats. From then on it follows the mechanism again.
+// turns on its own, at a speed in beats a second. It does not know what
+// shows: the slide makes sure that nothing that would hold the escape wheel
+// back is on the screen (docs/watch.md, "The free spin"):
+//   - a spin starts when the old picture has faded out (the fade's
+//     FADE_SECONDS), and speeds up in SPIN_UP_SECONDS;
+//   - a stop keeps it spinning for FADE_SECONDS, while the pallet fades back
+//     in, and then until the next tooth reaches the pallet: the lead reaches
+//     the next even number of beats. From then on it follows the mechanism
+//     again.
 // It only goes forward. Times: `now` in ms; speeds in beats a second.
 
 /** s: from still to the full speed of a spin. */
@@ -727,7 +729,8 @@ export class TrainClock {
 export interface WatchModelState {
   /** The balance stops at rest. */
   settled: boolean;
-  /** Degrees a second: the escape wheel spins freely; `null`: it does not. */
+  /** Degrees a second of the escape wheel: the train spins freely; `null`:
+   *  it follows the mechanism. */
   spin: number | null;
 }
 

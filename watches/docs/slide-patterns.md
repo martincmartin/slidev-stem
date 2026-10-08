@@ -159,15 +159,19 @@ the escape wheel spins alone, and at the third the pallet comes back and
 stops it.
 The Gears slide follows it: the Escapement slide's picture fades out, the
 camera jumps, and the fourth wheel and the escape wheel's pinion fade in
-(`watchMoveWith: none`).
+(`watchMoveWith: none`), turning freely (`watchSpin`). At its click, the
+rest of the Escapement slide's mechanism fades in around them, and the gears
+tick with it (`watchClicks`).
 It is described in [watch.md](watch.md).
 
 ## Where things go on a slide
 
 **The main focus of a slide is on its left.** Put the picture there, and the
-callouts and text on the right. When the picture needs the slide's whole
-height (the Escapement slide), it starts at the left edge, and the callouts go in the room
-on its right and in its gaps. The watch's train is laid out left to right from
+callouts and text on the right. If the picture takes less than 60% of the
+slide's width, centre it in the slide's left 60% (the Gears slide). When the
+picture is wider (the Escapement slide), it starts at the left edge, and the
+callouts go in the room on its right and in its gaps. The watch's fitted view
+does this for you ([watch.md](watch.md#fitted-views)). The watch's train is laid out left to right from
 the hairspring to the fourth wheel for this reason: see
 [watch.md](watch.md#the-layout-of-the-movement).
 

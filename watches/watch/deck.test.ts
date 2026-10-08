@@ -25,3 +25,17 @@ test("every slide's pieces and view exist, at every click", () => {
   }
   assert.ok(shown > 0, "no slide shows the watch");
 });
+
+test("no slide spins the train while the pallet fork shows: the escape wheel would turn through its stones", () => {
+  for (const { title, frontmatter } of slides) {
+    const clicks = Number(frontmatter["clicks"] ?? 0);
+    for (let click = 0; click <= clicks; click++) {
+      const state = watchState(frontmatter, click);
+      if (!state?.spin) continue; // a spin's speed is never 0
+      assert.ok(
+        state.show !== "all" && !state.show.includes("pallet fork"),
+        `${title} @${String(click)}`,
+      );
+    }
+  }
+});

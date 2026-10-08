@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // The words "tick" and "tock", one at each strike of the impulse jewel on the
 // fork, in the watch's layer (global-bottom.vue): docs/watch.md, "Tick and
-// tock". The slide names the click from which they show (`watchTickTock`);
+// tock". The slide says whether they show, at each click (`watchTickTock`);
 // `shown` is then how they show (`tickTockState` in watch/state.ts) and where
 // the jewel strikes, one for each tick window (`jewelStrikes` in
-// watch/callouts.ts), and `undefined` before it. From `watchTickTockBurst`
-// on, each word is a comic burst, the 1960s _Batman_ style: a trial, to
+// watch/callouts.ts), or `undefined` if they do not. With `watchTickTock:
+// burst`, each word is a comic burst, the 1960s _Batman_ style: a trial, to
 // compare with the plain words.
 //
 // The words follow the model's clock, not a timer: at each animation frame

@@ -1,5 +1,6 @@
-// The train's clock (model.ts, TrainClock): the escape wheel's free spin on
-// the Escapement slide, and the stop that brings it back into step with the mechanism.
+// The train's clock (model.ts, TrainClock): the train's free spin (the
+// escape wheel's on the Escapement slide, the gears' on the Gears slide), and
+// the stop that brings it back into step with the mechanism.
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
@@ -17,18 +18,31 @@ import {
   stepper,
   TrainClock,
 } from "./model.ts";
-import { SPIN_PIECES, stageState, watchState } from "./state.ts";
+import { moveWithBefore, stageState, watchState } from "./state.ts";
 
 const watch = generate();
 const { design, groups } = watch;
 const ESCAPEMENT_SLIDE = await slideFrontmatter("Escapement");
-/** The Escapement slide's stage state at a click. */
-function escapementAt(clicks: number) {
+const GEARS_SLIDE = await slideFrontmatter("Gears");
+/** A slide's stage state at a click. */
+function stageAt(frontmatter: Record<string, unknown>, clicks: number) {
   return stageState(
     watch,
-    watchState(ESCAPEMENT_SLIDE, clicks) ?? assert.fail("no watch"),
+    watchState(frontmatter, clicks) ?? assert.fail("no watch"),
+    moveWithBefore(frontmatter),
   );
 }
+/** The Escapement slide's stage state at a click. */
+function escapementAt(clicks: number) {
+  return stageAt(ESCAPEMENT_SLIDE, clicks);
+}
+/** The first click at which the Escapement slide spins the train. */
+const ESCAPEMENT_SPIN = (() => {
+  for (let click = 0; click <= Number(ESCAPEMENT_SLIDE["clicks"]); click++) {
+    if (watchState(ESCAPEMENT_SLIDE, click)?.spin) return click;
+  }
+  return assert.fail("the Escapement slide does not spin");
+})();
 const motion = new Motion(watch);
 const TIMING = design.timing;
 const [, , , fourth, escape] = design.wheels as [
@@ -115,7 +129,7 @@ test("a spin starts when the rest has faded out, and speeds up smoothly to its s
 });
 
 test("on the Escapement slide, the fade to the spinning wheel takes FADE_SECONDS, as the spin assumes", () => {
-  const spinAt = Number(ESCAPEMENT_SLIDE["watchSpin"]);
+  const spinAt = ESCAPEMENT_SPIN;
   const timeline = new Timeline();
   timeline.show(escapementAt(spinAt - 1), 0, true);
   timeline.show(escapementAt(spinAt), 1000, false);
@@ -200,15 +214,31 @@ test("a spin must be faster than the mechanism", () => {
   assert.ok(spinBeats(watch, 13) > 1);
 });
 
-test("the spin shows the escape wheel as the Escapement slide shows it", () => {
-  const spinAt = Number(ESCAPEMENT_SLIDE["watchSpin"]);
+test("the Escapement slide's spin shows the escape wheel as the slide shows it", () => {
+  const spinAt = ESCAPEMENT_SPIN;
   const still = escapementAt(spinAt - 1).shown;
   const spinning = escapementAt(spinAt).shown;
-  assert.ok(SPIN_PIECES.length > 0);
+  assert.ok(spinning.size > 0);
   for (const mesh of spinning) {
     assert.equal(mesh.part, "escape wheel");
     assert.ok(still.has(mesh));
   }
   const shown = [...still].filter((mesh) => mesh.part === "escape wheel");
   assert.equal(spinning.size, shown.length);
+});
+
+test("on the Gears slide, the gears spin from the start, and start to fade in as the spin starts", () => {
+  const gears = stageAt(GEARS_SLIDE, 0);
+  assert.deepEqual(watchState(GEARS_SLIDE, 0)?.show, GEARS_SLIDE["watch"]);
+  const timeline = new Timeline();
+  timeline.show(escapementAt(Number(ESCAPEMENT_SLIDE["clicks"])), 0, true);
+  timeline.show(gears, 1000, false);
+  // the spin starts FADE_SECONDS after the click (TrainClock.show): when the
+  // Escapement slide's picture has faded out, and the gears start to fade in
+  const spinStart = 1000 + FADE_SECONDS * 1000;
+  const before = timeline.valuesAt(spinStart - 1);
+  assert.ok(before.fade.size > 0 && before.rest < 1e-3);
+  const after = timeline.valuesAt(spinStart + 1);
+  assert.equal(after.keep.size, 0);
+  assert.deepEqual(after.fade, gears.shown);
 });

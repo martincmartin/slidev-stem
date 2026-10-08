@@ -5,8 +5,6 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { generate } from "./generate.ts";
 import {
-  SPIN_PIECES,
-  SPIN_SPEED,
   moveWithBefore,
   stageState,
   tickTockState,
@@ -24,6 +22,7 @@ test("the fields and their defaults", () => {
     view: null,
     tilt: 0,
     show: "all",
+    fit: "all",
     flash: undefined,
     settled: false,
     spin: null,
@@ -33,44 +32,125 @@ test("the fields and their defaults", () => {
     watchView: "hairspring",
     watchTilt: 20,
     watchFlash: ["balance wheel"],
-    watchSettle: 1,
+    watchClicks: { 1: { watchAtRest: true } },
   };
   assert.equal(watchState(frontmatter, 0)?.settled, false);
   assert.deepEqual(watchState(frontmatter, 1), {
     view: "hairspring",
     tilt: 20,
     show: ["hairspring", "collet", "stud"],
+    fit: ["hairspring", "collet", "stud"],
     flash: ["balance wheel"],
     settled: true,
     spin: null,
   });
 });
 
-test("the escape wheel spins alone from watchSpin until watchSpinEnd, in the slide's view", () => {
+test("a click block changes the motion from its click on, as the slide sets it for click 0", () => {
   const frontmatter = {
-    watch: ["pallet fork", "escape wheel", "escape arbor"],
-    watchSpin: 1,
-    watchSpinEnd: 2,
-    watchSpinSpeed: 120,
+    watch: "all",
+    watchSpin: 45,
+    watchClicks: {
+      1: { watchSpin: false, watchAtRest: true },
+      2: { watchSpin: 120, watchTilt: 20 },
+      3: { watchAtRest: false, watchTickTock: "plain" },
+      4: { watchTickTock: "burst" },
+      5: { watchTickTock: false },
+    },
+  };
+  const at = (clicks: number) => watchState(frontmatter, clicks);
+  const clicks = [0, 1, 2, 3, 4, 5];
+  assert.deepEqual(
+    clicks.map((click) => at(click)?.spin),
+    [45, null, 120, 120, 120, 120],
+  );
+  assert.deepEqual(
+    clicks.map((click) => at(click)?.settled),
+    [false, true, true, false, false, false],
+  );
+  assert.deepEqual(
+    clicks.map((click) => at(click)?.tilt),
+    [0, 0, 20, 20, 20, 20],
+  );
+  assert.deepEqual(
+    clicks.map((click) => tickTockState(frontmatter, click)),
+    [
+      undefined,
+      undefined,
+      undefined,
+      { burst: false },
+      { burst: true },
+      undefined,
+    ],
+  );
+  // a block that says what is already so changes nothing
+  assert.equal(
+    watchState({ watch: "all", watchClicks: { 2: { watchAtRest: false } } }, 3)
+      ?.settled,
+    false,
+  );
+});
+
+test("watchClicks changes what shows from its click on; the camera stays on watchView", () => {
+  const gears = ["fourth wheel", "escape pinion"];
+  const frontmatter = {
+    watch: gears,
+    watchView: gears,
+    // a list may hold lists (YAML aliases), and a name twice shows once
+    watchClicks: {
+      3: { watch: [gears, "pallet fork", "escape wheel"] },
+      1: { watch: [gears, "escape wheel", "escape pinion"] },
+    },
   };
   const at = (clicks: number) => watchState(frontmatter, clicks);
   assert.deepEqual(
-    [0, 1, 2, 3].map((clicks) => at(clicks)?.spin),
-    [null, 120, null, null],
+    [0, 1, 2, 3].map((clicks) => at(clicks)?.show),
+    [
+      gears,
+      [...gears, "escape wheel"],
+      [...gears, "escape wheel"],
+      [...gears, "pallet fork", "escape wheel"],
+    ],
   );
-  const still = stageState(watch, at(0) ?? assert.fail());
-  const spinning = stageState(watch, at(1) ?? assert.fail());
-  const spun = new Set(
-    watch.scene.pieces
-      .filter((piece) => SPIN_PIECES.includes(piece.name))
-      .flatMap((piece) => [...piece.meshes]),
-  );
-  assert.deepEqual(spinning.shown, spun);
-  assert.ok(still.shown.size > spun.size);
-  assert.deepEqual(spinning.view, still.view);
-  // with no end, it spins to the slide's end, at the default speed
-  const open = { watch: "all", watchSpin: 1 };
-  assert.equal(watchState(open, 5)?.spin, SPIN_SPEED);
+  const first = stageState(watch, at(0) ?? assert.fail());
+  const last = stageState(watch, at(3) ?? assert.fail());
+  assert.deepEqual(last.view, first.view);
+  assert.ok(last.shown.size > first.shown.size);
+  // without watchView, the view fits what shows, so it moves
+  const moving = { watch: gears, watchClicks: frontmatter.watchClicks };
+  const fitted = (clicks: number) =>
+    stageState(watch, watchState(moving, clicks) ?? assert.fail()).view;
+  assert.notDeepEqual(fitted(3), fitted(0));
+  // a click can change the frame too: here, to a named view
+  const named = {
+    watch: gears,
+    watchClicks: { 2: { watchView: "hairspring" } },
+  };
+  assert.equal(watchState(named, 1)?.view, null);
+  assert.equal(watchState(named, 2)?.view, "hairspring");
+});
+
+test("watchClicks and watchView refuse what they cannot hold, with the key's name", () => {
+  for (const [frontmatter, field] of [
+    [{ watchClicks: [{ watch: "all" }] }, "watchClicks"],
+    [{ watchClicks: { one: { watch: "all" } } }, "watchClicks"],
+    [{ watchClicks: { "-1": { watch: "all" } } }, "watchClicks"],
+    [{ watchClicks: { 1.5: { watch: "all" } } }, "watchClicks"],
+    [{ watchClicks: { 1: ["escape wheel"] } }, "watchClicks.1"],
+    [{ watchClicks: { 1: {} } }, "watchClicks.1"],
+    [{ watchClicks: { 1: { watchFlash: ["stud"] } } }, "watchClicks.1"],
+    // a block is checked before its click comes
+    [{ watchClicks: { 5: { watch: [] } } }, "watchClicks.5.watch"],
+    [{ watchClicks: { 5: { watchView: 3 } } }, "watchClicks.5.watchView"],
+    [{ watchView: [] }, "watchView"],
+    [{ watchView: [[]] }, "watchView"],
+  ] as const) {
+    assert.throws(
+      () => watchState({ watch: "all", ...frontmatter }, 0),
+      new RegExp(`^Error: ${field.replaceAll(".", "\\.")}:`),
+      JSON.stringify(frontmatter),
+    );
+  }
 });
 
 test("a slide shows the meshes of its pieces, or all of them, in its named or fitted view", () => {
@@ -129,39 +209,19 @@ test("watchMoveWith names what shows while the camera moves into the slide", () 
   );
 });
 
-test("watchSpinEnd needs an earlier watchSpin, and a speed needs a spin", () => {
+test("a key that a click can change needs watch on the slide", () => {
   for (const [frontmatter, field] of [
-    [{ watchSpinEnd: 2 }, "watchSpinEnd"],
-    [{ watchSpin: 2, watchSpinEnd: 2 }, "watchSpinEnd"],
-    [{ watchSpinSpeed: 90 }, "watchSpinSpeed"],
+    [{ watchSpin: 45 }, "watchSpin"],
+    [{ watchAtRest: true }, "watchAtRest"],
+    [{ watchTickTock: "plain" }, "watchTickTock"],
+    [{ watchClicks: { 1: { watch: "all" } } }, "watchClicks"],
   ] as const) {
     assert.throws(
-      () => watchState({ watch: "all", ...frontmatter }, 0),
-      new RegExp(`^Error: ${field}:`),
+      () => watchState(frontmatter, 0),
+      new RegExp(`^Error: ${field}: .*set only with watch`),
       JSON.stringify(frontmatter),
     );
-  }
-});
-
-test("a settled balance resumes at watchResume", () => {
-  const frontmatter = { watch: "all", watchSettle: 2, watchResume: 3 };
-  const at = (clicks: number) => watchState(frontmatter, clicks);
-  assert.equal(at(1)?.settled, false);
-  assert.equal(at(2)?.settled, true);
-  assert.equal(at(3)?.settled, false); // swinging again
-  assert.equal(at(4)?.settled, false);
-});
-
-test("watchResume needs an earlier watchSettle", () => {
-  for (const frontmatter of [
-    { watchResume: 2 },
-    { watchSettle: 2, watchResume: 2 },
-  ]) {
-    assert.throws(
-      () => watchState({ watch: "all", ...frontmatter }, 0),
-      /^Error: watchResume:/,
-      JSON.stringify(frontmatter),
-    );
+    assert.throws(() => tickTockState(frontmatter, 0), /set only with watch/);
   }
 });
 
@@ -181,52 +241,28 @@ test("a field of the wrong kind throws, with its name", () => {
     ["watchFlash", ""],
     ["watchFlash", 2],
     ["watchFlash", "stud"],
-    ["watchSettle", "1"],
-    ["watchSettle", 1.5],
-    ["watchSettle", -1],
-    ["watchResume", "3"],
-    ["watchResume", -1],
-    ["watchResume", 1.5],
-    ["watchSpin", "1"],
-    ["watchSpin", -1],
-    ["watchSpinEnd", 1.5],
-    ["watchSpinSpeed", 0],
-    ["watchSpinSpeed", -90],
-    ["watchSpinSpeed", "90"],
+    ["watchAtRest", 1],
+    ["watchAtRest", "true"],
+    ["watchSpin", "90"],
+    ["watchSpin", 0],
+    ["watchSpin", -90],
+    ["watchSpin", true],
+    ["watchSpin", Number.POSITIVE_INFINITY],
+    ["watchTickTock", true],
+    ["watchTickTock", "loud"],
   ] as const) {
     assert.throws(
       () => watchState({ watch: "all", [field]: value }, 0),
       new RegExp(`^Error: ${field}:`),
       `${field}: ${String(value)}`,
     );
+    if (field === "watchFlash") continue; // on the slide only
+    // the same key in a click block, checked before its click
+    assert.throws(
+      () =>
+        watchState({ watch: "all", watchClicks: { 3: { [field]: value } } }, 0),
+      new RegExp(`^Error: watchClicks\\.3\\.${field}:`),
+      `watchClicks.3.${field}: ${String(value)}`,
+    );
   }
-});
-
-test("the words tick and tock show from watchTickTock on, in bursts from watchTickTockBurst", () => {
-  assert.equal(tickTockState({ watch: "all" }, 9), undefined);
-  const frontmatter = {
-    watch: "all",
-    watchTickTock: 7,
-    watchTickTockBurst: 8,
-  };
-  assert.equal(tickTockState(frontmatter, 6), undefined);
-  assert.deepEqual(tickTockState(frontmatter, 7), { burst: false });
-  assert.deepEqual(tickTockState(frontmatter, 8), { burst: true });
-  assert.throws(
-    () => tickTockState({ watch: "all", watchTickTock: "7" }, 7),
-    /watchTickTock/,
-  );
-  assert.throws(() => tickTockState({ watchTickTock: 7 }, 7), /watchTickTock/);
-  assert.throws(
-    () =>
-      tickTockState(
-        { watch: "all", watchTickTock: 7, watchTickTockBurst: 7 },
-        7,
-      ),
-    /watchTickTockBurst/,
-  );
-  assert.throws(
-    () => tickTockState({ watch: "all", watchTickTockBurst: 8 }, 8),
-    /watchTickTockBurst/,
-  );
 });
