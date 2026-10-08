@@ -43,13 +43,12 @@ import {
   disc,
   dShape,
   escapeOutline,
-  gear,
   openings,
-  pinionOutline,
   polar,
   radians,
   spiralCurve,
 } from "./shapes.ts";
+import { pinionLeaves, wheelTeeth } from "./teeth.ts";
 
 // ---- what the art says (the 2D drawing's numbers) ------------------------------------
 /** Heights of the train's meshing: a pinion is level with the wheel that
@@ -946,10 +945,7 @@ function trainSolids(kit: Kit): void {
             wheel.outer,
             design.escapePhase,
           )
-        : gear(wheel.teeth, wheel.pitchRadius, wheel.toothPhase, {
-            addendum: wheel.depth,
-            dedendum: wheel.depth,
-          });
+        : wheelTeeth(wheel);
     const gaps =
       wheel === escape && design.escapeSolid
         ? null
@@ -976,18 +972,12 @@ function trainSolids(kit: Kit): void {
       ringsOf([circlePath(0, 0, 4), line(2)]),
       subjectWash,
     );
-    if (wheel.pinionRadius === null || wheel.pinionPhase === null) {
-      throw new Error(`the ${wheel.name} wheel has no pinion`);
-    }
     solids.add(
       kit.pieces.make(`${wheel.name} pinion`),
       owner,
       "other",
       group,
-      ringsOf([
-        pinionOutline(wheel.leaves, wheel.pinionRadius, wheel.pinionPhase),
-        line(2),
-      ]),
+      ringsOf([pinionLeaves(wheel), line(2)]),
       subjectWash,
     );
     solids.add(
@@ -1014,10 +1004,7 @@ function barrelSolids(kit: Kit): void {
     owner,
     "body",
     group,
-    ringsOf(
-      [gear(barrel.teeth, barrel.pitchRadius, barrel.toothPhase), line(2.5)],
-      [disc(lid), line(2)],
-    ),
+    ringsOf([wheelTeeth(barrel), line(2.5)], [disc(lid), line(2)]),
     subjectWash,
   );
   solids.add(

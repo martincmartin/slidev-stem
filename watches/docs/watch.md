@@ -49,6 +49,7 @@ ruler that the diving board replaced),
 | `webgl/probe/`                                           | a page with one canvas and `window.watchProbe.render(options)`, for the pixel and fade checks; `checks.ts`: `window.webglChecks()`, the renderer's browser checks      |
 | `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand. `art/watch_design.py --check` compares what the file means, not its bytes (`pnpm format` rewrites its spacing)   |
 | `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights, pieces and their extents, the named views, `fittedView`                                                      |
+| `watch/teeth.ts`, `teeth.test.ts`                        | the train's teeth: cycloidal wheel teeth and the pinion leaves they drive; tests that each pair meshes without overlap                                                 |
 | `watch/palette.ts`                                       | which theme variable colours each ink; `slidePalette()` reads them from the page, as a slide's classes change them, and the browser works out a recipe (`color-mix()`) |
 | `art/theme.py`                                           | the theme's palette for the scripts that write files (`diving_board.py`, `favicon.py`): it works out each recipe as the browser does                                   |
 | `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism, the balance's settle and the train's free spin; frontmatter to state; the watch's stills; the shared instance                                           |
@@ -90,6 +91,36 @@ before: the layout changed only what is inside the case.
 
 Use the ETA reference for the gross layout.
 Choose individual part details for clear motion and fit with the drawing style.
+
+## The teeth
+
+Every wheel that drives a pinion has watchmaker's cycloidal teeth.
+The face is an epicycloid drawn by a circle with half the pinion's pitch radius.
+The flank is radial. A tooth is half the pitch wide.
+`watch/teeth.ts` makes the outlines.
+
+The tip and root circles are `outer` and `inner` in `watch/design.ts`.
+The layout's clearance checks use these circles, so the teeth must not extend beyond them.
+A pinion leaf has radial flanks and a round end.
+Its width on the pitch circle is `TOOTH_FORM.leafWidth` modules.
+
+`ToothForm.faceSegments` must be a positive integer.
+`leafWidth` must be finite and positive; `contactSlack` must be finite and nonnegative.
+The tooth functions reject invalid settings before they make an outline.
+
+Each pinion turns back against its motion by half the backlash, less `TOOTH_FORM.contactSlack`.
+This puts its leaves against the driving flanks.
+The wheel always drives, so only that side must keep contact.
+`watch/teeth.test.ts` turns each pair through one tooth.
+It fails on overlap or a driving-side gap wider than the ink can cover.
+It also checks that each pinion leaf has four corners.
+Each round end uses one semicircular arc to prevent a false corner at its tip.
+
+The escape wheel's club teeth are separate: they act on the pallet stones.
+`escapeOutline` in `watch/shapes.ts` makes them.
+
+**Not an oversight:** the pinion has no cycloidal face, and wheel tips stop at the tip circle.
+Engineering cycloids on both gears looked less like a watch; full pointed tips changed the layout's circles.
 
 ## Oscillator geometry and framing
 
@@ -276,6 +307,8 @@ the spin starts and stops is in [The free spin](#the-free-spin).
   (`style.css`, and [slide-patterns.md](slide-patterns.md#text-fades)).
 
 ## The Gears slide
+
+The pair meshes without overlap throughout its motion ([The teeth](#the-teeth)).
 
 The Gears slide shows the fourth wheel (its wheel, hub and arbor) and the
 escape wheel's pinion with its arbor: 16 teeth drive 8 leaves. It leaves out

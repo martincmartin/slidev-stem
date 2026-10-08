@@ -58,54 +58,6 @@ export function dShape(
     .close();
 }
 
-export interface GearOptions {
-  addendum?: number;
-  dedendum?: number;
-  /** As fractions of the angle between two teeth. */
-  rootWidth?: number;
-  tipWidth?: number;
-}
-
-/** The closed outline of a toothed wheel, centred on the origin. */
-export function gear(
-  teeth: number,
-  pitchRadius: number,
-  phase = 0,
-  options: GearOptions = {},
-): Path {
-  const {
-    addendum = 4,
-    dedendum = 4,
-    rootWidth = 0.56,
-    tipWidth = 0.3,
-  } = options;
-  const toothAngle = 360 / teeth;
-  const rootRadius = pitchRadius - dedendum;
-  const tipRadius = pitchRadius + addendum;
-  const path = new Path();
-  for (let index = 0; index < teeth; index++) {
-    const middle = phase + index * toothAngle;
-    if (index === 0) {
-      path.moveTo(...polar(rootRadius, middle - (rootWidth * toothAngle) / 2));
-    }
-    path.lineTo(...polar(tipRadius, middle - (tipWidth * toothAngle) / 2));
-    path.arcTo(
-      tipRadius,
-      false,
-      true,
-      ...polar(tipRadius, middle + (tipWidth * toothAngle) / 2),
-    );
-    path.lineTo(...polar(rootRadius, middle + (rootWidth * toothAngle) / 2));
-    path.arcTo(
-      rootRadius,
-      false,
-      true,
-      ...polar(rootRadius, middle + toothAngle - (rootWidth * toothAngle) / 2),
-    );
-  }
-  return path.close();
-}
-
 /** A lever escape wheel: club teeth whose locking face leads anticlockwise,
  *  the way this one turns. */
 export function escapeOutline(
@@ -208,21 +160,6 @@ export function spiralCurve(
     startTangent = endTangent;
   }
   return path;
-}
-
-/** A pinion: few, rounded leaves, at the pitch of the wheel that drives it. */
-export function pinionOutline(
-  leaves: number,
-  radius: number,
-  phase: number,
-): Path {
-  const leafPitch = (2 * Math.PI * radius) / leaves;
-  return gear(leaves, radius, phase, {
-    addendum: Math.min(3.5, 0.3 * leafPitch),
-    dedendum: Math.min(4.5, 0.42 * leafPitch),
-    rootWidth: 0.5,
-    tipWidth: 0.4,
-  });
 }
 
 /** A closed polygon of straight edges. */
