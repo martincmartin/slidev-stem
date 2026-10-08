@@ -54,7 +54,7 @@ import {
 /** Heights of the train's meshing: a pinion is level with the wheel that
  *  drives it, and an arbor's end rises this far above its pinion. The arbor
  *  runs up from its wheel, through the pinion, so that a view without the
- *  pinion (slide 4's escape wheel) shows no floating arbor. */
+ *  pinion (the Escapement slide's escape wheel) shows no floating arbor. */
 const ARBOR_CAP = 3;
 const STRAP_THICKNESS = 4;
 /** From the watch centre: off the slide up to a tilt of about 75 degrees. */
@@ -104,8 +104,8 @@ const CROWN_ZOOM = 2;
 const HAIRSPRING_ZOOM = 250 / 56;
 /** Where the balance's arbor is on the slide in the hairspring view. */
 const HAIRSPRING_TARGET: Point2 = [275, 276];
-/** The escapement view's zoom and left edge (docs/watch.md, "Slide 4: the
- *  escapement"). The escapement is as large as fits in this frame, from its
+/** The escapement view's zoom and left edge (docs/watch.md, "The
+ *  Escapement slide"). The escapement is as large as fits in this frame, from its
  *  left edge. The frame is wider than the escapement, so its height sets the
  *  zoom, and the callouts use the room on the right. Its top and bottom do
  *  not place the escapement: ESCAPEMENT_ARBOR_Y does. */
@@ -115,7 +115,7 @@ const ESCAPEMENT_FRAME: PlanBox = Object.freeze({
   right: 964,
   bottom: 548,
 });
-/** The subtitle's baseline on slide 4, in slide px, as measured in the
+/** The subtitle's baseline on the Escapement slide, in slide px, as measured in the
  *  browser: the theme's title and subtitle (themes/ledger/styles/ledger.css)
  *  put it there. Measure it again if they change. */
 const SUBTITLE_BASELINE = 110.7;
@@ -292,7 +292,7 @@ export interface Watch {
   /** The chapter ring's height, on which the decals lie. */
   readonly ringTop: number;
   /** The tops of the escape wheel, the fork and the impulse jewel: where
-   *  slide 4's callouts point (watch/callouts.ts). */
+   *  the Escapement slide's callouts point (watch/callouts.ts). */
   readonly escapementTops: {
     readonly escape: number;
     readonly fork: number;
@@ -1477,7 +1477,7 @@ export function generate(design: Design = DESIGN): Watch {
     name: "hairspring and stud",
     meshes: new Set([springMesh, colletMesh, stud.mesh]),
   };
-  // the oscillator: what slide 2 flashes. Not the pallet fork.
+  // the oscillator: what the Hairspring slide flashes. Not the pallet fork.
   const oscillatorParts = new Set([
     parts.balance,
     parts.spring,
@@ -1508,8 +1508,8 @@ export function generate(design: Design = DESIGN): Watch {
       ...balanceScrews,
     ]),
   };
-  // what slide 3 adds to slide 2's picture: the balance wheel, its screws and
-  // the staff. Slide 3 flashes it when it has faded in.
+  // what the Balance Wheel slide adds to the Hairspring slide's picture: the balance wheel, its screws and
+  // the staff. The Balance Wheel slide flashes it when it has faded in.
   const wheelAdded: Subject = {
     name: "balance wheel",
     meshes: new Set(
@@ -1517,7 +1517,7 @@ export function generate(design: Design = DESIGN): Watch {
     ),
   };
   // the escapement: the oscillator, the pallet fork, and the escape wheel
-  // with its arbor but not its pinion (a wheel's "other" solid): what slide 4
+  // with its arbor but not its pinion (a wheel's "other" solid): what the Escapement slide
   // shows. It holds `wheel`, so the camera moves first, then the rest of it
   // fades in.
   const escapePart = partOf(train.escape);

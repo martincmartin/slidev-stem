@@ -111,10 +111,10 @@ drawing's colour, a leader reads as a part of the drawing. Two exceptions:
   second also shows where the leader crosses the subject's lines: ink on
   Ledger's subject is only 1.36:1 and ΔE 37; the second is ΔE 69 from it. No
   new hue fits better (theme.md, "Adding a colour"). A flash and a keyword
-  callout must not show at the same time. Slide 4 of `watches` is the example
+  callout must not show at the same time. The Escapement slide of `watches` is the example
   (`keyword` on `WatchCallout.vue`).
 - **A reference mark**: a leader may take the colour of a reference mark that
-  it names (slide 2 of `watches` points to a muted rest shape, in muted).
+  it names (the Hairspring slide of `watches` points to a muted rest shape, in muted).
 
 The widths are set in
 `watches/art/diving_board.py` (`LeaderDesign`) and
@@ -125,6 +125,19 @@ level, runs a fixed distance (`LeaderDesign` from `start` to `elbow`, and
 `ELBOW_RUN` in `WatchCallout.vue`; keep them equal), and then turns straight
 to the part, at one round-joined corner. Bend a leader when a straight one
 would cross another line of its label.
+
+**A leader ends where only one part can be meant.** By default, it ends on
+the paper, 10 px outside the outline of its part (slide px, as for the
+width). There it crosses none of the part's own lines, and its end shows
+clearly against the paper. For a part that moves, use its outline at each end
+of its motion. Sometimes the paper near the part is next to another part, and
+an end there could point at that part. Then end the leader inside its part, at
+a point that only that part can mean, for example a small part with a solid
+fill. The Escapement slide of `watches` has both kinds: the wheel's and the pallet's leaders
+end outside, and the jewel's leader ends inside the jewel, because the fork
+and the roller are all around it. A leader to a thin line, such as the Hairspring slide's
+rest shape, may end on the line: the line is its own outline. The gap is `LEADER_GAP` in
+`watches/watch/callouts.ts`; keep it equal to this rule.
 
 **Motion.** One loop per subject, running forever, with a fixed duration per
 subject, so two drawings side by side are never compared at different points

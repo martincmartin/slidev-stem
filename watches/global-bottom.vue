@@ -4,7 +4,7 @@
 // (`watch: hairspring`, `watchTilt: 45`, and see watch/state.ts); a slide
 // without one hides the layer. A click can change the state (`watchSettle`).
 // Above the watch, the one live diving board (components/DivingBoard.vue),
-// which slide 2's frontmatter shows (`board`, and see watch/board.ts). While
+// which the Hairspring slide's frontmatter shows (`board`, and see watch/board.ts). While
 // the board's picture shows, it covers the watch: the canvas fades out, and the
 // stage stops. The board's clock decides when (its `cover` event), so the
 // hairspring takes the board's place when the curl ends, with no click.

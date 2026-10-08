@@ -36,7 +36,7 @@ and the pixels of the watch's line colour on each page.
 
 OVERVIEW. /overview in headless Chromium: contexts, and stills drawn.
 
-OPENING. From the cover: a key goes to slide 2 (zoom, fade, tilt), a key
+OPENING. From the cover: a key goes to the Hairspring slide (zoom, fade, tilt), a key
 settles the balance, a key back resumes it, a key goes back to the cover. Each
 frame's gap and JS time are split by the stage's phase at that frame. A gap
 over 12.5 ms is a missed frame at 120 Hz.
@@ -261,7 +261,7 @@ def slide_rows(
 
 
 def walk(page: Page, target: Page | Frame) -> list[float]:
-    """Wait on the cover, press the key, wait on slide 2: the page time at
+    """Wait on the cover, press the key, wait on the Hairspring slide: the page time at
     the start of each slide."""
     marks = [float(target.evaluate("performance.now()"))]
     page.wait_for_timeout(SLIDE_SECONDS * 1000)
@@ -475,7 +475,7 @@ def overview(playwright: Playwright, deck: Deck) -> dict[str, object]:
 
 
 OPENING_STEPS = [  # (key, what it does, ms to wait after it)
-    ("ArrowRight", "to slide 2: zoom, fade, tilt", 7000),
+    ("ArrowRight", "to the Hairspring slide: zoom, fade, tilt", 7000),
     ("ArrowRight", "click: settle", 3500),
     ("ArrowLeft", "click back: resume", 2500),
     ("ArrowLeft", "to the cover: untilt, unfade, zoom out", 6000),

@@ -1,5 +1,5 @@
 // The train's clock (model.ts, TrainClock): the escape wheel's free spin on
-// slide 4, and the stop that brings it back into step with the mechanism.
+// the Escapement slide, and the stop that brings it back into step with the mechanism.
 
 import assert from "node:assert/strict";
 import { test } from "node:test";

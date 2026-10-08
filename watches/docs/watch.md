@@ -2,7 +2,7 @@
 
 **Covers:** this talk's live art: the skeleton watch in WebGL (its files, its
 design, the frontmatter keys that drive it, line widths when zooming, its
-measured budgets) and the diving board on slide 2.
+measured budgets) and the diving board on the Hairspring slide.
 **Read before** you change `watch/`, `art/`, the watch's frontmatter,
 `global-bottom.vue`, `slide-bottom.vue`, the diving board, or the slides that show
 them. The rules for WebGL art in any talk are in
@@ -53,7 +53,7 @@ ruler that the diving board replaced),
 | `global-bottom.vue`, `slide-bottom.vue`                  | the live canvas and the live diving board, and the kind of each move; the still and the posed board on each printed page                                               |
 | `watch/board.ts`, `components/DivingBoard.vue`           | the board's frontmatter to its target, and its clock (`BoardClock`); the component that inlines the SVG and sets its time                                              |
 | `watch/navigation.ts`, `slide-state.ts`                  | a step forward, a step back or a jump; `window.slideState()` for `tools/navcheck.py` ([`navigation.md`](../../docs/navigation.md))                                     |
-| `watch/callouts.ts`, `components/WatchCallout.vue`       | where slide 4's leaders end, on the slide (`escapementMarks`); a callout: a label, and a leader from one of its words                                                  |
+| `watch/callouts.ts`, `components/WatchCallout.vue`       | where the Escapement slide's leaders end, on the slide (`escapementMarks`); a callout: a label, and a leader from one of its words                                     |
 | `components/TickTock.vue`                                | the words "tick" and "tock" at each strike of the jewel, in the watch's layer; where they start (`jewelStrikes` in `watch/callouts.ts`)                                |
 | `types/`                                                 | two small `.d.ts` files, mapped by `tsconfig.json` `paths` to `@slidev/client`. `vue-tsc` would otherwise check Slidev's own source, which fails our strict settings.  |
 
@@ -69,7 +69,7 @@ each change to the design.
 
 **The main focus of a slide is on its left.** The audience looks left first, so
 a slide's picture goes on the left and its callouts and text go on the right.
-Slide 2 follows it: the hairspring is at slide x 275 (`HAIRSPRING_TARGET` in
+The Hairspring slide follows it: the hairspring is at slide x 275 (`HAIRSPRING_TARGET` in
 `watch/generate.ts`), and the diving board is shifted left with it.
 
 Therefore the train runs from the hairspring to the fourth wheel from left to
@@ -103,30 +103,30 @@ The hairspring view keeps its on-slide target and zoom when the oscillator heigh
 Its camera pivot uses the spring's midpoint in height. Thus the spring stays at its target as the view tilts.
 `watch/generate.ts` holds the target and zoom.
 
-On slide 2, the roller flashes with the oscillator before the zoom.
+On the Hairspring slide, the roller flashes with the oscillator before the zoom.
 Then it fades with the balance, jewel, staff, fork, and other mechanism parts.
 Only the hairspring, collet, and stud remain visible, so the roller does not cover the coils.
 The subject sets in `watch/generate.ts` control this fade.
 
-## Slide 3: the balance wheel joins
+## The Balance Wheel slide
 
-Slide 3 has the same view, tilt and swinging hairspring as the end of slide 2,
+The Balance Wheel slide has the same view, tilt and swinging hairspring as the end of the Hairspring slide,
 with `watchOnly: balance wheel and hairspring`. Entering it, the balance wheel
 and its staff fade in (not the roller or the jewel) (a swap) while the rest
-shape of slide 2 (the dashed line, the callout and its leader) fades out.
-Slide 3 has no code for this. It has no `board` key, so the live board's
+shape of the Hairspring slide (the dashed line, the callout and its leader) fades out.
+The Balance Wheel slide has no code for this. It has no `board` key, so the live board's
 target there is "off", and the board's layer fades its rest shape out in
 `FADE_SECONDS`, as long as the swap (`--watch-fade`, set by
 `global-bottom.vue`). Going back from 3 to 2 fades it in again while the wheel
 fades out, and from 4 to 3 nothing changes
-([`navigation.md`](../../docs/navigation.md)). A printed page of slide 3 has
+([`navigation.md`](../../docs/navigation.md)). A printed page of the Balance Wheel slide has
 no board.
 
-## Slide 4: the escapement
+## The Escapement slide
 
-Slide 4 has `watch: escapement`, `watchTilt: 20` and `watchOnly: escapement`:
+The Escapement slide has `watch: escapement`, `watchTilt: 20` and `watchOnly: escapement`:
 the whole path from the escape wheel to the balance, except the escape
-wheel's pinion. Entering it, the camera zooms out with only slide 3's picture
+wheel's pinion. Entering it, the camera zooms out with only the Balance Wheel slide's picture
 on the screen. Then the roller, the impulse jewel, the pallet fork and the
 escape wheel fade in. It is the opening's zoom in reverse, with the tilt kept.
 Going back, they fade out, and then the camera zooms in.
@@ -159,16 +159,16 @@ Three callouts appear, one at each click: "Wheel driven by hidden gear",
   the word and its leader are in the second, 4 px, and the rest of the label
   is ink ([`illustrations.md`](../../docs/illustrations.md), "Leaders"). The
   leaders pass the back-row gate
-  ([measurements.md](measurements.md#slide-4-leaders-alone)). Slide 2's
+  ([measurements.md](measurements.md#escapement-leaders-alone)). The Hairspring slide's
   leader is a reference mark's: muted, as the dashed rest shape is.
 - **The newest callout is the focus; the ones before it dim** (to
   `--esc-dim` in the slide's style: less than the "Before clocks" cards, so
   that a dimmed callout stays easy to read). From click 3 the wheel's callout, with its
-  leader and the drive arrow, dims; at click 6 the pallet's dims too. At
-  click 7 the balance swings again, the jewel's leader fades out, and the
+  leader and the drive arrow, dims; at click 4 the pallet's dims too. At
+  click 5 the balance swings again, the jewel's leader fades out, and the
   other two come back in `--text-fade`. Each dim waits for the callout that
   takes the focus (`--watch-fade` at click 3, `--watch-rest-delay` at click
-  6), so the focus never moves to empty space. A class on a wrapper names
+  4), so the focus never moves to empty space. A class on a wrapper names
   the focus at each click (`esc-focus-pallet`, `esc-focus-jewel`); the CSS
   is in the slide. The dim is on the callout's parts, not its root, which
   carries the `v-click` classes.
@@ -187,7 +187,7 @@ Three callouts appear, one at each click: "Wheel driven by hidden gear",
 - **The first leader bends** (`bent`): "Wheel" has the label's second line
   under it, which a straight leader to the wheel crossed. A bent leader leaves
   the word level, on the side that faces its end, and turns after
-  `ELBOW_RUN`, as slide 2's leader does.
+  `ELBOW_RUN`, as the Hairspring slide's leader does.
 - **The drive arrow** is an arc on the escape wheel's face, at its pinion's
   radius, where the fourth wheel's teeth push. It is centred on the line to
   the (hidden) fourth wheel and points the way the escape wheel turns.
@@ -196,29 +196,33 @@ Three callouts appear, one at each click: "Wheel driven by hidden gear",
   at rest, in the fork's mouth, where the jewel strikes. It ends at the D's
   deepest point: the centre of the largest circle inside it. A leader that
   followed the jewel would sweep across the balance.
-- **The balance rests for the jewel's callout** (`watchSettle: 6`,
-  `watchResume: 7`). A swinging jewel is at its leader's end for only about
+- **The balance rests for the jewel's callout** (`watchSettle: 4`,
+  `watchResume: 5`). A swinging jewel is at its leader's end for only about
   0.2 s of each swing. The callout appears only when the balance is at rest
   (the class `after-balance-rest`), so its leader never points at an empty
   notch. The settle waits for the end of a swing, so this is 0.8 to 1.8 s
-  after the click. At click 7 the balance swings again, and the viewer knows
+  after the click. At click 5 the balance swings again, and the viewer knows
   which part to follow. The leader fades out (`showLeader`), because the
-  jewel leaves its end; the label stays. Going back to click 6, the leader
+  jewel leaves its end; the label stays. Going back to click 4, the leader
   comes back when the balance is at rest again.
-- **The pallet's leader ends on the fork's lower arm, at a point that the
-  fork covers at every angle of its swing** (`palletPoint`). The outlines of
-  the fork at its two banks overlap, and the overlap ends below the pivot in
-  a tip. The point is a quarter of the way down from the pivot's circle to
-  that tip (`PALLET_DEPTH`), in the middle of the overlap's width there.
-  Its clearance from every edge, the circle's included, is 90% of the
-  largest on the arm. Not an oversight: a leader to a pallet stone pointed at
-  empty space for half of each beat. A leader to the pivot, or to the point
-  of the arm farthest from every edge (just under the circle), looked like
-  it pointed at the pivot. Halfway down to the tip looked too low.
+- **Each leader ends where only one part can be meant**
+  ([`illustrations.md`](../../docs/illustrations.md), "Leaders"). The
+  wheel's and the pallet's leaders end on the paper, `LEADER_GAP` px outside
+  their parts (`watch/callouts.ts`; the callout's `stop` and `clear`). Each
+  aims at a point of its part and stops short of the first outline that it
+  meets: the escape wheel's tip circle, or the fork at either bank. The
+  jewel's leader ends inside the jewel: outside it are only the fork and the
+  roller.
+- **The pallet's leader aims between corners A and B of the fork's lower
+  arm** (`palletAim`). B is the corner before the fork's lowest one, where
+  the back of the arm turns up. A is the first sharp inward corner after
+  it, where the lower stone meets the arm. The aim is halfway between A at
+  its leftmost and B at its rightmost over the fork's swing, so the leader
+  comes up to the bottom of the arm, not to a stone or the pivot.
 
 ### Tick and tock
 
-From click 7 (`watchTickTock: 7`), each time the jewel strikes the fork, a
+From click 5 (`watchTickTock: 5`), each time the jewel strikes the fork, a
 word appears beside the horn that it strikes: "tick" at the upper horn,
 "tock" at the lower one. The jewel enters the notch past one horn and
 strikes the other, ahead of it (`jewelStrikes` in `watch/callouts.ts`). It appears at once, and fades out in 0.8 s as it drifts 40 px
@@ -236,7 +240,7 @@ the type, the times and the distances.
   from the jewel.
 - **They drift as mirror images**: away from the fork's axis, leaning
   22.5° away from the fork (`STRIKE_LEAN` in `watch/callouts.ts`), so NNW
-  and SSW on slide 4. The two strikes are mirror images about the axis,
+  and SSW on the Escapement slide. The two strikes are mirror images about the axis,
   so the two words read as one sound from the notch. If the design or the
   view changes, the strikes and the ways follow.
 - **They live in the watch's layer**, because they need the model's clock.
@@ -245,8 +249,8 @@ the type, the times and the distances.
 - **They are lowercase, bold, with no quotes**: a sound, not a label or a
   quotation. Ink, with an outline in the paper's colour, so they read over
   the drawing.
-- **Click 8 is a trial**, to compare by going back and forward
-  (`watchTickTockBurst: 8`): the same words, times and drift, as 1960s
+- **Click 6 is a trial**, to compare by going back and forward
+  (`watchTickTockBurst: 6`): the same words, times and drift, as 1960s
   _Batman_ bursts in the theme's colours. Each is a spiked burst, outlined
   in ink: the accent behind "TICK!" and the second behind "TOCK!", so the
   two sounds differ in colour too. The words are capitals in the paper's
@@ -300,7 +304,7 @@ the wheel. The keys are `watchSpin`, `watchSpinEnd` and `watchSpinSpeed`
 
 ## Balance rim motion
 
-Four radial screws make the rim's swing visible on the cover and slide 3.
+Four radial screws make the rim's swing visible on the cover and the Balance Wheel slide.
 Their heads point outward from the rim and turn with the balance group.
 Each head has a slot on its outward face.
 The rim, arms, and hub retain their continuous outline.
@@ -311,14 +315,14 @@ The screws use the subject's outline and pale face colours.
 Their line widths stay fixed on the screen as the view zooms.
 
 The screws belong to the oscillator flash and the balance-wheel subject.
-On slide 2, they fade with the balance, so only the spring, collet, and stud remain.
-On slide 3, they fade in with the wheel.
+On the Hairspring slide, they fade with the balance, so only the spring, collet, and stud remain.
+On the Balance Wheel slide, they fade in with the wheel.
 The camera target, zoom, and mechanism timing remain unchanged.
 
 ## The frontmatter keys
 
 A slide asks for a view of the watch in its frontmatter. A slide with no
-`watch:` key hides it. Slide 2 is the example:
+`watch:` key hides it. The Hairspring slide is the example:
 
 ```yaml
 watch: hairspring
@@ -352,12 +356,12 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   balance staff, the stud, roller and impulse jewel. Not the pallet fork.
 - `balance wheel and hairspring`: the balance, the spring with its collet and
   the balance staff, and the stud. Not the roller, the impulse jewel or the
-  pallet fork. It holds `hairspring and stud`: slide 3 shows it.
-- `balance wheel`: what slide 3 adds to slide 2's picture: the balance, its
-  screws and the staff, not the spring. Slide 3 flashes it.
+  pallet fork. It holds `hairspring and stud`: the Balance Wheel slide shows it.
+- `balance wheel`: what the Balance Wheel slide adds to the Hairspring slide's picture: the balance, its
+  screws and the staff, not the spring. The Balance Wheel slide flashes it.
 - `escapement`: `balance and hairspring`, the pallet fork, and the escape
   wheel with its hub and arbor, not its pinion. It holds
-  `balance wheel and hairspring`: slide 4 shows it.
+  `balance wheel and hairspring`: the Escapement slide shows it.
 - `escape wheel` (`ESCAPE_WHEEL`): the escape wheel as `escapement` shows it.
   A free spin shows it alone.
 
@@ -369,8 +373,8 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   and the rest of the watch stays out (`Frame.fade` in `webgl/scene.ts`,
   `swap` in `webgl/timeline.ts`). If the view or the tilt changes too, the
   camera moves and tilts with the smaller subject on the screen, and then
-  the difference fades in (slide 3 to slide 4). Going back fades the
-  difference out first, and then moves the camera. Slide 2 to slide 3 is a
+  the difference fades in (the Balance Wheel slide to the Escapement slide). Going back fades the
+  difference out first, and then moves the camera. The Hairspring slide to the Balance Wheel slide is a
   swap with no camera move. A change during a swap (a fast click) first
   finishes the swap's fade, to the smaller subject if the new subject is
   inside it, else to the larger one; then the stage goes on from there. The
@@ -379,7 +383,7 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   **Flashing and zooming must not happen together: the combined motion is too
   visually busy and confusing. Start the zoom as soon as the last flash ends.**
   With `watchFlash`, the flash finishes before the camera moves, tilts, and fades.
-  In a swap, the flash starts when the swap ends (slide 3).
+  In a swap, the flash starts when the swap ends (the Balance Wheel slide).
   `webgl/timeline.ts` holds the flash count and all durations.
 - **A step animates, a jump does not** (`watch/navigation.ts`,
   [`navigation.md`](../../docs/navigation.md)). A step is one click, or the
@@ -387,16 +391,16 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
   the slide's state at once.
 - **The flash plays only on the step forward into its slide.** It points to
   where the camera goes. Going back to the cover zooms out with no flash, and
-  so does going back from slide 3 to slide 2.
+  so does going back from the Balance Wheel slide to the Hairspring slide.
 - **The settle:** the balance waits for its next extreme (at most half a
   period, 1 s), then moves to rest in 0.78 s, with no jump in angle, speed or
   acceleration where it starts. The rest of the mechanism stops with it.
 - **The mechanism's time only goes forward.** A resume swings on to the
   opposite extreme.
-- **Keep text out of the watch's way.** On slide 2 the hairspring is about 105
+- **Keep text out of the watch's way.** On the Hairspring slide the hairspring is about 105
   to 445 px across, on the left. Callouts go on the right.
 - **The cover's title fades as the watch flashes**: the `watch-zoom`
-  transition, between the cover and slide 2 only. The new slide's text comes
+  transition, between the cover and the Hairspring slide only. The new slide's text comes
   in after the camera's move, in either direction: `global-bottom.vue` sets
   `--watch-text-delay` from the stage (`viewEndAt` in `webgl/timeline.ts`).
   Forward, the text waits for the flash and camera move. Back to the cover,
@@ -415,7 +419,7 @@ at load with the key's name. The subjects are made in `watch/generate.ts`:
 - **The watch's layer paints the paper behind a `watch:` slide**, because that
   slide is see-through. When the watch hides (no `watch:`, or the diving board
   covers it), only the canvas fades; the layer stays. Fading the whole layer
-  left the page's white behind slide 2 while the watch was hidden.
+  left the page's white behind the Hairspring slide while the watch was hidden.
 - **The slide's text paints over the watch** because the slide's layout is
   positioned. A slide with its own layout must keep that.
 
@@ -451,9 +455,9 @@ The current art's back-row measurements are in [measurements.md](measurements.md
 
 ## The diving board
 
-Slide 2 ends with the diving board: `components/DivingBoard.vue`, which inlines
+The Hairspring slide ends with the diving board: `components/DivingBoard.vue`, which inlines
 `public/diving-board.svg`. There is one live board for the whole talk, in the
-watch's layer (`global-bottom.vue`), above the canvas. Slide 2's frontmatter
+watch's layer (`global-bottom.vue`), above the canvas. The Hairspring slide's frontmatter
 names its targets, as it names the watch's (below), and the layer moves the
 board from what is on the screen to each target, in either direction
 ([`navigation.md`](../../docs/navigation.md)). `art/diving_board.py` writes the SVG: edit the
@@ -514,7 +518,7 @@ it was given, and stops. If the watch's state changes while the canvas fades
 out or is hidden, the stage first makes that jump, and then moves to the new
 state as usual. So the watch comes back in the state of its click, however
 fast the clicks came: a camera move from the cover that the board covers at
-click 1 ends under the board, and slide 3's swap starts from slide 2's view.
+click 1 ends under the board, and the Balance Wheel slide's swap starts from the Hairspring slide's view.
 A move that nobody sees has no reason to go on. So the swap needs no click and no key: it
 happens when the curl ends, which only the board's clock knows (the curl waits
 for the next bottom of the swing). Going back, the clock crosses the same time
@@ -537,7 +541,7 @@ dashed outline has become. Each step is a quarter of `Timeline.edit` in
   word's width, with no font metrics in the generator. It fades with the
   leader (`data-layer="rest-callout"`), as text does: in `--text-fade`, and
   it fades in only after `--text-fade`, when the text that it replaces is gone
-  ([slide-patterns.md](slide-patterns.md#text-fades)). So slide 3's sentence,
+  ([slide-patterns.md](slide-patterns.md#text-fades)). So the Balance Wheel slide's sentence,
   in the same place, never shows on top of it.
 - **The leader points to the line "from straight,".** Its baseline starts at
   `LeaderDesign.label`, which the SVG's root gives the page (`data-label-x`,
@@ -580,14 +584,14 @@ The ghost does not change during the crossfade because the two rest outlines mat
 The real spring swings against this fixed reference at click 3.
 The component stops its frame loop when the clock holds still.
 A jump to click 2 or 3 (a reload, a link) shows the completed rest spring at once.
-The ghost fades out when the audience leaves slide 2, with the balance's swap on slide 3.
+The ghost fades out when the audience leaves the Hairspring slide, with the balance's swap on the Balance Wheel slide.
 The generator writes its paths, leader, and curl duration; do not edit the SVG by hand.
 
 The SVG draws the rest outline and callout after the board.
 The dashed reference therefore stays above the board during bending and curling.
 The board's layer is above the canvas, so the reference also stays above the live hairspring.
 The slide's text paints above both: the curling board rises behind the title.
-Slide 2 is see-through at every click, also while the watch hides, because it has a board (`slide-bottom.vue`'s marker).
+The Hairspring slide is see-through at every click, also while the watch hides, because it has a board (`slide-bottom.vue`'s marker).
 The crossfade changes the subject below the reference; its stacking order stays fixed.
 The component selects visible layers with `data-layer` attributes.
 `uv run art/diving_board.py` writes the SVG; its `--check` verifies it.
@@ -606,7 +610,7 @@ once (below), and the hairspring is at rest when it appears. At click 3 the cloc
 opposite extreme, which is the settle mirrored, so there is no jump in angle,
 speed or acceleration where it meets the free swing. A click back from 3 to 2
 settles it again. The board's end and the hairspring at rest are the same
-shape: laid over each other (a screenshot of slide 2 at click 2 after the
+shape: laid over each other (a screenshot of the Hairspring slide at click 2 after the
 curl, and the board's last frame) they agree to about a pixel, except for the
 real spring's stud and collet.
 The swing never damps, on purpose.
@@ -615,9 +619,9 @@ The swing never damps, on purpose.
   start on a click or play backwards on a click back.
 - **Not an oversight: one board in the watch's layer, not one on each slide.**
   A copy on each slide cannot move between slides: Slidev mounts a slide before
-  it shows it, and each copy starts a change from its own last state. Slide 3
+  it shows it, and each copy starts a change from its own last state. The Balance Wheel slide
   had its own copy, and its rest shape showed at once and then faded, going
-  back from slide 4
+  back from the Escapement slide
   ([`2026-10-04-backward-navigation`](../tasks/2026-10-04-backward-navigation/PLAN.md)).
 - **The curl waits for the bottom of the swing**, where the board is still, so
   it has no jump in position or speed (up to one period, 1 s, after the click).
@@ -628,7 +632,7 @@ The swing never damps, on purpose.
   `swing-period`, `curl-start`, `curl-duration`, `edit-duration`). The edit
   comes after the curl: a click back undoes it first, then uncurls.
 - **The end of the curl is the hairspring at rest** (swing 0, the middle of its
-  swing), at the hairspring's place and size on slide 2, with the view's tilt.
+  swing), at the hairspring's place and size on the Hairspring slide, with the view's tilt.
   Its numbers are copied from `watch/model.ts` and `watch/generate.ts` into
   `art/diving_board.py`: change them there when the spring or its view changes.
   The spring is a ribbon (a wall 8 units high), and the tilt shows it as two

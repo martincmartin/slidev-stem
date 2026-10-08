@@ -38,7 +38,7 @@
   );
 
   /* Materials whose colours tell them apart where they meet (the pool on
-     slide 2 of watches). In Ledger they are other roles. */
+     the Hairspring slide of watches). In Ledger they are other roles. */
   --palette-water: var(--palette-subject);
   --palette-ground: var(--palette-muted);
   --palette-ground-wash: color-mix(

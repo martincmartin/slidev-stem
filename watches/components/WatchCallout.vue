@@ -20,7 +20,7 @@
 // measures it, and again when the label's size changes (a font loads, or the
 // slide is shown). The slide decides when the callout appears (`v-click`):
 // do not bind `:class` on the root, as `v-click` puts its classes there.
-// docs/watch.md, "Slide 4: the escapement".
+// docs/watch.md, "The Escapement slide".
 import {
   computed,
   nextTick,
@@ -57,7 +57,7 @@ const props = withDefaults(
 
 /** px between the word's box and the leader. */
 const GAP = 4;
-/** A bent leader's level run, in px: slide 2's (`LeaderDesign`, from `start`
+/** A bent leader's level run, in px: the Hairspring slide's (`LeaderDesign`, from `start`
  *  to `elbow`, in art/diving_board.py). Keep them equal. */
 const ELBOW_RUN = 40;
 /** The arrow's head: its length and its half width, in px. */

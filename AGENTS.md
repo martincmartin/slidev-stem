@@ -21,6 +21,9 @@ first; the rest of the evening is social.
   argument for writing.
 - Lead with story. Use data and math only where they carry the point. (This is
   about the talk. When you compare options for the user, still prefer data.)
+- Name a slide by its title, not its number, in docs, code and messages: "the
+  Escapement slide", not "slide 4". A number changes when a slide is added,
+  moved, hidden or previewed. A tool may number the slides of a walk.
 
 ## Given talks and versions
 
@@ -78,7 +81,7 @@ comments point to them.
 | Before you…                                                                      | Read                                                         |
 | -------------------------------------------------------------------------------- | ------------------------------------------------------------ |
 | choose, compare, measure or add a colour, make a theme, or preview a palette     | `docs/theme.md`                                              |
-| draw or change any illustration (SVG)                                            | `docs/illustrations.md`                                      |
+| draw or change any illustration (SVG), or a callout's leader                     | `docs/illustrations.md`                                      |
 | change the WebGL renderer, the watch, or its frontmatter                         | `docs/webgl.md`                                              |
 | add a click, a slide transition, or anything that moves between clicks or slides | `docs/navigation.md`                                         |
 | decide if something is big, thick or dark enough                                 | `docs/legibility.md`                                         |

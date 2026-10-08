@@ -31,7 +31,7 @@ itself. Install them once: `uv run python -m playwright install firefox webkit`.
 Not covered: the PDF export, which Slidev draws on a route (`/print`) that only
 its export mode has, so a build cannot open it. It reads the same `$clicks`
 through a nav of its own for each page. After a change to the stills, look at
-`pnpm export`'s pages for slide 2.
+`pnpm export`'s pages for the Hairspring slide.
 
 A page with no still is a page with no watch: its state is `null`, the same as
 the live canvas's on a slide that hides the watch. Every outside request fails

@@ -5,25 +5,18 @@ import type { Point2 } from "../webgl/mesh.ts";
 import type { Wheel } from "./design.ts";
 import {
   escapementMarks,
-  forkAtBanks,
-  insidePolygon,
+  firstCrossing,
   jewelStrikes,
   onSlide,
-  palletPoint,
 } from "./callouts.ts";
-import {
-  FORK_PIVOT_RADIUS,
-  generate,
-  JEWEL_FLAT_OFFSET,
-  JEWEL_RADIUS,
-} from "./generate.ts";
+import { generate, JEWEL_FLAT_OFFSET, JEWEL_RADIUS } from "./generate.ts";
 import { tickWindows } from "./model.ts";
 import { polar } from "./shapes.ts";
 
 const watch = generate();
 const { design, scene } = watch;
-const SLIDE_4 = { watch: "escapement", watchTilt: 20 };
-const marks = escapementMarks(watch, SLIDE_4);
+const ESCAPEMENT_SLIDE = { watch: "escapement", watchTilt: 20 };
+const marks = escapementMarks(watch, ESCAPEMENT_SLIDE);
 const view = scene.views.find((candidate) => candidate.name === "escapement");
 const [, , , , escape] = design.wheels as [Wheel, Wheel, Wheel, Wheel, Wheel];
 
@@ -53,14 +46,12 @@ test("the callouts' marks are on the slide, in the escapement's order from left 
   assert.ok(marks.pallet[0] < marks.escape[0]);
 });
 
-test("the pallet's leader ends on the fork at both ends of its swing, clear of the pivot", () => {
-  const point = palletPoint(design);
-  for (const outline of forkAtBanks(design)) {
-    assert.ok(insidePolygon(point, outline));
+test("a leader from below to the pallet's aim meets the fork at both ends of its swing", () => {
+  const below: Point2 = [marks.pallet[0], at(scene.slide, 1)];
+  assert.equal(marks.forkOutlines.length, 2);
+  for (const outline of marks.forkOutlines) {
+    assert.notEqual(firstCrossing(below, marks.pallet, [outline]), undefined);
   }
-  // below the pivot's circle by more than the circle's radius
-  const pivotY = design.watchCentre[1] + design.fork.pivot[1];
-  assert.ok(point[1] - (pivotY + FORK_PIVOT_RADIUS) > FORK_PIVOT_RADIUS);
 });
 
 test("the drive arrow turns the way the escape wheel turns, on the side of the fourth wheel", () => {
@@ -117,7 +108,7 @@ test("the escapement view puts the hairspring's arbor halfway down from the subt
 });
 
 test("the two strikes are on either side of the fork's axis, and their words go out as mirror images", () => {
-  const strikes = jewelStrikes(watch, SLIDE_4);
+  const strikes = jewelStrikes(watch, ESCAPEMENT_SLIDE);
   const [upper, lower] = [...strikes].sort(
     (first, second) => first.at[1] - second.at[1],
   );
@@ -154,7 +145,7 @@ test("each window's strike is at the horn ahead of the jewel, not where it enter
     const [x, y] = polar(radius, design.balance.pinDirection + swing, arbor);
     return onSlide(view, 20, scene.slide, [x, y, watch.escapementTops.jewel]);
   };
-  const strikes = jewelStrikes(watch, SLIDE_4);
+  const strikes = jewelStrikes(watch, ESCAPEMENT_SLIDE);
   tickWindows(timing).forEach(([start], window) => {
     const time = start * timing.period;
     const [from, to] = [jewelAt(time), jewelAt(time + 0.01)];

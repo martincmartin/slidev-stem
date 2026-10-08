@@ -49,9 +49,8 @@ Five rules for a slide:
 - **To see a slide in another palette, give it a palette class**
   (`class: palette-campfire`; [theme.md](../../docs/theme.md#palette-classes-a-slide-in-another-palette)).
   The watch and the diving board follow it. To compare palettes, import the
-  slide once for each, as `slides.md` does with slide 2: the Hairspring slide
-  is in `pages/hairspring.md`, and its previews follow it. The slide numbers
-  in these docs count the talk's own slides, not the previews.
+  slide once for each, as `slides.md` does with the Hairspring slide: it is
+  in `pages/hairspring.md`, and its previews follow it.
 - **`layout: full` plus a class, not a custom layout.** It keeps each slide's layout
   next to its content, which has been worth more than the duplication costs — the
   slide you are reading is the slide you are editing.
@@ -136,9 +135,9 @@ reason next to it.
   slide transition does not fade it. It fades in `--text-fade`, and it fades
   in only after `--text-fade`
   ([watch.md](watch.md#the-diving-board)).
-- **Not an oversight: slide 4's "tick" and "tock" cut in**, because they
+- **Not an oversight: the Escapement slide's "tick" and "tock" cut in**, because they
   are a sound. They fade out ([watch.md](watch.md#tick-and-tock)).
-- **Not an oversight:** the cover's move to slide 2 has its own transition,
+- **Not an oversight:** the cover's move to the Hairspring slide has its own transition,
   `watch-zoom`, because its title fades while the watch flashes
   ([watch.md](watch.md)).
 
@@ -149,10 +148,10 @@ It is background, not rules.
 ## The live watch and the diving board
 
 A slide that shows the watch sets its view in the frontmatter.
-Slide 2 uses the diving board to explain the spring, and slide 3 fades its rest shape out as the balance wheel fades in.
-On slide 3, click 1 adds "and steadily". Click 2 replaces the explanation with the accuracy of a calibrated watch (99.99%), in the timekeeper card's type roles. Click 3 adds what that is in seconds a day, so the audience takes in the percentage first.
+The Hairspring slide uses the diving board to explain the spring, and the Balance Wheel slide fades its rest shape out as the balance wheel fades in.
+On the Balance Wheel slide, click 1 adds "and steadily". Click 2 replaces the explanation with the accuracy of a calibrated watch (99.99%), in the timekeeper card's type roles. Click 3 adds what that is in seconds a day, so the audience takes in the percentage first.
 The outgoing text fades out before the incoming text fades in, in both directions.
-Slide 4 zooms out, and then the rest of the escapement fades in. Its
+The Escapement slide zooms out, and then the rest of the escapement fades in. Its
 callouts point to parts of the watch, one at each click. At its second click
 the escape wheel spins alone, and at the third the pallet comes back and
 stops it.
@@ -162,7 +161,7 @@ It is described in [watch.md](watch.md).
 
 **The main focus of a slide is on its left.** Put the picture there, and the
 callouts and text on the right. When the picture needs the slide's whole
-height (slide 4), it starts at the left edge, and the callouts go in the room
+height (the Escapement slide), it starts at the left edge, and the callouts go in the room
 on its right and in its gaps. The watch's train is laid out left to right from
 the hairspring to the fourth wheel for this reason: see
 [watch.md](watch.md#the-layout-of-the-movement).

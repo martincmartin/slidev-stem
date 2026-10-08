@@ -77,10 +77,10 @@ whole number of periods, so the escapement would look still.
 
 Measured 2026-10-04 at `TV 55in @7m`, from 55 frame pairs separated by 100 ms:
 
-| View    | Mean CSS px² changing by at least 3:1 | With ambient flare $F=0.05$ |
-| ------- | ------------------------------------: | --------------------------: |
-| Cover   |                                   258 |                         221 |
-| Slide 3 |                                 2,626 |                       2,351 |
+| View          | Mean CSS px² changing by at least 3:1 | With ambient flare $F=0.05$ |
+| ------------- | ------------------------------------: | --------------------------: |
+| Cover         |                                   258 |                         221 |
+| Balance Wheel |                                 2,626 |                       2,351 |
 
 The score covers the projected rim band and excludes the arms and hairspring.
 The cover score includes some nearby mechanism motion in that band.
@@ -107,10 +107,10 @@ substance, the water colour at 0.6, the bottom of the water window in
 
 Measured 2026-10-04 at `TV 55in @7m`, from isolated Chromium screenshots at the slide's size:
 
-| Reference and callout       | hold | p90  | Fmax  |
-| --------------------------- | ---- | ---- | ----- |
-| Slide 2, straight board     | 3.35 | 5.16 | 0.055 |
-| Slide 2, single spring edge | 3.35 | 5.12 | 0.055 |
+| Reference and callout          | hold | p90  | Fmax  |
+| ------------------------------ | ---- | ---- | ----- |
+| Hairspring, straight board     | 3.35 | 5.16 | 0.055 |
+| Hairspring, single spring edge | 3.35 | 5.12 | 0.055 |
 
 Both clear the 3:1 gate. These screenshots include the dashed ghost, leader, and label on the slide background.
 The label was then "Rest Shape", in muted at 29 px. The callout's sentence that
@@ -123,10 +123,10 @@ The task holds the source screenshots and machine-readable results.
 
 Measured 2026-10-04 at `TV 55in @7m`, with each leader isolated on the slide background:
 
-| Leader                     | hold | p90  | Fmax  |
-| -------------------------- | ---- | ---- | ----- |
-| Slide 2, straight board    | 3.58 | 4.85 | 0.080 |
-| Slide 2, curled hairspring | 3.70 | 4.85 | 0.092 |
+| Leader                        | hold | p90  | Fmax  |
+| ----------------------------- | ---- | ---- | ----- |
+| Hairspring, straight board    | 3.58 | 4.85 | 0.080 |
+| Hairspring, curled hairspring | 3.70 | 4.85 | 0.092 |
 
 The leader clears both the resolution floor and the 3:1 contrast gate.
 Its stroke width is set by `LeaderDesign` in `art/diving_board.py`.
@@ -134,17 +134,19 @@ The [correction task](../tasks/2026-10-03-rest-shape/leader-correction/PLAN.md) 
 The earlier 2 px leader cleared the width floor but failed the blurred contrast gate when measured alone.
 The ghost, label, and live subject are absent from these isolated measurements.
 
-## Slide 4 leaders alone
+## Escapement leaders alone
 
-Measured 2026-10-07 at `TV 55in @7m`, from a Chromium screenshot of slide 4 at
-click 6 (1960 × 1104), with the balance at rest and only the three leaders
-shown (the second, `#B5601E`, 4 px):
+Measured 2026-10-07 at `TV 55in @7m`, from a Chromium screenshot of the Escapement slide at
+the jewel's click (then click 6, now click 4; 1960 × 1104), with the balance at
+rest and only the three leaders shown (the second, `#B5601E`, 4 px). The wheel's
+and the pallet's leaders then ended inside their parts. They now end on the
+paper and are shorter; they have not been measured again.
 
-| Leaders        | hold | p90  | Fmax  |
-| -------------- | ---- | ---- | ----- |
-| Slide 4, three | 3.33 | 4.14 | 0.049 |
+| Leaders           | hold | p90  | Fmax  |
+| ----------------- | ---- | ---- | ----- |
+| Escapement, three | 3.33 | 4.14 | 0.049 |
 
-They clear the 3:1 gate, with less room-light headroom than slide 2's muted
+They clear the 3:1 gate, with less room-light headroom than the Hairspring slide's muted
 leader (Fmax 0.080). In ink they held 6.90, with Fmax 0.277: the second costs
 contrast and room-light headroom, for a leader that the audience can tell from
 its label's other words and from the subject's lines

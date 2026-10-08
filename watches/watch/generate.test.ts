@@ -147,7 +147,7 @@ test("the flashed subject includes the roller and oscillator, not the fork", () 
   assert.ok(subject.meshes.has(watch.spring));
 });
 
-test("slide 3's subject is the balance wheel and the spring, not the roller or the jewel, and it holds slide 2's", () => {
+test("the Balance Wheel slide's subject is the balance wheel and the spring, not the roller or the jewel, and it holds the Hairspring slide's", () => {
   const find = (name: string) =>
     scene.subjects.find((candidate) => candidate.name === name);
   const wheel = find("balance wheel and hairspring");
@@ -162,7 +162,7 @@ test("slide 3's subject is the balance wheel and the spring, not the roller or t
   for (const mesh of partMeshes("balance")) assert.ok(wheel.meshes.has(mesh));
 });
 
-test("slide 3's flash is what it adds to slide 2: the wheel, its screws and the staff, not the spring", () => {
+test("the Balance Wheel slide's flash is what it adds to the Hairspring slide: the wheel, its screws and the staff, not the spring", () => {
   const find = (name: string) =>
     scene.subjects.find((candidate) => candidate.name === name);
   const added = find("balance wheel");
@@ -176,7 +176,7 @@ test("slide 3's flash is what it adds to slide 2: the wheel, its screws and the 
   for (const mesh of partMeshes("balance")) assert.ok(added.meshes.has(mesh));
 });
 
-test("slide 4's subject is the escapement: it holds slide 3's, and has the escape wheel and its arbor but not its pinion", () => {
+test("the Escapement slide's subject is the escapement: it holds the Balance Wheel slide's, and has the escape wheel and its arbor but not its pinion", () => {
   const find = (name: string) =>
     scene.subjects.find((candidate) => candidate.name === name);
   const escapement = find("escapement");
@@ -307,7 +307,7 @@ test("the impulse jewel is a D, its flat facing the fork, as wide as its circle"
   assert.ok(near(Math.min(...across), -JEWEL_RADIUS));
 });
 
-test("slide 2 keeps only the spring, collet and stud when the mechanism fades", () => {
+test("the Hairspring slide keeps only the spring, collet and stud when the mechanism fades", () => {
   const subject = scene.subjects.find(
     (candidate) => candidate.name === "hairspring and stud",
   );
@@ -318,7 +318,7 @@ test("slide 2 keeps only the spring, collet and stud when the mechanism fades", 
   }
 });
 
-test("the lowered spring stays at slide 2's target through its tilt", () => {
+test("the lowered spring stays at the Hairspring slide's target through its tilt", () => {
   const view = scene.views.find((candidate) => candidate.name === "hairspring");
   assert.ok(view);
   const arborX = design.watchCentre[0] + design.balance.arbor[0];

@@ -194,7 +194,7 @@ the accent is not in the art. Add a wash when a drawing first needs a face for
 that line colour. `WASH_PAIRS` in `tools/lib.py` lists the pairs.
 
 **A material colour** (water, ground) is a role only where two materials sit
-side by side and their colours tell them apart: the pool on slide 2 of
+side by side and their colours tell them apart: the pool on the Hairspring slide of
 `watches`. Water that is the subject of its drawing (a water clock) is drawn in
 the subject colour. Without material roles, a theme whose subject is brown and
 whose muted is blue would draw the pool's water like mud.
@@ -442,7 +442,7 @@ tools/palette.py` measures each one.
 The values are in `themes/ledger/styles/ledger.css` and
 `themes/ledger/styles/palettes.css`. As examples, their values on 2026-10-07.
 A role that is a recipe is shown as the colour that it gives, and the
-brackets say where it comes from. Water and ground are the pool on slide 2 of
+brackets say where it comes from. Water and ground are the pool on the Hairspring slide of
 `watches`. On dark paper the subject is a pale accent, which is not a water
 colour, so water is the second where the second is a blue, and a blue of its
 own where it is not (`tools/derive_palette.py`).

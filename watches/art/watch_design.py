@@ -213,7 +213,7 @@ class Layout:
 
 
 # The drawing's layout. The train runs from the centre wheel leftwards, so that
-# slide 2's hairspring is on the left of the slide (watches/docs/watch.md): the
+# the Hairspring slide's hairspring is on the left of the slide (watches/docs/watch.md): the
 # balance is at 11 o'clock, as in an ETA 6497. The barrel is as near 5 o'clock
 # as the third wheel allows. It leaves at least
 # MIN_CLEARANCE between the visible parts of parts that do not mesh,

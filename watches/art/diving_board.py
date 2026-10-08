@@ -239,7 +239,7 @@ SPRING_OUTER_ANGLE = 210.00132887586108  # degrees: the stud (watch/design.json)
 SPRING_SCALE = 250 / 56  # the view's zoom (HAIRSPRING_ZOOM in watch/generate.ts)
 SLIDE_ORIGIN = (-50.0, 100.0)  # where the slide shows the drawing's top left
 SPRING_CENTRE = (275.0 - SLIDE_ORIGIN[0], 276.0 - SLIDE_ORIGIN[1])  # HAIRSPRING_TARGET
-SPRING_TILT = math.radians(20.0)  # `watchTilt` on slide 2: squeezes y
+SPRING_TILT = math.radians(20.0)  # `watchTilt` on the Hairspring slide: squeezes y
 # The spring is a ribbon, a wall as high as `SPRING_Z` (watch/generate.ts
 # `springHeights`), and the view's pivot is at `SPRING_PIVOT_Z`: a higher point
 # is drawn higher up the slide, by its height times sin(tilt) times the zoom.

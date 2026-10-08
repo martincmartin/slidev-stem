@@ -19,7 +19,7 @@ pnpm art:print DECK   # DECK: a built deck; each printed page's watch against th
 You need pnpm and uv; see [`../docs/talks.md`](../docs/talks.md), "Set up a
 clone".
 
-Edit [slides.md](slides.md). The watch under the cover and slide 2 is drawn
+Edit [slides.md](slides.md). The watch under the cover and the Hairspring slide is drawn
 live in WebGL: [`../docs/webgl.md`](../docs/webgl.md) says how it is built. The look comes from the house theme, Ledger, in
 [`../themes/ledger/`](../themes/ledger/), which every STEM talk shares.
 

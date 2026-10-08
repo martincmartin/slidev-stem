@@ -220,7 +220,7 @@ test("to a subject that holds the old one, in another view: the camera moves and
 });
 
 test("a swap cut short by a state with no subject fades the difference in, then the rest", () => {
-  // slide 4 to 3, and on to the cover before the swap ends
+  // the Escapement slide back to the Balance Wheel slide, and on to the cover before the swap ends
   const inner = mesh("inner");
   const extra = mesh("extra");
   const small: Subject = { name: "small", meshes: new Set([inner]) };

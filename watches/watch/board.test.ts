@@ -25,7 +25,7 @@ const TIMING: BoardTiming = {
 };
 const CURL_END = TIMING.curlStart + TIMING.curlDuration;
 const END = storyEnd(TIMING);
-// slide 2's keys
+// the Hairspring slide's keys
 const SLIDE = { board: 1, boardCurl: 2 };
 
 function stateAt(clicks: number): BoardState {
@@ -38,7 +38,7 @@ test("a slide without `board` has no board", () => {
   assert.equal(boardState({}, 2), undefined);
 });
 
-test("slide 2's targets: off, swinging, curling, then curled", () => {
+test("the Hairspring slide's targets: off, swinging, curling, then curled", () => {
   assert.deepEqual(stateAt(0), {
     rest: false,
     curling: false,
