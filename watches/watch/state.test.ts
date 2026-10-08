@@ -23,6 +23,7 @@ test("the fields and their defaults", () => {
     tilt: 0,
     show: "all",
     fit: "all",
+    right: null,
     flash: undefined,
     settled: false,
     spin: null,
@@ -40,6 +41,7 @@ test("the fields and their defaults", () => {
     tilt: 20,
     show: ["hairspring", "collet", "stud"],
     fit: ["hairspring", "collet", "stud"],
+    right: null,
     flash: ["balance wheel"],
     settled: true,
     spin: null,
@@ -207,6 +209,36 @@ test("a slide shows the meshes of its pieces, or all but the marks, in its named
   }
 });
 
+test("watchRight puts a fitted view's right edge there, and needs a fitted view", () => {
+  const pieces = ["fourth wheel", "escape pinion"];
+  const right = (frontmatter: Record<string, unknown>): number => {
+    const { view } = stageState(
+      watch,
+      watchState({ watch: pieces, ...frontmatter }, 0) ?? assert.fail(),
+    );
+    const edge = Math.max(
+      ...pieces.map(
+        (name) =>
+          watch.extents.get(
+            watch.scene.pieces.find((piece) => piece.name === name) ??
+              assert.fail(),
+          )?.box.right ?? assert.fail(),
+      ),
+    );
+    return view.scale * edge + view.shift[0];
+  };
+  assert.ok(Math.abs(right({ watchRight: 489 }) - 489) < 1e-9);
+  assert.ok(Math.abs(right({}) - 489) > 1);
+  assert.throws(
+    () =>
+      watchState(
+        { watch: pieces, watchView: "hairspring", watchRight: 489 },
+        0,
+      ),
+    /^Error: watchRight: .*set only with a fitted view/,
+  );
+});
+
 test("watchMoveWith names what shows while the camera moves into the slide", () => {
   assert.equal(moveWithBefore({ watch: "all" }), "common");
   for (const value of ["common", "all", "none"]) {
@@ -227,6 +259,7 @@ test("a key that a click can change needs watch on the slide", () => {
     [{ watchSpin: 45 }, "watchSpin"],
     [{ watchAtRest: true }, "watchAtRest"],
     [{ watchTickTock: "plain" }, "watchTickTock"],
+    [{ watchRight: 489 }, "watchRight"],
     [{ watchClicks: { 1: { watch: "all" } } }, "watchClicks"],
   ] as const) {
     assert.throws(
@@ -263,6 +296,9 @@ test("a field of the wrong kind throws, with its name", () => {
     ["watchSpin", Number.POSITIVE_INFINITY],
     ["watchTickTock", true],
     ["watchTickTock", "loud"],
+    ["watchRight", "489"],
+    ["watchRight", true],
+    ["watchRight", Number.NaN],
   ] as const) {
     assert.throws(
       () => watchState({ watch: "all", [field]: value }, 0),

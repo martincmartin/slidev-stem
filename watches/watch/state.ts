@@ -9,6 +9,8 @@
 //   watchView: what the camera frames: a named view (cover, hairspring,
 //     crown), or a list of pieces, which the view fits (`fittedView`); none:
 //     the view fits the pieces shown
+//   watchRight: slide px: where a fitted view puts its pieces' right edge;
+//     none: they are centred in the slide's left 60% (`fittedView`)
 //   watchTilt: degrees (default 0)
 //   watchAtRest: true: the balance is at rest; false (default): it swings
 //   watchSpin: degrees a second of the escape wheel: the train spins freely
@@ -41,6 +43,9 @@ export interface WatchState {
   /** The names of the pieces that the fitted view fits, or "all": the
    *  `watchView` list, or else the pieces shown. */
   fit: readonly string[] | "all";
+  /** Where the fitted view puts the right edge of `fit`, in slide px, or
+   *  `null`: where the rule puts it (`fittedView`). */
+  right: number | null;
   flash: readonly string[] | undefined;
   settled: boolean;
   /** Degrees a second of the escape wheel: the train spins freely; `null`:
@@ -93,6 +98,13 @@ function viewOf(
   return wrong(name, value, "the name of a view, or a list of pieces");
 }
 
+function rightOf(name: string, value: unknown): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return wrong(name, value, "a number of slide px");
+  }
+  return value;
+}
+
 function tiltOf(name: string, value: unknown): number {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     return wrong(name, value, "a number of degrees");
@@ -134,6 +146,7 @@ function tickTockOf(name: string, value: unknown): TickTockState | undefined {
 const CLICK_KEYS = {
   watch: shownOf,
   watchView: viewOf,
+  watchRight: rightOf,
   watchTilt: tiltOf,
   watchAtRest: atRestOf,
   watchSpin: spinOf,
@@ -246,11 +259,15 @@ export function watchState(
   const show = now.watch;
   const framed = now.watchView ?? { fit: show };
   const flashed = frontmatter["watchFlash"];
+  if (now.watchRight !== undefined && "view" in framed) {
+    return wrong("watchRight", now.watchRight, "set only with a fitted view");
+  }
   return {
     view: "view" in framed ? framed.view : null,
     tilt: now.watchTilt ?? 0,
     show,
     fit: "fit" in framed ? framed.fit : show,
+    right: now.watchRight ?? null,
     flash: flashed === undefined ? undefined : namesOf("watchFlash", flashed),
     settled: now.watchAtRest ?? false,
     spin: now.watchSpin ?? null,
@@ -295,7 +312,7 @@ export function stageState(
   };
   const view =
     state.view === null
-      ? fittedView(watch, piecesOf(state.fit))
+      ? fittedView(watch, piecesOf(state.fit), state.right)
       : namedView(state.view);
   return {
     view,

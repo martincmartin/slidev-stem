@@ -342,9 +342,11 @@ spin.
   waits for the old picture to go.
 - **The view fits the pair.** The pinion is above the fourth wheel in the
   movement's layout, and a view does not turn, so the pair is tall: its
-  height sets the zoom. It is narrower than 60% of the slide, so it is
-  centred in the slide's left 60% ([Fitted views](#fitted-views)), and the
-  callouts go on its right.
+  height sets the zoom. It is narrower than 60% of the slide, and its
+  right edge is set (`watchRight`, [Fitted views](#fitted-views)): the
+  fourth wheel's teeth reach to 70 px left of the text. The value is the
+  text's left (`.gears-sentence`, in `slides.md`), less the gap and half
+  the teeth's 2.5 px outline. If you move one, move the other.
 - **The gears turn freely, from the start** (`watchSpin` on the slide; [The
   free spin](#the-free-spin)). Nothing holds them back, so they turn
   smoothly, not a tick at a time. Its value is the speed, in degrees a second
@@ -481,7 +483,7 @@ piece or a view that does not exist.
 
 A slide gives the watch's state at click 0. A click changes it from that click
 on, with the same keys, in a block under `watchClicks`; a later block changes
-it again. A block holds only the keys that say a state (the first six in
+it again. A block holds only the keys that say a state (the first seven in
 [The keys](#the-keys)); `watchFlash` and `watchMoveWith` are about the step
 into the slide, so they are on the slide only. A value says what is so, not
 what to do: `watchAtRest: true`, not "settle". So a block can repeat what is
@@ -535,6 +537,13 @@ stays there at any tilt. The baseline (`SUBTITLE_BASELINE`) is measured in
 the browser: the theme's title and subtitle sizes set it, so measure it again
 if they change. A piece's extent is where it reaches at any time: a turning
 part's whole circle, and the spring's reach over a swing.
+
+**A slide can set the picture's right edge instead** (`watchRight`, in px of
+the slide), when its gap to the text matters more than the rule: the Gears
+slide. The edge is the extent, at the middle of the outline, so the ink
+reaches half the outline's width further. The key is part of what the camera
+frames, so a click that changes it moves the camera. It needs a fitted view:
+with a named view, it stops the deck at load.
 
 The fit uses the pieces' plan, seen from above, and not their height. At a
 tilt, a part's height adds to its height on the slide. For a slide that shows
@@ -628,13 +637,14 @@ fourth wheel and the escape pinion.
 | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `watch: [hairspring, collet, stud]` | the pieces shown, or `all` (but the marks: [Pieces](#pieces)); no key hides the watch. A list may hold lists (YAML aliases)                                                                                                  |
 | `watchView: hairspring`             | what the camera frames: a named view (`cover`, `hairspring`, `crown`), or a list of pieces to fit; none: the [fitted view](#fitted-views) of what shows                                                                      |
+| `watchRight: 489`                   | px of the slide: where a [fitted view](#fitted-views) puts its pieces' right edge; none: centred in the left 60%, or at `FIT_LEFT`. Only with a fitted view                                                                  |
 | `watchTilt: 20`                     | degrees, towards the viewer's side (default 0)                                                                                                                                                                               |
 | `watchAtRest: true`                 | the balance is at rest, and the mechanism with it; `false` (default): it swings. To rest, it waits for its next extreme                                                                                                      |
 | `watchSpin: 135`                    | the train spins freely, at this speed in degrees a second of the escape wheel, faster than the mechanism's 12 ([The free spin](#the-free-spin)); `false` (default): it follows the mechanism, and a spin stops at the pallet |
 | `watchTickTock: plain`              | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `burst`: as comic bursts, a trial; `false` (default): they do not                                                            |
 | `watchFlash: [balance wheel]`       | on the slide only: pieces that flash, on the step forward into the slide only ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash")                                                                         |
 | `watchMoveWith: all`                | on the slide only: what is on the screen while the camera moves, on the step between this slide and the previous one: `common` (default), `all` or `none`                                                                    |
-| `watchClicks: {1: {watch: […]}}`    | on the slide only: for a click, the values of the first six keys from that click on ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way))                                                                        |
+| `watchClicks: {1: {watch: […]}}`    | on the slide only: for a click, the values of the first seven keys from that click on ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way))                                                                      |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
 at load with the key's name.

@@ -172,7 +172,8 @@ It is described in [watch.md](watch.md).
 
 **The main focus of a slide is on its left.** Put the picture there, and the
 callouts and text on the right. If the picture takes less than 60% of the
-slide's width, centre it in the slide's left 60% (the Gears slide). When the
+slide's width, centre it in the slide's left 60%. To set its gap to the text
+instead, give its right edge (`watchRight`; the Gears slide). When the
 picture is wider (the Escapement slide), it starts at the left edge, and the
 callouts go in the room on its right and in its gaps. The watch's fitted view
 does this for you ([watch.md](watch.md#fitted-views)). The watch's train is laid out left to right from

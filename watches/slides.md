@@ -314,6 +314,9 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 ---
 watch: &gears [fourth wheel, fourth arbor, escape pinion, escape arbor]
 watchView: *gears # the camera stays when a click adds pieces
+# the fourth wheel's teeth reach 70 px short of the text (.gears-sentence,
+# left: 560px): this edge, plus half the outline, is 70 px left of the "A"
+watchRight: 489
 watchTilt: 20
 # the audience has not seen these pieces, so their place in the watch does
 # not matter: the Escapement slide's picture fades out, the camera jumps, and
@@ -370,12 +373,13 @@ Fast gear, meet slow gear
 </div>
 
 <div v-click="7" class="gears-sentence after-watch-fade">
-  <div>Once a minute.</div>
+  <div>Makes a full turn<br>once a minute.</div>
   <div>The second hand!</div>
 </div>
 
 <style>
-/* On the right of the gears, which the fitted view centres in the left 60%.
+/* On the right of the gears, 70 px from the fourth wheel's teeth: the
+   frontmatter's watchRight follows this left.
    The second hand's text waits for the hand (after-watch-fade, style.css):
    so the fade is in longhands, which keep that rule's delay. */
 .slidev-layout.gears .gears-sentence {

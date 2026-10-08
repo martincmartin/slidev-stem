@@ -1748,9 +1748,14 @@ function views(
 /** The view of `pieces` when a slide names no view (docs/watch.md, "Fitted
  *  views"): as large as they fit in FIT_WIDTH by FIT_HEIGHT, centred in the
  *  slide's left FIT_FOCUS but not left of FIT_LEFT, with their middle halfway
- *  between the subtitle's baseline and the slide's bottom. It tilts about
- *  their middle, at the middle of their heights. */
-export function fittedView(watch: Watch, pieces: readonly Piece[]): View {
+ *  between the subtitle's baseline and the slide's bottom. If `right` is a
+ *  number, their right edge is there instead, in slide px (`watchRight`). It
+ *  tilts about their middle, at the middle of their heights. */
+export function fittedView(
+  watch: Watch,
+  pieces: readonly Piece[],
+  right: number | null = null,
+): View {
   const { box, bottom, top } = extentOf(
     pieces.map((piece) =>
       lookup(watch.extents, piece, `extent of ${piece.name}`),
@@ -1765,10 +1770,11 @@ export function fittedView(watch: Watch, pieces: readonly Piece[]): View {
     (box.top + box.bottom) / 2,
   ];
   const { width, height } = watch.design.canvas;
-  const middleX = Math.max(
-    (FIT_FOCUS * width) / 2,
-    FIT_LEFT + (scale * (box.right - box.left)) / 2,
-  );
+  const halfWidth = (scale * (box.right - box.left)) / 2;
+  const middleX =
+    right === null
+      ? Math.max((FIT_FOCUS * width) / 2, FIT_LEFT + halfWidth)
+      : right - halfWidth;
   const middleY = (SUBTITLE_BASELINE + height) / 2;
   return {
     name: pieces.map((piece) => piece.name).join(", "),
