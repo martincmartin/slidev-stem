@@ -1,5 +1,5 @@
-// A live stage: a canvas that moves its camera from view to view, fades the
-// rest of the scene away from a subject, tilts, and runs a model. It knows
+// A live stage: a canvas that moves its camera from view to view, fades
+// meshes in and out, tilts, and runs a model. It knows
 // nothing about what the scene shows: the model does.
 //
 // THE ORDER AND THE FLASH are the timeline's (timeline.ts): the stage has the
@@ -16,7 +16,7 @@
 import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
 import { FLASH_INKS } from "./scene.ts";
-import type { Group, Palette, Scene, Subject } from "./scene.ts";
+import type { Group, Mesh, Palette, Scene } from "./scene.ts";
 import { Timeline } from "./timeline.ts";
 import type { StageState, Values } from "./timeline.ts";
 
@@ -90,8 +90,8 @@ export class Stage<ModelState> {
     return flashSeconds;
   }
 
-  /** The flashed subject, if the flash is on at `now`. */
-  flashingAt(now: number): Subject | null {
+  /** The flashed meshes, if the flash is on at `now`. */
+  flashingAt(now: number): ReadonlySet<Mesh> | null {
     return this.timeline.flashingAt(now);
   }
 
@@ -172,12 +172,10 @@ export class Stage<ModelState> {
       view: values.view,
       tilt: values.tilt,
       groupMatrices: this.model.frame(now, this.renderer),
-      ...(values.subject ? { keep: values.subject.meshes } : {}),
+      keep: values.keep,
+      fade: values.fade,
       rest: values.rest,
-      ...(values.fading ? { fade: values.fading.meshes } : {}),
-      ...(flashing
-        ? { recolour: { meshes: flashing.meshes, inks: FLASH_INKS } }
-        : {}),
+      ...(flashing ? { recolour: { meshes: flashing, inks: FLASH_INKS } } : {}),
       size,
     });
     this.log.starts.push(now);

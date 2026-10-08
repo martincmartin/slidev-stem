@@ -40,8 +40,8 @@
 // the frame is drawn twice, with the rest and without it, and the two
 // pictures are mixed. So a fading part never shows its own hidden lines, and
 // what it hid shows through it as it fades. With `fade`, the picture "with the
-// rest" has only the meshes in `fade` and `keep`: a subject grows into a larger
-// one, and the meshes outside both stay out.
+// rest" has only the meshes in `fade` and `keep`: the meshes that fade in or
+// out, and the meshes outside both stay out.
 //
 // Ownership: a renderer is the only user of its canvas's context, until
 // `dispose()`. It sets the GL state that it needs at the start of each frame,

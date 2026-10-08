@@ -6,7 +6,8 @@ import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import { FADE_SECONDS, Timeline } from "../webgl/timeline.ts";
 import type { Wheel } from "./design.ts";
-import { ESCAPE_WHEEL, generate } from "./generate.ts";
+import { slideFrontmatter } from "./deck.ts";
+import { generate } from "./generate.ts";
 import {
   angleAt,
   BalanceClock,
@@ -16,9 +17,18 @@ import {
   stepper,
   TrainClock,
 } from "./model.ts";
+import { SPIN_PIECES, stageState, watchState } from "./state.ts";
 
 const watch = generate();
-const { design, scene, groups } = watch;
+const { design, groups } = watch;
+const ESCAPEMENT_SLIDE = await slideFrontmatter("Escapement");
+/** The Escapement slide's stage state at a click. */
+function escapementAt(clicks: number) {
+  return stageState(
+    watch,
+    watchState(ESCAPEMENT_SLIDE, clicks) ?? assert.fail("no watch"),
+  );
+}
 const motion = new Motion(watch);
 const TIMING = design.timing;
 const [, , , fourth, escape] = design.wheels as [
@@ -104,16 +114,13 @@ test("a spin starts when the rest has faded out, and speeds up smoothly to its s
   assert.ok(Math.abs(after - before - SPEED) < 1e-9);
 });
 
-test("the timeline's swap of the escapement and the escape wheel takes FADE_SECONDS, as the spin assumes", () => {
-  const view = scene.views.find((candidate) => candidate.name === "escapement");
-  const named = (name: string) =>
-    scene.subjects.find((candidate) => candidate.name === name) ?? null;
-  assert.ok(view);
+test("on the Escapement slide, the fade to the spinning wheel takes FADE_SECONDS, as the spin assumes", () => {
+  const spinAt = Number(ESCAPEMENT_SLIDE["watchSpin"]);
   const timeline = new Timeline();
-  const state = { view, tilt: 20, flash: null };
-  timeline.show({ ...state, subject: named("escapement") }, 0, true);
-  timeline.show({ ...state, subject: named(ESCAPE_WHEEL) }, 1000, false);
-  assert.equal(timeline.phaseAt(1000 + FADE_SECONDS * 1000 - 1), "swap");
+  timeline.show(escapementAt(spinAt - 1), 0, true);
+  timeline.show(escapementAt(spinAt), 1000, false);
+  assert.equal(timeline.phaseAt(1000), "fade");
+  assert.equal(timeline.phaseAt(1000 + FADE_SECONDS * 1000 - 1), "fade");
   assert.equal(timeline.phaseAt(1000 + FADE_SECONDS * 1000), null);
 });
 
@@ -193,19 +200,15 @@ test("a spin must be faster than the mechanism", () => {
   assert.ok(spinBeats(watch, 13) > 1);
 });
 
-test("the escape wheel's subject is the escape wheel as the escapement shows it", () => {
-  const named = (name: string) =>
-    scene.subjects.find((candidate) => candidate.name === name);
-  const wheel = named(ESCAPE_WHEEL);
-  const escapement = named("escapement");
-  assert.ok(wheel && escapement);
-  assert.ok(wheel.meshes.size >= 1);
-  for (const mesh of wheel.meshes) {
+test("the spin shows the escape wheel as the Escapement slide shows it", () => {
+  const spinAt = Number(ESCAPEMENT_SLIDE["watchSpin"]);
+  const still = escapementAt(spinAt - 1).shown;
+  const spinning = escapementAt(spinAt).shown;
+  assert.ok(SPIN_PIECES.length > 0);
+  for (const mesh of spinning) {
     assert.equal(mesh.part, "escape wheel");
-    assert.ok(escapement.meshes.has(mesh));
+    assert.ok(still.has(mesh));
   }
-  const shown = [...escapement.meshes].filter(
-    (mesh) => mesh.part === "escape wheel",
-  );
-  assert.equal(wheel.meshes.size, shown.length);
+  const shown = [...still].filter((mesh) => mesh.part === "escape wheel");
+  assert.equal(spinning.size, shown.length);
 });

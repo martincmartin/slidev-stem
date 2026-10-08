@@ -44,7 +44,7 @@ the viewer went (`navDirection`, `clicksDirection`): the layer decides that.
 | **Physical process** | a machine that runs on its own    | time goes forward; a mode changes by physics | the same: time goes forward, and the earlier mode comes back by physics  |
 | **Slide text**       | the words                         | Slidev (`v-click`)                           | Slidev                                                                   |
 
-Examples in the watch talk (`watches/docs/watch.md`): fades, the swap, the
+Examples in the watch talk (`watches/docs/watch.md`): the fades and the
 camera's move and tilt are presentation; the flash is the attention cue; the
 diving board's bend and curl, and the edit of its callout's sentence after the
 curl, are story animations, and its swing is a steady loop; the watch's

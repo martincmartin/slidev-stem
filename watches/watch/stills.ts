@@ -35,11 +35,12 @@ export class WatchStills {
     size: [number, number],
     palette: Palette,
   ): Promise<string> {
-    const { scene, design } = this.watch;
+    const { design } = this.watch;
     const key = JSON.stringify([
       state.view,
       state.tilt,
-      state.only,
+      state.show,
+      state.spin,
       state.settled,
       size,
     ]);
@@ -49,13 +50,14 @@ export class WatchStills {
         state.settled,
         STILL_TIME,
       );
-      const stage = stageState(scene, state);
+      const stage = stageState(this.watch, state);
       renderer.updateMesh(this.watch.spring, this.motion.springGeometry(swing));
       renderer.render({
         view: stage.view,
         tilt: stage.tilt,
         groupMatrices: this.motion.matrices(time, swing),
-        ...(stage.subject ? { keep: stage.subject.meshes, rest: 0 } : {}),
+        keep: stage.shown,
+        rest: 0,
         size,
       });
     });

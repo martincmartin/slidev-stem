@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """The fade of the rest of the watch: its pictures, and what it costs the GPU.
 
-    uv run tools/fade_check.py TALK --subject "hairspring and stud" \
-        --view cover:0 --view hairspring:20                     # in stem/
+    uv run tools/fade_check.py TALK --piece hairspring --piece collet \
+        --piece stud --view cover:0 --view hairspring:20       # in stem/
 
 TALK is the talk's directory. The talk must have a probe page, `webgl/probe/`
 (docs/webgl.md), which Vite serves from the talk: it sets
 `window.watchProbeReady`, and gives `window.watchProbe.render(options)` (one
 frame, into the page's only canvas, with `preserveDrawingBuffer`) and
 `window.watchProbe.info()`. The options are `view`, `tilt`, `time`, `swing`,
-`size`, and for a fade `only` (the subject) and `rest` (the opacity of the
-rest). `--view` is `name:tilt`, as often as needed. Runs in Chromium (GPU
+`size`, and for a fade `only` (the names of the pieces that stay) and `rest`
+(the opacity of the rest). `--view` is `name:tilt`, as often as needed. Runs in Chromium (GPU
 through Metal) and Firefox, at the laptop's full-screen size (3456 x 1954 px).
 
 THE PICTURES. A fade must not jump at its ends, and in between it must be the
@@ -67,7 +67,7 @@ class Fade:
     """What to check."""
 
     talk: pathlib.Path
-    subject: str
+    pieces: list[str]
     views: list[tuple[str, float]]
     port: int
     out: pathlib.Path
@@ -122,7 +122,7 @@ def picture(
         "size": SIZE,
     }
     if rest is not None:
-        options |= {"only": fade.subject, "rest": rest}
+        options |= {"only": fade.pieces, "rest": rest}
     page.evaluate("options => window.watchProbe.render(options)", options)
     # The drawing buffer itself (the probe preserves it), not a screenshot.
     url = page.evaluate("document.querySelector('canvas').toDataURL('image/png')")
@@ -157,7 +157,7 @@ def check(fade: Fade, browser: Browser, base: str, name: str) -> dict[str, objec
                 "size": SIZE,
             }
             if rest is not None:
-                options |= {"only": fade.subject, "rest": rest}
+                options |= {"only": fade.pieces, "rest": rest}
             page.evaluate(TIMING, {"options": options, "draws": 5})  # warm up
             times = page.evaluate(TIMING, {"options": options, "draws": DRAWS})
             timings[label] = {
@@ -190,7 +190,9 @@ def check(fade: Fade, browser: Browser, base: str, name: str) -> dict[str, objec
 def main() -> None:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
     parser.add_argument("talk", type=pathlib.Path)
-    parser.add_argument("--subject", required=True, help="the subject that stays")
+    parser.add_argument(
+        "--piece", action="append", required=True, help="a piece that stays"
+    )
     parser.add_argument(
         "--view", action="append", required=True, help="name:tilt in degrees"
     )
@@ -204,7 +206,7 @@ def main() -> None:
         views.append((name, float(tilt or 0)))
     fade = Fade(
         talk=talk,
-        subject=arguments.subject,
+        pieces=arguments.piece,
         views=views,
         port=arguments.port,
         out=(arguments.out or talk / "out" / "fade-check").resolve(),

@@ -2,31 +2,33 @@
 // channel moves when. `Stage` (stage.ts) draws what it says; this file has no
 // DOM and no WebGL, so a test can drive it with made-up times.
 //
-// THE ORDER. Each change runs one channel at a time, eased: towards a subject
-// the camera moves, then the camera tilts, then the rest fades; away from it,
-// the reverse. From one subject to another, the rest first fades in around
-// the old subject; then the stage goes towards the new one. Between two
-// subjects where one holds the other, the difference fades in or out alone,
-// with the rest of the scene still out (a SWAP). If the view or the tilt
-// changes too, the camera moves with the smaller subject on the screen: to the
-// larger subject, the camera moves and tilts, then the swap; back, the swap,
-// then the camera untilts and moves. A new state starts
-// from what is on the screen now, so a change during a transition does not
-// jump. A change during a swap first finishes the swap's fade, to the subject
-// that the new state needs: the smaller one if the new subject is inside it,
-// else the larger one. Then the stage goes on from that subject.
+// ONE RULE. A state names the meshes that it shows. From the shown set A to
+// the shown set B, with D the meshes on the screen while the camera moves
+// (`StageState.moveWith`: by default the meshes of both):
+//   1. A becomes D: the meshes of A that are not in D fade out; then the
+//      meshes of D that are not in A fade in.
+//   2. The camera moves and tilts, eased: zooming in, it moves and then
+//      tilts; otherwise it untilts and then moves. If D is empty, nothing is
+//      on the screen, and the camera jumps.
+//   3. D becomes B, as in 1.
+// Without a camera move, A becomes B, as in 1. A fade fades its meshes as one
+// picture, over the meshes that stay. A new state starts from what is on the
+// screen now: a fade cut short first ends (at 1 if the new state shows every
+// mesh that fades, else at 0), and a camera move goes on from where it is.
 //
-// A FLASH (docs/illustrations.md, "Flash"). A state can name a subject to
-// flash: before the channels change, the subject is drawn in FLASH_INKS and in
-// its own inks, in turn, FLASH_CYCLES times. Only in a transition: a state
-// shown at once, or one that changes no channel, does not flash. It ends on
-// its own inks. The first channel starts as soon as the flash ends. The caller
-// names a flash only on the step forward into its slide
-// (../../docs/navigation.md): the timeline does not know which way a change
-// goes. A swap does not move the stage, so its flash starts when the swap ends,
-// and plays on the part that has just faded in.
+// A FLASH (docs/illustrations.md, "Flash"). A state can name meshes to flash:
+// they are drawn in FLASH_INKS and in their own inks, in turn, FLASH_CYCLES
+// times. If they are all on the screen already, at full opacity, the flash
+// plays before the change, and the change waits for it: it points to where
+// the camera goes. If not, it plays when the change ends, on the meshes that
+// have faded in. A new state with the same flash lets a flash that has
+// started go on, and places one that is still waiting again. Only in a
+// transition: a state shown at once, or one that changes nothing,
+// does not flash. The caller names a flash only on the step forward into its
+// slide (../../docs/navigation.md): the timeline does not know which way a
+// change goes.
 
-import type { Subject, View } from "./scene.ts";
+import type { Mesh, View } from "./scene.ts";
 
 export const MOVE_SECONDS = 1.8;
 export const FADE_SECONDS = 0.8;
@@ -44,54 +46,56 @@ export function flashIsOn(elapsed: number): boolean {
   return elapsed % (FLASH_ON_SECONDS + FLASH_OFF_SECONDS) < FLASH_ON_SECONDS;
 }
 
+/** What is on the screen while the camera moves: the meshes that the old and
+ *  the new state both show, all the meshes of either, or none (the camera
+ *  jumps). */
+export type MoveWith = "common" | "all" | "none";
+
 /** What the camera and the fade show. */
 export interface StageState {
   view: View;
   /** Degrees. */
   tilt: number;
-  /** The rest of the scene fades away from this; `null`: nothing fades. */
-  subject: Subject | null;
-  /** Flashed before the channels change, or after a swap; `null`: none. */
-  flash: Subject | null;
+  /** The meshes on the screen; the others are faded out. */
+  shown: ReadonlySet<Mesh>;
+  /** Flashed before the change if they are on the screen, else after it;
+   *  `null`: none. */
+  flash: ReadonlySet<Mesh> | null;
+  moveWith: MoveWith;
 }
 
 /** Where each channel is. */
 export interface Values {
   view: View;
   tilt: number;
+  /** Drawn at full opacity. */
+  keep: ReadonlySet<Mesh>;
+  /** Drawn at opacity `rest`, as one picture: the meshes that fade in or
+   *  out. Empty while nothing fades. */
+  fade: ReadonlySet<Mesh>;
   rest: number;
-  /** What the fade keeps. It matters only while `rest` < 1. */
-  subject: Subject | null;
-  /** While `rest` < 1, the only meshes that fade, besides `subject`'s (a swap);
-   *  `null`: every mesh does. */
-  fading: Subject | null;
 }
 
-type Channel = "view" | "rest" | "tilt";
+const NOTHING: ReadonlySet<Mesh> = new Set();
 
 /** A channel's move from one value to another. Each variant ties the channel
  *  to the type of its values. */
 type Phase = {
   /** ms. */
   start: number;
+  /** 0: a jump. */
   seconds: number;
 } & (
   | { channel: "view"; from: View; to: View }
   | { channel: "tilt"; from: number; to: number }
   | {
-      channel: "rest";
+      channel: "fade";
+      keep: ReadonlySet<Mesh>;
+      fade: ReadonlySet<Mesh>;
       from: number;
       to: number;
-      /** A fade towards a subject: the subject that it keeps, from its start. */
-      subject?: Subject;
-    }
-  | {
-      channel: "swap";
-      smaller: Subject;
-      larger: Subject;
-      /** The difference's opacity: 0 shows `smaller`, 1 shows `larger`. */
-      from: number;
-      to: number;
+      /** What is on the screen at its end. */
+      after: ReadonlySet<Mesh>;
     }
 );
 
@@ -120,19 +124,47 @@ export function mixView(first: View, second: View, fraction: number): View {
   };
 }
 
-const TOWARDS_SUBJECT: Channel[] = ["view", "tilt", "rest"];
-const SECONDS: Record<Channel, number> = {
-  view: MOVE_SECONDS,
-  rest: FADE_SECONDS,
-  tilt: TILT_SECONDS,
-};
+/** Whether two views put the camera at the same place. */
+function sameView(first: View, second: View): boolean {
+  return (
+    first.scale === second.scale &&
+    first.shift.every((value, axis) => value === second.shift[axis]) &&
+    first.pivot.every((value, axis) => value === second.pivot[axis])
+  );
+}
+
+function union(
+  first: ReadonlySet<Mesh>,
+  second: ReadonlySet<Mesh>,
+): ReadonlySet<Mesh> {
+  return new Set([...first, ...second]);
+}
+
+/** The meshes of `first` that are not in `second`. */
+function minus(
+  first: ReadonlySet<Mesh>,
+  second: ReadonlySet<Mesh>,
+): ReadonlySet<Mesh> {
+  return new Set([...first].filter((mesh) => !second.has(mesh)));
+}
+
+function within(inner: ReadonlySet<Mesh>, outer: ReadonlySet<Mesh>): boolean {
+  return [...inner].every((mesh) => outer.has(mesh));
+}
+
+function sameSet(first: ReadonlySet<Mesh>, second: ReadonlySet<Mesh>): boolean {
+  return first.size === second.size && within(first, second);
+}
 
 /** `values` with `phase` applied at `now`. At its end, a phase gives the
  *  target itself, so that the next state can tell that its channel is already
  *  there. */
 function applyPhase(values: Values, phase: Phase, now: number): void {
   if (now < phase.start) return;
-  const fraction = Math.min(1, (now - phase.start) / (phase.seconds * 1000));
+  const fraction =
+    phase.seconds === 0
+      ? 1
+      : Math.min(1, (now - phase.start) / (phase.seconds * 1000));
   const eased = ease(fraction);
   const done = fraction >= 1;
   switch (phase.channel) {
@@ -142,58 +174,11 @@ function applyPhase(values: Values, phase: Phase, now: number): void {
     case "tilt":
       values.tilt = done ? phase.to : mix(phase.from, phase.to, eased);
       break;
-    case "rest":
-      if (phase.subject) values.subject = phase.subject;
-      values.rest = done ? phase.to : mix(phase.from, phase.to, eased);
+    case "fade":
+      values.keep = done ? phase.after : phase.keep;
+      values.fade = done ? NOTHING : phase.fade;
+      values.rest = done ? 1 : mix(phase.from, phase.to, eased);
       break;
-    case "swap":
-      // the smaller subject stays; the larger one's other meshes fade
-      values.subject = done
-        ? phase.to === 1
-          ? phase.larger
-          : phase.smaller
-        : phase.smaller;
-      values.fading = done ? null : phase.larger;
-      values.rest = done ? 0 : mix(phase.from, phase.to, eased);
-      break;
-  }
-}
-
-/** Whether `outer` has every mesh of `inner`. */
-function holds(outer: Subject, inner: Subject): boolean {
-  return [...inner.meshes].every((mesh) => outer.meshes.has(mesh));
-}
-
-/** The phase that takes `channel` from `from` to `target`, or `null` if it is
- *  there already. */
-function phaseOf(
-  channel: Channel,
-  from: Values,
-  target: Values,
-  start: number,
-  subject: Subject | null,
-): Phase | null {
-  const seconds = SECONDS[channel];
-  switch (channel) {
-    case "view":
-      return from.view === target.view
-        ? null
-        : { channel, from: from.view, to: target.view, start, seconds };
-    case "tilt":
-      return from.tilt === target.tilt
-        ? null
-        : { channel, from: from.tilt, to: target.tilt, start, seconds };
-    case "rest":
-      return from.rest === target.rest
-        ? null
-        : {
-            channel,
-            from: from.rest,
-            to: target.rest,
-            start,
-            seconds,
-            ...(subject ? { subject } : {}),
-          };
   }
 }
 
@@ -203,7 +188,7 @@ export class Timeline {
   /** One after another. */
   private phases: Phase[] = [];
   /** The flash and when it starts (ms). */
-  private flash: { subject: Subject; start: number } | null = null;
+  private flash: { meshes: ReadonlySet<Mesh>; start: number } | null = null;
 
   /** Whether a state has been shown yet. Until then, there is nothing to
    *  move from, and the first state is shown at once. */
@@ -211,22 +196,20 @@ export class Timeline {
     return this.values !== null;
   }
 
-  /** Go to a state at `now` (ms): at once, or one channel at a time from where
-   *  the channels are now, after the state's flash (before it for a swap).
-   *  Returns the seconds until
-   *  the flash ends, or 0 if there is none. */
+  /** Go to a state at `now` (ms): at once, or by the rule at the top of this
+   *  file, from where the channels are now. Returns the seconds until the
+   *  flash ends, or 0 if there is none. */
   show(state: StageState, now: number, instantly = false): number {
-    const target: Values = {
-      view: state.view,
-      tilt: state.tilt,
-      rest: state.subject ? 0 : 1,
-      subject: state.subject,
-      fading: null,
-    };
     const running = this.flash;
     this.flash = null;
     if (instantly || !this.values) {
-      this.values = target;
+      this.values = {
+        view: state.view,
+        tilt: state.tilt,
+        keep: state.shown,
+        fade: NOTHING,
+        rest: 1,
+      };
       this.phases = [];
       return 0;
     }
@@ -234,106 +217,116 @@ export class Timeline {
     this.values = current;
     this.phases = [];
     let start = now;
-    let swapped = false;
-    const add = (phase: Phase | null): void => {
-      if (!phase) return;
+    const add = (phase: Phase): void => {
       this.phases.push(phase);
       start += phase.seconds * 1000;
     };
-    // where each channel is when the phases so far end
-    const reached = { ...current };
-    if (current.fading !== null && current.subject !== null) {
-      // a swap was cut short: finish its fade, to the end that the new state
-      // needs. Without this, `fading` would stay, and only the swap's larger
-      // subject would ever be drawn again.
-      const smaller = current.subject;
-      const larger = current.fading;
-      const toSmaller = state.subject !== null && holds(smaller, state.subject);
-      swapped = true;
+    const fade = (
+      keep: ReadonlySet<Mesh>,
+      meshes: ReadonlySet<Mesh>,
+      from: number,
+      to: number,
+    ): void => {
+      const after = to === 1 ? union(keep, meshes) : keep;
       add({
-        channel: "swap",
-        smaller,
-        larger,
-        from: current.rest,
-        to: toSmaller ? 0 : 1,
+        channel: "fade",
+        keep,
+        fade: meshes,
+        from,
+        to,
+        after,
         start,
         seconds: FADE_SECONDS,
       });
-      reached.subject = toSmaller ? smaller : larger;
-      reached.rest = 0;
-      reached.fading = null;
+    };
+    // what is on the screen when the phases so far end
+    let shown = current.keep;
+    if (current.fade.size > 0) {
+      // a fade cut short ends first
+      const wanted = within(current.fade, state.shown);
+      fade(current.keep, current.fade, current.rest, wanted ? 1 : 0);
+      if (wanted) shown = union(current.keep, current.fade);
     }
-    if (
-      state.subject !== null &&
-      reached.subject !== null &&
-      reached.subject !== state.subject &&
-      reached.rest === 0 &&
-      (holds(state.subject, reached.subject) ||
-        holds(reached.subject, state.subject))
-    ) {
-      swapped = true;
-      const from = reached.subject;
-      const to = state.subject;
-      const growing = holds(to, from);
-      const swap = (): void => {
+    const become = (target: ReadonlySet<Mesh>): void => {
+      const going = minus(shown, target);
+      if (going.size > 0) {
+        shown = minus(shown, going);
+        fade(shown, going, 1, 0);
+      }
+      const coming = minus(target, shown);
+      if (coming.size > 0) {
+        fade(shown, coming, 0, 1);
+        shown = union(shown, coming);
+      }
+    };
+    const moves = !sameView(current.view, state.view);
+    const tilts = current.tilt !== state.tilt;
+    if (moves || tilts) {
+      const during =
+        state.moveWith === "all"
+          ? union(shown, state.shown)
+          : state.moveWith === "none"
+            ? NOTHING
+            : new Set([...shown].filter((mesh) => state.shown.has(mesh)));
+      become(during);
+      // a move that nobody sees is a jump
+      const seen = during.size > 0;
+      const move = (): void => {
+        if (!moves) return;
         add({
-          channel: "swap",
-          smaller: growing ? from : to,
-          larger: growing ? to : from,
-          from: growing ? 0 : 1,
-          to: growing ? 1 : 0,
+          channel: "view",
+          from: current.view,
+          to: state.view,
           start,
-          seconds: FADE_SECONDS,
+          seconds: seen ? MOVE_SECONDS : 0,
         });
       };
-      // the camera moves with the smaller subject on the screen
-      if (!growing) swap();
-      const camera: Channel[] = growing ? ["view", "tilt"] : ["tilt", "view"];
-      for (const channel of camera) {
-        add(phaseOf(channel, reached, target, start, null));
+      const tilt = (): void => {
+        if (!tilts) return;
+        add({
+          channel: "tilt",
+          from: current.tilt,
+          to: state.tilt,
+          start,
+          seconds: seen ? TILT_SECONDS : 0,
+        });
+      };
+      if (state.view.scale > current.view.scale) {
+        move();
+        tilt();
+      } else {
+        tilt();
+        move();
       }
-      reached.view = target.view;
-      reached.tilt = target.tilt;
-      if (growing) swap();
-      reached.subject = to;
-    } else if (
-      state.subject !== null &&
-      reached.subject !== state.subject &&
-      reached.rest < 1
-    ) {
-      add(phaseOf("rest", reached, { ...target, rest: 1 }, start, null));
-      reached.rest = 1;
     }
-    const order =
-      target.rest < reached.rest
-        ? TOWARDS_SUBJECT
-        : [...TOWARDS_SUBJECT].reverse();
-    for (const channel of order) {
-      add(phaseOf(channel, reached, target, start, state.subject));
-    }
+    become(state.shown);
     if (!state.flash || this.phases.length === 0) return 0;
-    // a flash of the same subject that is still running goes on: a click
-    // during it does not start it again
-    const flashStart =
-      running?.subject === state.flash &&
+    // only meshes at full opacity are on the screen: a fading one is not, yet
+    const onScreen = within(state.flash, current.keep);
+    // a flash of the same meshes that has started goes on: a click during it
+    // does not start it again. One that is still waiting is placed again.
+    const goesOn =
+      running &&
+      sameSet(running.meshes, state.flash) &&
+      running.start <= now &&
       now < running.start + FLASH_SECONDS * 1000
-        ? running.start
-        : swapped
-          ? start
-          : now;
-    this.flash = { subject: state.flash, start: flashStart };
-    if (!swapped) {
+        ? running
+        : null;
+    const flashStart = goesOn ? goesOn.start : onScreen ? now : start;
+    this.flash = { meshes: state.flash, start: flashStart };
+    // flashing and moving never happen together
+    if (onScreen || goesOn) {
       const delay = flashStart + FLASH_SECONDS * 1000 - now;
       for (const phase of this.phases) phase.start += delay;
     }
     return FLASH_SECONDS - (now - flashStart) / 1000;
   }
 
-  /** The flashed subject, if the flash is on at `now`. */
-  flashingAt(now: number): Subject | null {
+  /** The flashed meshes, if the flash is on at `now`. */
+  flashingAt(now: number): ReadonlySet<Mesh> | null {
     const { flash } = this;
     if (!flash || !flashIsOn((now - flash.start) / 1000)) return null;
-    return flash.subject;
+    return flash.meshes;
   }
 
   /** Each channel's value at `now`. */
@@ -346,7 +339,8 @@ export class Timeline {
 
   /** When the last camera move ends (ms), or `now` if none is still to come.
    *  Text that must not cross a moving picture waits for it, in either
-   *  direction: towards a subject the camera moves first, away from it last. */
+   *  direction: towards a close view the camera moves first, away from it
+   *  last. After a jump, the text waits for the old picture to go. */
   viewEndAt(now: number): number {
     const ends = this.phases
       .filter((phase) => phase.channel === "view")

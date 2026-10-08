@@ -125,7 +125,9 @@ export interface MeshGeometry {
 
 export interface Mesh extends MeshGeometry {
   readonly name: string;
-  /** The part's name, for reports only. */
+  /** The part's name, for reports only: the grouping of the 2D drawing that
+   *  the mesh came from. It is not a piece (`Scene.pieces`): one part can
+   *  hold several pieces, and their names can differ. */
   readonly part: string;
   readonly group: Group | null;
   /** `null`: lines only (a decal). */
@@ -147,7 +149,8 @@ export interface View {
   readonly pivot: Vec3;
 }
 
-export interface Subject {
+/** A named set of meshes: what a slide names to show a part of the scene. */
+export interface Piece {
   readonly name: string;
   readonly meshes: ReadonlySet<Mesh>;
 }
@@ -158,7 +161,7 @@ export interface Scene {
   readonly meshes: readonly Mesh[];
   readonly groups: readonly Group[];
   readonly views: readonly View[];
-  readonly subjects: readonly Subject[];
+  readonly pieces: readonly Piece[];
 }
 
 /** What the renderer takes for each frame. */
@@ -175,7 +178,7 @@ export interface Frame {
   /** The opacity of all other meshes, 0 to 1 (default 1). */
   readonly rest?: number;
   /** Only these meshes (and those in `keep`) show at `rest` and above, and no
-   *  other mesh is drawn: a subject that grows into a larger one. Default: every
+   *  other mesh is drawn: the meshes that fade in or out. Default: every
    *  mesh. */
   readonly fade?: ReadonlySet<Mesh>;
   /** Device px, whole numbers. */
@@ -292,10 +295,10 @@ export function checkScene(scene: Scene): void {
     checkFinite([mesh.lineOrder], `${mesh.name}'s line order`);
     checkGeometry(mesh, mesh.name);
   }
-  // slides name the views and the subjects
+  // slides name the views and the pieces
   for (const [kind, named] of [
     ["view", scene.views],
-    ["subject", scene.subjects],
+    ["piece", scene.pieces],
   ] as const) {
     const names = new Set(named.map((item) => item.name));
     check(names.size === named.length, `two ${kind}s have one name`);
@@ -304,11 +307,11 @@ export function checkScene(scene: Scene): void {
     checkFinite([view.scale, ...view.shift, ...view.pivot], view.name);
     check(view.scale > 0, `${view.name}: scale ${String(view.scale)}`);
   }
-  for (const subject of scene.subjects) {
-    for (const mesh of subject.meshes) {
+  for (const piece of scene.pieces) {
+    for (const mesh of piece.meshes) {
       check(
         meshes.has(mesh),
-        `${subject.name}: ${mesh.name} is not in the scene`,
+        `${piece.name}: ${mesh.name} is not in the scene`,
       );
     }
   }

@@ -32,6 +32,7 @@ import {
   FLASH_ON_SECONDS,
   FLASH_SECONDS,
 } from "../timeline.ts";
+import type { StageState } from "../timeline.ts";
 
 export interface CheckResult {
   name: string;
@@ -124,12 +125,23 @@ function makeScene(): {
     meshes: [back, front, spring],
     groups: [group],
     views: [{ name: "all", scale: 1, shift: [0, 0], pivot: [0, 0, 0] }],
-    subjects: [
+    pieces: [
       { name: "front", meshes: new Set([front]) },
       { name: "back", meshes: new Set([back]) },
     ],
   };
   return { scene, group, front, back, spring };
+}
+
+/** A stage state of the test scene that shows `shown` (default: all). */
+function stateOf(
+  test: TestScene,
+  shown: ReadonlySet<Mesh> = new Set(test.scene.meshes),
+  flash: ReadonlySet<Mesh> | null = null,
+): StageState {
+  const view = test.scene.views[0];
+  check(view !== undefined, "no view");
+  return { view, tilt: 0, shown, flash, moveWith: "common" };
 }
 
 type TestScene = ReturnType<typeof makeScene>;
@@ -507,9 +519,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
       };
       const target = canvas();
       const stage = own(new Stage(target, test.scene, PALETTE, model));
-      const view = test.scene.views[0];
-      check(view !== undefined, "no view");
-      stage.show({ view, tilt: 0, subject: null, flash: null }, null, true);
+      stage.show(stateOf(test), null, true);
       let animationFrames = 0;
       let counting = true;
       const count = (): void => {
@@ -541,47 +551,40 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
     },
   ],
   [
-    "from one subject to another, the rest fades in around the old subject before the new one is kept",
+    "from one set of meshes to another, the old ones fade out before the new ones fade in",
     (own) => {
       const test = makeScene();
-      const [front, back] = test.scene.subjects;
-      const view = test.scene.views[0];
-      check(
-        front !== undefined && back !== undefined && view !== undefined,
-        "the test scene is incomplete",
-      );
+      const { front, back } = test;
       const model: Model<null> = {
         show: () => undefined,
         frame: () => new Map([[test.group, IDENTITY]]),
         phase: () => "still",
       };
       const stage = own(new Stage(canvas(), test.scene, PALETTE, model));
-      stage.show({ view, tilt: 0, subject: front, flash: null }, null, true);
+      stage.show(stateOf(test, new Set([front])), null, true);
       const shown = performance.now();
-      stage.show({ view, tilt: 0, subject: back, flash: null }, null);
+      stage.show(stateOf(test, new Set([back])), null);
       const fade = FADE_SECONDS * 1000;
-      for (const [after, subject, rest] of [
+      for (const [after, fading, rest] of [
         [fade / 2, front, 0.5],
         [fade + fade / 2, back, 0.5],
-        [3 * fade, back, 0],
       ] as const) {
         const values = stage.valuesAt(shown + after);
         check(
-          values.subject === subject,
-          `after ${String(after)} ms the fade keeps ${values.subject?.name ?? "nothing"}, not ${subject.name}`,
+          values.keep.size === 0 &&
+            values.fade.size === 1 &&
+            values.fade.has(fading),
+          `after ${String(after)} ms ${fading.name} is not the one that fades`,
         );
         check(
           Math.abs(values.rest - rest) < 0.05,
           `after ${String(after)} ms the rest is ${String(values.rest)}, not about ${String(rest)}`,
         );
       }
-      stage.show({ view, tilt: 0, subject: back, flash: null }, null, true);
-      const leaving = performance.now();
-      stage.show({ view, tilt: 0, subject: null, flash: null }, null);
-      const values = stage.valuesAt(leaving + fade / 2);
+      const end = stage.valuesAt(shown + 3 * fade);
       check(
-        values.subject === back,
-        "the fade to no subject drops its subject before the rest is back",
+        end.keep.size === 1 && end.keep.has(back) && end.fade.size === 0,
+        "the change does not end on the new meshes",
       );
     },
   ],
@@ -643,21 +646,19 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
     "a flash runs before the channels, on and off, and only in a transition",
     (own) => {
       const test = makeScene();
-      const [subject] = test.scene.subjects;
-      const view = test.scene.views[0];
-      check(subject !== undefined && view !== undefined, "no subject or view");
+      const front = new Set([test.front]);
       const model: Model<null> = {
         show: () => undefined,
         frame: () => new Map([[test.group, IDENTITY]]),
         phase: () => "still",
       };
       const stage = own(new Stage(canvas(), test.scene, PALETTE, model));
-      const flashing = { view, tilt: 0, subject, flash: subject };
+      const flashing = stateOf(test, front, front);
       check(
         stage.show(flashing, null, true) === 0,
         "a state shown at once flashed",
       );
-      stage.show({ view, tilt: 0, subject: null, flash: null }, null, true);
+      stage.show(stateOf(test), null, true);
       const before = performance.now();
       const seconds = stage.show(flashing, null);
       const after = performance.now();
@@ -685,20 +686,22 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
         "the fade started before the flash ended",
       );
       check(
-        stage.phaseAt(after + FLASH_SECONDS * 1000) === "rest",
+        stage.phaseAt(after + FLASH_SECONDS * 1000) === "fade",
         "the fade did not start when the flash ended",
       );
       check(
         stage.flashingAt(after + FLASH_SECONDS * 1000) === null,
         "the flash outlasts its time",
       );
+      const faded = stage.valuesAt(
+        after + FLASH_SECONDS * 1000 + FADE_SECONDS * 1000 + 50,
+      );
       check(
-        stage.valuesAt(after + FLASH_SECONDS * 1000 + FADE_SECONDS * 1000 + 50)
-          .rest === 0,
+        faded.fade.size === 0 && faded.keep.size === 1,
         "the fade did not finish",
       );
       // a click during the flash: the same flash goes on, it does not restart
-      stage.show({ view, tilt: 0, subject: null, flash: null }, null, true);
+      stage.show(stateOf(test), null, true);
       const first = performance.now();
       stage.show(flashing, null);
       const left = stage.show(flashing, null);

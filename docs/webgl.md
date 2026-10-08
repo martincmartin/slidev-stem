@@ -14,7 +14,9 @@ frontmatter keys and measurements), read
 [`watches/tasks/2026-09-29-webgl-review-fixes/`](../watches/tasks/2026-09-29-webgl-review-fixes/PLAN.md)
 (the renderer's contract),
 [`watches/tasks/2026-09-30-flash/`](../watches/tasks/2026-09-30-flash/PLAN.md)
-(inks as a uniform, the recolour, the flash phase).
+(inks as a uniform, the recolour, the flash phase),
+[`watches/tasks/2026-10-07-watch-primitives/`](../watches/tasks/2026-10-07-watch-primitives/PLAN.md)
+(pieces, fitted views, one rule for every change).
 
 ## When to use it
 
@@ -136,26 +138,35 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
 ## Motion and slides
 
 - **One live canvas for the whole talk**, under every slide
-  (`global-bottom.vue`). Each slide names what it shows in its frontmatter; a
+  (`global-bottom.vue`). Each slide names what it shows in its frontmatter: a
+  list of the scene's pieces (`Scene.pieces`, named sets of meshes), and a
+  view, or none for a view that fits the pieces. A new slide needs no code. A
   slide with no key hides the canvas. A key of the wrong kind throws when the
   deck loads, with the key's name.
-- **Changes run one at a time:** towards a subject, the camera moves, then the
-  view tilts, then the rest fades; away from it, the reverse. A key press
-  during a change starts from what is on the screen. The order, the durations
-  and the flash are the timeline's (`webgl/timeline.ts`): it has no DOM and no
-  WebGL, so its tests (`timeline.test.ts`) drive it with made-up times.
-  `Stage` (`webgl/stage.ts`) holds the renderer, the model and the frame loop.
-- **A state can flash a subject during a change** (`StageState.flash`).
-  The first channel starts as soon as the flash ends.
-  In a swap, the flash starts when the swap ends. It flashes only in a transition that changes a channel,
-  not in a state shown at once. A key press during the flash does not start
-  it again. `Stage.show` (from `Timeline.show`) returns the seconds until the flash ends. The flash delays the channels, except in a swap.
+- **One rule for every change**, one channel at a time (`webgl/timeline.ts`).
+  From the shown meshes A to B, with D the meshes on the screen while the
+  camera moves (`StageState.moveWith`: those of both by default, all of
+  either, or none): A becomes D (fade out, then fade in), the camera moves
+  and tilts (zooming in: move, then tilt; otherwise the reverse), and D
+  becomes B. With nothing on the screen, the camera jumps. A key press
+  during a change starts from what is on the screen: a fade cut short ends
+  first. The timeline has no DOM and no WebGL, so its tests
+  (`timeline.test.ts`) drive it with made-up times. `Stage`
+  (`webgl/stage.ts`) holds the renderer, the model and the frame loop. The
+  watch talk's slides are the examples
+  ([`watches/docs/watch.md`](../watches/docs/watch.md), "The one rule").
+- **A state can flash meshes during a change** (`StageState.flash`). If they
+  are on the screen, the flash plays first, and the change starts as soon as
+  it ends; if they fade in, it plays when they are in. It flashes only in a
+  transition that changes a channel, not in a state shown at once. A key
+  press during the flash does not start it again. `Stage.show` (from
+  `Timeline.show`) returns the seconds until the flash ends.
   The caller passes a flash only on the step forward into its slide
   ([navigation.md](navigation.md)); the timeline itself never asks which way
   the viewer went. `viewEndAt` says when the camera's move ends, for text that
   waits for it.
-- **A fade fades the rest as one picture**, as SVG's group opacity does: the
-  fading parts never show their own hidden lines.
+- **A fade fades its meshes as one picture**, as SVG's group opacity does:
+  the fading parts never show their own hidden lines.
 - **Stills:** the export, the overview and the presenter's "next" pane show a
   picture of each slide's art, drawn by one hidden renderer for the page. The
   PDF export is a bitmap at twice the slide's size: good for a projector, not

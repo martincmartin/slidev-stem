@@ -19,7 +19,8 @@ hide: true
 # this slide to the next has the watch-zoom transition (global-bottom.vue); no
 # other move does.
 class: cover-watch
-watch: cover
+watch: all
+watchView: cover
 transition: watch-zoom
 ---
 
@@ -68,10 +69,10 @@ class: palette-after-hours palette-preview
 ---
 
 ---
-watch: hairspring
+watch: [balance wheel, balance staff, hairspring, collet, stud]
+watchView: hairspring
 watchTilt: 20
-watchOnly: balance wheel and hairspring
-watchFlash: balance wheel
+watchFlash: [balance wheel, balance staff]
 class: balance-wheel
 ---
 
@@ -176,9 +177,20 @@ IF ASKED: Why a wheel and not a disc? Mass at the rim counts most, like a figure
 -->
 
 ---
-watch: escapement
+watch:
+  [
+    balance wheel,
+    balance staff,
+    hairspring,
+    collet,
+    stud,
+    roller,
+    impulse jewel,
+    pallet fork,
+    escape wheel,
+    escape arbor,
+  ]
 watchTilt: 20
-watchOnly: escapement
 # click 2: the pallet and the balance fade, and the escape wheel spins freely;
 # click 3: they fade back in, and the pallet stops the wheel (docs/watch.md)
 watchSpin: 2
@@ -231,7 +243,7 @@ The wheel's and the pallet's leaders end LEADER_GAP px outside their parts
 <style>
 /* The callouts before the focus dim, to --esc-dim: less than the "Before
    clocks" cards (0.35), so that a dimmed callout stays easy to read. The
-   dim waits for the new callout: at click 3 for the watch's swap
+   dim waits for the new callout: at click 3 for the watch's fade
    (after-watch-fade), at click 4 for the balance's rest
    (after-balance-rest). Going back, the callouts come back at once. The
    callout's own root carries its v-click classes, so the dim is on its
@@ -289,6 +301,30 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 [click] As the balance swings, it periodically gives permission for one tiny advance. (Each time the jewel strikes the fork, "tick" or "tock" appears beside it and drifts away.) During that event some energy also travels the other way, from the gear train through the escapement into the balance.
 
 [click] (Trial: the same words as 1960s Batman bursts, to compare with click 5.)
+-->
+
+---
+watch: [fourth wheel, fourth arbor, escape pinion, escape arbor]
+watchTilt: 20
+# the audience has not seen these pieces, so their place in the watch does
+# not matter: the Escapement slide's picture fades out, the camera jumps, and
+# this one fades in, both ways (docs/watch.md, "The Gears slide")
+watchMoveWith: none
+---
+
+# Gears
+
+Fast gear, meet slow gear.
+
+<!--
+The escapement fades out. The fourth wheel and the escape wheel's pinion fade in.
+
+- The teeth must be the same size, or they do not mesh.
+- Each tooth that passes on one wheel passes on the other: the same number of teeth a second.
+- So the ratio of the speeds is the ratio of the teeth: 16 to 8 here, so the pinion turns twice as fast.
+- Same-size teeth: the number of teeth is in proportion to the circumference, and so to the radius.
+
+IF ASKED: Strictly, the pitch must match: a tooth plus its gap on one wheel equals a tooth plus its gap on the other. One wheel can have wider teeth and narrower gaps.
 -->
 
 ---

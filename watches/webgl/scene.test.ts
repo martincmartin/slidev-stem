@@ -37,7 +37,7 @@ const GOOD: Scene = {
   meshes: [MESH],
   groups: [ROOT],
   views: [{ name: "all", scale: 1, shift: [0, 0], pivot: [0, 0, 0] }],
-  subjects: [{ name: "the box", meshes: new Set([MESH]) }],
+  pieces: [{ name: "the box", meshes: new Set([MESH]) }],
 };
 
 test("a colour is #rrggbb", () => {
@@ -98,7 +98,7 @@ test("checkScene takes a good scene, and names what is wrong with a bad one", ()
     ],
     [
       /other is not in the scene/,
-      { ...GOOD, subjects: [{ name: "s", meshes: new Set([other]) }] },
+      { ...GOOD, pieces: [{ name: "s", meshes: new Set([other]) }] },
     ],
     [
       /not one of INKS/,
@@ -179,10 +179,10 @@ test("checkScene takes a good scene, and names what is wrong with a bad one", ()
       { ...GOOD, views: [...GOOD.views, ...GOOD.views] },
     ],
     [
-      /two subjects have one name/,
+      /two pieces have one name/,
       {
         ...GOOD,
-        subjects: [...GOOD.subjects, { name: "the box", meshes: new Set() }],
+        pieces: [...GOOD.pieces, { name: "the box", meshes: new Set() }],
       },
     ],
   ];

@@ -73,9 +73,11 @@ export function slideState(
       // a hidden watch keeps its last values: they are not on the screen
       settled["view"] = values.view.name;
       settled["tilt"] = values.tilt;
-      // the subject matters only while the rest of the watch is faded
-      settled["subject"] =
-        values.rest < 1 ? (values.subject?.name ?? "none") : "none";
+      // what is on the screen, once nothing fades
+      settled["shown"] = [...values.keep]
+        .map((mesh) => mesh.name)
+        .sort()
+        .join(", ");
       continuous["view scale"] = values.view.scale;
       continuous["tilt"] = values.tilt;
     }

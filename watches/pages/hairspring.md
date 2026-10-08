@@ -1,7 +1,19 @@
 ---
-watch: hairspring
-watchFlash: balance and hairspring
-watchOnly: hairspring and stud
+watch: [hairspring, collet, stud]
+watchView: hairspring
+# the oscillator flashes; then the camera zooms in with the whole watch on the
+# screen, and the rest fades out (docs/watch.md)
+watchFlash:
+  [
+    balance wheel,
+    balance staff,
+    hairspring,
+    collet,
+    stud,
+    roller,
+    impulse jewel,
+  ]
+watchMoveWith: all
 watchTilt: 20
 watchSettle: 2
 watchResume: 3

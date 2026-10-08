@@ -6,6 +6,8 @@
 import type { Ref } from "vue";
 
 export interface SlideRoute {
+  /** The slide's number (1-based). */
+  no: number;
   meta: { slide?: { frontmatter?: Record<string, unknown> } };
 }
 

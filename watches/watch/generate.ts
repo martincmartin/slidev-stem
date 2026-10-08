@@ -1,5 +1,6 @@
 // The design becomes a scene: the parts as meshes, with heights where they
-// touch, the 2D art's line styles, the clip discs, the views and the subjects.
+// touch, the 2D art's line styles, the clip discs, the pieces that slides name,
+// and the views.
 //
 // Ported from the spike of watches/tasks/2026-09-28-webgl-planning/
 // (depth_order.py: build_solids; cover_model.py: movement, frame, stud_for;
@@ -24,7 +25,7 @@ import type {
   LineStyle,
   Mesh,
   Scene,
-  Subject,
+  Piece,
   Vec3,
   View,
 } from "../webgl/scene.ts";
@@ -92,8 +93,6 @@ export const JEWEL_RADIUS = 6;
 /** The impulse jewel is a D, as in a Swiss lever: its flat faces the fork,
  *  this far from its centre. */
 export const JEWEL_FLAT_OFFSET = JEWEL_RADIUS / 3;
-/** The subject of a free spin (watch/state.ts, `watchSpin`). */
-export const ESCAPE_WHEEL = "escape wheel";
 /** The circle on the pallet fork's pivot. */
 export const FORK_PIVOT_RADIUS = 4;
 /** The stud: a block around the spring's outer end. */
@@ -104,18 +103,15 @@ const CROWN_ZOOM = 2;
 const HAIRSPRING_ZOOM = 250 / 56;
 /** Where the balance's arbor is on the slide in the hairspring view. */
 const HAIRSPRING_TARGET: Point2 = [275, 276];
-/** The escapement view's zoom and left edge (docs/watch.md, "The
- *  Escapement slide"). The escapement is as large as fits in this frame, from its
- *  left edge. The frame is wider than the escapement, so its height sets the
- *  zoom, and the callouts use the room on the right. Its top and bottom do
- *  not place the escapement: ESCAPEMENT_ARBOR_Y does. */
-const ESCAPEMENT_FRAME: PlanBox = Object.freeze({
-  left: 16,
-  top: 128,
-  right: 964,
-  bottom: 548,
-});
-/** The subtitle's baseline on the Escapement slide, in slide px, as measured in the
+/** A fitted view's room, in slide px (docs/watch.md, "Fitted views"): the
+ *  shown pieces are as large as fit in this width and height, from this left
+ *  edge, with their middle halfway between the subtitle's baseline and the
+ *  slide's bottom. The main focus of a slide is on its left; the callouts use
+ *  the room on the right. */
+const FIT_LEFT = 16;
+const FIT_WIDTH = 948;
+const FIT_HEIGHT = 420;
+/** The subtitle's baseline, in slide px, as measured in the
  *  browser: the theme's title and subtitle (themes/ledger/styles/ledger.css)
  *  put it there. Measure it again if they change. */
 const SUBTITLE_BASELINE = 110.7;
@@ -182,6 +178,8 @@ const WHEEL_RECIPES = {
 // ---- solids ----------------------------------------------------------------------------
 /** A solid before it has heights: an outline in its group's frame. */
 interface Solid {
+  /** The piece that a slide names to show it (`Scene.pieces`). */
+  piece: BuiltPiece;
   part: Part;
   role: Role;
   name: string;
@@ -202,8 +200,15 @@ export interface Heights {
   top: number;
 }
 
+/** Where a piece reaches, at any time: a box on the slide, and its heights. */
+export interface Extent {
+  readonly box: PlanBox;
+  readonly bottom: number;
+  readonly top: number;
+}
+
 /** A box on the slide, in px. */
-interface PlanBox {
+export interface PlanBox {
   readonly left: number;
   readonly top: number;
   readonly right: number;
@@ -211,16 +216,6 @@ interface PlanBox {
 }
 
 /** The smallest box that holds each circle, at any time. */
-function boxOf(circles: readonly { pivot: Point2; reach: number }[]): PlanBox {
-  if (circles.length === 0) throw new Error("a box of nothing");
-  return {
-    left: Math.min(...circles.map(({ pivot, reach }) => pivot[0] - reach)),
-    top: Math.min(...circles.map(({ pivot, reach }) => pivot[1] - reach)),
-    right: Math.max(...circles.map(({ pivot, reach }) => pivot[0] + reach)),
-    bottom: Math.max(...circles.map(({ pivot, reach }) => pivot[1] + reach)),
-  };
-}
-
 function contourRing(contour: Contour, style: LineStyle | null): Ring {
   return {
     points: contour.points,
@@ -283,6 +278,9 @@ export interface WatchGroups {
 export interface Watch {
   readonly design: Design;
   readonly scene: Scene;
+  /** Where each of the scene's pieces reaches, at any time: for a fitted
+   *  view (`fittedView`). */
+  readonly extents: ReadonlyMap<Piece, Extent>;
   readonly groups: WatchGroups;
   /** The hairspring: its geometry changes with the balance's angle. */
   readonly spring: Mesh;
@@ -590,6 +588,7 @@ function caseOf(
   root: Group,
   ringTop: number,
   movementBottom: number,
+  pieces: PieceList,
 ): CaseMeshes {
   const { mutedWash, mutedLine } = paint;
   const { caseRadius, bezelRadius } = design.case;
@@ -600,7 +599,14 @@ function caseOf(
   );
   const middle = (caseBottom + ringTop) / 2;
   const meshes: Mesh[] = [];
-  meshes.push(
+  const add = (piece: BuiltPiece, mesh: Mesh): void => {
+    piece.meshes.add(mesh);
+    meshes.push(mesh);
+  };
+  const strapPiece = pieces.make("strap");
+  const lugPiece = pieces.make("lug");
+  add(
+    pieces.make("case band"),
     extrude(
       ringsOf(
         [circlePath(0, 0, caseRadius), mutedLine(4)],
@@ -632,7 +638,8 @@ function caseOf(
       .arcTo(caseRadius, false, sweep(-84, 84, side), 84, caseY(84, side))
       .lineTo(84, strapFar)
       .close();
-    meshes.push(
+    add(
+      strapPiece,
       extrude(
         ringsOf([strapPath, mutedLine(3)]),
         middle - STRAP_THICKNESS / 2,
@@ -663,7 +670,8 @@ function caseOf(
         )
         .lineTo(right, far)
         .close();
-      meshes.push(
+      add(
+        lugPiece,
         extrude(ringsOf([lug, mutedLine(3)]), caseBottom, ringTop, {
           name: `lug ${String(level)}`,
           part: "lug",
@@ -690,7 +698,7 @@ function caseOf(
       lineOrder: middle + CROWN_RADIUS,
     },
   );
-  meshes.push(transformMesh(crownMesh, crownPlacement(middle)));
+  add(pieces.make("crown"), transformMesh(crownMesh, crownPlacement(middle)));
   return {
     meshes,
     caseBottom,
@@ -816,6 +824,25 @@ interface Kit {
   parts: Parts;
   groups: WatchGroups;
   solids: SolidList;
+  pieces: PieceList;
+}
+
+/** A piece while the watch is built: each mesh joins its piece where it is
+ *  made. The scene's pieces (`Scene.pieces`) are these. */
+interface BuiltPiece {
+  readonly name: string;
+  readonly meshes: Set<Mesh>;
+}
+
+/** The pieces, in the order in which they are made. */
+class PieceList {
+  readonly pieces: BuiltPiece[] = [];
+
+  make(name: string): BuiltPiece {
+    const made: BuiltPiece = { name, meshes: new Set() };
+    this.pieces.push(made);
+    return made;
+  }
 }
 
 /** The solids of the movement, in the drawing's order. */
@@ -837,6 +864,7 @@ class SolidList {
   }
 
   add(
+    piece: BuiltPiece,
     owner: Part,
     role: Role,
     group: Group,
@@ -855,6 +883,7 @@ class SolidList {
     const number = (this.counts.get(owner) ?? 0) + 1;
     this.counts.set(owner, number);
     const made: Solid = {
+      piece,
       part: owner,
       role,
       name: `${owner.name} ${String(number)}`,
@@ -934,8 +963,11 @@ function trainSolids(kit: Kit): void {
       [outline, line(fine ? 2 : 2.5)],
       ...(gaps ? ([[gaps, line(2)]] as [Path, LineStyle][]) : []),
     );
-    solids.add(owner, "body", group, bodyRings, subjectWash);
+    // the wheel and its hub are one piece
+    const wheelPiece = kit.pieces.make(`${wheel.name} wheel`);
+    solids.add(wheelPiece, owner, "body", group, bodyRings, subjectWash);
     solids.add(
+      wheelPiece,
       owner,
       "circle",
       group,
@@ -946,6 +978,7 @@ function trainSolids(kit: Kit): void {
       throw new Error(`the ${wheel.name} wheel has no pinion`);
     }
     solids.add(
+      kit.pieces.make(`${wheel.name} pinion`),
       owner,
       "other",
       group,
@@ -956,6 +989,7 @@ function trainSolids(kit: Kit): void {
       subjectWash,
     );
     solids.add(
+      kit.pieces.make(`${wheel.name} arbor`),
       owner,
       "circle",
       group,
@@ -974,6 +1008,7 @@ function barrelSolids(kit: Kit): void {
   const group = lookup(groups.wheels, barrel, "barrel group");
   const lid = barrel.pitchRadius - 12;
   solids.add(
+    kit.pieces.make("barrel"),
     owner,
     "body",
     group,
@@ -984,6 +1019,7 @@ function barrelSolids(kit: Kit): void {
     subjectWash,
   );
   solids.add(
+    kit.pieces.make("mainspring"),
     owner,
     "stroke",
     group,
@@ -994,7 +1030,14 @@ function barrelSolids(kit: Kit): void {
     subjectWash,
     { ribbon: true },
   );
-  solids.add(owner, "circle", group, ringsOf([disc(15), line(3)]), subjectWash);
+  solids.add(
+    kit.pieces.make("barrel arbor"),
+    owner,
+    "circle",
+    group,
+    ringsOf([disc(15), line(3)]),
+    subjectWash,
+  );
 }
 
 interface BalanceSolids {
@@ -1002,7 +1045,6 @@ interface BalanceSolids {
   wheel: Solid;
   /** The hairspring's coil. */
   spring: Solid;
-  collet: Solid;
   /** The coil's points at rest. */
   restSpring: Point2[];
   springShape: Spring;
@@ -1019,6 +1061,7 @@ function balanceSolids(kit: Kit): BalanceSolids {
   // The rim, arms, and hub are one piece, with no lines at their joins.
   // The radial screws show that the rim turns with the arms.
   const wheel = solids.add(
+    kit.pieces.make("balance wheel"),
     balancePart,
     "body",
     balanceGroup,
@@ -1051,6 +1094,7 @@ function balanceSolids(kit: Kit): BalanceSolids {
   );
   const restSpring = springPoints(springShape, at(swingSamples, 0));
   const springSolid = solids.add(
+    kit.pieces.make("hairspring"),
     springPart,
     "stroke",
     springBase,
@@ -1072,7 +1116,8 @@ function balanceSolids(kit: Kit): BalanceSolids {
 
   // the collet, which the drawing lacks: the spring's inner end is fixed to
   // it, and it turns with the balance
-  const collet = solids.add(
+  solids.add(
+    kit.pieces.make("collet"),
     springPart,
     "circle",
     balanceGroup,
@@ -1084,6 +1129,7 @@ function balanceSolids(kit: Kit): BalanceSolids {
   // The roller and jewel turn with the balance. The roller supports the
   // jewel's full footprint and joins it to the staff above the hairspring.
   solids.add(
+    kit.pieces.make("roller"),
     parts.roller,
     "body",
     balanceGroup,
@@ -1097,6 +1143,7 @@ function balanceSolids(kit: Kit): BalanceSolids {
     balanceDesign.pinDirection,
   );
   solids.add(
+    kit.pieces.make("impulse jewel"),
     jewelPart,
     "body",
     balanceGroup,
@@ -1111,7 +1158,7 @@ function balanceSolids(kit: Kit): BalanceSolids {
     ]),
     subjectFill,
   );
-  return { wheel, spring: springSolid, collet, restSpring, springShape };
+  return { wheel, spring: springSolid, restSpring, springShape };
 }
 
 /** Radial screw heads with slots on their outward faces. */
@@ -1191,7 +1238,9 @@ function forkSolids(kit: Kit): void {
   const { fork: forkPart } = parts;
   const { fork: forkGroup } = groups;
   const forkDesign = design.fork;
+  const forkPiece = kit.pieces.make("pallet fork");
   solids.add(
+    forkPiece,
     forkPart,
     "body",
     forkGroup,
@@ -1204,6 +1253,7 @@ function forkSolids(kit: Kit): void {
     subjectWash,
   );
   solids.add(
+    forkPiece,
     forkPart,
     "circle",
     forkGroup,
@@ -1231,7 +1281,9 @@ function dialSolids(kit: Kit): Solid {
     pivot: pivotPart,
   } = parts;
   // the seconds hand, on the fourth wheel's arbor
+  const secondsPiece = kit.pieces.make("seconds hand");
   solids.add(
+    secondsPiece,
     secondsPart,
     "body",
     secondsGroup,
@@ -1249,6 +1301,7 @@ function dialSolids(kit: Kit): Solid {
     mutedFill,
   );
   solids.add(
+    secondsPiece,
     secondsPart,
     "circle",
     secondsGroup,
@@ -1259,6 +1312,7 @@ function dialSolids(kit: Kit): Solid {
   // the chapter ring: what is left of the dial
   const { bezelRadius, ringRadius } = design.case;
   const ringSolid = solids.add(
+    kit.pieces.make("chapter ring"),
     ringPart,
     "body",
     root,
@@ -1272,6 +1326,7 @@ function dialSolids(kit: Kit): Solid {
   // the hands, at 2:35
   const hourTurn = (design.hands.hour + design.hands.minute / 60) * 30;
   solids.add(
+    kit.pieces.make("hour hand"),
     hourPart,
     "body",
     hourGroup,
@@ -1292,6 +1347,7 @@ function dialSolids(kit: Kit): Solid {
     mutedFill,
   );
   solids.add(
+    kit.pieces.make("minute hand"),
     minutePart,
     "body",
     minuteGroup,
@@ -1312,6 +1368,7 @@ function dialSolids(kit: Kit): Solid {
     mutedFill,
   );
   solids.add(
+    kit.pieces.make("centre pivot"),
     pivotPart,
     "body",
     root,
@@ -1331,6 +1388,7 @@ function staffSolid(kit: Kit): Solid {
   const staffPart = parts.spring; // the balance staff belongs to the hairspring's part
   const { root } = groups;
   return solids.add(
+    kit.pieces.make("balance staff"),
     staffPart,
     "body",
     root,
@@ -1373,13 +1431,13 @@ export function generate(design: Design = DESIGN): Watch {
     parts,
     groups: tree.groups,
     solids: list,
+    pieces: new PieceList(),
   };
   trainSolids(kit);
   barrelSolids(kit);
   const {
     wheel: balanceSolid,
     spring: springSolid,
-    collet,
     restSpring,
     springShape,
   } = balanceSolids(kit);
@@ -1440,6 +1498,7 @@ export function generate(design: Design = DESIGN): Watch {
     root,
     ringTop,
     heightRange(heights.values()).bottom,
+    kit.pieces,
   );
   const meshes: Mesh[] = [...caseMeshes];
 
@@ -1456,7 +1515,6 @@ export function generate(design: Design = DESIGN): Watch {
   meshes.push(...balanceScrews);
   const springMesh = lookup(movementMeshes, springSolid, "spring mesh");
   const springHeights = heightOf(springSolid);
-  const colletMesh = lookup(movementMeshes, collet, "collet mesh");
 
   const stud = studMesh(
     restSpring,
@@ -1467,122 +1525,56 @@ export function generate(design: Design = DESIGN): Watch {
   );
   meshes.push(stud.mesh);
 
-  meshes.push(...decalMeshes(paint, root, ringTop));
+  const decals = decalMeshes(paint, root, ringTop);
+  meshes.push(...decals);
 
-  // ---- views and subjects ----
+  // ---- the pieces: what a slide names (watch/state.ts) ----
+  for (const [solid, mesh] of movementMeshes) solid.piece.meshes.add(mesh);
+  // the screws turn with the balance wheel: they are part of it
+  for (const mesh of balanceScrews) balanceSolid.piece.meshes.add(mesh);
+  kit.pieces.make("stud").meshes.add(stud.mesh);
+  for (const mesh of decals) ringSolid.piece.meshes.add(mesh);
+  const pieces: readonly Piece[] = kit.pieces.pieces;
+  for (const piece of pieces) {
+    if (piece.meshes.size === 0) throw new Error(`${piece.name} has no mesh`);
+  }
+  const solidOf = new Map(
+    [...movementMeshes].map(([solid, mesh]) => [mesh, solid]),
+  );
+  const extents = new Map(
+    pieces.map((piece): [Piece, Extent] => [
+      piece,
+      extentOf(
+        [...piece.meshes].map((mesh) =>
+          meshExtent(mesh, solidOf.get(mesh), tree, watchCentre),
+        ),
+      ),
+    ]),
+  );
+
+  // ---- the named views ----
   const allHeights = heightRange(heights.values());
   const lowest = Math.min(caseBottom, allHeights.bottom);
   const highest = Math.max(ringTop, stud.top, allHeights.top);
-  const subject: Subject = {
-    name: "hairspring and stud",
-    meshes: new Set([springMesh, colletMesh, stud.mesh]),
-  };
-  // the oscillator: what the Hairspring slide flashes. Not the pallet fork.
-  const oscillatorParts = new Set([
-    parts.balance,
-    parts.spring,
-    parts.roller,
-    parts.jewel,
-  ]);
-  const oscillator: Subject = {
-    name: "balance and hairspring",
-    meshes: new Set([
-      ...[...movementMeshes]
-        .filter(([solid]) => oscillatorParts.has(solid.part))
-        .map(([, mesh]) => mesh),
-      stud.mesh,
-      ...balanceScrews,
-    ]),
-  };
-  // the balance wheel with the hairspring and the balance staff (the staff is
-  // part of the spring's `Part`), without the roller and the jewel: what slide
-  // 3 shows. It holds `subject`, so the balance fades in alone.
-  const wheelParts = new Set([parts.balance, parts.spring]);
-  const wheel: Subject = {
-    name: "balance wheel and hairspring",
-    meshes: new Set([
-      ...[...movementMeshes]
-        .filter(([solid]) => wheelParts.has(solid.part))
-        .map(([, mesh]) => mesh),
-      stud.mesh,
-      ...balanceScrews,
-    ]),
-  };
-  // what the Balance Wheel slide adds to the Hairspring slide's picture: the balance wheel, its screws and
-  // the staff. The Balance Wheel slide flashes it when it has faded in.
-  const wheelAdded: Subject = {
-    name: "balance wheel",
-    meshes: new Set(
-      [...wheel.meshes].filter((mesh) => !subject.meshes.has(mesh)),
-    ),
-  };
-  // the escapement: the oscillator, the pallet fork, and the escape wheel
-  // with its arbor but not its pinion (a wheel's "other" solid): what the Escapement slide
-  // shows. It holds `wheel`, so the camera moves first, then the rest of it
-  // fades in.
-  const escapePart = partOf(train.escape);
-  const escapementParts = new Set([...oscillatorParts, parts.fork, escapePart]);
-  const escapementSolids = [...movementMeshes.keys()].filter(
-    (solid) =>
-      escapementParts.has(solid.part) &&
-      !(solid.part === escapePart && solid.role === "other"),
-  );
-  const escapement: Subject = {
-    name: "escapement",
-    meshes: new Set([
-      ...escapementSolids.map((solid) =>
-        lookup(movementMeshes, solid, `mesh of ${solid.name}`),
-      ),
-      stud.mesh,
-      ...balanceScrews,
-    ]),
-  };
-  // the escape wheel alone, as the escapement shows it: what a free spin
-  // shows. The escapement holds it, so the rest of the escapement fades alone.
-  const escapeWheel: Subject = {
-    name: ESCAPE_WHEEL,
-    meshes: new Set(
-      escapementSolids
-        .filter((solid) => solid.part === escapePart)
-        .map((solid) => lookup(movementMeshes, solid, `mesh of ${solid.name}`)),
-    ),
-  };
-  const escapementBox = boxOf([
-    ...escapementSolids,
-    {
-      pivot: balanceSolid.pivot,
-      reach: design.balance.radius + BALANCE_SCREWS.protrusion,
-    },
-  ]);
   const springMiddle = (springHeights.bottom + springHeights.top) / 2;
   const scene: Scene = {
     slide: [design.canvas.width, design.canvas.height],
     meshes,
     groups: tree.all,
-    views: [
-      ...views(
-        design,
-        (lowest + highest) / 2,
-        springMiddle,
-        middle,
-        crownCentreX,
-      ),
-      fitView(
-        "escapement",
-        escapementBox,
-        ESCAPEMENT_FRAME,
-        // the hairspring's arbor, at the spring's height: halfway between
-        // the subtitle's baseline and the slide's bottom
-        [...balanceSolid.pivot, springMiddle],
-        (SUBTITLE_BASELINE + design.canvas.height) / 2,
-      ),
-    ],
-    subjects: [subject, oscillator, wheel, wheelAdded, escapement, escapeWheel],
+    views: views(
+      design,
+      (lowest + highest) / 2,
+      springMiddle,
+      middle,
+      crownCentreX,
+    ),
+    pieces,
   };
 
   return {
     design,
     scene,
+    extents,
     groups: tree.groups,
     spring: springMesh,
     springShape,
@@ -1649,25 +1641,100 @@ function views(
   ];
 }
 
-/** The view that zooms `box` as large as it fits in `frame`, against the
- *  frame's left edge, with the world point `pivot` at slide y `pivotY`. It
- *  tilts about `pivot`, so the pivot stays at `pivotY` at every tilt. */
-function fitView(
-  name: string,
-  box: PlanBox,
-  frame: PlanBox,
-  pivot: Vec3,
-  pivotY: number,
-): View {
-  const scale = Math.min(
-    (frame.right - frame.left) / (box.right - box.left),
-    (frame.bottom - frame.top) / (box.bottom - box.top),
+/** The view of `pieces` when a slide names no view (docs/watch.md, "Fitted
+ *  views"): as large as they fit in FIT_WIDTH by FIT_HEIGHT, from FIT_LEFT,
+ *  with their middle halfway between the subtitle's baseline and the slide's
+ *  bottom. It tilts about their middle, at the middle of their heights. */
+export function fittedView(watch: Watch, pieces: readonly Piece[]): View {
+  const { box, bottom, top } = extentOf(
+    pieces.map((piece) =>
+      lookup(watch.extents, piece, `extent of ${piece.name}`),
+    ),
   );
+  const scale = Math.min(
+    FIT_WIDTH / (box.right - box.left),
+    FIT_HEIGHT / (box.bottom - box.top),
+  );
+  const middle: Point2 = [
+    (box.left + box.right) / 2,
+    (box.top + box.bottom) / 2,
+  ];
+  const middleY = (SUBTITLE_BASELINE + watch.design.canvas.height) / 2;
   return {
-    name,
+    name: pieces.map((piece) => piece.name).join(", "),
     scale,
-    shift: [frame.left - scale * box.left, pivotY - scale * pivot[1]],
-    pivot,
+    shift: [FIT_LEFT - scale * box.left, middleY - scale * middle[1]],
+    pivot: [...middle, (bottom + top) / 2],
+  };
+}
+
+/** The smallest extent that holds all of `extents`. */
+function extentOf(extents: readonly Extent[]): Extent {
+  if (extents.length === 0) throw new Error("the extent of nothing");
+  return {
+    box: {
+      left: Math.min(...extents.map(({ box }) => box.left)),
+      top: Math.min(...extents.map(({ box }) => box.top)),
+      right: Math.max(...extents.map(({ box }) => box.right)),
+      bottom: Math.max(...extents.map(({ box }) => box.bottom)),
+    },
+    bottom: Math.min(...extents.map(({ bottom }) => bottom)),
+    top: Math.max(...extents.map(({ top }) => top)),
+  };
+}
+
+/** Where a mesh reaches, at any time: its solid's circle, if it has one (the
+ *  solid knows its reach over a swing); else, in a group that turns, the
+ *  circle that its vertices sweep; else, its vertices. */
+function meshExtent(
+  mesh: Mesh,
+  solid: Solid | undefined,
+  tree: GroupTree,
+  watchCentre: Point2,
+): Extent {
+  const { triangles } = mesh;
+  const vertices: Vec3[] = [];
+  for (let index = 0; index < triangles.length; index += 3) {
+    vertices.push([
+      at(triangles, index),
+      at(triangles, index + 1),
+      at(triangles, index + 2),
+    ]);
+  }
+  const bottom = Math.min(...vertices.map(([, , z]) => z));
+  const top = Math.max(...vertices.map(([, , z]) => z));
+  const circle = (centre: Point2, reach: number): Extent => ({
+    box: {
+      left: centre[0] - reach,
+      top: centre[1] - reach,
+      right: centre[0] + reach,
+      bottom: centre[1] + reach,
+    },
+    bottom,
+    top,
+  });
+  if (solid) return circle(solid.pivot, solid.reach);
+  const group = mesh.group ?? tree.groups.root;
+  const origin = lookup(tree.origins, group, `origin of ${group.name}`);
+  const centre: Point2 = [
+    watchCentre[0] + origin[0],
+    watchCentre[1] + origin[1],
+  ];
+  if (group !== tree.groups.root) {
+    return circle(
+      centre,
+      Math.max(...vertices.map(([x, y]) => Math.hypot(x, y))),
+    );
+  }
+  return {
+    box: {
+      left: centre[0] + Math.min(...vertices.map(([x]) => x)),
+      top: centre[1] + Math.min(...vertices.map(([, y]) => y)),
+      right: centre[0] + Math.max(...vertices.map(([x]) => x)),
+      bottom: centre[1] + Math.max(...vertices.map(([, y]) => y)),
+    },
+    bottom,
+    top,
   };
 }
 

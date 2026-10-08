@@ -238,7 +238,7 @@ const classes = computed(() => ({
 }
 /* Each layer fades on its own. The picture fades in 0.4 s, with the watch's
    0.3 s fade at the clicks where one takes the other's place. The rest shape
-   fades with the watch's swap, when the balance wheel joins (`--watch-fade`,
+   fades with the watch's fade, when the balance wheel joins (`--watch-fade`,
    which global-bottom.vue sets from FADE_SECONDS in webgl/timeline.ts). The
    callout is text: it fades as text does (--text-fade, in style.css), and
    fades in only after the text that it replaces has faded out. */

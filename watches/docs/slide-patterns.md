@@ -122,7 +122,7 @@ reason next to it.
   (`--watch-text-delay`), and then fades in. Both are in `style.css`.
 - **Text that names a part that fades in at the same click** waits for it:
   give the `v-click` element the class `after-watch-fade` (`style.css`). It
-  fades in after the watch's swap fade (`--watch-fade`), so its leader never
+  fades in after the watch's fade (`--watch-fade`), so its leader never
   points at a part that is not there yet. Going back, it fades out at once.
 - **Text that points at the balance at rest, at the click that settles it**,
   waits for the rest: give the `v-click` element the class
@@ -147,7 +147,9 @@ It is background, not rules.
 
 ## The live watch and the diving board
 
-A slide that shows the watch sets its view in the frontmatter.
+A slide that shows the watch names its pieces in the frontmatter, and needs no
+code: the view fits them, and the watch moves from the last slide's picture by
+one rule ([watch.md](watch.md#how-a-slide-shows-the-watch)).
 The Hairspring slide uses the diving board to explain the spring, and the Balance Wheel slide fades its rest shape out as the balance wheel fades in.
 On the Balance Wheel slide, click 1 adds "and steadily". Click 2 replaces the explanation with the accuracy of a calibrated watch (99.99%), in the timekeeper card's type roles. Click 3 adds what that is in seconds a day, so the audience takes in the percentage first.
 The outgoing text fades out before the incoming text fades in, in both directions.
@@ -155,6 +157,9 @@ The Escapement slide zooms out, and then the rest of the escapement fades in. It
 callouts point to parts of the watch, one at each click. At its second click
 the escape wheel spins alone, and at the third the pallet comes back and
 stops it.
+The Gears slide follows it: the Escapement slide's picture fades out, the
+camera jumps, and the fourth wheel and the escape wheel's pinion fade in
+(`watchMoveWith: none`).
 It is described in [watch.md](watch.md).
 
 ## Where things go on a slide

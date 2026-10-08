@@ -71,9 +71,9 @@ export function sceneData(
       dynamic: mesh.dynamic,
     })),
     views: scene.views,
-    subjects: scene.subjects.map((subject) => ({
-      name: subject.name,
-      meshes: [...subject.meshes].map((mesh) => indexOf(meshIndex, mesh)),
+    pieces: scene.pieces.map((piece) => ({
+      name: piece.name,
+      meshes: [...piece.meshes].map((mesh) => indexOf(meshIndex, mesh)),
     })),
   };
 }

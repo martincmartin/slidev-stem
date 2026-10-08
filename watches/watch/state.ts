@@ -1,34 +1,47 @@
 // A slide's frontmatter, at a number of clicks, as a state for the watch's
 // stage. The frontmatter names things; `stageState` turns the names into the
-// scene's objects, once, at this boundary.
-//   watch: a view (cover, hairspring, escapement, crown); none hides the watch
+// scene's objects, once, at this boundary (docs/watch.md, "The frontmatter
+// keys").
+//   watch: the pieces shown ([hairspring, collet, stud]), or `all`; no key
+//     hides the watch
+//   watchView: a named view (cover, hairspring, crown); none: the view that
+//     fits the shown pieces (`fittedView`)
 //   watchTilt: degrees (default 0)
-//   watchOnly: a subject ("hairspring and stud"): the rest of the watch fades
-//   watchFlash: a subject ("balance and hairspring") that flashes before the
-//     camera moves, when the slide is reached by a transition
+//   watchFlash: pieces that flash, when the slide is reached by a step
+//     forward
+//   watchMoveWith: what shows while the camera moves, on the step between
+//     this slide and the previous one, in either direction (`moveWithBefore`)
 //   watchSettle: the click at which the balance settles at rest
 //   watchResume: the click at which a settled balance starts to swing again
 //   watchSpin: the click at which the escape wheel spins freely, alone: the
-//     subject is the escape wheel (ESCAPE_WHEEL)
+//     shown pieces are SPIN_PIECES, in the slide's view
 //   watchSpinEnd: the click at which the rest comes back and stops it
 //   watchSpinSpeed: the spin's speed, degrees a second (default SPIN_SPEED)
 //   watchTickTock: the click from which the words "tick" and "tock" show at
 //     each strike of the jewel on the fork (`tickTockState`)
 //   watchTickTockBurst: the click from which they are comic bursts (a trial)
 
-import type { Scene } from "../webgl/scene.ts";
-import type { StageState } from "../webgl/timeline.ts";
-import { ESCAPE_WHEEL } from "./generate.ts";
+import type { Mesh, Piece, View } from "../webgl/scene.ts";
+import type { MoveWith, StageState } from "../webgl/timeline.ts";
+import { fittedView } from "./generate.ts";
+import type { Watch } from "./generate.ts";
 import type { WatchModelState } from "./model.ts";
 
 /** Degrees a second: a spin's speed when the slide does not give one. */
 export const SPIN_SPEED = 90;
+/** What a free spin shows: the escape wheel, as the Escapement slide shows
+ *  it. A spinning wheel would pass through the pallet, so it spins alone. */
+export const SPIN_PIECES: readonly string[] = ["escape wheel", "escape arbor"];
+const MOVES_WITH: readonly MoveWith[] = ["common", "all", "none"];
 
 export interface WatchState {
-  view: string;
+  /** A named view, or `null`: the view that fits the shown pieces. */
+  view: string | null;
   tilt: number;
-  only: string | undefined;
-  flash: string | undefined;
+  /** The names of the slide's pieces, or "all": the view fits them, and
+   *  they show, except during a spin (`spin`). */
+  show: readonly string[] | "all";
+  flash: readonly string[] | undefined;
   settled: boolean;
   /** Degrees a second: the escape wheel spins freely; `null`: it does not. */
   spin: number | null;
@@ -51,29 +64,57 @@ export function clickOf(
   return click;
 }
 
+/** A list of piece names, or throws with the key's name. */
+function namesOf(name: string, value: unknown): readonly string[] {
+  if (
+    !Array.isArray(value) ||
+    value.length === 0 ||
+    !value.every((item) => typeof item === "string" && item !== "")
+  ) {
+    return wrong(name, value, "a list of pieces");
+  }
+  return value as string[];
+}
+
+/** What shows while the camera moves on the step between this slide and the
+ *  previous one, in either direction: the pieces that both show (`common`,
+ *  the default), all the pieces of either (`all`), or none (`none`: the
+ *  camera jumps). Throws if `watchMoveWith` is not one of these, or if the
+ *  slide has no `watch`. */
+export function moveWithBefore(frontmatter: Record<string, unknown>): MoveWith {
+  const value = frontmatter["watchMoveWith"];
+  if (value === undefined) return "common";
+  const found = MOVES_WITH.find((each) => each === value);
+  if (found === undefined) {
+    return wrong("watchMoveWith", value, MOVES_WITH.join(", or "));
+  }
+  if (frontmatter["watch"] === undefined) {
+    return wrong("watchMoveWith", value, "set only with watch");
+  }
+  return found;
+}
+
 /** The slide's watch state, or `undefined` if the slide has no `watch`.
  *  Throws if a field is there but is not what the list above says. */
 export function watchState(
   frontmatter: Record<string, unknown>,
   clicks: number,
 ): WatchState | undefined {
-  const view = frontmatter["watch"];
-  if (view === undefined) return undefined;
-  if (typeof view !== "string" || view === "") {
-    return wrong("watch", view, "the name of a view");
+  moveWithBefore(frontmatter); // it throws on a wrong `watchMoveWith`
+  const shown = frontmatter["watch"];
+  if (shown === undefined) return undefined;
+  const show = shown === "all" ? "all" : namesOf("watch", shown);
+  const view = frontmatter["watchView"] ?? null;
+  if (view !== null && (typeof view !== "string" || view === "")) {
+    return wrong("watchView", view, "the name of a view");
   }
   const tilt = frontmatter["watchTilt"] ?? 0;
   if (typeof tilt !== "number" || !Number.isFinite(tilt)) {
     return wrong("watchTilt", tilt, "a number of degrees");
   }
-  const only = frontmatter["watchOnly"];
-  if (only !== undefined && (typeof only !== "string" || only === "")) {
-    return wrong("watchOnly", only, "the name of a subject");
-  }
-  const flash = frontmatter["watchFlash"];
-  if (flash !== undefined && (typeof flash !== "string" || flash === "")) {
-    return wrong("watchFlash", flash, "the name of a subject");
-  }
+  const flashed = frontmatter["watchFlash"];
+  const flash =
+    flashed === undefined ? undefined : namesOf("watchFlash", flashed);
   const settleAt = clickOf(frontmatter, "watchSettle");
   const resumeAt = clickOf(frontmatter, "watchResume");
   if (
@@ -104,8 +145,7 @@ export function watchState(
   return {
     view,
     tilt,
-    // a spinning wheel would pass through the pallet: it spins alone
-    only: spinning ? ESCAPE_WHEEL : only,
+    show,
     flash,
     settled:
       settleAt !== undefined &&
@@ -148,21 +188,46 @@ export function tickTockState(
   return { burst: burstFrom !== undefined && clicks >= burstFrom };
 }
 
-/** The camera's and the fade's state, with the names turned into objects. */
-export function stageState(scene: Scene, state: WatchState): StageState {
-  const view = scene.views.find((candidate) => candidate.name === state.view);
-  if (!view) throw new Error(`no watch view ${state.view}`);
-  const subjectNamed = (name: string | undefined) => {
-    if (name === undefined) return null;
-    const found = scene.subjects.find((candidate) => candidate.name === name);
-    if (!found) throw new Error(`no watch subject ${name}`);
+/** The camera's and the fade's state, with the names turned into objects.
+ *  `moveWith` is the step's (`moveWithBefore`). Throws if a name is not a
+ *  piece or a view of the watch. */
+export function stageState(
+  watch: Watch,
+  state: WatchState,
+  moveWith: MoveWith = "common",
+): StageState {
+  const { scene } = watch;
+  const piecesNamed = (key: string, names: readonly string[]): Piece[] =>
+    names.map((name) => {
+      const found = scene.pieces.find((candidate) => candidate.name === name);
+      if (!found) throw new Error(`${key}: no watch piece "${name}"`);
+      return found;
+    });
+  const meshesOf = (pieces: readonly Piece[]): ReadonlySet<Mesh> =>
+    new Set(pieces.flatMap((piece) => [...piece.meshes]));
+  const pieces =
+    state.show === "all" ? scene.pieces : piecesNamed("watch", state.show);
+  const namedView = (name: string): View => {
+    const found = scene.views.find((candidate) => candidate.name === name);
+    if (!found) throw new Error(`watchView: no watch view "${name}"`);
     return found;
   };
+  // the fitted view fits the slide's pieces, also while a spin shows fewer
+  const view =
+    state.view === null ? fittedView(watch, pieces) : namedView(state.view);
   return {
     view,
     tilt: state.tilt,
-    subject: subjectNamed(state.only),
-    flash: subjectNamed(state.flash),
+    shown:
+      state.spin !== null
+        ? meshesOf(piecesNamed("watchSpin", SPIN_PIECES))
+        : state.show === "all"
+          ? new Set(scene.meshes)
+          : meshesOf(pieces),
+    flash: state.flash
+      ? meshesOf(piecesNamed("watchFlash", state.flash))
+      : null,
+    moveWith,
   };
 }
 

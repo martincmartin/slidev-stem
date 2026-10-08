@@ -1,12 +1,23 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
-import type { Mesh } from "../webgl/scene.ts";
 import type { Wheel } from "./design.ts";
-import { generate, JEWEL_FLAT_OFFSET, JEWEL_RADIUS } from "./generate.ts";
+import type { Mesh, Piece } from "../webgl/scene.ts";
+import {
+  fittedView,
+  generate,
+  JEWEL_FLAT_OFFSET,
+  JEWEL_RADIUS,
+} from "./generate.ts";
 
 const watch = generate();
 const { design, scene } = watch;
+
+function piece(name: string): Piece {
+  const found = scene.pieces.find((candidate) => candidate.name === name);
+  if (!found) throw new Error(`no piece ${name}`);
+  return found;
+}
 
 function partMeshes(part: string): Mesh[] {
   return scene.meshes.filter((mesh) => mesh.part === part);
@@ -85,8 +96,8 @@ test("the spring is a ribbon on the balance, and the stud is not in the drawing"
   const [studBottom, studTop] = heights(stud);
   assert.equal(studBottom, springBottom - 1);
   assert.equal(studTop, springTop + 1);
-  const subject = at(scene.subjects, 0);
-  assert.ok(subject.meshes.has(spring) && subject.meshes.has(stud));
+  assert.ok(piece("hairspring").meshes.has(spring));
+  assert.ok(piece("stud").meshes.has(stud));
 });
 
 test("every mesh is finite, and every hidden-inside disc is a disc", () => {
@@ -123,104 +134,81 @@ test("the views: the cover is centred on the watch and the spring's view on the 
   assert.ok(Math.abs((crown?.scale ?? 0) - 2) < 1e-12);
 });
 
-test("the flashed subject includes the roller and oscillator, not the fork", () => {
-  const subject = scene.subjects.find(
-    (candidate) => candidate.name === "balance and hairspring",
-  );
-  assert.ok(subject);
-  const parts = new Set([...subject.meshes].map((mesh) => mesh.part));
-  assert.deepEqual(
-    [...parts].sort(),
-    [
-      "balance",
-      "hairspring",
-      "hairspring stud",
-      "impulse jewel",
-      "roller",
-    ].sort(),
-  );
-  for (const part of parts) {
-    for (const mesh of partMeshes(part)) {
-      assert.ok(subject.meshes.has(mesh), `${mesh.name} does not flash`);
+test("every mesh is in exactly one piece", () => {
+  const owners = new Map<Mesh, string[]>();
+  for (const each of scene.pieces) {
+    for (const mesh of each.meshes) {
+      owners.set(mesh, [...(owners.get(mesh) ?? []), each.name]);
     }
   }
-  assert.ok(subject.meshes.has(watch.spring));
-});
-
-test("the Balance Wheel slide's subject is the balance wheel and the spring, not the roller or the jewel, and it holds the Hairspring slide's", () => {
-  const find = (name: string) =>
-    scene.subjects.find((candidate) => candidate.name === name);
-  const wheel = find("balance wheel and hairspring");
-  const spring = find("hairspring and stud");
-  assert.ok(wheel && spring);
-  const parts = new Set([...wheel.meshes].map((mesh) => mesh.part));
-  assert.deepEqual(
-    [...parts].sort(),
-    ["balance", "hairspring", "hairspring stud"].sort(),
-  );
-  for (const mesh of spring.meshes) assert.ok(wheel.meshes.has(mesh));
-  for (const mesh of partMeshes("balance")) assert.ok(wheel.meshes.has(mesh));
-});
-
-test("the Balance Wheel slide's flash is what it adds to the Hairspring slide: the wheel, its screws and the staff, not the spring", () => {
-  const find = (name: string) =>
-    scene.subjects.find((candidate) => candidate.name === name);
-  const added = find("balance wheel");
-  const wheel = find("balance wheel and hairspring");
-  const spring = find("hairspring and stud");
-  assert.ok(added && wheel && spring);
-  assert.ok(added.meshes.size > 0);
-  for (const mesh of wheel.meshes) {
-    assert.equal(added.meshes.has(mesh), !spring.meshes.has(mesh));
+  for (const mesh of scene.meshes) {
+    assert.equal(
+      owners.get(mesh)?.length,
+      1,
+      `${mesh.name}: ${String(owners.get(mesh))}`,
+    );
   }
-  for (const mesh of partMeshes("balance")) assert.ok(added.meshes.has(mesh));
 });
 
-test("the Escapement slide's subject is the escapement: it holds the Balance Wheel slide's, and has the escape wheel and its arbor but not its pinion", () => {
-  const find = (name: string) =>
-    scene.subjects.find((candidate) => candidate.name === name);
-  const escapement = find("escapement");
-  const wheel = find("balance wheel and hairspring");
-  assert.ok(escapement && wheel);
-  for (const mesh of wheel.meshes) assert.ok(escapement.meshes.has(mesh));
-  const parts = new Set([...escapement.meshes].map((mesh) => mesh.part));
-  assert.deepEqual(
-    [...parts].sort(),
-    [
-      "balance",
-      "escape wheel",
-      "hairspring",
-      "hairspring stud",
-      "impulse jewel",
-      "pallet fork",
-      "roller",
-    ].sort(),
-  );
-  for (const part of parts) {
-    if (part === "escape wheel") continue;
-    for (const mesh of partMeshes(part)) assert.ok(escapement.meshes.has(mesh));
+test("each wheel of the train is three pieces: the wheel with its hub, the pinion and the arbor", () => {
+  for (const wheel of ["escape", "fourth", "third", "centre"]) {
+    // the wheel, its hub, its pinion and its arbor, in the drawing's order
+    const [body, hub, pinion, arbor] = partMeshes(`${wheel} wheel`);
+    assert.ok(body && hub && pinion && arbor);
+    assert.deepEqual(piece(`${wheel} wheel`).meshes, new Set([body, hub]));
+    assert.deepEqual(piece(`${wheel} pinion`).meshes, new Set([pinion]));
+    assert.deepEqual(piece(`${wheel} arbor`).meshes, new Set([arbor]));
+    // the arbor stands on the wheel: without the pinion it does not float
+    assert.equal(heights(arbor)[0], heights(body)[1]);
+    assert.ok(heights(arbor)[1] > heights(pinion)[1]);
   }
-  // the wheel, its hub and its arbor, in the drawing's order; the third is
-  // the pinion
-  const [body, hub, pinion, arbor] = partMeshes("escape wheel");
-  assert.ok(body && hub && pinion && arbor);
-  assert.ok(escapement.meshes.has(body));
-  assert.ok(escapement.meshes.has(hub));
-  assert.ok(!escapement.meshes.has(pinion));
-  assert.ok(escapement.meshes.has(arbor));
-  // the arbor stands on the wheel: without the pinion it does not float
-  assert.equal(heights(arbor)[0], heights(body)[1]);
-  assert.ok(heights(arbor)[1] > heights(pinion)[1]);
 });
 
-test("the escapement view is wider than the hairspring view", () => {
-  const view = (name: string) =>
-    scene.views.find((candidate) => candidate.name === name);
-  const escapement = view("escapement");
-  const hairspring = view("hairspring");
-  assert.ok(escapement && hairspring);
-  assert.ok(escapement.scale < hairspring.scale);
-  assert.ok(escapement.scale > 1);
+test("the oscillator's pieces: the balance wheel holds its screws; the spring, collet and stud are one mesh each", () => {
+  assert.deepEqual(
+    piece("balance wheel").meshes,
+    new Set(partMeshes("balance")),
+  );
+  const [spring, collet, staff] = partMeshes("hairspring");
+  assert.ok(spring && collet && staff);
+  assert.deepEqual(piece("hairspring").meshes, new Set([spring]));
+  assert.deepEqual(piece("collet").meshes, new Set([collet]));
+  assert.deepEqual(piece("balance staff").meshes, new Set([staff]));
+  assert.equal(piece("stud").meshes.size, 1);
+  assert.deepEqual(
+    piece("seconds hand").meshes,
+    new Set(partMeshes("seconds hand")),
+  );
+});
+
+test("a fitted view: the pieces fit the room under the subtitle, against its left edge", () => {
+  const escapement = [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "escape arbor",
+  ].map(piece);
+  const view = fittedView(watch, escapement);
+  const hairspring = scene.views.find(
+    (candidate) => candidate.name === "hairspring",
+  );
+  assert.ok(hairspring);
+  assert.ok(view.scale < hairspring.scale && view.scale > 1);
+  // the escapement is taller than wide: its height fills the room
+  const box = escapement
+    .map((each) => watch.extents.get(each)?.box)
+    .filter((each) => each !== undefined);
+  const top = Math.min(...box.map((each) => each.top));
+  const bottom = Math.max(...box.map((each) => each.bottom));
+  const left = Math.min(...box.map((each) => each.left));
+  assert.ok(Math.abs(view.scale * (bottom - top) - 420) < 1e-9);
+  assert.ok(Math.abs(view.scale * left + view.shift[0] - 16) < 1e-9);
 });
 
 test("four evenly spaced radial screws touch the balance rim and turn with it", () => {
@@ -305,17 +293,6 @@ test("the impulse jewel is a D, its flat facing the fork, as wide as its circle"
   assert.ok(near(Math.min(...along), centre - JEWEL_RADIUS));
   assert.ok(near(Math.max(...across), JEWEL_RADIUS));
   assert.ok(near(Math.min(...across), -JEWEL_RADIUS));
-});
-
-test("the Hairspring slide keeps only the spring, collet and stud when the mechanism fades", () => {
-  const subject = scene.subjects.find(
-    (candidate) => candidate.name === "hairspring and stud",
-  );
-  assert.ok(subject);
-  assert.equal(subject.meshes.size, 3);
-  for (const part of ["roller", "impulse jewel", "balance", "pallet fork"]) {
-    for (const mesh of partMeshes(part)) assert.ok(!subject.meshes.has(mesh));
-  }
 });
 
 test("the lowered spring stays at the Hairspring slide's target through its tilt", () => {

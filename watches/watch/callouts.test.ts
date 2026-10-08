@@ -9,15 +9,20 @@ import {
   jewelStrikes,
   onSlide,
 } from "./callouts.ts";
+import { slideFrontmatter } from "./deck.ts";
 import { generate, JEWEL_FLAT_OFFSET, JEWEL_RADIUS } from "./generate.ts";
 import { tickWindows } from "./model.ts";
 import { polar } from "./shapes.ts";
+import { stageState, watchState } from "./state.ts";
 
 const watch = generate();
 const { design, scene } = watch;
-const ESCAPEMENT_SLIDE = { watch: "escapement", watchTilt: 20 };
+const ESCAPEMENT_SLIDE = await slideFrontmatter("Escapement");
 const marks = escapementMarks(watch, ESCAPEMENT_SLIDE);
-const view = scene.views.find((candidate) => candidate.name === "escapement");
+const { view } = stageState(
+  watch,
+  watchState(ESCAPEMENT_SLIDE, 0) ?? assert.fail("no watch"),
+);
 const [, , , , escape] = design.wheels as [Wheel, Wheel, Wheel, Wheel, Wheel];
 
 /** Twice the signed area of the triangle: > 0 if it turns clockwise on the
@@ -27,7 +32,6 @@ function cross(a: Point2, b: Point2, c: Point2): number {
 }
 
 test("onSlide is the view's zoom and shift, and a tilt lifts a higher point", () => {
-  assert.ok(view);
   const point: [number, number, number] = [700, 150, 5];
   const [x, y] = onSlide(view, 0, scene.slide, point);
   assert.ok(Math.abs(x - (view.scale * 700 + view.shift[0])) < 1e-3);
@@ -92,17 +96,11 @@ test("the escapement's tops are the tops of their parts' meshes", () => {
   assert.equal(watch.escapementTops.jewel, top("impulse jewel", 0));
 });
 
-test("the escapement view puts the hairspring's arbor halfway down from the subtitle, at any tilt", () => {
-  assert.ok(view);
-  const arbor: [number, number, number] = [
-    design.watchCentre[0] + design.balance.arbor[0],
-    design.watchCentre[1] + design.balance.arbor[1],
-    (watch.springHeights.bottom + watch.springHeights.top) / 2,
-  ];
+test("a fitted view keeps its pieces' middle halfway down from the subtitle, at any tilt", () => {
   // the subtitle's baseline is at 110.7 (SUBTITLE_BASELINE in generate.ts)
   const halfway = (110.7 + at(scene.slide, 1)) / 2;
   for (const tilt of [0, 20, 45]) {
-    const [, y] = onSlide(view, tilt, scene.slide, arbor);
+    const [, y] = onSlide(view, tilt, scene.slide, view.pivot);
     assert.ok(Math.abs(y - halfway) < 1e-3, `tilt ${String(tilt)}`);
   }
 });
@@ -130,7 +128,6 @@ test("the two strikes are on either side of the fork's axis, and their words go 
 });
 
 test("each window's strike is at the horn ahead of the jewel, not where it enters", () => {
-  assert.ok(view);
   const { timing } = design;
   const radius =
     design.balance.impulsePinRadius + (JEWEL_FLAT_OFFSET - JEWEL_RADIUS) / 2;

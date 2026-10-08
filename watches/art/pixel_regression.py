@@ -29,8 +29,16 @@ import watch_stills
 from PIL import Image
 from playwright.sync_api import sync_playwright
 
-SUBJECT = "hairspring and stud"
-FLASHED = "balance and hairspring"
+SUBJECT = ["hairspring", "collet", "stud"]
+FLASHED = [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+]
 
 
 def options(
@@ -87,11 +95,10 @@ def draw(out: pathlib.Path) -> None:
             page.on("pageerror", lambda error: errors.append(str(error)))
             page.goto(f"{base}/index.html")
             page.wait_for_function("window.watchProbeReady === true")
-            subjects = page.evaluate(
-                "window.watchProbe.scene().subjects.map(s => s.name)"
-            )
-            if SUBJECT not in subjects:
-                sys.exit(f"no subject {SUBJECT!r}: {subjects}")
+            pieces = page.evaluate("window.watchProbe.scene().pieces.map(p => p.name)")
+            missing = [name for name in SUBJECT + FLASHED if name not in pieces]
+            if missing:
+                sys.exit(f"no pieces {missing!r}: {pieces}")
             for name, frame in FRAMES.items():
                 page.evaluate("o => window.watchProbe.render(o)", frame)
                 url = str(page.evaluate("document.querySelector('canvas').toDataURL()"))

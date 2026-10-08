@@ -606,8 +606,8 @@ export function stillPose(
 // teeth as they did, and every wheel stays in mesh. During a free spin it
 // turns on its own, at a speed in beats a second, while only the escape wheel
 // shows (docs/watch.md, "The free spin"):
-//   - a spin starts when the rest of the escapement has faded out (the swap's
-//     FADE_SECONDS), and speeds up in SPIN_UP_SECONDS;
+//   - a spin starts when the rest of the escapement has faded out (the
+//     fade's FADE_SECONDS), and speeds up in SPIN_UP_SECONDS;
 //   - a stop keeps it spinning until the rest has faded back in, and then
 //     until the next tooth reaches the pallet: the lead reaches the next even
 //     number of beats. From then on it follows the mechanism again.

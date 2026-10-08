@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // One live watch under every slide, for the whole talk, drawn with WebGL by the
-// stage of webgl/stage.ts. Each slide names a view in its frontmatter
-// (`watch: hairspring`, `watchTilt: 45`, and see watch/state.ts); a slide
-// without one hides the layer. A click can change the state (`watchSettle`).
+// stage of webgl/stage.ts. Each slide names the pieces that it shows in its
+// frontmatter (`watch: [hairspring, collet, stud]`, `watchTilt: 20`, and see
+// watch/state.ts); a slide without `watch` hides the layer. A click can change the state (`watchSettle`).
 // Above the watch, the one live diving board (components/DivingBoard.vue),
 // which the Hairspring slide's frontmatter shows (`board`, and see watch/board.ts). While
 // the board's picture shows, it covers the watch: the canvas fades out, and the
@@ -16,6 +16,8 @@
 // slide or click, this decides the kind of move (watch/navigation.ts): a step
 // animates from what is on the screen, in either direction, and a jump shows
 // the target at once. A flash plays only on the step forward into its slide.
+// On a step between two slides, the later one says what shows while the
+// camera moves (`watchMoveWith`), in either direction.
 // The new slide's text waits for the camera, in either direction
 // (`--watch-text-delay`, from the stage). A click's text can wait for the
 // balance to come to rest (`--watch-rest-delay`, from the model).
@@ -57,11 +59,13 @@ import { slideState } from "./watch/slide-state.ts";
 import type { SlideState } from "./watch/slide-state.ts";
 import {
   modelState,
+  moveWithBefore,
   stageState,
   tickTockState,
   watchState,
 } from "./watch/state.ts";
 import type { WatchState } from "./watch/state.ts";
+import type { MoveWith } from "./webgl/timeline.ts";
 
 declare global {
   interface Window {
@@ -74,17 +78,17 @@ declare global {
 
 const slidev = inject(injectionSlidevContext);
 if (!slidev) throw new Error("no Slidev context");
-const live = !useNav().isPrintMode.value;
+const nav = useNav();
+const live = !nav.isPrintMode.value;
 const frontmatter = computed(
   () => slidev.nav.currentSlideRoute.meta.slide?.frontmatter ?? {},
 );
 const state = computed(() => watchState(frontmatter.value, slidev.nav.clicks));
 /** The current slide's palette: the theme's, as the slide's classes change it. */
 const palette = computed(() => slidePalette(frontmatter.value["class"]));
-const name = computed(() => state.value?.view);
 /** The diving board's picture covers the watch. */
 const covered = ref(false);
-const hidden = computed(() => !name.value || covered.value);
+const hidden = computed(() => !state.value || covered.value);
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 const board = shallowRef<BoardTarget>({ state: undefined, atOnce: true });
 let stage: Stage<WatchModelState> | undefined;
@@ -112,6 +116,7 @@ function showWatch(
   now: WatchState | undefined,
   move: Move,
   intoSlide: boolean,
+  moveWith: MoveWith,
 ): void {
   const text = JSON.stringify(now ?? null);
   if (text === shownWatch && move !== "jump") return;
@@ -130,7 +135,7 @@ function showWatch(
   if (hideTimer !== undefined || hidden.value) goOutOfSight();
   // a slide reached from a slide without the watch starts at its state
   stage.show(
-    stageState(WATCH.scene, { ...now, flash }),
+    stageState(WATCH, { ...now, flash }, moveWith),
     modelState(now),
     move === "jump" || old === "null",
   );
@@ -174,14 +179,16 @@ function goOutOfSight(): void {
   clearTimeout(hideTimer);
   hideTimer = undefined;
   if (stageTarget && stage) {
-    stage.show(
-      stageState(WATCH.scene, stageTarget),
-      modelState(stageTarget),
-      true,
-    );
+    stage.show(stageState(WATCH, stageTarget), modelState(stageTarget), true);
     showRestDelay();
   }
   stage?.stop();
+}
+
+/** The frontmatter of the slide numbered `slide` (1-based). */
+function frontmatterOf(slide: number): Record<string, unknown> {
+  const route = nav.slides.value.find((each) => each.no === slide);
+  return route?.meta.slide?.frontmatter ?? {};
 }
 
 function showBoard(clicks: number, move: Move): void {
@@ -218,8 +225,12 @@ onMounted(() => {
       };
       const move = moveOf(place, to);
       const intoSlide = place?.slide !== to.slide;
+      const moveWith =
+        place && intoSlide
+          ? moveWithBefore(frontmatterOf(Math.max(place.slide, to.slide)))
+          : "common";
       place = to;
-      showWatch(state.value, move, intoSlide);
+      showWatch(state.value, move, intoSlide, moveWith);
       showBoard(to.clicks, move);
     },
     { immediate: true },
@@ -249,7 +260,7 @@ onMounted(() => {
     Math.round(WATCH.scene.slide[0] * ratio),
     Math.round(WATCH.scene.slide[1] * ratio),
   ];
-  const pending = useNav().slides.value.flatMap((route) => {
+  const pending = nav.slides.value.flatMap((route) => {
     const slide = route.meta.slide?.frontmatter ?? {};
     const shown = watchState(slide, 0);
     return shown

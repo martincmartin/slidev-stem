@@ -196,8 +196,8 @@ function slideProjection(
   frontmatter: Record<string, unknown>,
 ): (point: Point2, z: number) => Point2 {
   const state = watchState(frontmatter, 0);
-  if (!state) throw new Error("the escapement's callouts need a `watch:` view");
-  const { view, tilt } = stageState(watch.scene, state);
+  if (!state) throw new Error("the escapement's callouts need a `watch:`");
+  const { view, tilt } = stageState(watch, state);
   return (point, z) =>
     onSlide(view, tilt, watch.scene.slide, [point[0], point[1], z]);
 }
