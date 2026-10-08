@@ -49,6 +49,7 @@ uv run tools/validate.py --fix                          # ... after ruff formats
 (cd watches && uv run ../tools/validate.py --quick)     # source, generated files, and build
 (cd watches && uv run ../tools/validate.py --jobs 1)    # full checks, serial preparation
 (cd watches && uv run ../tools/validate.py --json)      # results and elapsed times as JSON
+(cd watches && uv run ../tools/validate.py --no-reuse)  # run print and navigation again
 uv run tools/lib.py                          # the framework, as numbers
 uv run tools/palette.py                      # every gate, pass/fail
 uv run tools/palette.py --talk watches       # only: does this talk set it outside a slide class?
@@ -89,6 +90,9 @@ Use quick mode for routine feedback.
 The [validation policy](../AGENTS.md#validate-before-you-commit) defines when full mode is required.
 Run full mode during work only after changes that could affect its results.
 Before a commit, reuse the last successful full run only if the project and its relevant inputs have not changed.
+After changes to docs only, a quick run is enough (the policy says which files).
+Full mode reuses a pass of print and navigation while the built deck and its checkers are byte-identical;
+`--no-reuse` runs them again. [talks.md](../docs/talks.md#check-your-work) gives the key.
 `--quick` checks source files, generated files, and a build.
 It omits rendered art, browser checks, print, and navigation.
 

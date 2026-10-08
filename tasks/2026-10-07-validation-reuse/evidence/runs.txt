@@ -1,0 +1,10 @@
+2026-10-07, watches, full mode (`uv run ../tools/validate.py`), 2 workers.
+
+1. No record (first run): 22 checks passed, 256.23 s.
+   print 65.48 s, navigation and offline 187.68 s. Both recorded.
+2. Nothing changed: 22 checks passed, 14.97 s.
+   print and navigation reused (0.01 s each).
+3. One line added to docs/measurements.md: 22 checks passed, 14.86 s.
+   print and navigation reused.
+4. One YAML comment changed in slides.md, deck built and keyed (not run in
+   full): the key differs from the record's, so print and navigation run.

@@ -33,6 +33,8 @@ mutagen.yml.lock
 # .claude/settings.json is shared; settings.local.json holds personal
 # permission grants with absolute paths, so it stays out of the repo.
 .claude/settings.local.json
+# ../tools/validate.py's record of passes that it may reuse (../docs/talks.md)
+.validate/
 
 # Note: .vscode/ is intentionally NOT ignored — settings.json and
 # extensions.json are project config meant to be shared.

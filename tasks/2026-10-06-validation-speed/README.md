@@ -105,3 +105,5 @@ Use quick mode for routine feedback.
 During work, run full mode only after changes that could affect its results.
 Before a commit, require a successful full run.
 If the project and its relevant inputs are unchanged since that run, reuse it.
+
+2026-10-07: full runs now reuse a pass of print and navigation while the built deck and its checkers are byte-identical, and a quick run is enough after changes to docs only. See [`tasks/2026-10-07-validation-reuse/`](../2026-10-07-validation-reuse/PLAN.md).

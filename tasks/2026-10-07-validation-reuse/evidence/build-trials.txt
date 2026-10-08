@@ -1,0 +1,13 @@
+2026-10-07, watches at 270f730, GNU sed, `pnpm build --out` (tools/build_trials.sh).
+Reference: 168 files, 3.7 MB.
+
+two builds of the same source: same
+doc (docs/watch.md): same
+README: same
+TS line comment (watch/callouts.ts): same
+TS doc comment change: same
+Vue script comment (WatchCallout.vue): DIFFERENT (54 files)
+slides.md YAML comment: DIFFERENT (52 files)
+slides.md HTML comment (not a note): DIFFERENT (54 files)
+slides.md CSS comment: DIFFERENT (54 files)
+speaker note: DIFFERENT (52 files)

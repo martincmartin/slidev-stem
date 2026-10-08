@@ -140,6 +140,11 @@ During work, run full mode only after changes that could affect its results.
 Before each commit, require successful full validation for each changed project.
 If the project has not changed since its last successful full run, reuse that result.
 Relevant changes include shared tools, themes, dependencies, and configuration that the project uses.
+If all changes since that run are to docs only (`docs/`, `tasks/`, a README or an
+`AGENTS.md`), a successful quick run is enough: only `doccheck` and Prettier read
+them, and quick mode runs both.
+A full run reuses an earlier pass of print and navigation while the built deck
+and its checkers are byte-identical.
 See `docs/talks.md` for the workflow.
 
 Run full mode in the project that you changed:
@@ -173,7 +178,9 @@ directory.
 
 Full validation runs every check and exits non-zero if any check fails.
 For routine edits, `--quick` runs source checks, generated-file checks, and a build.
-Quick mode does not satisfy the full-validation requirement before a commit.
+Quick mode does not satisfy the full-validation requirement before a commit,
+except after changes to docs only (above).
+`--no-reuse` runs print and navigation again, even if they passed with the same deck.
 Independent preparation groups use a bounded worker pool. Navigation runs alone.
 `--jobs 1` selects serial preparation; `--fix` always uses one worker.
 The summary includes timings. `--json` gives machine-readable results.

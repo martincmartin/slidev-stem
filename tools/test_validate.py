@@ -182,3 +182,160 @@ def test_json_report_exposes_timings_and_failures(
     assert result["passed"] is False
     assert result["checks"][0]["seconds"] >= 0
     assert result["checks"][0]["label"] == "failed"
+
+
+def a_stem_and_a_talk(tmp_path: Path) -> tuple[Path, Path, Path]:
+    """A house with a tool, a talk with art and a package.json, and a deck."""
+    stem = tmp_path / "stem"
+    (stem / "tools").mkdir(parents=True)
+    (stem / "tools" / "navcheck.py").write_text("walk")
+    (stem / "uv.lock").write_text("playwright 1")
+    talk = stem / "talk"
+    (talk / "art").mkdir(parents=True)
+    (talk / "art" / "print_check.py").write_text("print")
+    (talk / "package.json").write_text("{}")
+    (talk / "docs").mkdir()
+    (talk / "docs" / "notes.md").write_text("notes")
+    deck = tmp_path / "deck"
+    (deck / "assets").mkdir(parents=True)
+    (deck / "index.html").write_text("<html>")
+    (deck / "assets" / "index.js").write_text("slides")
+    return stem, talk, deck
+
+
+def test_the_deck_key_changes_with_the_deck_and_the_checkers_only(
+    tmp_path: Path,
+) -> None:
+    stem, talk, deck = a_stem_and_a_talk(tmp_path)
+    key = validate.deck_key(stem, talk, deck)
+    (talk / "docs" / "notes.md").write_text("other notes")
+    assert validate.deck_key(stem, talk, deck) == key
+    for changed in (
+        deck / "assets" / "index.js",
+        stem / "tools" / "navcheck.py",
+        stem / "uv.lock",
+        talk / "art" / "print_check.py",
+        talk / "package.json",
+    ):
+        original = changed.read_text()
+        changed.write_text(original + " changed")
+        assert validate.deck_key(stem, talk, deck) != key, changed
+        changed.write_text(original)
+    assert validate.deck_key(stem, talk, deck) == key
+
+
+def test_the_deck_key_tells_a_moved_file_from_a_changed_one(tmp_path: Path) -> None:
+    stem, talk, deck = a_stem_and_a_talk(tmp_path)
+    key = validate.deck_key(stem, talk, deck)
+    (deck / "assets" / "index.js").rename(deck / "assets" / "other.js")
+    assert validate.deck_key(stem, talk, deck) != key
+
+
+def test_there_is_no_deck_key_without_a_built_deck(tmp_path: Path) -> None:
+    stem, talk, deck = a_stem_and_a_talk(tmp_path)
+    (deck / "index.html").unlink()
+    with pytest.raises(ValueError, match="no built deck"):
+        validate.deck_key(stem, talk, deck)
+
+
+def counting_runs(monkeypatch: pytest.MonkeyPatch, code: int) -> list[str]:
+    """Make `run` count the checks it runs, and exit with `code`."""
+    import subprocess
+
+    ran: list[str] = []
+
+    def execute(check: Check) -> subprocess.CompletedProcess[str]:
+        ran.append(check.label)
+        return subprocess.CompletedProcess(check.command, code, "", "")
+
+    monkeypatch.setattr(validate, "run", execute)
+    return ran
+
+
+def test_a_pass_is_reused_while_the_key_is_the_same(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
+) -> None:
+    ran = counting_runs(monkeypatch, 0)
+    record = validate.PassRecord(tmp_path / ".validate" / "passes.json")
+    key = "first"
+    item = validate.Reusable(passing("print"), lambda: key, record)
+    assert validate.run_groups("heading", [[item]], machine_json=True) == 0
+    assert ran == ["print"]
+    capsys.readouterr()
+    assert validate.run_groups("heading", [[item]], machine_json=True) == 0
+    assert ran == ["print"]
+    import json
+
+    (result,) = json.loads(capsys.readouterr().out)["checks"]
+    assert result["reused"] is True
+    key = "second"
+    assert validate.run_groups("heading", [[item]], machine_json=True) == 0
+    assert ran == ["print", "print"]
+
+
+def test_a_failure_is_not_recorded(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    ran = counting_runs(monkeypatch, 1)
+    record = validate.PassRecord(tmp_path / "passes.json")
+    item = validate.Reusable(failing("print"), lambda: "key", record)
+    for _ in range(2):
+        assert validate.run_groups("heading", [[item]], machine_json=True) == 1
+    assert ran == ["print", "print"]
+    assert record.passed_at("key", "print") is None
+
+
+def test_a_new_key_forgets_the_passes_of_the_old_one(tmp_path: Path) -> None:
+    record = validate.PassRecord(tmp_path / "passes.json")
+    record.record("old", "print")
+    record.record("old", "navigation")
+    record.record("new", "print")
+    assert record.passed_at("new", "print") is not None
+    assert record.passed_at("new", "navigation") is None
+    assert record.passed_at("old", "navigation") is None
+
+
+def test_an_unreadable_record_counts_as_empty(tmp_path: Path) -> None:
+    file = tmp_path / "passes.json"
+    for text in ("not json", "[]", '{"key": "key", "passed": []}'):
+        file.write_text(text)
+        assert validate.PassRecord(file).passed_at("key", "print") is None
+    validate.PassRecord(file).record("key", "print")
+    assert validate.PassRecord(file).passed_at("key", "print") is not None
+
+
+def test_a_reusable_check_without_a_deck_fails_by_name_and_is_run_again(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+    tmp_path: Path,
+) -> None:
+    counting_runs(monkeypatch, 0)
+    stem, talk, deck = a_stem_and_a_talk(tmp_path)
+    (deck / "index.html").unlink()
+    record = validate.PassRecord(tmp_path / "passes.json")
+    item = validate.Reusable(
+        passing("print"), lambda: validate.deck_key(stem, talk, deck), record
+    )
+    assert validate.run_all("heading", [item]) == 1
+    output = capsys.readouterr().out
+    assert "FAIL  print" in output and "no built deck" in output
+
+
+def test_print_and_navigation_are_reusable_only_with_a_record(tmp_path: Path) -> None:
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    (talk / "package.json").write_text('{"scripts": {"art:print": "x"}}')
+    (talk / "pyproject.toml").write_text('[tool.mypy]\nfiles = ["art"]\n')
+    record = validate.PassRecord(tmp_path / "passes.json")
+    for given, expected in ((record, True), (None, False)):
+        groups, exclusive = validate.talk_groups(
+            talk, tmp_path / "deck", tmp_path / "work", False, False, given
+        )
+        reusable = {
+            item.label
+            for item in [*exclusive, *(item for group in groups for item in group)]
+            if isinstance(item, validate.Reusable)
+        }
+        assert reusable == ({"print", "navigation and offline"} if expected else set())

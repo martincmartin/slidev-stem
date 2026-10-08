@@ -6,6 +6,7 @@
     uv run ../tools/validate.py --quick      # source, generation, and build
     uv run ../tools/validate.py --jobs 1     # full validation, serial preparation
     uv run ../tools/validate.py --json       # results and timings as JSON
+    uv run ../tools/validate.py --no-reuse   # run print and navigation again
 
 The project comes from the nearest pyproject.toml. No run checks other talks.
 The house run checks Python, formatting, tests, documentation, and palette gates.
@@ -19,6 +20,10 @@ its dependency order. Navigation runs alone after preparation. Its --offline
 mode checks startup, page errors, outside requests, and a complete deck walk.
 A deck without a state probe receives the ordinary offline walk instead.
 
+Full mode reuses a pass of print and of navigation from an earlier full run
+while the built deck and the checkers are byte-identical (`deck_key`); the
+record is <project>/.validate/passes.json. Only passes are reused.
+
 --quick omits rendered art, renderer browser checks, print, and navigation.
 Use quick mode for routine feedback. Run full mode only after changes that
 could affect its results. Before a commit, require a successful full run unless
@@ -27,20 +32,25 @@ the project and its relevant inputs are unchanged since that run.
 with one worker to prevent races. All other modes only report. Build and art
 outputs go to temporary directories. Python checks use uv run --locked.
 Every check runs after failures. The summary includes each check's elapsed time.
-See docs/talks.md and tasks/2026-10-06-validation-speed/PLAN.md.
+See docs/talks.md, tasks/2026-10-06-validation-speed/PLAN.md and
+tasks/2026-10-07-validation-reuse/PLAN.md.
 """
 
 import argparse
+import hashlib
 import json
 import shlex
 import sys
 import tempfile
 import textwrap
+import threading
 import time
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 import lib
 from check_python import (
@@ -103,6 +113,99 @@ class Later:
 
     label: str
     make: Callable[[], Check]
+
+
+def deck_key(stem: Path, project: Path, deck: Path) -> str:
+    """The key of what a check of the built deck reads: the deck, and the
+    files that decide how it is checked. These are every `.py` file in the
+    house's tools/ and the talk's art/, the talk's package.json (its
+    scripts), and each project's uv.lock and .python-version (they pick
+    Playwright, and so Chromium). More than the checks read, so that a
+    change can cost a run but cannot give a false pass."""
+    if not (deck / "index.html").is_file():
+        raise ValueError(f"no built deck in {deck}")
+
+    def files(root: Path, pattern: str) -> list[Path]:
+        return sorted(path for path in root.glob(pattern) if path.is_file())
+
+    pins = ("uv.lock", ".python-version")
+    sources: list[tuple[str, Path, Iterable[Path]]] = [
+        ("deck", deck, files(deck, "**/*")),
+        ("tools", stem / "tools", files(stem / "tools", "*.py")),
+        ("stem", stem, [stem / name for name in pins]),
+        ("art", project / "art", files(project / "art", "**/*.py")),
+        ("talk", project, [project / name for name in ("package.json", *pins)]),
+    ]
+    digest = hashlib.sha256()
+    for tag, root, paths in sources:
+        for path in paths:
+            if not path.is_file():
+                continue
+            content = path.read_bytes()
+            name = f"{tag}/{path.relative_to(root).as_posix()}"
+            digest.update(f"{name}\0{len(content)}\0".encode())
+            digest.update(content)
+    return digest.hexdigest()
+
+
+class PassRecord:
+    """The checks that passed with one key, kept between runs in `file`. A
+    pass with a new key replaces the record of the old key. Only passes are
+    recorded. Unreadable records count as empty."""
+
+    def __init__(self, file: Path) -> None:
+        self.file = file
+        self._lock = threading.Lock()
+
+    def _read(self) -> dict[str, Any]:
+        try:
+            data = json.loads(self.file.read_text())
+        except OSError, ValueError:
+            return {}
+        if not isinstance(data, dict) or not isinstance(data.get("passed"), dict):
+            return {}
+        return data
+
+    def passed_at(self, key: str, label: str) -> str | None:
+        """When `label` passed with `key`, or None if it has not."""
+        with self._lock:
+            data = self._read()
+        if data.get("key") != key:
+            return None
+        when = data["passed"].get(label)
+        return when if isinstance(when, str) else None
+
+    def record(self, key: str, label: str) -> None:
+        """Record that `label` passed now, with `key`."""
+        with self._lock:
+            data = self._read()
+            if data.get("key") != key:
+                data = {"key": key, "passed": {}}
+            data["passed"][label] = (
+                datetime.now(UTC).astimezone().isoformat(timespec="seconds")
+            )
+            self.file.parent.mkdir(parents=True, exist_ok=True)
+            temporary = self.file.with_suffix(".tmp")
+            temporary.write_text(json.dumps(data, indent=2) + "\n")
+            temporary.replace(self.file)
+
+
+@dataclass(frozen=True)
+class Reusable:
+    """A check whose pass is reused while `key()` is the key it passed with
+    (tasks/2026-10-07-validation-reuse/PLAN.md)."""
+
+    check: Check
+    key: Callable[[], str]
+    record: PassRecord
+
+    @property
+    def label(self) -> str:
+        return self.check.label
+
+
+# Where a project keeps its PassRecord. Git ignores it.
+PASS_RECORD = Path(".validate") / "passes.json"
 
 
 def scripts_of(directory: Path) -> set[str]:
@@ -194,13 +297,29 @@ def print_checks(directory: Path, deck: Path) -> list[Check]:
     return [Check("print", directory, ("pnpm", "--silent", "art:print", str(deck)))]
 
 
+Item = Check | Later | Reusable
+
+
 def talk_groups(
-    directory: Path, deck: Path, work: Path, fix: bool, quick: bool
-) -> tuple[list[list[Check | Later]], list[Check | Later]]:
-    """Group independent work. Keep navigation outside the worker pool."""
+    directory: Path,
+    deck: Path,
+    work: Path,
+    fix: bool,
+    quick: bool,
+    record: PassRecord | None = None,
+) -> tuple[list[list[Item]], list[Item]]:
+    """Group independent work. Keep navigation outside the worker pool. With
+    `record`, a pass of print or navigation is reused while the deck and its
+    checkers are unchanged."""
+
+    def reusable(check: Check) -> Check | Reusable:
+        if record is None:
+            return check
+        return Reusable(check, lambda: deck_key(STEM, directory, deck), record)
+
     talk = str(lib.display_path(directory))
     public = str(lib.display_path(directory / "public"))
-    source: list[Check | Later] = [
+    source: list[Item] = [
         *python_checks(directory, code_paths(directory), fix),
         prettier(directory, fix),
         doccheck(directory, DOC_PATHS),
@@ -210,28 +329,30 @@ def talk_groups(
         Check("palette", STEM, uv_run("tools/palette.py", "--talk", talk)),
         Check("talk setup", STEM, uv_run("tools/talkcheck.py", talk)),
     ]
-    build: list[Check | Later] = [
+    build: list[Item] = [
         Check("build", directory, ("pnpm", "build", "--out", str(deck)))
     ]
     if quick:
         return [source, build], []
-    svg: list[Check | Later] = [
+    svg: list[Item] = [
         Check("barroom", STEM, uv_run("tools/barroom.py", public, "--gate-only")),
         Check("motion", STEM, uv_run("tools/motion.py", public)),
     ]
-    stills = still_checks(directory, work)
-    built_deck = [*build, *print_checks(directory, deck)]
+    stills: list[Item] = [*still_checks(directory, work)]
+    built_deck = [*build, *map(reusable, print_checks(directory, deck))]
     # Start the longest preparation sequence first. With --fix, source
     # rewrites must finish before any browser or build reads those files.
     groups = (
         [source, svg, stills, built_deck] if fix else [built_deck, source, svg, stills]
     )
     return groups, [
-        Check(
-            "navigation and offline",
-            STEM,
-            uv_run("tools/navcheck.py", str(deck), "--offline"),
-            shows_summary=True,
+        reusable(
+            Check(
+                "navigation and offline",
+                STEM,
+                uv_run("tools/navcheck.py", str(deck), "--offline"),
+                shows_summary=True,
+            )
         ),
     ]
 
@@ -243,24 +364,48 @@ class CheckResult:
     seconds: float
     message: str
     output: str
+    # passed in an earlier run, with the same key, and not run now
+    reused: bool = False
 
 
-def run_group(checks: Sequence[Check | Later]) -> list[CheckResult]:
+def run_group(checks: Sequence[Item]) -> list[CheckResult]:
     """Run one dependency sequence. Continue after failures."""
     results = []
     for item in checks:
         started = time.perf_counter()
         try:
-            check = item.make() if isinstance(item, Later) else item
+            key = None
+            if isinstance(item, Reusable):
+                key = item.key()
+                when = item.record.passed_at(key, item.label)
+                if when is not None:
+                    results.append(
+                        CheckResult(
+                            item.label,
+                            True,
+                            time.perf_counter() - started,
+                            f"ok    {item.label}  (reused: passed {when}"
+                            " with the same deck and checkers)",
+                            "",
+                            reused=True,
+                        )
+                    )
+                    continue
+                check = item.check
+            elif isinstance(item, Later):
+                check = item.make()
+            else:
+                check = item
             result = run(check)
+            passed = result.returncode == 0
+            if passed and isinstance(item, Reusable) and key is not None:
+                item.record.record(key, item.label)
             results.append(
                 CheckResult(
                     check.label,
-                    result.returncode == 0,
+                    passed,
                     time.perf_counter() - started,
-                    ok_line(check, result)
-                    if result.returncode == 0
-                    else f"FAIL  {check.label}",
+                    ok_line(check, result) if passed else f"FAIL  {check.label}",
                     (result.stdout + result.stderr).rstrip(),
                 )
             )
@@ -313,8 +458,8 @@ def report(
 
 def run_groups(
     heading: str,
-    groups: Sequence[Sequence[Check | Later]],
-    exclusive: Sequence[Check | Later] = (),
+    groups: Sequence[Sequence[Item]],
+    exclusive: Sequence[Item] = (),
     jobs: int = DEFAULT_WORKERS,
     machine_json: bool = False,
 ) -> int:
@@ -357,6 +502,11 @@ def main() -> int:
     parser.add_argument(
         "--json", action="store_true", help="print timings and results as JSON"
     )
+    parser.add_argument(
+        "--no-reuse",
+        action="store_true",
+        help="run print and navigation even if they passed with the same deck",
+    )
     arguments = parser.parse_args()
     if arguments.jobs < 1:
         parser.error("--jobs must be at least 1")
@@ -367,12 +517,17 @@ def main() -> int:
     ):
         if project == STEM:
             heading = "stem/, the shared files"
-            groups: list[list[Check | Later]] = [list(house_checks(arguments.fix))]
-            exclusive: list[Check | Later] = []
+            groups: list[list[Item]] = [list(house_checks(arguments.fix))]
+            exclusive: list[Item] = []
         elif (project / "slides.md").is_file():
             heading = f"{lib.display_path(project)}/, a talk"
             groups, exclusive = talk_groups(
-                project, Path(deck), Path(work), arguments.fix, arguments.quick
+                project,
+                Path(deck),
+                Path(work),
+                arguments.fix,
+                arguments.quick,
+                None if arguments.no_reuse else PassRecord(project / PASS_RECORD),
             )
         else:
             sys.exit(f"{project} is neither stem/ nor a talk (it has no slides.md)")
@@ -387,7 +542,7 @@ def main() -> int:
         )
 
 
-def run_all(heading: str, checks: Sequence[Check | Later]) -> int:
+def run_all(heading: str, checks: Sequence[Item]) -> int:
     """Run a serial sequence. Preserve the public entry point for callers."""
     started = time.perf_counter()
     return report(heading, run_group(checks), time.perf_counter() - started, False)

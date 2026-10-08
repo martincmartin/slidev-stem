@@ -7,7 +7,8 @@ start a new talk.
 **Tasks:**
 [`tasks/2026-09-28-per-talk-dependencies/`](../tasks/2026-09-28-per-talk-dependencies/PLAN.md),
 [`tasks/2026-09-28-validate/`](../tasks/2026-09-28-validate/PLAN.md),
-[`tasks/2026-10-06-validation-speed/`](../tasks/2026-10-06-validation-speed/PLAN.md).
+[`tasks/2026-10-06-validation-speed/`](../tasks/2026-10-06-validation-speed/PLAN.md),
+[`tasks/2026-10-07-validation-reuse/`](../tasks/2026-10-07-validation-reuse/PLAN.md).
 
 Each talk is a separate project, with its own package versions. A talk that you
 gave is frozen. This page tells you why, and how to work in that setup. The rules
@@ -92,7 +93,29 @@ During work, run full mode only after changes that could affect its results.
 Before each commit, require a successful full run for each changed project.
 If the project has not changed since its last successful full run, reuse that result.
 This includes changes to shared tools, themes, dependencies, and configuration used by the project.
-Quick mode does not satisfy the full-validation requirement.
+Quick mode does not satisfy the full-validation requirement, with one exception.
+If all changes since the last successful full run are to docs only (`docs/`,
+`tasks/`, a README or an `AGENTS.md`), a successful quick run is enough. No build
+and no check reads these files, except `doccheck` and Prettier, and quick mode
+runs both.
+
+**A full run reuses the passes of print and navigation that a change cannot
+affect.** These two checks take about 94% of a full run's time, and they read
+only the built deck and their own code. Two builds of the same source are
+byte-identical. A full run builds the deck, and computes a key (`deck_key` in
+`tools/validate.py`) from the deck's bytes, every `.py` file in `tools/` and the
+talk's `art/`, the talk's `package.json`, and each project's `uv.lock` and
+`.python-version`. If print or navigation passed with that key, the run reports
+it as `reused`, and does not run it again. The record is
+`<talk>/.validate/passes.json`; git ignores it. Only passes are recorded, and a
+pass with a new key replaces the record. `--no-reuse` runs both checks again.
+
+A change to docs, a README or a comment in a `.ts` file leaves the deck
+byte-identical, so a full run after it takes about 15 s, not about 260 s. A comment in a Vue
+file or anywhere in `slides.md` changes the deck (Slidev and Vue keep the
+source), so print and navigation run again. Not an oversight: removing the
+comments before the key would also remove the speaker notes, which are part of
+the deck. The measurements are in the validation-reuse task.
 
 Full validation retains settled navigation and the rapid offline walk.
 They use one browser with their original viewports and timing.
