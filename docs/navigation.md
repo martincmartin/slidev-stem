@@ -37,7 +37,7 @@ the viewer went (`navDirection`, `clicksDirection`): the layer decides that.
 | Kind                 | What it is for                    | Forward                                      | Back                                                                     |
 | -------------------- | --------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------ |
 | **Presentation**     | shows what to look at             | an eased move to the target                  | the same move reversed: the same lengths, the steps in the reverse order |
-| **Attention cue**    | points to where the view is going | plays on the step into its slide             | does not play: zooming out does not need it                              |
+| **Attention cue**    | points to where the view is going | plays on the step into its slide or click    | does not play: zooming out does not need it                              |
 | **Text timing**      | keeps text off a moving picture   | the text waits for the camera                | the text waits for the camera, which now moves last                      |
 | **Story animation**  | tells a story on a click          | plays forward                                | plays backward, to the earlier click's position on the same clock        |
 | **Steady loop**      | a state that moves while it lasts | starts at its boundary                       | starts at its boundary again; it is not played backward                  |

@@ -18,9 +18,13 @@
 //   watchTickTock: plain or burst: the words "tick" and "tock" show at each
 //     strike of the jewel on the fork, plain or as comic bursts (a trial);
 //     false (default): they do not (`tickTockState`)
+// On the slide or in a block, about the step into that click, so they do
+// not carry on to later clicks (STEP_KEYS):
+//   watchFlash: pieces that flash, on the step forward into the slide (on
+//     the slide) or into the block's click
+//   watchLater: of the pieces that fade in on a step into that click, those
+//     that fade in after the others
 // On the slide only, about the step into it:
-//   watchFlash: pieces that flash, when the slide is reached by a step
-//     forward
 //   watchMoveWith: what shows while the camera moves, on the step between
 //     this slide and the previous one, in either direction (`moveWithBefore`)
 //   watchClicks: for a click, the keys that change from that click on
@@ -46,7 +50,12 @@ export interface WatchState {
   /** Where the fitted view puts the right edge of `fit`, in slide px, or
    *  `null`: where the rule puts it (`fittedView`). */
   right: number | null;
+  /** The names of the pieces that flash on the step forward into this
+   *  click, or `undefined`. */
   flash: readonly string[] | undefined;
+  /** The names of the pieces that fade in after the others, on a step into
+   *  this click, or `undefined`. */
+  later: readonly string[] | undefined;
   settled: boolean;
   /** Degrees a second of the escape wheel: the train spins freely; `null`:
    *  it follows the mechanism. */
@@ -154,28 +163,55 @@ const CLICK_KEYS = {
 } as const;
 type ClickKey = keyof typeof CLICK_KEYS;
 type ClickValues = { [Key in ClickKey]?: ReturnType<(typeof CLICK_KEYS)[Key]> };
+/** The keys that the slide and a block can hold about the step into their
+ *  click: they do not carry on to later clicks. Each is a list of pieces. */
+const STEP_KEYS = ["watchFlash", "watchLater"] as const;
+type StepKey = (typeof STEP_KEYS)[number];
+type StepValues = Partial<Record<StepKey, readonly string[]>>;
+/** The click keys, and the step keys of one click. */
+type PlaceValues = ClickValues & StepValues;
 
 function isClickKey(name: string): name is ClickKey {
   return Object.hasOwn(CLICK_KEYS, name);
 }
 
-/** The keys of `values` that a click can change, read; `name` prefixes the
- *  key's name in an error. Throws if a key is not one of them, unless
- *  `others` (the slide's own frontmatter holds other keys too). */
+function isStepKey(name: string): name is StepKey {
+  return STEP_KEYS.some((key) => key === name);
+}
+
+/** The step keys of `values`, apart from the click keys. */
+function splitStep(values: PlaceValues): {
+  step: StepValues;
+  rest: ClickValues;
+} {
+  const step: StepValues = {};
+  const rest: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(values)) {
+    if (isStepKey(key)) step[key] = value as readonly string[];
+    else rest[key] = value;
+  }
+  return { step, rest };
+}
+
+/** The keys of `values` that a click can change, and its step keys, read;
+ *  `name` prefixes the key's name in an error. Throws if a key is not one of
+ *  them, unless `others` (the slide's own frontmatter holds other keys too). */
 function readClickKeys(
   name: string,
   values: Record<string, unknown>,
   others: boolean,
-): ClickValues {
+): PlaceValues {
   const read: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(values)) {
     if (isClickKey(key)) {
       read[key] = CLICK_KEYS[key](`${name}${key}`, value);
+    } else if (isStepKey(key)) {
+      read[key] = namesOf(`${name}${key}`, value);
     } else if (!others) {
       return wrong(
         name.slice(0, -1),
         key,
-        Object.keys(CLICK_KEYS).join(", or "),
+        [...Object.keys(CLICK_KEYS), ...STEP_KEYS].join(", or "),
       );
     }
   }
@@ -184,24 +220,30 @@ function readClickKeys(
 
 /** The slide's click keys at `clicks`: the slide's own, changed by each
  *  `watchClicks` block whose click has come, in click order. Each block is
- *  read, also before its click. Throws if a key of the map is not a click
- *  number, a block holds a key that a click cannot change or a value of the
- *  wrong kind, or the slide sets a click key without `watch`. */
+ *  read, also before its click. The step keys are those of `clicks` alone:
+ *  the slide's at click 0, or the block's at its click. Throws if a key of
+ *  the map is not a click number, a block holds a key that a click cannot
+ *  change or a value of the wrong kind, or the slide sets a click key or a
+ *  step key without `watch`. */
 function atClick(
   frontmatter: Record<string, unknown>,
   clicks: number,
-): ClickValues {
-  const state = readClickKeys("", frontmatter, true);
+): PlaceValues {
+  const { step: slideStep, rest: state } = splitStep(
+    readClickKeys("", frontmatter, true),
+  );
   const blocks = frontmatter["watchClicks"];
   if (state.watch === undefined) {
     const stray = Object.keys(frontmatter).find(
-      (key) => isClickKey(key) || key === "watchClicks",
+      (key) => isClickKey(key) || isStepKey(key) || key === "watchClicks",
     );
     if (stray !== undefined) {
       return wrong(stray, frontmatter[stray], "set only with watch");
     }
   }
-  if (blocks === undefined) return state;
+  if (blocks === undefined) {
+    return clicks === 0 ? { ...state, ...slideStep } : state;
+  }
   const isMap = (value: unknown): value is Record<string, unknown> =>
     typeof value === "object" && value !== null && !Array.isArray(value);
   if (!isMap(blocks)) {
@@ -221,11 +263,14 @@ function atClick(
     };
   });
   changes.sort((first, second) => first.click - second.click);
+  let step = clicks === 0 ? slideStep : {};
   for (const { click, values } of changes) {
     if (click > clicks) break;
-    Object.assign(state, values);
+    const { step: blockStep, rest } = splitStep(values);
+    Object.assign(state, rest);
+    if (click === clicks) step = { ...step, ...blockStep };
   }
-  return state;
+  return { ...state, ...step };
 }
 
 /** What shows while the camera moves on the step between this slide and the
@@ -258,7 +303,6 @@ export function watchState(
   if (now.watch === undefined) return undefined;
   const show = now.watch;
   const framed = now.watchView ?? { fit: show };
-  const flashed = frontmatter["watchFlash"];
   if (now.watchRight !== undefined && "view" in framed) {
     return wrong("watchRight", now.watchRight, "set only with a fitted view");
   }
@@ -268,7 +312,8 @@ export function watchState(
     show,
     fit: "fit" in framed ? framed.fit : show,
     right: now.watchRight ?? null,
-    flash: flashed === undefined ? undefined : namesOf("watchFlash", flashed),
+    flash: now.watchFlash,
+    later: now.watchLater,
     settled: now.watchAtRest ?? false,
     spin: now.watchSpin ?? null,
   };
@@ -321,6 +366,9 @@ export function stageState(
     flash: state.flash
       ? meshesOf(piecesNamed("watchFlash", state.flash))
       : null,
+    later: state.later
+      ? meshesOf(piecesNamed("watchLater", state.later))
+      : new Set(),
     moveWith,
   };
 }

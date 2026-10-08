@@ -124,6 +124,11 @@ reason next to it.
   give the `v-click` element the class `after-watch-fade` (`style.css`). It
   fades in after the watch's fade (`--watch-fade`), so its leader never
   points at a part that is not there yet. Going back, it fades out at once.
+- **Text that reads what the watch shows at its click** waits for all of
+  it: give the `v-click` element the class `after-watch` (`style.css`). It
+  fades in when the watch's change ends, with its flash
+  (`--watch-end-delay`), so the text comes after all the motion on the left
+  (the Gear Train slide). Going back, it fades out at once.
 - **Text that points at the balance at rest, at the click that settles it**,
   waits for the rest: give the `v-click` element the class
   `after-balance-rest` (`style.css`). It fades in when the balance is at rest
@@ -166,6 +171,14 @@ solid, and the text stays: two styles to compare. At click 6,
 the rest of the Escapement slide's mechanism fades in around them, the span
 and the text go, and the gears tick with it (`watchClicks`). At click 7, the
 seconds hand fades in, and then its text.
+The Gear Train slide follows it: the camera zooms out from the same picture,
+to frame the train from the escape wheel to the centre wheel. Click 1 zooms
+out to the case and shows one wheel that is 60 times slower, larger than the
+watch: the wheel fades in, then the case, and then the wheel and its
+pinion flash. Clicks
+2 and 3 add the third wheel and then the centre wheel, each with the pinion
+that it drives: each fades in, and then flashes. Click 4 adds the minute
+hand, the dial and the case.
 It is described in [watch.md](watch.md).
 
 ## Where things go on a slide

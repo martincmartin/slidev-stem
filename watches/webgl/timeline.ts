@@ -10,8 +10,9 @@
 //   2. The camera moves and tilts, eased: zooming in, it moves and then
 //      tilts; otherwise it untilts and then moves. If D is empty, nothing is
 //      on the screen, and the camera jumps.
-//   3. D becomes B, as in 1.
-// Without a camera move, A becomes B, as in 1. A fade fades its meshes as one
+//   3. D becomes B, as in 1; of the meshes that fade in, those in
+//      `StageState.later` fade in after the others.
+// Without a camera move, A becomes B, as in 3. A fade fades its meshes as one
 // picture, over the meshes that stay. A new state starts from what is on the
 // screen now: a fade cut short first ends (at 1 if the new state shows every
 // mesh that fades, else at 0), and a camera move goes on from where it is.
@@ -61,6 +62,9 @@ export interface StageState {
   /** Flashed before the change if they are on the screen, else after it;
    *  `null`: none. */
   flash: ReadonlySet<Mesh> | null;
+  /** Of the meshes that fade in at the end of the change, these fade in
+   *  after the others. */
+  later: ReadonlySet<Mesh>;
   moveWith: MoveWith;
 }
 
@@ -247,16 +251,22 @@ export class Timeline {
       fade(current.keep, current.fade, current.rest, wanted ? 1 : 0);
       if (wanted) shown = union(current.keep, current.fade);
     }
-    const become = (target: ReadonlySet<Mesh>): void => {
+    const become = (
+      target: ReadonlySet<Mesh>,
+      later: ReadonlySet<Mesh> = NOTHING,
+    ): void => {
       const going = minus(shown, target);
       if (going.size > 0) {
         shown = minus(shown, going);
         fade(shown, going, 1, 0);
       }
       const coming = minus(target, shown);
-      if (coming.size > 0) {
-        fade(shown, coming, 0, 1);
-        shown = union(shown, coming);
+      const first = minus(coming, later);
+      for (const meshes of [first, minus(coming, first)]) {
+        if (meshes.size > 0) {
+          fade(shown, meshes, 0, 1);
+          shown = union(shown, meshes);
+        }
       }
     };
     const moves = !sameView(current.view, state.view);
@@ -299,7 +309,7 @@ export class Timeline {
         move();
       }
     }
-    become(state.shown);
+    become(state.shown, state.later);
     if (!state.flash || this.phases.length === 0) return 0;
     // only meshes at full opacity are on the screen: a fading one is not, yet
     const onScreen = within(state.flash, current.keep);
@@ -345,6 +355,14 @@ export class Timeline {
     const ends = this.phases
       .filter((phase) => phase.channel === "view")
       .map((phase) => phase.start + phase.seconds * 1000);
+    return Math.max(now, ...ends);
+  }
+
+  /** When the change ends (ms), with its flash, or `now` if nothing is
+   *  still to come. Text that follows what the picture shows waits for it. */
+  endAt(now: number): number {
+    const ends = this.phases.map((phase) => phase.start + phase.seconds * 1000);
+    if (this.flash) ends.push(this.flash.start + FLASH_SECONDS * 1000);
     return Math.max(now, ...ends);
   }
 

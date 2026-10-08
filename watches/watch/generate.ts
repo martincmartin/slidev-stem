@@ -279,6 +279,8 @@ export interface WatchGroups {
   readonly root: Group;
   /** Each wheel of the train, about its arbor. */
   readonly wheels: ReadonlyMap<Wheel, Group>;
+  /** The one-step wheel (`oneStepWheel`), about its arbor. */
+  readonly oneStep: Group;
   /** The balance and the impulse jewel: they swing together. */
   readonly balance: Group;
   /** Static: the balance's arbor, where the spring is. */
@@ -310,6 +312,8 @@ export interface Watch {
     readonly fork: number;
     readonly jewel: number;
   };
+  /** The Gear Train slide's one-step wheel (`oneStepWheel`). */
+  readonly oneStep: Wheel;
 }
 
 // ---- paint ------------------------------------------------------------------------------
@@ -370,6 +374,107 @@ function trainOf(design: Design): Train {
   return { barrel, centre, third, fourth, escape };
 }
 
+// ---- the one-step wheel ---------------------------------------------------------------
+/** For the Gear Train slide (docs/watch.md): one wheel that turns the fourth
+ *  pinion this many times slower, where the third and the centre wheels take
+ *  two steps. It drives the fourth pinion as the third wheel does, at the
+ *  third wheel's height, with teeth of the same size, so it has `leaves`
+ *  times this many teeth. */
+const ONE_STEP_RATIO = 60;
+const ONE_STEP_DRAWING = { spokes: 6, rim: 10, hub: 20, spokeWidth: 10 };
+
+/** The one-step wheel: on the line from the escape arbor through the fourth
+ *  arbor, where it meshes with the fourth pinion (docs/watch.md, "The Gear
+ *  Train slide", says why there). It has a tooth in a gap of
+ *  the pinion at the train's start, as the third wheel has. */
+export function oneStepWheel(design: Design): Wheel {
+  const { escape, third, fourth } = trainOf(design);
+  const { pinionRadius, pinionPhase, leaves } = fourth;
+  if (pinionRadius === null || pinionPhase === null) {
+    throw new Error("the fourth wheel has no pinion");
+  }
+  const pitchRadius = pinionRadius * ONE_STEP_RATIO;
+  const teeth = leaves * ONE_STEP_RATIO;
+  const centres = pitchRadius + pinionRadius;
+  // the screen angle (degrees, y down) from the fourth arbor to its arbor
+  const angle =
+    (Math.atan2(
+      fourth.arbor[1] - escape.arbor[1],
+      fourth.arbor[0] - escape.arbor[0],
+    ) *
+      180) /
+    Math.PI;
+  // the pinion's leaves are at pinionPhase, every leafAngle, with gaps
+  // between. The wheel's tooth is as far from the line of centres, on the
+  // wheel's pitch circle, as the pinion's nearest gap is
+  const leafAngle = 360 / leaves;
+  const gapPhase = pinionPhase - leafAngle / 2;
+  const gap = gapPhase + Math.round((angle - gapPhase) / leafAngle) * leafAngle;
+  return {
+    name: "one-step wheel",
+    teeth,
+    pitchRadius,
+    inner: pitchRadius - third.depth,
+    outer: pitchRadius + third.depth,
+    depth: third.depth,
+    pitch: (2 * Math.PI * pitchRadius) / teeth,
+    spokes: ONE_STEP_DRAWING.spokes,
+    leaves: 0,
+    pinionRadius: null,
+    step: -fourth.step / ONE_STEP_RATIO,
+    arbor: [
+      fourth.arbor[0] + centres * Math.cos(radians(angle)),
+      fourth.arbor[1] + centres * Math.sin(radians(angle)),
+    ],
+    driven: fourth,
+    toothPhase: angle + 180 - (gap - angle) / ONE_STEP_RATIO,
+    pinionPhase: null,
+  };
+}
+
+/** The one-step wheel's meshes, at the heights of the third wheel's body
+ *  and of its arbor's circle. Its piece is its name, which `all` leaves out.
+ *  No part that shows with it is above it, so nothing hides it. */
+function oneStepMeshes(
+  wheel: Wheel,
+  group: Group,
+  heights: { body: Heights; circle: Heights },
+  paint: Paint,
+): Mesh[] {
+  const { line, subjectWash } = paint;
+  const { rim, hub, spokeWidth } = ONE_STEP_DRAWING;
+  const gaps = openings(
+    wheel.spokes,
+    hub,
+    wheel.inner - rim,
+    spokeWidth,
+    wheel.toothPhase + 90 / wheel.spokes,
+  );
+  const info = (name: string, top: number) => ({
+    name: `${wheel.name} ${name}`,
+    part: wheel.name,
+    group,
+    fill: subjectWash,
+    lineOrder: top,
+    inDrawing: false,
+  });
+  const { body, circle } = heights;
+  return [
+    extrude(
+      ringsOf([wheelTeeth(wheel), line(teethLine(wheel))], [gaps, line(2)]),
+      body.bottom,
+      body.top,
+      info("body", body.top),
+    ),
+    extrude(
+      ringsOf([circlePath(0, 0, 4), line(2)]),
+      circle.bottom,
+      circle.top,
+      info("arbor", circle.top),
+    ),
+  ];
+}
+
 // ---- groups ----------------------------------------------------------------------------
 interface GroupTree {
   groups: WatchGroups;
@@ -379,7 +484,7 @@ interface GroupTree {
   origins: Map<Group, Point2>;
 }
 
-function makeGroups(design: Design): GroupTree {
+function makeGroups(design: Design, oneStep: Wheel): GroupTree {
   const { centre, fourth } = trainOf(design);
   const root: Group = { name: "watch", parent: null };
   const origins = new Map<Group, Point2>([[root, [0, 0]]]);
@@ -400,6 +505,7 @@ function makeGroups(design: Design): GroupTree {
     groups: {
       root,
       wheels,
+      oneStep: groupAt(oneStep.name, oneStep.arbor),
       balance: groupAt("balance", design.balance.arbor),
       springBase: groupAt("spring base", design.balance.arbor),
       fork: groupAt("fork", design.fork.pivot),
@@ -507,7 +613,11 @@ function makeParts({ barrel, centre, third, fourth, escape }: Train): Parts {
 // ---- clip discs ------------------------------------------------------------------------
 /** A lower wheel is hidden inside the root circle of each round part above it
  *  that overlaps it. */
-function clipDiscs(design: Design, groups: WatchGroups): Map<Wheel, Disc[]> {
+function clipDiscs(
+  design: Design,
+  groups: WatchGroups,
+  oneStep: Wheel,
+): Map<Wheel, Disc[]> {
   interface Round {
     wheel: Wheel | null;
     group: Group;
@@ -561,6 +671,17 @@ function clipDiscs(design: Design, groups: WatchGroups): Map<Wheel, Disc[]> {
           by: upper.group,
         })),
     );
+  }
+  // the one-step wheel is above the pinion's wheel, as the third wheel is
+  if (oneStep.driven) {
+    discsOver.get(oneStep.driven)?.push({
+      centre: [
+        watchCentre[0] + oneStep.arbor[0],
+        watchCentre[1] + oneStep.arbor[1],
+      ],
+      radius: oneStep.inner,
+      by: groups.oneStep,
+    });
   }
   return discsOver;
 }
@@ -628,6 +749,10 @@ function caseOf(
     meshes.push(mesh);
   };
   const strapPiece = pieces.make("strap");
+  // the same strap, just under the chapter ring's top: above the train, so
+  // that it covers the Gear Train slide's one-step wheel (docs/watch.md)
+  const raisedStrapPiece = pieces.make("raised strap", { inAll: false });
+  const raisedTop = ringTop - 1;
   const lugPiece = pieces.make("lug");
   add(
     pieces.make("case band"),
@@ -674,6 +799,21 @@ function caseOf(
           group: root,
           fill: mutedWash,
           lineOrder: middle + STRAP_THICKNESS / 2,
+        },
+      ),
+    );
+    add(
+      raisedStrapPiece,
+      extrude(
+        ringsOf([strapPath, mutedLine(3)]),
+        raisedTop - STRAP_THICKNESS,
+        raisedTop,
+        {
+          name: `raised strap ${String(level)}`,
+          part: "strap",
+          group: root,
+          fill: mutedWash,
+          lineOrder: raisedTop,
         },
       ),
     );
@@ -1479,7 +1619,8 @@ export function generate(design: Design = DESIGN): Watch {
   const { watchCentre } = design;
   const paint = paintOf();
   const train = trainOf(design);
-  const tree = makeGroups(design);
+  const oneStep = oneStepWheel(design);
+  const tree = makeGroups(design, oneStep);
   const { root } = tree.groups;
   const parts = makeParts(train);
   const partOf = (wheel: Wheel): Part =>
@@ -1489,7 +1630,7 @@ export function generate(design: Design = DESIGN): Watch {
   const list = new SolidList(
     tree.origins,
     watchCentre,
-    clipDiscs(design, tree.groups),
+    clipDiscs(design, tree.groups, oneStep),
   );
   const kit: Kit = {
     design,
@@ -1574,6 +1715,21 @@ export function generate(design: Design = DESIGN): Watch {
   // ---- the movement's meshes ----
   const movementMeshes = solidMeshes(solids, heights, springSolid);
   meshes.push(...movementMeshes.values());
+  // after the fourth pinion: a wheel's teeth are painted over the pinion
+  // that it drives
+  const oneStepPiece = kit.pieces.make(oneStep.name, { inAll: false });
+  for (const mesh of oneStepMeshes(
+    oneStep,
+    tree.groups.oneStep,
+    {
+      body: heightOf(solidAt(partOf(train.third), "body")),
+      circle: heightOf(solidAt(partOf(train.third), "circle")),
+    },
+    paint,
+  )) {
+    oneStepPiece.meshes.add(mesh);
+    meshes.push(mesh);
+  }
   const balanceScrews = balanceScrewMeshes(
     design.balance,
     heightOf(balanceSolid),
@@ -1685,6 +1841,7 @@ export function generate(design: Design = DESIGN): Watch {
     springHeights,
     ringTop,
     escapementTops,
+    oneStep,
   };
 }
 

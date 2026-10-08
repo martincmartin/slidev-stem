@@ -271,6 +271,7 @@ export class Motion {
     for (const wheel of design.wheels) {
       this.steps.set(wheelGroup(groups, wheel), wheel.step);
     }
+    this.steps.set(groups.oneStep, watch.oneStep.step);
     const [, centre, , fourth] = design.wheels as [Wheel, Wheel, Wheel, Wheel];
     // the seconds hand is on the fourth wheel's arbor
     this.steps.set(groups.seconds, fourth.step);
@@ -308,6 +309,7 @@ export class Motion {
       const group = wheelGroup(groups, wheel);
       place(group, wheel.arbor, turned(group));
     }
+    place(groups.oneStep, this.watch.oneStep.arbor, turned(groups.oneStep));
     place(groups.balance, design.balance.arbor, swing);
     place(groups.springBase, design.balance.arbor, 0);
     place(groups.fork, design.fork.pivot, angleAt(this.forkTurning, time));

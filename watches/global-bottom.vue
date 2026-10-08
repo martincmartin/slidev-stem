@@ -15,12 +15,15 @@
 // A slide names targets, not moves (../docs/navigation.md). At each change of
 // slide or click, this decides the kind of move (watch/navigation.ts): a step
 // animates from what is on the screen, in either direction, and a jump shows
-// the target at once. A flash plays only on the step forward into its slide.
+// the target at once. A flash plays only on the step forward into the slide
+// or the click that names it.
 // On a step between two slides, the later one says what shows while the
 // camera moves (`watchMoveWith`), in either direction.
 // The new slide's text waits for the camera, in either direction
 // (`--watch-text-delay`, from the stage). A click's text can wait for the
-// balance to come to rest (`--watch-rest-delay`, from the model).
+// balance to come to rest (`--watch-rest-delay`, from the model), or for the
+// watch's change to end, with its flash (`--watch-end-delay`, from the
+// stage).
 //
 // Print mode (export) has no live layer: slide-bottom.vue draws a still and a
 // posed board on each page. `data-watch` on the canvas is the state it shows,
@@ -111,24 +114,35 @@ let unmounted = false;
 /** The place and the watch state that the layer shows. */
 let place: Place | undefined;
 let shownWatch = "null";
+/** The same state without its flash: what shows. */
+let shownPicture = "null";
 
 function showWatch(
   now: WatchState | undefined,
   move: Move,
-  intoSlide: boolean,
   moveWith: MoveWith,
 ): void {
-  const text = JSON.stringify(now ?? null);
-  if (text === shownWatch && move !== "jump") return;
-  const old = shownWatch;
-  shownWatch = text;
+  // a flash points to where the camera goes, or to what fades in: only on
+  // the step forward into the slide or the click that names it. It is not
+  // part of what shows, so a click that changes nothing else does not cut
+  // it. Nor is the order of the fades (`later`)
+  const flash = move === "forward" ? now?.flash : undefined;
+  const picture = JSON.stringify(
+    now ? { ...now, flash: undefined, later: undefined } : null,
+  );
+  const old = shownPicture;
+  shownWatch = JSON.stringify(now ?? null);
+  shownPicture = picture;
+  if (picture === old && move !== "jump" && !flash) {
+    showEndDelay();
+    return;
+  }
   if (!now || !stage) {
+    // nothing on the screen moves, so nothing is to wait for
+    document.documentElement.style.setProperty("--watch-end-delay", "0s");
     run();
     return;
   }
-  // a flash points to where the camera goes: only on the step forward into
-  // the slide that names it
-  const flash = move === "forward" && intoSlide ? now.flash : undefined;
   const at = performance.now();
   // a watch that is fading out or hidden first reaches its last target at
   // once: it comes back from its slide's state, not from a move cut short
@@ -145,7 +159,19 @@ function showWatch(
     `${String((stage.viewEndAt(at) - at) / 1000)}s`,
   );
   showRestDelay();
+  showEndDelay();
   run();
+}
+
+/** Set `--watch-end-delay`: how long until the watch's change ends, with
+ *  its flash, or 0 if it has. */
+function showEndDelay(): void {
+  const at = performance.now();
+  const milliseconds = stage ? stage.endAt(at) - at : 0;
+  document.documentElement.style.setProperty(
+    "--watch-end-delay",
+    `${String(milliseconds / 1000)}s`,
+  );
 }
 
 /** Set `--watch-rest-delay`: how long until the balance is at rest, or 0 if
@@ -230,7 +256,7 @@ onMounted(() => {
           ? moveWithBefore(frontmatterOf(Math.max(place.slide, to.slide)))
           : "common";
       place = to;
-      showWatch(state.value, move, intoSlide, moveWith);
+      showWatch(state.value, move, moveWith);
       showBoard(to.clicks, move);
     },
     { immediate: true },

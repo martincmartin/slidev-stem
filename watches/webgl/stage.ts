@@ -115,6 +115,11 @@ export class Stage<ModelState> {
     return this.timeline.viewEndAt(now);
   }
 
+  /** When the change ends (ms), with its flash, or `now` if it has. */
+  endAt(now: number): number {
+    return this.timeline.endAt(now);
+  }
+
   /** What is moving at `now`: the flash, a channel, or the model's phase. */
   phaseAt(now: number): string {
     return this.timeline.phaseAt(now) ?? this.model.phase(now);

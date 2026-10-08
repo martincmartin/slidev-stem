@@ -60,6 +60,7 @@ function state(options: Partial<StageState> & { view: View }): StageState {
     tilt: 0,
     shown: ALL,
     flash: null,
+    later: set(),
     moveWith: "common",
     ...options,
   };
@@ -92,6 +93,28 @@ test("the first state is shown at once, with no phase", () => {
     rest: 1,
   });
   assert.equal(timeline.phaseAt(0), null);
+});
+
+test("the later meshes fade in after the others, and then the flash plays", () => {
+  const timeline = timelineAt(state({ view: WIDE, shown: set(SPRING) }));
+  timeline.show(
+    state({
+      view: WIDE,
+      shown: ALL,
+      later: set(CASE),
+      flash: set(BALANCE),
+    }),
+    0,
+  );
+  assert.deepEqual(timeline.valuesAt(FADE / 2).fade, set(BALANCE));
+  const later = timeline.valuesAt(FADE + FADE / 2);
+  assert.deepEqual(later.keep, set(SPRING, BALANCE));
+  assert.deepEqual(later.fade, set(CASE));
+  assert.equal(timeline.flashingAt(FADE + FADE / 2), null);
+  assert.deepEqual(timeline.flashingAt(2 * FADE), set(BALANCE));
+  assert.deepEqual(timeline.valuesAt(2 * FADE).keep, ALL);
+  assert.equal(timeline.endAt(0), 2 * FADE + FLASH_SECONDS * 1000);
+  assert.equal(timeline.endAt(9000), 9000);
 });
 
 test("valuesAt before any state throws", () => {

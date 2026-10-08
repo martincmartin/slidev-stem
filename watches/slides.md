@@ -424,6 +424,154 @@ IF ASKED: Strictly, the pitch must match: a tooth plus its gap on one wheel equa
 -->
 
 ---
+# the Gears slide's last picture, in a view that frames the train from the
+# escape wheel to the centre wheel, which do not show yet. The pieces stay on
+# the screen while the camera moves; the balance is partly off the slide
+watch:
+  &seconds [
+    fourth wheel,
+    fourth arbor,
+    escape pinion,
+    escape arbor,
+    balance wheel,
+    balance staff,
+    hairspring,
+    collet,
+    stud,
+    roller,
+    impulse jewel,
+    pallet fork,
+    escape wheel,
+    seconds hand,
+  ]
+watchView: &frame [escape wheel, fourth wheel, third wheel, centre wheel]
+watchRight: 489
+watchTilt: 20
+class: gear-train
+watchClicks:
+  # one wheel that is sixty times slower, in one step: it drives the
+  # fourth pinion, from the line from the escape arbor through the fourth
+  # arbor (docs/watch.md, "The Gear Train slide"). The camera untilts and
+  # zooms out until the case band fills the picture band, so the case shows
+  # how large the wheel is. The wheel and the pinion fade in, then the case,
+  # and then they flash. The case's strap is the raised strap, above the wheel
+  1:
+    watch:
+      [
+        *seconds,
+        fourth pinion,
+        one-step wheel,
+        &case [case band, lug, crown, raised strap, chapter ring],
+      ]
+    watchView: [case band]
+    watchTilt: 0
+    watchLater: *case
+    watchFlash: [one-step wheel, fourth pinion]
+  # the train slows the turn from once a minute to once an hour, in two
+  # steps. Each fades in, and then flashes: the wheel, with its arbor, and
+  # the pinion that it drives
+  2:
+    watch: [*seconds, &third [fourth pinion, third wheel, third arbor]]
+    watchView: *frame
+    watchTilt: 20
+    watchFlash: *third
+  3:
+    watch:
+      &train [
+        *seconds,
+        *third,
+        &centre [third pinion, centre wheel, centre arbor],
+      ]
+    watchFlash: *centre
+  # the minute hand, on the centre wheel's arbor, and the case and the dial
+  # (the chapter ring holds its marks); not the hour hand
+  4:
+    watch:
+      [
+        *train,
+        minute hand,
+        centre pivot,
+        chapter ring,
+        case band,
+        lug,
+        crown,
+        strap,
+      ]
+clicks: 4
+---
+
+# Gear Train
+
+From once a minute to once an hour
+
+<!-- Each text waits for the watch's change at its click to end, with its
+flash (after-watch, style.css): it reads what the picture has just shown. -->
+
+<div v-click.hide="2" class="gt-sentence">
+  <div v-click="1" class="after-watch">60:1 gear ratio</div>
+</div>
+
+<div v-click.hide="4" class="gt-sentence">
+  <div v-click="2" class="after-watch">
+    <div>Two stages:</div>
+    <div>7.5:1</div>
+  </div>
+  <div v-click="3" class="after-watch">8:1</div>
+</div>
+
+<div v-click="4" class="gt-sentence after-watch">
+  <div>Makes a full turn<br>once an hour.</div>
+  <div>The minute hand!</div>
+</div>
+
+<style>
+/* At clicks 1 and 4 the chapter ring runs behind the title, the subtitle and
+   the text, and at click 1 the one-step wheel does too. The paper's outline
+   keeps them legible over the drawing, as on the Escapement slide's "tick"
+   and "tock" (components/TickTock.vue, .tick-tock-word). */
+.slidev-layout.gear-train h1,
+.slidev-layout.gear-train h1 + p,
+.slidev-layout.gear-train .gt-sentence {
+  -webkit-text-stroke: 6px var(--palette-background);
+  paint-order: stroke fill;
+}
+/* Where the Gears slide's text is, and the same type: 70 px right of the
+   picture's right edge (the frontmatter's watchRight). The fades are in
+   longhands, which keep after-watch's delay. */
+.slidev-layout.gear-train .gt-sentence {
+  position: absolute;
+  left: 560px;
+  top: 165px;
+  font-size: 35px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.slidev-layout.gear-train .gt-sentence div + div {
+  margin-top: 0.7em;
+}
+.slidev-layout.gear-train .gt-sentence.slidev-vclick-target,
+.slidev-layout.gear-train .gt-sentence > .slidev-vclick-target {
+  transition-property: opacity;
+  transition-duration: var(--text-fade);
+}
+</style>
+
+<!--
+The camera zooms out, to make room for the wheels that drive the fourth wheel. The third wheel and the centre wheel do not show yet.
+
+The second hand turns once a minute. A minute hand must turn once an hour: sixty times slower.
+
+[click] One gear could do it: sixty times the teeth of the small gear, 240 teeth. The camera pulls back. The gear and the small gear that it drives fade in, then the watch around them, and the two gears flash: the big one is bigger than the watch. Then the text: a 60 to 1 gear ratio.
+
+[click] So it takes two more pairs of gears. The third wheel, and the small gear on the fourth wheel that it drives, fade in and flash. 30 teeth drive 4: seven and a half times slower. Then the text: two stages, 7.5 to 1.
+
+[click] The centre wheel, and the small gear on the third wheel that it drives, fade in and flash. 32 teeth drive 4: eight times slower: the text adds 8 to 1. Seven and a half times eight is sixty. The centre wheel turns once an hour.
+
+[click] Put the minute hand on the centre wheel's arbor. The case and the dial fade in with it: this is the middle of the watch. Then the text: it makes a full turn once an hour. The minute hand!
+-->
+
+---
 layout: full
 class: tk-timekeepers
 # hide: true

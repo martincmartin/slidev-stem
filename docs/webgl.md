@@ -159,7 +159,9 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   camera moves (`StageState.moveWith`: those of both by default, all of
   either, or none): A becomes D (fade out, then fade in), the camera moves
   and tilts (zooming in: move, then tilt; otherwise the reverse), and D
-  becomes B. With nothing on the screen, the camera jumps. A key press
+  becomes B. Of the meshes that fade in as D becomes B, those in
+  `StageState.later` fade in after the others. With nothing on the screen,
+  the camera jumps. A key press
   during a change starts from what is on the screen: a fade cut short ends
   first. The timeline has no DOM and no WebGL, so its tests
   (`timeline.test.ts`) drive it with made-up times. `Stage`
@@ -172,8 +174,8 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   transition that changes a channel, not in a state shown at once. A key
   press during the flash does not start it again. `Stage.show` (from
   `Timeline.show`) returns the seconds until the flash ends.
-  The caller passes a flash only on the step forward into its slide
-  ([navigation.md](navigation.md)); the timeline itself never asks which way
+  The caller passes a flash only on the step forward into the slide or the
+  click that names it ([navigation.md](navigation.md)); the timeline itself never asks which way
   the viewer went. `viewEndAt` says when the camera's move ends, for text that
   waits for it.
 - **A fade fades its meshes as one picture**, as SVG's group opacity does:

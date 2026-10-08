@@ -8,6 +8,7 @@ import { at } from "../webgl/checked.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import designFile from "./design.json" with { type: "json" };
 import { readDesign, type Wheel } from "./design.ts";
+import { oneStepWheel } from "./generate.ts";
 import { FLATNESS, type Path } from "./path.ts";
 import {
   meshedSpan,
@@ -106,9 +107,10 @@ function offNearest(degrees: number, period: number): number {
   return degrees - period * Math.round(degrees / period);
 }
 
-test("every wheel meshes with its pinion: no overlap, and the driving flank keeps contact", () => {
-  assert.equal(meshes.length, 4); // barrel, centre, third, fourth
-  for (const [wheel, owner] of meshes) {
+/** Turns `wheel` and the pinion of `owner` through one tooth: they never
+ *  overlap, and the driving flank stays in touch. */
+function assertMeshes(wheel: Wheel, owner: Wheel): void {
+  {
     const wheelPoints = outline(wheelTeeth(wheel));
     const pinionPoints = outline(pinionLeaves(owner));
     const pinionReach =
@@ -167,6 +169,17 @@ test("every wheel meshes with its pinion: no overlap, and the driving flank keep
       );
     }
   }
+}
+
+test("every wheel meshes with its pinion: no overlap, and the driving flank keeps contact", () => {
+  assert.equal(meshes.length, 4); // barrel, centre, third, fourth
+  for (const [wheel, owner] of meshes) assertMeshes(wheel, owner);
+});
+
+test("the one-step wheel meshes with the fourth pinion, as the third wheel does", () => {
+  const wheel = oneStepWheel(design);
+  assert.ok(wheel.driven);
+  assertMeshes(wheel, wheel.driven);
 });
 
 /** The least distance between two closed outlines. */
