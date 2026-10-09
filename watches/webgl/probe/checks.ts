@@ -141,7 +141,16 @@ function stateOf(
 ): StageState {
   const view = test.scene.views[0];
   check(view !== undefined, "no view");
-  return { view, tilt: 0, shown, flash, later: new Set(), moveWith: "common" };
+  return {
+    view,
+    tilt: 0,
+    shown,
+    flash,
+    later: new Set(),
+    cut: new Set(),
+    goLater: new Set(),
+    moveWith: "common",
+  };
 }
 
 type TestScene = ReturnType<typeof makeScene>;

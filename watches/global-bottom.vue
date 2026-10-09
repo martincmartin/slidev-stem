@@ -22,8 +22,8 @@
 // The new slide's text waits for the camera, in either direction
 // (`--watch-text-delay`, from the stage). A click's text can wait for the
 // balance to come to rest (`--watch-rest-delay`, from the model), or for the
-// watch's change to end, with its flash (`--watch-end-delay`, from the
-// stage).
+// watch's change to end, with its flash and the model's story
+// (`--watch-end-delay`, from the stage).
 //
 // Print mode (export) has no live layer: slide-bottom.vue draws a still and a
 // posed board on each page. `data-watch` on the canvas is the state it shows,
@@ -173,7 +173,8 @@ function showWatch(
   // a flash points to where the camera goes, or to what fades in: only on
   // the step forward into the slide or the click that names it. It is not
   // part of what shows, so a click that changes nothing else does not cut
-  // it. Nor is the order of the fades (`later`)
+  // it. Nor is the order of the fades (`later`, `goLater`), or which pieces
+  // go at once (`cut`)
   const flash = move === "forward" ? now?.flash : undefined;
   const picture = JSON.stringify(
     now
@@ -183,6 +184,8 @@ function showWatch(
           flashAfterText: undefined,
           flashInverse: undefined,
           later: undefined,
+          cut: undefined,
+          goLater: undefined,
         }
       : null,
   );

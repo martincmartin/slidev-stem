@@ -5,6 +5,7 @@
 import { Stills } from "../webgl/stills.ts";
 import type { Palette } from "../webgl/scene.ts";
 import type { Watch } from "./generate.ts";
+import { linePose, stagePose } from "./mainspring.ts";
 import { Motion, stillPose } from "./model.ts";
 import { stageState } from "./state.ts";
 import type { WatchState } from "./state.ts";
@@ -41,8 +42,11 @@ export class WatchStills {
       state.tilt,
       state.show,
       state.fit,
+      state.right,
+      state.band,
       state.spin,
       state.settled,
+      state.mainspring,
       size,
     ]);
     return this.stills.of(key, palette, (renderer) => {
@@ -52,11 +56,23 @@ export class WatchStills {
         STILL_TIME,
       );
       const stage = stageState(this.watch, state);
+      // the story's stage once its moves end, or the spring at rest
+      const spring =
+        state.mainspring === null ? linePose(0) : stagePose(state.mainspring);
       renderer.updateMesh(this.watch.spring, this.motion.springGeometry(swing));
+      renderer.updateMesh(
+        this.watch.mainspring,
+        this.motion.mainspringGeometry(spring),
+      );
       renderer.render({
         view: stage.view,
         tilt: stage.tilt,
-        groupMatrices: this.motion.matrices(time, swing),
+        groupMatrices: this.motion.matrices(
+          time,
+          swing,
+          this.motion.beats(time),
+          spring.arbor,
+        ),
         keep: stage.shown,
         rest: 0,
         size,

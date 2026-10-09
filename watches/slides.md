@@ -193,26 +193,27 @@ watch:
 watchView: *escapement # the camera stays when click 2 shows less
 watchTilt: 20
 watchClicks:
-  # the pallet and the balance fade, and the escape wheel spins freely
-  2:
-    watch: [escape wheel, escape arbor]
+  # the wheel's callout appears; the pallet and the balance fade, and then
+  # the drive arrow fades in, and the escape wheel spins freely
+  1:
+    watch: [escape wheel, escape arbor, escape wheel drive]
     watchSpin: 135 # degrees a second
   # they fade back in, and the pallet stops the wheel (docs/watch.md)
-  3:
-    watch: *escapement
+  2:
+    watch: [*escapement, escape wheel drive]
     watchSpin: false
   # the balance comes to rest, with the jewel under its leader
-  4:
+  3:
     watchAtRest: true
   # it swings again, and the leader fades out; "tick" and "tock" show at
   # each strike of the jewel (docs/watch.md)
-  5:
+  4:
     watchAtRest: false
     watchTickTock: plain
   # a trial: the same words as comic bursts, to compare
-  6:
+  5:
     watchTickTock: burst
-clicks: 6
+clicks: 5
 ---
 
 # Escapement
@@ -227,24 +228,24 @@ import { WATCH } from "./watch/instance.ts";
 const marks = escapementMarks(WATCH, useSlideContext().$frontmatter);
 </script>
 
-<!-- Click 6 is a trial of the words at the strikes: comic bursts, to
-compare with click 5's plain words.
+<!-- Click 5 is a trial of the words at the strikes: comic bursts, to
+compare with click 4's plain words.
 
-The newest callout is the focus: while the pallet's (click 3) and then the
-jewel's (click 4) is the newest, the callouts before it dim. At click 5 the
+The newest callout is the focus: while the pallet's (click 2) and then the
+jewel's (click 3) is the newest, the callouts before it dim. At click 4 the
 balance swings again, the jewel's leader fades, and all three come back.
 
 The wheel's and the pallet's leaders end LEADER_GAP px outside their parts
 (docs/watch.md, "The callouts").
 -->
 
-<div class="esc-callouts" :class="{ 'esc-focus-pallet': $clicks === 3, 'esc-focus-jewel': $clicks === 4 }">
+<div class="esc-callouts" :class="{ 'esc-focus-pallet': $clicks === 2, 'esc-focus-jewel': $clicks === 3 }">
 
-<WatchCallout keyword v-click="1" class="esc-wheel" bent :to="marks.escape" :stop="LEADER_GAP" :clear="[marks.escapeTips]" :arrow="marks.drive" :left="680" :top="136"><span class="callout-word">Wheel</span> driven by<br>hidden gear</WatchCallout>
+<WatchCallout keyword v-click="1" class="esc-wheel" bent :to="marks.escape" :stop="LEADER_GAP" :clear="[marks.escapeTips]" :left="680" :top="136"><span class="callout-word">Wheel</span> driven by<br>hidden mechanism</WatchCallout>
 
-<WatchCallout keyword v-click="3" class="after-watch-fade esc-pallet" :to="marks.pallet" :stop="LEADER_GAP" :clear="marks.forkOutlines" :left="470" :top="470"><span class="callout-word">Pallet</span> blocks wheel</WatchCallout>
+<WatchCallout keyword v-click="2" class="after-watch-fade esc-pallet" :to="marks.pallet" :stop="LEADER_GAP" :clear="marks.forkOutlines" :left="470" :top="470"><span class="callout-word">Pallet</span> blocks wheel</WatchCallout>
 
-<WatchCallout keyword v-click="4" class="after-balance-rest" :to="marks.jewel" :show-leader="$clicks < 5" :left="330" :top="136"><span class="callout-word">Jewel</span> strikes pallet</WatchCallout>
+<WatchCallout keyword v-click="3" class="after-balance-rest" :to="marks.jewel" :show-leader="$clicks < 4" :left="330" :top="136"><span class="callout-word">Jewel</span> strikes pallet</WatchCallout>
 
 </div>
 
@@ -298,9 +299,7 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 - This is where the "tick tock" sound comes from!
 - The teeth are trapped by the pallet stones.  The pallet allows the teeth to "escape", hence the name "escapement."
 
-[click] First, the gears are trying to run forward because the mainspring is applying torque.
-
-[click] The pallet and the balance fade away, and nothing holds the escape wheel back: it spins freely.
+[click] First, the gears are trying to run forward because the mainspring is applying torque. (The wheel's callout and its arrow appear.) The pallet and the balance fade away, and nothing holds the escape wheel back: it spins freely.
 
 [click] Second, the escapement normally prevents them from doing so. The pallet stones lock the escape wheel.
 
@@ -308,7 +307,7 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 
 [click] As the balance swings, it periodically gives permission for one tiny advance. (Each time the jewel strikes the fork, "tick" or "tock" appears beside it and drifts away.) During that event some energy also travels the other way, from the gear train through the escapement into the balance.
 
-[click] (Trial: the same words as 1960s Batman bursts, to compare with click 5.)
+[click] (Trial: the same words as 1960s Batman bursts, to compare with click 4.)
 -->
 
 ---
@@ -346,12 +345,14 @@ watchClicks:
   5:
     watch: [*gears, fourth wheel span, escape pinion span]
   # the rest of the Escapement slide's mechanism fades in, in this view
-  # (much of it off the slide on the left), and the span goes. The pallet
-  # stops the spin: the gears tick with the escape wheel
+  # (much of it off the slide on the left), with the drive arrow on the
+  # fourth wheel, and the span goes. The pallet stops the spin: the gears
+  # tick with the escape wheel
   6:
     watchSpin: false
     watch:
       &mechanism [
+        fourth wheel drive,
         *gears,
         balance wheel,
         balance staff,
@@ -422,7 +423,7 @@ The escapement fades out. The fourth wheel and the escape wheel's pinion fade in
 
 [click] The same teeth, solid; the text stays. (A trial: compare with click 1, and keep one style.)
 
-[click] The rest of the escapement comes back, and the gears now advance one tick at a time: the escapement controls the whole train.
+[click] The rest of the escapement comes back, and the gears now advance one tick at a time: the escapement controls the whole train. (The arrow is on the big gear now: something we can't see yet still pushes it.)
 
 [click] Put a hand on the big gear's arbor. The gear turns once a minute, so the hand is the second hand: the first part of the watch that we read. (The hand fades in first, then the text.)
 
@@ -436,21 +437,24 @@ IF ASKED: Strictly, the pitch must match: a tooth plus its gap on one wheel equa
 # escape wheel to the centre wheel, which do not show yet. The pieces stay on
 # the screen while the camera moves; the balance is partly off the slide
 watch:
-  &seconds [
-    fourth wheel,
-    fourth arbor,
-    escape pinion,
-    escape arbor,
-    balance wheel,
-    balance staff,
-    hairspring,
-    collet,
-    stud,
-    roller,
-    impulse jewel,
-    pallet fork,
-    escape wheel,
-    seconds hand,
+  [
+    &seconds [
+      fourth wheel,
+      fourth arbor,
+      escape pinion,
+      escape arbor,
+      balance wheel,
+      balance staff,
+      hairspring,
+      collet,
+      stud,
+      roller,
+      impulse jewel,
+      pallet fork,
+      escape wheel,
+      seconds hand,
+    ],
+    fourth wheel drive,
   ]
 watchView: &frame [escape wheel, fourth wheel, third wheel, centre wheel]
 watchRight: 489
@@ -461,8 +465,10 @@ watchClicks:
   # fourth pinion, from the line from the escape arbor through the fourth
   # arbor (docs/watch.md, "The Gear Train slide"). The camera untilts and
   # zooms out until the case band fills the picture band, so the case shows
-  # how large the wheel is. The wheel and the pinion fade in, then the case,
-  # and then they flash. The case's strap is the raised strap, above the wheel
+  # how large the wheel is. The drive arrow stays on the fourth wheel while
+  # the camera moves, and then goes. The wheel and the pinion fade in, then
+  # the case, and then they flash. The case's strap is the raised strap,
+  # above the wheel
   1:
     watch:
       [
@@ -474,21 +480,31 @@ watchClicks:
     watchView: [case band]
     watchTilt: 0
     watchLater: *case
+    watchGoLater: [fourth wheel drive]
     watchFlash: [one-step wheel, fourth pinion]
   # the train slows the turn from once a minute to once an hour, in two
   # steps. Each fades in, and then flashes: the wheel, with its arbor, and
-  # the pinion that it drives
+  # the pinion that it drives. The drive arrow moves to the new wheel: the
+  # old one fades out first, and the new one fades in with its wheel
   2:
-    watch: [*seconds, &third [fourth pinion, third wheel, third arbor]]
+    watch:
+      [
+        *seconds,
+        &third [fourth pinion, third wheel, third arbor],
+        third wheel drive,
+      ]
     watchView: *frame
     watchTilt: 20
     watchFlash: *third
   3:
     watch:
-      &train [
-        *seconds,
-        *third,
-        &centre [third pinion, centre wheel, centre arbor],
+      [
+        &train [
+          *seconds,
+          *third,
+          &centre [third pinion, centre wheel, centre arbor],
+        ],
+        centre wheel drive,
       ]
     watchFlash: *centre
   # the minute hand, on the centre wheel's arbor, and the case and the dial
@@ -497,6 +513,7 @@ watchClicks:
     watch:
       [
         *train,
+        centre wheel drive,
         minute hand,
         centre pivot,
         chapter ring,
@@ -579,13 +596,156 @@ The camera zooms out, to make room for the wheels that drive the fourth wheel. T
 
 The second hand turns once a minute. A minute hand must turn once an hour: sixty times slower.
 
-[click] One gear could do it: sixty times the teeth of the small gear, 240 teeth. The camera pulls back. The gear and the small gear that it drives fade in, then the watch around them, and the two gears flash: the big one is bigger than the watch. Then the text: a 60 to 1 gear ratio.
+[click] One gear could do it: sixty times the teeth of the small gear, 240 teeth. The camera pulls back, and the arrow goes. The gear and the small gear that it drives fade in, then the watch around them, and the two gears flash: the big one is bigger than the watch. Then the text: a 60 to 1 gear ratio.
 
-[click] So it takes two more pairs of gears. The third wheel, and the small gear on the fourth wheel that it drives, fade in and flash. 30 teeth drive 4: seven and a half times slower. Then the text: two stages, 7.5 to 1.
+[click] So it takes two more pairs of gears. The third wheel, and the small gear on the fourth wheel that it drives, fade in and flash. The arrow is on the third wheel now: the push comes from further back. 30 teeth drive 4: seven and a half times slower. Then the text: two stages, 7.5 to 1.
 
-[click] The centre wheel, and the small gear on the third wheel that it drives, fade in and flash. 32 teeth drive 4: eight times slower: the text adds 8 to 1. Seven and a half times eight is sixty. The centre wheel turns once an hour.
+[click] The centre wheel, and the small gear on the third wheel that it drives, fade in and flash, and the arrow moves to it. 32 teeth drive 4: eight times slower: the text adds 8 to 1. Seven and a half times eight is sixty. The centre wheel turns once an hour.
 
 [click] Put the minute hand on the centre wheel's arbor. The case and the dial fade in with it: this is the middle of the watch. Then the text: it makes a full turn once an hour. The minute hand!
+-->
+
+---
+# the bare mainspring and its arbor, as large as the picture band; the
+# camera stays at every click. The story (watchMainspring) turns the key,
+# winds and lets down the spring, and says when the watch runs
+# (docs/watch.md, "The Mainspring slide")
+watch: &spring [mainspring, barrel arbor]
+watchView: *spring
+watchTilt: 20
+watchMainspring: free
+watchClicks:
+  # the key turns the bare spring: nothing holds its outer end, so it turns
+  # whole
+  1:
+    watchMainspring: turned
+  # the stud and the dashed rest shape fade in, and the stud flashes; then
+  # the key winds it
+  2:
+    watch: [*spring, mainspring stud, mainspring rest]
+    watchFlash: [mainspring stud]
+    watchMainspring: wound
+  # the stud flashes and is gone at once; the spring uncoils to its rest
+  # shape as soon as nothing holds its end
+  3:
+    watch: [*spring, mainspring rest]
+    watchFlash: [mainspring stud]
+    watchCut: [mainspring stud]
+    watchMainspring: released
+  # the rest shape fades out, the camera zooms out to the whole movement,
+  # from the barrel to the balance, and the barrel and the watch (all but
+  # the hour hand) fade in, still; the barrel and the centre pinion, which
+  # it drives, flash; then the key winds it, and the watch starts.
+  # Clicks 4 and 5 are trials, to choose a zoom: click 4 fits the movement
+  # in the slide band (it runs behind the title), click 5 in the picture
+  # band, where the spring is let down at once and the key winds it again.
+  # The pallet fork is not in the list: it is inside the others, and its
+  # extent is the whole circle about its pivot
+  4:
+    watch:
+      [
+        *spring,
+        barrel,
+        escape wheel,
+        escape pinion,
+        escape arbor,
+        fourth wheel,
+        fourth pinion,
+        fourth arbor,
+        third wheel,
+        third pinion,
+        third arbor,
+        centre wheel,
+        centre pinion,
+        centre arbor,
+        balance wheel,
+        balance staff,
+        hairspring,
+        collet,
+        stud,
+        roller,
+        impulse jewel,
+        pallet fork,
+        seconds hand,
+        minute hand,
+        centre pivot,
+        chapter ring,
+        case band,
+        lug,
+        crown,
+        strap,
+      ]
+    watchFlash: [barrel, centre pinion]
+    watchMainspring: barrel
+    watchView:
+      &movement [
+        barrel,
+        centre wheel,
+        third wheel,
+        fourth wheel,
+        escape wheel,
+        balance wheel,
+        hairspring,
+        stud,
+      ]
+    watchBand: slide
+  # the picture band fits the train, from the barrel to the escape wheel:
+  # the balance and the fork may run up behind the subtitle
+  5:
+    watchMainspring: barrel again
+    watchView: [barrel, centre wheel, third wheel, fourth wheel, escape wheel]
+    watchBand: picture
+  # a time-lapse, until the barrel has turned once: then the watch stops
+  6:
+    watchMainspring: run down
+clicks: 6
+class: mainspring
+---
+
+# Mainspring
+
+One spring to power them all
+
+<div v-click="6" class="ms-lapse">6 hours<br>in 6 seconds</div>
+
+<style>
+/* The label is on the right, clear of the crown in the whole movement's
+   view in the picture band (click 5). The text is outlined in the paper's
+   colour, as the Gear Train slide's text is, so it reads over the watch. */
+.slidev-layout.mainspring h1,
+.slidev-layout.mainspring h1 + p,
+.slidev-layout.mainspring .ms-lapse {
+  -webkit-text-stroke: 6px var(--palette-background);
+  paint-order: stroke fill;
+}
+.slidev-layout.mainspring .ms-lapse {
+  position: absolute;
+  left: 700px;
+  top: 280px;
+  font-size: 35px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.slidev-layout.mainspring .ms-lapse.slidev-vclick-target {
+  transition: opacity var(--text-fade);
+}
+</style>
+
+<!--
+The power comes from a spring too: the mainspring. A long ribbon of steel, coiled round an arbor.
+
+[click] A key fades in on the arbor, and turns it, a third of a turn at a time, three times. Nothing holds the spring's outer end, so the whole spring just turns with it. Nothing is stored.
+
+[click] Now a stud holds the outer end: it fades in and flashes. The dashed line is the spring's rest shape. The key turns the arbor the same three times, and this time the spring winds up: it keeps its length, so its coils draw in toward the arbor. Wind it away from rest, and it pushes back, as the hairspring does.
+
+[click] Let go of the outer end: the stud flashes, and is gone. At once the outer end swings round, while the arbor still holds the inner end, until the spring is back on its rest shape.
+
+[click] Put it in the barrel: the outer end hooks to the barrel's wall. The camera zooms out to the whole movement, as tall as the slide (a trial), and the barrel and the rest of the watch fade in. The barrel and the centre pinion flash: the barrel's teeth drive the train that we built. It is still: the spring is let down. The key winds it, and the watch starts as soon as the key starts to turn. The balance and the escapement let the train turn one tick at a time.
+
+[click] (A trial, to compare with the last click: the same, with the movement under the title. The spring is let down at once, and the key winds it again.)
+
+[click] The arbor is held now, so the spring can only let down by turning the barrel. Six hours in six seconds: the barrel turns once, the minute hand six times, and the coils move back out to the wall. When the spring is let down, the watch stops.
 -->
 
 ---

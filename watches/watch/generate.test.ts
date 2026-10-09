@@ -1,14 +1,18 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
+import { transformPoint } from "../webgl/math.ts";
+import { viewProjection } from "../webgl/renderer.ts";
 import type { Wheel } from "./design.ts";
 import type { Mesh, Piece } from "../webgl/scene.ts";
 import { INKS } from "../webgl/scene.ts";
 import {
+  driveArrowShape,
   fittedView,
   generate,
   JEWEL_FLAT_OFFSET,
   JEWEL_RADIUS,
+  PICTURE_BAND,
 } from "./generate.ts";
 
 const watch = generate();
@@ -262,7 +266,11 @@ test("a fitted view: the pieces fit the room under the subtitle, against its lef
   const top = Math.min(...box.map((each) => each.top));
   const bottom = Math.max(...box.map((each) => each.bottom));
   const left = Math.min(...box.map((each) => each.left));
-  assert.ok(Math.abs(view.scale * (bottom - top) - 420) < 1e-9);
+  assert.ok(
+    Math.abs(
+      view.scale * (bottom - top) - (PICTURE_BAND.bottom - PICTURE_BAND.top),
+    ) < 1e-9,
+  );
   assert.ok(Math.abs(view.scale * left + view.shift[0] - 16) < 1e-9);
 });
 
@@ -390,4 +398,66 @@ test("the spring's height and the hairspring view's pivot are what art/diving_bo
     [watch.springHeights.bottom, watch.springHeights.top, view?.pivot[2]],
     [-11, -3, -7],
   );
+});
+
+test("at a tilt, a fitted view fills its band on the screen, as the camera shows each piece", () => {
+  const movement = [
+    "barrel",
+    "centre wheel",
+    "balance wheel",
+    "hairspring",
+  ].map(piece);
+  const [, height] = scene.slide;
+  const margin = height - PICTURE_BAND.bottom;
+  for (const [band, top, bottom] of [
+    ["picture", PICTURE_BAND.top, PICTURE_BAND.bottom],
+    ["slide", margin, height - margin],
+  ] as const) {
+    const view = fittedView(watch, movement, null, band, 20);
+    const camera = viewProjection(view, 20, scene.slide);
+    const ys = movement.flatMap((each) => {
+      const extent = watch.extents.get(each) ?? assert.fail();
+      return [extent.box.top, extent.box.bottom].flatMap((y) =>
+        [extent.bottom, extent.top].map((z) => {
+          const [, clip] = transformPoint(camera.matrix, [view.pivot[0], y, z]);
+          return ((1 - clip) / 2) * height;
+        }),
+      );
+    });
+    assert.ok(Math.abs(Math.min(...ys) - top) < 1e-3, `${band} top`);
+    assert.ok(Math.abs(Math.max(...ys) - bottom) < 1e-3, `${band} bottom`);
+  }
+});
+
+test("each drive arrow is on its wheel, centred toward the wheel that drives it, and turns the way its wheel turns", () => {
+  const [, centre, third, fourth, escape] = design.wheels as [
+    Wheel,
+    Wheel,
+    Wheel,
+    Wheel,
+    Wheel,
+  ];
+  for (const wheel of [escape, fourth, third, centre]) {
+    const driver = design.wheels.find((each) => each.driven === wheel);
+    assert.ok(driver, wheel.name);
+    const { shaft, head } = driveArrowShape(wheel, driver);
+    const arbor = wheel.arbor;
+    const out = (point: readonly number[]): [number, number] => [
+      (point[0] ?? 0) - arbor[0],
+      (point[1] ?? 0) - arbor[1],
+    ];
+    // inside the wheel's root circle, clear of its teeth
+    for (const point of [...shaft, ...head]) {
+      assert.ok(Math.hypot(...out(point)) < wheel.inner, wheel.name);
+    }
+    // y is down, as on the slide: a negative step turns anticlockwise, from
+    // the tail to the tip
+    const [tailX, tailY] = out(at(shaft, 0));
+    const [tipX, tipY] = out(head[0]);
+    assert.equal(Math.sign(tailX * tipY - tailY * tipX), Math.sign(wheel.step));
+    // the middle of the arc faces the driver
+    const middle = out(at(shaft, Math.floor(shaft.length / 2)));
+    const toDriver = out(driver.arbor);
+    assert.ok(middle[0] * toDriver[0] + middle[1] * toDriver[1] > 0);
+  }
 });

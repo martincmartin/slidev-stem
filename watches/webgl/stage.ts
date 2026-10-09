@@ -5,6 +5,13 @@
 // THE ORDER AND THE FLASH are the timeline's (timeline.ts): the stage has the
 // renderer, the model and the frame loop, and asks the timeline what to draw.
 //
+// A MODEL'S STORY. A model may tell a story of its own at a change (in the
+// watch, a key that winds the mainspring). It starts when the stage's change
+// ends (`Model.show`'s `after`). The story can show meshes that no state
+// names, at an opacity (`Model.extra`): one fade at a time, so it fades them
+// while the timeline does not fade; if both fade at once, the story's meshes
+// show whole, or not at all.
+//
 // A stage owns its renderer and its frame loop: `dispose()` stops both and
 // frees the renderer's GL objects.
 //
@@ -19,12 +26,27 @@ import type { Group, Mesh, Palette, Scene } from "./scene.ts";
 import { Timeline } from "./timeline.ts";
 import type { StageState, Values } from "./timeline.ts";
 
+/** Meshes that a model's story shows besides the state's, at an opacity. */
+export interface Extra {
+  readonly meshes: ReadonlySet<Mesh>;
+  /** 0 to 1. */
+  readonly opacity: number;
+}
+
 /** What the scene shows and moves. */
 export interface Model<ModelState> {
-  /** A new state for the model; `instantly` for a slide reached directly. */
-  show(state: ModelState, now: number, instantly: boolean): void;
+  /** A new state for the model; `instantly` for a slide reached directly.
+   *  `after` (ms): when the stage's change ends, for a story that plays
+   *  forward. */
+  show(state: ModelState, now: number, instantly: boolean, after: number): void;
   /** The world matrix of each group at `now`; it updates dynamic meshes. */
   frame(now: number, renderer: Renderer): Map<Group, Float32Array>;
+  /** The story's meshes at `now`, or `null`. */
+  extra?(now: number): Extra | null;
+  /** When the story's moves end (ms), or `now`. */
+  endAt?(now: number): number;
+  /** Whether the story moves at `now`. */
+  moving?(now: number): boolean;
   /** What the model is doing, for the measurement scripts. */
   phase(now: number): string;
 }
@@ -56,6 +78,21 @@ export interface FrameLog {
   sizes: [number, string][];
 }
 
+/** The timeline's fade, with the story's meshes: whole, or as the fade if
+ *  the timeline does not fade. While both fade, they show whole from half
+ *  their opacity. */
+function withExtra(
+  values: Values,
+  extra: Extra | null | undefined,
+): Pick<Values, "keep" | "fade" | "rest"> {
+  const { keep, fade, rest } = values;
+  if (!extra || extra.opacity <= 0) return { keep, fade, rest };
+  const whole = new Set([...keep, ...extra.meshes]);
+  if (extra.opacity >= 1) return { keep: whole, fade, rest };
+  if (fade.size === 0) return { keep, fade: extra.meshes, rest: extra.opacity };
+  return { keep: extra.opacity >= 0.5 ? whole : keep, fade, rest };
+}
+
 export class Stage<ModelState> {
   readonly canvas: HTMLCanvasElement;
   readonly renderer: Renderer;
@@ -85,7 +122,7 @@ export class Stage<ModelState> {
     const now = performance.now();
     const atOnce = instantly || !this.timeline.hasState;
     const flashSeconds = this.timeline.show(state, now, atOnce);
-    this.model.show(modelState, now, atOnce);
+    this.model.show(modelState, now, atOnce, this.timeline.endAt(now));
     return flashSeconds;
   }
 
@@ -104,9 +141,12 @@ export class Stage<ModelState> {
     return this.timeline.hasState;
   }
 
-  /** Whether a channel moves or the flash runs at `now`. */
+  /** Whether a channel moves, the flash runs, or the model's story moves, at
+   *  `now`. */
   movingAt(now: number): boolean {
-    return this.timeline.phaseAt(now) !== null;
+    return (
+      this.timeline.phaseAt(now) !== null || (this.model.moving?.(now) ?? false)
+    );
   }
 
   /** When the camera's last move ends (ms), or `now` if it does not move. */
@@ -114,9 +154,10 @@ export class Stage<ModelState> {
     return this.timeline.viewEndAt(now);
   }
 
-  /** When the change ends (ms), with its flash, or `now` if it has. */
+  /** When the change ends (ms), with its flash and the model's story, or
+   *  `now` if it has. */
   endAt(now: number): number {
-    return this.timeline.endAt(now);
+    return Math.max(this.timeline.endAt(now), this.model.endAt?.(now) ?? now);
   }
 
   /** What is moving at `now`: the flash, a channel, or the model's phase. */
@@ -172,13 +213,15 @@ export class Stage<ModelState> {
     if (this.log.sizes.at(-1)?.[1] !== sizeText) {
       this.log.sizes.push([now, sizeText]);
     }
+    const groupMatrices = this.model.frame(now, this.renderer);
+    const { keep, fade, rest } = withExtra(values, this.model.extra?.(now));
     this.renderer.render({
       view: values.view,
       tilt: values.tilt,
-      groupMatrices: this.model.frame(now, this.renderer),
-      keep: values.keep,
-      fade: values.fade,
-      rest: values.rest,
+      groupMatrices,
+      keep,
+      fade,
+      rest,
       ...(recolour ? { recolour } : {}),
       size,
     });

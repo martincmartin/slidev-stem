@@ -62,6 +62,8 @@ function state(options: Partial<StageState> & { view: View }): StageState {
     shown: ALL,
     flash: null,
     later: set(),
+    cut: set(),
+    goLater: set(),
     moveWith: "common",
     ...options,
   };
@@ -480,4 +482,43 @@ test("a delayed cue waits for an interrupted mesh fade to finish", () => {
   assert.equal(timeline.flashingAt(999), null);
   assert.deepEqual(timeline.flashingAt(1000), set(BALANCE));
   assert.equal(timeline.valuesAt(1000).rest, 1);
+});
+
+test("a go-later mesh stays on the screen while the camera moves, and goes after it", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  timeline.show(
+    state({ view: CLOSE, shown: set(SPRING), goLater: set(BALANCE) }),
+    1000,
+  );
+  // the case fades out first, alone
+  const first = timeline.valuesAt(1000 + FADE / 2);
+  assert.deepEqual(first.fade, set(CASE));
+  assert.ok(first.keep.has(BALANCE));
+  // the balance stays while the camera moves
+  const moving = timeline.valuesAt(1000 + FADE + MOVE / 2);
+  assert.equal(moving.fade.size, 0);
+  assert.deepEqual(moving.keep, set(SPRING, BALANCE));
+  assert.ok(moving.view.scale > WIDE.scale && moving.view.scale < CLOSE.scale);
+  // then it fades out
+  const after = timeline.valuesAt(1000 + FADE + MOVE + FADE / 2);
+  assert.deepEqual(after.fade, set(BALANCE));
+  assert.equal(after.view.scale, CLOSE.scale);
+  assert.equal(timeline.endAt(1000), 1000 + FADE + MOVE + FADE);
+});
+
+test("a cut mesh goes at once, and the others then fade as usual", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  timeline.show(
+    state({ view: WIDE, shown: set(SPRING), cut: set(BALANCE) }),
+    1000,
+  );
+  const next = timeline.valuesAt(1000);
+  // the balance is gone at once; the case fades out
+  assert.ok(!next.keep.has(BALANCE) && !next.fade.has(BALANCE));
+  assert.ok(next.fade.has(CASE));
+  assert.equal(timeline.endAt(1000), 1000 + FADE);
+  // and comes back at once
+  timeline.show(state({ view: WIDE, cut: set(BALANCE) }), 5000);
+  const back = timeline.valuesAt(5000);
+  assert.ok(back.keep.has(BALANCE));
 });

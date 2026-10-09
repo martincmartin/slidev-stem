@@ -39,3 +39,59 @@ test("no slide spins the train while the pallet fork shows: the escape wheel wou
     }
   }
 });
+
+test("the mainspring winds only where its outer end is held: by the stud, or in the barrel", () => {
+  let seen = 0;
+  for (const { title, frontmatter } of slides) {
+    const clicks = Number(frontmatter["clicks"] ?? 0);
+    for (let click = 0; click <= clicks; click++) {
+      const state = watchState(frontmatter, click);
+      if (!state?.mainspring) continue;
+      seen++;
+      const shows = (piece: string): boolean =>
+        state.show === "all" || state.show.includes(piece);
+      const holder = shows("barrel")
+        ? "barrel"
+        : shows("mainspring stud")
+          ? "stud"
+          : "nothing";
+      const wanted = {
+        free: "nothing",
+        turned: "nothing",
+        wound: "stud",
+        released: "nothing",
+        barrel: "barrel",
+        "barrel again": "barrel",
+        "run down": "barrel",
+      }[state.mainspring];
+      assert.equal(holder, wanted, `${title} @${String(click)}`);
+    }
+  }
+  assert.ok(seen > 0, "no slide tells the mainspring's story");
+});
+
+test("the Gears slide's gears show where they set the picture band: its view is the plan fit that drew them", () => {
+  const gears = slides.find((slide) => slide.title === "Gears");
+  assert.ok(gears);
+  const state = watchState(gears.frontmatter, 0) ?? assert.fail();
+  const view = stageState(watch, state).view;
+  // the plan fit: the plan's height in 420 px, halfway between the
+  // subtitle's baseline (110.7) and the slide's bottom
+  const fit = state.fit;
+  assert.ok(fit !== "all");
+  const extents = watch.scene.pieces
+    .filter((piece) => fit.includes(piece.name))
+    .map((piece) => watch.extents.get(piece) ?? assert.fail());
+  const top = Math.min(...extents.map((extent) => extent.box.top));
+  const bottom = Math.max(...extents.map((extent) => extent.box.bottom));
+  const scale = 420 / (bottom - top);
+  const shiftY = (110.7 + 552) / 2 - (scale * (top + bottom)) / 2;
+  assert.ok(
+    Math.abs(view.scale / scale - 1) < 1e-4,
+    `scale ${String(view.scale)}`,
+  );
+  assert.ok(
+    Math.abs(view.shift[1] - shiftY) < 0.05,
+    `shift ${String(view.shift[1])}`,
+  );
+});

@@ -121,47 +121,6 @@ export function openings(
   return path;
 }
 
-/** An Archimedean spiral from (innerRadius, innerAngle) to (outerRadius,
- *  outerAngle), angles in degrees, as cubic Beziers: the barrel's mainspring. */
-export function spiralCurve(
-  innerRadius: number,
-  outerRadius: number,
-  innerAngle: number,
-  outerAngle: number,
-  segments: number,
-): Path {
-  const inner = radians(innerAngle);
-  const sweep = radians(outerAngle) - inner;
-  const radialSpan = outerRadius - innerRadius;
-  const point = (fraction: number): [Point2, Point2] => {
-    const radius = innerRadius + fraction * radialSpan;
-    const theta = inner + fraction * sweep;
-    return [
-      [radius * Math.cos(theta), radius * Math.sin(theta)],
-      [
-        radialSpan * Math.cos(theta) - radius * sweep * Math.sin(theta),
-        radialSpan * Math.sin(theta) + radius * sweep * Math.cos(theta),
-      ],
-    ];
-  };
-  let [start, startTangent] = point(0);
-  const path = new Path().moveTo(...start);
-  const handle = 1 / segments / 3;
-  for (let index = 1; index <= segments; index++) {
-    const [end, endTangent] = point(index / segments);
-    path.cubicTo(
-      start[0] + startTangent[0] * handle,
-      start[1] + startTangent[1] * handle,
-      end[0] - endTangent[0] * handle,
-      end[1] - endTangent[1] * handle,
-      ...end,
-    );
-    start = end;
-    startTangent = endTangent;
-  }
-  return path;
-}
-
 /** A closed polygon of straight edges. */
 export function polygon(points: Point2[]): Path {
   const [first, ...rest] = points;

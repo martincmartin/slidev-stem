@@ -4,7 +4,8 @@
 //
 // ONE RULE. A state names the meshes that it shows. From the shown set A to
 // the shown set B, with D the meshes on the screen while the camera moves
-// (`StageState.moveWith`: by default the meshes of both):
+// (`StageState.moveWith`: by default the meshes of both; and the meshes of
+// A in `StageState.goLater`):
 //   1. A becomes D: the meshes of A that are not in D fade out; then the
 //      meshes of D that are not in A fade in.
 //   2. The camera moves and tilts, eased: zooming in, it moves and then
@@ -12,6 +13,8 @@
 //      on the screen, and the camera jumps.
 //   3. D becomes B, as in 1; of the meshes that fade in, those in
 //      `StageState.later` fade in after the others.
+// The meshes in `StageState.cut` do not fade: they go, or come, at once,
+// before the others fade.
 // Without a camera move, A becomes B, as in 3. A fade fades its meshes as one
 // picture, over the meshes that stay. A new state starts from what is on the
 // screen now: a fade cut short first ends (at 1 if the new state shows every
@@ -71,6 +74,11 @@ export interface StageState {
   /** Of the meshes that fade in at the end of the change, these fade in
    *  after the others. */
   later: ReadonlySet<Mesh>;
+  /** Of the meshes that go or come, these do so at once, with no fade. */
+  cut: ReadonlySet<Mesh>;
+  /** Of the meshes that go, these stay on the screen while the camera moves,
+   *  and go after it. */
+  goLater: ReadonlySet<Mesh>;
   moveWith: MoveWith;
 }
 
@@ -246,6 +254,7 @@ export class Timeline {
       meshes: ReadonlySet<Mesh>,
       from: number,
       to: number,
+      seconds = FADE_SECONDS,
     ): void => {
       const after = to === 1 ? union(keep, meshes) : keep;
       add({
@@ -256,7 +265,7 @@ export class Timeline {
         to,
         after,
         start,
-        seconds: FADE_SECONDS,
+        seconds,
       });
     };
     // what is on the screen when the phases so far end
@@ -272,9 +281,24 @@ export class Timeline {
       later: ReadonlySet<Mesh> = NOTHING,
     ): void => {
       const going = minus(shown, target);
-      if (going.size > 0) {
-        shown = minus(shown, going);
-        fade(shown, going, 1, 0);
+      const cutGoing = new Set(
+        [...going].filter((mesh) => state.cut.has(mesh)),
+      );
+      if (cutGoing.size > 0) {
+        shown = minus(shown, cutGoing);
+        fade(shown, cutGoing, 1, 0, 0);
+      }
+      const fading = minus(going, cutGoing);
+      if (fading.size > 0) {
+        shown = minus(shown, fading);
+        fade(shown, fading, 1, 0);
+      }
+      const cutComing = new Set(
+        [...minus(target, shown)].filter((mesh) => state.cut.has(mesh)),
+      );
+      if (cutComing.size > 0) {
+        fade(shown, cutComing, 0, 1, 0);
+        shown = union(shown, cutComing);
       }
       const coming = minus(target, shown);
       const first = minus(coming, later);
@@ -288,12 +312,16 @@ export class Timeline {
     const moves = !sameView(current.view, state.view);
     const tilts = current.tilt !== state.tilt;
     if (moves || tilts) {
-      const during =
+      const moveWith =
         state.moveWith === "all"
           ? union(shown, state.shown)
           : state.moveWith === "none"
             ? NOTHING
             : new Set([...shown].filter((mesh) => state.shown.has(mesh)));
+      const during = union(
+        moveWith,
+        new Set([...shown].filter((mesh) => state.goLater.has(mesh))),
+      );
       become(during);
       // a move that nobody sees is a jump
       const seen = during.size > 0;

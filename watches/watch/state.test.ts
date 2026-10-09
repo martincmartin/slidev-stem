@@ -3,8 +3,9 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { generate } from "./generate.ts";
+import { generate, PICTURE_BAND } from "./generate.ts";
 import {
+  modelState,
   moveWithBefore,
   stageState,
   tickTockState,
@@ -24,10 +25,14 @@ test("the fields and their defaults", () => {
     show: "all",
     fit: "all",
     right: null,
+    band: "picture",
     flash: undefined,
     later: undefined,
+    cut: undefined,
+    goLater: undefined,
     settled: false,
     spin: null,
+    mainspring: null,
   });
   const frontmatter = {
     watch: ["hairspring", "collet", "stud"],
@@ -44,10 +49,14 @@ test("the fields and their defaults", () => {
     show: ["hairspring", "collet", "stud"],
     fit: ["hairspring", "collet", "stud"],
     right: null,
+    band: "picture",
     flash: undefined,
     later: undefined,
+    cut: undefined,
+    goLater: undefined,
     settled: true,
     spin: null,
+    mainspring: null,
   });
 });
 
@@ -58,7 +67,7 @@ test("a flash is of one click: the slide's at click 0, a block's at its click", 
     watchClicks: {
       1: { watchTilt: 20 },
       2: { watchFlash: ["third wheel", ["third arbor"]], watchLater: ["lug"] },
-      3: { watchTilt: 0, watchFlash: ["centre wheel"] },
+      3: { watchTilt: 0, watchFlash: ["centre wheel"], watchCut: ["stud"] },
     },
   };
   const flashes = [0, 1, 2, 3, 4].map(
@@ -75,6 +84,11 @@ test("a flash is of one click: the slide's at click 0, a block's at its click", 
   assert.deepEqual(
     [1, 2, 3].map((clicks) => watchState(frontmatter, clicks)?.later),
     [undefined, ["lug"], undefined],
+  );
+  // and which pieces go at once
+  assert.deepEqual(
+    [2, 3, 4].map((clicks) => watchState(frontmatter, clicks)?.cut),
+    [undefined, ["stud"], undefined],
   );
   // the other keys carry on, as without a flash
   assert.equal(watchState(frontmatter, 2)?.tilt, 20);
@@ -200,16 +214,23 @@ test("a slide shows the meshes of its pieces, or all but the marks, in its named
     watchState({ watch: "all" }, 0) ?? assert.fail(),
   );
   // every mesh but those of the pieces that only a slide that names them
-  // shows: the Gears slide's spans, and the Gear Train slide's one-step
-  // wheel and raised strap
+  // shows: the drive arrows, the Gears slide's spans, the Gear Train slide's
+  // one-step wheel and raised strap, and the Mainspring slide's props
   const marks = watch.scene.pieces.filter((piece) => !piece.inAll);
   assert.deepEqual(marks.map((piece) => piece.name).sort(), [
+    "centre wheel drive",
     "escape pinion span",
     "escape pinion span wash",
+    "escape wheel drive",
+    "fourth wheel drive",
     "fourth wheel span",
     "fourth wheel span wash",
+    "mainspring rest",
+    "mainspring stud",
     "one-step wheel",
     "raised strap",
+    "third wheel drive",
+    "winding key",
   ]);
   const markMeshes = new Set(marks.flatMap((piece) => [...piece.meshes]));
   assert.deepEqual(
@@ -326,6 +347,8 @@ test("a field of the wrong kind throws, with its name", () => {
     ["watchFlash", "stud"],
     ["watchLater", []],
     ["watchLater", "stud"],
+    ["watchCut", []],
+    ["watchCut", "stud"],
     ["watchAtRest", 1],
     ["watchAtRest", "true"],
     ["watchSpin", "90"],
@@ -338,6 +361,10 @@ test("a field of the wrong kind throws, with its name", () => {
     ["watchRight", "489"],
     ["watchRight", true],
     ["watchRight", Number.NaN],
+    ["watchBand", "page"],
+    ["watchBand", 1],
+    ["watchMainspring", "wound up"],
+    ["watchMainspring", true],
   ] as const) {
     assert.throws(
       () => watchState({ watch: "all", [field]: value }, 0),
@@ -398,5 +425,66 @@ test("text delay and inverse inks belong only to their flash click", () => {
   assert.throws(
     () => watchState({ watch: "all", watchFlashInverse: "yes" }, 0),
     /watchFlashInverse/,
+  );
+});
+
+test("the Mainspring slide's stage says when the watch runs: only in the barrel, wound", () => {
+  const frontmatter = {
+    watch: ["mainspring", "barrel arbor"],
+    watchMainspring: "free",
+    watchClicks: {
+      2: { watchMainspring: "wound" },
+      4: { watch: "all", watchMainspring: "barrel" },
+      5: { watchMainspring: "run down" },
+    },
+  };
+  const at = (click: number) => watchState(frontmatter, click) ?? assert.fail();
+  assert.equal(at(0).mainspring, "free");
+  assert.equal(at(3).mainspring, "wound");
+  assert.deepEqual(
+    [0, 2, 4, 5].map((click) => at(click).settled),
+    [true, true, false, true],
+  );
+  assert.deepEqual(modelState(at(4)), {
+    settled: false,
+    spin: null,
+    mainspring: "barrel",
+  });
+  // the story says when the balance swings: watchAtRest would say it twice
+  assert.throws(
+    () =>
+      watchState(
+        { ...frontmatter, watchClicks: { 1: { watchAtRest: true } } },
+        1,
+      ),
+    /^Error: watchAtRest: true should be left out where watchMainspring is set/,
+  );
+});
+
+test("watchBand: slide fits the slide's height, with the picture band's bottom margin at both ends", () => {
+  const pieces = ["barrel", "balance wheel"];
+  const view = (band: string) =>
+    stageState(
+      watch,
+      watchState({ watch: pieces, watchBand: band }, 0) ?? assert.fail(),
+    ).view;
+  const picture = view("picture");
+  const slide = view("slide");
+  const [, height] = watch.scene.slide;
+  // the same bottom margin; the slide band is taller by the room under the
+  // subtitle less one margin
+  const margin = height - PICTURE_BAND.bottom;
+  assert.ok(Math.abs(margin - 14.47) < 1e-9);
+  // at tilt 0 the plan is what shows: the scales go as the bands' heights
+  assert.ok(
+    Math.abs(
+      slide.scale / picture.scale -
+        (height - 2 * margin) / (PICTURE_BAND.bottom - PICTURE_BAND.top),
+    ) < 1e-9,
+  );
+  assert.throws(
+    () =>
+      watchState({ watch: pieces, watchView: "cover", watchBand: "slide" }, 0),
+    /^Error: watchBand: "slide" should be set only with a fitted view/,
   );
 });

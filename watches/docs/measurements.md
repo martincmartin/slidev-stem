@@ -138,7 +138,7 @@ The ghost, label, and live subject are absent from these isolated measurements.
 ## Escapement leaders alone
 
 Measured 2026-10-07 at `TV 55in @7m`, from a Chromium screenshot of the Escapement slide at
-the jewel's click (then click 6, now click 4; 1960 × 1104), with the balance at
+the jewel's click (then click 6, now click 3; 1960 × 1104), with the balance at
 rest and only the three leaders shown (the second, `#B5601E`, 4 px). The wheel's
 and the pallet's leaders then ended inside their parts. They now end on the
 paper and are shorter; they have not been measured again.
@@ -153,4 +153,5 @@ contrast and room-light headroom, for a leader that the audience can tell from
 its label's other words and from the subject's lines
 ([`2026-10-07-theme-colour-system`](../../tasks/2026-10-07-theme-colour-system/PLAN.md),
 §4.10). The labels, the drive arrow and the watch were hidden; they have not
-been measured.
+been measured. The drive arrow is now part of the watch's drawing
+([watch.md](watch.md#the-drive-arrow)).

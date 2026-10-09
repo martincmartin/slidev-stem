@@ -160,7 +160,10 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   either, or none): A becomes D (fade out, then fade in), the camera moves
   and tilts (zooming in: move, then tilt; otherwise the reverse), and D
   becomes B. Of the meshes that fade in as D becomes B, those in
-  `StageState.later` fade in after the others. With nothing on the screen,
+  `StageState.later` fade in after the others. The meshes in
+  `StageState.cut` go or come at once, with no fade. The meshes in
+  `StageState.goLater` stay on the screen while the camera moves, and go
+  after it. With nothing on the screen,
   the camera jumps. A key press
   during a change starts from what is on the screen: a fade cut short ends
   first. The timeline has no DOM and no WebGL, so its tests
@@ -180,6 +183,15 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   click that names it ([navigation.md](navigation.md)); the timeline itself never asks which way
   the viewer went. `viewEndAt` says when the camera's move ends, for text that
   waits for it.
+- **A model can tell a story of its own at a change** (`Model` in
+  `webgl/stage.ts`; the watch's winding key). It starts when the stage's
+  change ends (`show`'s `after`). The model knows from where its story is
+  whether a step goes forward or back, so nothing asks which way the viewer
+  went. The story may show meshes that no
+  state names, at an opacity (`extra`). The renderer has one fade, so the
+  story fades them only while the timeline does not fade; if both fade at
+  once, the story's meshes show whole, or not at all. `Stage.endAt` and
+  `movingAt` include the story.
 - **A fade fades its meshes as one picture**, as SVG's group opacity does:
   the fading parts never show their own hidden lines.
 - **Stills:** the export, the overview and the presenter's "next" pane show a

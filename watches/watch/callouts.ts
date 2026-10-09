@@ -18,9 +18,6 @@ import type { Watch } from "./generate.ts";
 import { polar, radians } from "./shapes.ts";
 import { stageState, watchState } from "./state.ts";
 
-/** Degrees: the length of the drive arrow's arc on the escape wheel. */
-const DRIVE_ARC = 90;
-const DRIVE_POINTS = 24;
 /** Points on the escape wheel's tip circle, for a leader that ends outside. */
 const TIP_POINTS = 120;
 /** In slide px: how far outside its part the wheel's and the pallet's leaders
@@ -31,10 +28,6 @@ export const LEADER_GAP = 10;
 export interface EscapementMarks {
   /** The escape wheel's arbor, on the wheel's face: where its leader aims. */
   readonly escape: Point2;
-  /** The drive arrow, from its tail to its head: an arc on the escape wheel's
-   *  face, at its pinion's radius, centred on the line to the fourth wheel,
-   *  in the direction that the fourth wheel turns it. */
-  readonly drive: readonly Point2[];
   /** Where the pallet's leader aims (`palletAim`), on the fork's top. */
   readonly pallet: Point2;
   /** The impulse jewel's deepest point, on its top, with the balance at rest
@@ -278,41 +271,11 @@ export function escapementMarks(
   const shown = slideProjection(watch, frontmatter);
   const { design, escapementTops: tops } = watch;
   const world = (point: Point2): Point2 => worldOf(design, point);
-  const [, , , fourth, escape] = design.wheels as [
-    Wheel,
-    Wheel,
-    Wheel,
-    Wheel,
-    Wheel,
-  ];
-
-  // the drive: the fourth wheel's teeth push the escape pinion
+  const [, , , , escape] = design.wheels as [Wheel, Wheel, Wheel, Wheel, Wheel];
   const escapeArbor = world(escape.arbor);
-  const fourthArbor = world(fourth.arbor);
-  const toFourth =
-    (Math.atan2(
-      fourthArbor[1] - escapeArbor[1],
-      fourthArbor[0] - escapeArbor[0],
-    ) *
-      180) /
-    Math.PI;
-  const turn = Math.sign(escape.step);
-  const pinion = escape.pinionRadius;
-  if (pinion === null) throw new Error("the escape wheel has no pinion");
-  const drive = Array.from({ length: DRIVE_POINTS + 1 }, (_, index) =>
-    shown(
-      polar(
-        pinion,
-        toFourth + turn * DRIVE_ARC * (index / DRIVE_POINTS - 0.5),
-        escapeArbor,
-      ),
-      tops.escape,
-    ),
-  );
 
   return {
     escape: shown(escapeArbor, tops.escape),
-    drive,
     pallet: shown(palletAim(design), tops.fork),
     jewel: shown(jewelPoint(design, 0), tops.jewel),
     forkOutlines: forkAtBanks(design).map((outline) =>

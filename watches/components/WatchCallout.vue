@@ -8,9 +8,7 @@
 // `<span class="callout-word">`; the leader leaves the word's box on the side
 // that faces `to`, and stops `stop` px short of it. With `clear` (closed
 // outlines, in slide px), it stops `stop` px short of where it first meets
-// one of them instead, so it ends outside them. `arrow` (none by default)
-// is a path drawn with the callout, from its tail to its head. A `bent`
-// leader leaves the word's side that faces `to`, runs level for ELBOW_RUN
+// one of them instead, so it ends outside them. A `bent` leader leaves the word's side that faces `to`, runs level for ELBOW_RUN
 // px, and turns there to `to`: for a word with another line of the label
 // under or over it, which a straight leader would cross. With `showLeader`
 // false, the leader fades out and the label stays: for a part that moves
@@ -39,7 +37,6 @@ const props = withDefaults(
     left: number;
     top: number;
     stop?: number;
-    arrow?: readonly Point2[];
     clear?: readonly (readonly Point2[])[];
     bent?: boolean;
     showLeader?: boolean;
@@ -47,7 +44,6 @@ const props = withDefaults(
   }>(),
   {
     stop: 0,
-    arrow: () => [],
     clear: () => [],
     bent: false,
     showLeader: true,
@@ -60,9 +56,6 @@ const GAP = 4;
 /** A bent leader's level run, in px: the Hairspring slide's (`LeaderDesign`, from `start`
  *  to `elbow`, in art/diving_board.py). Keep them equal. */
 const ELBOW_RUN = 40;
-/** The arrow's head: its length and its half width, in px. */
-const HEAD_LENGTH = 16;
-const HEAD_HALF_WIDTH = 9;
 
 const label = useTemplateRef<HTMLDivElement>("label");
 /** The word's box in slide px: left, top, width, height. */
@@ -138,32 +131,6 @@ const leader = computed(() => {
   const end = toward(from, props.to, meets * length - props.stop);
   return `M${[...corners, end].map((point) => point.join(" ")).join(" L")}`;
 });
-
-const arrowPaths = computed(() => {
-  const points = props.arrow;
-  if (points.length < 2) return undefined;
-  const head = at(points, points.length - 1);
-  const before = at(points, points.length - 2);
-  const length = Math.hypot(head[0] - before[0], head[1] - before[1]);
-  const along: Point2 = [
-    (head[0] - before[0]) / length,
-    (head[1] - before[1]) / length,
-  ];
-  const base: Point2 = [
-    head[0] - along[0] * HEAD_LENGTH,
-    head[1] - along[1] * HEAD_LENGTH,
-  ];
-  const side: Point2 = [
-    -along[1] * HEAD_HALF_WIDTH,
-    along[0] * HEAD_HALF_WIDTH,
-  ];
-  // the line ends inside the head, so its round cap does not show at the tip
-  const shaft = [...points.slice(0, -1), toward(base, head, HEAD_LENGTH / 3)];
-  return {
-    shaft: `M${shaft.map((point) => point.join(" ")).join(" L")}`,
-    head: `M${head.join(" ")} L${String(base[0] + side[0])} ${String(base[1] + side[1])} L${String(base[0] - side[0])} ${String(base[1] - side[1])} Z`,
-  };
-});
 </script>
 
 <template>
@@ -181,10 +148,6 @@ const arrowPaths = computed(() => {
         :class="{ 'callout-leader-hidden': !showLeader }"
         :d="leader"
       />
-      <template v-if="arrowPaths">
-        <path class="callout-arrow" :d="arrowPaths.shaft" />
-        <path class="callout-head" :d="arrowPaths.head" />
-      </template>
     </svg>
     <div
       ref="label"
@@ -200,9 +163,7 @@ const arrowPaths = computed(() => {
 <style scoped>
 /* The leader is in ink, the colour of its label, at 4 px, the width of every
    leader (stem/docs/illustrations.md, "Leaders"). A keyword callout draws its
-   word and its leader in the second, the art's colour for "look here". The
-   arrow shows a force that acts on the watch: muted, the art's colour for
-   what acts on the subject, at 4 px (docs/watch.md, "The callouts"). */
+   word and its leader in the second, the art's colour for "look here". */
 .callout {
   position: absolute;
   inset: 0;
@@ -214,8 +175,7 @@ const arrowPaths = computed(() => {
   top: 0;
   overflow: visible;
 }
-.callout-leader,
-.callout-arrow {
+.callout-leader {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -228,13 +188,6 @@ const arrowPaths = computed(() => {
 }
 .callout-leader-hidden {
   opacity: 0;
-}
-.callout-arrow {
-  stroke: var(--palette-muted);
-  stroke-width: 4;
-}
-.callout-head {
-  fill: var(--palette-muted);
 }
 .callout-label {
   position: absolute;

@@ -1,15 +1,17 @@
 // The watch's motion: the keyframes of the mechanism, the balance's swing and
-// the hairspring. The spring's formula exists once, here.
+// the springs. The springs' formula exists once, here.
 
 import { at, check } from "../webgl/checked.ts";
 import { ribbonGeometry, smoothRing } from "../webgl/mesh.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import type { Renderer } from "../webgl/renderer.ts";
-import type { Model } from "../webgl/stage.ts";
+import type { Extra, Model } from "../webgl/stage.ts";
 import { FADE_SECONDS } from "../webgl/timeline.ts";
 import type { Group, MeshGeometry } from "../webgl/scene.ts";
 import type { Timing, Wheel } from "./design.ts";
 import type { Watch, WatchGroups } from "./generate.ts";
+import { MainspringClock, WOUND } from "./mainspring.ts";
+import type { MainspringPose, MainspringStage } from "./mainspring.ts";
 import { polar, radians } from "./shapes.ts";
 
 /** The hairspring. Its inner end is on the collet, at `radii[0]`, and turns
@@ -28,6 +30,9 @@ export interface Spring {
 /** The spring's radii and turns, as the 2D drawing had them. */
 export const SPRING_RADII: [number, number] = [8, 38];
 export const SPRING_TURNS = 3.25;
+/** The mainspring's turns at rest: enough that one more turn of wind keeps
+ *  its length with the coils drawn in (`springPoints`' spread, MAX_SPREAD). */
+export const MAINSPRING_TURNS = 5;
 /** At most 0.011 px from the curve at the cover's scale. */
 export const SPRING_POINTS = 480;
 /** The spread's limit: its coils cross or double back beyond it. */
@@ -63,6 +68,21 @@ export function springPoints(spring: Spring, swing: number): Point2[] {
     else high = middle;
   }
   return curve((low + high) / 2);
+}
+
+/** The mainspring's points about the barrel arbor, with the arbor at
+ *  `arbor` degrees and the spring wound `wind` degrees: its inner end turns
+ *  with the arbor, and its outer end is `wind` degrees ahead of it. Its
+ *  length is the rest length, as the hairspring's is. */
+export function mainspringPoints(
+  spring: Spring,
+  arbor: number,
+  wind: number,
+): Point2[] {
+  return springPoints(
+    { ...spring, outerAngle: spring.outerAngle + arbor + wind },
+    -wind,
+  );
 }
 
 function spiralPoints(
@@ -287,11 +307,13 @@ export class Motion {
   }
 
   /** The world matrix of every group at mechanism time `time`, with the
-   *  balance at `swing` degrees and the train at `beats`. */
+   *  balance at `swing` degrees, the train at `beats` and the barrel arbor
+   *  at `arbor` degrees. */
   matrices(
     time: number,
     swing: number,
     beats = this.beats(time),
+    arbor = 0,
   ): Map<Group, Float32Array> {
     const { design, groups } = this.watch;
     const [centreX, centreY] = design.watchCentre;
@@ -310,6 +332,9 @@ export class Motion {
       place(group, wheel.arbor, turned(group));
     }
     place(groups.oneStep, this.watch.oneStep.arbor, turned(groups.oneStep));
+    const [barrel] = design.wheels as [Wheel];
+    place(groups.barrelArbor, barrel.arbor, arbor);
+    place(groups.mainspring, barrel.arbor, 0);
     place(groups.balance, design.balance.arbor, swing);
     place(groups.springBase, design.balance.arbor, 0);
     place(groups.fork, design.fork.pivot, angleAt(this.forkTurning, time));
@@ -327,6 +352,21 @@ export class Motion {
       smoothRing(springPoints(this.watch.springShape, swing), style, false),
       this.watch.springHeights.bottom,
       this.watch.springHeights.top,
+    );
+  }
+
+  /** The mainspring's geometry in a pose of the Mainspring slide's story. */
+  mainspringGeometry(pose: MainspringPose): MeshGeometry {
+    const { mainspring, mainspringShape, mainspringHeights } = this.watch;
+    const style = at(mainspring.lines, 0).style;
+    return ribbonGeometry(
+      smoothRing(
+        mainspringPoints(mainspringShape, pose.arbor, pose.wind),
+        style,
+        false,
+      ),
+      mainspringHeights.bottom,
+      mainspringHeights.top,
     );
   }
 }
@@ -601,6 +641,49 @@ export function stillPose(
   };
 }
 
+// ---- the time-lapse's mechanism ----------------------------------------------------------------
+// The time-lapse (watch/mainspring.ts) moves the whole mechanism on, not only
+// the train: its beats move the mechanism's time on, a beat a half period, so
+// the balance, the fork and the train stay in step. At its full speed the
+// balance swings 1,800 times a second: at 60 frames a second, that is a whole
+// number of swings a frame, so a frame at each `now` would show it at its own
+// slow pace, and the seconds hand, which turns once a frame, still. So each
+// frame shows the mechanism at an instant in its shutter, the time
+// since the last frame, spread evenly over successive frames: what moves
+// faster than a frame can show blurs, and what moves slowly moves less than a
+// frame's way out of line (docs/watch.md, "The Mainspring slide").
+
+/** ms: the longest shutter. After a longer gap (a hidden tab, say), a frame
+ *  does not look further back. */
+export const SHUTTER_LIMIT_MS = 50;
+/** The fraction of the golden ratio: successive frames' instants fill their
+ *  shutters evenly. */
+const GOLDEN_FRACTION = (Math.sqrt(5) - 1) / 2;
+
+/** The instant (ms) that frame number `frame` shows: in the `shutter` ms
+ *  before `now`. */
+export function shutterInstant(
+  now: number,
+  shutter: number,
+  frame: number,
+): number {
+  return now - ((frame * GOLDEN_FRACTION) % 1) * shutter;
+}
+
+/** The mechanism's time (s) and the balance's angle at `now`, `lapse` beats
+ *  ahead of the balance's clock. An even number of beats is whole periods,
+ *  and leaves the balance where its clock has it, settling or not. Between,
+ *  during a time-lapse, the balance is on its free swing. */
+export function mechanismAt(
+  clock: BalanceClock,
+  now: number,
+  lapse: number,
+): { time: number; swing: number } {
+  const time = clock.time(now) + (lapse * clock.period) / 2;
+  const swing = lapse % 2 === 0 ? clock.angle(now) : clock.swingAt(time);
+  return { time, swing };
+}
+
 // ---- the train's clock: the free spin -----------------------------------------------------------
 // The train's position, in beats (`Motion.beats`). Normally it follows the
 // mechanism, a whole number of teeth ahead: `lead` is an even number of beats
@@ -729,11 +812,20 @@ export class TrainClock {
 // ---- the watch's model for the stage ----------------------------------------------------------
 /** What a slide asks of the watch's motion. */
 export interface WatchModelState {
-  /** The balance stops at rest. */
+  /** The balance stops at rest. On the Mainspring slide, the story says
+   *  when (`mainspring`). */
   settled: boolean;
   /** Degrees a second of the escape wheel: the train spins freely; `null`:
    *  it follows the mechanism. */
   spin: number | null;
+  /** The Mainspring slide's stage (watch/mainspring.ts), or `null`. */
+  mainspring: MainspringStage | null;
+}
+
+/** The train's beats in one turn of the barrel: one time-lapse. */
+function barrelTurnBeats(watch: Watch): number {
+  const [barrel] = watch.design.wheels as [Wheel];
+  return Math.round(Math.abs(WOUND / barrel.step));
 }
 
 export class WatchModel implements Model<WatchModelState> {
@@ -741,17 +833,42 @@ export class WatchModel implements Model<WatchModelState> {
   private readonly motion: Motion;
   private readonly clock: BalanceClock;
   private readonly train = new TrainClock();
+  private readonly story: MainspringClock;
+  /** Whether the balance swings, as the story last had it; `null` off the
+   *  story. */
+  private runs: boolean | null = null;
+  /** The mainspring's last pose drawn, so that an unchanged one is not
+   *  drawn again. */
+  private drawn: MainspringPose | null = null;
+  /** ms: the last frame's `now`, for the next frame's shutter. */
+  private lastFrame: number | null = null;
+  /** The frames drawn, to spread their instants over their shutters. */
+  private frames = 0;
 
   constructor(watch: Watch, now = performance.now()) {
     this.watch = watch;
     this.motion = new Motion(watch);
     this.clock = new BalanceClock(watch.design.timing, now);
+    this.story = new MainspringClock(barrelTurnBeats(watch));
   }
 
-  show(state: WatchModelState, now: number, instantly: boolean): void {
-    if (instantly) this.clock.place(state.settled, now);
-    else if (state.settled) this.clock.settle(now);
-    else this.clock.resume(now);
+  show(
+    state: WatchModelState,
+    now: number,
+    instantly: boolean,
+    after = now,
+  ): void {
+    this.story.show(state.mainspring, now, instantly, after);
+    if (instantly) {
+      this.clock.place(state.settled, now);
+      this.runs = state.mainspring === null ? null : !state.settled;
+    } else if (state.mainspring === null) {
+      if (state.settled) this.clock.settle(now);
+      else this.clock.resume(now);
+      this.runs = null;
+    }
+    // on the story, the frame starts and stops the balance when the story
+    // says (`MainspringClock.runs`)
     this.train.show(
       state.spin === null ? null : spinBeats(this.watch, state.spin),
       now,
@@ -760,11 +877,51 @@ export class WatchModel implements Model<WatchModelState> {
   }
 
   frame(now: number, renderer: Renderer): Map<Group, Float32Array> {
-    const swing = this.clock.angle(now);
-    const time = this.clock.time(now);
+    // the time-lapse's beats at this frame's instant in its shutter: before
+    // anything at `now`, so that the story has not yet moved on past it
+    const shutter = Math.min(
+      Math.max(0, now - (this.lastFrame ?? now)),
+      SHUTTER_LIMIT_MS,
+    );
+    this.lastFrame = now;
+    this.frames += 1;
+    const lapse = this.story.trainBeats(
+      shutterInstant(now, shutter, this.frames),
+    );
+    const runs = this.story.runs(now);
+    if (runs !== null && runs !== this.runs) {
+      if (runs) this.clock.resume(now);
+      else this.clock.settle(now);
+      this.runs = runs;
+    }
+    const { time, swing } = mechanismAt(this.clock, now, lapse);
     renderer.updateMesh(this.watch.spring, this.motion.springGeometry(swing));
+    const pose = this.story.pose(now);
+    const drawn = this.drawn;
+    if (drawn?.arbor !== pose.arbor || drawn.wind !== pose.wind) {
+      renderer.updateMesh(
+        this.watch.mainspring,
+        this.motion.mainspringGeometry(pose),
+      );
+      this.drawn = pose;
+    }
     const beats = this.train.position(now, this.motion.beats(time));
-    return this.motion.matrices(time, swing, beats);
+    return this.motion.matrices(time, swing, beats, pose.arbor);
+  }
+
+  /** The winding key, while the story shows it. */
+  extra(now: number): Extra | null {
+    const { key } = this.story.pose(now);
+    return key > 0 ? { meshes: this.watch.key, opacity: key } : null;
+  }
+
+  /** When the story's last move ends (ms), or `now`. */
+  endAt(now: number): number {
+    return this.story.endAt(now);
+  }
+
+  moving(now: number): boolean {
+    return this.story.moving(now);
   }
 
   /** How long (ms) from `now` until the balance is at rest: 0 at rest, and
@@ -800,6 +957,8 @@ export class WatchModel implements Model<WatchModelState> {
 
   phase(now: number): string {
     this.clock.time(now); // moves the mode on
+    const story = this.story.phase(now);
+    if (story !== null) return story;
     if (this.train.mode.kind !== "locked") {
       return `train ${this.train.mode.kind}`;
     }

@@ -423,7 +423,7 @@ def fork_outline(mouth: float, pivot_distance: float) -> list[Point]:
 # ---- the design file ---------------------------------------------------------------
 DESIGN_FILE = TALK / "watch" / "design.json"
 WATCH_CENTRE: Point = (798, 276)  # the cover's watch centre on the canvas
-HANDS = {"hour": 5, "minute": 44}
+HANDS = {"hour": 3, "minute": 44}
 
 
 def design(layout: Layout = LAYOUT) -> dict[str, object]:

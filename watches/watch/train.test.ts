@@ -129,14 +129,23 @@ test("a spin starts when the rest has faded out, and speeds up smoothly to its s
   assert.ok(Math.abs(after - before - SPEED) < 1e-9);
 });
 
-test("on the Escapement slide, the fade to the spinning wheel takes FADE_SECONDS, as the spin assumes", () => {
+test("on the Escapement slide, the pallet and the balance fade out in FADE_SECONDS, as the spin assumes; then the drive arrow fades in", () => {
   const spinAt = ESCAPEMENT_SPIN;
+  const still = escapementAt(spinAt - 1).shown;
+  const spinning = escapementAt(spinAt).shown;
+  const going = [...still].filter((mesh) => !spinning.has(mesh));
+  const coming = new Set([...spinning].filter((mesh) => !still.has(mesh)));
+  assert.ok(going.length > 0 && coming.size > 0);
   const timeline = new Timeline();
   timeline.show(escapementAt(spinAt - 1), 0, true);
   timeline.show(escapementAt(spinAt), 1000, false);
   assert.equal(timeline.phaseAt(1000), "fade");
-  assert.equal(timeline.phaseAt(1000 + FADE_SECONDS * 1000 - 1), "fade");
-  assert.equal(timeline.phaseAt(1000 + FADE_SECONDS * 1000), null);
+  const gone = timeline.valuesAt(1000 + FADE_SECONDS * 1000 + 1);
+  for (const mesh of going) {
+    assert.ok(!gone.keep.has(mesh) && !gone.fade.has(mesh));
+  }
+  assert.deepEqual(gone.fade, coming);
+  assert.equal(timeline.endAt(1000), 1000 + 2 * FADE_SECONDS * 1000);
 });
 
 test("a stop spins on until the rest is back, then stops at the next tooth, in step with the mechanism", () => {
@@ -218,7 +227,14 @@ test("a spin must be faster than the mechanism", () => {
 test("the Escapement slide's spin shows the escape wheel as the slide shows it", () => {
   const spinAt = ESCAPEMENT_SPIN;
   const still = escapementAt(spinAt - 1).shown;
-  const spinning = escapementAt(spinAt).shown;
+  // the drive arrow does not turn: it is not part of the wheel
+  const arrow = watch.scene.pieces.find(
+    (piece) => piece.name === "escape wheel drive",
+  );
+  assert.ok(arrow);
+  const spinning = new Set(
+    [...escapementAt(spinAt).shown].filter((mesh) => !arrow.meshes.has(mesh)),
+  );
   assert.ok(spinning.size > 0);
   for (const mesh of spinning) {
     assert.equal(mesh.part, "escape wheel");

@@ -159,9 +159,9 @@ The Hairspring slide uses the diving board to explain the spring, and the Balanc
 On the Balance Wheel slide, click 1 adds "and steadily". Click 2 replaces the explanation with the accuracy of a calibrated watch (99.99%), in the timekeeper card's type roles. Click 3 adds what that is in seconds a day, so the audience takes in the percentage first.
 The outgoing text fades out before the incoming text fades in, in both directions.
 The Escapement slide zooms out, and then the rest of the escapement fades in. Its
-callouts point to parts of the watch, one at each click. At its second click
-the escape wheel spins alone, and at the third the pallet comes back and
-stops it.
+callouts point to parts of the watch, one at each click. At its first click
+the wheel's callout appears and the escape wheel spins alone, and at the
+second the pallet comes back and stops it.
 The Gears slide follows it: the Escapement slide's picture fades out, the
 camera jumps, and the fourth wheel and the escape wheel's pinion fade in
 (`watchMoveWith: none`), turning freely (`watchSpin`). At click 1,
@@ -172,7 +172,9 @@ When the second line is fully visible, the wheel's four marked teeth flash.
 Each cue alternates subject then second inks for five cycles ([watch.md](watch.md#the-gears-slide)). At click 5, the span is
 solid, and the text stays: two styles to compare. At click 6,
 the rest of the Escapement slide's mechanism fades in around them, the span
-and the text go, and the gears tick with it (`watchClicks`). At click 7, the
+and the text go, and the gears tick with it (`watchClicks`). The drive arrow
+moves from the escape wheel to the fourth wheel: the push still comes from
+something the audience cannot see. At click 7, the
 seconds hand fades in, and then its text.
 The Gear Train slide follows it: the camera zooms out from the same picture,
 to frame the train from the escape wheel to the centre wheel. Click 1 zooms
@@ -180,9 +182,22 @@ out to the case and shows one wheel that is 60 times slower, larger than the
 watch: the wheel fades in, then the case, and then the wheel and its
 pinion flash. Clicks
 2 and 3 add the third wheel and then the centre wheel, each with the pinion
-that it drives: each fades in, and then flashes. Click 4 adds the minute
+that it drives: each fades in, and then flashes. The drive arrow leaves the
+fourth wheel after click 1's zoom, and comes back on each new wheel. Click 4 adds the minute
 hand, the dial and the case.
-It is described in [watch.md](watch.md).
+The Mainspring slide follows it: the Gear Train slide's picture fades out, the
+camera jumps, and the bare mainspring and its arbor fade in. At click 1 a key
+turns the arbor, and the free spring turns whole. At click 2 a stud holds its
+outer end, the dashed rest shape fades in, and it flashes; the key winds
+it. At click 3 the stud flashes and is gone, and the spring uncoils to its
+rest shape. At click 4 the camera zooms out to the whole movement, as tall
+as the slide, behind the title; the barrel and the rest of the watch fade
+in, still, and the key winds the spring, which starts the watch. Click 5
+plays click 4 again with the movement under the title (clicks 4 and 5 are
+trials, to choose the zoom). At click 6, a time-lapse, "6 hours in 6
+seconds", lets the spring down, and the watch stops. Going back cuts to the
+earlier click's state: no key unwinds the spring.
+They are described in [watch.md](watch.md).
 
 ## Where things go on a slide
 

@@ -17,7 +17,7 @@ import {
   smoothRing,
   transformMesh,
 } from "../webgl/mesh.ts";
-import type { Ring } from "../webgl/mesh.ts";
+import type { MeshInfo, Ring } from "../webgl/mesh.ts";
 import type {
   Colour,
   Disc,
@@ -33,7 +33,12 @@ import { INKS } from "../webgl/scene.ts";
 import { at } from "../webgl/checked.ts";
 import type { Design, Wheel } from "./design.ts";
 import { DESIGN } from "./design.ts";
-import { springPoints, SPRING_RADII, SPRING_TURNS } from "./model.ts";
+import {
+  MAINSPRING_TURNS,
+  springPoints,
+  SPRING_RADII,
+  SPRING_TURNS,
+} from "./model.ts";
 import type { Spring } from "./model.ts";
 import { Path, circlePath } from "./path.ts";
 import type { Contour } from "./path.ts";
@@ -45,8 +50,8 @@ import {
   escapeOutline,
   openings,
   polar,
+  polygon,
   radians,
-  spiralCurve,
 } from "./shapes.ts";
 import {
   meshedSpan,
@@ -115,21 +120,41 @@ const CROWN_ZOOM = 2;
 const HAIRSPRING_ZOOM = 250 / 56;
 /** Where the balance's arbor is on the slide in the hairspring view. */
 const HAIRSPRING_TARGET: Point2 = [275, 276];
-/** A fitted view's room, in slide px (docs/watch.md, "Fitted views"): the
- *  shown pieces are as large as fit in this width and height, with their
- *  middle halfway between the subtitle's baseline and the slide's bottom.
- *  Across, their middle is at the middle of the slide's left FIT_FOCUS, but
- *  their left edge is never left of FIT_LEFT. The main focus of a slide is on
- *  its left; the callouts use the room on the right. */
+/** A fitted view's room across, in slide px (docs/watch.md, "Fitted
+ *  views"): the shown pieces are no wider than this. Their middle is at the
+ *  middle of the slide's left FIT_FOCUS, but their left edge is never left of
+ *  FIT_LEFT. The main focus of a slide is on its left; the callouts use the
+ *  room on the right. */
 const FIT_LEFT = 16;
 const FIT_WIDTH = 948;
-const FIT_HEIGHT = 420;
 const FIT_FOCUS = 0.6;
-/** The subtitle's baseline, in slide px, as measured in the
- *  browser: the theme's title and subtitle (themes/ledger/styles/ledger.css)
- *  put it there. Measure it again if they change. */
-const SUBTITLE_BASELINE = 110.7;
+/** The picture band, in slide px, on the screen (docs/watch.md, "Fitted
+ *  views"): where the Gears slide's gears show, under the subtitle. They set
+ *  it: their plan filled 420 px halfway between the subtitle's baseline
+ *  (110.7, as measured) and the slide's bottom, and at their tilt of 20 they
+ *  show here. `watch/generate.test.ts` checks that the Gears slide's view is
+ *  still that view. */
+export const PICTURE_BAND = { top: 138.44, bottom: 537.53 } as const;
 const SPRING_FRAMES = 25;
+
+/** Where a fitted view puts its pieces, up and down (docs/watch.md, "Fitted
+ *  views"): in the picture band, under the subtitle; or in the slide band,
+ *  the slide's height with the picture band's bottom margin at both ends,
+ *  for a picture that may run behind the title. */
+export const FIT_BANDS = ["picture", "slide"] as const;
+export type FitBand = (typeof FIT_BANDS)[number];
+
+/** The top and the height of a band, in slide px. */
+function bandOf(
+  band: FitBand,
+  slideHeight: number,
+): { top: number; height: number } {
+  const { top, bottom } = PICTURE_BAND;
+  const margin = slideHeight - bottom;
+  return band === "picture"
+    ? { top, height: bottom - top }
+    : { top: margin, height: slideHeight - 2 * margin };
+}
 
 // ---- parts and recipes ---------------------------------------------------------------
 type Stacking = "touch" | "everything" | "body";
@@ -281,6 +306,11 @@ export interface WatchGroups {
   readonly wheels: ReadonlyMap<Wheel, Group>;
   /** The one-step wheel (`oneStepWheel`), about its arbor. */
   readonly oneStep: Group;
+  /** The barrel arbor and the winding key, about the arbor: they turn when
+   *  the key winds the mainspring, and hold still while the barrel turns. */
+  readonly barrelArbor: Group;
+  /** Static: the barrel arbor, where the mainspring is. */
+  readonly mainspring: Group;
   /** The balance and the impulse jewel: they swing together. */
   readonly balance: Group;
   /** Static: the balance's arbor, where the spring is. */
@@ -303,6 +333,14 @@ export interface Watch {
   readonly springShape: Spring;
   /** The spring's heights, for `ribbonGeometry`. */
   readonly springHeights: Heights;
+  /** The mainspring: its geometry changes as it winds and lets down
+   *  (watch/mainspring.ts). */
+  readonly mainspring: Mesh;
+  readonly mainspringShape: Spring;
+  readonly mainspringHeights: Heights;
+  /** The winding key's meshes (its piece, which `all` leaves out). The
+   *  Mainspring slide's story shows them (`WatchModel.extra`). */
+  readonly key: ReadonlySet<Mesh>;
   /** The chapter ring's height, on which the decals lie. */
   readonly ringTop: number;
   /** The tops of the escape wheel, the fork and the impulse jewel: where
@@ -485,7 +523,7 @@ interface GroupTree {
 }
 
 function makeGroups(design: Design, oneStep: Wheel): GroupTree {
-  const { centre, fourth } = trainOf(design);
+  const { barrel, centre, fourth } = trainOf(design);
   const root: Group = { name: "watch", parent: null };
   const origins = new Map<Group, Point2>([[root, [0, 0]]]);
   const all: Group[] = [root];
@@ -506,6 +544,8 @@ function makeGroups(design: Design, oneStep: Wheel): GroupTree {
       root,
       wheels,
       oneStep: groupAt(oneStep.name, oneStep.arbor),
+      barrelArbor: groupAt("barrel arbor", barrel.arbor),
+      mainspring: groupAt("mainspring", barrel.arbor),
       balance: groupAt("balance", design.balance.arbor),
       springBase: groupAt("spring base", design.balance.arbor),
       fork: groupAt("fork", design.fork.pivot),
@@ -691,7 +731,7 @@ function clipDiscs(
 function solidMeshes(
   solids: Solid[],
   heights: Map<Solid, Heights>,
-  dynamic: Solid,
+  dynamic: ReadonlySet<Solid>,
 ): Map<Solid, Mesh> {
   return new Map(
     solids.map((each) => {
@@ -704,7 +744,7 @@ function solidMeshes(
         hiddenInside: each.discs,
         lineOrder: top,
         inDrawing: each.inDrawing,
-        dynamic: each === dynamic,
+        dynamic: dynamic.has(each),
       };
       return [
         each,
@@ -883,8 +923,10 @@ function crownPlacement(middle: number): Float32Array {
   ]);
 }
 
-/** The stud: a block around the spring's outer end, which is fixed. */
+/** A stud: a block around a spring's outer end, which it holds. `name`
+ *  names its part. */
 function studMesh(
+  name: string,
   restSpring: Point2[],
   arbor: Point2,
   springHeights: Heights,
@@ -914,8 +956,8 @@ function studMesh(
   const top = springHeights.top + STUD_OVERHANG;
   return {
     mesh: extrude([polygonRing(points, paint.line(2))], bottom, top, {
-      name: "hairspring stud (added)",
-      part: "hairspring stud",
+      name: `${name} (added)`,
+      part: name,
       group: root,
       fill: paint.subjectWash,
       lineOrder: top,
@@ -923,6 +965,227 @@ function studMesh(
     }),
     top,
   };
+}
+
+// ---- the Mainspring slide's props ----------------------------------------------------
+/** The square on the barrel arbor's top, which the key fits: its side, and how
+ *  far it rises. It shows the arbor turn. */
+const ARBOR_SQUARE = { side: 12, height: 4 };
+/** The winding key, an antique clock key: a pipe over the arbor's square, and
+ *  a flat bow on it, upright, to turn it by (in the bow's plane: across, and
+ *  up from the pipe). Two round lobes, each with a hole, and a dip between. */
+const KEY = {
+  pipeRadius: 10,
+  pipeHeight: 12,
+  neck: 5,
+  lobeCentre: [13, 15] as Point2,
+  lobeRadius: 11,
+  holeRadius: 4,
+  dip: 18,
+  thickness: 3,
+  lobePoints: 24,
+};
+/** The dashes of the mainspring's rest shape, in slide px, as the Hairspring
+ *  slide's (art/diving_board.py), at the view that fits the mainspring at
+ *  tilt 0; at the slide's tilt they are a little longer. */
+const REST_DASH = { dash: 8, gap: 6, width: 4 };
+
+/** The arbor's square, on top of the arbor's disc. */
+function arborSquareMesh(arborTop: number, group: Group, paint: Paint): Mesh {
+  const half = ARBOR_SQUARE.side / 2;
+  const top = arborTop + ARBOR_SQUARE.height;
+  return extrude(
+    ringsOf([
+      polygon([
+        [-half, -half],
+        [half, -half],
+        [half, half],
+        [-half, half],
+      ]),
+      paint.line(2),
+    ]),
+    arborTop,
+    top,
+    {
+      name: "barrel arbor square (added)",
+      part: "barrel arbor",
+      group,
+      fill: paint.subjectWash,
+      lineOrder: top,
+      inDrawing: false,
+    },
+  );
+}
+
+/** The key's bow, in its own plane: across (x) and up (y), from the pipe. */
+function keyBowRings(paint: Paint): Ring[] {
+  const { neck, lobeCentre, lobeRadius, holeRadius, dip, lobePoints } = KEY;
+  const [centreX, centreY] = lobeCentre;
+  const arc = (side: 1 | -1): Point2[] =>
+    Array.from({ length: lobePoints + 1 }, (_, index) => {
+      // the right lobe from its lower right, anticlockwise over its top; the
+      // left lobe is its mirror image, also anticlockwise
+      const angle = radians(-60 + (210 * index) / lobePoints);
+      const right: Point2 = [
+        centreX + lobeRadius * Math.cos(angle),
+        centreY + lobeRadius * Math.sin(angle),
+      ];
+      return side === 1 ? right : [-right[0], right[1]];
+    });
+  const right = arc(1);
+  const left = arc(-1).reverse();
+  const points: Point2[] = [[neck, 0], ...right, [0, dip], ...left, [-neck, 0]];
+  const corner = (index: number): boolean =>
+    index === 0 ||
+    index === 1 ||
+    index === right.length ||
+    index === right.length + 1 ||
+    index === right.length + 2 ||
+    index === points.length - 2 ||
+    index === points.length - 1;
+  const outline: Ring = {
+    points,
+    corners: points.map((_, index) => corner(index)),
+    style: paint.mutedLine(2.5),
+    closed: true,
+  };
+  const holes = [1, -1].map((side) =>
+    smoothRing(
+      Array.from({ length: lobePoints }, (_, index): Point2 => {
+        const angle = (2 * Math.PI * index) / lobePoints;
+        return [
+          side * centreX + holeRadius * Math.cos(angle),
+          centreY + holeRadius * Math.sin(angle),
+        ];
+      }),
+      paint.mutedLine(2),
+    ),
+  );
+  return [outline, ...holes];
+}
+
+/** The winding key on the arbor: its pipe, standing on the arbor's disc over
+ *  the square, and its bow, upright, in the plane through the arbor and the
+ *  slide's x axis, so that it faces the viewer at the start of each turn.
+ *  Muted: it acts on the subject. */
+function keyMeshes(arborTop: number, group: Group, paint: Paint): Mesh[] {
+  const { mutedWash, mutedLine } = paint;
+  const pipeTop = arborTop + KEY.pipeHeight;
+  const bowTop = pipeTop + KEY.lobeCentre[1] + KEY.lobeRadius;
+  const info = (name: string, top: number) => ({
+    name: `winding key ${name} (added)`,
+    part: "winding key",
+    group,
+    fill: mutedWash,
+    lineOrder: top,
+    inDrawing: false,
+  });
+  const pipe = extrude(
+    ringsOf([disc(KEY.pipeRadius), mutedLine(2.5)]),
+    arborTop,
+    pipeTop,
+    info("pipe", pipeTop),
+  );
+  const flat = extrude(
+    keyBowRings(paint),
+    -KEY.thickness / 2,
+    KEY.thickness / 2,
+    info("bow", bowTop),
+  );
+  // the bow's across stays x, its up becomes z, and its thickness y
+  const upright = Float32Array.from([
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    -1,
+    0,
+    0,
+    0,
+    0,
+    pipeTop,
+    1,
+  ]);
+  return [pipe, transformMesh(flat, upright)];
+}
+
+/** The mainspring's rest shape, dashed, on its top edge (the edge nearer the
+ *  viewer at a tilt), as the Hairspring slide's is: a reference mark, in
+ *  muted. `scale`: the view's, which sets the dashes' length in the model. */
+function restDashMesh(
+  restSpring: Point2[],
+  top: number,
+  scale: number,
+  group: Group,
+  paint: Paint,
+): Mesh {
+  const dash = REST_DASH.dash / scale;
+  const period = (REST_DASH.dash + REST_DASH.gap) / scale;
+  const dashes: Ring[] = [];
+  let along = 0;
+  let current: Point2[] = [];
+  const close = (): void => {
+    if (current.length >= 2) {
+      dashes.push(smoothRing(current, paint.mutedLine(REST_DASH.width), false));
+    }
+    current = [];
+  };
+  for (let index = 1; index < restSpring.length; index++) {
+    const start = at(restSpring, index - 1);
+    const end = at(restSpring, index);
+    const length = Math.hypot(end[0] - start[0], end[1] - start[1]);
+    // split the segment where a dash starts or ends
+    const cuts = [0, length];
+    for (
+      let edge = Math.floor(along / period) * period;
+      edge < along + length;
+      edge += period
+    ) {
+      cuts.push(edge - along, edge + dash - along);
+    }
+    const inside = cuts
+      .filter((cut) => cut >= 0 && cut <= length)
+      .sort((first, second) => first - second);
+    for (let cut = 1; cut < inside.length; cut++) {
+      const from = at(inside, cut - 1);
+      const to = at(inside, cut);
+      if (to - from < 1e-6) continue;
+      const middle = along + (from + to) / 2;
+      const point = (distance: number): Point2 => [
+        start[0] + ((end[0] - start[0]) * distance) / length,
+        start[1] + ((end[1] - start[1]) * distance) / length,
+      ];
+      if (middle % period < dash) {
+        if (current.length === 0) current.push(point(from));
+        current.push(point(to));
+      } else {
+        close();
+      }
+    }
+    along += length;
+  }
+  close();
+  // just above the spring's top edge, so that the spring does not hide it
+  const height = top + 0.1;
+  return extrude(
+    dashes,
+    height,
+    height,
+    {
+      name: "mainspring rest (added)",
+      part: "mainspring rest",
+      group,
+      fill: null,
+      lineOrder: top + 0.5,
+      inDrawing: false,
+    },
+    { decal: true },
+  );
 }
 
 /** The minute ticks and the hour marks, lying on the chapter ring. */
@@ -1164,42 +1427,72 @@ function trainSolids(kit: Kit): void {
   }
 }
 
-/** The barrel, in front: its lid is cut away to show the mainspring. */
-function barrelSolids(kit: Kit): void {
+/** The barrel arbor's radius: the mainspring's inner end is hooked to it. */
+const BARREL_ARBOR_RADIUS = 15;
+/** How far inside the barrel's pitch circle its wall is: where its lid is cut
+ *  away, and where the mainspring's outer end is hooked. */
+const BARREL_WALL_INSET = 12;
+/** Screen degrees: where the mainspring's outer end is, at rest. */
+const MAINSPRING_OUTER_ANGLE = 120;
+
+interface BarrelSolids {
+  mainspring: Solid;
+  arbor: Solid;
+  /** The mainspring's coil at rest. */
+  restMainspring: Point2[];
+  mainspringShape: Spring;
+}
+
+/** The barrel, in front: its lid is cut away to show the mainspring. The
+ *  mainspring's inner end is hooked to the arbor, and its outer end to the
+ *  barrel's wall. Its coils wind outward clockwise, so winding turns the
+ *  arbor anticlockwise, as the barrel turns when the spring lets down. */
+function barrelSolids(kit: Kit): BarrelSolids {
   const { paint, train, parts, groups, solids } = kit;
   const { subjectWash, line } = paint;
   const { barrel } = train;
+  if (!(barrel.step < 0)) {
+    throw new Error(
+      "the barrel must turn anticlockwise to let the spring down",
+    );
+  }
   const owner = lookup(parts.wheels, barrel, "barrel part");
   const group = lookup(groups.wheels, barrel, "barrel group");
-  const lid = barrel.pitchRadius - 12;
+  const wall = barrel.pitchRadius - BARREL_WALL_INSET;
   solids.add(
     kit.pieces.make("barrel"),
     owner,
     "body",
     group,
-    ringsOf([wheelTeeth(barrel), line(2.5)], [disc(lid), line(2)]),
+    ringsOf([wheelTeeth(barrel), line(2.5)], [disc(wall), line(2)]),
     subjectWash,
   );
-  solids.add(
+  const mainspringShape: Spring = {
+    // from the arbor's wall to the barrel's
+    radii: [BARREL_ARBOR_RADIUS, wall],
+    turns: MAINSPRING_TURNS,
+    outerAngle: MAINSPRING_OUTER_ANGLE,
+  };
+  const restMainspring = springPoints(mainspringShape, 0);
+  const mainspring = solids.add(
     kit.pieces.make("mainspring"),
     owner,
     "stroke",
-    group,
-    ringsOf([
-      spiralCurve(19, barrel.pitchRadius - 16, 300, 300 + 360 * 3.5, 14),
-      line(2),
-    ]),
+    groups.mainspring,
+    [smoothRing(restMainspring, line(2), false)],
     subjectWash,
+    // wound, its coils draw in: at rest it reaches furthest
     { ribbon: true },
   );
-  solids.add(
+  const arbor = solids.add(
     kit.pieces.make("barrel arbor"),
     owner,
     "circle",
-    group,
-    ringsOf([disc(15), line(3)]),
+    groups.barrelArbor,
+    ringsOf([disc(BARREL_ARBOR_RADIUS), line(3)]),
     subjectWash,
   );
+  return { mainspring, arbor, restMainspring, mainspringShape };
 }
 
 /** How a span is painted. */
@@ -1245,6 +1538,107 @@ function spanMeshes(
     teeth: lying(on.teeth, wheelToothShapes(fourth, teeth), teethLine(fourth)),
     leaves: lying(on.leaves, pinionLeafShapes(escape, leaves), LEAVES_LINE),
   };
+}
+
+/** The drive arrow on a wheel of the train: an arc on the wheel's face,
+ *  centred on the line to the wheel that drives it, pointing the way that
+ *  the wheel turns (docs/watch.md, "The drive arrow"). The arc's radius is
+ *  a fraction of the wheel's root radius: the push enters at the pinion, but
+ *  an arrow there, close to the arbor, looks as if it had no leverage. The
+ *  head's size is a fraction of the arc's radius, so the arrow is the same
+ *  shape on every wheel. The line is CSS px, as every line is. */
+const DRIVE_ARROW = {
+  radius: 0.7,
+  /** Degrees. */
+  arc: 90,
+  points: 24,
+  headLength: 0.31,
+  headHalfWidth: 0.175,
+  width: 4,
+};
+
+/** The drive arrow on `wheel`, in the watch's plan: the shaft, an arc from
+ *  its tail, and the head, a triangle from its tip. */
+export function driveArrowShape(
+  wheel: Wheel,
+  driver: Wheel,
+): { shaft: Point2[]; head: [Point2, Point2, Point2] } {
+  const centre = wheel.arbor;
+  const radius = DRIVE_ARROW.radius * wheel.inner;
+  const toDriver =
+    (Math.atan2(driver.arbor[1] - centre[1], driver.arbor[0] - centre[0]) *
+      180) /
+    Math.PI;
+  const turn = Math.sign(wheel.step);
+  if (turn === 0) throw new Error(`the ${wheel.name} wheel does not turn`);
+  const headLength = DRIVE_ARROW.headLength * radius;
+  const halfWidth = DRIVE_ARROW.headHalfWidth * radius;
+  const tipAngle = toDriver + (turn * DRIVE_ARROW.arc) / 2;
+  const tip = polar(radius, tipAngle, centre);
+  // along the arc's tangent at the tip, the way that the wheel turns
+  const tangent = polar(1, tipAngle + turn * 90, [0, 0]);
+  const base: Point2 = [
+    tip[0] - tangent[0] * headLength,
+    tip[1] - tangent[1] * headLength,
+  ];
+  const side: Point2 = [-tangent[1] * halfWidth, tangent[0] * halfWidth];
+  // the shaft ends inside the head, a third of its length from the base, so
+  // that the line's end does not show at the tip
+  const shaftArc =
+    DRIVE_ARROW.arc - (((2 / 3) * headLength) / radius) * (180 / Math.PI);
+  const shaft = Array.from({ length: DRIVE_ARROW.points + 1 }, (_, index) =>
+    polar(
+      radius,
+      tipAngle - turn * shaftArc * (1 - index / DRIVE_ARROW.points),
+      centre,
+    ),
+  );
+  return {
+    shaft,
+    head: [
+      tip,
+      [base[0] + side[0], base[1] + side[1]],
+      [base[0] - side[0], base[1] - side[1]],
+    ],
+  };
+}
+
+/** The drive arrow on `wheel` (`driveArrowShape`), on its face at `top`,
+ *  where it does not turn with the wheel: the shaft, a line on the face, and
+ *  the head, filled. */
+function driveArrowMeshes(
+  wheel: Wheel,
+  driver: Wheel,
+  top: number,
+  root: Group,
+  paint: Paint,
+): Mesh[] {
+  const { shaft, head } = driveArrowShape(wheel, driver);
+  const info = (name: string, fill: Colour | null): MeshInfo => ({
+    name: `${wheel.name} wheel drive ${name}`,
+    part: `${wheel.name} wheel drive`,
+    group: root,
+    fill,
+    lineOrder: top + 0.5,
+    inDrawing: false,
+  });
+  // just above the wheel's face, so that the face does not hide it
+  const height = top + 0.1;
+  return [
+    extrude(
+      [smoothRing(shaft, paint.mutedLine(DRIVE_ARROW.width), false)],
+      height,
+      height,
+      info("shaft", null),
+      { decal: true },
+    ),
+    extrude(
+      [polygonRing(head, null)],
+      top,
+      height,
+      info("head", paint.mutedFill),
+    ),
+  ];
 }
 
 interface BalanceSolids {
@@ -1642,7 +2036,12 @@ export function generate(design: Design = DESIGN): Watch {
     pieces: new PieceList(),
   };
   trainSolids(kit);
-  barrelSolids(kit);
+  const {
+    mainspring: mainspringSolid,
+    arbor: barrelArborSolid,
+    restMainspring,
+    mainspringShape,
+  } = barrelSolids(kit);
   const {
     wheel: balanceSolid,
     spring: springSolid,
@@ -1713,7 +2112,11 @@ export function generate(design: Design = DESIGN): Watch {
   const meshes: Mesh[] = [...caseMeshes];
 
   // ---- the movement's meshes ----
-  const movementMeshes = solidMeshes(solids, heights, springSolid);
+  const movementMeshes = solidMeshes(
+    solids,
+    heights,
+    new Set([springSolid, mainspringSolid]),
+  );
   meshes.push(...movementMeshes.values());
   // after the fourth pinion: a wheel's teeth are painted over the pinion
   // that it drives
@@ -1764,10 +2167,31 @@ export function generate(design: Design = DESIGN): Watch {
     meshes.push(span.leaves, span.teeth);
     return { style, ...span };
   });
+  // the drive arrows: one on each wheel that a hidden wheel drives
+  // (docs/watch.md, "The drive arrow")
+  const driveArrows = [
+    train.escape,
+    train.fourth,
+    train.third,
+    train.centre,
+  ].map((wheel) => {
+    const driver = design.wheels.find((each) => each.driven === wheel);
+    if (!driver) throw new Error(`nothing drives the ${wheel.name} wheel`);
+    const arrow = driveArrowMeshes(
+      wheel,
+      driver,
+      topOf(partOf(wheel), "body"),
+      root,
+      paint,
+    );
+    meshes.push(...arrow);
+    return { wheel, meshes: arrow };
+  });
   const springMesh = lookup(movementMeshes, springSolid, "spring mesh");
   const springHeights = heightOf(springSolid);
 
   const stud = studMesh(
+    "hairspring stud",
     restSpring,
     design.balance.arbor,
     springHeights,
@@ -1779,11 +2203,52 @@ export function generate(design: Design = DESIGN): Watch {
   const decals = decalMeshes(paint, root, ringTop);
   meshes.push(...decals);
 
+  // the Mainspring slide's props (docs/watch.md, "The Mainspring slide")
+  const mainspringMesh = lookup(
+    movementMeshes,
+    mainspringSolid,
+    "mainspring mesh",
+  );
+  const mainspringHeights = heightOf(mainspringSolid);
+  const arborTop = heightOf(barrelArborSolid).top;
+  const arborSquare = arborSquareMesh(arborTop, tree.groups.barrelArbor, paint);
+  const keys = keyMeshes(
+    arborTop + ARBOR_SQUARE.height,
+    tree.groups.barrelArbor,
+    paint,
+  );
+  const mainspringStud = studMesh(
+    "mainspring stud",
+    restMainspring,
+    train.barrel.arbor,
+    mainspringHeights,
+    paint,
+    root,
+  );
+  // the scale of the view that fits the mainspring: its height fills the
+  // picture band
+  const restDashes = restDashMesh(
+    restMainspring,
+    mainspringHeights.top,
+    (PICTURE_BAND.bottom - PICTURE_BAND.top) / (2 * mainspringSolid.reach),
+    tree.groups.mainspring,
+    paint,
+  );
+  meshes.push(arborSquare, ...keys, mainspringStud.mesh, restDashes);
+
   // ---- the pieces: what a slide names (watch/state.ts) ----
   for (const [solid, mesh] of movementMeshes) solid.piece.meshes.add(mesh);
   // the screws turn with the balance wheel: they are part of it
   for (const mesh of balanceScrews) balanceSolid.piece.meshes.add(mesh);
   kit.pieces.make("stud").meshes.add(stud.mesh);
+  barrelArborSolid.piece.meshes.add(arborSquare);
+  kit.pieces
+    .make("mainspring stud", { inAll: false })
+    .meshes.add(mainspringStud.mesh);
+  kit.pieces.make("mainspring rest", { inAll: false }).meshes.add(restDashes);
+  // the story shows the key (`WatchModel.extra`): no slide needs to name it
+  const keyPiece = kit.pieces.make("winding key", { inAll: false });
+  for (const mesh of keys) keyPiece.meshes.add(mesh);
   // the spans are marks on the gears, for the Gears slide only: not in `all`
   for (const { style, teeth, leaves } of spans) {
     kit.pieces
@@ -1794,6 +2259,13 @@ export function generate(design: Design = DESIGN): Watch {
       .meshes.add(leaves);
   }
   for (const mesh of decals) ringSolid.piece.meshes.add(mesh);
+  // a slide names the arrow that it shows: not in `all`
+  for (const arrow of driveArrows) {
+    const piece = kit.pieces.make(`${arrow.wheel.name} wheel drive`, {
+      inAll: false,
+    });
+    for (const mesh of arrow.meshes) piece.meshes.add(mesh);
+  }
   const pieces: readonly Piece[] = kit.pieces.pieces;
   for (const piece of pieces) {
     if (piece.meshes.size === 0) throw new Error(`${piece.name} has no mesh`);
@@ -1839,6 +2311,10 @@ export function generate(design: Design = DESIGN): Watch {
     spring: springMesh,
     springShape,
     springHeights,
+    mainspring: mainspringMesh,
+    mainspringShape,
+    mainspringHeights,
+    key: keyPiece.meshes,
     ringTop,
     escapementTops,
     oneStep,
@@ -1903,41 +2379,61 @@ function views(
 }
 
 /** The view of `pieces` when a slide names no view (docs/watch.md, "Fitted
- *  views"): as large as they fit in FIT_WIDTH by FIT_HEIGHT, centred in the
- *  slide's left FIT_FOCUS but not left of FIT_LEFT, with their middle halfway
- *  between the subtitle's baseline and the slide's bottom. If `right` is a
- *  number, their right edge is there instead, in slide px (`watchRight`). It
- *  tilts about their middle, at the middle of their heights. */
+ *  views"): as large as they fit in FIT_WIDTH by the band's height, centred
+ *  in the slide's left FIT_FOCUS but not left of FIT_LEFT, with their middle
+ *  at the band's middle (`bandOf`). If `right` is a number, their right edge
+ *  is there instead, in slide px (`watchRight`). It tilts about their middle,
+ *  at the middle of their heights. */
 export function fittedView(
   watch: Watch,
   pieces: readonly Piece[],
   right: number | null = null,
+  band: FitBand = "picture",
+  tilt = 0,
 ): View {
-  const { box, bottom, top } = extentOf(
-    pieces.map((piece) =>
-      lookup(watch.extents, piece, `extent of ${piece.name}`),
-    ),
+  const extents = pieces.map((piece) =>
+    lookup(watch.extents, piece, `extent of ${piece.name}`),
   );
-  const scale = Math.min(
-    FIT_WIDTH / (box.right - box.left),
-    FIT_HEIGHT / (box.bottom - box.top),
-  );
+  const { box, bottom, top } = extentOf(extents);
+  const { width, height } = watch.design.canvas;
+  const room = bandOf(band, height);
   const middle: Point2 = [
     (box.left + box.right) / 2,
     (box.top + box.bottom) / 2,
   ];
-  const { width, height } = watch.design.canvas;
+  const pivotZ = (bottom + top) / 2;
+  // Up and down on the slide, from the pivot, before the scale: each piece
+  // as the tilted camera shows it, so that the band's margins are on the
+  // screen. The camera is orthographic: a point shows at (y - pivot y)
+  // cos(tilt) - (z - pivot z) sin(tilt) (`viewProjection` in
+  // webgl/renderer.ts).
+  const across = radians(tilt);
+  const shownY = (y: number, z: number): number =>
+    (y - middle[1]) * Math.cos(across) - (z - pivotZ) * Math.sin(across);
+  const reach = extents.flatMap((extent) => [
+    shownY(extent.box.top, extent.top),
+    shownY(extent.box.top, extent.bottom),
+    shownY(extent.box.bottom, extent.top),
+    shownY(extent.box.bottom, extent.bottom),
+  ]);
+  const upper = Math.min(...reach);
+  const lower = Math.max(...reach);
+  const scale = Math.min(
+    FIT_WIDTH / (box.right - box.left),
+    room.height / (lower - upper),
+  );
   const halfWidth = (scale * (box.right - box.left)) / 2;
   const middleX =
     right === null
       ? Math.max((FIT_FOCUS * width) / 2, FIT_LEFT + halfWidth)
       : right - halfWidth;
-  const middleY = (SUBTITLE_BASELINE + height) / 2;
+  // the middle of what shows at the band's middle
+  const middleY = room.top + room.height / 2 - (scale * (upper + lower)) / 2;
   return {
     name: pieces.map((piece) => piece.name).join(", "),
     scale,
     shift: [middleX - scale * middle[0], middleY - scale * middle[1]],
-    pivot: [...middle, (bottom + top) / 2],
+    pivot: [...middle, pivotZ],
   };
 }
 

@@ -11,6 +11,8 @@
 //     the view fits the pieces shown
 //   watchRight: slide px: where a fitted view puts its pieces' right edge;
 //     none: they are centred in the slide's left 60% (`fittedView`)
+//   watchBand: picture (default) or slide: the band whose height a fitted
+//     view fills (`fittedView`)
 //   watchTilt: degrees (default 0)
 //   watchAtRest: true: the balance is at rest; false (default): it swings
 //   watchSpin: degrees a second of the escape wheel: the train spins freely
@@ -18,6 +20,9 @@
 //   watchTickTock: plain or burst: the words "tick" and "tock" show at each
 //     strike of the jewel on the fork, plain or as comic bursts (a trial);
 //     false (default): they do not (`tickTockState`)
+//   watchMainspring: a stage of the Mainspring slide's story (free, turned,
+//     wound, released, barrel, barrel again, run down: watch/mainspring.ts); it also says
+//     when the balance swings, so it is not set with watchAtRest
 // On the slide or in a block, about the step into that click, so they do
 // not carry on to later clicks (STEP_KEYS):
 //   watchFlash: pieces that flash, on the step forward into the slide (on
@@ -26,6 +31,10 @@
 //   watchFlashInverse: true: alternate subject inks and the permanent second inks
 //   watchLater: of the pieces that fade in on a step into that click, those
 //     that fade in after the others
+//   watchCut: of the pieces that go or come on a step into that click,
+//     those that do so at once, with no fade
+//   watchGoLater: of the pieces that go on a step into that click, those
+//     that stay on the screen while the camera moves, and go after it
 // On the slide only, about the step into it:
 //   watchMoveWith: what shows while the camera moves, on the step between
 //     this slide and the previous one, in either direction (`moveWithBefore`)
@@ -34,8 +43,10 @@
 
 import type { Mesh, Piece, View } from "../webgl/scene.ts";
 import type { MoveWith, StageState } from "../webgl/timeline.ts";
-import { fittedView } from "./generate.ts";
-import type { Watch } from "./generate.ts";
+import { FIT_BANDS, fittedView } from "./generate.ts";
+import type { FitBand, Watch } from "./generate.ts";
+import { BARREL_STAGES, MAINSPRING_STAGES } from "./mainspring.ts";
+import type { MainspringStage } from "./mainspring.ts";
 import type { WatchModelState } from "./model.ts";
 
 const MOVES_WITH: readonly MoveWith[] = ["common", "all", "none"];
@@ -52,6 +63,8 @@ export interface WatchState {
   /** Where the fitted view puts the right edge of `fit`, in slide px, or
    *  `null`: where the rule puts it (`fittedView`). */
   right: number | null;
+  /** The band whose height a fitted view fills. */
+  band: FitBand;
   /** The names of the pieces that flash on the step forward into this
    *  click, or `undefined`. */
   flash: readonly string[] | undefined;
@@ -62,10 +75,18 @@ export interface WatchState {
   /** The names of the pieces that fade in after the others, on a step into
    *  this click, or `undefined`. */
   later: readonly string[] | undefined;
+  /** The names of the pieces that go or come at once, on a step into this
+   *  click, or `undefined`. */
+  cut: readonly string[] | undefined;
+  /** The names of the pieces that go after the camera moves, on a step into
+   *  this click, or `undefined`. */
+  goLater: readonly string[] | undefined;
   settled: boolean;
   /** Degrees a second of the escape wheel: the train spins freely; `null`:
    *  it follows the mechanism. */
   spin: number | null;
+  /** The Mainspring slide's stage, or `null`. */
+  mainspring: MainspringStage | null;
 }
 
 export function wrong(name: string, value: unknown, wanted: string): never {
@@ -120,6 +141,12 @@ function rightOf(name: string, value: unknown): number {
   return value;
 }
 
+function bandOf(name: string, value: unknown): FitBand {
+  const found = FIT_BANDS.find((band) => band === value);
+  if (found === undefined) return wrong(name, value, FIT_BANDS.join(", or "));
+  return found;
+}
+
 function tiltOf(name: string, value: unknown): number {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     return wrong(name, value, "a number of degrees");
@@ -156,16 +183,26 @@ function tickTockOf(name: string, value: unknown): TickTockState | undefined {
   return { burst: value === "burst" };
 }
 
+function mainspringOf(name: string, value: unknown): MainspringStage {
+  const found = MAINSPRING_STAGES.find((stage) => stage === value);
+  if (found === undefined) {
+    return wrong(name, value, MAINSPRING_STAGES.join(", or "));
+  }
+  return found;
+}
+
 /** The keys that a slide sets for click 0 and a `watchClicks` block changes,
  *  each with how to read its value. */
 const CLICK_KEYS = {
   watch: shownOf,
   watchView: viewOf,
   watchRight: rightOf,
+  watchBand: bandOf,
   watchTilt: tiltOf,
   watchAtRest: atRestOf,
   watchSpin: spinOf,
   watchTickTock: tickTockOf,
+  watchMainspring: mainspringOf,
 } as const;
 type ClickKey = keyof typeof CLICK_KEYS;
 type ClickValues = { [Key in ClickKey]?: ReturnType<(typeof CLICK_KEYS)[Key]> };
@@ -174,6 +211,8 @@ type ClickValues = { [Key in ClickKey]?: ReturnType<(typeof CLICK_KEYS)[Key]> };
 const STEP_KEYS = {
   watchFlash: namesOf,
   watchLater: namesOf,
+  watchCut: namesOf,
+  watchGoLater: namesOf,
   watchFlashAfterText: atRestOf,
   watchFlashInverse: atRestOf,
 } as const;
@@ -317,18 +356,38 @@ export function watchState(
   if (now.watchRight !== undefined && "view" in framed) {
     return wrong("watchRight", now.watchRight, "set only with a fitted view");
   }
+  if (now.watchBand !== undefined && "view" in framed) {
+    return wrong("watchBand", now.watchBand, "set only with a fitted view");
+  }
+  const mainspring = now.watchMainspring ?? null;
+  if (mainspring !== null && now.watchAtRest !== undefined) {
+    return wrong(
+      "watchAtRest",
+      now.watchAtRest,
+      "left out where watchMainspring is set",
+    );
+  }
   return {
     view: "view" in framed ? framed.view : null,
     tilt: now.watchTilt ?? 0,
     show,
     fit: "fit" in framed ? framed.fit : show,
     right: now.watchRight ?? null,
+    band: now.watchBand ?? "picture",
     flash: now.watchFlash,
     ...(now.watchFlashAfterText ? { flashAfterText: true } : {}),
     ...(now.watchFlashInverse ? { flashInverse: true } : {}),
     later: now.watchLater,
-    settled: now.watchAtRest ?? false,
+    cut: now.watchCut,
+    goLater: now.watchGoLater,
+    // on the Mainspring slide, the watch runs only while the barrel's spring
+    // is wound
+    settled:
+      mainspring === null
+        ? (now.watchAtRest ?? false)
+        : !BARREL_STAGES.has(mainspring),
     spin: now.watchSpin ?? null,
+    mainspring,
   };
 }
 
@@ -370,7 +429,13 @@ export function stageState(
   };
   const view =
     state.view === null
-      ? fittedView(watch, piecesOf(state.fit), state.right)
+      ? fittedView(
+          watch,
+          piecesOf(state.fit),
+          state.right,
+          state.band,
+          state.tilt,
+        )
       : namedView(state.view);
   return {
     view,
@@ -383,10 +448,18 @@ export function stageState(
     later: state.later
       ? meshesOf(piecesNamed("watchLater", state.later))
       : new Set(),
+    cut: state.cut ? meshesOf(piecesNamed("watchCut", state.cut)) : new Set(),
+    goLater: state.goLater
+      ? meshesOf(piecesNamed("watchGoLater", state.goLater))
+      : new Set(),
     moveWith,
   };
 }
 
 export function modelState(state: WatchState): WatchModelState {
-  return { settled: state.settled, spin: state.spin };
+  return {
+    settled: state.settled,
+    spin: state.spin,
+    mainspring: state.mainspring,
+  };
 }

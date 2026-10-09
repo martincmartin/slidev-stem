@@ -10,7 +10,11 @@ import { at } from "../webgl/checked.ts";
 import { DESIGN } from "./design.ts";
 import { generate } from "./generate.ts";
 import {
+  balanceAngle,
   BalanceClock,
+  mechanismAt,
+  SHUTTER_LIMIT_MS,
+  shutterInstant,
   stillPose,
   strikesBetween,
   tickWindows,
@@ -270,6 +274,54 @@ test("the model gives each strike the moment it happened, between two frames", (
   assert.equal(at(after.strikes, 0).window, 0);
   assert.ok(Math.abs(at(after.strikes, 0).at - strikeMs) < 1e-6);
   // a jump puts the mechanism's time back: no strikes
-  model.show({ settled: false, spin: null }, 2000, true);
+  model.show({ settled: false, spin: null, mainspring: null }, 2000, true);
   assert.deepEqual(model.strikes({ now: 1990, time: 1.99 }, 2010).strikes, []);
+});
+
+test("a time-lapse moves the mechanism on: the balance stays in step with the train, and whole periods leave it where its clock has it", () => {
+  const clock = new BalanceClock(TIMING, 0);
+  clock.settle(0);
+  const settling = 1500;
+  // whole periods: as the clock has it, settling too
+  const whole = mechanismAt(clock, settling, 21_600);
+  assert.equal(whole.swing, clock.angle(settling));
+  assert.equal(whole.time, clock.time(settling) + 21_600 * (TIMING.period / 2));
+  // between: on the free swing, at the mechanism's time
+  const free = new BalanceClock(TIMING, 0);
+  const between = mechanismAt(free, 400, 1234.5);
+  assert.equal(between.time, free.time(400) + 1234.5 * (TIMING.period / 2));
+  assert.equal(between.swing, balanceAngle(TIMING, between.time));
+});
+
+test("at the time-lapse's full speed, the shutter shows the balance across its swing, not at its own pace", () => {
+  const clock = new BalanceClock(TIMING, 0);
+  const frameMs = 1000 / 60;
+  // 3,600 beats a second: 30 swings a frame
+  const lapseAt = (now: number): number => (3600 * now) / 1000;
+  const swings = (shutter: number): number[] =>
+    Array.from({ length: 60 }, (_, frame) => {
+      const now = 1000 + frame * frameMs;
+      const instant = shutterInstant(now, shutter, frame);
+      return mechanismAt(clock, now, lapseAt(instant)).swing;
+    });
+  // the mean change from one frame to the next (degrees)
+  const step = (values: number[]): number =>
+    values
+      .slice(1)
+      .reduce(
+        (sum, value, index) => sum + Math.abs(value - at(values, index)),
+        0,
+      ) /
+    (values.length - 1);
+  // one instant a frame: the lapse's 30 whole swings a frame do not show, so
+  // the balance seems to swing at its own slow pace
+  assert.ok(step(swings(0)) < 10);
+  // the shutter: from anywhere on the swing to anywhere, at each frame
+  assert.ok(step(swings(frameMs)) > 60);
+  assert.ok(frameMs < SHUTTER_LIMIT_MS);
+  // in the shutter, before `now`
+  for (let frame = 0; frame < 100; frame++) {
+    const instant = shutterInstant(1000, frameMs, frame);
+    assert.ok(instant <= 1000 && instant > 1000 - frameMs);
+  }
 });
