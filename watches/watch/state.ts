@@ -22,6 +22,8 @@
 // not carry on to later clicks (STEP_KEYS):
 //   watchFlash: pieces that flash, on the step forward into the slide (on
 //     the slide) or into the block's click
+//   watchFlashAfterText: true: wait for the click text fade before flashing
+//   watchFlashInverse: true: alternate subject inks and the permanent second inks
 //   watchLater: of the pieces that fade in on a step into that click, those
 //     that fade in after the others
 // On the slide only, about the step into it:
@@ -53,6 +55,10 @@ export interface WatchState {
   /** The names of the pieces that flash on the step forward into this
    *  click, or `undefined`. */
   flash: readonly string[] | undefined;
+  /** Wait for the click text to fade in before flashing. */
+  flashAfterText?: boolean;
+  /** Flash second-coloured meshes in subject inks first. */
+  flashInverse?: boolean;
   /** The names of the pieces that fade in after the others, on a step into
    *  this click, or `undefined`. */
   later: readonly string[] | undefined;
@@ -164,10 +170,15 @@ const CLICK_KEYS = {
 type ClickKey = keyof typeof CLICK_KEYS;
 type ClickValues = { [Key in ClickKey]?: ReturnType<(typeof CLICK_KEYS)[Key]> };
 /** The keys that the slide and a block can hold about the step into their
- *  click: they do not carry on to later clicks. Each is a list of pieces. */
-const STEP_KEYS = ["watchFlash", "watchLater"] as const;
-type StepKey = (typeof STEP_KEYS)[number];
-type StepValues = Partial<Record<StepKey, readonly string[]>>;
+ *  click: they do not carry on to later clicks. */
+const STEP_KEYS = {
+  watchFlash: namesOf,
+  watchLater: namesOf,
+  watchFlashAfterText: atRestOf,
+  watchFlashInverse: atRestOf,
+} as const;
+type StepKey = keyof typeof STEP_KEYS;
+type StepValues = { [Key in StepKey]?: ReturnType<(typeof STEP_KEYS)[Key]> };
 /** The click keys, and the step keys of one click. */
 type PlaceValues = ClickValues & StepValues;
 
@@ -176,7 +187,7 @@ function isClickKey(name: string): name is ClickKey {
 }
 
 function isStepKey(name: string): name is StepKey {
-  return STEP_KEYS.some((key) => key === name);
+  return Object.hasOwn(STEP_KEYS, name);
 }
 
 /** The step keys of `values`, apart from the click keys. */
@@ -184,10 +195,10 @@ function splitStep(values: PlaceValues): {
   step: StepValues;
   rest: ClickValues;
 } {
-  const step: StepValues = {};
+  const step: Record<string, unknown> = {};
   const rest: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(values)) {
-    if (isStepKey(key)) step[key] = value as readonly string[];
+    if (isStepKey(key)) step[key] = value;
     else rest[key] = value;
   }
   return { step, rest };
@@ -206,12 +217,12 @@ function readClickKeys(
     if (isClickKey(key)) {
       read[key] = CLICK_KEYS[key](`${name}${key}`, value);
     } else if (isStepKey(key)) {
-      read[key] = namesOf(`${name}${key}`, value);
+      read[key] = STEP_KEYS[key](`${name}${key}`, value);
     } else if (!others) {
       return wrong(
         name.slice(0, -1),
         key,
-        [...Object.keys(CLICK_KEYS), ...STEP_KEYS].join(", or "),
+        [...Object.keys(CLICK_KEYS), ...Object.keys(STEP_KEYS)].join(", or "),
       );
     }
   }
@@ -313,6 +324,8 @@ export function watchState(
     fit: "fit" in framed ? framed.fit : show,
     right: now.watchRight ?? null,
     flash: now.watchFlash,
+    ...(now.watchFlashAfterText ? { flashAfterText: true } : {}),
+    ...(now.watchFlashInverse ? { flashInverse: true } : {}),
     later: now.watchLater,
     settled: now.watchAtRest ?? false,
     spin: now.watchSpin ?? null,
@@ -366,6 +379,7 @@ export function stageState(
     flash: state.flash
       ? meshesOf(piecesNamed("watchFlash", state.flash))
       : null,
+    ...(state.flashInverse ? { flashInverse: true } : {}),
     later: state.later
       ? meshesOf(piecesNamed("watchLater", state.later))
       : new Set(),

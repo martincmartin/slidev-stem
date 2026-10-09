@@ -25,11 +25,13 @@
 // have faded in. A new state with the same flash lets a flash that has
 // started go on, and places one that is still waiting again. Only in a
 // transition: a state shown at once, or one that changes nothing,
-// does not flash. The caller names a flash only on the step forward into its
+// does not flash, unless it specifies a text delay. An inverse flash uses
+// subject inks first for meshes already in second inks. The caller names a flash only on the step forward into its
 // slide (../../docs/navigation.md): the timeline does not know which way a
 // change goes.
 
-import type { Mesh, View } from "./scene.ts";
+import { FLASH_INKS, INVERSE_FLASH_INKS } from "./scene.ts";
+import type { Mesh, Recolour, View } from "./scene.ts";
 
 export const MOVE_SECONDS = 1.8;
 export const FADE_SECONDS = 0.8;
@@ -62,6 +64,10 @@ export interface StageState {
   /** Flashed before the change if they are on the screen, else after it;
    *  `null`: none. */
   flash: ReadonlySet<Mesh> | null;
+  /** Seconds from the text reveal; permits a cue without a channel change. */
+  flashDelay?: number;
+  /** Use subject inks for a mark already drawn in second inks. */
+  flashInverse?: boolean;
   /** Of the meshes that fade in at the end of the change, these fade in
    *  after the others. */
   later: ReadonlySet<Mesh>;
@@ -192,7 +198,11 @@ export class Timeline {
   /** One after another. */
   private phases: Phase[] = [];
   /** The flash and when it starts (ms). */
-  private flash: { meshes: ReadonlySet<Mesh>; start: number } | null = null;
+  private flash: {
+    meshes: ReadonlySet<Mesh>;
+    start: number;
+    inverse: boolean;
+  } | null = null;
 
   /** Whether a state has been shown yet. Until then, there is nothing to
    *  move from, and the first state is shown at once. */
@@ -204,6 +214,12 @@ export class Timeline {
    *  file, from where the channels are now. Returns the seconds until the
    *  flash ends, or 0 if there is none. */
   show(state: StageState, now: number, instantly = false): number {
+    if (
+      state.flashDelay !== undefined &&
+      (!Number.isFinite(state.flashDelay) || state.flashDelay < 0)
+    ) {
+      throw new Error("flashDelay must be finite and nonnegative");
+    }
     const running = this.flash;
     this.flash = null;
     if (instantly || !this.values) {
@@ -310,7 +326,11 @@ export class Timeline {
       }
     }
     become(state.shown, state.later);
-    if (!state.flash || this.phases.length === 0) return 0;
+    if (
+      !state.flash ||
+      (this.phases.length === 0 && state.flashDelay === undefined)
+    )
+      return 0;
     // only meshes at full opacity are on the screen: a fading one is not, yet
     const onScreen = within(state.flash, current.keep);
     // a flash of the same meshes that has started goes on: a click during it
@@ -318,14 +338,25 @@ export class Timeline {
     const goesOn =
       running &&
       sameSet(running.meshes, state.flash) &&
+      running.inverse === (state.flashInverse ?? false) &&
       running.start <= now &&
       now < running.start + FLASH_SECONDS * 1000
         ? running
         : null;
-    const flashStart = goesOn ? goesOn.start : onScreen ? now : start;
-    this.flash = { meshes: state.flash, start: flashStart };
+    const flashStart = goesOn
+      ? goesOn.start
+      : state.flashDelay !== undefined
+        ? Math.max(start, now + state.flashDelay * 1000)
+        : onScreen
+          ? now
+          : start;
+    this.flash = {
+      meshes: state.flash,
+      start: flashStart,
+      inverse: state.flashInverse ?? false,
+    };
     // flashing and moving never happen together
-    if (onScreen || goesOn) {
+    if ((onScreen && state.flashDelay === undefined) || goesOn) {
       const delay = flashStart + FLASH_SECONDS * 1000 - now;
       for (const phase of this.phases) phase.start += delay;
     }
@@ -337,6 +368,17 @@ export class Timeline {
     const { flash } = this;
     if (!flash || !flashIsOn((now - flash.start) / 1000)) return null;
     return flash.meshes;
+  }
+
+  /** The ink override for the active half-cycle. */
+  recolourAt(now: number): Recolour | undefined {
+    const meshes = this.flashingAt(now);
+    return meshes
+      ? {
+          meshes,
+          inks: this.flash?.inverse ? INVERSE_FLASH_INKS : FLASH_INKS,
+        }
+      : undefined;
   }
 
   /** Each channel's value at `now`. */

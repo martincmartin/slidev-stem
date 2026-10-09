@@ -8,6 +8,7 @@ measured budgets) and the diving board on the Hairspring slide.
 them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
+[`2026-10-09-gears-text-flash`](../tasks/2026-10-09-gears-text-flash/PLAN.md) (inverse cues after the Gears text),
 [`2026-10-07-watch-primitives`](../tasks/2026-10-07-watch-primitives/PLAN.md) (named pieces, fitted views, one rule for every move),
 [`2026-10-07-gears-slide`](../tasks/2026-10-07-gears-slide/PLAN.md) (the Gears slide; the free spin for any slide; a narrow picture centred in the left 60%),
 [`2026-10-07-tick-tock-words`](../tasks/2026-10-07-tick-tock-words/PLAN.md) (the words at each strike),
@@ -334,6 +335,11 @@ spin.
 | 6     | the gears and the rest of the Escapement slide's mechanism; the span and text go     | tick with it |
 | 7     | and the seconds hand, and then its text                                              | tick with it |
 
+At click 2, the pinion's four marked teeth flash after "Half of the small gear" has fully faded in.
+At click 3, the wheel's four marked teeth flash after "A quarter of the big gear" has fully faded in.
+Both cues use subject inks first, then restore second inks, with the timeline's standard five cycles.
+The marks stay in second inks when the cue ends. A jump or backward step does not start either cue.
+
 - **The step from the Escapement slide, and back, jumps the camera.** The
   audience has not seen these pieces, so their place in the watch does not
   matter. With `watchMoveWith: none`, nothing is on the screen while the
@@ -572,7 +578,7 @@ piece or a view that does not exist.
 A slide gives the watch's state at click 0. A click changes it from that click
 on, with the same keys, in a block under `watchClicks`; a later block changes
 it again. A block holds the keys that say a state (the first seven in
-[The keys](#the-keys)), and `watchFlash` and `watchLater`. These two are
+[The keys](#the-keys)), and the flash settings and `watchLater`. These settings are
 about the step into their click (or into the slide, on the slide), so they
 do not carry on to later clicks. `watchMoveWith` is about the step into the slide, so it is on the
 slide only. A value says what is so, not
@@ -737,9 +743,11 @@ fourth wheel and the escape pinion.
 | `watchSpin: 135`                    | the train spins freely, at this speed in degrees a second of the escape wheel, faster than the mechanism's 12 ([The free spin](#the-free-spin)); `false` (default): it follows the mechanism, and a spin stops at the pallet        |
 | `watchTickTock: plain`              | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `burst`: as comic bursts, a trial; `false` (default): they do not                                                                   |
 | `watchFlash: [balance wheel]`       | pieces that flash, on the step forward into the slide (on the slide) or into the block's click (in `watchClicks`) only; it does not carry on to later clicks ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash") |
+| `watchFlashAfterText: true`         | wait for the click text fade before flashing; permits a flash without a watch change. The layer waits for the current click's opacity transitions to finish. This setting applies only to its click.                                |
+| `watchFlashInverse: true`           | use subject inks in the first half-cycle, then restore the permanent second inks. This setting applies only to its click.                                                                                                           |
 | `watchMoveWith: all`                | on the slide only: what is on the screen while the camera moves, on the step between this slide and the previous one: `common` (default), `all` or `none`                                                                           |
 | `watchLater: [case band]`           | of the pieces that fade in on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that fade in after the others; it does not carry on to later clicks                                          |
-| `watchClicks: {1: {watch: […]}}`    | on the slide only: for a click, the values of the first seven keys from that click on, and its `watchFlash` and `watchLater` ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way))                                      |
+| `watchClicks: {1: {watch: […]}}`    | on the slide only: for a click, the values of the first seven keys from that click on, and its flash settings and `watchLater` ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way))                                    |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
 at load with the key's name.

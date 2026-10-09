@@ -15,7 +15,6 @@
 
 import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
-import { FLASH_INKS } from "./scene.ts";
 import type { Group, Mesh, Palette, Scene } from "./scene.ts";
 import { Timeline } from "./timeline.ts";
 import type { StageState, Values } from "./timeline.ts";
@@ -167,7 +166,7 @@ export class Stage<ModelState> {
     this.request = null;
     const before = performance.now();
     const values = this.valuesAt(now);
-    const flashing = this.flashingAt(now);
+    const recolour = this.timeline.recolourAt(now);
     const size = deviceSize(this.canvas);
     const sizeText = size.join(" x ");
     if (this.log.sizes.at(-1)?.[1] !== sizeText) {
@@ -180,7 +179,7 @@ export class Stage<ModelState> {
       keep: values.keep,
       fade: values.fade,
       rest: values.rest,
-      ...(flashing ? { recolour: { meshes: flashing, inks: FLASH_INKS } } : {}),
+      ...(recolour ? { recolour } : {}),
       size,
     });
     this.log.starts.push(now);

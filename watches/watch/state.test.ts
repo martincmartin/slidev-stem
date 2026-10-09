@@ -353,3 +353,50 @@ test("a field of the wrong kind throws, with its name", () => {
     );
   }
 });
+
+test("text delay and inverse inks belong only to their flash click", () => {
+  const frontmatter = {
+    watch: [
+      "fourth wheel",
+      "escape pinion",
+      "fourth wheel span wash",
+      "escape pinion span wash",
+    ],
+    watchClicks: {
+      2: {
+        watchFlash: ["escape pinion span wash"],
+        watchFlashAfterText: true,
+        watchFlashInverse: true,
+      },
+      3: {
+        watchFlash: ["fourth wheel span wash"],
+        watchFlashAfterText: true,
+        watchFlashInverse: true,
+      },
+    },
+  };
+  for (const click of [2, 3]) {
+    const state = watchState(frontmatter, click);
+    assert.ok(state);
+    assert.equal(state.flashAfterText, true);
+    assert.equal(stageState(watch, state).flashInverse, true);
+    const flashed = stageState(watch, state).flash;
+    assert.ok(flashed);
+    const pieceName =
+      click === 2 ? "escape pinion span wash" : "fourth wheel span wash";
+    assert.deepEqual(
+      flashed,
+      watch.scene.pieces.find((piece) => piece.name === pieceName)?.meshes,
+    );
+  }
+  assert.equal(watchState(frontmatter, 4)?.flashAfterText, undefined);
+  assert.equal(watchState(frontmatter, 4)?.flashInverse, undefined);
+  assert.throws(
+    () => watchState({ watch: "all", watchFlashAfterText: "yes" }, 0),
+    /watchFlashAfterText/,
+  );
+  assert.throws(
+    () => watchState({ watch: "all", watchFlashInverse: "yes" }, 0),
+    /watchFlashInverse/,
+  );
+});

@@ -1,0 +1,414 @@
+diff --git a/docs/illustrations.md b/docs/illustrations.md
+index 0bc9d58..761b77f 100644
+--- a/docs/illustrations.md
++++ b/docs/illustrations.md
+@@ -224,2 +224,3 @@ its own colours.
+-- **When.** During a camera move to the part, so that the audience can follow
+-  the zoom, or when the part fades in, to point at what is new. Never while a
++- **When.** Before a camera move to the part, or after the part fades in, to point at what is new.
++  A text cue can flash after its text has fully faded in.
++  If a mark is already in second inks, flash it in subject inks first, then restore second inks. Never while a
+diff --git a/docs/webgl.md b/docs/webgl.md
+index 9d95e89..2952af3 100644
+--- a/docs/webgl.md
++++ b/docs/webgl.md
+@@ -173,2 +173,4 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
+-  it ends; if they fade in, it plays when they are in. It flashes only in a
+-  transition that changes a channel, not in a state shown at once. A key
++  it ends; if they fade in, it plays when they are in. A delayed text cue can flash without changing a channel (`StageState.flashDelay`).
++  It starts after both the text delay and any watch change have ended.
++  An inverse cue (`StageState.flashInverse`) uses subject inks first for meshes already in second inks.
++  A state shown at once never flashes. A key
+diff --git a/watches/docs/slide-patterns.md b/watches/docs/slide-patterns.md
+index 2412222..f22480e 100644
+--- a/watches/docs/slide-patterns.md
++++ b/watches/docs/slide-patterns.md
+@@ -169 +169,4 @@ four teeth on each gear turn the second (the span), in the flash's colours,
+-and clicks 2 to 4 add the text one line at a time. At click 5, the span is
++and clicks 2 to 4 add the text one line at a time.
++When the first line is fully visible, the pinion's four marked teeth flash.
++When the second line is fully visible, the wheel's four marked teeth flash.
++Each cue alternates subject then second inks for five cycles ([watch.md](watch.md#the-gears-slide)). At click 5, the span is
+diff --git a/watches/docs/watch.md b/watches/docs/watch.md
+index 0495224..d38766c 100644
+--- a/watches/docs/watch.md
++++ b/watches/docs/watch.md
+@@ -10,0 +11 @@ them. The rules for WebGL art in any talk are in
++[`2026-10-09-gears-text-flash`](../tasks/2026-10-09-gears-text-flash/PLAN.md) (inverse cues after the Gears text),
+@@ -336,0 +338,5 @@ spin.
++At click 2, the pinion's four marked teeth flash after "Half of the small gear" has fully faded in.
++At click 3, the wheel's four marked teeth flash after "A quarter of the big gear" has fully faded in.
++Both cues use subject inks first, then restore second inks, with the timeline's standard five cycles.
++The marks stay in second inks when the cue ends. A jump or backward step does not start either cue.
++
+@@ -575 +581 @@ it again. A block holds the keys that say a state (the first seven in
+-[The keys](#the-keys)), and `watchFlash` and `watchLater`. These two are
++[The keys](#the-keys)), and the flash settings and `watchLater`. These settings are
+@@ -739,0 +746,2 @@ fourth wheel and the escape pinion.
++| `watchFlashAfterText: true`         | wait for the click text fade before flashing; permits a flash without a watch change. The layer waits for the current click's opacity transitions to finish. This setting applies only to its click.                                |
++| `watchFlashInverse: true`           | use subject inks in the first half-cycle, then restore the permanent second inks. This setting applies only to its click.                                                                                                           |
+@@ -742 +750 @@ fourth wheel and the escape pinion.
+-| `watchClicks: {1: {watch: […]}}`    | on the slide only: for a click, the values of the first seven keys from that click on, and its `watchFlash` and `watchLater` ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way))                                      |
++| `watchClicks: {1: {watch: […]}}`    | on the slide only: for a click, the values of the first seven keys from that click on, and its flash settings and `watchLater` ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way))                                    |
+diff --git a/watches/global-bottom.vue b/watches/global-bottom.vue
+index ba62f97..a66e023 100644
+--- a/watches/global-bottom.vue
++++ b/watches/global-bottom.vue
+@@ -40,0 +41 @@ import {
++  nextTick,
+@@ -71 +72 @@ import type { WatchState } from "./watch/state.ts";
+-import type { MoveWith } from "./webgl/timeline.ts";
++import type { MoveWith, StageState } from "./webgl/timeline.ts";
+@@ -119,0 +121,46 @@ let shownPicture = "null";
++/** Invalidates a text cue when the viewer leaves its click. */
++let textFlashVersion = 0;
++
++/** Start the cue when the current click's opacity transitions have finished. */
++async function showTextFlash(
++  target: StageState,
++  modelTarget: WatchModelState,
++  version: number,
++  slide: number,
++): Promise<void> {
++  await nextTick();
++  await new Promise<void>((resolve) =>
++    requestAnimationFrame(() => {
++      resolve();
++    }),
++  );
++  if (version !== textFlashVersion || unmounted) return;
++  const elements = document.querySelectorAll<HTMLElement>(
++    `[data-slidev-no="${String(slide)}"] .slidev-vclick-current`,
++  );
++  const transitions = [...elements].flatMap((element) => {
++    // Flush the revealed element's style before reading its transitions.
++    getComputedStyle(element).getPropertyValue("opacity");
++    return element
++      .getAnimations()
++      .filter(
++        (animation) =>
++          animation instanceof CSSTransition &&
++          animation.transitionProperty === "opacity",
++      );
++  });
++  const completed = await Promise.all(
++    transitions.map((animation) =>
++      animation.finished.then(
++        () => true,
++        () => false,
++      ),
++    ),
++  );
++  if (version !== textFlashVersion || !completed.every(Boolean) || !stage)
++    return;
++  stage.show({ ...target, flashDelay: 0 }, modelTarget);
++  showEndDelay();
++  run();
++}
++
+@@ -124,0 +172 @@ function showWatch(
++  const version = ++textFlashVersion;
+@@ -131 +179,9 @@ function showWatch(
+-    now ? { ...now, flash: undefined, later: undefined } : null,
++    now
++      ? {
++          ...now,
++          flash: undefined,
++          flashAfterText: undefined,
++          flashInverse: undefined,
++          later: undefined,
++        }
++      : null,
+@@ -150,0 +207,2 @@ function showWatch(
++  const target = stageState(WATCH, { ...now, flash }, moveWith);
++  const afterText = flash && now.flashAfterText && move === "forward";
+@@ -152 +210 @@ function showWatch(
+-    stageState(WATCH, { ...now, flash }, moveWith),
++    afterText ? { ...target, flash: null } : target,
+@@ -155,0 +214,3 @@ function showWatch(
++  if (afterText && place) {
++    void showTextFlash(target, modelState(now), version, place.slide);
++  }
+@@ -270,0 +332 @@ onBeforeUnmount(() => {
++  ++textFlashVersion;
+diff --git a/watches/slides.md b/watches/slides.md
+index 5637525..cca5479 100644
+--- a/watches/slides.md
++++ b/watches/slides.md
+@@ -337,0 +338,8 @@ watchClicks:
++  2:
++    watchFlash: [escape pinion span wash]
++    watchFlashAfterText: true
++    watchFlashInverse: true
++  3:
++    watchFlash: [fourth wheel span wash]
++    watchFlashAfterText: true
++    watchFlashInverse: true
+@@ -409 +417 @@ The escapement fades out. The fourth wheel and the escape wheel's pinion fade in
+-[click] Half of the small gear: count them, four of its eight teeth.
++[click] Half of the small gear: count them, four of its eight teeth. When the text is fully visible, those four teeth flash in subject then second, five times.
+@@ -411 +419 @@ The escapement fades out. The fourth wheel and the escape wheel's pinion fade in
+-[click] A quarter of the big gear: the same four teeth, but four of its sixteen. The same length of rim, because the teeth must be the same size, or they do not mesh. Each tooth fits in one gap of the other gear, so the teeth go by one for one: both rims move at the same speed.
++[click] A quarter of the big gear: the same four teeth, but four of its sixteen. When the text is fully visible, those four teeth flash the same way. The same length of rim, because the teeth must be the same size, or they do not mesh. Each tooth fits in one gap of the other gear, so the teeth go by one for one: both rims move at the same speed.
+diff --git a/watches/watch/state.test.ts b/watches/watch/state.test.ts
+index 1c12ef8..3e5c074 100644
+--- a/watches/watch/state.test.ts
++++ b/watches/watch/state.test.ts
+@@ -355,0 +356,47 @@ test("a field of the wrong kind throws, with its name", () => {
++
++test("text delay and inverse inks belong only to their flash click", () => {
++  const frontmatter = {
++    watch: [
++      "fourth wheel",
++      "escape pinion",
++      "fourth wheel span wash",
++      "escape pinion span wash",
++    ],
++    watchClicks: {
++      2: {
++        watchFlash: ["escape pinion span wash"],
++        watchFlashAfterText: true,
++        watchFlashInverse: true,
++      },
++      3: {
++        watchFlash: ["fourth wheel span wash"],
++        watchFlashAfterText: true,
++        watchFlashInverse: true,
++      },
++    },
++  };
++  for (const click of [2, 3]) {
++    const state = watchState(frontmatter, click);
++    assert.ok(state);
++    assert.equal(state.flashAfterText, true);
++    assert.equal(stageState(watch, state).flashInverse, true);
++    const flashed = stageState(watch, state).flash;
++    assert.ok(flashed);
++    const pieceName =
++      click === 2 ? "escape pinion span wash" : "fourth wheel span wash";
++    assert.deepEqual(
++      flashed,
++      watch.scene.pieces.find((piece) => piece.name === pieceName)?.meshes,
++    );
++  }
++  assert.equal(watchState(frontmatter, 4)?.flashAfterText, undefined);
++  assert.equal(watchState(frontmatter, 4)?.flashInverse, undefined);
++  assert.throws(
++    () => watchState({ watch: "all", watchFlashAfterText: "yes" }, 0),
++    /watchFlashAfterText/,
++  );
++  assert.throws(
++    () => watchState({ watch: "all", watchFlashInverse: "yes" }, 0),
++    /watchFlashInverse/,
++  );
++});
+diff --git a/watches/watch/state.ts b/watches/watch/state.ts
+index b898339..dd8fc06 100644
+--- a/watches/watch/state.ts
++++ b/watches/watch/state.ts
+@@ -24,0 +25,2 @@
++//   watchFlashAfterText: true: wait for the click text fade before flashing
++//   watchFlashInverse: true: alternate subject inks and the permanent second inks
+@@ -55,0 +58,4 @@ export interface WatchState {
++  /** Wait for the click text to fade in before flashing. */
++  flashAfterText?: boolean;
++  /** Flash second-coloured meshes in subject inks first. */
++  flashInverse?: boolean;
+@@ -167,4 +173,9 @@ type ClickValues = { [Key in ClickKey]?: ReturnType<(typeof CLICK_KEYS)[Key]> };
+- *  click: they do not carry on to later clicks. Each is a list of pieces. */
+-const STEP_KEYS = ["watchFlash", "watchLater"] as const;
+-type StepKey = (typeof STEP_KEYS)[number];
+-type StepValues = Partial<Record<StepKey, readonly string[]>>;
++ *  click: they do not carry on to later clicks. */
++const STEP_KEYS = {
++  watchFlash: namesOf,
++  watchLater: namesOf,
++  watchFlashAfterText: atRestOf,
++  watchFlashInverse: atRestOf,
++} as const;
++type StepKey = keyof typeof STEP_KEYS;
++type StepValues = { [Key in StepKey]?: ReturnType<(typeof STEP_KEYS)[Key]> };
+@@ -179 +190 @@ function isStepKey(name: string): name is StepKey {
+-  return STEP_KEYS.some((key) => key === name);
++  return Object.hasOwn(STEP_KEYS, name);
+@@ -187 +198 @@ function splitStep(values: PlaceValues): {
+-  const step: StepValues = {};
++  const step: Record<string, unknown> = {};
+@@ -190 +201 @@ function splitStep(values: PlaceValues): {
+-    if (isStepKey(key)) step[key] = value as readonly string[];
++    if (isStepKey(key)) step[key] = value;
+@@ -209 +220 @@ function readClickKeys(
+-      read[key] = namesOf(`${name}${key}`, value);
++      read[key] = STEP_KEYS[key](`${name}${key}`, value);
+@@ -214 +225 @@ function readClickKeys(
+-        [...Object.keys(CLICK_KEYS), ...STEP_KEYS].join(", or "),
++        [...Object.keys(CLICK_KEYS), ...Object.keys(STEP_KEYS)].join(", or "),
+@@ -315,0 +327,2 @@ export function watchState(
++    ...(now.watchFlashAfterText ? { flashAfterText: true } : {}),
++    ...(now.watchFlashInverse ? { flashInverse: true } : {}),
+@@ -368,0 +382 @@ export function stageState(
++    ...(state.flashInverse ? { flashInverse: true } : {}),
+diff --git a/watches/webgl/scene.ts b/watches/webgl/scene.ts
+index d853034..d6ae393 100644
+--- a/watches/webgl/scene.ts
++++ b/watches/webgl/scene.ts
+@@ -63,0 +64,6 @@ export const FLASH_INKS: ReadonlyMap<Ink, Ink> = new Map<Ink, Ink>([
++/** Return a second-coloured mark to subject inks for the first half-cycle. */
++export const INVERSE_FLASH_INKS: ReadonlyMap<Ink, Ink> = new Map<Ink, Ink>([
++  [INKS.second, INKS.subject],
++  [INKS.secondWash, INKS.subjectWash],
++]);
++
+diff --git a/watches/webgl/stage.ts b/watches/webgl/stage.ts
+index b146aa9..320c064 100644
+--- a/watches/webgl/stage.ts
++++ b/watches/webgl/stage.ts
+@@ -18 +17,0 @@ import { Renderer } from "./renderer.ts";
+-import { FLASH_INKS } from "./scene.ts";
+@@ -170 +169 @@ export class Stage<ModelState> {
+-    const flashing = this.flashingAt(now);
++    const recolour = this.timeline.recolourAt(now);
+@@ -183 +182 @@ export class Stage<ModelState> {
+-      ...(flashing ? { recolour: { meshes: flashing, inks: FLASH_INKS } } : {}),
++      ...(recolour ? { recolour } : {}),
+diff --git a/watches/webgl/timeline.test.ts b/watches/webgl/timeline.test.ts
+index d27c86f..ea719de 100644
+--- a/watches/webgl/timeline.test.ts
++++ b/watches/webgl/timeline.test.ts
+@@ -2,0 +3 @@ import { test } from "node:test";
++import { INKS, INVERSE_FLASH_INKS } from "./scene.ts";
+@@ -418,0 +420,64 @@ test("text waits for the camera: first towards a close view, last away from it",
++
++test("a text-only inverse cue waits for the text fade and runs five cycles", () => {
++  const timeline = new Timeline();
++  timeline.show(state({ view: WIDE }), 0);
++  const cue = state({
++    view: WIDE,
++    flash: set(SPRING),
++    flashDelay: 0.4,
++    flashInverse: true,
++  });
++  assert.equal(timeline.show(cue, 100), 0.4 + FLASH_SECONDS);
++  assert.equal(timeline.recolourAt(499), undefined);
++  assert.equal(timeline.phaseAt(499), null);
++  for (let cycle = 0; cycle < FLASH_CYCLES; cycle++) {
++    const start = 500 + cycle * 500;
++    assert.deepEqual(timeline.recolourAt(start)?.meshes, set(SPRING));
++    assert.equal(timeline.recolourAt(start)?.inks, INVERSE_FLASH_INKS);
++    assert.equal(
++      timeline.recolourAt(start)?.inks.get(INKS.second),
++      INKS.subject,
++    );
++    assert.equal(
++      timeline.recolourAt(start)?.inks.get(INKS.secondWash),
++      INKS.subjectWash,
++    );
++    assert.equal(timeline.recolourAt(start + 250), undefined);
++    assert.equal(timeline.recolourAt(start + 499), undefined);
++  }
++  assert.equal(timeline.recolourAt(3000), undefined);
++  assert.equal(timeline.endAt(100), 3000);
++  assert.deepEqual(timeline.valuesAt(100).keep, ALL);
++});
++
++test("a queued text cue is cancelled by another target or a jump", () => {
++  for (const instantly of [false, true]) {
++    const timeline = new Timeline();
++    timeline.show(state({ view: WIDE }), 0);
++    timeline.show(
++      state({ view: WIDE, flash: set(SPRING), flashDelay: 0.4 }),
++      100,
++    );
++    timeline.show(state({ view: WIDE, flash: null }), 200, instantly);
++    assert.equal(timeline.recolourAt(500), undefined);
++    assert.equal(timeline.endAt(200), 200);
++  }
++});
++
++test("a delayed cue waits for an interrupted mesh fade to finish", () => {
++  const timeline = new Timeline();
++  timeline.show(state({ view: WIDE, shown: set(SPRING) }), 0);
++  timeline.show(state({ view: WIDE, shown: set(SPRING, BALANCE) }), 100);
++  timeline.show(
++    state({
++      view: WIDE,
++      shown: set(SPRING, BALANCE),
++      flash: set(BALANCE),
++      flashDelay: 0.4,
++    }),
++    200,
++  );
++  assert.equal(timeline.flashingAt(999), null);
++  assert.deepEqual(timeline.flashingAt(1000), set(BALANCE));
++  assert.equal(timeline.valuesAt(1000).rest, 1);
++});
+diff --git a/watches/webgl/timeline.ts b/watches/webgl/timeline.ts
+index fc34b35..1d54209 100644
+--- a/watches/webgl/timeline.ts
++++ b/watches/webgl/timeline.ts
+@@ -28 +28,2 @@
+-// does not flash. The caller names a flash only on the step forward into its
++// does not flash, unless it specifies a text delay. An inverse flash uses
++// subject inks first for meshes already in second inks. The caller names a flash only on the step forward into its
+@@ -32 +33,2 @@
+-import type { Mesh, View } from "./scene.ts";
++import { FLASH_INKS, INVERSE_FLASH_INKS } from "./scene.ts";
++import type { Mesh, Recolour, View } from "./scene.ts";
+@@ -64,0 +67,4 @@ export interface StageState {
++  /** Seconds from the text reveal; permits a cue without a channel change. */
++  flashDelay?: number;
++  /** Use subject inks for a mark already drawn in second inks. */
++  flashInverse?: boolean;
+@@ -195 +201,5 @@ export class Timeline {
+-  private flash: { meshes: ReadonlySet<Mesh>; start: number } | null = null;
++  private flash: {
++    meshes: ReadonlySet<Mesh>;
++    start: number;
++    inverse: boolean;
++  } | null = null;
+@@ -206,0 +217,6 @@ export class Timeline {
++    if (
++      state.flashDelay !== undefined &&
++      (!Number.isFinite(state.flashDelay) || state.flashDelay < 0)
++    ) {
++      throw new Error("flashDelay must be finite and nonnegative");
++    }
+@@ -313 +329,5 @@ export class Timeline {
+-    if (!state.flash || this.phases.length === 0) return 0;
++    if (
++      !state.flash ||
++      (this.phases.length === 0 && state.flashDelay === undefined)
++    )
++      return 0;
+@@ -320,0 +341 @@ export class Timeline {
++      running.inverse === (state.flashInverse ?? false) &&
+@@ -325,2 +346,12 @@ export class Timeline {
+-    const flashStart = goesOn ? goesOn.start : onScreen ? now : start;
+-    this.flash = { meshes: state.flash, start: flashStart };
++    const flashStart = goesOn
++      ? goesOn.start
++      : state.flashDelay !== undefined
++        ? Math.max(start, now + state.flashDelay * 1000)
++        : onScreen
++          ? now
++          : start;
++    this.flash = {
++      meshes: state.flash,
++      start: flashStart,
++      inverse: state.flashInverse ?? false,
++    };
+@@ -328 +359 @@ export class Timeline {
+-    if (onScreen || goesOn) {
++    if ((onScreen && state.flashDelay === undefined) || goesOn) {
+@@ -341,0 +373,11 @@ export class Timeline {
++  /** The ink override for the active half-cycle. */
++  recolourAt(now: number): Recolour | undefined {
++    const meshes = this.flashingAt(now);
++    return meshes
++      ? {
++          meshes,
++          inks: this.flash?.inverse ? INVERSE_FLASH_INKS : FLASH_INKS,
++        }
++      : undefined;
++  }
++

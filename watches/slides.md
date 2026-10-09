@@ -335,6 +335,14 @@ watchClicks:
   # the text still up
   1:
     watch: [*gears, fourth wheel span wash, escape pinion span wash]
+  2:
+    watchFlash: [escape pinion span wash]
+    watchFlashAfterText: true
+    watchFlashInverse: true
+  3:
+    watchFlash: [fourth wheel span wash]
+    watchFlashAfterText: true
+    watchFlashInverse: true
   5:
     watch: [*gears, fourth wheel span, escape pinion span]
   # the rest of the Escapement slide's mechanism fades in, in this view
@@ -406,9 +414,9 @@ The escapement fades out. The fourth wheel and the escape wheel's pinion fade in
 
 [click] Four teeth on each gear are coloured: the same length of rim. They go through the mesh together, tooth for tooth, once each turn of the wheel. Four teeth are half the pinion, but a quarter of the wheel. Between, the pinion's coloured half comes round again on its own. (A trial: the colours of the flash. Wait for one pass before the next click.)
 
-[click] Half of the small gear: count them, four of its eight teeth.
+[click] Half of the small gear: count them, four of its eight teeth. When the text is fully visible, those four teeth flash in subject then second, five times.
 
-[click] A quarter of the big gear: the same four teeth, but four of its sixteen. The same length of rim, because the teeth must be the same size, or they do not mesh. Each tooth fits in one gap of the other gear, so the teeth go by one for one: both rims move at the same speed.
+[click] A quarter of the big gear: the same four teeth, but four of its sixteen. When the text is fully visible, those four teeth flash the same way. The same length of rim, because the teeth must be the same size, or they do not mesh. Each tooth fits in one gap of the other gear, so the teeth go by one for one: both rims move at the same speed.
 
 [click] Twice the size, half the speed. Exactly: teeth cannot slip, as a belt can. So the big gear turns once for every two turns of the small one, for ever.
 

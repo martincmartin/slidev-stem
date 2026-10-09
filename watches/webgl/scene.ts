@@ -61,6 +61,12 @@ export const FLASH_INKS: ReadonlyMap<Ink, Ink> = new Map<Ink, Ink>([
   [INKS.mutedWash, INKS.secondWash],
 ]);
 
+/** Return a second-coloured mark to subject inks for the first half-cycle. */
+export const INVERSE_FLASH_INKS: ReadonlyMap<Ink, Ink> = new Map<Ink, Ink>([
+  [INKS.second, INKS.subject],
+  [INKS.secondWash, INKS.subjectWash],
+]);
+
 /** `#rrggbb` for the paper (what the scene is drawn on, and what a fill's
  *  opacity is over) and for each ink. */
 export type Palette = Readonly<Record<InkName, string>> & {

@@ -38,6 +38,7 @@ import { injectionSlidevContext } from "@slidev/client/constants.ts";
 import {
   computed,
   inject,
+  nextTick,
   onBeforeUnmount,
   onMounted,
   ref,
@@ -68,7 +69,7 @@ import {
   watchState,
 } from "./watch/state.ts";
 import type { WatchState } from "./watch/state.ts";
-import type { MoveWith } from "./webgl/timeline.ts";
+import type { MoveWith, StageState } from "./webgl/timeline.ts";
 
 declare global {
   interface Window {
@@ -117,18 +118,73 @@ let shownWatch = "null";
 /** The same state without its flash: what shows. */
 let shownPicture = "null";
 
+/** Invalidates a text cue when the viewer leaves its click. */
+let textFlashVersion = 0;
+
+/** Start the cue when the current click's opacity transitions have finished. */
+async function showTextFlash(
+  target: StageState,
+  modelTarget: WatchModelState,
+  version: number,
+  slide: number,
+): Promise<void> {
+  await nextTick();
+  await new Promise<void>((resolve) =>
+    requestAnimationFrame(() => {
+      resolve();
+    }),
+  );
+  if (version !== textFlashVersion || unmounted) return;
+  const elements = document.querySelectorAll<HTMLElement>(
+    `[data-slidev-no="${String(slide)}"] .slidev-vclick-current`,
+  );
+  const transitions = [...elements].flatMap((element) => {
+    // Flush the revealed element's style before reading its transitions.
+    getComputedStyle(element).getPropertyValue("opacity");
+    return element
+      .getAnimations()
+      .filter(
+        (animation) =>
+          animation instanceof CSSTransition &&
+          animation.transitionProperty === "opacity",
+      );
+  });
+  const completed = await Promise.all(
+    transitions.map((animation) =>
+      animation.finished.then(
+        () => true,
+        () => false,
+      ),
+    ),
+  );
+  if (version !== textFlashVersion || !completed.every(Boolean) || !stage)
+    return;
+  stage.show({ ...target, flashDelay: 0 }, modelTarget);
+  showEndDelay();
+  run();
+}
+
 function showWatch(
   now: WatchState | undefined,
   move: Move,
   moveWith: MoveWith,
 ): void {
+  const version = ++textFlashVersion;
   // a flash points to where the camera goes, or to what fades in: only on
   // the step forward into the slide or the click that names it. It is not
   // part of what shows, so a click that changes nothing else does not cut
   // it. Nor is the order of the fades (`later`)
   const flash = move === "forward" ? now?.flash : undefined;
   const picture = JSON.stringify(
-    now ? { ...now, flash: undefined, later: undefined } : null,
+    now
+      ? {
+          ...now,
+          flash: undefined,
+          flashAfterText: undefined,
+          flashInverse: undefined,
+          later: undefined,
+        }
+      : null,
   );
   const old = shownPicture;
   shownWatch = JSON.stringify(now ?? null);
@@ -148,11 +204,16 @@ function showWatch(
   // once: it comes back from its slide's state, not from a move cut short
   if (hideTimer !== undefined || hidden.value) goOutOfSight();
   // a slide reached from a slide without the watch starts at its state
+  const target = stageState(WATCH, { ...now, flash }, moveWith);
+  const afterText = flash && now.flashAfterText && move === "forward";
   stage.show(
-    stageState(WATCH, { ...now, flash }, moveWith),
+    afterText ? { ...target, flash: null } : target,
     modelState(now),
     move === "jump" || old === "null",
   );
+  if (afterText && place) {
+    void showTextFlash(target, modelState(now), version, place.slide);
+  }
   stageTarget = now;
   document.documentElement.style.setProperty(
     "--watch-text-delay",
@@ -268,6 +329,7 @@ onMounted(() => {
 });
 onBeforeUnmount(() => {
   unmounted = true;
+  ++textFlashVersion;
   clearTimeout(hideTimer);
   stage?.dispose();
   stage = undefined;

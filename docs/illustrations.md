@@ -221,8 +221,9 @@ its own colours.
   structure stays readable. One colour for lines and fills merges a spring's
   coils into the wheel behind them, and pale lines on a dark fill read as a
   negative: both were drawn and rejected (the flash task).
-- **When.** During a camera move to the part, so that the audience can follow
-  the zoom, or when the part fades in, to point at what is new. Never while a
+- **When.** Before a camera move to the part, or after the part fades in, to point at what is new.
+  A text cue can flash after its text has fully faded in.
+  If a mark is already in second inks, flash it in subject inks first, then restore second inks. Never while a
   keyword callout shows: its leader is in the second too. Only on the step
   forward into the slide or the click that names it: a slide or a click
   reached by a jump, or by a step back, shows its state with no flash

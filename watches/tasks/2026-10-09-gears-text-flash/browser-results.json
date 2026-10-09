@@ -1,0 +1,50 @@
+[
+  {
+    "browser": "chromium",
+    "text": "Half of the small gear",
+    "first_flash_ms": 555.1,
+    "cycles": 5,
+    "opacity_at_first_flash": 1,
+    "flash_after_transition_end_ms": 4.3
+  },
+  {
+    "browser": "chromium",
+    "text": "A quarter of the big gear",
+    "first_flash_ms": 562.2,
+    "cycles": 5,
+    "opacity_at_first_flash": 1,
+    "flash_after_transition_end_ms": 4.2
+  },
+  {
+    "browser": "firefox",
+    "text": "Half of the small gear",
+    "first_flash_ms": 408,
+    "cycles": 5,
+    "opacity_at_first_flash": 1,
+    "flash_after_transition_end_ms": 4
+  },
+  {
+    "browser": "firefox",
+    "text": "A quarter of the big gear",
+    "first_flash_ms": 414,
+    "cycles": 5,
+    "opacity_at_first_flash": 1,
+    "flash_after_transition_end_ms": 4
+  },
+  {
+    "browser": "webkit",
+    "text": "Half of the small gear",
+    "first_flash_ms": 426,
+    "cycles": 5,
+    "opacity_at_first_flash": 1,
+    "flash_after_transition_end_ms": 7
+  },
+  {
+    "browser": "webkit",
+    "text": "A quarter of the big gear",
+    "first_flash_ms": 429,
+    "cycles": 5,
+    "opacity_at_first_flash": 1,
+    "flash_after_transition_end_ms": 8
+  }
+]
