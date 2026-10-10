@@ -28,8 +28,6 @@
 // not carry on to later clicks (STEP_KEYS):
 //   watchFlash: pieces that flash, on the step forward into the slide (on
 //     the slide) or into the block's click
-//   watchFlashAfterText: true: wait for the click text fade before flashing
-//   watchFlashInverse: true: alternate subject inks and the permanent second inks
 //   watchLater: of the pieces that fade in on a step into that click, those
 //     that fade in after the others
 //   watchCut: of the pieces that go or come on a step into that click,
@@ -75,10 +73,6 @@ export interface WatchState {
   /** The names of the pieces that flash on the step forward into this
    *  click, or `undefined`. */
   flash: readonly string[] | undefined;
-  /** Wait for the click text to fade in before flashing. */
-  flashAfterText?: boolean;
-  /** Flash second-coloured meshes in subject inks first. */
-  flashInverse?: boolean;
   /** The names of the pieces that fade in after the others, on a step into
    *  this click, or `undefined`. */
   later: readonly string[] | undefined;
@@ -213,8 +207,6 @@ const STEP_KEYS = {
   watchLater: namesOf,
   watchCut: namesOf,
   watchGoLater: namesOf,
-  watchFlashAfterText: booleanOf,
-  watchFlashInverse: booleanOf,
 } as const;
 type StepKey = keyof typeof STEP_KEYS;
 type StepValues = { [Key in StepKey]?: ReturnType<(typeof STEP_KEYS)[Key]> };
@@ -375,8 +367,6 @@ export function watchState(
     right: now.watchRight ?? null,
     band: now.watchBand ?? "picture",
     flash: now.watchFlash,
-    ...(now.watchFlashAfterText ? { flashAfterText: true } : {}),
-    ...(now.watchFlashInverse ? { flashInverse: true } : {}),
     later: now.watchLater,
     cut: now.watchCut,
     goLater: now.watchGoLater,
@@ -444,7 +434,6 @@ export function stageState(
     flash: state.flash
       ? meshesOf(piecesNamed("watchFlash", state.flash))
       : null,
-    ...(state.flashInverse ? { flashInverse: true } : {}),
     later: state.later
       ? meshesOf(piecesNamed("watchLater", state.later))
       : new Set(),

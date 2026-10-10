@@ -1,6 +1,5 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { INKS, INVERSE_FLASH_INKS } from "./scene.ts";
 import type { Mesh, View } from "./scene.ts";
 import {
   DIM_SECONDS,
@@ -451,70 +450,6 @@ test("text waits for the camera: first towards a close view, last away from it",
   assert.equal(timeline.viewEndAt(10_000), 10_000 + FADE + TILT + MOVE);
   // after the move, or with no move, there is nothing to wait for
   assert.equal(timeline.viewEndAt(20_000), 20_000);
-});
-
-test("a text-only inverse cue waits for the text fade and runs five cycles", () => {
-  const timeline = new Timeline();
-  timeline.show(state({ view: WIDE }), 0);
-  const cue = state({
-    view: WIDE,
-    flash: set(SPRING),
-    flashDelay: 0.4,
-    flashInverse: true,
-  });
-  assert.equal(timeline.show(cue, 100), 0.4 + FLASH_SECONDS);
-  assert.equal(timeline.recolourAt(499), undefined);
-  assert.equal(timeline.phaseAt(499), null);
-  for (let cycle = 0; cycle < FLASH_CYCLES; cycle++) {
-    const start = 500 + cycle * 500;
-    assert.deepEqual(timeline.recolourAt(start)?.meshes, set(SPRING));
-    assert.equal(timeline.recolourAt(start)?.inks, INVERSE_FLASH_INKS);
-    assert.equal(
-      timeline.recolourAt(start)?.inks.get(INKS.second),
-      INKS.subject,
-    );
-    assert.equal(
-      timeline.recolourAt(start)?.inks.get(INKS.secondWash),
-      INKS.subjectWash,
-    );
-    assert.equal(timeline.recolourAt(start + 250), undefined);
-    assert.equal(timeline.recolourAt(start + 499), undefined);
-  }
-  assert.equal(timeline.recolourAt(3000), undefined);
-  assert.equal(timeline.endAt(100), 3000);
-  assert.deepEqual(timeline.valuesAt(100).keep, ALL);
-});
-
-test("a queued text cue is cancelled by another target or a jump", () => {
-  for (const instantly of [false, true]) {
-    const timeline = new Timeline();
-    timeline.show(state({ view: WIDE }), 0);
-    timeline.show(
-      state({ view: WIDE, flash: set(SPRING), flashDelay: 0.4 }),
-      100,
-    );
-    timeline.show(state({ view: WIDE, flash: null }), 200, instantly);
-    assert.equal(timeline.recolourAt(500), undefined);
-    assert.equal(timeline.endAt(200), 200);
-  }
-});
-
-test("a delayed cue waits for an interrupted mesh fade to finish", () => {
-  const timeline = new Timeline();
-  timeline.show(state({ view: WIDE, shown: set(SPRING) }), 0);
-  timeline.show(state({ view: WIDE, shown: set(SPRING, BALANCE) }), 100);
-  timeline.show(
-    state({
-      view: WIDE,
-      shown: set(SPRING, BALANCE),
-      flash: set(BALANCE),
-      flashDelay: 0.4,
-    }),
-    200,
-  );
-  assert.equal(timeline.flashingAt(999), null);
-  assert.deepEqual(timeline.flashingAt(1000), set(BALANCE));
-  assert.equal(timeline.valuesAt(1000).rest, 1);
 });
 
 test("a go-later mesh stays on the screen while the camera moves, and goes after it", () => {

@@ -18,7 +18,16 @@ either misses the flash, or the two pull against each other.
 - The big gear's leader bends: straight, it left its label from below and
   crossed "Twice the radius".
 - Clicks 2 and 3 no longer set `watchFlash`. `watchFlashAfterText` and
-  `watchFlashInverse` stay in the timeline, unused, for a later slide.
+  `watchFlashInverse`, which only they used, are removed: the text cue in
+  `global-bottom.vue`, `flashDelay` and `flashInverse` in the timeline, and
+  `INVERSE_FLASH_INKS`.
+
+## The radii (tried, dropped)
+
+A muted, level line on each gear from the arbor to the pitch circle (32 and
+16), added with "Twice the radius, half the speed", was built and previewed
+the same day. The user dropped it: the slide keeps the text, the span and
+the turning gears.
 
 ## Options considered
 
