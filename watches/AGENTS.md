@@ -11,3 +11,4 @@ talk's own docs are in `docs/`.
 | change the watch (`watch/`, `art/`, its frontmatter, `global-bottom.vue`) or the diving board | `docs/watch.md`, and `../docs/webgl.md` for `webgl/` |
 | change a drawing, or claim that one is legible                                                | `docs/measurements.md`, `../docs/legibility.md`      |
 | choose what the next slide says                                                               | `docs/rough-slides.md`                               |
+| update packages or remove a dependency override                                               | `docs/packages.md`, and `../docs/talks.md`           |

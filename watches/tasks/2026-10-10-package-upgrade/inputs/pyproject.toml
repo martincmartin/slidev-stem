@@ -1,0 +1,63 @@
+# This talk's Python: art/ and the scripts in tasks/. It is not a package, and
+# it is separate from stem/pyproject.toml (the house tools), so that this
+# talk keeps its own versions. See "Given talks and versions" in
+# ../AGENTS.md.
+#
+#   uv sync                                   # make or update watches/.venv
+#   uv run art/validate_watch_design.py     # after each change to the art
+
+[project]
+name = "watches"
+version = "0"
+requires-python = "==3.14.*"
+dependencies = [
+  "numpy>=2.5.3",
+  "pillow>=12.3.0",
+  # screenshots, in the scripts of tasks/
+  "playwright>=1.63.0",
+  # nearest-point search, for tasks/2026-09-26-zoom-line-contacts/
+  "scipy>=1.18.1",
+]
+
+[dependency-groups]
+# The style and type checkers that ../tools/check_python.py runs on art/.
+dev = [
+  "mypy>=2.3.1",
+  "pyright>=1.1.414",
+  "ruff>=0.16.9",
+  "scipy-stubs>=1.18.1.1",
+]
+
+[tool.uv]
+package = false
+# Only an interpreter that uv installed: a Homebrew upgrade must not remove the
+# interpreter of a venv.
+python-preference = "only-managed"
+
+[tool.ruff]
+target-version = "py314"
+# A bare `ruff format` must not change a task: a finished task is frozen. (ruff
+# uses the nearest config for each file, so `include` cannot keep it out: a
+# task keeps its own copies of pyproject.toml.) tools/validate.py gives ruff
+# the paths in [tool.mypy] files.
+extend-exclude = ["tasks"]
+# Python only. Markdown is Prettier's (ruff would format its Python blocks).
+include = ["*.py", "*.pyi"]
+
+[tool.ruff.lint]
+# Beyond ruff's defaults: import order, newer syntax, likely bugs, simpler code,
+# comprehensions, pathlib, naming, performance, ruff's own. Not PL (the tools'
+# constants are deliberate), S (the subprocess calls) or D (the house's
+# docstring style). See tasks/2026-09-28-validate/PLAN.md.
+extend-select = ["I", "UP", "B", "SIM", "C4", "PTH", "N", "PERF", "RUF"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+files = ["art"]
+
+[tool.pyright]
+pythonVersion = "3.14"
+include = ["art"]
+venvPath = "."
+venv = ".venv"

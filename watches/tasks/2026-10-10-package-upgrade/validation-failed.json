@@ -1,0 +1,191 @@
+{
+  "project": "watches/, a talk",
+  "seconds": 25.11956304195337,
+  "passed": false,
+  "checks": [
+    {
+      "label": "build",
+      "passed": false,
+      "seconds": 4.040834499988705,
+      "message": "FAIL  build",
+      "output": "\n\n  \u25cf\u25a0\u25b2\n  Slidev  v53.0.0 (global)\n\n  theme       slidev-theme-ledger\n  css engine  unocss\n  entry       /Users/martin/Develop/slidev/stem/work2/watches/slides.md\nvite v8.3.4 building client environment for production...\ntransforming...\n\u2713 537 modules transformed.\nrendering chunks...\n$ slidev build --out /var/folders/t6/ckqzvjtj3_3f6y1nbj6gnvqr0000gn/T/deck-pq236ofs\n\n(!) outDir /var/folders/t6/ckqzvjtj3_3f6y1nbj6gnvqr0000gn/T/deck-pq236ofs is not inside project root and will not be emptied.\nUse --emptyOutDir to override.\n\n\u2717 Build failed in 2.31s\nBuild failed with 1 error:\n\n[plugin vite:css-post]\nSyntaxError: [lightningcss minify] Invalid token in pseudo element: Dimension { has_sign: false, value: 1.5, int_value: None, unit: \"rem\" }\n800 |    border-color: currentColor;\n801 |  }\n802 |  margin-right:1.5rem;width:1rem;--un-text-opacity:1;color:rgb(156 163 175 / var(--un-text-opacity));.dark .slidev-code...\n    |                     ^\n803 |  }\n804 |  .slidev-katex-wrapper .mord.dishonored {\n    at Module.<anonymous> (/Users/martin/Develop/slidev/stem/work2/watches/node_modules/.pnpm/lightningcss@1.33.0/node_modules/lightningcss/node/index.js:56:14)\n    at minifyCSS (file:///Users/martin/Develop/slidev/stem/work2/watches/node_modules/.pnpm/vite@8.3.4_@types+node@26.6.4_jiti@2.7.0_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:30767:59)\n    at async finalizeCss (file:///Users/martin/Develop/slidev/stem/work2/watches/node_modules/.pnpm/vite@8.3.4_@types+node@26.6.4_jiti@2.7.0_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:30609:36)\n    at aggregateBindingErrorsIntoJsError (file:///Users/martin/Develop/slidev/stem/work2/watches/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/error-Dsqzw0Oa.mjs:49:18)\n    at unwrapBindingResult (file:///Users/martin/Develop/slidev/stem/work2/watches/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/error-Dsqzw0Oa.mjs:19:128)\n    at #build (file:///Users/martin/Develop/slidev/stem/work2/watches/node_modules/.pnpm/rolldown@1.2.13/node_modules/rolldown/dist/shared/rolldown-D_vNlorD.mjs:133:34)\n    at async buildEnvironment (file:///Users/martin/Develop/slidev/stem/work2/watches/node_modules/.pnpm/vite@8.3.4_@types+node@26.6.4_jiti@2.7.0_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:34716:66)\n    at async Object.build (file:///Users/martin/Develop/slidev/stem/work2/watches/node_modules/.pnpm/vite@8.3.4_@types+node@26.6.4_jiti@2.7.0_yaml@2.9.1/node_modules/vite/dist/node/chunks/node.js:35137:19)\n    at async build (file:///Users/martin/Develop/slidev/stem/work2/watches/node_modules/.pnpm/@slidev+cli@53.0.0_@nuxt+kit@3.21.11_@oxc-project+types@0.153.0_@types+markdown-it@14.2_4850c0b12a3389df2a1df8bbe48dee82/node_modules/@slidev/cli/dist/build-DasIcfzi.mjs:38:2)\n    at async Object.handler (file:///Users/martin/Develop/slidev/stem/work2/watches/node_modules/.pnpm/@slidev+cli@53.0.0_@nuxt+kit@3.21.11_@oxc-project+types@0.153.0_@types+markdown-it@14.2_4850c0b12a3389df2a1df8bbe48dee82/node_modules/@slidev/cli/dist/cli.mjs:326:3) {\n  errors: [Getter/Setter]\n}\n[ELIFECYCLE] Command failed with exit code 1.",
+      "reused": false
+    },
+    {
+      "label": "print",
+      "passed": false,
+      "seconds": 0.00011741701746359468,
+      "message": "FAIL  print",
+      "output": "could not run: no built deck in /var/folders/t6/ckqzvjtj3_3f6y1nbj6gnvqr0000gn/T/deck-pq236ofs",
+      "reused": false
+    },
+    {
+      "label": "private browsing",
+      "passed": false,
+      "seconds": 1.5790981706231833e-05,
+      "message": "FAIL  private browsing",
+      "output": "could not run: no built deck in /var/folders/t6/ckqzvjtj3_3f6y1nbj6gnvqr0000gn/T/deck-pq236ofs",
+      "reused": false
+    },
+    {
+      "label": "ruff format",
+      "passed": true,
+      "seconds": 0.6361144169932231,
+      "message": "ok    ruff format  (12 files already formatted)",
+      "output": "12 files already formatted",
+      "reused": false
+    },
+    {
+      "label": "ruff check",
+      "passed": true,
+      "seconds": 0.028571041009854525,
+      "message": "ok    ruff check",
+      "output": "All checks passed!",
+      "reused": false
+    },
+    {
+      "label": "mypy --strict",
+      "passed": true,
+      "seconds": 3.8841070419875905,
+      "message": "ok    mypy --strict",
+      "output": "Success: no issues found in 12 source files",
+      "reused": false
+    },
+    {
+      "label": "pyright",
+      "passed": true,
+      "seconds": 1.9179580000345595,
+      "message": "ok    pyright",
+      "output": "0 errors, 0 warnings, 0 informations",
+      "reused": false
+    },
+    {
+      "label": "prettier",
+      "passed": true,
+      "seconds": 1.3312575420131907,
+      "message": "ok    prettier",
+      "output": "Checking formatting...\nAll matched files use Prettier code style!\n$ prettier --check .",
+      "reused": false
+    },
+    {
+      "label": "doccheck",
+      "passed": true,
+      "seconds": 0.0807724169571884,
+      "message": "ok    doccheck",
+      "output": "no findings in 7 Markdown files",
+      "reused": false
+    },
+    {
+      "label": "typecheck",
+      "passed": true,
+      "seconds": 1.5745942500070669,
+      "message": "ok    typecheck",
+      "output": "$ vue-tsc --noEmit",
+      "reused": false
+    },
+    {
+      "label": "lint",
+      "passed": true,
+      "seconds": 4.7525207080179825,
+      "message": "ok    lint",
+      "output": "$ eslint .",
+      "reused": false
+    },
+    {
+      "label": "test",
+      "passed": true,
+      "seconds": 2.9453309579985216,
+      "message": "ok    test",
+      "output": "\u2714 a slide without `board` has no board (12.347916ms)\n\u2714 the Hairspring slide's targets: off, swinging, curling, then curled (0.444875ms)\n\u2714 the picture shows from the board's click until the curl ends (0.09125ms)\n\u2714 the keys must come in order (0.201333ms)\n\u2714 a page's pose: 0, the bottom of the swing, part of the way through the curl, the end (0.069459ms)\n\u2714 the edit: after the curl, one step after another, in reading order (0.139166ms)\n\u2714 forward: the swing plays from 0, and the curl waits for the bottom (0.21425ms)\n\u2714 back: the board uncurls to the bottom of the swing, and swings on (0.064875ms)\n\u2714 a change of mind in the middle of a curl turns it round where it is (0.085584ms)\n\u2714 off and back: the pose holds, and the next swing plays from 0 (0.093208ms)\n\u2714 a jump shows the target at once (4.077333ms)\n\u2714 onSlide is the view's zoom and shift, and a tilt lifts a higher point (0.452875ms)\n\u2714 the callouts' marks are on the slide, in the escapement's order from left to right (0.075417ms)\n\u2714 a leader from below to the pallet's aim meets the fork at both ends of its swing (0.205625ms)\n\u2714 the escapement's tops are the tops of their parts' meshes (0.284417ms)\n\u2714 a fitted view tilts about its pieces' middle: the middle stays where it is, at any tilt (0.104583ms)\n\u2714 the two strikes are on either side of the fork's axis, and their words go out as mirror images (0.245584ms)\n\u2714 each window's strike is at the horn ahead of the jewel, not where it enters (0.201833ms)\n\u2714 every slide's pieces and view exist, at every click (2.328292ms)\n\u2714 no slide spins the train while the pallet fork shows: the escape wheel would turn through its stones (0.504208ms)\n\u2714 the mainspring winds only where its outer end is held: by the stud, or in the barrel (0.498458ms)\n\u2714 the Gears slide's gears show where they set the picture band: its view is the plan fit that drew them (0.142ms)\n\u2714 design.json is a good design (0.50725ms)\n\u2714 a timing out of range throws, with its name (0.665542ms)\n\u2714 a motion works whose gears are off their arbors throws (0.208ms)\n\u2714 a point that is not finite throws (0.110375ms)\n\u2714 two wheels with one name throw (0.105875ms)\n\u2714 stepper refuses a duration that is not a whole number of periods (0.161167ms)\n\u2714 each wheel is one mesh distance from the pinion it drives (1.155167ms)\n\u2714 each wheel has four corners for each tooth (0.612959ms)\n\u2714 a pinion is level with the wheel that drives it (5.55125ms)\n\u2714 the hands sit under the chapter ring's top and the ring is flush with the case (0.815125ms)\n\u2714 the spring is a ribbon on the balance, and the stud is not in the drawing (0.1285ms)\n\u2714 every mesh is finite, and every hidden-inside disc is a disc (20.210625ms)\n\u2714 the cover draws the group of a clip disc only with a part that covers the disc (21.101792ms)\n\u2714 the views: the cover is centred on the watch and the spring's view on the balance (0.118333ms)\n\u2714 every mesh is in exactly one piece (0.138041ms)\n\u2714 each wheel of the train is three pieces: the wheel with its hub, the pinion and the arbor (2.776542ms)\n\u2714 the Gears slide's spans are whole teeth of their gears, in the second, and turn with them (4.318875ms)\n\u2714 the oscillator's pieces: the balance wheel holds its screws; the spring, collet and stud are one mesh each (0.112708ms)\n\u2714 a fitted view: the pieces fit the room under the subtitle, against its left edge (0.253958ms)\n\u2714 a fitted view narrower than 60% of the slide is centred in the slide's left 60% (0.078875ms)\n\u2714 four evenly spaced radial screws touch the balance rim and turn with it (1.03525ms)\n\u2714 the lowered oscillator connects to the upper roller and jewel with clearance (0.733709ms)\n\u2714 the impulse jewel is a D, its flat facing the fork, as wide as its circle (0.165583ms)\n\u2714 the lowered spring stays at the Hairspring slide's target through its tilt (0.053417ms)\n\u2714 the spring's height and the hairspring view's pivot are what art/diving_board.py copies (0.041083ms)\n\u2714 at a tilt, a fitted view fills its band on the screen, as the camera shows each piece (0.251625ms)\n\u2714 each drive arrow is on its wheel, centred toward the wheel that drives it, and turns the way its wheel turns (0.186333ms)\n\u2714 each stage's pose: the arbor where it started, the spring wound only where something holds its end (0.92675ms)\n\u2714 the key fades in, turns a third of a turn three times with a pause after each, and fades out (0.108125ms)\n\u2714 the mainspring keeps its length wound, with its coils drawn in to the arbor (8.558125ms)\n\u2714 a step forward plays when the stage's change ends; a step back cuts to its stage at once (0.673958ms)\n\u2714 a step back during a play cuts to its stage (0.244584ms)\n\u2714 the time-lapse turns the train one turn of the barrel, lets the spring down, and stops the watch (0.498875ms)\n\u2714 back from the time-lapse cuts to the spring wound: the train never goes back, and stops at a tooth (0.147083ms)\n\u2714 a jump, or a step from a slide without the story, is at its stage at once (0.260792ms)\n\u2714 the trial: a step to `barrel again` lets the spring down at once, then the key winds it after the stage's change (0.128333ms)\n\u2714 the free swing is the control: speed jumps 0.15 deg/s a step, acceleration 0 (1.16975ms)\n\u2714 a settle starts at the next extreme, with no acceleration jump there (68.405166ms)\n\u2714 a settle stops in 0.78 s with no jump in speed; acceleration drops 1500 deg/s2 there (0.441333ms)\n\u2714 a resume from rest starts as the settle mirrored and joins the free swing with no jump (1.344ms)\n\u2714 a resume during a settle has no jump in angle or speed (41.19725ms)\n\u2714 the mechanism's time never goes back (0.073709ms)\n\u2714 a settled still has the mechanism time and the angle of the settled live clock (0.096125ms)\n\u2714 a free still is on the swing curve at its time (0.063541ms)\n\u2714 untilRest is when a settle reaches rest, and null for a free swing (0.148459ms)\n\u2714 a strike is the start of each tick window, after `from` and up to `to` (4.09275ms)\n\u2714 the model gives each strike the moment it happened, between two frames (285.505917ms)\n\u2714 a time-lapse moves the mechanism on: the balance stays in step with the train, and whole periods leave it where its clock has it (0.088709ms)\n\u2714 at the time-lapse's full speed, the shutter shows the balance across its swing, not at its own pace (0.205667ms)\n\u2714 a step is one click, or the next or the previous slide (0.526916ms)\n\u2714 anything else is a jump, and so is the first place (0.079917ms)\n\u2714 computed sRGB colours preserve bytes and round recipes (0.586125ms)\n\u2714 computed sRGB colours reject transparency and invalid channels (1.0985ms)\n\u2714 every ink has its own theme variable (8.92575ms)\n\u2714 readPalette gives each ink the colour of its variable (0.178709ms)\n\u2714 readPalette names a variable that the theme does not set (10.307333ms)\n\u2714 readVariables gives each of the theme's variables, and no other (0.409125ms)\n\u2714 readVariables throws if the browser lists no paper (0.191125ms)\n\u2714 slideClasses reads a string or a list of classes (0.433625ms)\n\u2714 a slide without watch has no state (1.360625ms)\n\u2714 the fields and their defaults (0.623458ms)\n\u2714 watchDim dims pieces from its click on, until false; the stage gets their meshes at WATCH_DIM (0.664833ms)\n\u2714 a flash is of one click: the slide's at click 0, a block's at its click (0.223292ms)\n\u2714 a click block changes the motion from its click on, as the slide sets it for click 0 (0.282542ms)\n\u2714 watchClicks changes what shows from its click on; the camera stays on watchView (0.247625ms)\n\u2714 watchClicks and watchView refuse what they cannot hold, with the key's name (2.293458ms)\n\u2714 a slide shows the meshes of its pieces, or all but the marks, in its named or fitted view (1.619583ms)\n\u2714 watchRight puts a fitted view's right edge there, and needs a fitted view (0.947791ms)\n\u2714 watchMoveWith names what shows while the camera moves into the slide (0.663583ms)\n\u2714 a key that a click can change needs watch on the slide (0.725375ms)\n\u2714 a field of the wrong kind throws, with its name (2.708417ms)\n\u2714 text delay and inverse inks belong only to their flash click (0.541083ms)\n\u2714 the Mainspring slide's stage says when the watch runs: only in the barrel, wound (0.1765ms)\n\u2714 watchBand: slide fits the slide's height, with the picture band's bottom margin at both ends (0.121125ms)\n\u2714 every wheel meshes with its pinion: no overlap, and the driving flank keeps contact (759.620292ms)\n\u2714 the one-step wheel meshes with the fourth pinion, as the third wheel does (689.396708ms)\n\u2714 each pinion of the motion works meshes with the wheel that it drives (100.654458ms)\n\u2714 a meshed span's teeth drive its leaves, and no other leaves, as it passes through the mesh (594.495042ms)\n\u2714 a meshed span is the size of the pinion at most, and a shape's index is one of the wheel's (0.624542ms)\n\u2714 a wheel's teeth reach its tip circle and its root circle (1.8795ms)\n\u2714 a tooth that would come to a point throws (0.078958ms)\n\u2714 each pinion turns back by half its backlash, against its turn (0.062542ms)\n\u2714 each pinion has four corners for each leaf (0.172875ms)\n\u2714 faceSegments must be a positive integer (0.173291ms)\n\u2714 leafWidth must be finite and positive (0.094291ms)\n\u2714 contactSlack must be finite and nonnegative (0.145334ms)\n\u2714 the train turns as the mechanism's steppers did: each wheel its step a beat (0.7855ms)\n\u2714 a spin starts when the rest has faded out, and speeds up smoothly to its speed (0.280667ms)\n\u2714 on the Escapement slide, the pallet and the balance fade out in FADE_SECONDS, as the spin assumes; then the drive arrow fades in (1.076167ms)\n\u2714 a stop spins on until the rest is back, then stops at the next tooth, in step with the mechanism (0.609666ms)\n\u2714 a stop before the spin has started leaves the train where it was (0.227875ms)\n\u2714 fast clicks back and forth never move the train back, and it ends in step (0.338583ms)\n\u2714 a slide reached directly is at its state at once: spinning at speed, or in step (0.055292ms)\n\u2714 a spin must be faster than the mechanism (0.185916ms)\n\u2714 the Escapement slide's spin shows the escape wheel as the slide shows it (0.172667ms)\n\u2714 on the Gears slide, the gears spin from the start, and start to fade in as the spin starts (0.295208ms)\n\u2714 on the Gears slide, the span fades in while the gears turn on at full speed (0.187792ms)\n\u2714 at returns an item, and throws for any index that has none (1.162834ms)\n\u2714 a moved normal stays perpendicular to every moved tangent (0.556459ms)\n\u2714 a singular matrix has no normal matrix (0.199958ms)\n\u2714 the renderer's matrices must be affine and finite (0.197833ms)\n\u2714 a square with a square hole: two caps of the right area, and 16 walls (2.210792ms)\n\u2714 a circle of 64 points has 64 silhouette edges (0.68175ms)\n\u2714 the ring sort finds a hole inside a hole, in either winding (0.167625ms)\n\u2714 a ribbon has walls and no caps; its ends have vertical lines (0.09475ms)\n\u2714 a decal has only top lines (0.069417ms)\n\u2714 a ring must have enough points, a flag for each, and no zero-length edge (0.34775ms)\n\u2714 rings that cross have no outer ring for a hole: an error (0.108709ms)\n\u2714 a shear keeps each silhouette normal perpendicular to its vertical edge (0.672875ms)\n\u2714 heights must be finite with the bottom below the top; a decal may be flat (0.185083ms)\n\u2714 transformMesh refuses a matrix that is not affine (0.82275ms)\n\u2714 a colour is #rrggbb (0.972ms)\n\u2714 checkPalette wants a #rrggbb colour for the paper and for each ink (0.171666ms)\n\u2714 checkScene takes a good scene, and names what is wrong with a bad one (0.575541ms)\n\u2714 a flash draws each ink that a scene uses in a flash ink (0.151542ms)\n\u2714 a flash is five cycles of 0.25 s on and 0.25 s off (0.537833ms)\n\u2714 a flash is on in the first part of each cycle, and ends off (0.106333ms)\n\u2714 the first state is shown at once, with no phase (0.574459ms)\n\u2714 the later meshes fade in after the others, and then the flash plays (0.293ms)\n\u2714 valuesAt before any state throws (0.179208ms)\n\u2714 by default the old meshes fade out, the camera moves with the common ones, then the new ones fade in (0.218292ms)\n\u2714 a dim eases after the camera moves and the old meshes fade out, before the new ones fade in (0.150708ms)\n\u2714 zooming in, the camera moves and then tilts; zooming out, it untilts and then moves (0.09075ms)\n\u2714 with moveWith all, the new meshes fade in first and the camera moves with both (1.668375ms)\n\u2714 with nothing on the screen during the move, the camera jumps (0.883541ms)\n\u2714 without a camera move, the old meshes fade out and then the new ones fade in (0.321ms)\n\u2714 to a set that holds the old one, only the difference fades in, and back (0.12175ms)\n\u2714 in another view: the camera moves with the smaller set, then the difference fades in; back, the reverse (0.117166ms)\n\u2714 a fade cut short ends at 1 if the new state shows its meshes, else at 0, with no jump (0.11125ms)\n\u2714 a new state during a camera move starts from what is shown, with no jump (0.100167ms)\n\u2714 a state that changes nothing has no phase and no flash (0.048958ms)\n\u2714 an equal view that is another object does not move the camera (0.036209ms)\n\u2714 shown at once, a state has no phase and no flash (0.033417ms)\n\u2714 a flash of meshes on the screen plays first, and the change waits for it (0.145708ms)\n\u2714 a flash of meshes that fade in plays when they are in (0.064375ms)\n\u2714 a click during a flash of the same meshes does not start it again (0.071291ms)\n\u2714 a waiting flash cut short during its fade: the fade ends first, then the camera moves, then it flashes (0.087416ms)\n\u2714 a flash that has started goes on through a new state, and the change waits for it (0.0545ms)\n\u2714 a flash of other meshes starts from the click (0.040333ms)\n\u2714 a flash that has ended does not go on (0.044416ms)\n\u2714 text waits for the camera: first towards a close view, last away from it (0.053708ms)\n\u2714 a text-only inverse cue waits for the text fade and runs five cycles (0.104917ms)\n\u2714 a queued text cue is cancelled by another target or a jump (0.074125ms)\n\u2714 a delayed cue waits for an interrupted mesh fade to finish (0.043209ms)\n\u2714 a go-later mesh stays on the screen while the camera moves, and goes after it (0.072125ms)\n\u2714 a cut mesh goes at once, and the others then fade as usual (0.052167ms)\n\u2139 tests 168\n\u2139 suites 0\n\u2139 pass 168\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 2328.986125\n$ node --test \"webgl/**/*.test.ts\" \"watch/**/*.test.ts\" && uv run art/test_leader_path.py\n.......\n----------------------------------------------------------------------\nRan 7 tests in 0.001s\n\nOK",
+      "reused": false
+    },
+    {
+      "label": "artcheck",
+      "passed": true,
+      "seconds": 0.05153962504118681,
+      "message": "ok    artcheck",
+      "output": "ok    watches/public/diving-board.svg\nok    watches/public/timekeepers/candle.svg\n      note: fill #143C6B at 0.35 reads 1.91:1 on the panel, under 3:1 (needs 0.55). Faint: the drawing must read without it\nok    watches/public/timekeepers/hourglass.svg\nok    watches/public/timekeepers/sundial.svg\n      note: stroke #143C6B at 0.45 reads 2.37:1 on the panel, under 3:1 (needs 0.55). Faint: the drawing must read without it\n      note: stroke #2A2520 at 0.5 reads 2.97:1 on the panel, under 3:1 (needs 0.50). Faint: the drawing must read without it\nok    watches/public/timekeepers/water-clock.svg\n      note: stroke #2A2520 at 0.5 reads 2.97:1 on the panel, under 3:1 (needs 0.50). Faint: the drawing must read without it\n\n5 file(s), 0 failing.\nGrammar: strokes [2.0, 2.5, 3.0, 4.0] CSS px as shown, floor 1.64 CSS px at TV 55in @7m.",
+      "reused": false
+    },
+    {
+      "label": "scenecheck",
+      "passed": true,
+      "seconds": 0.2944600830087438,
+      "message": "ok    scenecheck",
+      "output": "83 mesh(es), 0 finding(s). Grammar: strokes [2.0, 2.5, 3.0, 4.0] CSS px, the art inks, solid washes.",
+      "reused": false
+    },
+    {
+      "label": "generated",
+      "passed": true,
+      "seconds": 4.615086624980904,
+      "message": "ok    generated",
+      "output": "",
+      "reused": false
+    },
+    {
+      "label": "palette",
+      "passed": true,
+      "seconds": 2.0174709589919075,
+      "message": "ok    palette",
+      "output": "\nthe theme sets the palette (themes/ledger/styles/ledger.css); a slide class may override it\n\n  ok   no talk declares a --palette-* variable (1 talk(s) checked)",
+      "reused": false
+    },
+    {
+      "label": "talk setup",
+      "passed": true,
+      "seconds": 0.9887125419918448,
+      "message": "ok    talk setup",
+      "output": "ok    watches: has pnpm-workspace.yaml; 2 deck file(s) use the slidev parser",
+      "reused": false
+    },
+    {
+      "label": "barroom",
+      "passed": true,
+      "seconds": 1.0851688750553876,
+      "message": "ok    barroom",
+      "output": "ok  watches/public/diving-board.svg: hold 3.37\nok  watches/public/timekeepers/candle.svg: hold 3.60\nok  watches/public/timekeepers/hourglass.svg: hold 4.42\nok  watches/public/timekeepers/sundial.svg: hold 4.10\nok  watches/public/timekeepers/water-clock.svg: hold 5.39\ngate: hold >= 3.0 at TV 55in @7m",
+      "reused": false
+    },
+    {
+      "label": "motion",
+      "passed": true,
+      "seconds": 2.032303999993019,
+      "message": "ok    motion",
+      "output": "MOTION at TV 55in @7m, flare 0.00\n\ndrawing                  dPeak    dP99   area CSS px^2 changing by    >=1.2    >=1.5    >=2.0    >=3.0\ndiving-board              8.96    2.51                              10631     7542     5932     3239\ncandle                   12.19    7.91                               1291      978      752      515\nhourglass                 6.45    6.45                                820      757      705      643\nsundial                   8.00    6.44                                313      267      234      194\nwater-clock               7.59    6.39                               1936     1487     1158      660\n\ndiving-board (980x452 = 442960 CSS px^2 in total): (0,1.2), (0.3,1.5), (0.6,1.8), (0.9,2.1)\n    longest animation 2.4s -> sampling 1.2s apart (opposite extremes of it)\n      1s animation does NOT cancel (1.20 periods) and is included in this row's numbers\ncandle (122x97 = 11834 CSS px^2 in total): (0,6), (1.5,7.5), (3,9), (4.5,10.5)\n    longest animation 12s -> sampling 6s apart (opposite extremes of it)\n      1.5s animation cancels exactly (4 whole periods), so it is excluded\n      1.6s animation does NOT cancel (3.75 periods) and is included in this row's numbers\n      1.8s animation does NOT cancel (3.33 periods) and is included in this row's numbers\n      3.1s animation does NOT cancel (1.94 periods) and is included in this row's numbers\n      4.3s animation does NOT cancel (1.40 periods) and is included in this row's numbers\nhourglass (122x97 = 11834 CSS px^2 in total): (0,4.5), (1.125,5.625), (2.25,6.75), (3.375,7.875)\n    longest animation 9s -> sampling 4.5s apart (opposite extremes of it)\n      0.6s animation does NOT cancel (7.50 periods) and is included in this row's numbers\nsundial (122x97 = 11834 CSS px^2 in total): (0,5.5), (1.375,6.875), (2.75,8.25), (4.125,9.625)\n    longest animation 11s -> sampling 5.5s apart (opposite extremes of it)\nwater-clock (122x97 = 11834 CSS px^2 in total): (0,4), (1,5), (2,6), (3,7)\n    longest animation 8s -> sampling 4s apart (opposite extremes of it)\n      1s animation cancels exactly (4 whole periods), so it is excluded\nno drawing animates only in marks below the floor.",
+      "reused": false
+    },
+    {
+      "label": "stills",
+      "passed": true,
+      "seconds": 8.260438166966196,
+      "message": "ok    stills",
+      "output": "wrote cover.png, motion-a.png, motion-b.png and pairs.json to /var/folders/t6/ckqzvjtj3_3f6y1nbj6gnvqr0000gn/T/art-thcjcvpf/stills\nthe renderer's browser checks passed",
+      "reused": false
+    },
+    {
+      "label": "barroom (png)",
+      "passed": true,
+      "seconds": 0.432902832981199,
+      "message": "ok    barroom (png)",
+      "output": "ok  /private/var/folders/t6/ckqzvjtj3_3f6y1nbj6gnvqr0000gn/T/art-thcjcvpf/stills/cover.png: hold 4.35\nok  /private/var/folders/t6/ckqzvjtj3_3f6y1nbj6gnvqr0000gn/T/art-thcjcvpf/stills/motion-a.png: hold 4.35\nok  /private/var/folders/t6/ckqzvjtj3_3f6y1nbj6gnvqr0000gn/T/art-thcjcvpf/stills/motion-b.png: hold 4.35\ngate: hold >= 3.0 at TV 55in @7m",
+      "reused": false
+    },
+    {
+      "label": "motion (png)",
+      "passed": true,
+      "seconds": 0.34800104098394513,
+      "message": "ok    motion (png)",
+      "output": "MOTION between PNG frames, at TV 55in @7m, flare 0.00\n\nfirst frame              dPeak    dP99   area CSS px^2 changing by    >=1.2    >=1.5    >=2.0    >=3.0\nmotion-a                 10.31    1.97                              12994     8675     5284     3413\nmotion-a against motion-b.png",
+      "reused": false
+    },
+    {
+      "label": "navigation smoke",
+      "passed": false,
+      "seconds": 7.908401312306523e-05,
+      "message": "FAIL  navigation smoke",
+      "output": "could not run: no built deck in /var/folders/t6/ckqzvjtj3_3f6y1nbj6gnvqr0000gn/T/deck-pq236ofs",
+      "reused": false
+    }
+  ]
+}

@@ -12,3 +12,4 @@ the two lists in step.
 | [watch.md](watch.md)                   | the live watch (files, design, rim screws, frontmatter keys, zoom line widths, budgets) and the diving board       |
 | [measurements.md](measurements.md)     | what the timekeepers, the cover watch, balance rim motion, and the diving board measure at the back row            |
 | [rough-slides.md](rough-slides.md)     | the talk's outline, as working notes. Check each claim before it goes on a slide                                   |
+| [packages.md](packages.md)             | dependency constraints and the UnoCSS build override                                                               |
