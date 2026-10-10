@@ -32,7 +32,10 @@ the narration (the full spoken text) with the slides.
   page for each click. `pnpm export` in the watches talk uses `--with-clicks`.
 - In the watches talk, a still of the watch follows the click of its page
   (`pnpm art:print` checks it), and so does the diving board's pose
-  ([`watches/docs/watch.md`](../watches/docs/watch.md)).
+  ([`watches/docs/watch.md`](../watches/docs/watch.md)). Full validation runs
+  that check only after a change to a print input, so run
+  `uv run ../tools/validate.py --print` in the talk before you export it
+  ([`talks.md`](talks.md#the-print-check)).
 
 ## The plan (a proposal, not a rule)
 

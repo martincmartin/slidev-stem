@@ -1,0 +1,9 @@
+FAIL slide 2, click 2: the board's picture is True, live False
+REAL print 1960x1104 args=('--use-angle=swiftshader',): rc 1 169.8s
+REAL print 980x552 args=('--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'): rc 0 154.5s
+FAIL slide 2, click 2: the board's picture is True, live False
+REAL print 1960x1104 args=('--use-angle=swiftshader',): rc 1 149.0s
+REAL print 980x552 args=('--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'): rc 0 146.6s
+FAIL slide 2, click 2: the board's picture is True, live False
+REAL print 1960x1104 args=('--use-angle=swiftshader',): rc 1 146.2s
+REAL print 980x552 args=('--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'): rc 0 147.4s

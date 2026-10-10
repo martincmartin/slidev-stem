@@ -373,3 +373,80 @@ def test_full_validation_uses_smoke_and_never_exhaustive_navigation(
             assert any("tools/smokecheck.py" in check.command for check in checks) is (
                 not quick
             )
+
+
+def a_talk_in_git(tmp_path: Path, inputs: str | None) -> Path:
+    """A committed talk, with `inputs` as its [tool.validate] print-inputs."""
+    import subprocess
+
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    settings = '[tool.mypy]\nfiles = ["art"]\n'
+    if inputs is not None:
+        settings += f"[tool.validate]\nprint-inputs = {inputs}\n"
+    (talk / "pyproject.toml").write_text(settings)
+    (talk / "slide-bottom.vue").write_text("still")
+    (talk / "slides.md").write_text("words")
+    for command in (
+        ("git", "init", "-q"),
+        ("git", "add", "."),
+        ("git", "-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "t"),
+    ):
+        subprocess.run(command, cwd=talk, check=True)
+    return talk
+
+
+def test_print_inputs_change_only_with_a_change_to_a_listed_file(
+    tmp_path: Path,
+) -> None:
+    talk = a_talk_in_git(tmp_path, '["slide-bottom.vue", "art/print_check.py"]')
+    assert validate.print_inputs(talk) == ["slide-bottom.vue", "art/print_check.py"]
+    assert not validate.print_inputs_changed(talk)
+    (talk / "slides.md").write_text("other words")
+    assert not validate.print_inputs_changed(talk)
+    (talk / "slide-bottom.vue").write_text("other still")
+    assert validate.print_inputs_changed(talk)
+    (talk / "slide-bottom.vue").write_text("still")
+    assert not validate.print_inputs_changed(talk)
+    (talk / "art").mkdir()
+    (talk / "art" / "print_check.py").write_text("new")  # untracked
+    assert validate.print_inputs_changed(talk)
+
+
+def test_print_runs_when_the_talk_declares_no_inputs_or_git_cannot_tell(
+    tmp_path: Path,
+) -> None:
+    talk = a_talk_in_git(tmp_path, None)
+    assert validate.print_inputs(talk) is None
+    assert validate.print_inputs_changed(talk)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "pyproject.toml").write_text(
+        '[tool.validate]\nprint-inputs = ["slide-bottom.vue"]\n'
+    )
+    assert validate.print_inputs_changed(outside)  # not a git repository
+
+
+def test_print_inputs_must_be_a_list_of_paths(tmp_path: Path) -> None:
+    (tmp_path / "pyproject.toml").write_text('[tool.validate]\nprint-inputs = "x"\n')
+    with pytest.raises(ValueError, match="print-inputs"):
+        validate.print_inputs(tmp_path)
+
+
+def test_print_is_skipped_unless_asked_and_the_skip_passes_by_name(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    (talk / "package.json").write_text('{"scripts": {"art:print": "x"}}')
+    (talk / "pyproject.toml").write_text('[tool.mypy]\nfiles = ["art"]\n')
+    for run_print in (True, False):
+        groups, _ = validate.talk_groups(
+            talk, tmp_path / "deck", tmp_path / "work", False, False, None, run_print
+        )
+        (item,) = [i for group in groups for i in group if i.label == "print"]
+        assert isinstance(item, validate.Skipped) != run_print
+    assert run_all("heading", [item, passing("build")]) == 0
+    output = capsys.readouterr().out
+    assert "skip  print  (no print input changed" in output
+    assert "all 2 checks passed (1 skipped)" in output

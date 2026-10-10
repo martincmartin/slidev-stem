@@ -51,6 +51,7 @@ uv run tools/validate.py --fix                          # ... after ruff formats
 (cd watches && uv run ../tools/validate.py --jobs 1)    # full checks, serial preparation
 (cd watches && uv run ../tools/validate.py --json)      # results and elapsed times as JSON
 (cd watches && uv run ../tools/validate.py --no-reuse)  # run print and smoke navigation again
+(cd watches && uv run ../tools/validate.py --print)     # run print even if no print input changed
 uv run tools/lib.py                          # the framework, as numbers
 uv run tools/palette.py                      # every gate, pass/fail
 uv run tools/palette.py --talk watches       # only: does this talk set it outside a slide class?
@@ -98,6 +99,8 @@ Before a commit, reuse the last successful full run only if the project and its 
 After changes to docs only, a quick run is enough (the policy says which files).
 Full mode reuses a pass of print and smoke navigation while the built deck and its checkers are byte-identical;
 `--no-reuse` runs them again. [talks.md](../docs/talks.md#check-your-work) gives the key.
+Full mode runs print only with `--print` or after a change to a print input
+([talks.md](../docs/talks.md#the-print-check)); run `--print` before an export or a tag.
 `--quick` checks source files, generated files, and a build.
 It omits rendered art, browser checks, print, and navigation.
 

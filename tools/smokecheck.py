@@ -7,7 +7,7 @@
 
 Full validation uses this check in Chromium, Firefox, and WebKit, with
 --no-canvas-readback. Each walk uses a fresh non-persistent context.
-Chromium draws WebGL on the GPU (browsers.CHROMIUM_GPU), as Chrome does.
+Chromium draws WebGL on the GPU (browsers.launch_args), as Chrome does.
 This is an incognito-like session, not a reproduction of every privacy policy.
 Quick validation has no browser walk.
 The Ledger theme supplies window.slideNavigation(), as specified in

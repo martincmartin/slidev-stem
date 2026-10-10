@@ -8,7 +8,8 @@ start a new talk.
 [`tasks/2026-09-28-per-talk-dependencies/`](../tasks/2026-09-28-per-talk-dependencies/PLAN.md),
 [`tasks/2026-09-28-validate/`](../tasks/2026-09-28-validate/PLAN.md),
 [`tasks/2026-10-06-validation-speed/`](../tasks/2026-10-06-validation-speed/PLAN.md),
-[`tasks/2026-10-07-validation-reuse/`](../tasks/2026-10-07-validation-reuse/PLAN.md).
+[`tasks/2026-10-07-validation-reuse/`](../tasks/2026-10-07-validation-reuse/PLAN.md),
+[`tasks/2026-10-10-cloud-validation/`](../tasks/2026-10-10-cloud-validation/README.md).
 
 Each talk is a separate project, with its own package versions. A talk that you
 gave is frozen. This page tells you why, and how to work in that setup. The rules
@@ -56,6 +57,22 @@ Playwright keeps its browsers in one cache for your user
 (`~/Library/Caches/ms-playwright` on macOS). All checkouts and worktrees share
 it, so a new one downloads no browser.
 
+### Cloud sessions
+
+A Claude Code cloud session runs `.claude/hooks/session-start.sh` when it
+starts. It installs what a laptop already has: pnpm 12 (it reads the lockfiles,
+and then runs each project's pinned pnpm), a uv that knows the pinned Python,
+each project in progress from its lockfiles, the three Playwright engines, and
+the system libraries WebKit needs. It also starts an X server (Xvfb) and sets
+`DISPLAY`. This is not an oversight: on Linux without a GPU, headless Firefox
+has WebGL only with a display (it then draws in software, with Mesa). Without
+one, Firefox draws no watch, and the privacy check fails in Firefox. A laptop
+needs none of this.
+
+The environment's network policy must allow `cdn.playwright.dev` and
+`playwright.download.prss.microsoft.com`, where Playwright downloads its
+browsers.
+
 ## Why each talk is its own project
 
 The usual life of a talk is: write it, give it, tag it, and never touch it
@@ -94,8 +111,16 @@ results. This is not an oversight: headless Chromium otherwise draws WebGL in
 software (SwiftShader), on the CPU, which made the print check about 3 times
 slower (the dated note in the
 [validation-speed task](../tasks/2026-10-06-validation-speed/README.md)).
-Without a GPU, Chromium falls back to SwiftShader: the checks are the same, but
-slower. The PNG stills (`art:stills`) stay in software, because the legibility
+Without a GPU (Linux without `/dev/dri`, such as a cloud container), Chromium
+draws in software either way, and gets `CHROMIUM_NO_GPU`, ANGLE's SwiftShader
+backend: the checks are the same, but slower. There it drew the watch about
+4.8 times as fast as Chromium's default software path (8.2 against 1.7 frames
+a second), and the print check took 94 s instead of 117 s (median of five runs
+each, all passing; the
+[cloud-validation task](../tasks/2026-10-10-cloud-validation/README.md)). With Chromium 141 the same flag made the print
+check fail at the Hairspring slide's curl click three times out of three: the
+live capture of that click depends on frame timing. If the print check fails
+only without a GPU, suspect this first. The PNG stills (`art:stills`) stay in software, because the legibility
 and motion checks measure their pixels.
 Each walk uses a fresh non-persistent browser context, with no saved cookies,
 storage, or permissions. These are
@@ -133,6 +158,28 @@ If all changes since the last successful full run are to docs only (`docs/`,
 `tasks/`, a README or an `AGENTS.md`), a successful quick run is enough. No build
 and no check reads these files, except `doccheck` and Prettier, and quick mode
 runs both.
+
+### The print check
+
+The print check (`art:print`) checks the pages of an export: each printed page's
+watch must be the live slide's at the same click. It is the slowest check, and
+an export is the only thing it guards: the live talk does not use it. So full
+validation runs it only when it can find something new:
+
+- **With `--print`.** Run `uv run ../tools/validate.py --print` before you export
+  a talk, before you tag it, and before you give it.
+- **When the working tree changes a print input**: staged, unstaged or
+  untracked, against `HEAD` (`git status`). A talk lists its print inputs in its
+  `pyproject.toml` (`print-inputs` in `[tool.validate]`): the files with code
+  that only printed pages run, the check itself, and the Slidev version.
+
+Otherwise the summary says `skip  print`, and the run passes. A talk that lists
+no print inputs runs the check every time. So does a run where git cannot say
+what changed. This is not an oversight: on a laptop with a GPU the check takes
+about 18 s, but on a machine without one about 195 s, three quarters of a full
+run ([cloud-validation task](../tasks/2026-10-10-cloud-validation/README.md)).
+The cost is a later warning: a change to shared code or to `slides.md` that
+breaks only the printed pages fails at `--print`, not at the commit.
 
 **Full validation reuses successful print and smoke navigation checks when their inputs are unchanged.**
 The key is computed by `deck_key` in `tools/validate.py`.

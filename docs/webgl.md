@@ -242,9 +242,11 @@ of [talks.md](talks.md):
   slide and click, the state that the printed page's still shows must equal the
   live slide's. It compares states, not pixels, and it opens a slide in print
   mode, not Slidev's `/print` route (a build has none). It walks the live deck
-  first, and then loads the printed pages in several browsers at once: each
-  printed page draws the still of every watch slide, and the live watch's
-  animation must not compete with those loads. `--browser firefox` or
+  first, and then loads the printed pages in several browsers at once, so
+  the live watch's animation does not compete with those loads. A printed page
+  mounts every slide but shows one, and only that one draws its still
+  (`slide-bottom.vue`). Full validation runs it only with `--print`, or after a
+  change to a print input ([talks.md](talks.md#the-print-check)). `--browser firefox` or
   `webkit` runs it in another engine. Copy it with the
   layers; it reads the `data-watch` attribute that `global-bottom.vue` and
   `slide-bottom.vue` write.

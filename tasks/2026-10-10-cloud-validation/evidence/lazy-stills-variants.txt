@@ -1,0 +1,22 @@
+[cur p3] REAL print 1960x1104 args=('--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'): rc 0 122.8s
+[ss p3] REAL print 1960x1104 args=('--use-angle=swiftshader',): rc 0 118.1s
+[cur p4] REAL print 1960x1104 args=('--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'): rc 0 124.2s
+[cur p3] REAL print 1960x1104 args=('--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'): rc 0 116.3s
+[ss p3] REAL print 1960x1104 args=('--use-angle=swiftshader',): rc 0 92.5s
+[cur p4] REAL print 1960x1104 args=('--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'): rc 0 114.3s
+[cur p3] REAL print 1960x1104 args=('--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'): rc 0 117.4s
+[ss p3] REAL print 1960x1104 args=('--use-angle=swiftshader',): rc 0 94.3s
+[cur p4] REAL print 1960x1104 args=('--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'): rc 0 122.2s
+[cur p3] REAL print 1960x1104 args=('--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'): rc 0 119.5s
+[ss p3] REAL print 1960x1104 args=('--use-angle=swiftshader',): rc 0 100.2s
+[cur p3] REAL print 1960x1104 args=('--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'): rc 0 112.3s
+[ss p3] REAL print 1960x1104 args=('--use-angle=swiftshader',): rc 0 93.6s
+[ss] smoke chromium 1960x1104: rc 0 26.6s
+[cur] smoke chromium 1960x1104: rc 0 33.4s
+[ss] smoke chromium 1960x1104: rc 0 23.3s
+[cur] smoke chromium 1960x1104: rc 0 31.6s
+[ss] smoke chromium 1960x1104: rc 0 26.9s
+[cur] smoke chromium 1960x1104: rc 0 30.1s
+[ss] smoke chromium 1960x1104: rc 0 25.9s
+[ss] smoke chromium 1960x1104: rc 0 23.9s
+DONE

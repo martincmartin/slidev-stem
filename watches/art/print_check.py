@@ -18,10 +18,11 @@ draws one pose of it. It does not check that the still's picture matches its
 state.
 
 The two phases do not share a browser, so the printed loads do not compete with
-the live watch's animation. A printed page draws the still of every watch slide,
-which is why its loads are spread over several browsers. Chromium draws WebGL
-on the GPU (CHROMIUM_GPU), as Chrome does in a talk; without a GPU it falls back
-to software (SwiftShader), and the check is the same, but slower. The output
+the live watch's animation. A printed page mounts every slide but draws the
+still of its own slide only (slide-bottom.vue). Its loads are spread over
+several browsers. Chromium draws WebGL
+on the GPU (CHROMIUM_GPU), as Chrome does in a talk; without a GPU it draws in
+software (CHROMIUM_NO_GPU), and the check is the same, but slower. The output
 names the renderer.
 
 The diving board (components/DivingBoard.vue) is checked the same way: the
@@ -75,6 +76,15 @@ VIEWPORT: ViewportSize = {"width": 1960, "height": 1104}
 PRINTED_PAGES = 3
 # The same as stem/tools/browsers.py's: a talk does not import the house tools.
 CHROMIUM_GPU = ("--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist")
+CHROMIUM_NO_GPU = ("--use-angle=swiftshader",)
+
+
+def chromium_args() -> list[str]:
+    """Chromium on the GPU, or, where there is none (Linux without /dev/dri),
+    the faster of its software renderers. As stem/tools/browsers.py's."""
+    if sys.platform == "darwin" or Path("/dev/dri").exists():
+        return list(CHROMIUM_GPU)
+    return list(CHROMIUM_NO_GPU)
 
 
 # The engines that --browser accepts: Playwright's name for each is its attribute.
@@ -88,7 +98,7 @@ BROWSERS: dict[str, Callable[[Playwright], BrowserType]] = {
 def launch(playwright: Playwright, engine: str) -> Browser:
     """Start `engine`: Chromium on the GPU, as Chrome draws a talk."""
     return BROWSERS[engine](playwright).launch(
-        args=list(CHROMIUM_GPU) if engine == "chromium" else []
+        args=chromium_args() if engine == "chromium" else []
     )
 
 

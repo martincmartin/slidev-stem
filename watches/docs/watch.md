@@ -1349,6 +1349,13 @@ art:generated` runs it with the `--check` of `watch_design.py` and
   WebKit, not Safari itself) pass too, as of 2026-10-04.
   Why: [`tasks/2026-10-03-narrated-export/`](../../tasks/2026-10-03-narrated-export/PLAN.md),
   "The watches talk: what the still forms need".
+- **A printed page draws one still.** A page of one slide
+  (`/N?print=clicks`, what `slidev export --format png` and `art:print` open)
+  mounts every slide but shows only its own, and `slide-bottom.vue` draws the
+  still of that one only. It drew all eight before, and without a GPU a page
+  loaded 2 to 2.5 times slower. Each page of the PDF has a nav of its own, so
+  every page still draws its still: the PDF's 42 pages of watch slides were
+  pixel-identical before and after (2026-10-10).
 - **The board is posed in print.** A page that does not run the clock (print,
   export, the overview) sets the SVG's time to the pose of its click
   (`boardPoseTime` in `watch/board.ts`; the posed board is `slide-bottom.vue`'s): bent, at the bottom of the swing, at click 1, and half

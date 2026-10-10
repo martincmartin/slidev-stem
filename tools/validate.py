@@ -7,6 +7,7 @@
     uv run ../tools/validate.py --jobs 1     # full validation, serial preparation
     uv run ../tools/validate.py --json       # results and timings as JSON
     uv run ../tools/validate.py --no-reuse   # run print and smoke navigation again
+    uv run ../tools/validate.py --print      # run print even if no print input changed
 
 The project comes from the nearest pyproject.toml. No run checks other talks.
 The house run checks Python, formatting, tests, documentation, and palette gates.
@@ -19,6 +20,10 @@ Independent preparation groups use the default worker limit below. Each group ke
 its dependency order. Smoke navigation runs after preparation. It checks startup, page errors,
 outside requests, and completion. Exhaustive navigation is diagnostic only.
 Neither full nor quick validation runs navcheck.py.
+
+Full mode runs the print check only with --print, or when the working tree
+changes one of the talk's print inputs ([tool.validate] print-inputs in its
+pyproject.toml). Run --print before an export or a tag (docs/talks.md).
 
 Full mode reuses a pass of print and of smoke navigation from an earlier full run
 while the built deck and the checkers are byte-identical (`deck_key`); the
@@ -40,11 +45,13 @@ import argparse
 import hashlib
 import json
 import shlex
+import subprocess
 import sys
 import tempfile
 import textwrap
 import threading
 import time
+import tomllib
 from collections.abc import Callable, Iterable, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
@@ -312,7 +319,48 @@ def privacy_checks(directory: Path, deck: Path) -> list[Check]:
     ]
 
 
-Item = Check | Later | Reusable
+def print_inputs(directory: Path) -> list[str] | None:
+    """The talk's files that only the print check tests: `print-inputs` of
+    [tool.validate] in its pyproject.toml, relative to the talk. None if the
+    talk does not declare them."""
+    settings = tomllib.loads((directory / "pyproject.toml").read_text())
+    paths = settings.get("tool", {}).get("validate", {}).get("print-inputs")
+    if paths is None:
+        return None
+    if not isinstance(paths, list) or not all(isinstance(p, str) for p in paths):
+        raise ValueError("[tool.validate] print-inputs must be a list of paths")
+    return paths
+
+
+def print_inputs_changed(directory: Path) -> bool:
+    """Whether the working tree changes a print input of the talk in
+    `directory`: staged, unstaged or untracked, against HEAD. True when the
+    talk declares no inputs, or when git cannot tell: then print runs."""
+    paths = print_inputs(directory)
+    if paths is None:
+        return True
+    try:
+        status = subprocess.run(
+            ("git", "status", "--porcelain", "--", *paths),
+            cwd=directory,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except OSError, subprocess.CalledProcessError:
+        return True
+    return bool(status.stdout.strip())
+
+
+@dataclass(frozen=True)
+class Skipped:
+    """A check that is not run, and why. It passes, and says so."""
+
+    label: str
+    reason: str
+
+
+Item = Check | Later | Reusable | Skipped
 
 
 def talk_groups(
@@ -322,15 +370,25 @@ def talk_groups(
     fix: bool,
     quick: bool,
     record: PassRecord | None = None,
+    run_print: bool = True,
 ) -> tuple[list[list[Item]], list[Item]]:
     """Group independent work. Keep navigation outside the worker pool. With
     `record`, a pass of print or smoke navigation is reused while the deck and its
-    checkers are unchanged."""
+    checkers are unchanged. Without `run_print`, print is skipped
+    (docs/talks.md, "The print check")."""
 
     def reusable(check: Check) -> Check | Reusable:
         if record is None:
             return check
         return Reusable(check, lambda: deck_key(STEM, directory, deck), record)
+
+    def printing(check: Check) -> Item:
+        if run_print:
+            return reusable(check)
+        return Skipped(
+            check.label,
+            "no print input changed; run --print before an export or a tag",
+        )
 
     talk = str(lib.display_path(directory))
     public = str(lib.display_path(directory / "public"))
@@ -356,7 +414,7 @@ def talk_groups(
     stills: list[Item] = [*still_checks(directory, work)]
     built_deck = [
         *build,
-        *map(reusable, print_checks(directory, deck)),
+        *map(printing, print_checks(directory, deck)),
         *map(reusable, privacy_checks(directory, deck)),
     ]
     # Start the longest preparation sequence first. With --fix, source
@@ -391,6 +449,8 @@ class CheckResult:
     output: str
     # passed in an earlier run, with the same key, and not run now
     reused: bool = False
+    # not run, by design (Skipped)
+    skipped: bool = False
 
 
 def run_group(checks: Sequence[Item]) -> list[CheckResult]:
@@ -398,6 +458,18 @@ def run_group(checks: Sequence[Item]) -> list[CheckResult]:
     results = []
     for item in checks:
         started = time.perf_counter()
+        if isinstance(item, Skipped):
+            results.append(
+                CheckResult(
+                    item.label,
+                    True,
+                    0.0,
+                    f"skip  {item.label}  ({item.reason})",
+                    "",
+                    skipped=True,
+                )
+            )
+            continue
         try:
             key = None
             if isinstance(item, Reusable):
@@ -476,7 +548,9 @@ def report(
                 f"\n{len(failed)} of {len(results)} checks failed ({', '.join(failed)})"
             )
         else:
-            print(f"\nall {len(results)} checks passed")
+            skipped = sum(result.skipped for result in results)
+            note = f" ({skipped} skipped)" if skipped else ""
+            print(f"\nall {len(results)} checks passed{note}")
         print(f"total: {seconds:.2f} s")
     return 1 if failed else 0
 
@@ -531,6 +605,11 @@ def main() -> int:
         "--json", action="store_true", help="print timings and results as JSON"
     )
     parser.add_argument(
+        "--print",
+        action="store_true",
+        help="run the print check even if no print input changed (before an export or a tag)",
+    )
+    parser.add_argument(
         "--no-reuse",
         action="store_true",
         help="run print and smoke navigation even if they passed with the same deck",
@@ -556,6 +635,7 @@ def main() -> int:
                 arguments.fix,
                 arguments.quick,
                 None if arguments.no_reuse else PassRecord(project / PASS_RECORD),
+                arguments.print or print_inputs_changed(project),
             )
         else:
             sys.exit(f"{project} is neither stem/ nor a talk (it has no slides.md)")

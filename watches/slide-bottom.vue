@@ -14,6 +14,9 @@
 // board covers the live watch. This layer is outside the slide's
 // `.slidev-layout`, so it takes the slide's palette as global-bottom.vue does:
 // the still is drawn in its colours, and the board gets its variables.
+// A printed page of one slide (`/N?print=clicks`) mounts every slide but shows
+// only its own: the others draw no still. Each page of the PDF has a nav of its
+// own, whose slide is the page's, so every page draws its still.
 import { useNav, useSlideContext } from "@slidev/client";
 import { computed, ref, watch as onChange } from "vue";
 import DivingBoard from "./components/DivingBoard.vue";
@@ -22,14 +25,20 @@ import { WATCH, watchStills } from "./watch/instance.ts";
 import { slidePalette } from "./watch/palette.ts";
 import { watchState } from "./watch/state.ts";
 
-const { $frontmatter, $renderContext, $clicks } = useSlideContext();
+const { $frontmatter, $renderContext, $clicks, $page } = useSlideContext();
 const LIVE = ["slide", "presenter"];
-const { isPrintMode } = useNav();
+const { isPrintMode, currentSlideNo } = useNav();
 const state = computed(() => watchState($frontmatter, $clicks.value));
 const notLive = computed(
   () => isPrintMode.value || !LIVE.includes($renderContext.value),
 );
-const needsStill = computed(() => state.value !== undefined && notLive.value);
+/** A slide that a printed page mounts but does not show. */
+const hiddenInPrint = computed(
+  () => isPrintMode.value && currentSlideNo.value !== $page.value,
+);
+const needsStill = computed(
+  () => state.value !== undefined && notLive.value && !hiddenInPrint.value,
+);
 const posed = computed(() => boardState($frontmatter, $clicks.value));
 /** Read only where a still or a posed board needs it. */
 const palette = computed(() => slidePalette($frontmatter["class"]));

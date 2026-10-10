@@ -24,7 +24,7 @@ import io
 import pathlib
 import sys
 
-from PIL import Image
+from PIL import IcoImagePlugin, Image
 from theme import theme_palette
 from watch_design import TALK
 
@@ -139,6 +139,17 @@ def icon_bytes() -> bytes:
     return buffer.getvalue()
 
 
+def icon_pixels(data: bytes) -> dict[tuple[int, int], bytes]:
+    """Each size in the .ico `data`, and its RGBA pixels. Two files with the
+    same pixels can differ in their bytes: zlib, under Pillow's PNG encoder,
+    compresses differently on macOS and on Linux."""
+    icon = IcoImagePlugin.IcoFile(io.BytesIO(data))
+    return {
+        size: icon.getimage(size).convert("RGBA").tobytes()
+        for size in sorted(icon.sizes())
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Write the deck's favicon.")
     parser.add_argument(
@@ -148,11 +159,13 @@ def main() -> int:
     parser.add_argument(
         "--check",
         action="store_true",
-        help="fail if the file on disk differs; write nothing",
+        help="fail if the file on disk has other sizes or pixels; write nothing",
     )
     arguments = parser.parse_args()
     if arguments.check:
-        if not arguments.out.exists() or arguments.out.read_bytes() != icon_bytes():
+        if not arguments.out.exists() or icon_pixels(
+            arguments.out.read_bytes()
+        ) != icon_pixels(icon_bytes()):
             print(
                 f"{arguments.out} differs from what {pathlib.Path(__file__).name} writes",
                 file=sys.stderr,
