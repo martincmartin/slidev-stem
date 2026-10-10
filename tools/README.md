@@ -117,7 +117,8 @@ The sampling plans and contrast calculations are unchanged.
 Frame capture waits for fonts and two paint frames instead of a fixed delay.
 
 `smokecheck.py` provides the full validation deck walk in Chromium, Firefox,
-and WebKit. Each uses a fresh non-persistent context. Full validation blocks
+and WebKit. Each uses a fresh non-persistent context, and Chromium draws on the
+GPU ([browser support](../docs/talks.md#browser-support)). Full validation blocks
 2D canvas pixel reads as a privacy regression check.
 See [browser support](../docs/talks.md#browser-support) for the requirements and limits.
 It checks startup, page errors, outside requests, navigation stalls, and completion.

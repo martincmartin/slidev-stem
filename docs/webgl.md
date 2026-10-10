@@ -239,10 +239,14 @@ of [talks.md](talks.md):
 - `art/privacy_check.py` (`pnpm art:privacy DECK`, on the built deck):
   Chromium, Firefox, and WebKit must start the live watch with canvas pixel
   reads blocked. This catches a palette error that can leave a slide blank.
+  The three engines run at once.
 - `art/print_check.py` (`pnpm art:print DECK`, on the built deck): for each
   slide and click, the state that the printed page's still shows must equal the
   live slide's. It compares states, not pixels, and it opens a slide in print
-  mode, not Slidev's `/print` route (a build has none). `--browser firefox` or
+  mode, not Slidev's `/print` route (a build has none). It walks the live deck
+  first, and then loads the printed pages in several browsers at once: each
+  printed page draws the still of every watch slide, and the live watch's
+  animation must not compete with those loads. `--browser firefox` or
   `webkit` runs it in another engine. Copy it with the
   layers; it reads the `data-watch` attribute that `global-bottom.vue` and
   `slide-bottom.vue` write.

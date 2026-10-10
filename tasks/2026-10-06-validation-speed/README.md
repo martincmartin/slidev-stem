@@ -110,3 +110,5 @@ If the project and its relevant inputs are unchanged since that run, reuse it.
 
 
 2026-10-07: [Smoke navigation](../../watches/tasks/2026-10-07-full-validation-profile/README.md) replaces exhaustive navigation in validation. Reuse now applies to print and smoke navigation. Exhaustive navigation is diagnostic only.
+
+2026-10-10: the default is three workers. The print check walks the live deck first, then loads the printed pages in three browsers at once, so the printed loads no longer compete with the live watch. Chromium draws WebGL on the GPU in the print, smoke and privacy checks (`tools/browsers.py`). On an Apple M3 Pro, with the 47-position deck, the print check alone took 104 s split, 62 s split in three browsers, and 18 s split in three browsers on the GPU, against 169 s before. A full watches run went from 196 s to 33 s (32.6 s, 23 checks passed). No check or position was removed.

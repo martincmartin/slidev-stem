@@ -58,6 +58,7 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Any
 
+import browsers
 import lib
 import numpy as np
 from PIL import Image
@@ -453,9 +454,7 @@ def export(playwright: Playwright, deck: Deck) -> dict[str, object]:
 
 
 def overview(playwright: Playwright, deck: Deck) -> dict[str, object]:
-    browser = playwright.chromium.launch(
-        args=["--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist"]
-    )
+    browser = playwright.chromium.launch(args=browsers.launch_args("chromium"))
     page = browser.new_page(
         viewport={"width": 1400, "height": 900}, device_scale_factor=2
     )

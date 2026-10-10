@@ -87,6 +87,16 @@ windows. They must work offline with default privacy protections enabled.
 
 Full validation walks the built deck in Playwright Chromium, Firefox, and WebKit.
 The three independent walks run together after other checks finish.
+In these walks and in the print and privacy checks, Chromium draws WebGL on the GPU
+(`CHROMIUM_GPU` in `tools/browsers.py`), as Chrome does in a talk. The checks
+compare states and positions, not pixels, so the renderer does not change their
+results. This is not an oversight: headless Chromium otherwise draws WebGL in
+software (SwiftShader), on the CPU, which made the print check about 3 times
+slower (the dated note in the
+[validation-speed task](../tasks/2026-10-06-validation-speed/README.md)).
+Without a GPU, Chromium falls back to SwiftShader: the checks are the same, but
+slower. The PNG stills (`art:stills`) stay in software, because the legibility
+and motion checks measure their pixels.
 Each walk uses a fresh non-persistent browser context, with no saved cookies,
 storage, or permissions. These are
 [incognito-like contexts](https://playwright.dev/python/docs/browser-contexts).

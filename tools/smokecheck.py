@@ -7,6 +7,7 @@
 
 Full validation uses this check in Chromium, Firefox, and WebKit, with
 --no-canvas-readback. Each walk uses a fresh non-persistent context.
+Chromium draws WebGL on the GPU (browsers.CHROMIUM_GPU), as Chrome does.
 This is an incognito-like session, not a reproduction of every privacy policy.
 Quick validation has no browser walk.
 The Ledger theme supplies window.slideNavigation(), as specified in
@@ -122,7 +123,7 @@ async def check(
     async with async_playwright() as playwright:
         browser_type = browsers.select(playwright, engine)
         browsers.install(browser_type)
-        browser = await browser_type.launch()
+        browser = await browser_type.launch(args=browsers.launch_args(engine))
         try:
             # A new non-persistent context is an incognito-like session.
             context = await browser.new_context(

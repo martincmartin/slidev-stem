@@ -40,11 +40,11 @@ import urllib.request
 from collections.abc import Iterator
 from dataclasses import dataclass
 
+import browsers
 import numpy as np
 from PIL import Image
 from playwright.sync_api import Browser, Page, sync_playwright
 
-CHROMIUM_GPU = ["--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist"]
 SLIDE = (980, 552)  # CSS px
 RATIO = 2
 SCALE = 1728 / 980  # the laptop's full-screen slide, in slide px per CSS px
@@ -214,9 +214,7 @@ def main() -> None:
     result: dict[str, object] = {"size px": SIZE, "draws": DRAWS}
     with probe_server(fade) as base, sync_playwright() as playwright:
         for name in ("chromium", "firefox"):
-            browser = getattr(playwright, name).launch(
-                args=CHROMIUM_GPU if name == "chromium" else []
-            )
+            browser = getattr(playwright, name).launch(args=browsers.launch_args(name))
             result[name] = check(fade, browser, base, name)
             browser.close()
             print(name, json.dumps(result[name], indent=1))

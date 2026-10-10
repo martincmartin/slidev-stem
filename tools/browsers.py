@@ -22,6 +22,18 @@ from playwright.sync_api import Playwright as SyncPlaywright
 
 NAMES = ("chromium", "firefox", "webkit")
 
+# Without these, headless Chromium draws WebGL in software (SwiftShader), on the
+# CPU. With them, it draws on the GPU (Metal on a Mac), as Chrome does in a talk.
+# Where there is no GPU, Chromium uses SwiftShader: slower, but the same checks.
+CHROMIUM_GPU = ("--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist")
+
+
+def launch_args(name: str) -> list[str]:
+    """The launch arguments for engine `name`: the GPU for Chromium."""
+    if name not in NAMES:
+        raise ValueError(f"Unknown browser engine: {name}")
+    return list(CHROMIUM_GPU) if name == "chromium" else []
+
 
 @overload
 def select(playwright: AsyncPlaywright, name: str) -> AsyncBrowserType: ...

@@ -8,13 +8,21 @@ DECK_DIR is the built deck (`pnpm build --out DECK_DIR`). An export has one page
 for each click (`slidev export --with-clicks`), and a page's still must be the
 live slide's watch at the same click. The two layers write the state that they
 show in a `data-watch` attribute: the live canvas (global-bottom.vue) and the
-still (slide-bottom.vue). This steps through the live deck with the right arrow,
-as the viewer does. At each slide and click it also loads the slide in print
-mode at that click (`/N?print=clicks&clicks=C`, the address that
-`slidev export --format png --with-clicks` opens), and fails if the two states
-differ. It compares states, not pixels: the live watch swings, and the still
+still (slide-bottom.vue). First this steps through the live deck with the right
+arrow, as the viewer does, and records the state at each slide and click. Then
+it loads each slide in print mode at each click (`/N?print=clicks&clicks=C`,
+the address that `slidev export --format png --with-clicks` opens), in
+PRINTED_PAGES browsers at once, and fails if a printed state differs from the
+live one. It compares states, not pixels: the live watch swings, and the still
 draws one pose of it. It does not check that the still's picture matches its
 state.
+
+The two phases do not share a browser, so the printed loads do not compete with
+the live watch's animation. A printed page draws the still of every watch slide,
+which is why its loads are spread over several browsers. Chromium draws WebGL
+on the GPU (CHROMIUM_GPU), as Chrome does in a talk; without a GPU it falls back
+to software (SwiftShader), and the check is the same, but slower. The output
+names the renderer.
 
 The diving board (components/DivingBoard.vue) is checked the same way: the
 printed page must show the board when the live slide does, its picture when
@@ -41,16 +49,32 @@ the check, as in `stem/tools/offline_check.py`.
 import argparse
 import mimetypes
 import sys
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from playwright.sync_api import BrowserType, Page, Playwright, Route, sync_playwright
+from playwright.sync_api import (
+    Browser,
+    BrowserType,
+    Page,
+    Playwright,
+    Route,
+    ViewportSize,
+    sync_playwright,
+)
 
 HOST = "deck.test"
 TIMEOUT_MS = 60_000
 STEP_LIMIT = 1000  # no talk has this many steps
 BOARD_TIME_TOLERANCE_S = 0.05  # the SVG's clock reads a little after it is set
+VIEWPORT: ViewportSize = {"width": 1960, "height": 1104}
+# Browsers that load printed pages at once. On an Apple M3 Pro, 47 pages took
+# 21.5 s in one and 8.9 s in three.
+PRINTED_PAGES = 3
+# The same as stem/tools/browsers.py's: a talk does not import the house tools.
+CHROMIUM_GPU = ("--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist")
 
 
 # The engines that --browser accepts: Playwright's name for each is its attribute.
@@ -59,6 +83,13 @@ BROWSERS: dict[str, Callable[[Playwright], BrowserType]] = {
     "firefox": lambda playwright: playwright.firefox,
     "webkit": lambda playwright: playwright.webkit,
 }
+
+
+def launch(playwright: Playwright, engine: str) -> Browser:
+    """Start `engine`: Chromium on the GPU, as Chrome draws a talk."""
+    return BROWSERS[engine](playwright).launch(
+        args=list(CHROMIUM_GPU) if engine == "chromium" else []
+    )
 
 
 def serve_from(directory: Path, page: Page, outside: list[str]) -> None:
@@ -230,63 +261,162 @@ def board_problems(
     return problems
 
 
-def clicks_of(url: str) -> tuple[int, int]:
-    """The slide number and the click that a live URL shows."""
+@dataclass(frozen=True)
+class Position:
+    slide: int
+    click: int
+
+
+def clicks_of(url: str) -> Position:
+    """The slide and the click that a live URL shows."""
     parts = urlparse(url)
     clicks = parse_qs(parts.query).get("clicks", ["0"])
-    return int(parts.path.strip("/")), int(clicks[0])
+    return Position(int(parts.path.strip("/")), int(clicks[0]))
+
+
+Pose = dict[str, float | bool]
+
+
+@dataclass(frozen=True)
+class LiveView:
+    """What the live slide shows at one position."""
+
+    position: Position
+    watch: str
+    board: Pose | None
+
+
+@dataclass(frozen=True)
+class PrintedView:
+    """What the printed page of one position shows."""
+
+    watch: str
+    board: Pose | None
+    still_loaded: bool
+
+
+@dataclass
+class Findings:
+    """What one browser found. Each browser has its own."""
+
+    problems: list[str] = field(default_factory=list)
+    outside: list[str] = field(default_factory=list)
+
+
+def open_page(browser: Browser, deck: Path, findings: Findings) -> Page:
+    page = browser.new_page(viewport=VIEWPORT)
+    page.set_default_timeout(TIMEOUT_MS)
+    page.on("pageerror", lambda error: findings.problems.append(f"page error: {error}"))
+    serve_from(deck, page, findings.outside)
+    return page
+
+
+def renderer(page: Page) -> str:
+    """The WebGL renderer: the GPU, or SwiftShader when there is none."""
+    name: str = page.evaluate("""() => {
+        const gl = document.createElement('canvas').getContext('webgl2');
+        const info = gl?.getExtension('WEBGL_debug_renderer_info');
+        return info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : 'unknown';
+    }""")
+    return name
+
+
+def walk_live(deck: Path, engine: str) -> tuple[list[LiveView], str, Findings]:
+    """Step through the live deck, and record what each position shows."""
+    findings = Findings()
+    views: list[LiveView] = []
+    with sync_playwright() as playwright:
+        browser = launch(playwright, engine)
+        try:
+            live = open_page(browser, deck, findings)
+            show(live, "1", 1)
+            live_ready(live)
+            gl = renderer(live)
+            urls = [live.url]
+            while len(urls) < STEP_LIMIT:
+                board = board_pose(live, LIVE_BOARD)
+                views.append(
+                    LiveView(
+                        clicks_of(urls[-1]), watch_state(live, ".watch-canvas"), board
+                    )
+                )
+                live.keyboard.press("ArrowRight")
+                live_ready(live, finish_story=bool(board and board["curling"]))
+                if live.url == urls[-1]:
+                    break
+                urls.append(live.url)
+            else:
+                findings.problems.append(
+                    f"the walk did not end within {STEP_LIMIT} steps"
+                )
+        finally:
+            browser.close()
+    return views, gl, findings
+
+
+def load_printed(
+    deck: Path, engine: str, positions: Sequence[Position]
+) -> tuple[dict[Position, PrintedView], Findings]:
+    """Load the printed page of each position, in one browser."""
+    findings = Findings()
+    views: dict[Position, PrintedView] = {}
+    with sync_playwright() as playwright:
+        browser = launch(playwright, engine)
+        try:
+            page = open_page(browser, deck, findings)
+            for position in positions:
+                slide = position.slide
+                show(page, f"{slide}?print=clicks&clicks={position.click}", slide)
+                watch = watch_state(page, f'[data-slidev-no="{slide}"] .watch-still')
+                views[position] = PrintedView(
+                    watch,
+                    board_pose(page, printed_board(slide)),
+                    watch != "null" and still_loaded(page, slide),
+                )
+        finally:
+            browser.close()
+    return views, findings
 
 
 def check(deck: Path, engine: str) -> int:
-    outside: list[str] = []
-    problems: list[str] = []
-    with sync_playwright() as playwright:
-        browser = BROWSERS[engine](playwright).launch()
-        live = browser.new_page(viewport={"width": 1960, "height": 1104})
-        printed = browser.new_page(viewport={"width": 1960, "height": 1104})
-        for page in (live, printed):
-            page.set_default_timeout(TIMEOUT_MS)
-            page.on("pageerror", lambda error: problems.append(f"page error: {error}"))
-            serve_from(deck, page, outside)
-        with_watch = 0  # pages that show a watch: a check of none compares nothing
-        show(live, "1", 1)
-        live_ready(live)
-        urls = [live.url]
-        while len(urls) < STEP_LIMIT:
-            slide, click = clicks_of(urls[-1])
-            wanted = watch_state(live, ".watch-canvas")
-            live_pose = board_pose(live, LIVE_BOARD)
-            show(printed, f"{slide}?print=clicks&clicks={click}", slide)
-            shown = watch_state(printed, f'[data-slidev-no="{slide}"] .watch-still')
-            if shown != wanted:
-                problems.append(
-                    f"slide {slide}, click {click}: the printed page shows {shown},"
-                    f" the live slide {wanted}"
-                )
-            problems.extend(
-                f"slide {slide}, click {click}: {problem}"
-                for problem in board_problems(
-                    live_pose,
-                    board_pose(printed, printed_board(slide)),
-                )
+    live, gl, findings = walk_live(deck, engine)
+    positions = [view.position for view in live]
+    shares = [positions[start::PRINTED_PAGES] for start in range(PRINTED_PAGES)]
+    with ThreadPoolExecutor(max_workers=PRINTED_PAGES) as pool:
+        loads = list(
+            pool.map(
+                lambda share: load_printed(deck, engine, share), filter(None, shares)
             )
-            if shown != "null":
-                with_watch += 1
-                if not still_loaded(printed, slide):
-                    problems.append(
-                        f"slide {slide}, click {click}: the still did not load"
-                    )
-            live.keyboard.press("ArrowRight")
-            live_ready(live, finish_story=bool(live_pose and live_pose["curling"]))
-            if live.url == urls[-1]:
-                break
-            urls.append(live.url)
-        else:
-            problems.append(f"the walk did not end within {STEP_LIMIT} steps")
-        browser.close()
+        )
+    printed: dict[Position, PrintedView] = {}
+    problems, outside = list(findings.problems), list(findings.outside)
+    for views, more in loads:
+        printed.update(views)
+        problems.extend(more.problems)
+        outside.extend(more.outside)
+    with_watch = 0  # pages that show a watch: a check of none compares nothing
+    for view in live:
+        page = printed.get(view.position)
+        where = f"slide {view.position.slide}, click {view.position.click}"
+        if page is None:
+            problems.append(f"{where}: the printed page did not load")
+            continue
+        if page.watch != view.watch:
+            problems.append(
+                f"{where}: the printed page shows {page.watch},"
+                f" the live slide {view.watch}"
+            )
+        problems.extend(
+            f"{where}: {problem}" for problem in board_problems(view.board, page.board)
+        )
+        if page.watch != "null":
+            with_watch += 1
+            if not page.still_loaded:
+                problems.append(f"{where}: the still did not load")
     if with_watch == 0:
         problems.append("no page shows the watch: nothing was compared")
-    print(f"slides and clicks compared: {len(urls)}, with the watch: {with_watch}")
+    print(f"WebGL renderer: {gl}")
+    print(f"slides and clicks compared: {len(live)}, with the watch: {with_watch}")
     problems.extend(f"outside request: {url}" for url in outside)
     for problem in problems:
         print("FAIL", problem)

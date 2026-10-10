@@ -71,9 +71,11 @@ def prettier(directory: Path, fix: bool) -> Check:
     return Check("prettier", directory, ("pnpm", "format" if fix else "format:check"))
 
 
+# One worker for each long sequence of a talk: the build and the checks of the
+# built deck; the source checks; the SVG and still checks.
+DEFAULT_WORKERS = 3
 # The Markdown that doccheck reads in each project, if it is there. Not tasks/:
 # a finished task is frozen, and its links may point at what has moved since.
-DEFAULT_WORKERS = 2
 DOC_PATHS = ("docs", "README.md", "AGENTS.md")
 HOUSE_DOC_PATHS = (*DOC_PATHS, "tools", "themes")
 
