@@ -1,7 +1,7 @@
-// Where the Escapement slide's callouts point: points on the escapement, in a pose, where
-// the slide's view shows them. The slide places each callout's label; its
-// leader ends here, so the leaders follow the design and the view
-// (docs/watch.md, "The Escapement slide").
+// Where the Escapement slide's and the Gears slide's callouts point: points on
+// the watch, in a pose, where the slide's view shows them. The slide places
+// each callout's label; its leader ends here, so the leaders follow the design
+// and the view (docs/watch.md, "The Escapement slide" and "The Gears slide").
 
 import { at } from "../webgl/checked.ts";
 import { transformPoint } from "../webgl/math.ts";
@@ -17,8 +17,10 @@ import {
 import type { Watch } from "./generate.ts";
 import { polar, radians } from "./shapes.ts";
 import { stageState, watchState } from "./state.ts";
+import { pinionTip } from "./teeth.ts";
 
-/** Points on the escape wheel's tip circle, for a leader that ends outside. */
+/** Points on a tip circle (the escape wheel's, or a gear's on the Gears
+ *  slide), for a leader that ends outside. */
 const TIP_POINTS = 120;
 /** In slide px: how far outside its part the wheel's and the pallet's leaders
  *  end (the callout's `stop`, with `clear`). */
@@ -189,7 +191,7 @@ function slideProjection(
   frontmatter: Record<string, unknown>,
 ): (point: Point2, z: number) => Point2 {
   const state = watchState(frontmatter, 0);
-  if (!state) throw new Error("the escapement's callouts need a `watch:`");
+  if (!state) throw new Error("a slide's callouts need a `watch:`");
   const { view, tilt } = stageState(watch, state);
   return (point, z) =>
     onSlide(view, tilt, watch.scene.slide, [point[0], point[1], z]);
@@ -287,5 +289,47 @@ export function escapementMarks(
         tops.escape,
       ),
     ),
+  };
+}
+
+/** In slide px. */
+export interface GearsMarks {
+  /** The escape pinion's arbor and the fourth wheel's: where their leaders
+   *  aim. */
+  readonly pinion: Point2;
+  readonly wheel: Point2;
+  /** The tip circles that the leaders end outside. */
+  readonly pinionTips: readonly Point2[];
+  readonly wheelTips: readonly Point2[];
+}
+
+/** The Gears slide's marks, for the slide whose frontmatter is `frontmatter`:
+ *  its view and its tilt. The gears turn, so the leaders aim at the arbors
+ *  and end outside the tip circles, which do not move. Throws if the slide
+ *  shows no watch. */
+export function gearsMarks(
+  watch: Watch,
+  frontmatter: Record<string, unknown>,
+): GearsMarks {
+  const shown = slideProjection(watch, frontmatter);
+  const { design, gearsTop: top } = watch;
+  const [, , , fourth, escape] = design.wheels as [
+    Wheel,
+    Wheel,
+    Wheel,
+    Wheel,
+    Wheel,
+  ];
+  const circle = (radius: number, centre: Point2): Point2[] =>
+    Array.from({ length: TIP_POINTS }, (_, index) =>
+      shown(polar(radius, (360 * index) / TIP_POINTS, centre), top),
+    );
+  const pinionArbor = worldOf(design, escape.arbor);
+  const wheelArbor = worldOf(design, fourth.arbor);
+  return {
+    pinion: shown(pinionArbor, top),
+    wheel: shown(wheelArbor, top),
+    pinionTips: circle(pinionTip(escape), pinionArbor),
+    wheelTips: circle(fourth.outer, wheelArbor),
   };
 }

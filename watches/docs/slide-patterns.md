@@ -164,10 +164,9 @@ The Gears slide follows it: the Escapement slide's picture fades out, the
 camera jumps, and the fourth wheel and the escape wheel's pinion fade in
 (`watchMoveWith: none`), turning freely (`watchSpin`). At click 1,
 four teeth on each gear turn the second (the span), in the flash's colours,
-and clicks 2 to 4 add the text one line at a time.
-When the first line is fully visible, the pinion's four marked teeth flash.
-When the second line is fully visible, the wheel's four marked teeth flash.
-Each cue alternates subject then second inks for five cycles ([watch.md](watch.md#the-gears-slide)). At click 5, the span is
+and clicks 2 to 4 add the text one line at a time: a callout to the small
+gear, a callout to the big gear, and the rule
+([watch.md](watch.md#the-gears-slide)). At click 5, the span is
 solid, and the text stays: two styles to compare. At click 6,
 the rest of the Escapement slide's mechanism fades in around them, the span
 and the text go, and the gears tick with it (`watchClicks`). The drive arrow

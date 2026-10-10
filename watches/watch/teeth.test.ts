@@ -24,6 +24,7 @@ import {
   pinionLead,
   pinionLeafShapes,
   pinionLeaves,
+  pinionTip,
   TOOTH_FORM,
   turned,
   wheelTeeth,
@@ -350,6 +351,15 @@ test("each pinion has four corners for each leaf", () => {
     assert.equal(contours.length, 1, owner.name);
     const corners = at(contours, 0).corners.filter(Boolean).length;
     assert.equal(corners, 4 * owner.leaves, owner.name);
+  }
+});
+
+test("a pinion's tip circle is where its leaves reach", () => {
+  for (const [, owner] of meshes) {
+    const reach = Math.max(
+      ...outline(pinionLeaves(owner)).map((point) => Math.hypot(...point)),
+    );
+    assert.ok(Math.abs(pinionTip(owner) - reach) < FLATNESS, owner.name);
   }
 });
 

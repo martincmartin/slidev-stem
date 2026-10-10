@@ -5,6 +5,7 @@ import type { Point2 } from "../webgl/mesh.ts";
 import {
   escapementMarks,
   firstCrossing,
+  gearsMarks,
   jewelStrikes,
   onSlide,
 } from "./callouts.ts";
@@ -18,6 +19,7 @@ const watch = generate();
 const { design, scene } = watch;
 const ESCAPEMENT_SLIDE = await slideFrontmatter("Escapement");
 const marks = escapementMarks(watch, ESCAPEMENT_SLIDE);
+const GEARS_SLIDE = await slideFrontmatter("Gears");
 const { view } = stageState(
   watch,
   watchState(ESCAPEMENT_SLIDE, 0) ?? assert.fail("no watch"),
@@ -64,6 +66,24 @@ test("the escapement's tops are the tops of their parts' meshes", () => {
   assert.equal(watch.escapementTops.escape, top("escape wheel", 0));
   assert.equal(watch.escapementTops.fork, top("pallet fork", 0));
   assert.equal(watch.escapementTops.jewel, top("impulse jewel", 0));
+  assert.equal(watch.gearsTop, top("fourth wheel", 0));
+});
+
+test("the Gears slide's marks: the small gear above the big one, each inside its tip circle, on the slide", () => {
+  const gears = gearsMarks(watch, GEARS_SLIDE);
+  assert.ok(gears.pinion[1] < gears.wheel[1]);
+  const reach = (centre: Point2, tips: readonly Point2[]): number =>
+    Math.max(
+      ...tips.map((tip) => Math.hypot(tip[0] - centre[0], tip[1] - centre[1])),
+    );
+  assert.ok(reach(gears.pinion, gears.pinionTips) > 0);
+  assert.ok(
+    reach(gears.pinion, gears.pinionTips) < reach(gears.wheel, gears.wheelTips),
+  );
+  for (const point of [...gears.pinionTips, ...gears.wheelTips]) {
+    assert.ok(point[0] > 0 && point[0] < at(scene.slide, 0));
+    assert.ok(point[1] > 0 && point[1] < at(scene.slide, 1));
+  }
 });
 
 test("a fitted view tilts about its pieces' middle: the middle stays where it is, at any tilt", () => {

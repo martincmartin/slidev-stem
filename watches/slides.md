@@ -303,18 +303,11 @@ watchClicks:
   # Four teeth are a quarter of the wheel and half the pinion. The gears
   # turn on. Two styles, to compare (a trial): first the flash's colours
   # (second-wash faces, second outline), while the text comes one line a
-  # click (clicks 2 to 4); then solid second with the gear's outline, with
-  # the text still up
+  # click (clicks 2 to 4: two callouts, then a sentence); then solid second
+  # with the gear's outline, with the text still up. No flash: each callout's
+  # leader shows which gear it means
   1:
     watch: [*gears, fourth wheel span wash, escape pinion span wash]
-  2:
-    watchFlash: [escape pinion span wash]
-    watchFlashAfterText: true
-    watchFlashInverse: true
-  3:
-    watchFlash: [fourth wheel span wash]
-    watchFlashAfterText: true
-    watchFlashInverse: true
   5:
     watch: [*gears, fourth wheel span, escape pinion span]
   # the rest of the Escapement slide's mechanism fades in, in this view
@@ -348,10 +341,26 @@ clicks: 7
 
 Fast gear, meet slow gear
 
-<div v-click.hide="6" class="gears-sentence">
-  <div v-click="2">Half of the small gear</div>
-  <div v-click="3">A quarter of the big gear</div>
-  <div v-click="4">Twice the radius, half<br>the speed.  Exactly.</div>
+<script setup>
+import { useSlideContext } from "@slidev/client";
+import { gearsMarks, LEADER_GAP } from "./watch/callouts.ts";
+import { WATCH } from "./watch/instance.ts";
+// where the leaders end: outside the gears' tip circles, in this slide's view
+const marks = gearsMarks(WATCH, useSlideContext().$frontmatter);
+</script>
+
+<!-- Each callout's leader points at the gear that the whole label names, so
+the label is all one callout word, in ink: not a keyword callout, whose
+second would merge with the span (docs/watch.md, "The Gears slide"). -->
+
+<div v-click.hide="6" class="gears-reading">
+
+<WatchCallout v-click="2" class="gears-callout" :to="marks.pinion" :stop="LEADER_GAP" :clear="[marks.pinionTips]" :left="560" :top="165"><span class="callout-word">Half of the small gear</span></WatchCallout>
+
+<WatchCallout v-click="3" class="gears-callout" bent :to="marks.wheel" :stop="LEADER_GAP" :clear="[marks.wheelTips]" :left="560" :top="233"><span class="callout-word">A quarter of the big gear</span></WatchCallout>
+
+<div v-click="4" class="gears-sentence gears-rule">Twice the radius, half<br>the speed.  Exactly.</div>
+
 </div>
 
 <div v-click="7" class="gears-sentence after-watch-fade">
@@ -361,23 +370,33 @@ Fast gear, meet slow gear
 
 <style>
 /* On the right of the gears, 70 px from the fourth wheel's teeth: the
-   frontmatter's watchRight follows this left.
+   frontmatter's watchRight follows this left, and the callouts' :left.
+   The three lines are one type, 0.7em apart: the callouts' :top steps by
+   one line and the gap (35 * 1.25 + 0.7 * 35 = 68 px), and so does the
+   rule's top.
    The second hand's text waits for the hand (after-watch-fade, style.css):
    so the fade is in longhands, which keep that rule's delay. */
-.slidev-layout.gears .gears-sentence {
-  position: absolute;
-  left: 560px;
-  top: 165px;
+.slidev-layout.gears .gears-sentence,
+.slidev-layout.gears .gears-callout :deep(.callout-label) {
   font-size: 35px;
   font-weight: 600;
   line-height: 1.25;
   white-space: nowrap;
 }
+.slidev-layout.gears .gears-sentence {
+  position: absolute;
+  left: 560px;
+  top: 165px;
+}
+.slidev-layout.gears .gears-sentence.gears-rule {
+  top: 301px;
+}
 .slidev-layout.gears .gears-sentence > div + div {
   margin-top: 0.7em;
 }
-.slidev-layout.gears .gears-sentence.slidev-vclick-target,
-.slidev-layout.gears .gears-sentence > .slidev-vclick-target {
+.slidev-layout.gears .gears-reading.slidev-vclick-target,
+.slidev-layout.gears .gears-reading > .slidev-vclick-target,
+.slidev-layout.gears .gears-sentence.slidev-vclick-target {
   transition-property: opacity;
   transition-duration: var(--text-fade);
 }
@@ -388,9 +407,9 @@ The escapement fades out. The fourth wheel and the escape wheel's pinion fade in
 
 [click] Four teeth on each gear are coloured: the same length of rim. They go through the mesh together, tooth for tooth, once each turn of the wheel. Four teeth are half the pinion, but a quarter of the wheel. Between, the pinion's coloured half comes round again on its own. (A trial: the colours of the flash. Wait for one pass before the next click.)
 
-[click] Half of the small gear: count them, four of its eight teeth. When the text is fully visible, those four teeth flash in subject then second, five times.
+[click] Half of the small gear: count them, four of its eight teeth. (The callout's leader points at the small gear.)
 
-[click] A quarter of the big gear: the same four teeth, but four of its sixteen. When the text is fully visible, those four teeth flash the same way. The same length of rim, because the teeth must be the same size, or they do not mesh. Each tooth fits in one gap of the other gear, so the teeth go by one for one: both rims move at the same speed.
+[click] A quarter of the big gear: the same four teeth, but four of its sixteen. (The leader points at the big gear.) The same length of rim, because the teeth must be the same size, or they do not mesh. Each tooth fits in one gap of the other gear, so the teeth go by one for one: both rims move at the same speed.
 
 [click] Twice the size, half the speed. Exactly: teeth cannot slip, as a belt can. So the big gear turns once for every two turns of the small one, for ever.
 

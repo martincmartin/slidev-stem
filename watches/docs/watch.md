@@ -9,6 +9,7 @@ them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
 [`2026-10-09-motion-works`](../tasks/2026-10-09-motion-works/PLAN.md) (the motion works, and the Hour Hand slide),
+[`2026-10-10-gears-callouts`](../tasks/2026-10-10-gears-callouts/README.md) (the Gears slide's callouts, in place of its text cues),
 [`2026-10-09-gears-text-flash`](../tasks/2026-10-09-gears-text-flash/PLAN.md) (inverse cues after the Gears text),
 [`2026-10-07-watch-primitives`](../tasks/2026-10-07-watch-primitives/PLAN.md) (named pieces, fitted views, one rule for every move),
 [`2026-10-07-gears-slide`](../tasks/2026-10-07-gears-slide/PLAN.md) (the Gears slide; the free spin for any slide; a narrow picture centred in the left 60%),
@@ -332,15 +333,10 @@ spin.
 | ----- | ------------------------------------------------------------------------------------ | ------------ |
 | 0     | the two gears                                                                        | turn freely  |
 | 1     | and the span, in the flash's colours (a trial): four teeth and the leaves they drive | turn freely  |
-| 2–4   | and the text, one line a click                                                       | turn freely  |
+| 2–4   | and the text, one line a click: two callouts, then the rule                          | turn freely  |
 | 5     | the span, solid (a trial); the text stays                                            | turn freely  |
 | 6     | the gears and the rest of the Escapement slide's mechanism; the span and text go     | tick with it |
 | 7     | and the seconds hand, and then its text                                              | tick with it |
-
-At click 2, the pinion's four marked teeth flash after "Half of the small gear" has fully faded in.
-At click 3, the wheel's four marked teeth flash after "A quarter of the big gear" has fully faded in.
-Both cues use subject inks first, then restore second inks, with the timeline's standard five cycles.
-The marks stay in second inks when the cue ends. A jump or backward step does not start either cue.
 
 - **The step from the Escapement slide, and back, jumps the camera.** The
   audience has not seen these pieces, so their place in the watch does not
@@ -395,7 +391,7 @@ The marks stay in second inks when the cue ends. A jump or backward step does no
     leader are in the second too, and would merge with the span.
 - **The text reads the span** (in `slides.md`, on the right of the gears),
   one line a click (clicks 2 to 4): "Half of the small gear", "A quarter
-  of the big gear", "Twice the size, half the speed. Exactly." The same length
+  of the big gear", "Twice the radius, half the speed. Exactly." The same length
   of rim is half of one gear and a quarter of the other, so the big gear is
   twice the size; the rule follows. "Twice … half" says the direction of
   the ratio (the speeds go as the sizes, upside down), and "exactly" holds
@@ -403,6 +399,21 @@ The marks stay in second inks when the cue ends. A jump or backward step does no
   "pinion" and "wheel": the audience does not know those words. The text is
   in the ink, not the second: the second marks the span. It stays up while
   the span changes style at click 5.
+- **The first two lines are callouts** (`WatchCallout.vue`), in the
+  sentence's type (35 px, weight 600), with an ink leader each: to the small
+  gear, then to the big one. Not keyword callouts: each leader points at the
+  gear that the whole label names, so the whole label is the callout word,
+  and a leader in the second would merge with the span. The leaders aim at
+  the arbors and end `LEADER_GAP` px outside the tip circles, which do not
+  move as the gears turn (`gearsMarks` in `watch/callouts.ts`). The big
+  gear's leader bends (`bent`): a straight one left its label from below
+  and crossed the third line.
+- **Not an oversight: no flash at clicks 2 and 3.** A flash after each line
+  had faded in (the
+  [`gears-text-flash`](../tasks/2026-10-09-gears-text-flash/PLAN.md) task)
+  competed with the reading: the eye is on the new words just as the teeth
+  flash. The leader joins the words to the gear as they are read, and the
+  span, already in the second, shows the teeth.
 - **At click 6, the rest of the Escapement slide's mechanism fades in**
   (`watchClicks`): everything that the talk has explained so far, with the
   [drive arrow](#the-drive-arrow) on the fourth wheel. The camera

@@ -424,6 +424,13 @@ export function pinionLeaves(owner: Wheel, form: ToothForm = TOOTH_FORM): Path {
   return leavesOutline(trainPinion(owner, form), form);
 }
 
+/** The tip circle of the pinion on `owner`'s arbor: where its leaves' round
+ *  ends reach. */
+export function pinionTip(owner: Wheel, form: ToothForm = TOOTH_FORM): number {
+  const leaf = pinionLeaf(trainPinion(owner, form), form);
+  return leaf.lowerPitch[0] + leaf.endRadius;
+}
+
 /** The closed outline of a pinion of the motion works, which drives a
  *  wheel: the leaves of `pinionLeaves`, with no lead. */
 export function drivingPinionLeaves(

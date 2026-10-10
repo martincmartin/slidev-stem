@@ -362,6 +362,9 @@ export interface Watch {
     readonly fork: number;
     readonly jewel: number;
   };
+  /** The fourth wheel's top, level with the escape pinion that it drives:
+   *  where the Gears slide's callouts point (watch/callouts.ts). */
+  readonly gearsTop: number;
   /** The Gear Train slide's one-step wheel (`oneStepWheel`). */
   readonly oneStep: Wheel;
   /** The Hour Hand slide's one-step hour wheel (`oneStepHourWheel`). */
@@ -2408,6 +2411,7 @@ export function generate(design: Design = DESIGN): Watch {
     fork: topOf(parts.fork, "body"),
     jewel: topOf(parts.jewel, "body"),
   };
+  const gearsTop = topOf(partOf(train.fourth), "body");
 
   // ---- the case, lugs, strap and crown ----
   const {
@@ -2658,6 +2662,7 @@ export function generate(design: Design = DESIGN): Watch {
     key: keyPiece.meshes,
     ringTop,
     escapementTops,
+    gearsTop,
     oneStep,
     oneStepHour,
   };
