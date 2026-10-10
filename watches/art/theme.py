@@ -1,4 +1,4 @@
-"""The palette of the talk's theme, for the art scripts that write files.
+"""The palette of Ledger, the house theme, for the art scripts that write files.
 
 The theme sets each role as `--palette-<role>` in its CSS (stem/docs/theme.md):
 a #rrggbb colour, `var()` of another role, or `color-mix(in srgb, ...)` of
@@ -15,17 +15,14 @@ from watch_design import TALK
 
 
 def theme_css(talk: pathlib.Path = TALK) -> pathlib.Path:
-    """The CSS of the theme that the `theme:` line in the headmatter of the
-    talk's slides.md names."""
-    slides = talk / "slides.md"
-    headmatter = re.match(r"---\n(.*?)\n---", slides.read_text(), re.DOTALL)
-    theme = (
-        re.search(r"(?m)^theme:\s*(\S+)", headmatter.group(1)) if headmatter else None
-    )
-    if theme is None:
-        raise SystemExit(f"no `theme:` line in the headmatter of {slides}")
-    name = theme.group(1)
-    return talk.parent / "themes" / name / "styles" / f"{name}.css"
+    """The CSS of Ledger, the house theme that every other house theme is
+    built on (stem/docs/theme.md, "The house themes"). The files that the art
+    scripts write take their fallback colours from it, whichever house theme
+    the `theme:` line of the talk's headmatter names: the house tools measure
+    the art in Ledger, and the gates hold each house theme to the same pairs.
+    On a slide, the theme paints the art through its `var()`s. So a talk
+    changes its theme with its `theme:` line alone."""
+    return talk.parent / "themes" / "ledger" / "styles" / "ledger.css"
 
 
 def mix(first: str, second: str, share: float) -> str:

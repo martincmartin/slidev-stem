@@ -53,9 +53,10 @@ inlined SVG takes the colours of the slide it is on, including a slide's own
 `class:`. A lit or shaded face is its wash moved toward its line or toward
 the paper, as `color-mix()` of the roles (a `Shade`). Each mark also keeps the
 hex as its attribute: the house tools (artcheck, barroom, motion) read and
-render the file on its own, where the fallback paints the same pixels. The hex
-values are read from the theme that the talk links (art/theme.py), so
-`--check` fails when the theme changes.
+render the file on its own, where the fallback paints Ledger's pixels. The hex
+values are read from Ledger, the house theme that the others are built on
+(art/theme.py), so `--check` fails when Ledger changes, and not when the talk
+changes its theme.
 """
 
 import argparse

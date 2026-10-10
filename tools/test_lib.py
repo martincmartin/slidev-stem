@@ -136,6 +136,49 @@ def test_the_house_palette_classes_set_only_the_themes_roles() -> None:
         palette_class.palette(lib.THEME_RECIPES)
 
 
+# ---- the house themes -----------------------------------------------------------
+def test_ledger_is_the_first_house_theme() -> None:
+    themes = lib.house_themes()
+    assert themes[0] == lib.HOUSE_THEME
+    assert lib.theme_recipes(lib.HOUSE_THEME) == lib.THEME_RECIPES
+    assert {"campfire", "after-hours", "beacon"} <= set(themes)
+
+
+@pytest.mark.parametrize("name", lib.house_themes()[1:])
+def test_each_theme_is_its_palette_class(name: str) -> None:
+    """A theme and its palette class set the same roles to the same values, so
+    a slide previewed in the class looks as the theme would show it."""
+    house_class = next(
+        found for found in lib.css_palette_classes() if found.name == f"palette-{name}"
+    )
+    assert lib.THEME_RECIPES | house_class.recipes == lib.theme_recipes(name)
+
+
+@pytest.mark.parametrize("name", lib.house_themes())
+def test_each_house_theme_passes_every_gate(name: str) -> None:
+    palette = lib.resolve(lib.theme_recipes(name))
+    assert [
+        gate for gate in lib.GATES if gate.required and not gate.passes(palette)
+    ] == []
+    assert all(gate.passes(palette) for gate in lib.HUE_GATES)
+
+
+def test_a_theme_that_is_not_a_house_theme_is_an_error() -> None:
+    with pytest.raises(ValueError, match="not a house theme"):
+        lib.theme_recipes("no-such-theme")
+
+
+def test_a_talk_names_its_theme_in_its_headmatter(tmp_path: Path) -> None:
+    write(tmp_path / "slides.md", "---\n# a comment\ntheme: campfire # dark\n---\n")
+    assert lib.talk_theme(tmp_path) == "campfire"
+
+
+def test_a_talk_without_a_theme_is_an_error(tmp_path: Path) -> None:
+    write(tmp_path / "slides.md", "---\ntitle: x\n---\n\ntheme: ledger\n")
+    with pytest.raises(ValueError, match="names no theme"):
+        lib.talk_theme(tmp_path)
+
+
 # ---- recipes ------------------------------------------------------------------------
 def test_a_recipe_is_a_role_or_a_mix_of_roles() -> None:
     palette = lib.resolve(

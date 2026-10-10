@@ -13,8 +13,7 @@ pattern here.
 
 ## The theme
 
-The deck uses the house theme, named in the headmatter (now Ledger:
-`theme: ledger`). The theme sets the `--palette-*` variables
+The deck uses a house theme, named in the headmatter (now Ledger: `theme: ledger`; any house theme works there: [theme.md](../../docs/theme.md), "The house themes"). The theme sets the `--palette-*` variables
 ([theme.md](../../docs/theme.md)), the slide background, the
 text colour and the fonts, on every slide. A slide needs no class to get them. So
 a slide's own `<style>` holds only its layout. The "Before clocks" slide in
@@ -67,15 +66,15 @@ One card: a drawing, a date, a name, one big number, its unit, and the catch.
 The props are typed at the top of the component, and the slide's `cards` array
 is the example. Each prop has one job:
 
-| prop      | job                                                                    |
-| --------- | ---------------------------------------------------------------------- |
-| `name`    | the card's title                                                       |
-| `date`    | when, under the art                                                    |
-| `img`     | the SVG, shown at the `width` and `height` it states                   |
-| `stat`    | **the one number**, in the accent                                      |
-| `unit`    | what the number means                                                  |
-| `problem` | the catch, in `--palette-second`                                       |
-| `unknown` | draws `stat` in muted instead of accent — for "we could not find data" |
+| prop      | job                                                                            |
+| --------- | ------------------------------------------------------------------------------ |
+| `name`    | the card's title                                                               |
+| `date`    | when, under the art                                                            |
+| `img`     | the SVG, inlined so the theme paints it, at the `width` and `height` it states |
+| `stat`    | **the one number**, in the accent                                              |
+| `unit`    | what the number means                                                          |
+| `problem` | the catch, in `--palette-second`                                               |
+| `unknown` | draws `stat` in muted instead of accent — for "we could not find data"         |
 
 The sizes are in the component's CSS, and the reasons for them are in
 [legibility.md](../../docs/legibility.md#text-sizes).

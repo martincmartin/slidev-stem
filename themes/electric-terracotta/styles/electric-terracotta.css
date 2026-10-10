@@ -1,0 +1,28 @@
+/* Electric Terracotta: peach paper, terracotta, indigo. A light house theme, built on Ledger.
+
+   The roles that it changes from ledger.css (stem/themes/ledger/styles/);
+   a role that it does not set keeps Ledger's recipe, made from these roles.
+   stem/tools/lib.py reads them from this rule, and `uv run tools/palette.py`
+   (in stem/) measures them against every gate. The palette class
+   `.palette-electric-terracotta` in ledger's palettes.css must set the same roles to the
+   same values (tools/test_lib.py checks it), so that any slide of any talk
+   can show this palette.
+
+   From a candidate of watches/tasks/2026-09-18-theme-colors, tuned to pass the gates, with the art roles derived by tools/derive_palette.py.
+
+   Tuned from the candidate, each by the least that passes its gate: the
+   accent is darker, a rust (#c95c3f was 3.07:1 on the panel, under 4.5), and
+   so is the ink (#302d36 was 10.05:1 on the panel, under 12). */
+.slidev-layout {
+  --palette-background: #f6e7d8; /* a pale peach */
+  --palette-panel: #eadcce; /* a light peach-beige */
+  --palette-border: #d2c6bb; /* a light taupe */
+  --palette-ink: #211e27; /* a near-black violet-grey */
+  --palette-muted: #655f62; /* a warm grey */
+  --palette-accent: #a74026; /* a rust terracotta */
+  --palette-second: #5252a3; /* an indigo */
+  --palette-subject: #631400; /* a dark oxblood */
+  --palette-subject-wash: #d6c9c5; /* a pale rose-grey */
+  --palette-second-wash: #d4c9cd; /* a pale mauve-grey */
+  --palette-water: var(--palette-second);
+}

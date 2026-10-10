@@ -175,6 +175,24 @@ importers:
       earcut:
         specifier: ^3.2.4
         version: 3.2.4
+      slidev-theme-after-hours:
+        specifier: link:../themes/after-hours
+        version: link:../themes/after-hours
+      slidev-theme-beacon:
+        specifier: link:../themes/beacon
+        version: link:../themes/beacon
+      slidev-theme-campfire:
+        specifier: link:../themes/campfire
+        version: link:../themes/campfire
+      slidev-theme-electric-terracotta:
+        specifier: link:../themes/electric-terracotta
+        version: link:../themes/electric-terracotta
+      slidev-theme-field-notes:
+        specifier: link:../themes/field-notes
+        version: link:../themes/field-notes
+      slidev-theme-kraft-ink:
+        specifier: link:../themes/kraft-ink
+        version: link:../themes/kraft-ink
       slidev-theme-ledger:
         specifier: link:../themes/ledger
         version: link:../themes/ledger

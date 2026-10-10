@@ -6,8 +6,10 @@
         --accent "#FFB340" --second "#54BCD6"
 
 Prints a `.slidev-layout.palette-<name>` rule for
-themes/ledger/styles/palettes.css (docs/theme.md, "Palette classes"). Then
-`uv run tools/palette.py` reports its gates. Stdlib only.
+themes/ledger/styles/palettes.css (docs/theme.md, "Palette classes"). Its body,
+without `--preview-name`, is also the `.slidev-layout` rule of a house theme
+built on Ledger, themes/<name>/styles/<name>.css (docs/theme.md, "The house
+themes"). Then `uv run tools/palette.py` reports its gates. Stdlib only.
 
 The steps are those of docs/theme.md, "Making a theme":
 

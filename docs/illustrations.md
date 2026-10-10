@@ -191,17 +191,19 @@ own, where the `var()` fallback paints the same pixels.
   applies to the whole page (`.diving-board-stroke-subject`).
 - **Always give `var()` its fallback.** Without the theme, a `var()` with no
   fallback does not use the attribute: the mark takes its parent's colour.
-- **Write the hex from the theme, not by hand.** `watches/art/diving_board.py`
-  reads the values from the theme that the talk links (`watches/art/theme.py`
-  works out its recipes), and its `--check` fails when the theme changes. It is
-  the example.
+- **Write the hex from Ledger, not by hand.** The fallbacks are Ledger's, the
+  house theme that the others are built on, whichever theme the talk names:
+  the tools measure the art in Ledger ([theme.md](theme.md), "The house
+  themes"). `watches/art/diving_board.py` reads the values from Ledger
+  (`watches/art/theme.py` works out its recipes), and its `--check` fails when
+  Ledger changes. It is the example.
 - **A variation of a wash is `color-mix()` of the roles**, with the mixed hex
   as its fallback: `color-mix(in srgb, var(--palette-ground, #736A60) 15%,
 var(--palette-ground-wash, #E2DED6))` (`Shade` in the diving board's
   script).
 
-The four timekeepers do not do this yet: `TimekeeperCard.vue` shows them in an
-`<img>`, so they keep Ledger's colours.
+The four timekeepers do it too: `watches/components/TimekeeperCard.vue`
+inlines each one, and gives its ids a suffix for each copy of the slide.
 
 ## Flash
 

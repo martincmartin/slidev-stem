@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Is this colour allowed, and does the palette still pass its own gates?
 
-    .venv/bin/python3 tools/palette.py                  # the palette, every gate, pass/fail;
+    .venv/bin/python3 tools/palette.py                  # each house theme, every gate, pass/fail;
                                                         # then each palette class's gates
     .venv/bin/python3 tools/palette.py --talk watches   # only: does this talk set it?
                                                         # (only a slide class may)
@@ -9,8 +9,9 @@
     .venv/bin/python3 tools/palette.py "#C0451C" accent # ... and specifically as the accent
 
 Stdlib only. The thresholds live in `lib.py`; this file only applies them. The
-palette values come from the theme's CSS (`lib.THEME_CSS`), the one place they
-are set.
+palette values come from each theme's CSS (`lib.THEME_CSS` for Ledger,
+`lib.theme_css` for the themes built on it). A candidate colour is measured in
+Ledger.
 
 WHY YOU WOULD RUN THIS. Sooner or later a slide wants a colour the roles do
 not cover -- a third series in a chart, a highlight on a diagram, "just this one
@@ -44,10 +45,28 @@ def rule(passed: bool) -> str:
 
 
 def show_palette() -> bool:
-    palette = lib.LEDGER
-    print(f"Ledger, from {lib.display_path(lib.THEME_CSS)}\n")
+    """Print each house theme and each palette class with its gates. True if
+    every one passes every required gate."""
+    passed = True
+    for name in lib.house_themes():
+        passed = show_theme(name) and passed
+    passed = show_palette_classes() and passed
+    print(f"\n{'ALL GATES PASS' if passed else 'SOMETHING FAILS -- see above'}")
+    return passed
+
+
+def show_theme(name: str) -> bool:
+    """Print the house theme `name`: its values, its gates and its room-light
+    table. True if it passes every required gate."""
+    try:
+        recipes = lib.theme_recipes(name)
+    except ValueError as error:
+        print(f"\n{name}\n\n  FAIL {error}")
+        return False
+    palette = lib.resolve(recipes)
+    print(f"\n{name}, from {lib.display_path(lib.theme_css(name))}\n")
     for role, value in palette.items():
-        recipe = lib.THEME_RECIPES[role]
+        recipe = recipes[role]
         made = "" if recipe.upper() == str(value) else f"   = {recipe}"
         print(f"  {lib.PALETTE_PREFIX}{role:<20} {value}{made}")
 
@@ -80,9 +99,6 @@ def show_palette() -> bool:
         + "".join(f"{lib.flare_ceiling(flare):>8.2f}" for flare in FLARES)
         + f"{0.30:>8.3f}"
     )
-
-    passed = show_palette_classes() and passed
-    print(f"\n{'ALL GATES PASS' if passed else 'SOMETHING FAILS -- see above'}")
     return passed
 
 
@@ -145,10 +161,29 @@ def show_gates(palette: lib.Palette) -> bool:
 
 def show_talks(talks: list[pathlib.Path]) -> bool:
     """Fail if one of `talks` sets the palette, except for the slides with a
-    class, or if such a slide's palette fails a gate."""
-    css_name = lib.display_path(lib.THEME_CSS)
-    print(f"\nthe theme sets the palette ({css_name}); a slide class may override it\n")
-    found = lib.talk_palette_declarations(talks, lib.THEME_RECIPES)
+    class, or if such a slide's palette fails a gate. Each talk's slides are
+    measured in the theme that its headmatter names."""
+    passed = True
+    for talk in talks:
+        try:
+            name = lib.talk_theme(talk)
+            theme = lib.theme_recipes(name)
+        except ValueError as error:
+            print(f"\n  FAIL {error}")
+            passed = False
+            continue
+        css_name = lib.display_path(lib.theme_css(name))
+        print(
+            f"\n{lib.display_path(talk)}: the theme {name} sets the palette "
+            f"({css_name}); a slide class may override it\n"
+        )
+        passed = show_talk(talk, theme) and passed
+    return passed
+
+
+def show_talk(talk: pathlib.Path, theme: lib.Recipes) -> bool:
+    """`show_talks` for one talk, whose theme's roles are `theme`."""
+    found = lib.talk_palette_declarations([talk], theme)
     for declaration, fault in found.faults:
         print(
             f"  FAIL {declaration.path}:{declaration.line} sets "
@@ -159,12 +194,9 @@ def show_talks(talks: list[pathlib.Path]) -> bool:
         first = override.declarations[0]
         roles = ", ".join(declaration.role for declaration in override.declarations)
         print(f"\n  {override.selector} ({first.path}:{first.line}) sets {roles}\n")
-        passed = show_gates(override.palette(lib.THEME_RECIPES)) and passed
+        passed = show_gates(override.palette(theme)) and passed
     if not found.faults and not found.overrides:
-        print(
-            f"  ok   no talk declares a {lib.PALETTE_PREFIX}* variable "
-            f"({len(talks)} talk(s) checked)"
-        )
+        print(f"  ok   the talk declares no {lib.PALETTE_PREFIX}* variable")
     return passed
 
 

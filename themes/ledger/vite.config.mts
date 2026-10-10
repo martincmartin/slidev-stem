@@ -5,6 +5,10 @@
 // at the repo root, in stem/node_modules. That is outside a talk, so without
 // this file the dev server and `slidev export` refuse the font files (403) and
 // show fallback fonts. `slidev build` does not check, so a built deck has them.
+//
+// The other house themes (campfire, beacon, ...) are built on Ledger: they
+// import its styles and re-export this file. Slidev serves only the active
+// theme's directory, so this file also allows Ledger's own.
 import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -25,5 +29,7 @@ function installed(name: string): string {
 }
 
 export default {
-  server: { fs: { allow: Object.keys(dependencies).map(installed) } },
+  server: {
+    fs: { allow: [THEME, ...Object.keys(dependencies).map(installed)] },
+  },
 };

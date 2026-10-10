@@ -1,7 +1,14 @@
 <script setup lang="ts">
 // One timekeeper card. Purely presentational: the slide decides when it
 // appears and dims (v-click and the slide's CSS).
-defineProps<{
+//
+// The diagram is inlined, not an <img>: an <img> is a separate document that
+// no page CSS reaches, so its colours would stay Ledger's. Inlined, its
+// `var(--palette-*)` classes take the slide's theme and class
+// (stem/docs/illustrations.md, "The page's theme paints the drawing").
+import { onMounted, ref, useId } from "vue";
+
+const props = defineProps<{
   name: string;
   date: string;
   img: string; // SVG diagram
@@ -10,12 +17,39 @@ defineProps<{
   problem: string;
   unknown?: boolean; // no reliable accuracy data: stat drawn in muted grey
 }>();
+
+const markup = ref("");
+// Each copy of a slide (the overview, print, the presenter's panes) inlines
+// the SVG again, so each copy's ids get a suffix of their own: otherwise
+// every copy's clip paths would resolve to the first copy's.
+const suffix = useId();
+
+onMounted(async () => {
+  const response = await fetch(props.img);
+  if (!response.ok) throw new Error(`${props.img}: ${String(response.status)}`);
+  const source = await response.text();
+  const ids = [...source.matchAll(/id="([^"]+)"/g)].map(([, id]) => id ?? "");
+  markup.value = ids.reduce(
+    (text, id) =>
+      text
+        .replaceAll(`id="${id}"`, `id="${id}-${suffix}"`)
+        .replaceAll(`url(#${id})`, `url(#${id}-${suffix})`),
+    source,
+  );
+});
 </script>
 
 <template>
   <div class="tk-card">
     <div class="tk-art">
-      <img :src="img" :alt="`${name} diagram`" />
+      <!-- eslint-disable vue/no-v-html -- our own file, in public/timekeepers/ -->
+      <div
+        class="tk-diagram"
+        role="img"
+        :aria-label="`${name} diagram`"
+        v-html="markup"
+      />
+      <!-- eslint-enable vue/no-v-html -->
       <span class="tk-date">{{ date }}</span>
     </div>
     <div class="tk-text">

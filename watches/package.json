@@ -33,6 +33,12 @@
   "dependencies": {
     "@slidev/cli": "^53.0.0",
     "earcut": "^3.2.4",
+    "slidev-theme-after-hours": "link:../themes/after-hours",
+    "slidev-theme-beacon": "link:../themes/beacon",
+    "slidev-theme-campfire": "link:../themes/campfire",
+    "slidev-theme-electric-terracotta": "link:../themes/electric-terracotta",
+    "slidev-theme-field-notes": "link:../themes/field-notes",
+    "slidev-theme-kraft-ink": "link:../themes/kraft-ink",
     "slidev-theme-ledger": "link:../themes/ledger",
     "vue": "^3.5.43"
   },

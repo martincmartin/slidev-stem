@@ -1,0 +1,28 @@
+{
+  "name": "slidev-theme-electric-terracotta",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Electric Terracotta: a house Slidev theme for the STEM talks, built on Ledger. A light theme: peach paper, terracotta accent, indigo second.",
+  "keywords": [
+    "slidev-theme",
+    "slidev"
+  ],
+  "engines": {
+    "slidev": ">=53.0.0"
+  },
+  "slidev": {
+    "colorSchema": "light",
+    "defaults": {
+      "colorSchema": "light",
+      "fonts": {
+        "sans": "IBM Plex Sans",
+        "serif": "Fraunces",
+        "mono": "IBM Plex Mono",
+        "provider": "none"
+      }
+    }
+  },
+  "dependencies": {
+    "slidev-theme-ledger": "link:../ledger"
+  }
+}

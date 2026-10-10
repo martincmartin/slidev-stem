@@ -270,6 +270,62 @@ if not _recipes:
 THEME_RECIPES: Recipes = _recipes
 LEDGER: Palette = resolve(THEME_RECIPES)
 
+# The house themes: Ledger, and the themes built on it (docs/theme.md, "The
+# house themes"). Each is themes/<name>/, and a talk names it in its
+# headmatter: `theme: campfire`. A theme other than Ledger sets the roles that
+# it changes in the THEME_SELECTOR rule of themes/<name>/styles/<name>.css.
+THEMES_DIR = ROOT / "themes"
+HOUSE_THEME = "ledger"
+
+
+def theme_css(name: str) -> pathlib.Path:
+    """The file of the house theme `name` that sets its palette."""
+    return THEMES_DIR / name / "styles" / f"{name}.css"
+
+
+def house_themes() -> list[str]:
+    """Ledger, then each theme built on it, by name."""
+    return [
+        HOUSE_THEME,
+        *sorted(
+            directory.name
+            for directory in THEMES_DIR.iterdir()
+            if directory.name != HOUSE_THEME and theme_css(directory.name).is_file()
+        ),
+    ]
+
+
+def theme_recipes(name: str) -> Recipes:
+    """The roles of the house theme `name`: Ledger's, with each role that the
+    theme's own rule sets replaced. A recipe of Ledger's that uses a replaced
+    role follows it, as in CSS."""
+    if name == HOUSE_THEME:
+        return THEME_RECIPES
+    path = theme_css(name)
+    own = css_recipes(path) if path.is_file() else None
+    if not own:
+        raise ValueError(
+            f"{name!r} is not a house theme: no `{THEME_SELECTOR} {{ "
+            f"{PALETTE_PREFIX}... }}` rule in {display_path(path)}"
+        )
+    unknown = set(own) - set(THEME_RECIPES)
+    if unknown:
+        raise ValueError(f"{name} sets roles that Ledger does not: {sorted(unknown)}")
+    return THEME_RECIPES | own
+
+
+def talk_theme(talk: pathlib.Path) -> str:
+    """The theme that the headmatter of `talk`'s slides.md names."""
+    slides = talk / "slides.md"
+    head = re.match(r"---\n(.*?)\n---", slides.read_text(), flags=re.DOTALL)
+    found = head and re.search(
+        r"""(?m)^theme:\s*["']?([\w-]+)["']?\s*(?:#.*)?$""", head.group(1)
+    )
+    if not found:
+        raise ValueError(f"{display_path(slides)} names no theme in its headmatter")
+    return found.group(1)
+
+
 # Each wash and the line colour that it is the face for (docs/theme.md, "The
 # pairs"). A drawing's variation of a face is its wash mixed toward its line or
 # toward the paper.

@@ -54,8 +54,7 @@ not change it on `main`.
   a uv workspace has one resolution, and a pnpm workspace with
   `shamefullyHoist` has one shared `node_modules`, so an upgrade for one talk
   would reach the others.
-- **House items have one live copy.** The house items are the theme
-  (`themes/ledger/`), `tools/`, `docs/` and `.prettierrc`. All talks use their
+- **House items have one live copy.** The house items are the themes (`themes/`: Ledger, and the themes built on it), `tools/`, `docs/` and `.prettierrc`. All talks use their
   current version, and each talk's tag records the version
   that talk was given with. Before you change a house item, find the talks in
   progress that use it.
