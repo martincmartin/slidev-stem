@@ -23,6 +23,8 @@
 //   watchMainspring: a stage of the Mainspring slide's story (free, turned,
 //     wound, released, barrel, barrel again, run down: watch/mainspring.ts); it also says
 //     when the balance swings, so it is not set with watchAtRest
+//   watchDim: pieces drawn dimmed (WATCH_DIM), to keep the eye on the
+//     others; false (default): none
 // On the slide or in a block, about the step into that click, so they do
 // not carry on to later clicks (STEP_KEYS):
 //   watchFlash: pieces that flash, on the step forward into the slide (on
@@ -50,6 +52,12 @@ import type { MainspringStage } from "./mainspring.ts";
 import type { WatchModelState } from "./model.ts";
 
 const MOVES_WITH: readonly MoveWith[] = ["common", "all", "none"];
+
+/** The weight of a dimmed piece's own colours against the paper
+ *  (`watchDim`): it looks as it would at this opacity. The "Before clocks"
+ *  slide dims its cards to the same (slides.md): a part of the picture is
+ *  more like a card than a line of text, which dims to 0.5. */
+export const WATCH_DIM = 0.35;
 
 export interface WatchState {
   /** A named view, or `null`: the view that fits `fit`. */
@@ -87,6 +95,8 @@ export interface WatchState {
   spin: number | null;
   /** The Mainspring slide's stage, or `null`. */
   mainspring: MainspringStage | null;
+  /** The names of the pieces drawn dimmed, or `null`: none. */
+  dim: readonly string[] | null;
 }
 
 export function wrong(name: string, value: unknown, wanted: string): never {
@@ -183,6 +193,11 @@ function tickTockOf(name: string, value: unknown): TickTockState | undefined {
   return { burst: value === "burst" };
 }
 
+/** The pieces dimmed, or `null`: none. */
+function dimOf(name: string, value: unknown): readonly string[] | null {
+  return value === false ? null : namesOf(name, value);
+}
+
 function mainspringOf(name: string, value: unknown): MainspringStage {
   const found = MAINSPRING_STAGES.find((stage) => stage === value);
   if (found === undefined) {
@@ -203,6 +218,7 @@ const CLICK_KEYS = {
   watchSpin: spinOf,
   watchTickTock: tickTockOf,
   watchMainspring: mainspringOf,
+  watchDim: dimOf,
 } as const;
 type ClickKey = keyof typeof CLICK_KEYS;
 type ClickValues = { [Key in ClickKey]?: ReturnType<(typeof CLICK_KEYS)[Key]> };
@@ -388,6 +404,7 @@ export function watchState(
         : !BARREL_STAGES.has(mainspring),
     spin: now.watchSpin ?? null,
     mainspring,
+    dim: now.watchDim ?? null,
   };
 }
 
@@ -453,6 +470,15 @@ export function stageState(
       ? meshesOf(piecesNamed("watchGoLater", state.goLater))
       : new Set(),
     moveWith,
+    ...(state.dim
+      ? {
+          dim: new Map(
+            [...meshesOf(piecesNamed("watchDim", state.dim))].map(
+              (mesh): [Mesh, number] => [mesh, WATCH_DIM],
+            ),
+          ),
+        }
+      : {}),
   };
 }
 

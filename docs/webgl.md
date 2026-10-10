@@ -126,6 +126,10 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   visible, and not at all where its centre is hidden, as in the 2D art. Other
   methods were measured and are worse at these widths (a constant depth bias
   hides up to half a 4 px line wrongly).
+  A face hides a line only if it is more than the tolerance in front of the
+  line's centre (`HIDDEN_LINE_TOLERANCE` in `renderer.ts`). So a part that
+  sits on a face, and must hide that face's lines, stands higher than the
+  tolerance.
 - **Heights:** parts sit where they touch. A part that floats above another
   looks wrong when the view tilts.
 - **Faces:** flat fills, no lighting, no textures. A curved surface reads
@@ -142,6 +146,12 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   disc names the group of the part that covers it (`Disc.by`). It hides only
   in a picture that draws a mesh of that group, so when the covering part
   fades out, the whole part under it shows.
+  So do not put a part in the covering part's group if it can show
+  without the covering part: its disc then hides with nothing over it.
+- **A dim** (`Frame.dim`) draws a mesh with its colours mixed toward the
+  paper, faces and lines, by a weight from 0 to 1. It is not an opacity: a
+  dimmed mesh still hides what is under it, and shows none of its own hidden
+  lines, so it needs no extra picture.
 - **Curved surfaces:** make them fine enough that the silhouette does not jump
   as the view turns. For a cylinder of screen radius $R$ px with $N$ facets,
   the jump is about $R\pi^2/2N^2$. For $R = 200$ px, 64 facets give 0.24 px.
@@ -163,7 +173,8 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   `StageState.later` fade in after the others. The meshes in
   `StageState.cut` go or come at once, with no fade. The meshes in
   `StageState.goLater` stay on the screen while the camera moves, and go
-  after it. With nothing on the screen,
+  after it. A dim (`StageState.dim`) eases in step 3, after the meshes that
+  go have faded out and before the others fade in. With nothing on the screen,
   the camera jumps. A key press
   during a change starts from what is on the screen: a fade cut short ends
   first. The timeline has no DOM and no WebGL, so its tests

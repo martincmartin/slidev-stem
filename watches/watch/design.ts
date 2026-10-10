@@ -19,7 +19,6 @@ export interface Timing {
   readonly unlock: number;
   /** s: one turn of the fourth wheel. */
   readonly fourthLoop: number;
-  readonly hourRatio: number;
 }
 
 /** A wheel and the pinion on its arbor. */
@@ -44,6 +43,60 @@ export interface Wheel {
   readonly driven: Wheel | null;
   readonly toothPhase: number;
   readonly pinionPhase: number | null;
+}
+
+/** A pinion of the motion works: it drives a wheel. */
+export interface DrivingPinion {
+  readonly name: string;
+  readonly leaves: number;
+  /** Its pitch radius. */
+  readonly radius: number;
+  /** Degrees from screen angle 0 to leaf 0's centre line. */
+  readonly phase: number;
+  /** Degrees a beat. */
+  readonly step: number;
+  /** From the watch centre. */
+  readonly arbor: Point2;
+}
+
+/** A wheel of the motion works: a pinion drives it. */
+export interface DrivenWheel {
+  readonly name: string;
+  readonly teeth: number;
+  readonly pitchRadius: number;
+  /** The root circle. */
+  readonly inner: number;
+  /** The tip circle. */
+  readonly outer: number;
+  readonly depth: number;
+  readonly pitch: number;
+  readonly spokes: number;
+  /** Degrees a beat. */
+  readonly step: number;
+  /** From the watch centre. */
+  readonly arbor: Point2;
+  readonly toothPhase: number;
+  /** The pinion that turns this wheel's teeth. */
+  readonly driver: DrivingPinion;
+  /** The pinion on its own arbor, which drives the next wheel; null if
+   *  there is none. */
+  readonly pinion: DrivingPinion | null;
+}
+
+/** The gears that turn the hour hand (art/watch_design.py, MotionWorks):
+ *  the cannon pinion, on the centre arbor, drives the minute wheel, and the
+ *  minute wheel's pinion drives the hour wheel, about the centre arbor. */
+export interface MotionWorks {
+  readonly cannon: DrivingPinion;
+  readonly minute: DrivenWheel;
+  readonly hour: DrivenWheel;
+}
+
+/** Turns of the minute hand to one of the hour hand: 12. */
+export function hourRatio({ minute, hour }: MotionWorks): number {
+  return (
+    (minute.teeth / minute.driver.leaves) * (hour.teeth / hour.driver.leaves)
+  );
 }
 
 export interface BalanceDesign {
@@ -80,6 +133,7 @@ export interface Design {
     readonly ringRadius: number;
   };
   readonly hands: { readonly hour: number; readonly minute: number };
+  readonly motionWorks: MotionWorks;
 }
 
 type Json = unknown;
@@ -192,7 +246,6 @@ function checkTiming(timing: Timing): void {
         timing.fourthLoop >= timing.period,
       "a whole number of periods",
     ],
-    ["hourRatio", timing.hourRatio > 0, "more than 0"],
   ];
   for (const [name, inRange, wanted] of ranges) {
     if (!inRange) fail(`timing.${name}`, wanted);
@@ -207,10 +260,85 @@ function readTiming(timing: Record<string, Json>): Timing {
     bank: num(timing, "bank", "timing"),
     unlock: num(timing, "unlock", "timing"),
     fourthLoop: num(timing, "fourthLoop", "timing"),
-    hourRatio: num(timing, "hourRatio", "timing"),
   };
   checkTiming(read);
   return read;
+}
+
+function readPinion(entry: Record<string, Json>, where: string): DrivingPinion {
+  return {
+    name: text(entry, "name", where),
+    leaves: num(entry, "leaves", where),
+    radius: num(entry, "radius", where),
+    phase: num(entry, "phase", where),
+    step: num(entry, "step", where),
+    arbor: point(field(entry, "arbor", where), `${where}.arbor`),
+  };
+}
+
+function readDrivenWheel(
+  entry: Record<string, Json>,
+  where: string,
+  driver: DrivingPinion,
+  pinion: DrivingPinion | null,
+): DrivenWheel {
+  const arbor = point(field(entry, "arbor", where), `${where}.arbor`);
+  if (
+    pinion &&
+    (pinion.arbor[0] !== arbor[0] || pinion.arbor[1] !== arbor[1])
+  ) {
+    return fail(`${where}.pinion`, "on its wheel's arbor");
+  }
+  return {
+    name: text(entry, "name", where),
+    teeth: num(entry, "teeth", where),
+    pitchRadius: num(entry, "pitchRadius", where),
+    inner: num(entry, "inner", where),
+    outer: num(entry, "outer", where),
+    depth: num(entry, "depth", where),
+    pitch: num(entry, "pitch", where),
+    spokes: num(entry, "spokes", where),
+    step: num(entry, "step", where),
+    arbor,
+    toothPhase: num(entry, "toothPhase", where),
+    driver,
+    pinion,
+  };
+}
+
+/** The motion works, linked: the cannon pinion drives the minute wheel,
+ *  and the minute pinion the hour wheel. The cannon pinion and the hour
+ *  wheel turn about the centre arbor. */
+function readMotionWorks(json: Json): MotionWorks {
+  const works = record(json, "motionWorks");
+  const minuteEntry = record(field(works, "minute", "motionWorks"), "minute");
+  const cannon = readPinion(
+    record(field(works, "cannon", "motionWorks"), "motionWorks.cannon"),
+    "motionWorks.cannon",
+  );
+  const minutePinion = readPinion(
+    record(
+      field(minuteEntry, "pinion", "motionWorks.minute"),
+      "motionWorks.minute.pinion",
+    ),
+    "motionWorks.minute.pinion",
+  );
+  const minute = readDrivenWheel(
+    minuteEntry,
+    "motionWorks.minute",
+    cannon,
+    minutePinion,
+  );
+  const hour = readDrivenWheel(
+    record(field(works, "hour", "motionWorks"), "motionWorks.hour"),
+    "motionWorks.hour",
+    minutePinion,
+    null,
+  );
+  if (hour.arbor[0] !== cannon.arbor[0] || hour.arbor[1] !== cannon.arbor[1]) {
+    return fail("motionWorks.hour.arbor", "the cannon pinion's arbor");
+  }
+  return { cannon, minute, hour };
 }
 
 /** Check the JSON and turn its names into objects. */
@@ -303,6 +431,7 @@ export function readDesign(json: Json): Design {
       hour: num(hands, "hour", "hands"),
       minute: num(hands, "minute", "hands"),
     },
+    motionWorks: readMotionWorks(field(root, "motionWorks", "the file")),
   };
 }
 

@@ -9,6 +9,7 @@ import {
   moveWithBefore,
   stageState,
   tickTockState,
+  WATCH_DIM,
   watchState,
 } from "./state.ts";
 
@@ -33,6 +34,7 @@ test("the fields and their defaults", () => {
     settled: false,
     spin: null,
     mainspring: null,
+    dim: null,
   });
   const frontmatter = {
     watch: ["hairspring", "collet", "stud"],
@@ -57,7 +59,37 @@ test("the fields and their defaults", () => {
     settled: true,
     spin: null,
     mainspring: null,
+    dim: null,
   });
+});
+
+test("watchDim dims pieces from its click on, until false; the stage gets their meshes at WATCH_DIM", () => {
+  const frontmatter = {
+    watch: ["hairspring", "collet", "stud"],
+    watchClicks: { 1: { watchDim: ["stud"] }, 2: { watchDim: false } },
+  };
+  assert.equal(watchState(frontmatter, 0)?.dim, null);
+  const dimmed = watchState(frontmatter, 1) ?? assert.fail();
+  assert.deepEqual(dimmed.dim, ["stud"]);
+  const stud = watch.scene.pieces.find((piece) => piece.name === "stud");
+  assert.ok(stud);
+  assert.deepEqual(
+    stageState(watch, dimmed).dim,
+    new Map([...stud.meshes].map((mesh) => [mesh, WATCH_DIM])),
+  );
+  assert.equal(watchState(frontmatter, 2)?.dim, null);
+  assert.equal(
+    stageState(watch, watchState(frontmatter, 2) ?? assert.fail()).dim,
+    undefined,
+  );
+  assert.throws(
+    () => watchState({ watch: ["stud"], watchDim: true }, 0),
+    /watchDim/,
+  );
+  assert.throws(
+    () => stageState(watch, { ...dimmed, dim: ["no such piece"] }),
+    /watchDim/,
+  );
 });
 
 test("a flash is of one click: the slide's at click 0, a block's at its click", () => {
@@ -215,9 +247,11 @@ test("a slide shows the meshes of its pieces, or all but the marks, in its named
   );
   // every mesh but those of the pieces that only a slide that names them
   // shows: the drive arrows, the Gears slide's spans, the Gear Train slide's
-  // one-step wheel and raised strap, and the Mainspring slide's props
+  // one-step wheel and raised strap, the Mainspring slide's props, and the
+  // motion works with the Hour Hand slide's one-step hour wheel
   const marks = watch.scene.pieces.filter((piece) => !piece.inAll);
   assert.deepEqual(marks.map((piece) => piece.name).sort(), [
+    "cannon pinion",
     "centre wheel drive",
     "escape pinion span",
     "escape pinion span wash",
@@ -225,8 +259,14 @@ test("a slide shows the meshes of its pieces, or all but the marks, in its named
     "fourth wheel drive",
     "fourth wheel span",
     "fourth wheel span wash",
+    "hour wheel",
     "mainspring rest",
     "mainspring stud",
+    "minute arbor",
+    "minute pinion",
+    "minute wheel",
+    "one-step hour hand",
+    "one-step hour wheel",
     "one-step wheel",
     "raised strap",
     "third wheel drive",

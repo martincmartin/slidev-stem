@@ -11,8 +11,7 @@
     "pinArc": 25.0,
     "bank": 9.0,
     "unlock": 0.5,
-    "fourthLoop": 60.0,
-    "hourRatio": 12
+    "fourthLoop": 60.0
   },
   "wheels": [
     {
@@ -154,5 +153,49 @@
   "hands": {
     "hour": 3,
     "minute": 44
+  },
+  "motionWorks": {
+    "cannon": {
+      "name": "cannon",
+      "arbor": [0.0, 0.0],
+      "leaves": 4,
+      "radius": 6.25,
+      "step": 0.1,
+      "phase": -85.0
+    },
+    "minute": {
+      "name": "minute",
+      "teeth": 12,
+      "pitchRadius": 18.75,
+      "inner": 15.608407346410207,
+      "outer": 21.891592653589793,
+      "depth": 3.141592653589793,
+      "pitch": 9.817477042468104,
+      "spokes": 4,
+      "step": -0.03333333333333333,
+      "toothPhase": 49.99999999999999,
+      "arbor": [-16.069690242163485, -19.15111107797445],
+      "pinion": {
+        "name": "minute",
+        "arbor": [-16.069690242163485, -19.15111107797445],
+        "leaves": 4,
+        "radius": 5.0,
+        "step": -0.03333333333333333,
+        "phase": 95.0
+      }
+    },
+    "hour": {
+      "name": "hour",
+      "teeth": 16,
+      "pitchRadius": 20.0,
+      "inner": 17.486725877128166,
+      "outer": 22.513274122871834,
+      "depth": 2.5132741228718345,
+      "pitch": 7.853981633974483,
+      "spokes": 4,
+      "step": 0.008333333333333333,
+      "toothPhase": -130.0,
+      "arbor": [0.0, 0.0]
+    }
   }
 }

@@ -3,6 +3,7 @@ import { test } from "node:test";
 import { INKS, INVERSE_FLASH_INKS } from "./scene.ts";
 import type { Mesh, View } from "./scene.ts";
 import {
+  DIM_SECONDS,
   FADE_SECONDS,
   FLASH_CYCLES,
   FLASH_OFF_SECONDS,
@@ -94,6 +95,7 @@ test("the first state is shown at once, with no phase", () => {
     keep: set(SPRING),
     fade: set(),
     rest: 1,
+    dim: new Map(),
   });
   assert.equal(timeline.phaseAt(0), null);
 });
@@ -146,8 +148,39 @@ test("by default the old meshes fade out, the camera moves with the common ones,
     keep: set(SPRING, BALANCE),
     fade: set(),
     rest: 1,
+    dim: new Map(),
   });
   assert.equal(timeline.phaseAt(2 * FADE + MOVE), null);
+});
+
+test("a dim eases after the camera moves and the old meshes fade out, before the new ones fade in", () => {
+  const timeline = timelineAt(state({ view: WIDE, shown: set(SPRING, CASE) }));
+  const dimmed = new Map([[CASE, 0.35]]);
+  timeline.show(
+    state({ view: CLOSE, shown: set(CASE, BALANCE), dim: dimmed }),
+    0,
+  );
+  // the spring fades out; the camera moves with the case, still bright
+  assert.equal(timeline.valuesAt(FADE + MOVE / 2).dim.size, 0);
+  assert.equal(timeline.phaseAt(FADE + MOVE), "dim");
+  const easing = timeline.valuesAt(FADE + MOVE + DIM_SECONDS * 500);
+  const weight = easing.dim.get(CASE) ?? 1;
+  assert.ok(weight > 0.35 && weight < 1, String(weight));
+  // then the balance fades in, with the case dimmed
+  assert.equal(timeline.phaseAt(FADE + MOVE + DIM_SECONDS * 1000), "fade");
+  const end = FADE + MOVE + DIM_SECONDS * 1000 + FADE;
+  assert.deepEqual(timeline.valuesAt(end).dim, dimmed);
+  assert.equal(timeline.endAt(0), end);
+  // the end of a dim eases too, from where it is
+  timeline.show(state({ view: CLOSE, shown: set(CASE, BALANCE) }), 20_000);
+  assert.equal(timeline.phaseAt(20_000), "dim");
+  assert.deepEqual(
+    timeline.valuesAt(20_000 + DIM_SECONDS * 1000).dim,
+    new Map(),
+  );
+  // a state with the same dim changes nothing
+  timeline.show(state({ view: CLOSE, shown: set(CASE, BALANCE) }), 30_000);
+  assert.equal(timeline.phaseAt(30_000), null);
 });
 
 test("zooming in, the camera moves and then tilts; zooming out, it untilts and then moves", () => {

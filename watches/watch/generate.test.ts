@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import { transformPoint } from "../webgl/math.ts";
+import type { Point2 } from "../webgl/mesh.ts";
 import { viewProjection } from "../webgl/renderer.ts";
 import type { Wheel } from "./design.ts";
 import type { Mesh, Piece } from "../webgl/scene.ts";
@@ -128,6 +129,42 @@ test("every mesh is finite, and every hidden-inside disc is a disc", () => {
     }
     for (const disc of mesh.hiddenInside) {
       assert.ok(disc.radius > 0 && disc.centre.every(Number.isFinite));
+    }
+  }
+});
+
+test("the cover draws the group of a clip disc only with a part that covers the disc", () => {
+  // A disc hides while any mesh of its group is drawn (docs/webgl.md, "Clip
+  // discs"). So a part that the cover shows must not share a group with a
+  // covering part that the cover leaves out. A mesh covers a disc if, in every
+  // sector about the group's arbor, it reaches the disc's edge.
+  const SECTORS = 16;
+  const onCover = new Set(
+    scene.pieces
+      .filter((each) => each.inAll)
+      .flatMap((each) => [...each.meshes]),
+  );
+  const covers = (mesh: Mesh, radius: number): boolean => {
+    const reached = new Array<number>(SECTORS).fill(0);
+    for (let index = 0; index < mesh.triangles.length; index += 3) {
+      const x = at(mesh.triangles, index);
+      const y = at(mesh.triangles, index + 1);
+      const sector =
+        Math.floor((Math.atan2(y, x) / (2 * Math.PI) + 1) * SECTORS) % SECTORS;
+      reached[sector] = Math.max(at(reached, sector), Math.hypot(x, y));
+    }
+    return reached.every((reach) => reach >= radius);
+  };
+  for (const mesh of onCover) {
+    for (const disc of mesh.hiddenInside) {
+      const drawn = scene.meshes.filter(
+        (each) => each.group === disc.by && onCover.has(each),
+      );
+      if (drawn.length === 0) continue;
+      assert.ok(
+        drawn.some((each) => each.fill !== null && covers(each, disc.radius)),
+        `${mesh.name}: the cover draws ${disc.by.name}, but not the part that covers its disc`,
+      );
     }
   }
 });
@@ -459,5 +496,13 @@ test("each drive arrow is on its wheel, centred toward the wheel that drives it,
     const middle = out(at(shaft, Math.floor(shaft.length / 2)));
     const toDriver = out(driver.arbor);
     assert.ok(middle[0] * toDriver[0] + middle[1] * toDriver[1] > 0);
+    // the shaft ends inside the head, at its middle: the line's round end
+    // does not show past the tip
+    const [tip, left, right] = head;
+    const end = at(shaft, shaft.length - 1);
+    const base: Point2 = [(left[0] + right[0]) / 2, (left[1] + right[1]) / 2];
+    const fromTip = Math.hypot(end[0] - tip[0], end[1] - tip[1]);
+    const length = Math.hypot(base[0] - tip[0], base[1] - tip[1]);
+    assert.ok(Math.abs(fromTip / length - 1 / 2) < 0.01, wheel.name);
   }
 });

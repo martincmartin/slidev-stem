@@ -27,7 +27,10 @@ from watch_design import (
     BANK,
     BARREL,
     BARREL_ANGLE,
+    CENTRE,
     ESCAPE,
+    MOTION_WORKS,
+    RING_CLEARANCE,
     RING_RADIUS,
     STACK,
     THIRD,
@@ -219,6 +222,33 @@ def layout_constraints(placement: Placement, spacing: float = 1.0) -> list[str]:
             f"third-barrel: visible gap {gap:.1f} px, expected "
             f"{THIRD_BARREL_CLEARANCE:g} +/- {THIRD_BARREL_TOLERANCE:g} px"
         )
+    return problems
+
+
+def motion_works_problems(placement: Placement) -> list[str]:
+    """The motion works are above the train, so only their own meshes and
+    the chapter ring limit them: both stages have the same centres, the hour
+    wheel's arbor is the centre arbor, the minute wheel is inside the ring,
+    and the hour hand turns a whole number of times slower."""
+    works = MOTION_WORKS
+    problems = []
+    have = math.dist(placement.arbor[CENTRE], placement.minute_arbor)
+    for stage, want in (
+        ("cannon-minute", works.cannon_radius + works.minute.pitch_radius),
+        ("minute-hour", works.minute_pinion_radius + works.hour.pitch_radius),
+    ):
+        if abs(have - want) > MESH_TOLERANCE:
+            problems.append(
+                f"{stage}: arbors {have:.2f} px apart, the mesh needs {want:.2f}"
+            )
+    gap = RING_RADIUS - (have + works.minute.outer)
+    if gap < RING_CLEARANCE:
+        problems.append(
+            f"minute wheel: {gap:.1f} px from the chapter ring, "
+            f"under RING_CLEARANCE {RING_CLEARANCE:g}"
+        )
+    if not math.isclose(works.ratio, round(works.ratio)):
+        problems.append(f"motion works: a ratio of {works.ratio:g}, not whole")
     return problems
 
 

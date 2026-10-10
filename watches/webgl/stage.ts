@@ -223,6 +223,7 @@ export class Stage<ModelState> {
       fade,
       rest,
       ...(recolour ? { recolour } : {}),
+      dim: values.dim,
       size,
     });
     this.log.starts.push(now);

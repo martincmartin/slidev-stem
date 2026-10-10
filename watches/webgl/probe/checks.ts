@@ -1,6 +1,6 @@
 // Checks of the renderer, the stage and the stills that need a browser:
 // context loss, dispose, a dynamic mesh drawn last, the fade, a recolour,
-// the flash, and the contract of each input. They draw small scenes of their own, not the
+// a dim, the flash, and the contract of each input. They draw small scenes of their own, not the
 // watch. `window.webglChecks()` runs them all; art/watch_stills.py calls it.
 
 import { check } from "../checked.ts";
@@ -646,6 +646,60 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
               inks: FLASH_INKS,
             },
           }),
+        );
+      }, /not in the scene/);
+      noError(target);
+    },
+  ],
+  [
+    "a dim mixes a mesh's colours toward the paper, and it still hides what is under it",
+    (own) => {
+      const test = makeScene();
+      const target = canvas();
+      const drawn = own(renderer(target, test.scene));
+      const rgb = (hex: string): number[] =>
+        hexRgb(hex).map((value) => value * 255);
+      const wash = rgb(PALETTE.subjectWash);
+      const paper = rgb(PALETTE.paper);
+      /** Pixels within 1 of `colour` in each channel. */
+      const count = (picture: Uint8Array, colour: number[]): number => {
+        let found = 0;
+        for (let index = 0; index < picture.length; index += 4) {
+          if (
+            colour.every(
+              (value, channel) =>
+                Math.abs((picture[index + channel] ?? 0) - value) <= 1,
+            )
+          ) {
+            found++;
+          }
+        }
+        return found;
+      };
+      drawn.render(frameOf(test));
+      const plain = pixels(target);
+      drawn.render(frameOf(test, { dim: new Map([[test.front, 1]]) }));
+      same(plain, pixels(target), "a dim of weight 1");
+      drawn.render(frameOf(test, { dim: new Map([[test.front, 0.5]]) }));
+      const half = wash.map(
+        (value, channel) => 0.5 * value + 0.5 * (paper[channel] ?? 0),
+      );
+      check(count(pixels(target), half) > 100, "a dim of 0.5 has no half fill");
+      // dimmed to the paper, the front box still hides the back one
+      drawn.render(frameOf(test, { dim: new Map([[test.front, 0]]) }));
+      const blank = count(pixels(target), wash);
+      drawn.render(frameOf(test, { keep: new Set([test.back]), rest: 0 }));
+      const backAlone = count(pixels(target), wash);
+      check(
+        blank > 100 && blank < backAlone,
+        `the dimmed box does not hide the back one (${String(blank)} and ${String(backAlone)} px of its fill)`,
+      );
+      throws(() => {
+        drawn.render(frameOf(test, { dim: new Map([[test.front, 1.5]]) }));
+      }, /outside 0..1/);
+      throws(() => {
+        drawn.render(
+          frameOf(test, { dim: new Map([[makeScene().front, 0.5]]) }),
         );
       }, /not in the scene/);
       noError(target);

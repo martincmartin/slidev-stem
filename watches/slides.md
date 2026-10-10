@@ -749,6 +749,165 @@ The power comes from a spring too: the mainspring. A long ribbon of steel, coile
 -->
 
 ---
+# the whole watch as the Mainspring slide leaves it, but the hour hand, in
+# its view (the train in the picture band), so the step from it does not
+# move the camera; tilt 20 at every click. While the camera is in on the
+# motion works, all but the centre wheel and the minute hand is dimmed
+# (docs/watch.md, "The Hour Hand slide")
+watch:
+  &watch [
+    &faint [
+      mainspring,
+      barrel arbor,
+      barrel,
+      centre pinion,
+      escape wheel,
+      escape pinion,
+      escape arbor,
+      fourth wheel,
+      fourth pinion,
+      fourth arbor,
+      third wheel,
+      third pinion,
+      third arbor,
+      balance wheel,
+      balance staff,
+      hairspring,
+      collet,
+      stud,
+      roller,
+      impulse jewel,
+      pallet fork,
+      seconds hand,
+      chapter ring,
+      case band,
+      lug,
+      crown,
+      strap,
+    ],
+    centre wheel,
+    centre arbor,
+    minute hand,
+    centre pivot,
+  ]
+watchView:
+  &train [barrel, centre wheel, third wheel, fourth wheel, escape wheel]
+watchTilt: 20
+class: hour-hand
+watchClicks:
+  # one wheel, 12 times slower: a pinion on the centre arbor (the cannon
+  # pinion) and a wheel with 12 times its leaves. They fade in and flash
+  1:
+    watch: [*watch, &oneStep [cannon pinion, one-step hour wheel]]
+    watchFlash: *oneStep
+  # the hour hand on that wheel's arbor: off centre
+  2:
+    watch: [*watch, *oneStep, one-step hour hand]
+  # the one-step wheel, its hand and its pinion go; the camera zooms in on
+  # the centre wheel, and then all but the centre wheel and the minute hand
+  # dims
+  3:
+    watch: *watch
+    watchView: [centre wheel]
+    watchDim: *faint
+  # the cannon pinion and the minute wheel fade in, and flash: out, 3:1
+  4:
+    watch: [*watch, &out [cannon pinion, minute wheel, minute arbor]]
+    watchFlash: [cannon pinion, minute wheel]
+  # the minute pinion and the hour wheel fade in, and flash: back, 4:1
+  5:
+    watch: [*watch, *out, &back [minute pinion, hour wheel]]
+    watchFlash: *back
+  # the camera zooms back out, the dim ends, and the hour hand fades in, on
+  # the hour wheel, in the middle
+  6:
+    watch: [*watch, *out, *back, hour hand]
+    watchView: *train
+    watchDim: false
+clicks: 6
+---
+
+# Hour Hand
+
+From once an hour to twice a day
+
+<!-- Each text waits for the watch's change at its click to end, with its
+flash (after-watch, style.css), as on the Gear Train slide. -->
+
+<div v-click.hide="3" class="hh-sentence">
+  <div v-click="1" class="after-watch">12:1 gear ratio</div>
+  <div v-click="2" class="after-watch">Off centre!</div>
+</div>
+
+<!-- The stages stay at click 6, dimmed, above the hour hand's text: a
+recap, as on the Gear Train slide. -->
+
+<div class="hh-sentence" :class="{ 'hh-recap': $clicks >= 6 }">
+  <div v-click="4" class="after-watch hh-stage">Out: 3:1</div>
+  <div v-click="5" class="after-watch hh-stage">
+    <div>Back: 4:1</div>
+    <div>3 × 4 = 12</div>
+  </div>
+  <div v-click="6" class="after-watch">
+    <div>Twice a day,<br>in the middle.</div>
+    <div>The hour hand!</div>
+  </div>
+</div>
+
+<style>
+/* The ring and the one-step hour wheel run behind the title and the text:
+   the paper's outline keeps them legible, as on the Gear Train slide. */
+.slidev-layout.hour-hand h1,
+.slidev-layout.hour-hand h1 + p,
+.slidev-layout.hour-hand .hh-sentence {
+  -webkit-text-stroke: 6px var(--palette-background);
+  paint-order: stroke fill;
+}
+/* Where the Gear Train slide's text is, and the same type: 70 px right of
+   the picture's right edge (the frontmatter's watchRight). The fades are in
+   longhands, which keep after-watch's delay. */
+.slidev-layout.hour-hand .hh-sentence {
+  position: absolute;
+  left: 560px;
+  top: 165px;
+  font-size: 35px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.slidev-layout.hour-hand .hh-sentence div + div {
+  margin-top: 0.7em;
+}
+.slidev-layout.hour-hand .hh-sentence.slidev-vclick-target,
+.slidev-layout.hour-hand .hh-sentence > .slidev-vclick-target {
+  transition-property: opacity;
+  transition-duration: var(--text-fade);
+}
+/* At click 6 the stages dim, as the Gear Train slide's do, when the hour
+   hand's text fades in: after the watch's change (after-watch). */
+.slidev-layout.hour-hand .hh-recap > .hh-stage {
+  opacity: 0.5;
+  transition-delay: var(--watch-end-delay, 0s);
+}
+</style>
+
+<!--
+The minute hand turns once an hour. The hour hand must turn twelve times slower: once in twelve hours, twice a day.
+
+[click] Twelve to one is not much more than the eight to one of the last stage. One pinion on the centre arbor, and a wheel with twelve times its teeth: forty-eight. They fade in and flash. Only one and a half times the centre wheel's size.
+
+[click] Put the hour hand on its arbor. It is off centre! Wherever the wheel goes, its arbor is off centre. A seconds hand can live off centre; an hour hand cannot. (And it would run backwards: a gear turns the other way from the gear that drives it.)
+
+[click] So, two steps. The big wheel and its pinion go, and the camera zooms in on the centre wheel. The rest of the watch dims, the big pinion that the barrel drives too, so that only the centre wheel and the minute hand are in full colour.
+
+[click] The same small pinion comes back, and drives a small wheel, the minute wheel: three to one, out from the centre. They flash.
+
+[click] The minute wheel's own pinion drives the hour wheel, which turns on the centre arbor: four to one, back to the centre. Three times four is twelve. And two steps turn it the right way again.
+
+[click] Zoom back out, and the whole watch is in full colour again. The hour hand goes on the hour wheel. It turns twice a day, in the middle, under the minute hand. The hour hand!
+-->
+
+---
 layout: full
 class: tk-timekeepers
 # hide: true

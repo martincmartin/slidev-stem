@@ -1,4 +1,5 @@
-// The train's teeth: every wheel meshes with the pinion that it drives. Over
+// The teeth: every wheel of the train meshes with the pinion that it drives,
+// and every pinion of the motion works with the wheel that it drives. Over
 // one tooth, the outlines never overlap, and the driving flank stays in
 // touch (docs/watch.md, "The teeth").
 
@@ -7,10 +8,18 @@ import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import designFile from "./design.json" with { type: "json" };
-import { readDesign, type Wheel } from "./design.ts";
+import {
+  readDesign,
+  type DrivenWheel,
+  type DrivingPinion,
+  type Wheel,
+} from "./design.ts";
 import { oneStepWheel } from "./generate.ts";
 import { FLATNESS, type Path } from "./path.ts";
 import {
+  drivenLead,
+  drivenWheelTeeth,
+  drivingPinionLeaves,
   meshedSpan,
   pinionLead,
   pinionLeafShapes,
@@ -29,6 +38,12 @@ const MAX_OVERLAP = 2 * FLATNESS;
 /** px: on the Gears slide a px is about 4.3 screen px, and the two outlines'
  *  half widths add to 2.25 screen px, so a smaller gap is under the ink. */
 const MAX_CONTACT_GAP = 0.3;
+/** px, where a pinion drives (the motion works): the leaf's round end is not
+ *  shaped to drive, so the contact opens a little as each tooth leaves
+ *  (0.33 px at most, measured on 2026-10-09). The Hour Hand slide shows
+ *  them at about 3.8 screen px a px, so 0.4 px is under the 2.25 screen px
+ *  of the two outlines' half widths, as on the Gears slide. */
+const MAX_DRIVEN_GAP = 0.4;
 const SAMPLES = 60;
 
 /** Each wheel that drives a pinion, with the wheel that carries it. */
@@ -107,12 +122,56 @@ function offNearest(degrees: number, period: number): number {
   return degrees - period * Math.round(degrees / period);
 }
 
-/** Turns `wheel` and the pinion of `owner` through one tooth: they never
- *  overlap, and the driving flank stays in touch. */
-function assertMeshes(wheel: Wheel, owner: Wheel): void {
+/** A wheel and a pinion in mesh, as the test turns them. */
+interface Pair {
+  readonly wheel: {
+    readonly name: string;
+    readonly points: Point2[];
+    readonly teeth: number;
+    readonly step: number;
+    readonly arbor: Point2;
+    readonly outer: number;
+    /** Where tooth 0's centre line is, with its lead. */
+    readonly toothPhase: number;
+  };
+  readonly pinion: {
+    readonly points: Point2[];
+    readonly step: number;
+    readonly arbor: Point2;
+  };
+  /** Which of the two turns the other. */
+  readonly driver: "wheel" | "pinion";
+}
+
+/** A wheel of the train and the pinion of `owner`, which it drives. */
+function trainPair(wheel: Wheel, owner: Wheel): Pair {
+  return {
+    wheel: { ...wheel, points: outline(wheelTeeth(wheel)) },
+    pinion: { ...owner, points: outline(pinionLeaves(owner)) },
+    driver: "wheel",
+  };
+}
+
+/** A wheel of the motion works and the pinion that drives it. */
+function motionPair(wheel: DrivenWheel, pinion: DrivingPinion): Pair {
+  return {
+    wheel: {
+      ...wheel,
+      points: outline(drivenWheelTeeth(wheel)),
+      toothPhase: wheel.toothPhase + drivenLead(wheel),
+    },
+    pinion: { ...pinion, points: outline(drivingPinionLeaves(pinion)) },
+    driver: "pinion",
+  };
+}
+
+/** Turns the pair through one tooth: they never overlap, and the driving
+ *  flank stays in touch. */
+function assertMeshes(pair: Pair): void {
+  const { wheel, pinion: owner } = pair;
   {
-    const wheelPoints = outline(wheelTeeth(wheel));
-    const pinionPoints = outline(pinionLeaves(owner));
+    const wheelPoints = wheel.points;
+    const pinionPoints = owner.points;
     const pinionReach =
       Math.max(...pinionPoints.map((point) => Math.hypot(...point))) + 1;
     // one wheel tooth passes in this many beats
@@ -150,9 +209,12 @@ function assertMeshes(wheel: Wheel, owner: Wheel): void {
         const [distance, foot] = nearestOn(point, wheelNow);
         if (distance < gap) [gap, wheelContact] = [distance, foot];
       }
-      assert.ok(gap <= MAX_CONTACT_GAP, `${where}: gap ${String(gap)}`);
+      const allowed =
+        pair.driver === "wheel" ? MAX_CONTACT_GAP : MAX_DRIVEN_GAP;
+      assert.ok(gap <= allowed, `${where}: gap ${String(gap)}`);
 
-      // the contact is on a tooth's leading flank: the side the wheel turns to
+      // a wheel that drives touches with a tooth's leading flank, the side
+      // that it turns to; a wheel that a pinion drives, with the trailing one
       const [localX, localY] = turned(
         [wheelContact[0] - wheel.arbor[0], wheelContact[1] - wheel.arbor[1]],
         (-wheelTurn * Math.PI) / 180,
@@ -164,8 +226,8 @@ function assertMeshes(wheel: Wheel, owner: Wheel): void {
       );
       assert.equal(
         Math.sign(fromToothCentre),
-        Math.sign(wheel.step),
-        `${where}: the contact is on the trailing flank`,
+        Math.sign(wheel.step) * (pair.driver === "wheel" ? 1 : -1),
+        `${where}: the contact is on the flank that does not drive`,
       );
     }
   }
@@ -173,13 +235,20 @@ function assertMeshes(wheel: Wheel, owner: Wheel): void {
 
 test("every wheel meshes with its pinion: no overlap, and the driving flank keeps contact", () => {
   assert.equal(meshes.length, 4); // barrel, centre, third, fourth
-  for (const [wheel, owner] of meshes) assertMeshes(wheel, owner);
+  for (const [wheel, owner] of meshes) assertMeshes(trainPair(wheel, owner));
 });
 
 test("the one-step wheel meshes with the fourth pinion, as the third wheel does", () => {
   const wheel = oneStepWheel(design);
   assert.ok(wheel.driven);
-  assertMeshes(wheel, wheel.driven);
+  assertMeshes(trainPair(wheel, wheel.driven));
+});
+
+test("each pinion of the motion works meshes with the wheel that it drives", () => {
+  const { minute, hour } = design.motionWorks;
+  for (const wheel of [minute, hour]) {
+    assertMeshes(motionPair(wheel, wheel.driver));
+  }
 });
 
 /** The least distance between two closed outlines. */

@@ -10,7 +10,10 @@
 //
 // Inks: a line instance holds the index of its ink, not a colour, and each
 // draw gives the colour of every ink as a uniform. So a frame can draw some
-// meshes in other inks (`Frame.recolour`, a flash) with no new buffers.
+// meshes in other inks (`Frame.recolour`, a flash) with no new buffers, and
+// dim some (`Frame.dim`): their colours mixed toward the paper, each face's
+// and each ink's. A dim is not an opacity: a dimmed part still hides what is
+// under it, and shows none of its own hidden lines.
 //
 // Lines: each edge is an instanced quad, expanded on the screen in the vertex
 // shader (mattdesl's "expand in the vertex shader", in screen space). The
@@ -24,8 +27,9 @@
 //
 // Hidden lines: the centre-line test. The faces are drawn into a depth
 // texture first. Each fragment of a line takes the point of the line's
-// centre line nearest to it, and is drawn only if that point is visible:
-// no nearer than the farthest of the 2 x 2 texels around it, plus TOLERANCE.
+// centre line nearest to it, and is drawn only if that point is visible: no
+// nearer than the farthest of the 2 x 2 texels around it, plus
+// HIDDEN_LINE_TOLERANCE.
 // So a line is drawn at its full width where its centre is visible, and not
 // at all where it is hidden: the painter's rule of the 2D art. Lines do not
 // test each other's depth: they are drawn in increasing `lineOrder`, then in
@@ -76,7 +80,10 @@ import { IDENTITY, checkAffine, normalMatrix } from "./math.ts";
 import type { Matrix4 } from "./math.ts";
 
 const DEPTH_RANGE = 2000; // slide px: world depth maps to clip z = -depth / range
-const TOLERANCE = 0.25; // slide px of depth, for the centre-line test
+/** Slide px of depth, for the centre-line test: a face hides a line only if
+ *  it is more than this in front of the line's centre. So a part that must
+ *  hide the lines of the face that it sits on stands higher than this. */
+export const HIDDEN_LINE_TOLERANCE = 0.25;
 const MAX_DISCS = 4;
 /** The polygon offset of an overlay's faces (`Mesh.overlay`): toward the
  *  camera by its slope and by two steps of the depth buffer, more than the
@@ -410,6 +417,8 @@ interface Picture {
   size: [number, number];
   pixelsPerSlidePx: number;
   recolour: Recolour | null;
+  /** The weight of each dimmed mesh's own colours (`Frame.dim`). */
+  dim: ReadonlyMap<Mesh, number>;
 }
 
 function modelOf(picture: Picture, mesh: Mesh): Matrix4 {
@@ -808,18 +817,33 @@ export class Renderer {
     return made;
   }
 
+  /** The `inks` uniform for `mesh` in `picture`: after its map, and mixed
+   *  toward the paper if it is dimmed. */
+  private meshInks(picture: Picture, mesh: Mesh): Float32Array {
+    const own = this.inkUniform(this.inkMap(picture, mesh));
+    const weight = picture.dim.get(mesh) ?? 1;
+    if (weight === 1) return own;
+    // a dim eases: a new array for each weight, not a cache that grows
+    return own.map(
+      (value, index) =>
+        weight * value + (1 - weight) * (this.paper[index % 3] ?? 0),
+    );
+  }
+
   /** A palette colour over the paper: `opacity x colour + (1 - opacity) x
-   *  paper`, with the fill's ink after `map`. */
+   *  paper`, with the fill's ink after `map`, and the opacity times
+   *  `weight`, a dim's. */
   private fillColour(
     fill: Colour | null,
     map: ReadonlyMap<Ink, Ink> | null,
+    weight: number,
   ): Rgba | null {
     if (fill === null) return null;
     const [red, green, blue] = inkColour(
       this.inks,
       map?.get(fill.ink) ?? fill.ink,
     );
-    const opacity = fill.opacity;
+    const opacity = fill.opacity * weight;
     const mixed = (own: number, paper: number): number =>
       opacity * own + (1 - opacity) * paper;
     return [
@@ -1033,12 +1057,21 @@ export class Renderer {
         checkInk(to, "recolour");
       }
     }
+    const dim = frame.dim ?? new Map<Mesh, number>();
+    for (const [mesh, weight] of dim) {
+      check(this.geometry.has(mesh), `${mesh.name} is not in the scene`);
+      check(
+        weight >= 0 && weight <= 1,
+        `${mesh.name}'s dim ${String(weight)} is outside 0..1`,
+      );
+    }
     return {
       camera: viewProjection(view, frame.tilt, this.scene.slide),
       models,
       size: [width, height],
       pixelsPerSlidePx: width / this.scene.slide[0],
       recolour,
+      dim,
     };
   }
 
@@ -1230,6 +1263,7 @@ export class Renderer {
       const colour = this.fillColour(
         drawn.mesh.fill,
         this.inkMap(picture, drawn.mesh),
+        picture.dim.get(drawn.mesh) ?? 1,
       );
       if (!colour || made.triangleVertices === 0) continue;
       gl.uniformMatrix4fv(
@@ -1273,7 +1307,10 @@ export class Renderer {
       uniform(program, "pixelsPerSlidePx"),
       picture.pixelsPerSlidePx,
     );
-    gl.uniform1f(uniform(program, "tolerance"), TOLERANCE / (2 * DEPTH_RANGE));
+    gl.uniform1f(
+      uniform(program, "tolerance"),
+      HIDDEN_LINE_TOLERANCE / (2 * DEPTH_RANGE),
+    );
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, target.depth);
     gl.uniform1i(uniform(program, "faceDepth"), 0);
@@ -1298,7 +1335,7 @@ export class Renderer {
       );
       gl.uniform3fv(
         uniform(program, "inks"),
-        this.inkUniform(this.inkMap(picture, drawn.mesh)),
+        this.meshInks(picture, drawn.mesh),
       );
       this.setDiscs(program, drawn, groups);
       gl.bindVertexArray(made.segments);

@@ -295,7 +295,11 @@ export class Motion {
     const [, centre, , fourth] = design.wheels as [Wheel, Wheel, Wheel, Wheel];
     // the seconds hand is on the fourth wheel's arbor
     this.steps.set(groups.seconds, fourth.step);
-    this.steps.set(groups.hour, centre.step / timing.hourRatio);
+    // the hour wheel carries the hour hand
+    this.steps.set(groups.hour, design.motionWorks.hour.step);
+    this.steps.set(groups.hourWheel, design.motionWorks.hour.step);
+    this.steps.set(groups.minuteWheel, design.motionWorks.minute.step);
+    this.steps.set(groups.oneStepHour, watch.oneStepHour.step);
     this.steps.set(groups.minute, centre.step);
     this.forkTurning = forkFlips(timing);
   }
@@ -341,6 +345,17 @@ export class Motion {
     const [, centre, , fourth] = design.wheels as [Wheel, Wheel, Wheel, Wheel];
     place(groups.seconds, fourth.arbor, turned(groups.seconds));
     place(groups.hour, centre.arbor, turned(groups.hour));
+    place(groups.hourWheel, centre.arbor, turned(groups.hourWheel));
+    place(
+      groups.minuteWheel,
+      design.motionWorks.minute.arbor,
+      turned(groups.minuteWheel),
+    );
+    place(
+      groups.oneStepHour,
+      this.watch.oneStepHour.arbor,
+      turned(groups.oneStepHour),
+    );
     place(groups.minute, centre.arbor, turned(groups.minute));
     return result;
   }

@@ -25,7 +25,22 @@ test("a timing out of range throws, with its name", () => {
     [/timing.bank/, (design) => (design.timing.bank = 0)],
     [/timing.unlock/, (design) => (design.timing.unlock = 1)],
     [/timing.fourthLoop/, (design) => (design.timing.fourthLoop = 61)],
-    [/timing.hourRatio/, (design) => (design.timing.hourRatio = 0)],
+  ];
+  for (const [message, edit] of bad) {
+    assert.throws(() => readDesign(changed(edit)), message);
+  }
+});
+
+test("a motion works whose gears are off their arbors throws", () => {
+  const bad: [RegExp, (design: typeof designFile) => void][] = [
+    [
+      /motionWorks.minute.pinion/,
+      (design) => (design.motionWorks.minute.pinion.arbor = [0, 0]),
+    ],
+    [
+      /motionWorks.hour.arbor/,
+      (design) => (design.motionWorks.hour.arbor = [1, 0]),
+    ],
   ];
   for (const [message, edit] of bad) {
     assert.throws(() => readDesign(changed(edit)), message);

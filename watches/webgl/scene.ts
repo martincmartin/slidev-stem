@@ -201,6 +201,11 @@ export interface Frame {
   /** Draw these meshes with other inks: each ink that `inks` has goes to its
    *  value (a flash: `FLASH_INKS`). Default: every mesh in its own inks. */
   readonly recolour?: Recolour;
+  /** Dimmed meshes: the weight of each one's own colours, 0 to 1, against
+   *  the paper. Each face and line colour is `weight x colour + (1 - weight)
+   *  x paper`, so a dimmed part looks as it would at that opacity over the
+   *  paper, but it still hides what is under it. Default: none. */
+  readonly dim?: ReadonlyMap<Mesh, number>;
 }
 
 export interface Recolour {

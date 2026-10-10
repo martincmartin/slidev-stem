@@ -47,6 +47,7 @@ export class WatchStills {
       state.spin,
       state.settled,
       state.mainspring,
+      state.dim,
       size,
     ]);
     return this.stills.of(key, palette, (renderer) => {
@@ -75,6 +76,7 @@ export class WatchStills {
         ),
         keep: stage.shown,
         rest: 0,
+        ...(stage.dim ? { dim: stage.dim } : {}),
         size,
       });
     });

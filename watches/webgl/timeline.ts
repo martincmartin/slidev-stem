@@ -14,7 +14,9 @@
 //   3. D becomes B, as in 1; of the meshes that fade in, those in
 //      `StageState.later` fade in after the others.
 // The meshes in `StageState.cut` do not fade: they go, or come, at once,
-// before the others fade.
+// before the others fade. A DIM (`StageState.dim`) changes in 3, after the
+// meshes that go have faded out and before the others fade in: so a camera
+// move shows the old dim, and a dim that comes with a zoom in follows it.
 // Without a camera move, A becomes B, as in 3. A fade fades its meshes as one
 // picture, over the meshes that stay. A new state starts from what is on the
 // screen now: a fade cut short first ends (at 1 if the new state shows every
@@ -38,6 +40,8 @@ import type { Mesh, Recolour, View } from "./scene.ts";
 
 export const MOVE_SECONDS = 1.8;
 export const FADE_SECONDS = 0.8;
+/** A dim, or its end, eases in this time. */
+export const DIM_SECONDS = FADE_SECONDS;
 export const TILT_SECONDS = 1.5;
 /** A flash: on (in FLASH_INKS), then off (in its own inks), this many times. */
 export const FLASH_ON_SECONDS = 0.25;
@@ -80,6 +84,9 @@ export interface StageState {
    *  and go after it. */
   goLater: ReadonlySet<Mesh>;
   moveWith: MoveWith;
+  /** The dimmed meshes: the weight of each one's own colours against the
+   *  paper (`Frame.dim`). Default: none. */
+  dim?: ReadonlyMap<Mesh, number>;
 }
 
 /** Where each channel is. */
@@ -92,9 +99,12 @@ export interface Values {
    *  out. Empty while nothing fades. */
   fade: ReadonlySet<Mesh>;
   rest: number;
+  /** The weight of each dimmed mesh's own colours. */
+  dim: ReadonlyMap<Mesh, number>;
 }
 
 const NOTHING: ReadonlySet<Mesh> = new Set();
+const UNDIMMED: ReadonlyMap<Mesh, number> = new Map();
 
 /** A channel's move from one value to another. Each variant ties the channel
  *  to the type of its values. */
@@ -114,6 +124,11 @@ type Phase = {
       to: number;
       /** What is on the screen at its end. */
       after: ReadonlySet<Mesh>;
+    }
+  | {
+      channel: "dim";
+      from: ReadonlyMap<Mesh, number>;
+      to: ReadonlyMap<Mesh, number>;
     }
 );
 
@@ -174,6 +189,30 @@ function sameSet(first: ReadonlySet<Mesh>, second: ReadonlySet<Mesh>): boolean {
   return first.size === second.size && within(first, second);
 }
 
+function sameDim(
+  first: ReadonlyMap<Mesh, number>,
+  second: ReadonlyMap<Mesh, number>,
+): boolean {
+  return (
+    first.size === second.size &&
+    [...first].every(([mesh, weight]) => second.get(mesh) === weight)
+  );
+}
+
+/** The weights of two dims, mixed: a mesh that one of them leaves out is at
+ *  1 there. */
+function mixDim(
+  first: ReadonlyMap<Mesh, number>,
+  second: ReadonlyMap<Mesh, number>,
+  fraction: number,
+): ReadonlyMap<Mesh, number> {
+  const mixed = new Map<Mesh, number>();
+  for (const mesh of new Set([...first.keys(), ...second.keys()])) {
+    mixed.set(mesh, mix(first.get(mesh) ?? 1, second.get(mesh) ?? 1, fraction));
+  }
+  return mixed;
+}
+
 /** `values` with `phase` applied at `now`. At its end, a phase gives the
  *  target itself, so that the next state can tell that its channel is already
  *  there. */
@@ -196,6 +235,9 @@ function applyPhase(values: Values, phase: Phase, now: number): void {
       values.keep = done ? phase.after : phase.keep;
       values.fade = done ? NOTHING : phase.fade;
       values.rest = done ? 1 : mix(phase.from, phase.to, eased);
+      break;
+    case "dim":
+      values.dim = done ? phase.to : mixDim(phase.from, phase.to, eased);
       break;
   }
 }
@@ -237,6 +279,7 @@ export class Timeline {
         keep: state.shown,
         fade: NOTHING,
         rest: 1,
+        dim: state.dim ?? UNDIMMED,
       };
       this.phases = [];
       return 0;
@@ -279,6 +322,7 @@ export class Timeline {
     const become = (
       target: ReadonlySet<Mesh>,
       later: ReadonlySet<Mesh> = NOTHING,
+      between: () => void = () => undefined,
     ): void => {
       const going = minus(shown, target);
       const cutGoing = new Set(
@@ -293,6 +337,7 @@ export class Timeline {
         shown = minus(shown, fading);
         fade(shown, fading, 1, 0);
       }
+      between();
       const cutComing = new Set(
         [...minus(target, shown)].filter((mesh) => state.cut.has(mesh)),
       );
@@ -353,7 +398,17 @@ export class Timeline {
         move();
       }
     }
-    become(state.shown, state.later);
+    const dimTo = state.dim ?? UNDIMMED;
+    become(state.shown, state.later, () => {
+      if (sameDim(current.dim, dimTo)) return;
+      add({
+        channel: "dim",
+        from: current.dim,
+        to: dimTo,
+        start,
+        seconds: DIM_SECONDS,
+      });
+    });
     if (
       !state.flash ||
       (this.phases.length === 0 && state.flashDelay === undefined)

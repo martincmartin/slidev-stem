@@ -8,6 +8,7 @@ measured budgets) and the diving board on the Hairspring slide.
 them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
+[`2026-10-09-motion-works`](../tasks/2026-10-09-motion-works/PLAN.md) (the motion works, and the Hour Hand slide),
 [`2026-10-09-gears-text-flash`](../tasks/2026-10-09-gears-text-flash/PLAN.md) (inverse cues after the Gears text),
 [`2026-10-07-watch-primitives`](../tasks/2026-10-07-watch-primitives/PLAN.md) (named pieces, fitted views, one rule for every move),
 [`2026-10-07-gears-slide`](../tasks/2026-10-07-gears-slide/PLAN.md) (the Gears slide; the free spin for any slide; a narrow picture centred in the left 60%),
@@ -50,7 +51,7 @@ ruler that the diving board replaced),
 | `webgl/probe/`                                           | a page with one canvas and `window.watchProbe.render(options)`, for the pixel and fade checks; `checks.ts`: `window.webglChecks()`, the renderer's browser checks      |
 | `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand. `art/watch_design.py --check` compares what the file means, not its bytes (`pnpm format` rewrites its spacing)   |
 | `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights, pieces and their extents, the named views, `fittedView`                                                      |
-| `watch/teeth.ts`, `teeth.test.ts`                        | the train's teeth: cycloidal wheel teeth and the pinion leaves they drive, also a few at a time (a span); tests that each pair meshes without overlap                  |
+| `watch/teeth.ts`, `teeth.test.ts`                        | the teeth: cycloidal wheel teeth and the pinion leaves they mesh with, also a few at a time (a span); tests that each pair meshes without overlap                      |
 | `watch/palette.ts`                                       | which theme variable colours each ink; `slidePalette()` reads them from the page, as a slide's classes change them, and the browser works out a recipe (`color-mix()`) |
 | `art/theme.py`                                           | the theme's palette for the scripts that write files (`diving_board.py`, `favicon.py`): it works out each recipe as the browser does                                   |
 | `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism, the balance's settle and the train's free spin; frontmatter to state; the watch's stills; the shared instance                                           |
@@ -87,6 +88,11 @@ until the balance is at 11 o'clock. The barrel is at `BARREL_ANGLE`, as near
 5 o'clock as the third wheel allows: the third-barrel gap must stay 12 +/- 1 px.
 The hands still turn clockwise: the layout moves the arbors, not the turning
 directions. `art/watch_design.py` holds the numbers, and `LAYOUT` the angles.
+
+The minute wheel is at `minute_angle` in `LAYOUT`, about 10:40. It is above
+the train, so only the chapter ring limits it, and the search does not move
+it. At 10:40 it covers nothing of the train that the hour wheel does not
+([The motion works](#the-motion-works)).
 
 The cover has the watch case on the right and the title on the left, as it did
 before: the layout changed only what is inside the case.
@@ -125,6 +131,15 @@ train's start, and the leaves that they drive. The ratio is whole, so a tooth
 drives the same leaf at every turn. `watch/teeth.test.ts` turns the pair
 through the mesh, and fails if a tooth of the span touches a leaf that is not
 its own.
+
+**In the motion works, each pinion drives a wheel.** The shapes are the same:
+the pinion's radial flank and the wheel's epicycloid face come from one
+rolling circle, half the pinion's size, so they work in both directions. Only
+the backlash moves: the driven wheel turns back by half of it, not the pinion
+(`drivenWheelTeeth`, `drivingPinionLeaves`). The leaf's round end is not
+shaped to drive, so the contact opens a little as each tooth leaves: the
+test allows 0.4 px there, not 0.3 px (`MAX_DRIVEN_GAP` in `teeth.test.ts`
+says why).
 
 The escape wheel's club teeth are separate: they act on the pallet stones.
 `escapeOutline` in `watch/shapes.ts` makes them.
@@ -535,7 +550,11 @@ pointed.
 - **How it looks:** muted, the art's colour for what acts on the subject. Its
   line is 4 px at every zoom, as every line is. The head is filled, and its
   size is a fraction of the arc's radius, so the arrow is the same shape on
-  every wheel.
+  every wheel. The line ends at the middle of the head, so its round end
+  does not show past the tip.
+- **How high it is:** twice the renderer's hidden-line tolerance above the
+  wheel's face (`DRIVE_ARROW.rise`). Lower than the tolerance, the wheel's
+  spoke and rim lines show through the head.
 - **Not on the one-step wheel.** At the Gear Train slide's click 1, the
   fourth wheel's arrow stays while the camera untilts and zooms out
   (`watchGoLater`). Then it goes, before the one-step wheel fades in.
@@ -545,7 +564,8 @@ pointed.
   balance fade out, as the wheel starts to spin. It is part of the drawing,
   so it does not dim with the wheel's callout.
 - `watch/generate.test.ts` checks that each arrow is inside its wheel's root
-  circle, faces the wheel that drives it, and turns the way its wheel turns.
+  circle, faces the wheel that drives it, turns the way its wheel turns, and
+  that its line ends at the middle of its head.
 
 ## The Mainspring slide
 
@@ -648,6 +668,96 @@ the story, and `watch/mainspring.test.ts` tests it.
   paper's colour too: at click 4 the movement runs behind the title and the
   subtitle.
 
+## The motion works
+
+The motion works turn the hour hand 12 times slower than the minute hand,
+about the same arbor (`MotionWorks` in `art/watch_design.py`):
+
+- **The cannon pinion**, 4 leaves on the centre arbor, drives the **minute
+  wheel**, 12 teeth: 1 to 3, as on an ETA 6497. Its teeth are the centre
+  wheel's size, as the 8:1 stage's are.
+- **The minute pinion**, 4 leaves on the minute wheel's arbor, drives the
+  **hour wheel**, 16 teeth: 1 to 4. The hour wheel turns on the centre arbor,
+  in a group of its own with the hand's step, and carries the hand on its
+  pipe. The wheel and the hand are not in one group: a clip disc hides
+  while any mesh of its group is drawn, and the cover draws the hand
+  without the wheel (`generate.test.ts` checks this for every disc).
+- **The two stages go out from the centre and come back to it**, so their
+  centre distances are equal. The second stage's teeth are finer: their size
+  follows from that distance. `validate_watch_design.py` checks the distances,
+  the gap to the chapter ring, and that the ratio is whole. The hour hand's
+  speed is the hour wheel's step: no other number holds the ratio.
+- **The cannon pinion is fixed on the arbor.** A real one is a friction fit, so
+  that the hands can be set. The talk does not set the hands.
+- **They are on the dial side**: above all of the train that they overlap,
+  and under the hands (`assignHeights`). The cannon pinion and the minute wheel
+  are at one height, and the minute pinion and the hour wheel above them. So
+  from above, the hour wheel covers the cannon pinion and the inside of the
+  minute wheel.
+- **Each hides the train's wheels under its openings, as a train wheel hides
+  the wheel below it** (`clipDiscs`). They are far above the train, so at a
+  tilt a disc in the plan slides against the wheel above it: by the height
+  between them times the tilt's tangent. So a disc ends half way across the
+  rim, not at the root circle: it covers the openings, and the rim covers its
+  edge, while the slide is less than half the rim. Their rims are wider than
+  the train's for this (`MOTION_DRAWINGS`): at tilt 20 the slide is up to
+  about 3 px. A disc out to the root circle cut slivers out of the centre
+  wheel, and a disc out to the openings showed a crescent of it in each one.
+  The barrel arbor's square has the barrel's discs, so it does not show
+  through the one-step hour wheel. The hour wheel hides the cannon pinion and
+  the minute wheel under its openings in the same way.
+- **`all` leaves them out**, so the cover does not show them: they would
+  crowd it. A slide names them to show them.
+- **Not an oversight: they do not use the existing centre pinion.** It has 6
+  leaves at the barrel's tooth size. Then the minute wheel is 18 teeth and the
+  hour wheel 43 px across, and they cover about six times as much of the
+  movement. Also the Hour Hand slide's one-step wheel would need 72 teeth,
+  past the case. See the task.
+
+## The Hour Hand slide
+
+The Hour Hand slide follows the Mainspring slide. It shows why the hour
+hand needs two stages: one wheel 12 times slower puts the hand off centre.
+The stages go out from the centre and come back.
+
+| Click | What shows                                                                                                                                                        |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0     | the whole watch as the Mainspring slide leaves it, but the hour hand, in its view: the camera does not move                                                       |
+| 1     | and the cannon pinion and the one-step hour wheel, which fade in and flash                                                                                        |
+| 2     | and the one-step hour hand, on that wheel's arbor: off centre                                                                                                     |
+| 3     | the one-step wheel, its hand and the cannon pinion go; the camera zooms in on the centre wheel; then all but the centre wheel, its arbor and the minute hand dims |
+| 4     | and the cannon pinion and the minute wheel, which fade in and flash                                                                                               |
+| 5     | and the minute pinion and the hour wheel, which fade in and flash                                                                                                 |
+| 6     | the camera zooms back out to click 0's view, the dim ends, and the hour hand fades in; the stages' text dims to 0.5                                               |
+
+The tilt is 20 at every click, so the stack of the motion works shows.
+
+- **While the camera is in on the motion works, the rest of the watch is
+  dimmed** (`watchDim`, [Dimmed pieces](#dimmed-pieces)), the old centre
+  pinion too. So the eye stays on the centre wheel, the minute hand and what
+  comes in, and the centre arbor shows one pinion at full colour. The dim
+  comes after the zoom in, and goes after the zoom out.
+- **At click 6 the stages' text dims to 0.5**, as the Gear Train slide's
+  does, when the hour hand's text fades in.
+
+- **The one-step hour wheel** (`oneStepHourWheel` in `watch/generate.ts`)
+  meshes with the cannon pinion, at the minute wheel's height, with the
+  minute wheel's teeth: $4 \times 12 = 48$ teeth, 1.5 times the centre
+  wheel's size, as 12 is 1.5 times 8. Its arbor is at 8 o'clock
+  (`ONE_STEP_HOUR_ANGLE`): with the whole watch on the screen, it covers only
+  the barrel there, and its hand's pivot is clear of the minute hand. Any
+  place would be off centre. Its hand is the hour hand's shape, at its
+  height. `all` leaves both out.
+- **The one-step hand turns backwards.** A wheel turns the other way from the
+  pinion that drives it. At the mechanism's speed an hour hand moves 0.5° a
+  minute, so it does not show; the speaker notes say it.
+- **The view at clicks 0 to 2 and 7 is the Mainspring slide's last view**
+  (the train, from the barrel to the escape wheel, in the picture band), so
+  the step from it does not move the camera. The dial's ring and the crown
+  run behind the text there; the text has the paper's outline. Clicks 3 to 6
+  fit the centre wheel. The text is where the Gear Train slide's is.
+  Each text comes after the motion of its click (`after-watch`).
+
 ## Balance rim motion
 
 Four radial screws make the rim's swing visible on the cover and the Balance Wheel slide.
@@ -701,7 +811,8 @@ Each mesh of the watch belongs to one piece, with a name that a slide uses
 (`Scene.pieces`; each solid names its piece where `watch/generate.ts` draws
 it). `watch: all` shows every piece but the marks that only a slide that names
 them shows: the Gears slide's spans, the Gear Train slide's one-step
-wheel and raised strap, and the Mainspring slide's props (`inAll: false`,
+wheel and raised strap, the Mainspring slide's props, and the motion works
+with the Hour Hand slide's one-step hour wheel (`inAll: false`,
 `webgl/scene.ts`).
 
 | Pieces                                                                                | What they are                                                   |
@@ -714,6 +825,8 @@ wheel and raised strap, and the Mainspring slide's props (`inAll: false`,
 | `fourth wheel span`, `escape pinion span`; `… span wash`                              | the Gears slide's span, solid; in the flash's colours (a trial) |
 | `escape wheel drive`, `fourth wheel drive`, `third wheel drive`, `centre wheel drive` | the [drive arrow](#the-drive-arrow) on that wheel               |
 | `one-step wheel`, `raised strap`                                                      | the Gear Train slide's one-step wheel, and the strap above it   |
+| `cannon pinion`, `minute wheel`, `minute pinion`, `minute arbor`, `hour wheel`        | the [motion works](#the-motion-works)                           |
+| `one-step hour wheel`, `one-step hour hand`                                           | the Hour Hand slide's one-step wheel, and its hand              |
 | `mainspring stud`, `mainspring rest`, `winding key`                                   | the Mainspring slide's props; the story shows the key           |
 | `seconds hand`, `minute hand`, `hour hand`, `centre pivot`, `chapter ring`            | the dial side                                                   |
 | `case band`, `strap`, `lug`, `crown`                                                  | the case                                                        |
@@ -726,7 +839,7 @@ piece or a view that does not exist.
 
 A slide gives the watch's state at click 0. A click changes it from that click
 on, with the same keys, in a block under `watchClicks`; a later block changes
-it again. A block holds the keys that say a state (the first nine in
+it again. A block holds the keys that say a state (the first ten in
 [The keys](#the-keys)), and its step keys: the flash settings, `watchLater`,
 `watchCut` and `watchGoLater`. These are
 about the step into their click (or into the slide, on the slide), so they
@@ -900,6 +1013,25 @@ fourth wheel and the escape pinion.
   wheels at one place, which the timeline does not have and which flickers in
   the depth test.
 
+### Dimmed pieces
+
+A slide can dim pieces, to keep the eye on the others (`watchDim`: the Hour
+Hand slide). A dimmed piece's colours are mixed toward the paper:
+$0.35 \times \text{colour} + 0.65 \times \text{paper}$ (`WATCH_DIM` in
+`watch/state.ts`), as the "Before clocks" slide's dimmed cards are at
+opacity 0.35. A part of the picture is more like a card than a line of text,
+which dims to 0.5.
+
+- **A dim is not an opacity.** A dimmed part still hides what is under it,
+  and shows none of its own hidden lines (`Frame.dim` in `webgl/scene.ts`).
+  So a dimmed part above a bright one covers it, as the Hour Hand slide's
+  barrel covers a few of the centre wheel's teeth.
+- **It eases in `DIM_SECONDS`**, after the camera moves and the old pieces
+  fade out, before the new ones fade in ([The one rule](#the-one-rule)). So a
+  zoom in shows the old picture bright, and then the dim.
+- **It carries on to later clicks**, as `watch` does, until a click sets
+  `watchDim: false`.
+
 ### The keys
 
 | Key                                  | Meaning                                                                                                                                                                                                                             |
@@ -912,6 +1044,7 @@ fourth wheel and the escape pinion.
 | `watchAtRest: true`                  | the balance is at rest, and the mechanism with it; `false` (default): it swings. To rest, it waits for its next extreme                                                                                                             |
 | `watchSpin: 135`                     | the train spins freely, at this speed in degrees a second of the escape wheel, faster than the mechanism's 12 ([The free spin](#the-free-spin)); `false` (default): it follows the mechanism, and a spin stops at the pallet        |
 | `watchMainspring: wound`             | the Mainspring slide's stage: `free`, `turned`, `wound`, `released`, `barrel`, `barrel again` (a trial) or `run down` ([The Mainspring slide](#the-mainspring-slide)); it says when the watch runs, so not with `watchAtRest`       |
+| `watchDim: [barrel]`                 | the pieces drawn dimmed, as at opacity 0.35 over the paper (`WATCH_DIM`), from that click on; `false` (default): none ([Dimmed pieces](#dimmed-pieces))                                                                             |
 | `watchTickTock: plain`               | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `burst`: as comic bursts, a trial; `false` (default): they do not                                                                   |
 | `watchFlash: [balance wheel]`        | pieces that flash, on the step forward into the slide (on the slide) or into the block's click (in `watchClicks`) only; it does not carry on to later clicks ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash") |
 | `watchFlashAfterText: true`          | wait for the click text fade before flashing; permits a flash without a watch change. The layer waits for the current click's opacity transitions to finish. This setting applies only to its click.                                |
@@ -920,7 +1053,7 @@ fourth wheel and the escape pinion.
 | `watchCut: [mainspring stud]`        | of the pieces that go or come on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that do so at once, with no fade, before the others fade; it does not carry on to later clicks            |
 | `watchLater: [case band]`            | of the pieces that fade in on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that fade in after the others; it does not carry on to later clicks                                          |
 | `watchGoLater: [fourth wheel drive]` | of the pieces that go on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that stay on the screen while the camera moves, and go after it; it does not carry on to later clicks             |
-| `watchClicks: {1: {watch: […]}}`     | on the slide only: for a click, the values of the first nine keys from that click on, and its flash settings, `watchLater`, `watchCut` and `watchGoLater` ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way))         |
+| `watchClicks: {1: {watch: […]}}`     | on the slide only: for a click, the values of the first ten keys from that click on, and its flash settings, `watchLater`, `watchCut` and `watchGoLater` ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way))          |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
 at load with the key's name.

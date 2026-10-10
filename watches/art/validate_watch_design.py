@@ -19,6 +19,9 @@ The steps:
      MIN_CLEARANCE apart;
    - the pallet fork, at both ends of its swing, is at least FORK_CLEARANCE
      from the visible parts of the parts it does not work on;
+   - the motion works, above the train: both stages have the same centres,
+     the minute wheel is RING_CLEARANCE inside the chapter ring, and the
+     hour ratio is whole;
    (first, the clearance functions themselves, on shapes with a known gap);
 4. write watch/design.json.
 
@@ -102,6 +105,7 @@ def check_layout() -> None:
         f"{label(pair)}: {error}" for pair, error in clearances.mesh_errors.items()
     ]
     problems.extend(geometry.layout_constraints(placement))
+    problems.extend(geometry.motion_works_problems(placement))
     for part, gap in clearances.ring_gaps.items():
         if gap < watch.RING_CLEARANCE:
             problems.append(

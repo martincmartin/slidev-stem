@@ -54,6 +54,11 @@ FOURTH_LOOP = 60.0
 
 
 # ---- the parts ------------------------------------------------------------------
+def tooth_depth(pitch: float) -> float:
+    """Addendum and dedendum: 4 px, or less where the teeth are fine."""
+    return min(4.0, 0.32 * pitch)
+
+
 # A part holds only what never changes. Where its arbor is depends on the
 # layout, so that is in a Placement, a side table made fresh for each layout.
 # Parts compare and hash by identity (eq=False), so they can be dict keys.
@@ -87,8 +92,7 @@ class Wheel:
 
     @property
     def depth(self) -> float:
-        """Addendum and dedendum: 4 px, or less where the teeth are fine."""
-        return min(4.0, 0.32 * self.pitch)
+        return tooth_depth(self.pitch)
 
     @property
     def inner(self) -> float:
@@ -182,7 +186,99 @@ CENTRE = Wheel("centre", teeth=32, pitch_radius=50, spokes=5, leaves=6, driven=T
 BARREL = Wheel("barrel", teeth=36, pitch_radius=74, driven=CENTRE)
 TRAIN = [BARREL, CENTRE, THIRD, FOURTH, ESCAPE]
 ESCAPE_SOLID = True  # small, with a large pinion: filled, not crossed out
-HOUR_RATIO = 12  # the motion works under the dial turn the hour hand
+
+
+@dataclass(frozen=True)
+class GearSize:
+    """A wheel's teeth: how many, and its pitch radius. The rest follows,
+    by the train's rules."""
+
+    teeth: int
+    pitch_radius: float
+
+    @property
+    def pitch(self) -> float:
+        return 2 * math.pi * self.pitch_radius / self.teeth
+
+    @property
+    def depth(self) -> float:
+        return tooth_depth(self.pitch)
+
+    @property
+    def inner(self) -> float:
+        return self.pitch_radius - self.depth
+
+    @property
+    def outer(self) -> float:
+        return self.pitch_radius + self.depth
+
+
+@dataclass(frozen=True)
+class MotionWorks:
+    """The gears on the dial side that turn the hour hand: a pinion on the
+    centre arbor (the cannon pinion, but fixed: nothing sets the hands)
+    drives the minute wheel; the minute wheel's pinion drives the hour wheel,
+    which turns about the centre arbor. So the two stages go out from the
+    centre and come back to it, and their centre distances are equal. Here
+    each pinion drives a wheel, the reverse of the train. Why these numbers:
+    watches/tasks/2026-10-09-motion-works/PLAN.md."""
+
+    cannon_leaves: int
+    minute_teeth: int
+    minute_leaves: int
+    hour_teeth: int
+    # px of pitch radius a tooth, in the first stage
+    tooth_size: float
+    minute_spokes: int
+    hour_spokes: int
+
+    @property
+    def centres(self) -> float:
+        """px from the centre arbor to the minute wheel's arbor."""
+        return self.tooth_size * (self.cannon_leaves + self.minute_teeth)
+
+    @property
+    def second_tooth_size(self) -> float:
+        """px of pitch radius a tooth, in the second stage: it fits the
+        same centres."""
+        return self.centres / (self.minute_leaves + self.hour_teeth)
+
+    @property
+    def cannon_radius(self) -> float:
+        return self.tooth_size * self.cannon_leaves
+
+    @property
+    def minute(self) -> GearSize:
+        return GearSize(self.minute_teeth, self.tooth_size * self.minute_teeth)
+
+    @property
+    def minute_pinion_radius(self) -> float:
+        return self.second_tooth_size * self.minute_leaves
+
+    @property
+    def hour(self) -> GearSize:
+        return GearSize(self.hour_teeth, self.second_tooth_size * self.hour_teeth)
+
+    @property
+    def ratio(self) -> float:
+        """Turns of the minute hand to one of the hour hand."""
+        return (self.minute_teeth / self.cannon_leaves) * (
+            self.hour_teeth / self.minute_leaves
+        )
+
+
+# 1 : 3 and then 1 : 4, as on the ETA 6497. The first stage has the centre
+# wheel's tooth size, as the 8:1 stage (centre wheel to third pinion) has: the
+# Hour Hand slide's one-step trial is that stage's pinion with 48 teeth.
+MOTION_WORKS = MotionWorks(
+    cannon_leaves=4,
+    minute_teeth=12,
+    minute_leaves=4,
+    hour_teeth=16,
+    tooth_size=CENTRE.pitch_radius / CENTRE.teeth,
+    minute_spokes=4,
+    hour_spokes=4,
+)
 BALANCE = Balance("balance", radius=56)
 IMPULSE_PIN_RADIUS = 15  # the impulse jewel's distance from the balance's arbor
 FORK = Fork("fork")
@@ -210,6 +306,10 @@ class Layout:
     lever_angle: float  # from the escape arbor toward the balance
     fork_pivot_distance: float  # from the escape arbor, along lever_angle
     balance_distance: float  # from the escape arbor, along lever_angle
+    # the minute wheel, from the centre arbor. It is above the train, so the
+    # search and the clearance checks do not move it. At 10:40 it covers
+    # nothing that the hour wheel does not (the motion-works task)
+    minute_angle: float = 230.0
 
 
 # The drawing's layout. The train runs from the centre wheel leftwards, so that
@@ -232,6 +332,7 @@ LAYOUT = Layout(
     lever_angle=-180.95,
     fork_pivot_distance=40.0,
     balance_distance=110.0,
+    minute_angle=230.0,
 )
 MIN_CLEARANCE = 8.0  # px between parts that do not mesh
 FORK_CLEARANCE = 8.0  # px from the fork to the wheels it does not work on
@@ -313,6 +414,7 @@ class Placement:
             FORK: polar(layout.fork_pivot_distance, layout.lever_angle, escape),
             BALANCE: polar(layout.balance_distance, layout.lever_angle, escape),
         }
+        self.minute_arbor = polar(MOTION_WORKS.centres, layout.minute_angle)
 
     def fork_polygon(self, bank: float) -> list[Point]:
         """The fork's outline in watch coordinates, turned `bank` degrees from
@@ -477,7 +579,6 @@ def design(layout: Layout = LAYOUT) -> dict[str, object]:
             "bank": BANK,
             "unlock": UNLOCK,
             "fourthLoop": FOURTH_LOOP,
-            "hourRatio": HOUR_RATIO,
         },
         "wheels": [wheel_entry(wheel) for wheel in TRAIN],
         "escapeSolid": ESCAPE_SOLID,
@@ -503,6 +604,87 @@ def design(layout: Layout = LAYOUT) -> dict[str, object]:
             "ringRadius": RING_RADIUS,
         },
         "hands": HANDS,
+        "motionWorks": motion_works_entry(placement),
+    }
+
+
+def motion_works_entry(placement: Placement) -> dict[str, object]:
+    """The motion works in design.json (MotionWorks). As in the train, a
+    wheel has a tooth on the line to the pinion that it meshes with, and the
+    pinion a gap there; here the pinion drives."""
+    works = MOTION_WORKS
+    centre = placement.arbor[CENTRE]
+    minute = placement.minute_arbor
+    out = direction(centre, minute)  # from the centre arbor to the minute arbor
+    back = direction(minute, centre)
+    cannon_step = CENTRE.step
+    minute_step = -cannon_step * works.cannon_leaves / works.minute_teeth
+    hour_step = -minute_step * works.minute_leaves / works.hour_teeth
+
+    def wheel(
+        name: str, size: GearSize, spokes: int, step: float, phase: float
+    ) -> dict[str, object]:
+        return {
+            "name": name,
+            "teeth": size.teeth,
+            "pitchRadius": size.pitch_radius,
+            "inner": size.inner,
+            "outer": size.outer,
+            "depth": size.depth,
+            "pitch": size.pitch,
+            "spokes": spokes,
+            "step": step,
+            "toothPhase": phase,
+        }
+
+    def pinion(
+        name: str,
+        leaves: int,
+        radius: float,
+        step: float,
+        facing: float,
+        arbor: Point,
+    ) -> dict[str, object]:
+        return {
+            "name": name,
+            "arbor": list(arbor),
+            "leaves": leaves,
+            "radius": radius,
+            "step": step,
+            "phase": facing + 180 / leaves,
+        }
+
+    return {
+        "cannon": pinion(
+            "cannon",
+            works.cannon_leaves,
+            works.cannon_radius,
+            cannon_step,
+            out,
+            centre,
+        ),
+        "minute": {
+            **wheel(
+                "minute",
+                works.minute,
+                works.minute_spokes,
+                minute_step,
+                back,
+            ),
+            "arbor": list(minute),
+            "pinion": pinion(
+                "minute",
+                works.minute_leaves,
+                works.minute_pinion_radius,
+                minute_step,
+                back,
+                minute,
+            ),
+        },
+        "hour": {
+            **wheel("hour", works.hour, works.hour_spokes, hour_step, out),
+            "arbor": list(centre),
+        },
     }
 
 

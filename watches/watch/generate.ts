@@ -31,8 +31,9 @@ import type {
 } from "../webgl/scene.ts";
 import { INKS } from "../webgl/scene.ts";
 import { at } from "../webgl/checked.ts";
-import type { Design, Wheel } from "./design.ts";
-import { DESIGN } from "./design.ts";
+import { HIDDEN_LINE_TOLERANCE } from "../webgl/renderer.ts";
+import type { Design, DrivenWheel, Wheel } from "./design.ts";
+import { DESIGN, hourRatio } from "./design.ts";
 import {
   MAINSPRING_TURNS,
   springPoints,
@@ -54,6 +55,8 @@ import {
   radians,
 } from "./shapes.ts";
 import {
+  drivenWheelTeeth,
+  drivingPinionLeaves,
   meshedSpan,
   pinionLeafShapes,
   pinionLeaves,
@@ -317,8 +320,17 @@ export interface WatchGroups {
   readonly springBase: Group;
   readonly fork: Group;
   readonly seconds: Group;
+  /** The hour hand, about the centre arbor. */
   readonly hour: Group;
+  /** The hour wheel, about the centre arbor, with the hour hand's step. It is
+   *  not in the hand's group: its clip disc hides only while its group is
+   *  drawn, and the cover draws the hand without the wheel. */
+  readonly hourWheel: Group;
   readonly minute: Group;
+  /** The minute wheel and its pinion, about its arbor. */
+  readonly minuteWheel: Group;
+  /** The Hour Hand slide's one-step hour wheel and its hand. */
+  readonly oneStepHour: Group;
 }
 
 export interface Watch {
@@ -352,6 +364,8 @@ export interface Watch {
   };
   /** The Gear Train slide's one-step wheel (`oneStepWheel`). */
   readonly oneStep: Wheel;
+  /** The Hour Hand slide's one-step hour wheel (`oneStepHourWheel`). */
+  readonly oneStepHour: DrivenWheel;
 }
 
 // ---- paint ------------------------------------------------------------------------------
@@ -513,6 +527,233 @@ function oneStepMeshes(
   ];
 }
 
+// ---- the motion works ------------------------------------------------------------------
+/** Screen degrees from the centre arbor to its arbor: 8 o'clock, where it
+ *  covers only the barrel, and its hand's pivot is clear of the minute hand
+ *  (the motion-works task, out/scan_one_step_hour.txt). Any angle would do
+ *  for the story: every one is off centre. */
+const ONE_STEP_HOUR_ANGLE = 150;
+/** The motion works' wheels are drawn as the train's are. A rim is wider
+ *  than the train's: at tilt 20 the disc that hides the wheels below slides
+ *  up to about 3 px against the wheel above (`clipDiscs`), and the rim must
+ *  be twice that. */
+const MOTION_DRAWINGS = {
+  minute: { rim: 6, hub: 6, spokeWidth: 3 },
+  hour: { rim: 6, hub: 7, spokeWidth: 3 },
+  oneStepHour: { rim: 6, hub: 14, spokeWidth: 7, spokes: 6 },
+};
+/** The hour wheel's pipe, round the centre arbor, up to the hour hand. */
+const HOUR_PIPE_RADIUS = 5.5;
+
+/** The Hour Hand slide's first try (docs/watch.md): one wheel that the
+ *  cannon pinion drives as many times slower as the motion works do, so
+ *  that the hour hand on its arbor turns once in 12 hours. Its teeth are
+ *  the cannon pinion's size, as the minute wheel's are, so it is the 8:1
+ *  stage's size times 12/8. It meshes with the cannon pinion at
+ *  ONE_STEP_HOUR_ANGLE. A tooth is as far from the line of centres, on its
+ *  pitch circle, as the pinion's nearest gap is (as `oneStepWheel`). */
+export function oneStepHourWheel(design: Design): DrivenWheel {
+  const { cannon, minute } = design.motionWorks;
+  const ratio = hourRatio(design.motionWorks);
+  if (!Number.isInteger(ratio)) throw new Error("the hour ratio is not whole");
+  const teeth = cannon.leaves * ratio;
+  const pitchRadius = cannon.radius * ratio;
+  const pitch = (2 * Math.PI * pitchRadius) / teeth;
+  // the minute wheel's teeth, which mesh with the same pinion
+  const { depth } = minute;
+  const centres = pitchRadius + cannon.radius;
+  const angle = ONE_STEP_HOUR_ANGLE;
+  const leafAngle = 360 / cannon.leaves;
+  const gapPhase = cannon.phase - leafAngle / 2;
+  const gap = gapPhase + Math.round((angle - gapPhase) / leafAngle) * leafAngle;
+  return {
+    name: "one-step hour",
+    teeth,
+    pitchRadius,
+    inner: pitchRadius - depth,
+    outer: pitchRadius + depth,
+    depth,
+    pitch,
+    spokes: MOTION_DRAWINGS.oneStepHour.spokes,
+    step: (-cannon.step * cannon.leaves) / teeth,
+    arbor: [
+      cannon.arbor[0] + centres * Math.cos(radians(angle)),
+      cannon.arbor[1] + centres * Math.sin(radians(angle)),
+    ],
+    toothPhase: angle + 180 - (gap - angle) / ratio,
+    driver: cannon,
+    pinion: null,
+  };
+}
+
+/** A wheel of the motion works: its teeth with spoked openings. */
+function drivenWheelRings(
+  wheel: DrivenWheel,
+  drawing: { rim: number; hub: number; spokeWidth: number },
+  paint: Paint,
+): Ring[] {
+  const gaps = openings(
+    wheel.spokes,
+    drawing.hub,
+    wheel.inner - drawing.rim,
+    drawing.spokeWidth,
+    wheel.toothPhase + 90 / wheel.spokes,
+  );
+  return ringsOf(
+    [drivenWheelTeeth(wheel), paint.line(teethLine(wheel))],
+    [gaps, paint.line(2)],
+  );
+}
+
+/** The motion works' solids (docs/watch.md, "The motion works"): the cannon
+ *  pinion on the centre arbor, the minute wheel with its pinion and arbor,
+ *  and the hour wheel with its pipe. Each is a piece that `all` leaves out,
+ *  so the cover does not show them. Their heights are set in
+ *  `assignHeights`. */
+function motionWorksSolids(kit: Kit): MotionSolids {
+  const { design, paint, train, parts, groups, solids } = kit;
+  const { subjectWash, line } = paint;
+  const { cannon, minute, hour } = design.motionWorks;
+  const minutePinion = minute.pinion;
+  if (minutePinion === null) throw new Error("the minute wheel has no pinion");
+  const piece = (name: string): BuiltPiece =>
+    kit.pieces.make(name, { inAll: false });
+  const centreGroup = lookup(groups.wheels, train.centre, "centre group");
+  // the hour wheel is above the cannon pinion and the minute wheel: they
+  // are hidden under its openings, as the train is
+  const underHour = {
+    discs: [
+      motionDisc(design, hour, MOTION_DRAWINGS.hour.rim, groups.hourWheel),
+    ],
+  };
+  const cannonSolid = solids.add(
+    piece("cannon pinion"),
+    parts.cannon,
+    "other",
+    centreGroup,
+    ringsOf([drivingPinionLeaves(cannon), line(LEAVES_LINE)]),
+    subjectWash,
+    underHour,
+  );
+  const minutePiece = piece("minute wheel");
+  const minuteBody = solids.add(
+    minutePiece,
+    parts.minuteWheel,
+    "body",
+    groups.minuteWheel,
+    drivenWheelRings(minute, MOTION_DRAWINGS.minute, paint),
+    subjectWash,
+    underHour,
+  );
+  const minuteHub = solids.add(
+    minutePiece,
+    parts.minuteWheel,
+    "circle",
+    groups.minuteWheel,
+    ringsOf([circlePath(0, 0, 4), line(2)]),
+    subjectWash,
+  );
+  const minutePinionSolid = solids.add(
+    piece("minute pinion"),
+    parts.minuteWheel,
+    "other",
+    groups.minuteWheel,
+    ringsOf([drivingPinionLeaves(minutePinion), line(LEAVES_LINE)]),
+    subjectWash,
+  );
+  const minuteArbor = solids.add(
+    piece("minute arbor"),
+    parts.minuteWheel,
+    "circle",
+    groups.minuteWheel,
+    ringsOf([circlePath(0, 0, 3), line(2)]),
+    subjectWash,
+  );
+  const hourPiece = piece("hour wheel");
+  const hourBody = solids.add(
+    hourPiece,
+    parts.hourWheel,
+    "body",
+    groups.hourWheel,
+    drivenWheelRings(hour, MOTION_DRAWINGS.hour, paint),
+    subjectWash,
+  );
+  const hourPipe = solids.add(
+    hourPiece,
+    parts.hourWheel,
+    "circle",
+    groups.hourWheel,
+    ringsOf([circlePath(0, 0, HOUR_PIPE_RADIUS), line(2)]),
+    subjectWash,
+  );
+  return {
+    cannon: cannonSolid,
+    minuteBody,
+    minuteHub,
+    minutePinion: minutePinionSolid,
+    minuteArbor,
+    hourBody,
+    hourPipe,
+  };
+}
+
+/** The motion works' solids, for `assignHeights`. */
+interface MotionSolids {
+  cannon: Solid;
+  minuteBody: Solid;
+  minuteHub: Solid;
+  minutePinion: Solid;
+  minuteArbor: Solid;
+  hourBody: Solid;
+  hourPipe: Solid;
+}
+
+/** The one-step hour wheel and its hand, at the heights of the minute
+ *  wheel (it meshes with the cannon pinion too) and of the hour hand. Its
+ *  pieces are props, which `all` leaves out. */
+function oneStepHourMeshes(
+  wheel: DrivenWheel,
+  group: Group,
+  heights: { body: Heights; hand: Heights },
+  hand: Path,
+  paint: Paint,
+): { wheel: Mesh[]; hand: Mesh[] } {
+  const { line, subjectWash, mutedFill } = paint;
+  const info = (name: string, top: number, fill: Colour) => ({
+    name: `${wheel.name} ${name}`,
+    part: `${wheel.name} wheel`,
+    group,
+    fill,
+    lineOrder: top,
+    inDrawing: false,
+  });
+  const { body, hand: handHeights } = heights;
+  return {
+    wheel: [
+      extrude(
+        drivenWheelRings(wheel, MOTION_DRAWINGS.oneStepHour, paint),
+        body.bottom,
+        body.top,
+        info("body", body.top, subjectWash),
+      ),
+      extrude(
+        ringsOf([circlePath(0, 0, 4), line(2)]),
+        body.bottom,
+        handHeights.bottom,
+        info("arbor", handHeights.bottom, subjectWash),
+      ),
+    ],
+    hand: [
+      extrude(
+        ringsOf([hand, line(3)]),
+        handHeights.bottom,
+        handHeights.top,
+        info("hand", handHeights.top, mutedFill),
+      ),
+    ],
+  };
+}
+
 // ---- groups ----------------------------------------------------------------------------
 interface GroupTree {
   groups: WatchGroups;
@@ -522,7 +763,11 @@ interface GroupTree {
   origins: Map<Group, Point2>;
 }
 
-function makeGroups(design: Design, oneStep: Wheel): GroupTree {
+function makeGroups(
+  design: Design,
+  oneStep: Wheel,
+  oneStepHour: DrivenWheel,
+): GroupTree {
   const { barrel, centre, fourth } = trainOf(design);
   const root: Group = { name: "watch", parent: null };
   const origins = new Map<Group, Point2>([[root, [0, 0]]]);
@@ -551,7 +796,10 @@ function makeGroups(design: Design, oneStep: Wheel): GroupTree {
       fork: groupAt("fork", design.fork.pivot),
       seconds: groupAt("seconds hand", fourth.arbor),
       hour: groupAt("hour hand", centre.arbor),
+      hourWheel: groupAt("hour wheel", centre.arbor),
       minute: groupAt("minute hand", centre.arbor),
+      minuteWheel: groupAt("minute wheel", design.motionWorks.minute.arbor),
+      oneStepHour: groupAt(`${oneStepHour.name} wheel`, oneStepHour.arbor),
     },
     all,
     origins,
@@ -572,6 +820,9 @@ interface Parts {
   hour: Part;
   minute: Part;
   pivot: Part;
+  cannon: Part;
+  minuteWheel: Part;
+  hourWheel: Part;
 }
 
 function makeParts({ barrel, centre, third, fourth, escape }: Train): Parts {
@@ -647,6 +898,10 @@ function makeParts({ barrel, centre, third, fourth, escape }: Train): Parts {
       circle: recipe(1),
       other: recipe(1),
     }),
+    // the motion works: `assignHeights` stacks them over the train
+    cannon: part("cannon pinion", { other: WHEEL_RECIPES.body }),
+    minuteWheel: part("minute wheel", WHEEL_RECIPES),
+    hourWheel: part("hour wheel", WHEEL_RECIPES),
   };
 }
 
@@ -657,6 +912,7 @@ function clipDiscs(
   design: Design,
   groups: WatchGroups,
   oneStep: Wheel,
+  oneStepHour: DrivenWheel,
 ): Map<Wheel, Disc[]> {
   interface Round {
     wheel: Wheel | null;
@@ -723,7 +979,49 @@ function clipDiscs(
       by: groups.oneStep,
     });
   }
+  // The motion works and the one-step hour wheel are far above the train. At
+  // a tilt, a disc in the plan slides against the wheel above it, by the
+  // height between them times the tilt's tangent. A disc out to the root
+  // circle then cuts a sliver out of the wheel below, beside the rim, and a
+  // disc out to the openings shows a crescent of it in each opening. So
+  // their discs end half way across their rims: they cover the openings,
+  // and the rim covers their edges, while the slide is less than half the
+  // rim (docs/watch.md, "The motion works").
+  const { minute, hour } = design.motionWorks;
+  const above: [DrivenWheel, number, Group][] = [
+    [minute, MOTION_DRAWINGS.minute.rim, groups.minuteWheel],
+    [hour, MOTION_DRAWINGS.hour.rim, groups.hourWheel],
+    [oneStepHour, MOTION_DRAWINGS.oneStepHour.rim, groups.oneStepHour],
+  ];
+  for (const lower of rounds) {
+    if (lower.wheel === null) continue;
+    for (const [upper, rim, by] of above) {
+      const disc = motionDisc(design, upper, rim, by);
+      const apart = Math.hypot(
+        lower.arbor[0] - upper.arbor[0],
+        lower.arbor[1] - upper.arbor[1],
+      );
+      if (apart >= lower.outer + disc.radius) continue;
+      discsOver.get(lower.wheel)?.push(disc);
+    }
+  }
   return discsOver;
+}
+
+/** The disc inside which a wheel of the motion works, or the one-step hour
+ *  wheel, hides what is below it: half way across its rim (`clipDiscs`). */
+function motionDisc(
+  design: Design,
+  wheel: DrivenWheel,
+  rim: number,
+  by: Group,
+): Disc {
+  const { watchCentre } = design;
+  return {
+    centre: [watchCentre[0] + wheel.arbor[0], watchCentre[1] + wheel.arbor[1]],
+    radius: wheel.inner - rim / 2,
+    by,
+  };
 }
 
 // ---- meshes ----------------------------------------------------------------------------
@@ -991,7 +1289,14 @@ const KEY = {
 const REST_DASH = { dash: 8, gap: 6, width: 4 };
 
 /** The arbor's square, on top of the arbor's disc. */
-function arborSquareMesh(arborTop: number, group: Group, paint: Paint): Mesh {
+/** The barrel arbor's square, hidden inside `hiddenInside`: the barrel's
+ *  discs, as the arbor is. */
+function arborSquareMesh(
+  arborTop: number,
+  group: Group,
+  paint: Paint,
+  hiddenInside: Disc[],
+): Mesh {
   const half = ARBOR_SQUARE.side / 2;
   const top = arborTop + ARBOR_SQUARE.height;
   return extrude(
@@ -1011,6 +1316,7 @@ function arborSquareMesh(arborTop: number, group: Group, paint: Paint): Mesh {
       part: "barrel arbor",
       group,
       fill: paint.subjectWash,
+      hiddenInside,
       lineOrder: top,
       inDrawing: false,
     },
@@ -1300,7 +1606,7 @@ class SolidList {
     rings: Ring[],
     fill: Colour | null,
     extra: Partial<
-      Pick<Solid, "pivot" | "reach" | "ribbon" | "inDrawing">
+      Pick<Solid, "pivot" | "reach" | "ribbon" | "inDrawing" | "discs">
     > = {},
   ): Solid {
     const { watchCentre } = this;
@@ -1329,7 +1635,9 @@ class SolidList {
             : [0, 0],
         ),
       ribbon: extra.ribbon ?? false,
-      discs: owner.wheel ? (this.discsOver.get(owner.wheel) ?? []) : [],
+      discs:
+        extra.discs ??
+        (owner.wheel ? (this.discsOver.get(owner.wheel) ?? []) : []),
       inDrawing: extra.inDrawing ?? true,
     };
     this.solids.push(made);
@@ -1339,7 +1647,7 @@ class SolidList {
 
 /** The width of the line round a wheel's teeth: fine teeth take the thinner
  *  line. */
-function teethLine(wheel: Wheel): number {
+function teethLine(wheel: Pick<Wheel, "pitch">): number {
   return wheel.pitch < 9 ? 2 : 2.5;
 }
 
@@ -1555,6 +1863,10 @@ const DRIVE_ARROW = {
   headLength: 0.31,
   headHalfWidth: 0.175,
   width: 4,
+  /** How high the arrow stands on the wheel's face: twice the renderer's
+   *  tolerance, so that its head hides the wheel's lines under it. At a
+   *  tilt of 20°, the head is then 0.94 of this in front of them. */
+  rise: 2 * HIDDEN_LINE_TOLERANCE,
 };
 
 /** The drive arrow on `wheel`, in the watch's plan: the shaft, an arc from
@@ -1582,14 +1894,15 @@ export function driveArrowShape(
     tip[1] - tangent[1] * headLength,
   ];
   const side: Point2 = [-tangent[1] * halfWidth, tangent[0] * halfWidth];
-  // the shaft ends inside the head, a third of its length from the base, so
-  // that the line's end does not show at the tip
-  const shaftArc =
-    DRIVE_ARROW.arc - (((2 / 3) * headLength) / radius) * (180 / Math.PI);
+  // the shaft runs from the tail to the middle of the head, so that the
+  // line's round end does not show past the tip
+  const tailAngle = tipAngle - turn * DRIVE_ARROW.arc;
+  const endAngle =
+    tipAngle - turn * ((headLength / 2 / radius) * (180 / Math.PI));
   const shaft = Array.from({ length: DRIVE_ARROW.points + 1 }, (_, index) =>
     polar(
       radius,
-      tipAngle - turn * shaftArc * (1 - index / DRIVE_ARROW.points),
+      tailAngle + (endAngle - tailAngle) * (index / DRIVE_ARROW.points),
       centre,
     ),
   );
@@ -1622,8 +1935,8 @@ function driveArrowMeshes(
     lineOrder: top + 0.5,
     inDrawing: false,
   });
-  // just above the wheel's face, so that the face does not hide it
-  const height = top + 0.1;
+  // above the wheel's face, so that the head hides the face's lines
+  const height = top + DRIVE_ARROW.rise;
   return [
     extrude(
       [smoothRing(shaft, paint.mutedLine(DRIVE_ARROW.width), false)],
@@ -1925,26 +2238,12 @@ function dialSolids(kit: Kit): Solid {
   );
 
   // the hands
-  const hourTurn = (design.hands.hour + design.hands.minute / 60) * 30;
   solids.add(
     kit.pieces.make("hour hand"),
     hourPart,
     "body",
     hourGroup,
-    ringsOf([
-      turned(
-        dagger({
-          length: 140,
-          maxWidth: 17,
-          widestAt: 0.62,
-          tail: 10,
-          tailWidth: 3,
-          neck: 26,
-        }),
-        hourTurn,
-      ),
-      line(3),
-    ]),
+    ringsOf([hourHandPath(design), line(3)]),
     mutedFill,
   );
   solids.add(
@@ -1977,6 +2276,21 @@ function dialSolids(kit: Kit): Solid {
     subjectWash,
   );
   return ringSolid;
+}
+
+/** The hour hand about its arbor, at the design's time. */
+function hourHandPath(design: Design): Path {
+  return turned(
+    dagger({
+      length: 140,
+      maxWidth: 17,
+      widestAt: 0.62,
+      tail: 10,
+      tailWidth: 3,
+      neck: 26,
+    }),
+    (design.hands.hour + design.hands.minute / 60) * 30,
+  );
 }
 
 /** The balance staff, which the drawing lacks: it rises through the spring's
@@ -2014,18 +2328,16 @@ export function generate(design: Design = DESIGN): Watch {
   const paint = paintOf();
   const train = trainOf(design);
   const oneStep = oneStepWheel(design);
-  const tree = makeGroups(design, oneStep);
+  const oneStepHour = oneStepHourWheel(design);
+  const tree = makeGroups(design, oneStep, oneStepHour);
   const { root } = tree.groups;
   const parts = makeParts(train);
   const partOf = (wheel: Wheel): Part =>
     lookup(parts.wheels, wheel, `part for the ${wheel.name} wheel`);
 
   // ---- the solids of the movement, in the drawing's order ----
-  const list = new SolidList(
-    tree.origins,
-    watchCentre,
-    clipDiscs(design, tree.groups, oneStep),
-  );
+  const discsOver = clipDiscs(design, tree.groups, oneStep, oneStepHour);
+  const list = new SolidList(tree.origins, watchCentre, discsOver);
   const kit: Kit = {
     design,
     paint,
@@ -2049,6 +2361,7 @@ export function generate(design: Design = DESIGN): Watch {
     springShape,
   } = balanceSolids(kit);
   forkSolids(kit);
+  const motionSolids = motionWorksSolids(kit);
   const ringSolid = dialSolids(kit);
   const staff = staffSolid(kit);
   const solids = list.solids;
@@ -2058,6 +2371,7 @@ export function generate(design: Design = DESIGN): Watch {
     springSolid,
     staff,
     ringSolid,
+    motion: motionSolids,
     partsOf: {
       escape: partOf(train.escape),
       fourth: partOf(train.fourth),
@@ -2132,6 +2446,28 @@ export function generate(design: Design = DESIGN): Watch {
   )) {
     oneStepPiece.meshes.add(mesh);
     meshes.push(mesh);
+  }
+  // the one-step hour wheel meshes with the cannon pinion, at the minute
+  // wheel's height; its hand is where the hour hand is
+  const oneStepHourParts = oneStepHourMeshes(
+    oneStepHour,
+    tree.groups.oneStepHour,
+    {
+      body: heightOf(motionSolids.minuteBody),
+      hand: heightOf(solidAt(parts.hour, "body")),
+    },
+    hourHandPath(design),
+    paint,
+  );
+  for (const [name, made] of [
+    [`${oneStepHour.name} wheel`, oneStepHourParts.wheel],
+    [`${oneStepHour.name} hand`, oneStepHourParts.hand],
+  ] as const) {
+    const piece = kit.pieces.make(name, { inAll: false });
+    for (const mesh of made) {
+      piece.meshes.add(mesh);
+      meshes.push(mesh);
+    }
   }
   const balanceScrews = balanceScrewMeshes(
     design.balance,
@@ -2211,7 +2547,12 @@ export function generate(design: Design = DESIGN): Watch {
   );
   const mainspringHeights = heightOf(mainspringSolid);
   const arborTop = heightOf(barrelArborSolid).top;
-  const arborSquare = arborSquareMesh(arborTop, tree.groups.barrelArbor, paint);
+  const arborSquare = arborSquareMesh(
+    arborTop,
+    tree.groups.barrelArbor,
+    paint,
+    discsOver.get(train.barrel) ?? [],
+  );
   const keys = keyMeshes(
     arborTop + ARBOR_SQUARE.height,
     tree.groups.barrelArbor,
@@ -2318,6 +2659,7 @@ export function generate(design: Design = DESIGN): Watch {
     ringTop,
     escapementTops,
     oneStep,
+    oneStepHour,
   };
 }
 
@@ -2512,6 +2854,7 @@ interface HeightParts {
   springSolid: Solid;
   staff: Solid;
   ringSolid: Solid;
+  motion: MotionSolids;
   partsOf: {
     escape: Part;
     fourth: Part;
@@ -2644,6 +2987,39 @@ function assignHeights(
   ]);
   const below = placed.filter((each) => !dialSide.has(each.part));
 
+  // ---- the motion works, above the train and under the hands ----
+  const { motion } = found;
+  const motionSet = new Set<Solid>(Object.values(motion));
+  const overlaps = (first: Solid, second: Solid): boolean =>
+    Math.hypot(
+      first.pivot[0] - second.pivot[0],
+      first.pivot[1] - second.pivot[1],
+    ) <
+    first.reach + second.reach;
+  // the centre arbor runs up through them: `raiseArbor` makes it longer
+  const under = below.filter(
+    (each) =>
+      !motionSet.has(each) &&
+      !(each.part === partsOf.centre && each.role === "circle") &&
+      [motion.minuteBody, motion.hourBody].some((wheel) =>
+        overlaps(wheel, each),
+      ),
+  );
+  const motionBottom = Math.max(...under.map((each) => heightOf(each).top));
+  const firstTop = motionBottom + thicknessOf(motion.minuteBody);
+  const secondTop = firstTop + thicknessOf(motion.hourBody);
+  const level = (each: Solid, bottom: number, top: number): void => {
+    heights.set(each, { bottom, top });
+  };
+  // a pinion is level with the wheel that it drives
+  level(motion.cannon, motionBottom, firstTop);
+  level(motion.minuteBody, motionBottom, firstTop);
+  level(motion.minuteHub, motionBottom, firstTop);
+  level(motion.minutePinion, firstTop, secondTop);
+  level(motion.minuteArbor, firstTop, secondTop + ARBOR_CAP);
+  level(motion.hourBody, firstTop, secondTop);
+  level(motion.hourPipe, firstTop, secondTop);
+
   const centreOf = (each: Solid): Point2 => each.pivot;
   const sweepsOver = (hand: Solid, other: Solid): boolean =>
     Math.hypot(
@@ -2691,6 +3067,8 @@ function assignHeights(
   );
   const hourTop = stack(hour, hourBottom);
   raiseArbor(partsOf.centre, hourBottom);
+  // the hour wheel's pipe carries the hour hand
+  heights.set(motion.hourPipe, { bottom: firstTop, top: hourBottom });
   // The minute hand is longer than the hour hand: it may sweep over more.
   const minute = ofPart(partsOf.minute);
   const minuteHand = at(minute, 0);
