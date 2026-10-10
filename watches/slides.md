@@ -50,25 +50,6 @@ src: ./pages/hairspring.md
 ---
 
 ---
-# Previews: the Hairspring slide in other palettes (palette classes, ../docs/theme.md).
-# Each imports the same page and changes only its class; palette-preview
-# puts the palette's name, small, in the lower right corner. Remove them when
-# the palette is chosen.
-src: ./pages/hairspring.md
-class: palette-campfire palette-preview
----
-
----
-src: ./pages/hairspring.md
-class: palette-marmalade palette-preview
----
-
----
-src: ./pages/hairspring.md
-class: palette-after-hours palette-preview
----
-
----
 watch: [balance wheel, balance staff, hairspring, collet, stud]
 watchView: hairspring
 watchTilt: 20
@@ -209,11 +190,8 @@ watchClicks:
   # each strike of the jewel (docs/watch.md)
   4:
     watchAtRest: false
-    watchTickTock: plain
-  # a trial: the same words as comic bursts, to compare
-  5:
-    watchTickTock: burst
-clicks: 5
+    watchTickTock: true
+clicks: 4
 ---
 
 # Escapement
@@ -228,10 +206,7 @@ import { WATCH } from "./watch/instance.ts";
 const marks = escapementMarks(WATCH, useSlideContext().$frontmatter);
 </script>
 
-<!-- Click 5 is a trial of the words at the strikes: comic bursts, to
-compare with click 4's plain words.
-
-The newest callout is the focus: while the pallet's (click 2) and then the
+<!-- The newest callout is the focus: while the pallet's (click 2) and then the
 jewel's (click 3) is the newest, the callouts before it dim. At click 4 the
 balance swings again, the jewel's leader fades, and all three come back.
 
@@ -306,8 +281,6 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 [click] Third, the jewel. (The balance comes to rest, with the jewel in the fork's notch, under its leader.)
 
 [click] As the balance swings, it periodically gives permission for one tiny advance. (Each time the jewel strikes the fork, "tick" or "tock" appears beside it and drifts away.) During that event some energy also travels the other way, from the gear train through the escapement into the balance.
-
-[click] (Trial: the same words as 1960s Batman bursts, to compare with click 4.)
 -->
 
 ---

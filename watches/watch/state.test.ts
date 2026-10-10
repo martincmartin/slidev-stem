@@ -133,8 +133,7 @@ test("a click block changes the motion from its click on, as the slide sets it f
     watchClicks: {
       1: { watchSpin: false, watchAtRest: true },
       2: { watchSpin: 120, watchTilt: 20 },
-      3: { watchAtRest: false, watchTickTock: "plain" },
-      4: { watchTickTock: "burst" },
+      3: { watchAtRest: false, watchTickTock: true },
       5: { watchTickTock: false },
     },
   };
@@ -154,14 +153,7 @@ test("a click block changes the motion from its click on, as the slide sets it f
   );
   assert.deepEqual(
     clicks.map((click) => tickTockState(frontmatter, click)),
-    [
-      undefined,
-      undefined,
-      undefined,
-      { burst: false },
-      { burst: true },
-      undefined,
-    ],
+    [false, false, false, true, true, false],
   );
   // a block that says what is already so changes nothing
   assert.equal(
@@ -354,7 +346,7 @@ test("a key that a click can change needs watch on the slide", () => {
   for (const [frontmatter, field] of [
     [{ watchSpin: 45 }, "watchSpin"],
     [{ watchAtRest: true }, "watchAtRest"],
-    [{ watchTickTock: "plain" }, "watchTickTock"],
+    [{ watchTickTock: true }, "watchTickTock"],
     [{ watchRight: 489 }, "watchRight"],
     [{ watchFlash: ["stud"] }, "watchFlash"],
     [{ watchLater: ["stud"] }, "watchLater"],
@@ -396,8 +388,8 @@ test("a field of the wrong kind throws, with its name", () => {
     ["watchSpin", -90],
     ["watchSpin", true],
     ["watchSpin", Number.POSITIVE_INFINITY],
-    ["watchTickTock", true],
-    ["watchTickTock", "loud"],
+    ["watchTickTock", "plain"],
+    ["watchTickTock", 1],
     ["watchRight", "489"],
     ["watchRight", true],
     ["watchRight", Number.NaN],

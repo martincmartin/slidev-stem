@@ -49,8 +49,7 @@ Five rules for a slide:
 - **To see a slide in another palette, give it a palette class**
   (`class: palette-campfire`; [theme.md](../../docs/theme.md#palette-classes-a-slide-in-another-palette)).
   The watch and the diving board follow it. To compare palettes, import the
-  slide once for each, as `slides.md` does with the Hairspring slide: it is
-  in `pages/hairspring.md`, and its previews follow it.
+  slide once for each palette.
 - **`layout: full` plus a class, not a custom layout.** It keeps each slide's layout
   next to its content, which has been worth more than the duplication costs — the
   slide you are reading is the slide you are editing.

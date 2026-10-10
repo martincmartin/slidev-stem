@@ -99,14 +99,12 @@ let stage: Stage<WatchModelState> | undefined;
 /** The stage's model: it says when the balance comes to rest, and when the
  *  jewel strikes. */
 const model = shallowRef<WatchModel>();
-/** How the words show at the jewel's strikes, and where it strikes, while the
- *  slide shows them. */
-const tickTock = computed(() => {
-  const shown = tickTockState(frontmatter.value, slidev.nav.clicks);
-  return shown && !hidden.value
-    ? { ...shown, strikes: jewelStrikes(WATCH, frontmatter.value) }
-    : undefined;
-});
+/** Where the jewel strikes, while the slide shows the words at its strikes. */
+const tickTock = computed(() =>
+  tickTockState(frontmatter.value, slidev.nav.clicks) && !hidden.value
+    ? { strikes: jewelStrikes(WATCH, frontmatter.value) }
+    : undefined,
+);
 /** Set while the canvas fades out: then the stage goes out of sight. */
 let hideTimer: ReturnType<typeof setTimeout> | undefined;
 /** The last state given to the stage. */

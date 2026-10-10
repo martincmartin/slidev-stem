@@ -17,9 +17,8 @@
 //   watchAtRest: true: the balance is at rest; false (default): it swings
 //   watchSpin: degrees a second of the escape wheel: the train spins freely
 //     (`TrainClock`); false (default): it follows the mechanism
-//   watchTickTock: plain or burst: the words "tick" and "tock" show at each
-//     strike of the jewel on the fork, plain or as comic bursts (a trial);
-//     false (default): they do not (`tickTockState`)
+//   watchTickTock: true: the words "tick" and "tock" show at each strike of
+//     the jewel on the fork; false (default): they do not (`tickTockState`)
 //   watchMainspring: a stage of the Mainspring slide's story (free, turned,
 //     wound, released, barrel, barrel again, run down: watch/mainspring.ts); it also says
 //     when the balance swings, so it is not set with watchAtRest
@@ -164,7 +163,7 @@ function tiltOf(name: string, value: unknown): number {
   return value;
 }
 
-function atRestOf(name: string, value: unknown): boolean {
+function booleanOf(name: string, value: unknown): boolean {
   if (typeof value !== "boolean") return wrong(name, value, "true or false");
   return value;
 }
@@ -176,21 +175,6 @@ function spinOf(name: string, value: unknown): number | null {
     return wrong(name, value, "a speed in degrees a second, or false");
   }
   return value;
-}
-
-/** How the words "tick" and "tock" show at each strike. */
-export interface TickTockState {
-  /** In comic bursts, the 1960s _Batman_ style: a trial, to compare with
-   *  the plain words. */
-  burst: boolean;
-}
-
-function tickTockOf(name: string, value: unknown): TickTockState | undefined {
-  if (value === false) return undefined;
-  if (value !== "plain" && value !== "burst") {
-    return wrong(name, value, "plain, or burst, or false");
-  }
-  return { burst: value === "burst" };
 }
 
 /** The pieces dimmed, or `null`: none. */
@@ -214,9 +198,9 @@ const CLICK_KEYS = {
   watchRight: rightOf,
   watchBand: bandOf,
   watchTilt: tiltOf,
-  watchAtRest: atRestOf,
+  watchAtRest: booleanOf,
   watchSpin: spinOf,
-  watchTickTock: tickTockOf,
+  watchTickTock: booleanOf,
   watchMainspring: mainspringOf,
   watchDim: dimOf,
 } as const;
@@ -229,8 +213,8 @@ const STEP_KEYS = {
   watchLater: namesOf,
   watchCut: namesOf,
   watchGoLater: namesOf,
-  watchFlashAfterText: atRestOf,
-  watchFlashInverse: atRestOf,
+  watchFlashAfterText: booleanOf,
+  watchFlashInverse: booleanOf,
 } as const;
 type StepKey = keyof typeof STEP_KEYS;
 type StepValues = { [Key in StepKey]?: ReturnType<(typeof STEP_KEYS)[Key]> };
@@ -408,14 +392,13 @@ export function watchState(
   };
 }
 
-/** How the words "tick" and "tock" show at each strike, at `clicks`, or
- *  `undefined` if they do not (`watchTickTock`). Throws as `watchState`
- *  does. */
+/** Whether the words "tick" and "tock" show at each strike, at `clicks`
+ *  (`watchTickTock`). Throws as `watchState` does. */
 export function tickTockState(
   frontmatter: Record<string, unknown>,
   clicks: number,
-): TickTockState | undefined {
-  return atClick(frontmatter, clicks).watchTickTock;
+): boolean {
+  return atClick(frontmatter, clicks).watchTickTock ?? false;
 }
 
 /** The camera's and the fade's state, with the names turned into objects.

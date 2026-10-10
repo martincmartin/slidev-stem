@@ -83,12 +83,11 @@ export function slideState(
     }
     busy = stage.movingAt(now);
   }
-  // how the words "tick" and "tock" show at the strikes (off, plain or
-  // burst): each word's opacity is the phase of the mechanism, so it is not
-  // `continuous`
+  // whether the words "tick" and "tock" show at the strikes: each word's
+  // opacity is the phase of the mechanism, so it is not `continuous`
   const tickTock = document.querySelector<HTMLElement>(".tick-tock");
-  const style = tickTock?.dataset["style"];
-  if (style !== undefined) settled["tick-tock"] = style;
+  const words = tickTock?.dataset["shown"];
+  if (words !== undefined) settled["tick-tock"] = words;
   for (const host of boards) {
     const phase = host.dataset["phase"];
     if (phase !== undefined) settled["board"] = phase;

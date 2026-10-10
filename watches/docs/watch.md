@@ -269,7 +269,7 @@ watch's drawing ([The drive arrow](#the-drive-arrow)).
 
 ### Tick and tock
 
-From click 4 (`watchTickTock: plain`), each time the jewel strikes the fork, a
+From click 4 (`watchTickTock: true`), each time the jewel strikes the fork, a
 word appears beside the horn that it strikes: "tick" at the upper horn,
 "tock" at the lower one. The jewel enters the notch past one horn and
 strikes the other, ahead of it (`jewelStrikes` in `watch/callouts.ts`). It appears at once, and fades out in 0.8 s as it drifts 40 px
@@ -296,17 +296,8 @@ the type, the times and the distances.
 - **They are lowercase, bold, with no quotes**: a sound, not a label or a
   quotation. Ink, with an outline in the paper's colour, so they read over
   the drawing.
-- **Click 5 is a trial**, to compare by going back and forward
-  (`watchTickTock: burst`): the same words, times and drift, as 1960s
-  _Batman_ bursts in the theme's colours. Each is a spiked burst, outlined
-  in ink: the accent behind "TICK!" and the second behind "TOCK!", so the
-  two sounds differ in colour too. The words are capitals in the paper's
-  colour, outlined in ink, with an ink shadow. "TICK!" tilts one way and
-  "TOCK!" the other. A burst is larger than a word, so it starts farther from the
-  horn. It uses the theme's sans at 600: a heavier weight would need a new
-  import in the theme.
-- **`slideState`** reports how the words show (`tick-tock`, settled: off,
-  plain or burst). A word's opacity is the phase of the mechanism, so it
+- **`slideState`** reports whether the words show (`tick-tock`, settled:
+  `true` or `false`). A word's opacity is the phase of the mechanism, so it
   is not continuous.
 - **A printed page shows no words**: a still has no strikes.
 
@@ -395,11 +386,11 @@ The marks stay in second inks when the cue ends. A jump or backward step does no
   - **The solid style's outline stays the subject's.** In the second, a
     tooth and the leaf that it drives merged where they touch.
   - **One colour, the second**: its art job is "look here". In each of the
-    four top-pick palettes it was at least 54 CVD ΔE from the gear's faces
+    top-pick palettes it was at least 54 CVD ΔE from the gear's faces
     (measured on 2026-10-08).
     The span needs only to differ from the plain teeth, so it does not need
     a second colour. Not an oversight: two marks on each gear in two colours
-    were measured, and are weaker in Marmalade. See the task.
+    were measured, and were weaker in one dark palette. See the task.
   - **No keyword callout on the gears while the span shows**: its word and
     leader are in the second too, and would merge with the span.
 - **The text reads the span** (in `slides.md`, on the right of the gears),
@@ -1045,7 +1036,7 @@ which dims to 0.5.
 | `watchSpin: 135`                     | the train spins freely, at this speed in degrees a second of the escape wheel, faster than the mechanism's 12 ([The free spin](#the-free-spin)); `false` (default): it follows the mechanism, and a spin stops at the pallet        |
 | `watchMainspring: wound`             | the Mainspring slide's stage: `free`, `turned`, `wound`, `released`, `barrel`, `barrel again` (a trial) or `run down` ([The Mainspring slide](#the-mainspring-slide)); it says when the watch runs, so not with `watchAtRest`       |
 | `watchDim: [barrel]`                 | the pieces drawn dimmed, as at opacity 0.35 over the paper (`WATCH_DIM`), from that click on; `false` (default): none ([Dimmed pieces](#dimmed-pieces))                                                                             |
-| `watchTickTock: plain`               | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `burst`: as comic bursts, a trial; `false` (default): they do not                                                                   |
+| `watchTickTock: true`                | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `false` (default): they do not                                                                                                      |
 | `watchFlash: [balance wheel]`        | pieces that flash, on the step forward into the slide (on the slide) or into the block's click (in `watchClicks`) only; it does not carry on to later clicks ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash") |
 | `watchFlashAfterText: true`          | wait for the click text fade before flashing; permits a flash without a watch change. The layer waits for the current click's opacity transitions to finish. This setting applies only to its click.                                |
 | `watchFlashInverse: true`            | use subject inks in the first half-cycle, then restore the permanent second inks. This setting applies only to its click.                                                                                                           |
