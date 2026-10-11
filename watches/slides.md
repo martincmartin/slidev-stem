@@ -59,84 +59,62 @@ class: balance-wheel
 
 # Balance Wheel
 
-<div v-click.hide="2" class="bw-sentence bw-explanation">
-  <div>Add mass,<br>it swings slowly</div>
-  <div v-click="1">and steadily</div>
-</div>
-
-<div v-click="2" class="bw-sentence bw-accuracy">
-  <div class="bw-calibrated font-serif">Well calibrated</div>
-  <div class="bw-percent">99.99% <span>accurate</span></div>
-  <div class="bw-unit">Seiko & Citizen</div>
-  <div v-click="3" class="bw-daily">
-    <div class="bw-unit">out of 86,400 sec a day</div>
+<div class="bw-sentence">
+  <div class="bw-paragraph">Add mass, it swings<br>slowly <span v-click="1">and steadily</span></div>
+  <div v-click="2" class="bw-paragraph">
+    <div>Well calibrated</div>
+    <div><span class="bw-percent">99.99%</span> accurate</div>
+    <div>Seiko • Citizen</div>
+  </div>
+  <div v-click="3" class="bw-paragraph">
+    <div>86,400 sec in a day</div>
     <div class="bw-error">±9 sec a day</div>
   </div>
 </div>
 
 <style>
-/* The sentence is where the Hairspring slide's was, and looks the same: its left edge and
-   its first line's top are those of the board's sentence (DivingBoard.vue,
-   --label-x and --label-y), so the new words take the old words' place. */
+/* The sentence is where the Hairspring slide's was, in the same type: its
+   left edge is the board's sentence's (DivingBoard.vue, --label-x), and its
+   first line's glyphs are where that sentence's first line was, so the new
+   words take the old words' place. The board's sentence is double-spaced,
+   to clear the board; this one is single-spaced, as on the later slides, so
+   its top is lower by half the difference in line height:
+   137 + 35 * (2.1 - 1.25) / 2 = 152 px. */
 .slidev-layout.balance-wheel .bw-sentence {
   position: absolute;
   left: 610px;
-  top: 137px;
+  top: 152px;
   font-size: 35px;
   font-weight: 600;
-  line-height: 2.1;
+  line-height: 1.25;
   white-space: nowrap;
 }
-.slidev-layout.balance-wheel .bw-sentence.slidev-vclick-target {
+/* Each click adds to the sentence, and nothing leaves, so all of the text
+   is on the slide at the last click. "and steadily" has its place on the
+   second line from the start: it fades in, and no word moves. */
+.slidev-layout.balance-wheel .bw-sentence .slidev-vclick-target,
+.slidev-layout.balance-wheel .bw-paragraph {
   transition: opacity var(--text-fade);
 }
-/* In either direction, the incoming block waits for the outgoing block. */
-.slidev-layout.balance-wheel .bw-sentence:not(.slidev-vclick-hidden) {
-  transition-delay: var(--text-fade);
+.slidev-layout.balance-wheel .bw-paragraph + .bw-paragraph {
+  margin-top: 0.7em;
 }
-/* The accuracy uses the timekeeper card's type roles (TimekeeperCard.vue):
-   name, stat in the accent, unit in muted, and the catch in second. Each is
-   a little larger than on a card, because it has the column to itself. The
-   numbers are in the sans, not the card's mono: mono gives the decimal point
-   and each space a full digit's width, and "99 . 99%" reads as two numbers. */
-.slidev-layout.balance-wheel .bw-accuracy {
-  line-height: 1.2;
+/* When a paragraph shows, the paragraphs before it dim, to 0.5, as the
+   Escapement slide's earlier callouts do (--esc-dim): the newest is the
+   focus. Slidev's hidden class sets opacity with !important, so a paragraph
+   that is not shown yet stays hidden. */
+.slidev-layout.balance-wheel
+  .bw-paragraph:has(~ .bw-paragraph:not(.slidev-vclick-hidden)) {
+  opacity: 0.5;
 }
-.slidev-layout.balance-wheel .bw-calibrated {
-  font-size: 29px;
-  font-weight: 600;
-  color: var(--palette-ink);
-}
+/* The accuracy is in the sentence's type. Only the stat is larger, in the
+   accent, and the catch is in second. */
 .slidev-layout.balance-wheel .bw-percent {
-  margin-top: 10px;
   font-size: 48px;
-  font-weight: 600;
   line-height: 1;
   color: var(--palette-accent);
 }
-/* "accurate" shares the stat's line and baseline, in ink, so the accent
-   stays on the number alone. */
-.slidev-layout.balance-wheel .bw-percent span {
-  font-size: 29px;
-  font-weight: 500;
-  color: var(--palette-ink);
-}
-.slidev-layout.balance-wheel .bw-unit {
-  margin-top: 6px;
-  font-size: 20px;
-  font-weight: 400;
-  color: var(--palette-muted);
-}
-.slidev-layout.balance-wheel .bw-daily {
-  margin-top: 30px;
-}
-.slidev-layout.balance-wheel .bw-daily.slidev-vclick-target {
-  transition: opacity var(--text-fade);
-}
 .slidev-layout.balance-wheel .bw-error {
-  margin-top: 4px;
-  font-size: 26px;
-  font-weight: 600;
   color: var(--palette-second);
 }
 </style>
