@@ -289,7 +289,7 @@ test("a slide shows the meshes of its pieces, or all but the marks, in its named
   );
   // every mesh but those of the pieces that only a slide that names them
   // shows: the drive arrows, the Gears slide's spans, the Gear Train slide's
-  // one-step wheel and raised strap, the Spring Of Power slide's props, and the
+  // one-step wheel and raised strap, the Mainspring slide's props, and the
   // motion works with the Hour Hand slide's one-step hour wheel
   const marks = watch.scene.pieces.filter((piece) => !piece.inAll);
   assert.deepEqual(marks.map((piece) => piece.name).sort(), [
@@ -465,7 +465,7 @@ test("a field of the wrong kind throws, with its name", () => {
   }
 });
 
-test("the Spring Of Power slide's stage says when the watch runs: only in the barrel, wound", () => {
+test("the Mainspring slide's stage says when the watch runs: only in the barrel, wound", () => {
   const frontmatter = {
     watch: ["mainspring", "barrel arbor"],
     watchMainspring: "free",

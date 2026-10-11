@@ -213,7 +213,9 @@ const leader = computed(() => {
 <style scoped>
 /* The leader is in ink, the colour of its label, at 4 px, the width of every
    leader (stem/docs/illustrations.md, "Leaders"). A keyword callout draws its
-   word and its leader in the second, the art's colour for "look here". */
+   word and its leader in the second, the art's colour for "look here". Each
+   colour mixes toward the paper by --text-dim, so a slide can dim the
+   callout (style.css, "TEXT DIMS"). */
 .callout {
   position: absolute;
   inset: 0;
@@ -231,7 +233,11 @@ const leader = computed(() => {
   stroke-linejoin: round;
 }
 .callout-leader {
-  stroke: var(--palette-ink);
+  stroke: color-mix(
+    in srgb,
+    var(--palette-ink),
+    var(--palette-background) var(--text-dim)
+  );
   stroke-width: 4;
   /* it fades as text does (style.css, "TEXT FADES") */
   transition: opacity var(--text-fade);
@@ -241,13 +247,26 @@ const leader = computed(() => {
 }
 .callout-label {
   position: absolute;
+  color: color-mix(
+    in srgb,
+    var(--palette-ink),
+    var(--palette-background) var(--text-dim)
+  );
   font-weight: 600;
   white-space: nowrap;
 }
 .callout-keyword .callout-leader {
-  stroke: var(--palette-second);
+  stroke: color-mix(
+    in srgb,
+    var(--palette-second),
+    var(--palette-background) var(--text-dim)
+  );
 }
 .callout-label.callout-keyword :slotted(.callout-word) {
-  color: var(--palette-second);
+  color: color-mix(
+    in srgb,
+    var(--palette-second),
+    var(--palette-background) var(--text-dim)
+  );
 }
 </style>

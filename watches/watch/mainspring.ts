@@ -1,4 +1,4 @@
-// The Spring Of Power slide's story (docs/watch.md, "The Spring Of Power slide"): the
+// The Mainspring slide's story (docs/watch.md, "The Mainspring slide"): the
 // barrel arbor's angle, the mainspring's wind and the winding key's opacity,
 // at each moment. No DOM and no WebGL here, so a test can drive the clock with
 // made-up times.
@@ -6,10 +6,9 @@
 // A SLIDE NAMES TARGETS, NOT MOVES (../../docs/navigation.md). Each click names
 // a stage of the story (`watchMainspring`), in this order:
 //   free: the bare spring and its arbor, at rest
-//   turned: the key fades in, turns the arbor a third of a turn three times,
-//     with a pause after each, and fades out. Nothing holds the outer end, so
-//     the spring turns whole
-//   wound: the same, with the outer end held (the stud): the spring winds
+//   wound: the outer end is held (the stud); the key fades in, turns the
+//     arbor a third of a turn three times, with a pause after each, and fades
+//     out, and the spring winds
 //   released: the outer end is let go, and the spring uncoils to its rest
 //   barrel: in the barrel, the key winds it again; the watch starts when the
 //     key starts to turn
@@ -35,7 +34,6 @@ import { ease, FADE_SECONDS } from "../webgl/timeline.ts";
 
 export const MAINSPRING_STAGES = [
   "free",
-  "turned",
   "wound",
   "released",
   "barrel",
@@ -87,21 +85,20 @@ export interface MainspringPose {
   key: number;
 }
 
-/** A part of the line: the key's turns (which wind the spring if its outer
- *  end is held, and start the watch if it is in the barrel), the uncoil, or
- *  a let-down at once (which stops the watch). */
+/** A part of the line: the key's turns (which wind the spring, and start
+ *  the watch if it is in the barrel), the uncoil, or a let-down at once
+ *  (which stops the watch). */
 type Segment =
-  | { kind: "key"; winds: boolean; starts: boolean; seconds: number }
+  | { kind: "key"; starts: boolean; seconds: number }
   | { kind: "uncoil"; seconds: number }
   | { kind: "let down"; seconds: number };
 
 const LINE: readonly Segment[] = [
-  { kind: "key", winds: false, starts: false, seconds: KEY_SECONDS },
-  { kind: "key", winds: true, starts: false, seconds: KEY_SECONDS },
+  { kind: "key", starts: false, seconds: KEY_SECONDS },
   { kind: "uncoil", seconds: UNCOIL_SECONDS },
-  { kind: "key", winds: true, starts: true, seconds: KEY_SECONDS },
+  { kind: "key", starts: true, seconds: KEY_SECONDS },
   { kind: "let down", seconds: LET_DOWN_SECONDS },
-  { kind: "key", winds: true, starts: true, seconds: KEY_SECONDS },
+  { kind: "key", starts: true, seconds: KEY_SECONDS },
 ];
 
 /** Story time (s) at the start of the line and at the end of each segment. */
@@ -119,16 +116,15 @@ function placeOf(index: number): number {
 /** Each stage on the line, and its place: the end of its segment. */
 const STAGE_PLACES = new Map<MainspringStage, number>([
   ["free", placeOf(0)],
-  ["turned", placeOf(1)],
-  ["wound", placeOf(2)],
-  ["released", placeOf(3)],
-  ["barrel", placeOf(4)],
-  ["barrel again", placeOf(6)],
+  ["wound", placeOf(1)],
+  ["released", placeOf(2)],
+  ["barrel", placeOf(3)],
+  ["barrel again", placeOf(5)],
 ]);
 
 /** The places where the key has wound the spring in the barrel: a
  *  time-lapse starts from one, and ends where its key started. */
-const WOUND_IN_BARREL = [placeOf(4), placeOf(6)];
+const WOUND_IN_BARREL = [placeOf(3), placeOf(5)];
 
 /** How the watch runs: from the first turn of a key that starts it to the
  *  end of the next let-down, as story times. */
@@ -207,12 +203,12 @@ export function linePose(time: number): MainspringPose {
       if (time < start + segment.seconds) {
         return {
           arbor: arbor - turned,
-          wind: segment.winds ? wind + turned : wind,
+          wind: wind + turned,
           key,
         };
       }
       arbor -= WOUND;
-      if (segment.winds) wind += WOUND;
+      wind += WOUND;
     }
     start += segment.seconds;
   }

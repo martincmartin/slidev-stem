@@ -1,4 +1,4 @@
-// The Spring Of Power slide's story, driven with made-up times: the poses at each
+// The Mainspring slide's story, driven with made-up times: the poses at each
 // stage, the key's turns, the order of a step forward and back, and the
 // time-lapse, which only goes forward.
 
@@ -37,11 +37,11 @@ test("each stage's pose: the arbor where it started, the spring wound only where
   const poses = MAINSPRING_STAGES.map((stage) => stagePose(stage));
   assert.deepEqual(
     poses.map((pose) => turned(pose.arbor)),
-    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0],
   );
   assert.deepEqual(
     poses.map((pose) => pose.wind),
-    [0, 0, WOUND, 0, WOUND, WOUND, 0],
+    [0, WOUND, 0, WOUND, WOUND, 0],
   );
   assert.ok(poses.every((pose) => pose.key === 0));
   assert.equal(WOUND, 360);
@@ -65,8 +65,8 @@ test("the key fades in, turns a third of a turn three times with a pause after e
   }
   assert.ok(into(KEY_SECONDS - FADE_SECONDS / 2).key < 1);
   assert.equal(KEY_SECONDS, 2 * FADE_SECONDS + 3 * cycle);
-  // nothing holds the outer end: the spring turns whole
-  assert.equal(into(KEY_SECONDS / 2).wind, 0);
+  // the stud holds the outer end: the spring winds as the arbor turns
+  assert.equal(into(KEY_SECONDS).wind, WOUND);
 });
 
 test("the mainspring keeps its length wound, with its coils drawn in to the arbor", () => {
@@ -100,10 +100,10 @@ test("the mainspring keeps its length wound, with its coils drawn in to the arbo
 
 test("a step forward plays when the stage's change ends; a step back cuts to its stage at once", () => {
   const clock = new MainspringClock(BEATS);
-  clock.show("turned", 0, true);
+  clock.show("free", 0, true);
   // forward: the stud fades in first, then the key winds
   clock.show("wound", 1000, false, 1000 + FADE_SECONDS * 1000);
-  assert.deepEqual(clock.pose(1500), stagePose("turned"));
+  assert.deepEqual(clock.pose(1500), stagePose("free"));
   assert.ok(clock.moving(1500));
   const ends = 1000 + (FADE_SECONDS + KEY_SECONDS) * 1000;
   assert.ok(Math.abs(clock.endAt(1000) - ends) < 1e-6);
@@ -112,8 +112,8 @@ test("a step forward plays when the stage's change ends; a step back cuts to its
   assert.equal(clock.moving(done), false);
   // back: no key unwinds it; the spring is as it was before the key
   const back = 20_000;
-  clock.show("turned", back, false, back);
-  assert.deepEqual(clock.pose(back), stagePose("turned"));
+  clock.show("free", back, false, back);
+  assert.deepEqual(clock.pose(back), stagePose("free"));
   assert.equal(clock.moving(back), false);
 });
 

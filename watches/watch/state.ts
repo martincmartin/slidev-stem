@@ -19,8 +19,8 @@
 //     (`TrainClock`); false (default): it follows the mechanism
 //   watchTickTock: true: the words "tick" and "tock" show at each strike of
 //     the jewel on the fork; false (default): they do not (`tickTockState`)
-//   watchMainspring: a stage of the Spring Of Power slide's story (free, turned,
-//     wound, released, barrel, barrel again, run down: watch/mainspring.ts); it also says
+//   watchMainspring: a stage of the Mainspring slide's story (free, wound,
+//     released, barrel, barrel again, run down: watch/mainspring.ts); it also says
 //     when the balance swings, so it is not set with watchAtRest
 //   watchDim: pieces drawn dimmed (WATCH_DIM), to keep the eye on the
 //     others; false (default): none
@@ -88,7 +88,7 @@ export interface WatchState {
   /** Degrees a second of the escape wheel: the train spins freely; `null`:
    *  it follows the mechanism. */
   spin: number | null;
-  /** The Spring Of Power slide's stage, or `null`. */
+  /** The Mainspring slide's stage, or `null`. */
   mainspring: MainspringStage | null;
   /** The names of the pieces drawn dimmed, or `null`: none. */
   dim: readonly string[] | null;
@@ -419,7 +419,7 @@ export function watchState(
     cut: now.watchCut,
     goLater: now.watchGoLater,
     ...(now.watchLinger ? { linger: now.watchLinger } : {}),
-    // on the Spring Of Power slide, the watch runs only while the barrel's spring
+    // on the Mainspring slide, the watch runs only while the barrel's spring
     // is wound
     settled:
       mainspring === null

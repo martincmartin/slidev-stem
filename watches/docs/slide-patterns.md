@@ -148,13 +148,37 @@ For other ways that text can appear, move and stay on a screen, see
 [text-display-deep-research-report.md](../../docs/text-display-deep-research-report.md).
 It is background, not rules.
 
+## Text dims
+
+**Text that is no longer the focus dims: its colours mix halfway to the
+paper.** The newest text is the one to read. The text before it stays, so
+the audience can look back. The mechanism is in `style.css` ("TEXT DIMS"):
+
+- **Give the element that dims the class `text-dims`.** Its ink is a mix
+  with the paper by `--text-dim`, and `--text-dim` fades in `--text-fade`,
+  with the element's opacity.
+- **To dim it, set `--text-dim: var(--text-dimmed)`** in the slide's dim
+  rule. `--text-dimmed` (`style.css`) is the one value for every slide.
+- **A colour of its own inside the element** (an accent, a callout's word
+  or leader) is a `color-mix()` with `--text-dim` too, so that it dims with
+  its text. `WatchCallout.vue` does this for its colours.
+- **Not an opacity.** An opacity fades the text's paper outline too, and
+  the picture under the text shows through. A mix keeps the outline solid,
+  as the watch's own dim does ([watch.md](watch.md#dimmed-pieces)).
+  Over the paper, the two look the same.
+- **`--text-dim` is registered (`@property`), so it can fade.** It is
+  inherited: set it and fade it on one element only.
+
+Not for the "Before clocks" cards: a card is a panel with art, not text over
+a picture, so it dims with an opacity ([Clicks](#clicks)).
+
 ## The live watch and the diving board
 
 A slide that shows the watch names its pieces in the frontmatter, and needs no
 code: the view fits them, and the watch moves from the last slide's picture by
 one rule ([watch.md](watch.md#how-a-slide-shows-the-watch)).
 The Hairspring slide uses the diving board to explain the spring, and the Balance Wheel slide fades its rest shape out as the balance wheel fades in.
-On the Balance Wheel slide, each click adds text, and no text leaves: at the last click, all of the slide's text is on the slide. Click 1 adds "and steadily" after "slowly", in a space that is kept for it, so no word moves. Click 2 adds the accuracy of a calibrated watch (99.99%) below the explanation. Click 3 adds what that is in seconds a day, so the audience takes in the percentage first. When a paragraph shows, the paragraphs before it dim to 0.5, as the Escapement slide's earlier callouts do. All the text is in the sentence's type, single-spaced; only the stat is larger, in the accent.
+On the Balance Wheel slide, each click adds text, and no text leaves: at the last click, all of the slide's text is on the slide. Click 1 adds "and steadily" after "slowly", in a space that is kept for it, so no word moves. Click 2 adds the accuracy of a calibrated watch (99.99%) below the explanation. Click 3 adds what that is in seconds a day, so the audience takes in the percentage first. When a paragraph shows, the paragraphs before it dim ([Text dims](#text-dims)), as the Escapement slide's earlier callouts do. All the text is in the sentence's type, single-spaced; only the stat is larger, in the accent.
 The Escapement slide zooms out, and then the rest of the escapement fades in. Its
 callouts point to parts of the watch, one at each click. At its first click
 the wheel's callout appears and the escape wheel spins alone, and at the
@@ -172,7 +196,7 @@ and the callouts go, the rule stays, and the gears tick with it (`watchClicks`).
 moves from the escape wheel to the fourth wheel: the push still comes from
 something the audience cannot see. At click 7, the
 seconds hand fades in, and then its text, under the rule. Each click
-that adds text dims the text before it to 0.5.
+that adds text dims the text before it ([Text dims](#text-dims)).
 The Gear Train slide follows it: the camera zooms out from the same picture,
 to frame the train from the escape wheel to the centre wheel. Click 1 zooms
 out to the case and shows one wheel that is 60 times slower, larger than the
@@ -184,20 +208,23 @@ fourth wheel after click 1's zoom, and comes back on each new wheel. Click 4 add
 hand, the dial and the case. Click 5 fades out the right-side text and dims the watch.
 Only the centre wheel, its arbor, pivot and drive arrow stay undimmed.
 "Wheel driven by hidden mechanism" then fades in, with a leader to the centre wheel.
-The Spring Of Power slide follows it: the Gear Train text and dimmed watch parts fade out.
+The Mainspring slide follows it: the Gear Train text and dimmed watch parts fade out.
 The centre wheel, arbor, pivot and muted arrow remain for one second.
 Then the mechanism fades out. The arrow remains alone for one second, then fades out (`watchLinger`).
-The camera then jumps, and the bare mainspring and its arbor fade in. At click 1 a key
-turns the arbor, and the free spring turns whole. At click 2 a stud holds its
-outer end, the dashed rest shape fades in, and it flashes; the key winds
-it. At click 3 the stud flashes and is gone, and the spring uncoils to its
-rest shape. At click 4 the camera zooms out to the whole movement, as tall
-as the slide, behind the title; the barrel and the rest of the watch fade
-in, still, and the key winds the spring, which starts the watch. Click 5
-plays click 4 again with the movement under the title (clicks 4 and 5 are
-trials, to choose the zoom). At click 6, a time-lapse, "6 hours in 6
-seconds", lets the spring down, and the watch stops. Going back cuts to the
-earlier click's state: no key unwinds the spring.
+The camera then jumps, and the bare mainspring and its arbor fade in, with
+"Not back-and-forth / One slow unwind": the title names it, and the text
+says that it is not the hairspring. At click 1 a stud holds its outer end,
+the dashed rest shape fades in, and it flashes; a key winds it, and
+"Winding causes tension" fades in. At click 2 the stud flashes and is gone,
+and the spring uncoils to its rest shape. At click 3 the camera zooms out
+to the whole movement, as tall as the slide, behind the title; the barrel
+and the rest of the watch fade in, still, and the key winds the spring,
+which starts the watch; "Unwinding drives barrel" fades in. Click 4 plays
+click 3 again with the movement under the title (clicks 3 and 4 are trials,
+to choose the zoom). At click 5, a time-lapse, "6 hours in 6 seconds", lets
+the spring down, and the watch stops. Each click that adds text dims the
+text before it ([Text dims](#text-dims)). Going back cuts to the earlier click's state: no key
+unwinds the spring.
 They are described in [watch.md](watch.md).
 
 ## Where things go on a slide

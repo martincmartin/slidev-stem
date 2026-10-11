@@ -351,7 +351,7 @@ export interface Watch {
   readonly mainspringShape: Spring;
   readonly mainspringHeights: Heights;
   /** The winding key's meshes (its piece, which `all` leaves out). The
-   *  Spring Of Power slide's story shows them (`WatchModel.extra`). */
+   *  Mainspring slide's story shows them (`WatchModel.extra`). */
   readonly key: ReadonlySet<Mesh>;
   /** The chapter ring's height, on which the decals lie. */
   readonly ringTop: number;
@@ -1270,7 +1270,7 @@ function studMesh(
   };
 }
 
-// ---- the Spring Of Power slide's props ----------------------------------------------------
+// ---- the Mainspring slide's props ----------------------------------------------------
 /** The square on the barrel arbor's top, which the key fits: its side, and how
  *  far it rises. It shows the arbor turn. */
 const ARBOR_SQUARE = { side: 12, height: 4 };
@@ -2549,7 +2549,7 @@ export function generate(design: Design = DESIGN): Watch {
   const decals = decalMeshes(paint, root, ringTop);
   meshes.push(...decals);
 
-  // the Spring Of Power slide's props (docs/watch.md, "The Spring Of Power slide")
+  // the Mainspring slide's props (docs/watch.md, "The Mainspring slide")
   const mainspringMesh = lookup(
     movementMeshes,
     mainspringSolid,

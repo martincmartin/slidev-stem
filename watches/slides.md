@@ -60,13 +60,13 @@ class: balance-wheel
 # Balance Wheel
 
 <div class="bw-sentence">
-  <div class="bw-paragraph">Add mass, it swings<br>slowly <span v-click="1">and steadily</span></div>
-  <div v-click="2" class="bw-paragraph">
+  <div class="bw-paragraph text-dims">Add mass, it swings<br>slowly <span v-click="1">and steadily</span></div>
+  <div v-click="2" class="bw-paragraph text-dims">
     <div>Well calibrated</div>
     <div><span class="bw-percent">99.99%</span> accurate</div>
     <div>Seiko • Citizen</div>
   </div>
-  <div v-click="3" class="bw-paragraph">
+  <div v-click="3" class="bw-paragraph text-dims">
     <div>86,400 sec in a day</div>
     <div class="bw-error">±9 sec a day</div>
   </div>
@@ -91,31 +91,38 @@ class: balance-wheel
 }
 /* Each click adds to the sentence, and nothing leaves, so all of the text
    is on the slide at the last click. "and steadily" has its place on the
-   second line from the start: it fades in, and no word moves. */
-.slidev-layout.balance-wheel .bw-sentence .slidev-vclick-target,
-.slidev-layout.balance-wheel .bw-paragraph {
+   second line from the start: it fades in, and no word moves. The
+   paragraphs' fades come with text-dims (style.css). */
+.slidev-layout.balance-wheel .bw-sentence .slidev-vclick-target:not(.text-dims) {
   transition: opacity var(--text-fade);
 }
 .slidev-layout.balance-wheel .bw-paragraph + .bw-paragraph {
   margin-top: 0.7em;
 }
-/* When a paragraph shows, the paragraphs before it dim, to 0.5, as the
-   Escapement slide's earlier callouts do (--esc-dim): the newest is the
-   focus. Slidev's hidden class sets opacity with !important, so a paragraph
-   that is not shown yet stays hidden. */
+/* When a paragraph shows, the paragraphs before it dim (style.css, "TEXT
+   DIMS"), as the Escapement slide's earlier callouts do: the newest is the
+   focus. */
 .slidev-layout.balance-wheel
   .bw-paragraph:has(~ .bw-paragraph:not(.slidev-vclick-hidden)) {
-  opacity: 0.5;
+  --text-dim: var(--text-dimmed);
 }
 /* The accuracy is in the sentence's type. Only the stat is larger, in the
-   accent, and the catch is in second. */
+   accent, and the catch is in second. Both dim with their paragraph. */
 .slidev-layout.balance-wheel .bw-percent {
   font-size: 48px;
   line-height: 1;
-  color: var(--palette-accent);
+  color: color-mix(
+    in srgb,
+    var(--palette-accent),
+    var(--palette-background) var(--text-dim)
+  );
 }
 .slidev-layout.balance-wheel .bw-error {
-  color: var(--palette-second);
+  color: color-mix(
+    in srgb,
+    var(--palette-second),
+    var(--palette-background) var(--text-dim)
+  );
 }
 </style>
 
@@ -203,30 +210,27 @@ The wheel's and the pallet's leaders end LEADER_GAP px outside their parts
 </div>
 
 <style>
-/* The callouts before the focus dim, to --esc-dim: less than the "Before
-   clocks" cards (0.35), so that a dimmed callout stays easy to read. The
-   dim waits for the new callout: at click 3 for the watch's fade
+/* The callouts before the focus dim (style.css, "TEXT DIMS"): less than
+   the "Before clocks" cards (0.35), so that a dimmed callout stays easy to
+   read. The dim waits for the new callout: at click 3 for the watch's fade
    (after-watch-fade), at click 4 for the balance's rest
    (after-balance-rest). Going back, the callouts come back at once. The
-   callout's own root carries its v-click classes, so the dim is on its
-   parts. */
-.esc-callouts {
-  --esc-dim: 0.5;
-}
+   callout's own root carries its v-click classes and their fade, so the
+   dim is on its parts. */
 .esc-callouts :deep(.callout-art),
 .esc-callouts :deep(.callout-label) {
-  transition: opacity var(--text-fade);
+  transition: --text-dim var(--text-fade);
 }
 .esc-focus-pallet .esc-wheel :deep(.callout-art),
 .esc-focus-pallet .esc-wheel :deep(.callout-label) {
-  opacity: var(--esc-dim);
+  --text-dim: var(--text-dimmed);
   transition-delay: var(--watch-fade, 0s);
 }
 .esc-focus-jewel .esc-wheel :deep(.callout-art),
 .esc-focus-jewel .esc-wheel :deep(.callout-label),
 .esc-focus-jewel .esc-pallet :deep(.callout-art),
 .esc-focus-jewel .esc-pallet :deep(.callout-label) {
-  opacity: var(--esc-dim);
+  --text-dim: var(--text-dimmed);
   transition-delay: var(--watch-rest-delay, 0s);
 }
 </style>
@@ -344,13 +348,13 @@ const marks = gearsMarks(WATCH, useSlideContext().$frontmatter);
 the label is all one callout word, in ink: not a keyword callout, whose
 second would merge with the span (docs/watch.md, "The Gears slide"). -->
 
-<WatchCallout v-click="[2, 6]" class="gears-callout" from-end :to="marks.pinion" :stop="LEADER_GAP" :clear="[marks.pinionTips]" :left="380" :top="165"><span class="callout-word">Half of the small gear</span></WatchCallout>
+<WatchCallout v-click="[2, 6]" class="gears-callout text-dims" from-end :to="marks.pinion" :stop="LEADER_GAP" :clear="[marks.pinionTips]" :left="380" :top="165"><span class="callout-word">Half of the small gear</span></WatchCallout>
 
-<WatchCallout v-click="[3, 6]" class="gears-callout" from-end :to="marks.wheel" :stop="LEADER_GAP" :clear="[marks.wheelTips]" :left="500" :top="222"><span class="callout-word">A quarter of the big gear</span></WatchCallout>
+<WatchCallout v-click="[3, 6]" class="gears-callout text-dims" from-end :to="marks.wheel" :stop="LEADER_GAP" :clear="[marks.wheelTips]" :left="500" :top="222"><span class="callout-word">A quarter of the big gear</span></WatchCallout>
 
-<div v-click="4" class="gears-sentence gears-rule">Twice the circumference,<br>half the speed.  Exactly.</div>
+<div v-click="4" class="gears-sentence gears-rule text-dims">Twice the circumference,<br>half the speed.  Exactly.</div>
 
-<div v-click="7" class="gears-sentence gears-minute after-watch-fade">
+<div v-click="7" class="gears-sentence gears-minute after-watch-fade text-dims">
   <div>One turn a minute</div>
   <div>The second hand!</div>
 </div>
@@ -361,8 +365,8 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
    callout type, next to their gears, above the rule: not in this column.
    The second hand's text is under the rule, 0.7em below it
    (301 + 2 * 43.75 + 24.5 = 413 px).
-   The second hand's text waits for the hand (after-watch-fade, style.css):
-   so the fade is in longhands, which keep that rule's delay. */
+   The second hand's text waits for the hand (after-watch-fade, style.css).
+   The fades come with text-dims, in longhands that keep that delay. */
 /* At click 7 the seconds hand turns under the text: the paper's outline
    keeps it legible over the hand, as on the Gear Train slide. */
 .slidev-layout.gears .gears-sentence {
@@ -389,21 +393,15 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
 .slidev-layout.gears .gears-sentence > div + div {
   margin-top: 0.7em;
 }
-.slidev-layout.gears .gears-callout.slidev-vclick-target,
-.slidev-layout.gears .gears-sentence.slidev-vclick-target {
-  transition-property: opacity;
-  transition-duration: var(--text-fade);
-}
-/* When a click adds text, the text before it dims to 0.5, as the Escapement
-   slide's earlier callouts do (--esc-dim). Text not shown yet stays hidden:
-   vclick.css's opacity is !important. At click 7 the dim waits for the
-   hand, as the new text does (after-watch-fade). Going back, the text comes
-   back at once. */
+/* When a click adds text, the text before it dims (style.css, "TEXT
+   DIMS"), as the Escapement slide's earlier callouts do. At click 7 the dim
+   waits for the hand, as the new text does (after-watch-fade). Going back,
+   the text comes back at once. */
 .slidev-layout.gears
   :is(.gears-callout, .gears-sentence):has(
     ~ :is(.gears-callout, .gears-sentence):not(.slidev-vclick-hidden)
   ) {
-  opacity: 0.5;
+  --text-dim: var(--text-dimmed);
 }
 .slidev-layout.gears
   :is(.gears-callout, .gears-sentence):has(
@@ -552,11 +550,11 @@ recap for anyone who missed clicks 2 and 3. -->
 
 <div v-click.hide="5" class="gt-reading">
 <div class="gt-sentence" :class="{ 'gt-recap': $clicks >= 4 }">
-  <div v-click="2" class="after-watch gt-stage">
+  <div v-click="2" class="after-watch gt-stage text-dims">
     <div>Two stages:</div>
     <div>7.5:1</div>
   </div>
-  <div v-click="3" class="after-watch gt-stage">8:1</div>
+  <div v-click="3" class="after-watch gt-stage text-dims">8:1</div>
   <div v-click="4" class="after-watch">
     <div>Makes a full turn<br>once an hour.</div>
     <div>The minute hand!</div>
@@ -593,7 +591,7 @@ recap for anyone who missed clicks 2 and 3. -->
   margin-top: 0.7em;
 }
 .slidev-layout.gear-train .gt-sentence.slidev-vclick-target,
-.slidev-layout.gear-train .gt-sentence > .slidev-vclick-target,
+.slidev-layout.gear-train .gt-sentence > .slidev-vclick-target:not(.text-dims),
 .slidev-layout.gear-train .gt-reading.slidev-vclick-target,
 .slidev-layout.gear-train .gt-power.slidev-vclick-target {
   transition-property: opacity;
@@ -605,11 +603,11 @@ recap for anyone who missed clicks 2 and 3. -->
 .slidev-layout.gear-train .gt-reading:not(.slidev-vclick-hidden) {
   transition-delay: max(var(--text-fade), var(--watch-end-delay, 0s));
 }
-/* At click 4 the stages dim, as the Escapement slide's earlier callouts do
-   (--esc-dim), when the minute hand's text fades in: after the watch's
-   change (after-watch). */
+/* At click 4 the stages dim (style.css, "TEXT DIMS"), as the Escapement
+   slide's earlier callouts do, when the minute hand's text fades in: after
+   the watch's change (after-watch). Their fades come with text-dims. */
 .slidev-layout.gear-train .gt-recap > .gt-stage {
-  opacity: 0.5;
+  --text-dim: var(--text-dimmed);
   transition-delay: var(--watch-end-delay, 0s);
 }
 </style>
@@ -634,7 +632,7 @@ The second hand turns once a minute. A minute hand must turn once an hour: sixty
 # the bare mainspring and its arbor, as large as the picture band; the
 # camera stays at every click. The story (watchMainspring) turns the key,
 # winds and lets down the spring, and says when the watch runs
-# (docs/watch.md, "The Spring Of Power slide")
+# (docs/watch.md, "The Mainspring slide")
 watch: &spring [mainspring, barrel arbor]
 watchView: *spring
 watchTilt: 20
@@ -648,19 +646,15 @@ watchLinger:
   - pieces: [centre wheel drive]
     seconds: 1
 watchClicks:
-  # the key turns the bare spring: nothing holds its outer end, so it turns
-  # whole
-  1:
-    watchMainspring: turned
   # the stud and the dashed rest shape fade in, and the stud flashes; then
   # the key winds it
-  2:
+  1:
     watch: [*spring, mainspring stud, mainspring rest]
     watchFlash: [mainspring stud]
     watchMainspring: wound
   # the stud flashes and is gone at once; the spring uncoils to its rest
   # shape as soon as nothing holds its end
-  3:
+  2:
     watch: [*spring, mainspring rest]
     watchFlash: [mainspring stud]
     watchCut: [mainspring stud]
@@ -669,12 +663,12 @@ watchClicks:
   # from the barrel to the balance, and the barrel and the watch (all but
   # the hour hand) fade in, still; the barrel and the centre pinion, which
   # it drives, flash; then the key winds it, and the watch starts.
-  # Clicks 4 and 5 are trials, to choose a zoom: click 4 fits the movement
-  # in the slide band (it runs behind the title), click 5 in the picture
+  # Clicks 3 and 4 are trials, to choose a zoom: click 3 fits the movement
+  # in the slide band (it runs behind the title), click 4 in the picture
   # band, where the spring is let down at once and the key winds it again.
   # The pallet fork is not in the list: it is inside the others, and its
   # extent is the whole circle about its pivot
-  4:
+  3:
     watch:
       [
         *spring,
@@ -724,57 +718,68 @@ watchClicks:
     watchBand: slide
   # the picture band fits the train, from the barrel to the escape wheel:
   # the balance and the fork may run up behind the subtitle
-  5:
+  4:
     watchMainspring: barrel again
     watchView: [barrel, centre wheel, third wheel, fourth wheel, escape wheel]
     watchBand: picture
   # a time-lapse, until the barrel has turned once: then the watch stops
-  6:
+  5:
     watchMainspring: run down
-clicks: 6
+clicks: 5
 class: mainspring
 ---
 
-# The Spring Of Power
+# Mainspring
 
 One spring to power them all
 
-<div v-click="6" class="ms-lapse">6 hours<br>in 6 seconds</div>
+<div class="ms-sentence">
+  <div class="ms-paragraph text-dims">Not back-and-forth<br>One slow unwind</div>
+  <div v-click="1" class="ms-paragraph text-dims">Winding causes tension</div>
+  <div v-click="3" class="ms-paragraph text-dims">Unwinding drives barrel</div>
+  <div v-click="5" class="ms-paragraph text-dims">6 hours in 6 seconds</div>
+</div>
 
 <style>
-/* The label is on the right, clear of the crown in the whole movement's
-   view in the picture band (click 5). The text is outlined in the paper's
-   colour, as the Gear Train slide's text is, so it reads over the watch. */
+/* The text is where the Gears and Gear Train slides' text is, in the same
+   type. From click 3 the case runs behind it, so it is outlined in the
+   paper's colour, as the Gear Train slide's text is; so are the title and
+   the subtitle, which the movement runs behind at click 3. */
 .slidev-layout.mainspring h1,
 .slidev-layout.mainspring h1 + p,
-.slidev-layout.mainspring .ms-lapse {
+.slidev-layout.mainspring .ms-sentence {
   -webkit-text-stroke: 6px var(--palette-background);
   paint-order: stroke fill;
 }
-.slidev-layout.mainspring .ms-lapse {
+.slidev-layout.mainspring .ms-sentence {
   position: absolute;
-  left: 700px;
-  top: 280px;
+  left: 560px;
+  top: 165px;
   font-size: 35px;
   font-weight: 600;
   line-height: 1.25;
   white-space: nowrap;
 }
-.slidev-layout.mainspring .ms-lapse.slidev-vclick-target {
-  transition: opacity var(--text-fade);
+/* Each click adds a paragraph, and nothing leaves. When a paragraph shows,
+   the paragraphs before it dim (style.css, "TEXT DIMS"), as on the Balance
+   Wheel slide. */
+.slidev-layout.mainspring .ms-paragraph + .ms-paragraph {
+  margin-top: 0.7em;
+}
+.slidev-layout.mainspring
+  .ms-paragraph:has(~ .ms-paragraph:not(.slidev-vclick-hidden)) {
+  --text-dim: var(--text-dimmed);
 }
 </style>
 
 <!--
-The power comes from a spring too: the mainspring. A long ribbon of steel, coiled round an arbor.
+The power comes from a spring too: the mainspring. A long ribbon of steel, coiled round an arbor. It is not the hairspring: it does not swing back and forth. It unwinds once, slowly, over days.
 
-[click] A key fades in on the arbor, and turns it, a third of a turn at a time, three times. Nothing holds the spring's outer end, so the whole spring just turns with it. Nothing is stored.
-
-[click] Now a stud holds the outer end: it fades in and flashes. The dashed line is the spring's rest shape. The key turns the arbor the same three times, and this time the spring winds up: it keeps its length, so its coils draw in toward the arbor. Wind it away from rest, and it pushes back, as the hairspring does.
+[click] A stud holds the outer end: it fades in and flashes. The dashed line is the spring's rest shape. A key fades in on the arbor, and turns it, a third of a turn at a time, three times. The spring winds up: it keeps its length, so its coils draw in toward the arbor. Winding causes tension: wind it away from rest, and it pushes back, as the hairspring does.
 
 [click] Let go of the outer end: the stud flashes, and is gone. At once the outer end swings round, while the arbor still holds the inner end, until the spring is back on its rest shape.
 
-[click] Put it in the barrel: the outer end hooks to the barrel's wall. The camera zooms out to the whole movement, as tall as the slide (a trial), and the barrel and the rest of the watch fade in. The barrel and the centre pinion flash: the barrel's teeth drive the train that we built. It is still: the spring is let down. The key winds it, and the watch starts as soon as the key starts to turn. The balance and the escapement let the train turn one tick at a time.
+[click] Put it in the barrel: the outer end hooks to the barrel's wall. The camera zooms out to the whole movement, as tall as the slide (a trial), and the barrel and the rest of the watch fade in. The barrel and the centre pinion flash: the barrel's teeth drive the train that we built. It is still: the spring is let down. The key winds it, and the watch starts as soon as the key starts to turn. The balance and the escapement let the train turn one tick at a time. Unwinding drives the barrel.
 
 [click] (A trial, to compare with the last click: the same, with the movement under the title. The spring is let down at once, and the key winds it again.)
 
@@ -782,7 +787,7 @@ The power comes from a spring too: the mainspring. A long ribbon of steel, coile
 -->
 
 ---
-# the whole watch as the Spring Of Power slide leaves it, but the hour hand, in
+# the whole watch as the Mainspring slide leaves it, but the hour hand, in
 # its view (the train in the picture band), so the step from it does not
 # move the camera; tilt 20 at every click. While the camera is in on the
 # motion works, all but the centre wheel and the minute hand is dimmed
@@ -869,15 +874,15 @@ flash (after-watch, style.css), as on the Gear Train slide. -->
 
 <div v-click.hide="3" class="hh-sentence">
   <div v-click="1" class="after-watch">12:1 gear ratio</div>
-  <div v-click="2" class="after-watch">Off centre!</div>
+  <div v-click="2" class="after-watch">Hour hand off centre!</div>
 </div>
 
 <!-- The stages stay at click 6, dimmed, above the hour hand's text: a
 recap, as on the Gear Train slide. -->
 
 <div class="hh-sentence" :class="{ 'hh-recap': $clicks >= 6 }">
-  <div v-click="4" class="after-watch hh-stage">Out: 3:1</div>
-  <div v-click="5" class="after-watch hh-stage">
+  <div v-click="4" class="after-watch hh-stage text-dims">Out: 3:1</div>
+  <div v-click="5" class="after-watch hh-stage text-dims">
     <div>Back: 4:1</div>
     <div>3 × 4 = 12</div>
   </div>
@@ -912,14 +917,15 @@ recap, as on the Gear Train slide. -->
   margin-top: 0.7em;
 }
 .slidev-layout.hour-hand .hh-sentence.slidev-vclick-target,
-.slidev-layout.hour-hand .hh-sentence > .slidev-vclick-target {
+.slidev-layout.hour-hand .hh-sentence > .slidev-vclick-target:not(.text-dims) {
   transition-property: opacity;
   transition-duration: var(--text-fade);
 }
-/* At click 6 the stages dim, as the Gear Train slide's do, when the hour
-   hand's text fades in: after the watch's change (after-watch). */
+/* At click 6 the stages dim (style.css, "TEXT DIMS"), as the Gear Train
+   slide's do, when the hour hand's text fades in: after the watch's change
+   (after-watch). Their fades come with text-dims. */
 .slidev-layout.hour-hand .hh-recap > .hh-stage {
-  opacity: 0.5;
+  --text-dim: var(--text-dimmed);
   transition-delay: var(--watch-end-delay, 0s);
 }
 </style>
@@ -939,6 +945,12 @@ The minute hand turns once an hour. The hour hand must turn twelve times slower:
 
 [click] Zoom back out, and the whole watch is in full colour again. The hour hand goes on the hour wheel. It turns twice a day, in the middle, under the minute hand. The hour hand!
 -->
+
+---
+layout: section
+---
+
+# History
 
 ---
 layout: full

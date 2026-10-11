@@ -57,7 +57,6 @@ test("the mainspring winds only where its outer end is held: by the stud, or in 
           : "nothing";
       const wanted = {
         free: "nothing",
-        turned: "nothing",
         wound: "stud",
         released: "nothing",
         barrel: "barrel",

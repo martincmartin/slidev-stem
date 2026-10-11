@@ -51,3 +51,30 @@
 .after-balance-rest .callout-art .callout-leader:not(.callout-leader-hidden) {
   transition-delay: var(--watch-rest-delay, 0s);
 }
+
+/* TEXT DIMS: text that is no longer the focus dims: its colours mix toward
+   the paper by --text-dim, from 0% to --text-dimmed (docs/slide-patterns.md,
+   "Text dims"). Not an opacity: an opacity fades the text's paper outline
+   too, and the picture under the text shows through. Give the element that
+   dims the class `text-dims`, and set --text-dim on it: its ink follows,
+   and --text-dim fades in --text-fade, with the element's opacity. Each
+   colour of its own inside it (an accent, a callout's leader) is a mix with
+   --text-dim too. --text-dim is registered, so that it can fade; it is
+   inherited, so it is set and faded on one element only. */
+@property --text-dim {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+:root {
+  --text-dimmed: 50%;
+}
+.slidev-layout .text-dims {
+  color: color-mix(
+    in srgb,
+    var(--palette-ink),
+    var(--palette-background) var(--text-dim)
+  );
+  transition-property: opacity, --text-dim;
+  transition-duration: var(--text-fade);
+}

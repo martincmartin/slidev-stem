@@ -56,7 +56,7 @@ ruler that the diving board replaced),
 | `watch/palette.ts`                                       | which theme variable colours each ink; `slidePalette()` reads them from the page, as a slide's classes change them, and the browser works out a recipe (`color-mix()`)  |
 | `art/theme.py`                                           | Ledger's palette for the scripts that write files (`diving_board.py`, `favicon.py`), whichever house theme the talk names: it works out each recipe as the browser does |
 | `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism, the balance's settle and the train's free spin; frontmatter to state; the watch's stills; the shared instance                                            |
-| `watch/mainspring.ts`                                    | the Spring Of Power slide's story: the key, the spring's wind and the time-lapse, at each moment                                                                        |
+| `watch/mainspring.ts`                                    | the Mainspring slide's story: the key, the spring's wind and the time-lapse, at each moment                                                                             |
 | `watch/deck.ts`, `deck.test.ts`                          | slides.md as Slidev reads it, for the tests; the check that every slide's pieces and view exist                                                                         |
 | `global-bottom.vue`, `slide-bottom.vue`                  | the live canvas and the live diving board, and the kind of each move; the still and the posed board on each printed page                                                |
 | `watch/board.ts`, `components/DivingBoard.vue`           | the board's frontmatter to its target, and its clock (`BoardClock`); the component that inlines the SVG and sets its time                                               |
@@ -215,9 +215,9 @@ watch's drawing ([The drive arrow](#the-drive-arrow)).
   leaders pass the back-row gate
   ([measurements.md](measurements.md#escapement-leaders-alone)). The Hairspring slide's
   leader is a reference mark's: muted, as the dashed rest shape is.
-- **The newest callout is the focus; the ones before it dim** (to
-  `--esc-dim` in the slide's style: less than the "Before clocks" cards, so
-  that a dimmed callout stays easy to read). From click 2 the wheel's callout, with its
+- **The newest callout is the focus; the ones before it dim**
+  ([slide-patterns.md](slide-patterns.md#text-dims): less than the "Before
+  clocks" cards, so that a dimmed callout stays easy to read). From click 2 the wheel's callout, with its
   leader, dims; at click 3 the pallet's dims too. At
   click 4 the balance swings again, the jewel's leader fades out, and the
   other two come back in `--text-fade`. Each dim waits for the callout that
@@ -444,8 +444,8 @@ spin.
 - **The rule and the second hand's text have an outline in the paper's
   colour**, as on the Gear Train slide: at click 7 the seconds hand turns
   under them.
-- **When a click adds text (clicks 2, 3, 4 and 7), the text before it dims to
-  0.5**, as on the Escapement slide: the newest line is the one to read.
+- **When a click adds text (clicks 2, 3, 4 and 7), the text before it dims**
+  ([slide-patterns.md](slide-patterns.md#text-dims)), as on the Escapement slide: the newest line is the one to read.
   At click 7 the dim waits for the hand, as the new text does.
 
 ## The Gear Train slide
@@ -527,12 +527,13 @@ leaves: $7.5 \times 8 = 60$.
   Gears slide says it of the second hand. Each of these texts comes after all
   the motion of its click, flash included (`after-watch`,
   [slide-patterns.md](slide-patterns.md#text-fades)).
-- **At click 4 the stages stay, dimmed to 0.5**, as the Escapement slide's
+- **At click 4 the stages stay, dimmed**
+  ([slide-patterns.md](slide-patterns.md#text-dims)), as the Escapement slide's
   earlier callouts are: a recap for anyone who missed clicks 2 and 3, while
   the new text stays the focus. They dim when the new text fades in. The
   five lines fill the right of the slide to just inside the picture band's
-  bottom, so there is no room for another line. At 0.5, the dimmed text is
-  about 3:1 against its outline, at the contrast floor
+  bottom, so there is no room for another line. Dimmed halfway to the
+  paper, the text is about 3:1 against its outline, at the contrast floor
   ([legibility.md](../../docs/legibility.md)).
 - **At click 5 the right-side text fades out.** The rest of the watch dims with `watchDim`. Only the centre wheel, its arbor, pivot and drive arrow stay undimmed.
   "Wheel driven by hidden mechanism" then fades in. Its keyword leader points to the centre wheel and stops outside its tip circle (`gearTrainMarks` in `watch/callouts.ts`).
@@ -557,7 +558,7 @@ more of the train:
 | Gear Train, 2      | the third wheel  |
 | Gear Train, 3 to 5 | the centre wheel |
 
-The Spring Of Power slide shows what pushes the centre wheel, so it has no arrow:
+The Mainspring slide shows what pushes the centre wheel, so it has no arrow:
 at its click 4 the barrel and the centre pinion flash, where the last arrow
 pointed.
 
@@ -595,9 +596,9 @@ pointed.
   circle, faces the wheel that drives it, turns the way its wheel turns, and
   that its line ends at the middle of its head.
 
-## The Spring Of Power slide
+## The Mainspring slide
 
-The Spring Of Power slide follows the Gear Train slide. It shows the source of power: the mainspring.
+The Mainspring slide follows the Gear Train slide. It shows the source of power: the mainspring.
 This spring stores energy when the key winds it. It powers the watch as it unwinds and turns the barrel. Its frontmatter names the pieces at each click,
 and the stage of the story (`watchMainspring`); `watch/mainspring.ts` holds
 the story, and `watch/mainspring.test.ts` tests it.
@@ -608,37 +609,36 @@ Then the mechanism fades out. The arrow remains alone for one second, then fades
 Only then does the camera change to the spring view and the next slide appear.
 The slide declares these two groups with `watchLinger`. Direct jumps and printed pages show the spring immediately.
 
-| Click | Stage          | What shows, and what happens                                                                                                                                                                                                                                                                                                   |
-| ----- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 0     | `free`         | the mainspring and the barrel arbor, at rest                                                                                                                                                                                                                                                                                   |
-| 1     | `turned`       | the key fades in, turns the arbor a third of a turn three times, with a pause after each, and fades out. Nothing holds the outer end, so the spring turns whole                                                                                                                                                                |
-| 2     | `wound`        | the stud and the dashed rest shape fade in, and the stud flashes; then the key turns the arbor the same way, and the spring winds                                                                                                                                                                                              |
-| 3     | `released`     | the stud flashes and is gone at once (`watchCut`); the spring uncoils at once, its inner end still on the arbor, until it lies on its rest shape again                                                                                                                                                                         |
-| 4     | `barrel`       | the rest shape fades out; the camera zooms out until the movement, from the barrel to the balance, fills the slide band (a trial); the barrel and the rest of the watch, but the hour hand, fade in, still; the barrel and the centre pinion flash. The key winds the spring, and the watch starts when the key starts to turn |
-| 5     | `barrel again` | a trial, to compare with click 4: the spring is let down at once and the watch stops, and the camera fits the train in the picture band. Then the key winds the spring, and the watch starts, as at click 4                                                                                                                    |
-| 6     | `run down`     | "6 hours in 6 seconds": a time-lapse, until the barrel has turned once and the spring is let down. Then the watch stops                                                                                                                                                                                                        |
+| Click | Stage          | What shows, and what happens                                                                                                                                                                                                                                                                                                                                                                    |
+| ----- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0     | `free`         | the mainspring and the barrel arbor, at rest, and "Not back-and-forth / One slow unwind"                                                                                                                                                                                                                                                                                                        |
+| 1     | `wound`        | the stud and the dashed rest shape fade in, and the stud flashes; then the key fades in, turns the arbor a third of a turn three times, with a pause after each, and fades out. The spring winds; "Winding causes tension" fades in, and the text before it dims                                                                                                                                |
+| 2     | `released`     | the stud flashes and is gone at once (`watchCut`); the spring uncoils at once, its inner end still on the arbor, until it lies on its rest shape again                                                                                                                                                                                                                                          |
+| 3     | `barrel`       | the rest shape fades out; "Unwinding drives barrel" fades in, and the text before it dims; the camera zooms out until the movement, from the barrel to the balance, fills the slide band (a trial); the barrel and the rest of the watch, but the hour hand, fade in, still; the barrel and the centre pinion flash. The key winds the spring, and the watch starts when the key starts to turn |
+| 4     | `barrel again` | a trial, to compare with click 3: the spring is let down at once and the watch stops, and the camera fits the train in the picture band. Then the key winds the spring, and the watch starts, as at click 3                                                                                                                                                                                     |
+| 5     | `run down`     | "6 hours in 6 seconds" fades in, and the text before it dims; a time-lapse, until the barrel has turned once and the spring is let down. Then the watch stops                                                                                                                                                                                                                                   |
 
 - **The view fits the mainspring and its arbor** (`watchView`) at clicks 0
-  to 3, so their height fills the picture band ([Fitted views](#fitted-views)),
+  to 2, so their height fills the picture band ([Fitted views](#fitted-views)),
   as the Gears slide's gears do. Its tilt is 20, so the spring shows as a
   ribbon and the key stands up. From the Gear Train slide, no piece is on
   both slides, so the old picture fades out, the camera jumps, and the
   spring fades in ([The one rule](#the-one-rule)).
-- **Clicks 4 and 5 are trials, to choose a zoom.** Click 4 fits the
+- **Clicks 3 and 4 are trials, to choose a zoom.** Click 3 fits the
   movement from the barrel to the balance in the slide band, behind the
   title. The pallet fork is not in that list: it is inside the others, and
-  its extent is the whole circle about its pivot. Click 5 fits only the
+  its extent is the whole circle about its pivot. Click 4 fits only the
   train, from the barrel to the escape wheel, in the picture band. So the
   escape wheel has the Gears slide's clearance below the subtitle, and the
-  balance and the fork, which only swing, may run up behind the subtitle. At click 5 the spring is let down at once, at the click
+  balance and the fork, which only swing, may run up behind the subtitle. At click 4 the spring is let down at once, at the click
   (`barrel again` in `watch/mainspring.ts`), so the camera moves to a watch
   that has stopped, and the key winds it again. The time-lapse keeps click
-  5's view. Once a zoom is chosen, drop the other click, and `barrel again`.
-  Click 5 does not flash: its pieces are on the screen already, so a flash
-  would play before the camera moves. If click 4 is dropped, move its
-  `watchFlash` to click 5: its pieces then fade in first, so they flash
+  4's view. Once a zoom is chosen, drop the other click, and `barrel again`.
+  Click 4 does not flash: its pieces are on the screen already, so a flash
+  would play before the camera moves. If click 3 is dropped, move its
+  `watchFlash` to click 4: its pieces then fade in first, so they flash
   after the zoom.
-- **The stud goes at once at click 3**, after its flash, so the spring
+- **The stud goes at once at click 2**, after its flash, so the spring
   moves as soon as nothing holds it: a fade would leave a stud that holds
   nothing. Going back, it fades in after the spring has coiled again.
 - **The spring keeps its length**, as the hairspring does (`springPoints` in
@@ -694,11 +694,17 @@ The slide declares these two groups with `watchLinger`. Direct jumps and printed
   balance at its slow pace and the seconds hand still, as a stroboscope does.
 - **`watch/deck.test.ts` checks the holder**: the spring is wound only where
   the stud or the barrel shows.
-- **The words "6 hours in 6 seconds"** are on the right, clear of the crown
-  in the whole movement's view and of the barrel in the close one, outlined
+- **The text says that this spring is not the hairspring.** The spring
+  looks like the Hairspring slide's, so the title names it, and the first text
+  says what makes it different: "Not back-and-forth / One slow unwind".
+  Clicks 1, 3 and 5 each add a paragraph, and no text leaves. When a
+  paragraph shows, the paragraphs before it dim
+  ([slide-patterns.md](slide-patterns.md#text-dims)), as on the Balance
+  Wheel slide. The text is where the Gears and Gear Train slides' text is,
+  in the same type. From click 3 the case runs behind it, so it is outlined
   in the paper's colour.
 - **The subtitle, "One spring to power them all"**, is outlined in the
-  paper's colour too: at click 4 the movement runs behind the title and the
+  paper's colour too: at click 3 the movement runs behind the title and the
   subtitle.
 
 ## The motion works
@@ -749,19 +755,19 @@ about the same arbor (`MotionWorks` in `art/watch_design.py`):
 
 ## The Hour Hand slide
 
-The Hour Hand slide follows the Spring Of Power slide. It shows why the hour
+The Hour Hand slide follows the Mainspring slide. It shows why the hour
 hand needs two stages: one wheel 12 times slower puts the hand off centre.
 The stages go out from the centre and come back.
 
 | Click | What shows                                                                                                                                                        |
 | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0     | the whole watch as the Spring Of Power slide leaves it, but the hour hand, in its view: the camera does not move                                                  |
+| 0     | the whole watch as the Mainspring slide leaves it, but the hour hand, in its view: the camera does not move                                                       |
 | 1     | and the cannon pinion and the one-step hour wheel, which fade in and flash                                                                                        |
 | 2     | and the one-step hour hand, on that wheel's arbor: off centre                                                                                                     |
 | 3     | the one-step wheel, its hand and the cannon pinion go; the camera zooms in on the centre wheel; then all but the centre wheel, its arbor and the minute hand dims |
 | 4     | and the cannon pinion and the minute wheel, which fade in and flash                                                                                               |
 | 5     | and the minute pinion and the hour wheel, which fade in and flash                                                                                                 |
-| 6     | the camera zooms back out to click 0's view, the dim ends, and the hour hand fades in; the stages' text dims to 0.5                                               |
+| 6     | the camera zooms back out to click 0's view, the dim ends, and the hour hand fades in; the stages' text dims                                                      |
 
 The tilt is 20 at every click, so the stack of the motion works shows.
 
@@ -770,7 +776,7 @@ The tilt is 20 at every click, so the stack of the motion works shows.
   pinion too. So the eye stays on the centre wheel, the minute hand and what
   comes in, and the centre arbor shows one pinion at full colour. The dim
   comes after the zoom in, and goes after the zoom out.
-- **At click 6 the stages' text dims to 0.5**, as the Gear Train slide's
+- **At click 6 the stages' text dims**, as the Gear Train slide's
   does, when the hour hand's text fades in.
 
 - **The one-step hour wheel** (`oneStepHourWheel` in `watch/generate.ts`)
@@ -784,7 +790,7 @@ The tilt is 20 at every click, so the stack of the motion works shows.
 - **The one-step hand turns backwards.** A wheel turns the other way from the
   pinion that drives it. At the mechanism's speed an hour hand moves 0.5° a
   minute, so it does not show; the speaker notes say it.
-- **The view at clicks 0 to 2 and 7 is the Spring Of Power slide's last view**
+- **The view at clicks 0 to 2 and 7 is the Mainspring slide's last view**
   (the train, from the barrel to the escape wheel, in the picture band), so
   the step from it does not move the camera. The dial's ring and the crown
   run behind the text there; the text has the paper's outline. Clicks 3 to 6
@@ -844,7 +850,7 @@ Each mesh of the watch belongs to one piece, with a name that a slide uses
 (`Scene.pieces`; each solid names its piece where `watch/generate.ts` draws
 it). `watch: all` shows every piece but the marks that only a slide that names
 them shows: the Gears slide's spans, the Gear Train slide's one-step
-wheel and raised strap, the Spring Of Power slide's props, and the motion works
+wheel and raised strap, the Mainspring slide's props, and the motion works
 with the Hour Hand slide's one-step hour wheel (`inAll: false`,
 `webgl/scene.ts`).
 
@@ -860,7 +866,7 @@ with the Hour Hand slide's one-step hour wheel (`inAll: false`,
 | `one-step wheel`, `raised strap`                                                      | the Gear Train slide's one-step wheel, and the strap above it                                     |
 | `cannon pinion`, `minute wheel`, `minute pinion`, `minute arbor`, `hour wheel`        | the [motion works](#the-motion-works)                                                             |
 | `one-step hour wheel`, `one-step hour hand`                                           | the Hour Hand slide's one-step wheel, and its hand                                                |
-| `mainspring stud`, `mainspring rest`, `winding key`                                   | the Spring Of Power slide's props; the story shows the key                                        |
+| `mainspring stud`, `mainspring rest`, `winding key`                                   | the Mainspring slide's props; the story shows the key                                             |
 | `seconds hand`, `minute hand`, `hour hand`, `centre pivot`, `chapter ring`            | the dial side                                                                                     |
 | `case band`, `strap`, `lug`, `crown`                                                  | the case                                                                                          |
 
@@ -933,7 +939,7 @@ the band goes.
 
 **The slide band** (`watchBand: slide`) is the slide's whole height, with
 the picture band's bottom margin at the top too: for a picture that may run
-behind the title (the Spring Of Power slide's click 4).
+behind the title (the Mainspring slide's click 3).
 
 **A picture that takes less than 60% of the slide's width is centred in the
 slide's left 60%** (`FIT_FOCUS`). A wider picture starts at `FIT_LEFT`. The
@@ -980,7 +986,7 @@ the pieces on the screen while the camera moves:
    names in `watchLater` fade in after the others.
 
 The pieces that the click names in `watchCut` do not fade: they go, or come,
-at once, before the others fade (the Spring Of Power slide's stud). The pieces
+at once, before the others fade (the Mainspring slide's stud). The pieces
 that the click names in `watchGoLater` are in D: they stay on the screen
 while the camera moves, and go in step 3 (the Gear Train slide's drive
 arrow).
@@ -1059,7 +1065,8 @@ Hand slide). A dimmed piece's colours are mixed toward the paper:
 $0.35 \times \text{colour} + 0.65 \times \text{paper}$ (`WATCH_DIM` in
 `watch/state.ts`), as the "Before clocks" slide's dimmed cards are at
 opacity 0.35. A part of the picture is more like a card than a line of text,
-which dims to 0.5.
+which dims halfway (`--text-dimmed`;
+[slide-patterns.md](slide-patterns.md#text-dims)).
 
 - **A dim is not an opacity.** A dimmed part still hides what is under it,
   and shows none of its own hidden lines (`Frame.dim` in `webgl/scene.ts`).
@@ -1073,25 +1080,25 @@ which dims to 0.5.
 
 ### The keys
 
-| Key                                                         | Meaning                                                                                                                                                                                                                                      |
-| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `watch: [hairspring, collet, stud]`                         | the pieces shown, or `all` (but the marks: [Pieces](#pieces)); no key hides the watch. A list may hold lists (YAML aliases)                                                                                                                  |
-| `watchView: hairspring`                                     | what the camera frames: a named view (`cover`, `hairspring`, `crown`), or a list of pieces to fit; none: the [fitted view](#fitted-views) of what shows                                                                                      |
-| `watchRight: 489`                                           | px of the slide: where a [fitted view](#fitted-views) puts its pieces' right edge; none: centred in the left 60%, or at `FIT_LEFT`. Only with a fitted view                                                                                  |
-| `watchBand: slide`                                          | the band whose height a [fitted view](#fitted-views) fills: `picture` (default), or `slide`, the slide's height with the same margins, on the screen. Only with a fitted view                                                                |
-| `watchTilt: 20`                                             | degrees, towards the viewer's side (default 0)                                                                                                                                                                                               |
-| `watchAtRest: true`                                         | the balance is at rest, and the mechanism with it; `false` (default): it swings. To rest, it waits for its next extreme                                                                                                                      |
-| `watchSpin: 135`                                            | the train spins freely, at this speed in degrees a second of the escape wheel, faster than the mechanism's 12 ([The free spin](#the-free-spin)); `false` (default): it follows the mechanism, and a spin stops at the pallet                 |
-| `watchMainspring: wound`                                    | the Spring Of Power slide's stage: `free`, `turned`, `wound`, `released`, `barrel`, `barrel again` (a trial) or `run down` ([The Spring Of Power slide](#the-spring-of-power-slide)); it says when the watch runs, so not with `watchAtRest` |
-| `watchDim: [barrel]`                                        | the pieces drawn dimmed, as at opacity 0.35 over the paper (`WATCH_DIM`), from that click on; `false` (default): none ([Dimmed pieces](#dimmed-pieces))                                                                                      |
-| `watchTickTock: true`                                       | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `false` (default): they do not                                                                                                               |
-| `watchFlash: [balance wheel]`                               | pieces that flash, on the step forward into the slide (on the slide) or into the block's click (in `watchClicks`) only; it does not carry on to later clicks ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash")          |
-| `watchMoveWith: all`                                        | on the slide only: what is on the screen while the camera moves, on the step between this slide and the previous one: `common` (default), `all` or `none`                                                                                    |
-| `watchCut: [mainspring stud]`                               | of the pieces that go or come on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that do so at once, with no fade, before the others fade; it does not carry on to later clicks                     |
-| `watchLater: [case band]`                                   | of the pieces that fade in on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that fade in after the others; it does not carry on to later clicks                                                   |
-| `watchGoLater: [fourth wheel drive]`                        | of the pieces that go on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that stay on the screen while the camera moves, and go after it; it does not carry on to later clicks                      |
-| `watchLinger: [{pieces: [centre wheel drive], seconds: 1}]` | ordered outgoing groups; each pauses for its declared seconds, then fades out before the next group pauses; the camera waits for all groups; applies only at the declared click                                                              |
-| `watchClicks: {1: {watch: […]}}`                            | on the slide only: for a click, the values of the first ten keys from that click on, and its flash settings, `watchLater`, `watchCut`, `watchGoLater` and `watchLinger` ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way))    |
+| Key                                                         | Meaning                                                                                                                                                                                                                                   |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `watch: [hairspring, collet, stud]`                         | the pieces shown, or `all` (but the marks: [Pieces](#pieces)); no key hides the watch. A list may hold lists (YAML aliases)                                                                                                               |
+| `watchView: hairspring`                                     | what the camera frames: a named view (`cover`, `hairspring`, `crown`), or a list of pieces to fit; none: the [fitted view](#fitted-views) of what shows                                                                                   |
+| `watchRight: 489`                                           | px of the slide: where a [fitted view](#fitted-views) puts its pieces' right edge; none: centred in the left 60%, or at `FIT_LEFT`. Only with a fitted view                                                                               |
+| `watchBand: slide`                                          | the band whose height a [fitted view](#fitted-views) fills: `picture` (default), or `slide`, the slide's height with the same margins, on the screen. Only with a fitted view                                                             |
+| `watchTilt: 20`                                             | degrees, towards the viewer's side (default 0)                                                                                                                                                                                            |
+| `watchAtRest: true`                                         | the balance is at rest, and the mechanism with it; `false` (default): it swings. To rest, it waits for its next extreme                                                                                                                   |
+| `watchSpin: 135`                                            | the train spins freely, at this speed in degrees a second of the escape wheel, faster than the mechanism's 12 ([The free spin](#the-free-spin)); `false` (default): it follows the mechanism, and a spin stops at the pallet              |
+| `watchMainspring: wound`                                    | the Mainspring slide's stage: `free`, `wound`, `released`, `barrel`, `barrel again` (a trial) or `run down` ([The Mainspring slide](#the-mainspring-slide)); it says when the watch runs, so not with `watchAtRest`                       |
+| `watchDim: [barrel]`                                        | the pieces drawn dimmed, as at opacity 0.35 over the paper (`WATCH_DIM`), from that click on; `false` (default): none ([Dimmed pieces](#dimmed-pieces))                                                                                   |
+| `watchTickTock: true`                                       | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `false` (default): they do not                                                                                                            |
+| `watchFlash: [balance wheel]`                               | pieces that flash, on the step forward into the slide (on the slide) or into the block's click (in `watchClicks`) only; it does not carry on to later clicks ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash")       |
+| `watchMoveWith: all`                                        | on the slide only: what is on the screen while the camera moves, on the step between this slide and the previous one: `common` (default), `all` or `none`                                                                                 |
+| `watchCut: [mainspring stud]`                               | of the pieces that go or come on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that do so at once, with no fade, before the others fade; it does not carry on to later clicks                  |
+| `watchLater: [case band]`                                   | of the pieces that fade in on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that fade in after the others; it does not carry on to later clicks                                                |
+| `watchGoLater: [fourth wheel drive]`                        | of the pieces that go on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that stay on the screen while the camera moves, and go after it; it does not carry on to later clicks                   |
+| `watchLinger: [{pieces: [centre wheel drive], seconds: 1}]` | ordered outgoing groups; each pauses for its declared seconds, then fades out before the next group pauses; the camera waits for all groups; applies only at the declared click                                                           |
+| `watchClicks: {1: {watch: […]}}`                            | on the slide only: for a click, the values of the first ten keys from that click on, and its flash settings, `watchLater`, `watchCut`, `watchGoLater` and `watchLinger` ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way)) |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
 at load with the key's name.
