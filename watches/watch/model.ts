@@ -370,7 +370,7 @@ export class Motion {
     );
   }
 
-  /** The mainspring's geometry in a pose of the Mainspring slide's story. */
+  /** The mainspring's geometry in a pose of the Spring Of Power slide's story. */
   mainspringGeometry(pose: MainspringPose): MeshGeometry {
     const { mainspring, mainspringShape, mainspringHeights } = this.watch;
     const style = at(mainspring.lines, 0).style;
@@ -666,7 +666,7 @@ export function stillPose(
 // frame shows the mechanism at an instant in its shutter, the time
 // since the last frame, spread evenly over successive frames: what moves
 // faster than a frame can show blurs, and what moves slowly moves less than a
-// frame's way out of line (docs/watch.md, "The Mainspring slide").
+// frame's way out of line (docs/watch.md, "The Spring Of Power slide").
 
 /** ms: the longest shutter. After a longer gap (a hidden tab, say), a frame
  *  does not look further back. */
@@ -827,13 +827,13 @@ export class TrainClock {
 // ---- the watch's model for the stage ----------------------------------------------------------
 /** What a slide asks of the watch's motion. */
 export interface WatchModelState {
-  /** The balance stops at rest. On the Mainspring slide, the story says
+  /** The balance stops at rest. On the Spring Of Power slide, the story says
    *  when (`mainspring`). */
   settled: boolean;
   /** Degrees a second of the escape wheel: the train spins freely; `null`:
    *  it follows the mechanism. */
   spin: number | null;
-  /** The Mainspring slide's stage (watch/mainspring.ts), or `null`. */
+  /** The Spring Of Power slide's stage (watch/mainspring.ts), or `null`. */
   mainspring: MainspringStage | null;
 }
 

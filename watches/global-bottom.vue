@@ -134,6 +134,7 @@ function showWatch(
           later: undefined,
           cut: undefined,
           goLater: undefined,
+          linger: undefined,
         }
       : null,
   );

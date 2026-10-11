@@ -79,6 +79,136 @@ function timelineAt(initial: StageState): Timeline {
   return timeline;
 }
 
+test("outgoing meshes linger alone for one second, then fade before the camera changes", () => {
+  const arrow = mesh("torque arrow");
+  const timeline = timelineAt(state({ view: WIDE, shown: set(CASE, arrow) }));
+  timeline.show(
+    state({
+      view: CLOSE,
+      shown: set(SPRING),
+      linger: [{ meshes: set(arrow), seconds: 1 }],
+    }),
+    0,
+  );
+  assert.deepEqual(timeline.valuesAt(FADE / 2).keep, set(arrow));
+  assert.deepEqual(timeline.valuesAt(FADE / 2).fade, set(CASE));
+  for (const time of [FADE, FADE + 500, FADE + 999]) {
+    const values = timeline.valuesAt(time);
+    assert.deepEqual(values.keep, set(arrow));
+    assert.deepEqual(values.fade, set());
+    assert.equal(values.view, WIDE);
+    assert.equal(timeline.phaseAt(time), "hold");
+  }
+  const leaving = timeline.valuesAt(FADE + 1000 + FADE / 2);
+  assert.deepEqual(leaving.keep, set());
+  assert.deepEqual(leaving.fade, set(arrow));
+  assert.equal(leaving.rest, 0.5);
+  assert.equal(leaving.view, WIDE);
+  const arriving = timeline.valuesAt(2 * FADE + 1000);
+  assert.equal(arriving.view, CLOSE);
+  assert.deepEqual(arriving.fade, set(SPRING));
+  assert.equal(timeline.viewEndAt(0), 2 * FADE + 1000);
+  assert.deepEqual(timeline.valuesAt(3 * FADE + 1000).keep, set(SPRING));
+});
+
+test("a jump skips the linger, and an interrupted hold restores the earlier state", () => {
+  const arrow = mesh("torque arrow");
+  const before = state({ view: WIDE, shown: set(CASE, arrow) });
+  const after = state({
+    view: CLOSE,
+    shown: set(SPRING),
+    linger: [{ meshes: set(arrow), seconds: 1 }],
+  });
+  const timeline = timelineAt(before);
+  timeline.show(after, 0);
+  timeline.show(before, FADE + 500);
+  assert.deepEqual(timeline.valuesAt(FADE + 500).keep, set(arrow));
+  assert.equal(timeline.phaseAt(FADE + 500), "fade");
+  assert.deepEqual(timeline.valuesAt(2 * FADE + 500).keep, before.shown);
+  assert.equal(timeline.phaseAt(2 * FADE + 500), null);
+  timeline.show(after, 2 * FADE + 500, true);
+  assert.deepEqual(timeline.valuesAt(2 * FADE + 500).keep, after.shown);
+  assert.equal(timeline.phaseAt(2 * FADE + 500), null);
+});
+
+test("linger ignores meshes that do not leave and rejects invalid durations", () => {
+  const before = state({ view: WIDE, shown: set(CASE) });
+  const timeline = timelineAt(before);
+  timeline.show({ ...before, linger: [{ meshes: set(CASE), seconds: 1 }] }, 0);
+  assert.equal(timeline.phaseAt(0), null);
+  for (const seconds of [0, -1, Number.NaN, Infinity]) {
+    assert.throws(
+      () =>
+        timeline.show(
+          { ...before, linger: [{ meshes: set(CASE), seconds }] },
+          0,
+        ),
+      /linger seconds/,
+    );
+  }
+});
+
+test("two outgoing groups pause and fade in order before the camera changes", () => {
+  const arrow = mesh("torque arrow");
+  const before = state({ view: WIDE, shown: set(CASE, BALANCE, arrow) });
+  const after = state({
+    view: CLOSE,
+    shown: set(SPRING),
+    linger: [
+      { meshes: set(BALANCE), seconds: 1 },
+      { meshes: set(arrow), seconds: 1 },
+    ],
+  });
+  const timeline = timelineAt(before);
+  timeline.show(after, 0);
+  assert.deepEqual(timeline.valuesAt(FADE / 2).keep, set(BALANCE, arrow));
+  assert.deepEqual(timeline.valuesAt(FADE / 2).fade, set(CASE));
+  for (const offset of [0, 500, 999]) {
+    const first = timeline.valuesAt(FADE + offset);
+    assert.deepEqual(first.keep, set(BALANCE, arrow));
+    assert.deepEqual(first.fade, set());
+    assert.equal(first.view, WIDE);
+    assert.equal(timeline.phaseAt(FADE + offset), "hold");
+    const second = timeline.valuesAt(2 * FADE + 1000 + offset);
+    assert.deepEqual(second.keep, set(arrow));
+    assert.deepEqual(second.fade, set());
+    assert.equal(second.view, WIDE);
+    assert.equal(timeline.phaseAt(2 * FADE + 1000 + offset), "hold");
+  }
+  assert.deepEqual(
+    timeline.valuesAt(FADE + 1000 + FADE / 2).fade,
+    set(BALANCE),
+  );
+  assert.deepEqual(
+    timeline.valuesAt(2 * FADE + 2000 + FADE / 2).fade,
+    set(arrow),
+  );
+  assert.equal(timeline.viewEndAt(0), 3 * FADE + 2000);
+  assert.deepEqual(timeline.valuesAt(4 * FADE + 2000).keep, set(SPRING));
+  for (const time of [FADE + 500, 2 * FADE + 1500]) {
+    const interrupted = timelineAt(before);
+    interrupted.show(after, 0);
+    interrupted.show(before, time);
+    assert.equal(interrupted.phaseAt(time), "fade");
+    assert.deepEqual(interrupted.valuesAt(time + FADE).keep, before.shown);
+    assert.equal(interrupted.phaseAt(time + FADE), null);
+  }
+  assert.throws(
+    () =>
+      timeline.show(
+        {
+          ...after,
+          linger: [
+            { meshes: set(arrow), seconds: 1 },
+            { meshes: set(arrow), seconds: 1 },
+          ],
+        },
+        0,
+      ),
+    /only one linger group/,
+  );
+});
+
 test("the first state is shown at once, with no phase", () => {
   const timeline = new Timeline();
   assert.equal(timeline.hasState, false);

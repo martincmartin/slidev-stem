@@ -503,13 +503,13 @@ watchClicks:
     watch:
       [
         &train [
-          *seconds,
-          *third,
-          &centre [third pinion, centre wheel, centre arbor],
+          &trainContext [*seconds, *third, third pinion],
+          centre wheel,
+          centre arbor,
         ],
         centre wheel drive,
       ]
-    watchFlash: *centre
+    watchFlash: [third pinion, centre wheel, centre arbor]
   # the minute hand, on the centre wheel's arbor, and the case and the dial
   # (the chapter ring holds its marks); not the hour hand
   4:
@@ -517,20 +517,26 @@ watchClicks:
       [
         *train,
         centre wheel drive,
-        minute hand,
         centre pivot,
-        chapter ring,
-        case band,
-        lug,
-        crown,
-        strap,
+        &face [minute hand, chapter ring, case band, lug, crown, strap],
       ]
-clicks: 4
+  # keep the centre wheel, its arbor, pivot and drive arrow bright; the hidden
+  # source of the push is the next slide's spring
+  5:
+    watchDim: [*trainContext, *face]
+clicks: 5
 ---
 
 # Gear Train
 
 From once a minute to once an hour
+
+<script setup>
+import { useSlideContext } from "@slidev/client";
+import { gearTrainMarks, LEADER_GAP } from "./watch/callouts.ts";
+import { WATCH } from "./watch/instance.ts";
+const marks = gearTrainMarks(WATCH, useSlideContext().$frontmatter);
+</script>
 
 <!-- Click 1's text fades in at the click, as the camera starts to move: it
 says why the camera untilts and zooms out. Each later text waits for the
@@ -544,6 +550,7 @@ it reads what the picture has just shown. -->
 <!-- The stages stay at click 4, dimmed, above the minute hand's text: a
 recap for anyone who missed clicks 2 and 3. -->
 
+<div v-click.hide="5" class="gt-reading">
 <div class="gt-sentence" :class="{ 'gt-recap': $clicks >= 4 }">
   <div v-click="2" class="after-watch gt-stage">
     <div>Two stages:</div>
@@ -555,6 +562,9 @@ recap for anyone who missed clicks 2 and 3. -->
     <div>The minute hand!</div>
   </div>
 </div>
+</div>
+
+<WatchCallout keyword v-click="5" class="gt-power after-watch" bent :to="marks.wheel" :stop="LEADER_GAP" :clear="[marks.wheelTips]" :left="500" :top="340"><span class="callout-word">Wheel</span> driven by<br>hidden mechanism</WatchCallout>
 
 <style>
 /* At clicks 1 and 4 the chapter ring runs behind the title, the subtitle and
@@ -583,9 +593,17 @@ recap for anyone who missed clicks 2 and 3. -->
   margin-top: 0.7em;
 }
 .slidev-layout.gear-train .gt-sentence.slidev-vclick-target,
-.slidev-layout.gear-train .gt-sentence > .slidev-vclick-target {
+.slidev-layout.gear-train .gt-sentence > .slidev-vclick-target,
+.slidev-layout.gear-train .gt-reading.slidev-vclick-target,
+.slidev-layout.gear-train .gt-power.slidev-vclick-target {
   transition-property: opacity;
   transition-duration: var(--text-fade);
+}
+/* The old text must leave before the callout appears, even when the dim
+   finishes sooner. This delay applies only while the callout is shown. */
+.slidev-layout.gear-train .gt-power:not(.slidev-vclick-hidden),
+.slidev-layout.gear-train .gt-reading:not(.slidev-vclick-hidden) {
+  transition-delay: max(var(--text-fade), var(--watch-end-delay, 0s));
 }
 /* At click 4 the stages dim, as the Escapement slide's earlier callouts do
    (--esc-dim), when the minute hand's text fades in: after the watch's
@@ -608,17 +626,27 @@ The second hand turns once a minute. A minute hand must turn once an hour: sixty
 [click] The centre wheel, and the small gear on the third wheel that it drives, fade in and flash, and the arrow moves to it. 32 teeth drive 4: eight times slower: the text adds 8 to 1. Seven and a half times eight is sixty. The centre wheel turns once an hour.
 
 [click] Put the minute hand on the centre wheel's arbor. The case and the dial fade in with it: this is the middle of the watch. Then the text: it makes a full turn once an hour. The minute hand!
+
+[click] But what drives this wheel? The text fades out, and the rest of the watch dims. The centre wheel, its arbor, pivot and curved arrow stay bright: wheel driven by hidden mechanism.
 -->
 
 ---
 # the bare mainspring and its arbor, as large as the picture band; the
 # camera stays at every click. The story (watchMainspring) turns the key,
 # winds and lets down the spring, and says when the watch runs
-# (docs/watch.md, "The Mainspring slide")
+# (docs/watch.md, "The Spring Of Power slide")
 watch: &spring [mainspring, barrel arbor]
 watchView: *spring
 watchTilt: 20
 watchMainspring: free
+# The centre wheel, arbor, pivot and drive arrow remain for one second.
+# Then the mechanism fades, leaving the arrow alone for one more second.
+# The arrow fades before the camera changes to the spring's view.
+watchLinger:
+  - pieces: [centre wheel, centre arbor, centre pivot]
+    seconds: 1
+  - pieces: [centre wheel drive]
+    seconds: 1
 watchClicks:
   # the key turns the bare spring: nothing holds its outer end, so it turns
   # whole
@@ -707,7 +735,7 @@ clicks: 6
 class: mainspring
 ---
 
-# Mainspring
+# The Spring Of Power
 
 One spring to power them all
 
@@ -754,7 +782,7 @@ The power comes from a spring too: the mainspring. A long ribbon of steel, coile
 -->
 
 ---
-# the whole watch as the Mainspring slide leaves it, but the hour hand, in
+# the whole watch as the Spring Of Power slide leaves it, but the hour hand, in
 # its view (the train in the picture band), so the step from it does not
 # move the camera; tilt 20 at every click. While the camera is in on the
 # motion works, all but the centre wheel and the minute hand is dimmed

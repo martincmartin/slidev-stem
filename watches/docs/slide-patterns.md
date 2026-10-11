@@ -181,9 +181,13 @@ pinion flash. Clicks
 2 and 3 add the third wheel and then the centre wheel, each with the pinion
 that it drives: each fades in, and then flashes. The drive arrow leaves the
 fourth wheel after click 1's zoom, and comes back on each new wheel. Click 4 adds the minute
-hand, the dial and the case.
-The Mainspring slide follows it: the Gear Train slide's picture fades out, the
-camera jumps, and the bare mainspring and its arbor fade in. At click 1 a key
+hand, the dial and the case. Click 5 fades out the right-side text and dims the watch.
+Only the centre wheel, its arbor, pivot and drive arrow stay undimmed.
+"Wheel driven by hidden mechanism" then fades in, with a leader to the centre wheel.
+The Spring Of Power slide follows it: the Gear Train text and dimmed watch parts fade out.
+The centre wheel, arbor, pivot and muted arrow remain for one second.
+Then the mechanism fades out. The arrow remains alone for one second, then fades out (`watchLinger`).
+The camera then jumps, and the bare mainspring and its arbor fade in. At click 1 a key
 turns the arbor, and the free spring turns whole. At click 2 a stud holds its
 outer end, the dashed rest shape fades in, and it flashes; the key winds
 it. At click 3 the stud flashes and is gone, and the spring uncoils to its

@@ -35,6 +35,7 @@
 // change goes.
 
 import type { Mesh, View } from "./scene.ts";
+import { check } from "./checked.ts";
 
 export const MOVE_SECONDS = 1.8;
 export const FADE_SECONDS = 0.8;
@@ -81,6 +82,11 @@ export interface StageState {
   /** The dimmed meshes: the weight of each one's own colours against the
    *  paper (`Frame.dim`). Default: none. */
   dim?: ReadonlyMap<Mesh, number>;
+  /** Outgoing groups that pause and then fade, in this order. */
+  linger?: readonly {
+    readonly meshes: ReadonlySet<Mesh>;
+    readonly seconds: number;
+  }[];
 }
 
 /** Where each channel is. */
@@ -108,6 +114,7 @@ type Phase = {
   /** 0: a jump. */
   seconds: number;
 } & (
+  | { channel: "hold" }
   | { channel: "view"; from: View; to: View }
   | { channel: "tilt"; from: number; to: number }
   | {
@@ -219,6 +226,8 @@ function applyPhase(values: Values, phase: Phase, now: number): void {
   const eased = ease(fraction);
   const done = fraction >= 1;
   switch (phase.channel) {
+    case "hold":
+      break;
     case "view":
       values.view = done ? phase.to : mixView(phase.from, phase.to, eased);
       break;
@@ -254,6 +263,20 @@ export class Timeline {
    *  file, from where the channels are now. Returns the seconds until the
    *  flash ends, or 0 if there is none. */
   show(state: StageState, now: number, instantly = false): number {
+    const lingerMeshes = new Set<Mesh>();
+    for (const group of state.linger ?? []) {
+      check(
+        Number.isFinite(group.seconds) && group.seconds > 0,
+        "linger seconds must be finite and greater than zero",
+      );
+      for (const mesh of group.meshes) {
+        check(
+          !lingerMeshes.has(mesh),
+          "a mesh can appear in only one linger group",
+        );
+        lingerMeshes.add(mesh);
+      }
+    }
     const running = this.flash;
     this.flash = null;
     if (instantly || !this.values) {
@@ -317,9 +340,19 @@ export class Timeline {
         fade(shown, cutGoing, 1, 0, 0);
       }
       const fading = minus(going, cutGoing);
-      if (fading.size > 0) {
-        shown = minus(shown, fading);
-        fade(shown, fading, 1, 0);
+      const firstGoing = minus(fading, lingerMeshes);
+      if (firstGoing.size > 0) {
+        shown = minus(shown, firstGoing);
+        fade(shown, firstGoing, 1, 0);
+      }
+      for (const group of state.linger ?? []) {
+        const lingering = new Set(
+          [...fading].filter((mesh) => group.meshes.has(mesh)),
+        );
+        if (lingering.size === 0) continue;
+        add({ channel: "hold", start, seconds: group.seconds });
+        shown = minus(shown, lingering);
+        fade(shown, lingering, 1, 0);
       }
       between();
       const cutComing = new Set(

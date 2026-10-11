@@ -92,6 +92,56 @@ test("watchDim dims pieces from its click on, until false; the stage gets their 
   );
 });
 
+test("watchLinger resolves its pieces and applies only at the declared click", () => {
+  const frontmatter = {
+    watch: ["mainspring", "barrel arbor"],
+    watchLinger: [{ pieces: ["centre wheel drive"], seconds: 1 }],
+  };
+  const parsed = watchState(frontmatter, 0) ?? assert.fail();
+  const arrow = watch.scene.pieces.find(
+    (piece) => piece.name === "centre wheel drive",
+  );
+  assert.ok(arrow);
+  assert.deepEqual(stageState(watch, parsed).linger, [
+    {
+      meshes: arrow.meshes,
+      seconds: 1,
+    },
+  ]);
+  assert.equal(watchState(frontmatter, 1)?.linger, undefined);
+  for (const value of [null, {}, []]) {
+    assert.throws(
+      () => watchState({ ...frontmatter, watchLinger: value }, 0),
+      /watchLinger/,
+    );
+  }
+  assert.throws(
+    () =>
+      stageState(watch, {
+        ...parsed,
+        linger: [{ pieces: ["unknown"], seconds: 1 }],
+      }),
+    /watchLinger/,
+  );
+  for (const value of [
+    null,
+    true,
+    {},
+    { pieces: [], seconds: 1 },
+    { pieces: ["centre wheel drive"], seconds: "1" },
+    ...[0, -1, Infinity, Number.NaN].map((seconds) => ({
+      pieces: ["centre wheel drive"],
+      seconds,
+    })),
+    { pieces: ["centre wheel drive"], seconds: 1, extra: true },
+  ]) {
+    assert.throws(
+      () => watchState({ ...frontmatter, watchLinger: [value] }, 0),
+      /watchLinger/,
+    );
+  }
+});
+
 test("a flash is of one click: the slide's at click 0, a block's at its click", () => {
   const frontmatter = {
     watch: "all",
@@ -239,7 +289,7 @@ test("a slide shows the meshes of its pieces, or all but the marks, in its named
   );
   // every mesh but those of the pieces that only a slide that names them
   // shows: the drive arrows, the Gears slide's spans, the Gear Train slide's
-  // one-step wheel and raised strap, the Mainspring slide's props, and the
+  // one-step wheel and raised strap, the Spring Of Power slide's props, and the
   // motion works with the Hour Hand slide's one-step hour wheel
   const marks = watch.scene.pieces.filter((piece) => !piece.inAll);
   assert.deepEqual(marks.map((piece) => piece.name).sort(), [
@@ -415,7 +465,7 @@ test("a field of the wrong kind throws, with its name", () => {
   }
 });
 
-test("the Mainspring slide's stage says when the watch runs: only in the barrel, wound", () => {
+test("the Spring Of Power slide's stage says when the watch runs: only in the barrel, wound", () => {
   const frontmatter = {
     watch: ["mainspring", "barrel arbor"],
     watchMainspring: "free",

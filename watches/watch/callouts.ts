@@ -333,3 +333,23 @@ export function gearsMarks(
     wheelTips: circle(fourth.outer, wheelArbor),
   };
 }
+
+/** The Gear Train slide's centre wheel, in its unchanged train view. Its
+ *  final callout ends outside the wheel's tip circle. */
+export function gearTrainMarks(
+  watch: Watch,
+  frontmatter: Record<string, unknown>,
+): Pick<GearsMarks, "wheel" | "wheelTips"> {
+  const shown = slideProjection(watch, frontmatter);
+  const centre = at(watch.design.wheels, 1);
+  const arbor = worldOf(watch.design, centre.arbor);
+  return {
+    wheel: shown(arbor, watch.centreTop),
+    wheelTips: Array.from({ length: TIP_POINTS }, (_, index) =>
+      shown(
+        polar(centre.outer, (360 * index) / TIP_POINTS, arbor),
+        watch.centreTop,
+      ),
+    ),
+  };
+}

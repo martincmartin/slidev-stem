@@ -19,7 +19,7 @@
 //     (`TrainClock`); false (default): it follows the mechanism
 //   watchTickTock: true: the words "tick" and "tock" show at each strike of
 //     the jewel on the fork; false (default): they do not (`tickTockState`)
-//   watchMainspring: a stage of the Mainspring slide's story (free, turned,
+//   watchMainspring: a stage of the Spring Of Power slide's story (free, turned,
 //     wound, released, barrel, barrel again, run down: watch/mainspring.ts); it also says
 //     when the balance swings, so it is not set with watchAtRest
 //   watchDim: pieces drawn dimmed (WATCH_DIM), to keep the eye on the
@@ -34,6 +34,8 @@
 //     those that do so at once, with no fade
 //   watchGoLater: of the pieces that go on a step into that click, those
 //     that stay on the screen while the camera moves, and go after it
+//   watchLinger: ordered outgoing groups; each pauses, then fades out,
+//     before the camera moves
 // On the slide only, about the step into it:
 //   watchMoveWith: what shows while the camera moves, on the step between
 //     this slide and the previous one, in either direction (`moveWithBefore`)
@@ -86,10 +88,15 @@ export interface WatchState {
   /** Degrees a second of the escape wheel: the train spins freely; `null`:
    *  it follows the mechanism. */
   spin: number | null;
-  /** The Mainspring slide's stage, or `null`. */
+  /** The Spring Of Power slide's stage, or `null`. */
   mainspring: MainspringStage | null;
   /** The names of the pieces drawn dimmed, or `null`: none. */
   dim: readonly string[] | null;
+  /** Outgoing groups that pause before their fade, on this step only. */
+  linger?: readonly {
+    readonly pieces: readonly string[];
+    readonly seconds: number;
+  }[];
 }
 
 export function wrong(name: string, value: unknown, wanted: string): never {
@@ -176,6 +183,48 @@ function dimOf(name: string, value: unknown): readonly string[] | null {
   return value === false ? null : namesOf(name, value);
 }
 
+function isMap(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function lingerOf(
+  name: string,
+  value: unknown,
+): NonNullable<WatchState["linger"]>[number] {
+  if (
+    !isMap(value) ||
+    Object.keys(value).some((key) => !["pieces", "seconds"].includes(key))
+  ) {
+    return wrong(name, value, "a map with pieces and seconds");
+  }
+  const pieces = namesOf(`${name}.pieces`, value["pieces"]);
+  const seconds = value["seconds"];
+  if (
+    typeof seconds !== "number" ||
+    !Number.isFinite(seconds) ||
+    seconds <= 0
+  ) {
+    return wrong(
+      `${name}.seconds`,
+      seconds,
+      "a finite number greater than zero",
+    );
+  }
+  return { pieces, seconds };
+}
+
+function lingerGroupsOf(
+  name: string,
+  value: unknown,
+): NonNullable<WatchState["linger"]> {
+  if (!Array.isArray(value) || value.length === 0) {
+    return wrong(name, value, "a non-empty list of linger groups");
+  }
+  return value.map((group: unknown, index) =>
+    lingerOf(`${name}.${String(index)}`, group),
+  );
+}
+
 function mainspringOf(name: string, value: unknown): MainspringStage {
   const found = MAINSPRING_STAGES.find((stage) => stage === value);
   if (found === undefined) {
@@ -207,6 +256,7 @@ const STEP_KEYS = {
   watchLater: namesOf,
   watchCut: namesOf,
   watchGoLater: namesOf,
+  watchLinger: lingerGroupsOf,
 } as const;
 type StepKey = keyof typeof STEP_KEYS;
 type StepValues = { [Key in StepKey]?: ReturnType<(typeof STEP_KEYS)[Key]> };
@@ -286,8 +336,6 @@ function atClick(
   if (blocks === undefined) {
     return clicks === 0 ? { ...state, ...slideStep } : state;
   }
-  const isMap = (value: unknown): value is Record<string, unknown> =>
-    typeof value === "object" && value !== null && !Array.isArray(value);
   if (!isMap(blocks)) {
     return wrong("watchClicks", blocks, "a map from a click to keys");
   }
@@ -370,7 +418,8 @@ export function watchState(
     later: now.watchLater,
     cut: now.watchCut,
     goLater: now.watchGoLater,
-    // on the Mainspring slide, the watch runs only while the barrel's spring
+    ...(now.watchLinger ? { linger: now.watchLinger } : {}),
+    // on the Spring Of Power slide, the watch runs only while the barrel's spring
     // is wound
     settled:
       mainspring === null
@@ -442,6 +491,14 @@ export function stageState(
       ? meshesOf(piecesNamed("watchGoLater", state.goLater))
       : new Set(),
     moveWith,
+    ...(state.linger
+      ? {
+          linger: state.linger.map((group) => ({
+            meshes: meshesOf(piecesNamed("watchLinger", group.pieces)),
+            seconds: group.seconds,
+          })),
+        }
+      : {}),
     ...(state.dim
       ? {
           dim: new Map(

@@ -1,4 +1,4 @@
-// The Mainspring slide's story (docs/watch.md, "The Mainspring slide"): the
+// The Spring Of Power slide's story (docs/watch.md, "The Spring Of Power slide"): the
 // barrel arbor's angle, the mainspring's wind and the winding key's opacity,
 // at each moment. No DOM and no WebGL here, so a test can drive the clock with
 // made-up times.

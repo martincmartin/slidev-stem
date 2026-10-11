@@ -48,12 +48,12 @@ Examples in the watch talk (`watches/docs/watch.md`): the fades and the
 camera's move and tilt are presentation; the flash is the attention cue; the
 diving board's bend and curl, and the edit of its callout's sentence after the
 curl, are story animations, and its swing is a steady loop; the watch's
-mechanism is a physical process. On the Mainspring slide, the key's turns and
+mechanism is a physical process. On the Spring Of Power slide, the key's turns and
 the spring's uncoil are story animations, and the time-lapse is a physical
 process. Not an oversight: there, a step back cuts to the earlier click's
 pose, and does not play the story backward. A key that unwinds the spring
 runs time backward, which a step back should not do
-([`watch.md`](../watches/docs/watch.md#the-mainspring-slide)). Text that is part of a story animation runs on
+([`watch.md`](../watches/docs/watch.md#the-spring-of-power-slide)). Text that is part of a story animation runs on
 that animation's clock, not on a `v-click`.
 
 **Rule 3: a visual on more than one slide is one element.** It lives in a layer

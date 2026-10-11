@@ -351,7 +351,7 @@ export interface Watch {
   readonly mainspringShape: Spring;
   readonly mainspringHeights: Heights;
   /** The winding key's meshes (its piece, which `all` leaves out). The
-   *  Mainspring slide's story shows them (`WatchModel.extra`). */
+   *  Spring Of Power slide's story shows them (`WatchModel.extra`). */
   readonly key: ReadonlySet<Mesh>;
   /** The chapter ring's height, on which the decals lie. */
   readonly ringTop: number;
@@ -365,6 +365,8 @@ export interface Watch {
   /** The fourth wheel's top, level with the escape pinion that it drives:
    *  where the Gears slide's callouts point (watch/callouts.ts). */
   readonly gearsTop: number;
+  /** The centre wheel's top, where the Gear Train slide's callout points. */
+  readonly centreTop: number;
   /** The Gear Train slide's one-step wheel (`oneStepWheel`). */
   readonly oneStep: Wheel;
   /** The Hour Hand slide's one-step hour wheel (`oneStepHourWheel`). */
@@ -1268,7 +1270,7 @@ function studMesh(
   };
 }
 
-// ---- the Mainspring slide's props ----------------------------------------------------
+// ---- the Spring Of Power slide's props ----------------------------------------------------
 /** The square on the barrel arbor's top, which the key fits: its side, and how
  *  far it rises. It shows the arbor turn. */
 const ARBOR_SQUARE = { side: 12, height: 4 };
@@ -2412,6 +2414,7 @@ export function generate(design: Design = DESIGN): Watch {
     jewel: topOf(parts.jewel, "body"),
   };
   const gearsTop = topOf(partOf(train.fourth), "body");
+  const centreTop = topOf(partOf(train.centre), "body");
 
   // ---- the case, lugs, strap and crown ----
   const {
@@ -2546,7 +2549,7 @@ export function generate(design: Design = DESIGN): Watch {
   const decals = decalMeshes(paint, root, ringTop);
   meshes.push(...decals);
 
-  // the Mainspring slide's props (docs/watch.md, "The Mainspring slide")
+  // the Spring Of Power slide's props (docs/watch.md, "The Spring Of Power slide")
   const mainspringMesh = lookup(
     movementMeshes,
     mainspringSolid,
@@ -2666,6 +2669,7 @@ export function generate(design: Design = DESIGN): Watch {
     ringTop,
     escapementTops,
     gearsTop,
+    centreTop,
     oneStep,
     oneStepHour,
   };

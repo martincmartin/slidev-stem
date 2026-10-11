@@ -1,4 +1,4 @@
-// The Mainspring slide's story, driven with made-up times: the poses at each
+// The Spring Of Power slide's story, driven with made-up times: the poses at each
 // stage, the key's turns, the order of a step forward and back, and the
 // time-lapse, which only goes forward.
 
