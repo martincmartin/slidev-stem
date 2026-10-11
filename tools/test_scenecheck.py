@@ -79,16 +79,15 @@ def test_the_command_line_reader_rejects_nan() -> None:
         json.loads('{"opacity": NaN}', parse_constant=scenecheck.reject_constant)
 
 
-def test_the_second_is_a_solid_mark_fill_only() -> None:
-    assert whats(scene({"ink": 3, "opacity": 1.0})) == []
-    assert "of a mark should be 1" in whats(scene({"ink": 3, "opacity": 0.6}))[0]
+def test_the_second_is_not_a_fill_or_a_line_off_a_mark() -> None:
+    assert "not an art colour" in whats(scene({"ink": 3, "opacity": 1.0}))[0]
     found = whats(scene(None, {"ink": 3, "width": 2.0, "opacity": 1.0}))
     assert len(found) == 1
     assert "not an art colour" in found[0]
 
 
-def test_a_mark_in_the_flash_colours_has_a_wash_fill_and_second_lines() -> None:
-    def wash_mark(fill_opacity: float, line_ink: int) -> dict[str, object]:
+def test_a_mark_has_a_solid_second_wash_fill_and_second_lines() -> None:
+    def mark(fill_opacity: float, line_ink: int) -> dict[str, object]:
         data = scene(
             {"ink": 4, "opacity": fill_opacity},
             {"ink": line_ink, "width": 2.0, "opacity": 1.0},
@@ -98,10 +97,10 @@ def test_a_mark_in_the_flash_colours_has_a_wash_fill_and_second_lines() -> None:
         inks.append({"name": "secondWash", "variable": "--palette-second-wash"})
         return data
 
-    assert whats(wash_mark(1.0, 3)) == []
-    assert whats(wash_mark(1.0, 0)) == []
-    assert "of a mark should be 1" in whats(wash_mark(0.6, 3))[0]
-    # a line in the second only on a mark in the flash's colours
+    assert whats(mark(1.0, 3)) == []
+    assert whats(mark(1.0, 0)) == []
+    assert "of a mark should be 1" in whats(mark(0.6, 3))[0]
+    # a line in the second only on a mark
     assert (
         "not an art colour"
         in whats(

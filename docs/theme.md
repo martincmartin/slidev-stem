@@ -140,22 +140,22 @@ from there, and the WebGL art reads them from the page ([webgl.md](webgl.md)). A
 role, or `color-mix(in srgb, …)` of those: a recipe. A recipe follows its
 roles, so a slide class that changes a role also changes what is made from it.
 
-| Variable                 | Job in text and layout                 | Job in the art                                                                                                                                             |
-| ------------------------ | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--palette-background`   | the slide field                        | the paper of full-slide art and of the WebGL art                                                                                                           |
-| `--palette-ink`          | body text, headings                    | scales and fine detail: ticks, graduations; usually at 0.5 (WebGL ink `ink`)                                                                               |
-| `--palette-muted`        | captions, units, dates, secondary text | context: what holds or acts on the subject (a stand, a case, a clamp), as a line (WebGL ink `muted`)                                                       |
-| `--palette-accent`       | the one emphasised thing on a slide    | not used: see `--palette-subject`                                                                                                                          |
-| `--palette-second`       | the turn: the catch, the warning       | "look here": a flash's lines, a keyword callout's word and leader, and a mark's fill ([illustrations.md](illustrations.md), "Leaders"; WebGL ink `second`) |
-| `--palette-panel`        | a card's fill                          | the paper of a card's art                                                                                                                                  |
-| `--palette-border`       | a card's edge                          | not used                                                                                                                                                   |
-| `--palette-subject`      | not used                               | the subject: its structure, and the thing that moves (WebGL ink `subject`)                                                                                 |
-| `--palette-subject-wash` | not used                               | the subject's faces (WebGL ink `subjectWash`)                                                                                                              |
-| `--palette-muted-wash`   | not used                               | the faces of the context (WebGL ink `mutedWash`)                                                                                                           |
-| `--palette-second-wash`  | not used                               | a flash's faces (WebGL ink `secondWash`)                                                                                                                   |
-| `--palette-water`        | not used                               | water, where it meets another material                                                                                                                     |
-| `--palette-ground`       | not used                               | ground and stone, where they meet another material                                                                                                         |
-| `--palette-ground-wash`  | not used                               | the faces of ground and stone                                                                                                                              |
+| Variable                 | Job in text and layout                 | Job in the art                                                                                                                                              |
+| ------------------------ | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--palette-background`   | the slide field                        | the paper of full-slide art and of the WebGL art                                                                                                            |
+| `--palette-ink`          | body text, headings                    | scales and fine detail: ticks, graduations; usually at 0.5 (WebGL ink `ink`)                                                                                |
+| `--palette-muted`        | captions, units, dates, secondary text | context: what holds or acts on the subject (a stand, a case, a clamp), as a line (WebGL ink `muted`)                                                        |
+| `--palette-accent`       | the one emphasised thing on a slide    | not used: see `--palette-subject`                                                                                                                           |
+| `--palette-second`       | the turn: the catch, the warning       | "look here": a flash's lines, a keyword callout's word and leader, and a mark's lines ([illustrations.md](illustrations.md), "Leaders"; WebGL ink `second`) |
+| `--palette-panel`        | a card's fill                          | the paper of a card's art                                                                                                                                   |
+| `--palette-border`       | a card's edge                          | not used                                                                                                                                                    |
+| `--palette-subject`      | not used                               | the subject: its structure, and the thing that moves (WebGL ink `subject`)                                                                                  |
+| `--palette-subject-wash` | not used                               | the subject's faces (WebGL ink `subjectWash`)                                                                                                               |
+| `--palette-muted-wash`   | not used                               | the faces of the context (WebGL ink `mutedWash`)                                                                                                            |
+| `--palette-second-wash`  | not used                               | a flash's faces, and a mark's faces (WebGL ink `secondWash`)                                                                                                |
+| `--palette-water`        | not used                               | water, where it meets another material                                                                                                                      |
+| `--palette-ground`       | not used                               | ground and stone, where they meet another material                                                                                                          |
+| `--palette-ground-wash`  | not used                               | the faces of ground and stone                                                                                                                               |
 
 How a drawing uses these (faces, substances, strokes) is in
 [illustrations.md](illustrations.md).

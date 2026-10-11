@@ -207,15 +207,11 @@ test("each wheel of the train is three pieces: the wheel with its hub, the pinio
   }
 });
 
-test("the Gears slide's spans are whole teeth of their gears, in the second, and turn with them", () => {
+test("the Gears slide's spans are whole teeth of their gears, in the flash's colours, and turn with them", () => {
   const fourth = design.wheels.find((wheel) => wheel.name === "fourth");
   assert.ok(fourth);
-  // solid, with the gear's outline: a tooth and its leaf must not merge; and
-  // the trial in the flash's colours
-  const styles = [
-    ["span", INKS.second, INKS.subject],
-    ["span wash", INKS.secondWash, INKS.second],
-  ] as const;
+  // faces in the second's wash, outline in the second
+  const styles = [["span", INKS.secondWash, INKS.second]] as const;
   // the wheel's body, and the pinion on the escape wheel's arbor
   const gears = [
     ["fourth wheel", at(partMeshes("fourth wheel"), 0), fourth.outer],

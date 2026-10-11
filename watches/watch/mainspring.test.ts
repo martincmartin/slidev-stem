@@ -37,11 +37,11 @@ test("each stage's pose: the arbor where it started, the spring wound only where
   const poses = MAINSPRING_STAGES.map((stage) => stagePose(stage));
   assert.deepEqual(
     poses.map((pose) => turned(pose.arbor)),
-    [0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0],
   );
   assert.deepEqual(
     poses.map((pose) => pose.wind),
-    [0, WOUND, 0, WOUND, WOUND, 0],
+    [0, WOUND, 0, WOUND, 0],
   );
   assert.ok(poses.every((pose) => pose.key === 0));
   assert.equal(WOUND, 360);
@@ -187,22 +187,4 @@ test("a jump, or a step from a slide without the story, is at its stage at once"
   clock.show(null, 30, true);
   assert.equal(clock.runs(30), null);
   assert.throws(() => new MainspringClock(21601), /whole number of teeth/);
-});
-
-test("the trial: a step to `barrel again` lets the spring down at once, then the key winds it after the stage's change", () => {
-  const clock = new MainspringClock(BEATS);
-  clock.show("barrel", 0, true);
-  assert.equal(clock.runs(0), true);
-  const zoom = 1800; // ms: the camera zooms out first
-  clock.show("barrel again", 1000, false, 1000 + zoom);
-  assert.equal(clock.pose(1000).wind, 0);
-  assert.equal(clock.runs(1000), false);
-  assert.equal(clock.runs(1000 + zoom + FADE_SECONDS * 1000 - 1), false);
-  assert.equal(clock.runs(1000 + zoom + FADE_SECONDS * 1000 + 1), true);
-  const ends = 1000 + zoom + KEY_SECONDS * 1000;
-  assert.deepEqual(clock.pose(ends), stagePose("barrel again"));
-  // back: cut to `barrel`, wound and running
-  clock.show("barrel", ends, false, ends);
-  assert.deepEqual(clock.pose(ends), stagePose("barrel"));
-  assert.equal(clock.runs(ends), true);
 });

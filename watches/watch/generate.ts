@@ -388,12 +388,10 @@ interface Paint {
   line: (width: number) => LineStyle;
   /** A line in muted. */
   mutedLine: (width: number) => LineStyle;
-  /** The second, solid: a mark that says "look here" (the Gears slide's
-   *  span). */
-  secondFill: Colour;
-  /** The faces of a flashed part. */
+  /** The faces of a flashed part, and of a mark that says "look here" (the
+   *  Gears slide's span). */
   secondWash: Colour;
-  /** A line in the second: a flashed part's. */
+  /** A line in the second: a flashed part's, and a mark's. */
   secondLine: (width: number) => LineStyle;
 }
 
@@ -405,7 +403,6 @@ function paintOf(): Paint {
     mutedWash: { ink: INKS.mutedWash, opacity: 1 },
     line: (width) => ({ ink: INKS.subject, opacity: 1, width }),
     mutedLine: (width) => ({ ink: INKS.muted, opacity: 1, width }),
-    secondFill: { ink: INKS.second, opacity: 1 },
     secondWash: { ink: INKS.secondWash, opacity: 1 },
     secondLine: (width) => ({ ink: INKS.second, opacity: 1, width }),
   };
@@ -1820,9 +1817,7 @@ interface SpanStyle {
  *  teeth, on `teeth`, its body, and the escape pinion's leaves that they
  *  drive, on `leaves`, the pinion. Each is the whole tooth or leaf, at the
  *  same place as its gear's faces (an overlay); it turns with its gear and
- *  is hidden where its gear is. The solid style's outline stays the
- *  subject's: in the second, a tooth and the leaf that it drives would merge
- *  where they touch. */
+ *  is hidden where its gear is. */
 function spanMeshes(
   fourth: Wheel,
   on: { teeth: Solid; leaves: Solid },
@@ -2485,14 +2480,8 @@ export function generate(design: Design = DESIGN): Watch {
   );
   meshes.push(...balanceScrews);
   const spanStyles: SpanStyle[] = [
-    { name: "span", fill: paint.secondFill, line: paint.line },
-    // a trial, to compare: the flash's colours
-    // (docs/watch.md, "The Gears slide")
-    {
-      name: "span wash",
-      fill: paint.secondWash,
-      line: paint.secondLine,
-    },
+    // in the flash's colours (docs/watch.md, "The Gears slide")
+    { name: "span", fill: paint.secondWash, line: paint.secondLine },
     // the span in the gear's own colours: it cannot be seen, but a flash
     // draws it in the flash's colours (docs/watch.md, "The Gears slide")
     { name: "span plain", fill: paint.subjectWash, line: paint.line },

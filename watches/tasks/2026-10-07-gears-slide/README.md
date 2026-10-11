@@ -51,3 +51,6 @@ The plan and the options are in [PLAN.md](PLAN.md).
 - 2026-10-08: `scenecheck` allows the flash style for the trial
   (`MARK_WASH_ROLE`), so the talk commits with both styles ([PLAN.md](PLAN.md),
   "Commit with both styles").
+- 2026-10-11: the user kept the flash's colours. The solid span and its click
+  (click 5) are gone, `… span wash` is now `… span`, and `scenecheck` allows
+  a mark only in the flash's colours (`MARK_FILL_ROLE`, `MARK_LINE_ROLE`).

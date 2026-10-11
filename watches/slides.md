@@ -286,30 +286,27 @@ class: gears
 watchClicks:
   # a span: four teeth of the wheel, and the four leaves that they drive.
   # Four teeth are a quarter of the wheel and half the pinion. The gears
-  # turn on. Two styles, to compare (a trial): first the flash's colours
-  # (second-wash faces, second outline), while the text comes one line a
-  # click (clicks 2 to 4: two callouts, then a sentence); then solid second
-  # with the gear's outline, with the text still up. The span comes in
-  # with a flash, not a fade: its plain teeth flash, and when the flash
-  # ends, they go and the span shows, at once. No flash for the text: each
-  # callout's leader shows which gear it means
+  # turn on. The span is in the flash's colours (second-wash faces, second
+  # outline), and the text comes one line a click (clicks 2 to 4: two
+  # callouts, then a sentence). The span comes in with a flash, not a fade:
+  # its plain teeth flash, and when the flash ends, they go and the span
+  # shows, at once. No flash for the text: each callout's leader shows which
+  # gear it means
   1:
-    watch: [*gears, fourth wheel span wash, escape pinion span wash]
+    watch: [*gears, fourth wheel span, escape pinion span]
     watchFlash: [fourth wheel span plain, escape pinion span plain]
     watchCut:
       [
         fourth wheel span plain,
         escape pinion span plain,
-        fourth wheel span wash,
-        escape pinion span wash,
+        fourth wheel span,
+        escape pinion span,
       ]
-  5:
-    watch: [*gears, fourth wheel span, escape pinion span]
   # the rest of the Escapement slide's mechanism fades in, in this view
   # (much of it off the slide on the left), with the drive arrow on the
   # fourth wheel, and the span goes. The pallet stops the spin: the gears
   # tick with the escape wheel
-  6:
+  5:
     watchSpin: false
     watch:
       &mechanism [
@@ -327,9 +324,9 @@ watchClicks:
       ]
   # the seconds hand, on the fourth wheel's arbor: it turns once a minute,
   # and the text says so after the hand has faded in
-  7:
+  6:
     watch: [*mechanism, seconds hand]
-clicks: 7
+clicks: 6
 ---
 
 # Gears
@@ -348,13 +345,13 @@ const marks = gearsMarks(WATCH, useSlideContext().$frontmatter);
 the label is all one callout word, in ink: not a keyword callout, whose
 second would merge with the span (docs/watch.md, "The Gears slide"). -->
 
-<WatchCallout v-click="[2, 6]" class="gears-callout text-dims" from-end :to="marks.pinion" :stop="LEADER_GAP" :clear="[marks.pinionTips]" :left="380" :top="165"><span class="callout-word">Half of the small gear</span></WatchCallout>
+<WatchCallout v-click="[2, 5]" class="gears-callout text-dims" from-end :to="marks.pinion" :stop="LEADER_GAP" :clear="[marks.pinionTips]" :left="380" :top="165"><span class="callout-word">Half of the small gear</span></WatchCallout>
 
-<WatchCallout v-click="[3, 6]" class="gears-callout text-dims" from-end :to="marks.wheel" :stop="LEADER_GAP" :clear="[marks.wheelTips]" :left="500" :top="222"><span class="callout-word">A quarter of the big gear</span></WatchCallout>
+<WatchCallout v-click="[3, 5]" class="gears-callout text-dims" from-end :to="marks.wheel" :stop="LEADER_GAP" :clear="[marks.wheelTips]" :left="500" :top="222"><span class="callout-word">A quarter of the big gear</span></WatchCallout>
 
 <div v-click="4" class="gears-sentence gears-rule text-dims">Twice the circumference,<br>half the speed.  Exactly.</div>
 
-<div v-click="7" class="gears-sentence gears-minute after-watch-fade text-dims">
+<div v-click="6" class="gears-sentence gears-minute after-watch-fade text-dims">
   <div>One turn a minute</div>
   <div>The second hand!</div>
 </div>
@@ -367,7 +364,7 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
    (301 + 2 * 43.75 + 24.5 = 413 px).
    The second hand's text waits for the hand (after-watch-fade, style.css).
    The fades come with text-dims, in longhands that keep that delay. */
-/* At click 7 the seconds hand turns under the text: the paper's outline
+/* At click 6 the seconds hand turns under the text: the paper's outline
    keeps it legible over the hand, as on the Gear Train slide. */
 .slidev-layout.gears .gears-sentence {
   -webkit-text-stroke: 6px var(--palette-background);
@@ -394,7 +391,7 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
   margin-top: 0.7em;
 }
 /* When a click adds text, the text before it dims (style.css, "TEXT
-   DIMS"), as the Escapement slide's earlier callouts do. At click 7 the dim
+   DIMS"), as the Escapement slide's earlier callouts do. At click 6 the dim
    waits for the hand, as the new text does (after-watch-fade). Going back,
    the text comes back at once. */
 .slidev-layout.gears
@@ -414,15 +411,13 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
 <!--
 The escapement fades out. The fourth wheel and the escape wheel's pinion fade in, and turn: the pinion twice for each turn of the wheel.
 
-[click] Four teeth on each gear are coloured: the same length of rim. They go through the mesh together, tooth for tooth, once each turn of the wheel. Four teeth are half the pinion, but a quarter of the wheel. Between, the pinion's coloured half comes round again on its own. The four teeth on each gear flash, and stay coloured. (A trial: the colours of the flash. Wait for one pass before the next click.)
+[click] Four teeth on each gear are coloured: the same length of rim. They go through the mesh together, tooth for tooth, once each turn of the wheel. Four teeth are half the pinion, but a quarter of the wheel. Between, the pinion's coloured half comes round again on its own. The four teeth on each gear flash, and stay coloured. (Wait for one pass before the next click.)
 
 [click] Half of the small gear: count them, four of its eight teeth. (The callout's leader points at the small gear.)
 
 [click] A quarter of the big gear: the same four teeth, but four of its sixteen. (The leader points at the big gear.) The same length of rim, because the teeth must be the same size, or they do not mesh. Each tooth fits in one gap of the other gear, so the teeth go by one for one: both rims move at the same speed.
 
 [click] Twice the size, half the speed. Exactly: teeth cannot slip, as a belt can. So the big gear turns once for every two turns of the small one, for ever.
-
-[click] The same teeth, solid; the text stays. (A trial: compare with click 1, and keep one style.)
 
 [click] The rest of the escapement comes back, and the gears now advance one tick at a time: the escapement controls the whole train. (The text stays. The arrow is on the big gear now: something we can't see yet still pushes it.)
 
@@ -662,12 +657,10 @@ watchClicks:
   # the rest shape fades out, the camera zooms out to the whole movement,
   # from the barrel to the balance, and the barrel and the watch (all but
   # the hour hand) fade in, still; the barrel and the centre pinion, which
-  # it drives, flash; then the key winds it, and the watch starts.
-  # Clicks 3 and 4 are trials, to choose a zoom: click 3 fits the movement
-  # in the slide band (it runs behind the title), click 4 in the picture
-  # band, where the spring is let down at once and the key winds it again.
-  # The pallet fork is not in the list: it is inside the others, and its
-  # extent is the whole circle about its pivot
+  # it drives, flash; then the key winds it, and the watch starts. The view
+  # fits the movement in the slide band: it runs behind the title. The
+  # pallet fork is not in the list: it is inside the others, and its extent
+  # is the whole circle about its pivot
   3:
     watch:
       [
@@ -716,16 +709,10 @@ watchClicks:
         stud,
       ]
     watchBand: slide
-  # the picture band fits the train, from the barrel to the escape wheel:
-  # the balance and the fork may run up behind the subtitle
-  4:
-    watchMainspring: barrel again
-    watchView: [barrel, centre wheel, third wheel, fourth wheel, escape wheel]
-    watchBand: picture
   # a time-lapse, until the barrel has turned once: then the watch stops
-  5:
+  4:
     watchMainspring: run down
-clicks: 5
+clicks: 4
 class: mainspring
 ---
 
@@ -737,7 +724,7 @@ One spring to power them all
   <div class="ms-paragraph text-dims">Not back-and-forth<br>One slow unwind</div>
   <div v-click="1" class="ms-paragraph text-dims">Winding causes tension</div>
   <div v-click="3" class="ms-paragraph text-dims">Unwinding drives barrel</div>
-  <div v-click="5" class="ms-paragraph text-dims">6 hours in 6 seconds</div>
+  <div v-click="4" class="ms-paragraph text-dims">6 hours in 6 seconds</div>
 </div>
 
 <style>
@@ -779,16 +766,14 @@ The power comes from a spring too: the mainspring. A long ribbon of steel, coile
 
 [click] Let go of the outer end: the stud flashes, and is gone. At once the outer end swings round, while the arbor still holds the inner end, until the spring is back on its rest shape.
 
-[click] Put it in the barrel: the outer end hooks to the barrel's wall. The camera zooms out to the whole movement, as tall as the slide (a trial), and the barrel and the rest of the watch fade in. The barrel and the centre pinion flash: the barrel's teeth drive the train that we built. It is still: the spring is let down. The key winds it, and the watch starts as soon as the key starts to turn. The balance and the escapement let the train turn one tick at a time. Unwinding drives the barrel.
-
-[click] (A trial, to compare with the last click: the same, with the movement under the title. The spring is let down at once, and the key winds it again.)
+[click] Put it in the barrel: the outer end hooks to the barrel's wall. The camera zooms out to the whole movement, as tall as the slide, and the barrel and the rest of the watch fade in. The barrel and the centre pinion flash: the barrel's teeth drive the train that we built. It is still: the spring is let down. The key winds it, and the watch starts as soon as the key starts to turn. The balance and the escapement let the train turn one tick at a time. Unwinding drives the barrel.
 
 [click] The arbor is held now, so the spring can only let down by turning the barrel. Six hours in six seconds: the barrel turns once, the minute hand six times, and the coils move back out to the wall. When the spring is let down, the watch stops.
 -->
 
 ---
 # the whole watch as the Mainspring slide leaves it, but the hour hand, in
-# its view (the train in the picture band), so the step from it does not
+# its view (the movement in the slide band), so the step from it does not
 # move the camera; tilt 20 at every click. While the camera is in on the
 # motion works, all but the centre wheel and the minute hand is dimmed
 # (docs/watch.md, "The Hour Hand slide")
@@ -829,7 +814,17 @@ watch:
     centre pivot,
   ]
 watchView:
-  &train [barrel, centre wheel, third wheel, fourth wheel, escape wheel]
+  &movement [
+    barrel,
+    centre wheel,
+    third wheel,
+    fourth wheel,
+    escape wheel,
+    balance wheel,
+    hairspring,
+    stud,
+  ]
+watchBand: slide
 watchTilt: 20
 class: hour-hand
 watchClicks:
@@ -842,11 +837,12 @@ watchClicks:
   2:
     watch: [*watch, *oneStep, one-step hour hand]
   # the one-step wheel, its hand and its pinion go; the camera zooms in on
-  # the centre wheel, and then all but the centre wheel and the minute hand
-  # dims
+  # the centre wheel, in the picture band, and then all but the centre wheel
+  # and the minute hand dims
   3:
     watch: *watch
     watchView: [centre wheel]
+    watchBand: picture
     watchDim: *faint
   # the cannon pinion and the minute wheel fade in, and flash: out, 3:1
   4:
@@ -860,7 +856,8 @@ watchClicks:
   # the hour wheel, in the middle
   6:
     watch: [*watch, *out, *back, hour hand]
-    watchView: *train
+    watchView: *movement
+    watchBand: slide
     watchDim: false
 clicks: 6
 ---

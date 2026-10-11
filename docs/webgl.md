@@ -80,13 +80,13 @@ these additions.
 - **Colours:** the art colours, and only those, for lines and fills. A face
   (the case, the strap, a wheel) is its wash, solid. A fill in a line colour
   (the impulse jewel) is at 0.60–1.0; the renderer blends a fill below 1 with
-  the paper into an opaque fill. A mark on part of a part is a fill in the
-  second, solid, with the part's own outline (`watches`, the Gears slide's
-  teeth). `tools/scenecheck.py` checks the scene.
+  the paper into an opaque fill. A mark on part of a part is in the flash's
+  colours: a fill in the second's wash, solid, with lines in the second
+  (`watches`, the Gears slide's teeth). `tools/scenecheck.py` checks the scene.
 - **A scene holds inks, not colours.** An `Ink` is one of the objects in
   `INKS` (`webgl/scene.ts`): `subject`, `subjectWash`, `muted`, `mutedWash`
-  and `ink` for the scene, `second` for a mark's fill, and `second` and
-  `secondWash` for a flash. Each is
+  and `ink` for the scene, and `second` and `secondWash` for a flash and a
+  mark. Each is
   an art role of the theme ([theme.md](theme.md), "The roles"). A role may be
   a recipe (`color-mix()`): `watch/palette.ts` resolves each one with computed
   CSS style, converts it to sRGB, and makes its hexadecimal value. Canvas

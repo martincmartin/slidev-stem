@@ -329,14 +329,13 @@ hand (on the fourth wheel's arbor) until its last click. It has no code: its
 frontmatter names the pieces, the tilt (20), `watchMoveWith: none` and the
 spin.
 
-| Click | What shows                                                                                                               | The gears    |
-| ----- | ------------------------------------------------------------------------------------------------------------------------ | ------------ |
-| 0     | the two gears                                                                                                            | turn freely  |
-| 1     | and the span, in the flash's colours (a trial): four teeth and the leaves they drive, which flash, and then show at once | turn freely  |
-| 2–4   | and the text, one line a click: two callouts, then the rule                                                              | turn freely  |
-| 5     | the span, solid (a trial); the text stays                                                                                | turn freely  |
-| 6     | the gears and the rest of the Escapement slide's mechanism; the span and the callouts go, and the rule stays             | tick with it |
-| 7     | and the seconds hand, and then its text                                                                                  | tick with it |
+| Click | What shows                                                                                                     | The gears    |
+| ----- | -------------------------------------------------------------------------------------------------------------- | ------------ |
+| 0     | the two gears                                                                                                  | turn freely  |
+| 1     | and the span, in the flash's colours: four teeth and the leaves they drive, which flash, and then show at once | turn freely  |
+| 2–4   | and the text, one line a click: two callouts, then the rule                                                    | turn freely  |
+| 5     | the gears and the rest of the Escapement slide's mechanism; the span and the callouts go, and the rule stays   | tick with it |
+| 6     | and the seconds hand, and then its text                                                                        | tick with it |
 
 - **The step from the Escapement slide, and back, jumps the camera.** The
   audience has not seen these pieces, so their place in the watch does not
@@ -359,8 +358,8 @@ spin.
   of the fourth wheel. From the Escapement slide, the spin starts when the old
   picture has faded out, so the gears start to turn as they fade in.
 - The tilt shows the arbors as posts.
-- **At clicks 1 to 5, the span shows: the same four teeth on each gear, in
-  the second.** The gears turn on, at the same speed. The teeth have the same pitch, so the four teeth are the
+- **At clicks 1 to 4, the span shows: the same four teeth on each gear, in
+  the flash's colours.** The gears turn on, at the same speed. The teeth have the same pitch, so the four teeth are the
   same length of rim on each gear: half the pinion, but a quarter of the
   wheel. The span's teeth drive its leaves (`meshedSpan`), so once in each
   turn of the wheel, colour meshes with colour for a quarter of that turn.
@@ -371,28 +370,22 @@ spin.
     shows the span from the start in the gear's own inks (`… span plain`),
     so it cannot be seen. At click 1 it flashes (`watchFlash`): it is on
     the screen, so the flash plays first. When the flash ends, the plain
-    span goes and the span in the flash's colours shows, both at once
-    (`watchCut`). Not an oversight: a flash of the span in the flash's
-    colours would not change its colours.
-  - **Two styles, to compare (a trial; keep one).** Click 1 shows the flash's
-    colours (`fourth wheel span wash`, `escape pinion span wash`): faces in
-    the second's wash, outline in the second. Click 5 shows the span solid
-    in the second, with the gear's own outline (`fourth wheel span`,
-    `escape pinion span`). Measured, the wash is close to the gear's faces
-    in every palette (at most 19 ΔE), so the flash style shows mostly
-    through its thin outline. `tools/scenecheck.py` allows both styles while
-    the trial is open (`MARK_WASH_ROLE`); delete the rejected one there too.
+    span goes and the span shows, both at once (`watchCut`). Not an
+    oversight: a flash of the span would not change its colours.
+  - **The span is in the flash's colours** (`fourth wheel span`,
+    `escape pinion span`): faces in the second's wash, outline in the
+    second. Measured, the wash is close to the gear's faces in every
+    palette (at most 19 ΔE), so the span shows mostly through its outline.
+    Not an oversight: a span solid in the second stood out more, and the
+    user chose the light one (the
+    [`gears-slide`](../tasks/2026-10-07-gears-slide/README.md) task).
   - **A span is the whole tooth**: top, bottom and sides, as high as its
     gear and at the same place as its faces, in its group, hidden where the
     gear is. It is an overlay (`Mesh.overlay`), so its faces show over the
     gear's.
-  - **The solid style's outline stays the subject's.** In the second, a
-    tooth and the leaf that it drives merged where they touch.
-  - **One colour, the second**: its art job is "look here". In each of the
-    top-pick palettes it was at least 54 CVD ΔE from the gear's faces
-    (measured on 2026-10-08).
-    The span needs only to differ from the plain teeth, so it does not need
-    a second colour. Not an oversight: two marks on each gear in two colours
+  - **One colour, the second**: its art job is "look here". The span needs
+    only to differ from the plain teeth, so it does not need a second
+    colour. Not an oversight: two marks on each gear in two colours
     were measured, and were weaker in one dark palette. See the task.
   - **No keyword callout on the gears while the span shows**: its word and
     leader are in the second too, and would merge with the span.
@@ -404,13 +397,12 @@ spin.
   the ratio (the speeds go as the sizes, upside down), and "exactly" holds
   because teeth cannot slip. The words say "small gear" and "big gear", not
   "pinion" and "wheel": the audience does not know those words. The text is
-  in the ink, not the second: the second marks the span. It stays up while
-  the span changes style at click 5.
+  in the ink, not the second: the second marks the span.
 - **The first two lines are callouts** (`WatchCallout.vue`), in the
   callout type, next to their gears, with an ink leader each: to the small
   gear, then to the big one. They are not in the text's column, so they read
   as labels on the picture, as on the Escapement slide. They go with the
-  span at click 6: they name its teeth. Not keyword callouts: each leader points at the
+  span at click 5: they name its teeth. Not keyword callouts: each leader points at the
   gear that the whole label names, so the whole label is the callout word,
   and a leader in the second would merge with the span. The leaders aim at
   the arbors and end `LEADER_GAP` px outside the tip circles, which do not
@@ -424,7 +416,7 @@ spin.
   competed with the reading: the eye is on the new words just as the teeth
   flash. The leader joins the words to the gear as they are read, and the
   span, already in the second, shows the teeth.
-- **At click 6, the rest of the Escapement slide's mechanism fades in**
+- **At click 5, the rest of the Escapement slide's mechanism fades in**
   (`watchClicks`): everything that the talk has explained so far, with the
   [drive arrow](#the-drive-arrow) on the fourth wheel. The camera
   frames the gears at every click (`watchView`), so it does not move: the
@@ -432,7 +424,7 @@ spin.
   on the left. The span and the callouts go, and the rule stays. The pallet is back, so the spin ends at the same click
   (`watchSpin: false`): the gears stop at the next tooth, and then tick with
   the escape wheel.
-- **At click 7, the seconds hand fades in**, on the fourth wheel's arbor. The
+- **At click 6, the seconds hand fades in**, on the fourth wheel's arbor. The
   fourth wheel turns once a minute as the mechanism ticks, so the hand keeps
   real time. Then its text fades in, under the rule: "One turn a minute",
   "The second hand!" So all the slide's text shows at the end. Each line
@@ -442,11 +434,11 @@ spin.
   "seconds hand". The text does not say that the hand is the first part of
   the watch that we read: the hand shows it.
 - **The rule and the second hand's text have an outline in the paper's
-  colour**, as on the Gear Train slide: at click 7 the seconds hand turns
+  colour**, as on the Gear Train slide: at click 6 the seconds hand turns
   under them.
-- **When a click adds text (clicks 2, 3, 4 and 7), the text before it dims**
+- **When a click adds text (clicks 2, 3, 4 and 6), the text before it dims**
   ([slide-patterns.md](slide-patterns.md#text-dims)), as on the Escapement slide: the newest line is the one to read.
-  At click 7 the dim waits for the hand, as the new text does.
+  At click 6 the dim waits for the hand, as the new text does.
 
 ## The Gear Train slide
 
@@ -609,14 +601,13 @@ Then the mechanism fades out. The arrow remains alone for one second, then fades
 Only then does the camera change to the spring view and the next slide appear.
 The slide declares these two groups with `watchLinger`. Direct jumps and printed pages show the spring immediately.
 
-| Click | Stage          | What shows, and what happens                                                                                                                                                                                                                                                                                                                                                                    |
-| ----- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0     | `free`         | the mainspring and the barrel arbor, at rest, and "Not back-and-forth / One slow unwind"                                                                                                                                                                                                                                                                                                        |
-| 1     | `wound`        | the stud and the dashed rest shape fade in, and the stud flashes; then the key fades in, turns the arbor a third of a turn three times, with a pause after each, and fades out. The spring winds; "Winding causes tension" fades in, and the text before it dims                                                                                                                                |
-| 2     | `released`     | the stud flashes and is gone at once (`watchCut`); the spring uncoils at once, its inner end still on the arbor, until it lies on its rest shape again                                                                                                                                                                                                                                          |
-| 3     | `barrel`       | the rest shape fades out; "Unwinding drives barrel" fades in, and the text before it dims; the camera zooms out until the movement, from the barrel to the balance, fills the slide band (a trial); the barrel and the rest of the watch, but the hour hand, fade in, still; the barrel and the centre pinion flash. The key winds the spring, and the watch starts when the key starts to turn |
-| 4     | `barrel again` | a trial, to compare with click 3: the spring is let down at once and the watch stops, and the camera fits the train in the picture band. Then the key winds the spring, and the watch starts, as at click 3                                                                                                                                                                                     |
-| 5     | `run down`     | "6 hours in 6 seconds" fades in, and the text before it dims; a time-lapse, until the barrel has turned once and the spring is let down. Then the watch stops                                                                                                                                                                                                                                   |
+| Click | Stage      | What shows, and what happens                                                                                                                                                                                                                                                                                                                                                          |
+| ----- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0     | `free`     | the mainspring and the barrel arbor, at rest, and "Not back-and-forth / One slow unwind"                                                                                                                                                                                                                                                                                              |
+| 1     | `wound`    | the stud and the dashed rest shape fade in, and the stud flashes; then the key fades in, turns the arbor a third of a turn three times, with a pause after each, and fades out. The spring winds; "Winding causes tension" fades in, and the text before it dims                                                                                                                      |
+| 2     | `released` | the stud flashes and is gone at once (`watchCut`); the spring uncoils at once, its inner end still on the arbor, until it lies on its rest shape again                                                                                                                                                                                                                                |
+| 3     | `barrel`   | the rest shape fades out; "Unwinding drives barrel" fades in, and the text before it dims; the camera zooms out until the movement, from the barrel to the balance, fills the slide band; the barrel and the rest of the watch, but the hour hand, fade in, still; the barrel and the centre pinion flash. The key winds the spring, and the watch starts when the key starts to turn |
+| 4     | `run down` | "6 hours in 6 seconds" fades in, and the text before it dims; a time-lapse, until the barrel has turned once and the spring is let down. Then the watch stops                                                                                                                                                                                                                         |
 
 - **The view fits the mainspring and its arbor** (`watchView`) at clicks 0
   to 2, so their height fills the picture band ([Fitted views](#fitted-views)),
@@ -624,20 +615,12 @@ The slide declares these two groups with `watchLinger`. Direct jumps and printed
   ribbon and the key stands up. From the Gear Train slide, no piece is on
   both slides, so the old picture fades out, the camera jumps, and the
   spring fades in ([The one rule](#the-one-rule)).
-- **Clicks 3 and 4 are trials, to choose a zoom.** Click 3 fits the
-  movement from the barrel to the balance in the slide band, behind the
-  title. The pallet fork is not in that list: it is inside the others, and
-  its extent is the whole circle about its pivot. Click 4 fits only the
-  train, from the barrel to the escape wheel, in the picture band. So the
-  escape wheel has the Gears slide's clearance below the subtitle, and the
-  balance and the fork, which only swing, may run up behind the subtitle. At click 4 the spring is let down at once, at the click
-  (`barrel again` in `watch/mainspring.ts`), so the camera moves to a watch
-  that has stopped, and the key winds it again. The time-lapse keeps click
-  4's view. Once a zoom is chosen, drop the other click, and `barrel again`.
-  Click 4 does not flash: its pieces are on the screen already, so a flash
-  would play before the camera moves. If click 3 is dropped, move its
-  `watchFlash` to click 4: its pieces then fade in first, so they flash
-  after the zoom.
+- **From click 3, the view fits the movement, from the barrel to the
+  balance, in the slide band**, behind the title. The pallet fork is not in
+  that list: it is inside the others, and its extent is the whole circle
+  about its pivot. The time-lapse keeps this view. Not an oversight: a view
+  of the train alone, in the picture band, was smaller, and the user chose
+  this one.
 - **The stud goes at once at click 2**, after its flash, so the spring
   moves as soon as nothing holds it: a fade would leave a stud that holds
   nothing. Going back, it fades in after the spring has coiled again.
@@ -697,7 +680,7 @@ The slide declares these two groups with `watchLinger`. Direct jumps and printed
 - **The text says that this spring is not the hairspring.** The spring
   looks like the Hairspring slide's, so the title names it, and the first text
   says what makes it different: "Not back-and-forth / One slow unwind".
-  Clicks 1, 3 and 5 each add a paragraph, and no text leaves. When a
+  Clicks 1, 3 and 4 each add a paragraph, and no text leaves. When a
   paragraph shows, the paragraphs before it dim
   ([slide-patterns.md](slide-patterns.md#text-dims)), as on the Balance
   Wheel slide. The text is where the Gears and Gear Train slides' text is,
@@ -790,11 +773,11 @@ The tilt is 20 at every click, so the stack of the motion works shows.
 - **The one-step hand turns backwards.** A wheel turns the other way from the
   pinion that drives it. At the mechanism's speed an hour hand moves 0.5° a
   minute, so it does not show; the speaker notes say it.
-- **The view at clicks 0 to 2 and 7 is the Mainspring slide's last view**
-  (the train, from the barrel to the escape wheel, in the picture band), so
-  the step from it does not move the camera. The dial's ring and the crown
-  run behind the text there; the text has the paper's outline. Clicks 3 to 6
-  fit the centre wheel. The text is where the Gear Train slide's is.
+- **The view at clicks 0 to 2 and 6 is the Mainspring slide's last view**
+  (the movement, from the barrel to the balance, in the slide band), so
+  the step from it does not move the camera. The movement runs behind the
+  title and the text there; they have the paper's outline. Clicks 3 to 5
+  fit the centre wheel, in the picture band. The text is where the Gear Train slide's is.
   Each text comes after the motion of its click (`after-watch`).
 
 ## Balance rim motion
@@ -854,21 +837,21 @@ wheel and raised strap, the Mainspring slide's props, and the motion works
 with the Hour Hand slide's one-step hour wheel (`inAll: false`,
 `webgl/scene.ts`).
 
-| Pieces                                                                                | What they are                                                                                     |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `escape wheel`, `fourth wheel`, `third wheel`, `centre wheel`                         | a train wheel with its hub                                                                        |
-| `escape pinion`, `fourth pinion`, … ; `escape arbor`, `fourth arbor`, …               | its pinion; its arbor, which stands on the wheel                                                  |
-| `barrel`, `mainspring`, `barrel arbor`                                                | the barrel; the arbor has the key's square                                                        |
-| `balance wheel`, `balance staff`, `hairspring`, `collet`, `stud`                      | the balance wheel with its screws, and the spring                                                 |
-| `roller`, `impulse jewel`, `pallet fork`                                              | the rest of the escapement                                                                        |
-| `fourth wheel span`, `escape pinion span`; `… span wash`; `… span plain`              | the Gears slide's span, solid; in the flash's colours (a trial); in the gear's own inks, to flash |
-| `escape wheel drive`, `fourth wheel drive`, `third wheel drive`, `centre wheel drive` | the [drive arrow](#the-drive-arrow) on that wheel                                                 |
-| `one-step wheel`, `raised strap`                                                      | the Gear Train slide's one-step wheel, and the strap above it                                     |
-| `cannon pinion`, `minute wheel`, `minute pinion`, `minute arbor`, `hour wheel`        | the [motion works](#the-motion-works)                                                             |
-| `one-step hour wheel`, `one-step hour hand`                                           | the Hour Hand slide's one-step wheel, and its hand                                                |
-| `mainspring stud`, `mainspring rest`, `winding key`                                   | the Mainspring slide's props; the story shows the key                                             |
-| `seconds hand`, `minute hand`, `hour hand`, `centre pivot`, `chapter ring`            | the dial side                                                                                     |
-| `case band`, `strap`, `lug`, `crown`                                                  | the case                                                                                          |
+| Pieces                                                                                | What they are                                                                    |
+| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `escape wheel`, `fourth wheel`, `third wheel`, `centre wheel`                         | a train wheel with its hub                                                       |
+| `escape pinion`, `fourth pinion`, … ; `escape arbor`, `fourth arbor`, …               | its pinion; its arbor, which stands on the wheel                                 |
+| `barrel`, `mainspring`, `barrel arbor`                                                | the barrel; the arbor has the key's square                                       |
+| `balance wheel`, `balance staff`, `hairspring`, `collet`, `stud`                      | the balance wheel with its screws, and the spring                                |
+| `roller`, `impulse jewel`, `pallet fork`                                              | the rest of the escapement                                                       |
+| `fourth wheel span`, `escape pinion span`; `… span plain`                             | the Gears slide's span, in the flash's colours; in the gear's own inks, to flash |
+| `escape wheel drive`, `fourth wheel drive`, `third wheel drive`, `centre wheel drive` | the [drive arrow](#the-drive-arrow) on that wheel                                |
+| `one-step wheel`, `raised strap`                                                      | the Gear Train slide's one-step wheel, and the strap above it                    |
+| `cannon pinion`, `minute wheel`, `minute pinion`, `minute arbor`, `hour wheel`        | the [motion works](#the-motion-works)                                            |
+| `one-step hour wheel`, `one-step hour hand`                                           | the Hour Hand slide's one-step wheel, and its hand                               |
+| `mainspring stud`, `mainspring rest`, `winding key`                                   | the Mainspring slide's props; the story shows the key                            |
+| `seconds hand`, `minute hand`, `hour hand`, `centre pivot`, `chapter ring`            | the dial side                                                                    |
+| `case band`, `strap`, `lug`, `crown`                                                  | the case                                                                         |
 
 A new part of the model names its piece when it is drawn (`solids.add`), and
 a slide can show it at once. `watch/deck.test.ts` fails if a slide names a
@@ -939,7 +922,8 @@ the band goes.
 
 **The slide band** (`watchBand: slide`) is the slide's whole height, with
 the picture band's bottom margin at the top too: for a picture that may run
-behind the title (the Mainspring slide's click 3).
+behind the title (the Mainspring slide from click 3, and the Hour Hand
+slide).
 
 **A picture that takes less than 60% of the slide's width is centred in the
 slide's left 60%** (`FIT_FOCUS`). A wider picture starts at `FIT_LEFT`. The
@@ -1089,7 +1073,7 @@ which dims halfway (`--text-dimmed`;
 | `watchTilt: 20`                                             | degrees, towards the viewer's side (default 0)                                                                                                                                                                                            |
 | `watchAtRest: true`                                         | the balance is at rest, and the mechanism with it; `false` (default): it swings. To rest, it waits for its next extreme                                                                                                                   |
 | `watchSpin: 135`                                            | the train spins freely, at this speed in degrees a second of the escape wheel, faster than the mechanism's 12 ([The free spin](#the-free-spin)); `false` (default): it follows the mechanism, and a spin stops at the pallet              |
-| `watchMainspring: wound`                                    | the Mainspring slide's stage: `free`, `wound`, `released`, `barrel`, `barrel again` (a trial) or `run down` ([The Mainspring slide](#the-mainspring-slide)); it says when the watch runs, so not with `watchAtRest`                       |
+| `watchMainspring: wound`                                    | the Mainspring slide's stage: `free`, `wound`, `released`, `barrel` or `run down` ([The Mainspring slide](#the-mainspring-slide)); it says when the watch runs, so not with `watchAtRest`                                                 |
 | `watchDim: [barrel]`                                        | the pieces drawn dimmed, as at opacity 0.35 over the paper (`WATCH_DIM`), from that click on; `false` (default): none ([Dimmed pieces](#dimmed-pieces))                                                                                   |
 | `watchTickTock: true`                                       | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `false` (default): they do not                                                                                                            |
 | `watchFlash: [balance wheel]`                               | pieces that flash, on the step forward into the slide (on the slide) or into the block's click (in `watchClicks`) only; it does not carry on to later clicks ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash")       |

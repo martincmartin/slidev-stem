@@ -60,7 +60,6 @@ test("the mainspring winds only where its outer end is held: by the stud, or in 
         wound: "stud",
         released: "nothing",
         barrel: "barrel",
-        "barrel again": "barrel",
         "run down": "barrel",
       }[state.mainspring];
       assert.equal(holder, wanted, `${title} @${String(click)}`);

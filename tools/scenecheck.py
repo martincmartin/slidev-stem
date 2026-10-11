@@ -14,10 +14,9 @@ which theme variable (`--palette-ink`, ...) gives each ink its colour, so the
 check holds for any theme:
 
   * every fill and every line is in an art ink: an ink whose variable is one
-    of the art roles (`lib.ART_ROLES`). One more ink is allowed as a fill
-    only: the mark, solid (`MARK_ROLE`). For a trial, a mark may also be in
-    the flash's colours: a solid fill in `MARK_WASH_ROLE`, and lines in
-    `MARK_ROLE` on that mesh only;
+    of the art roles (`lib.ART_ROLES`). A mark is also allowed, in the
+    flash's colours: a solid fill in `MARK_FILL_ROLE`, and lines in
+    `MARK_LINE_ROLE` on that mesh only;
   * every line width is on the stroke ladder (2, 2.5, 3 and 4 CSS px, within
     5%): line widths in a scene are CSS px on the screen, at every zoom;
   * opacities follow the docs: a line is solid, except a line of the detail
@@ -37,14 +36,12 @@ from dataclasses import dataclass
 import lib
 
 OPACITY_TOLERANCE = 1e-9
-# A scene may fill a mark on part of a part in this role, solid, to say "look
-# here" (docs/illustrations.md, "Colour"; the teeth on the Gears slide of
-# `watches`). It is not an art colour: no line is drawn in it.
-MARK_ROLE = "second"
-# A trial (the Gears slide of `watches`, until the talk keeps one style): a
-# mark in the flash's colours, a solid fill in the second's wash with its
-# lines in the second. Delete it if the talk keeps the solid mark.
-MARK_WASH_ROLE = "second-wash"
+# A scene may draw a mark on part of a part in the flash's colours, to say
+# "look here" (docs/illustrations.md, "Colour"; the teeth on the Gears slide
+# of `watches`): a solid fill in the second's wash, with its lines in the
+# second. Neither is an art colour, so only a mark's mesh may use them.
+MARK_FILL_ROLE = "second-wash"
+MARK_LINE_ROLE = "second"
 
 
 @dataclass(frozen=True)
@@ -108,7 +105,7 @@ def fill_findings(mesh: str, fill: dict[str, object], inks: list[Ink]) -> list[F
         return [problem]
     ink = inks[int(str(fill["ink"]))]
     opacity = float(str(fill["opacity"]))
-    if ink.role in (MARK_ROLE, MARK_WASH_ROLE):
+    if ink.role == MARK_FILL_ROLE:
         if abs(opacity - 1) > OPACITY_TOLERANCE:
             return [
                 Finding(mesh, f"fill opacity {opacity:g} of a mark should be 1: solid")
@@ -134,23 +131,23 @@ def fill_findings(mesh: str, fill: dict[str, object], inks: list[Ink]) -> list[F
     return [finding for finding in found if finding]
 
 
-def is_wash_mark(fill: dict[str, object] | None, inks: list[Ink]) -> bool:
-    """Is a fill a mark in the flash's colours (`MARK_WASH_ROLE`)? Its mesh
-    may have lines in `MARK_ROLE`."""
+def is_mark(fill: dict[str, object] | None, inks: list[Ink]) -> bool:
+    """Is a fill a mark's (`MARK_FILL_ROLE`)? Its mesh may have lines in
+    `MARK_LINE_ROLE`."""
     if fill is None or malformed("", "fill", fill, ("opacity",), len(inks)):
         return False
-    return inks[int(str(fill["ink"]))].role == MARK_WASH_ROLE
+    return inks[int(str(fill["ink"]))].role == MARK_FILL_ROLE
 
 
 def style_findings(
-    mesh: str, style: dict[str, object], inks: list[Ink], wash_mark: bool
+    mesh: str, style: dict[str, object], inks: list[Ink], mark: bool
 ) -> list[Finding]:
-    """`wash_mark`: the mesh is a mark in the flash's colours, so a line in
-    `MARK_ROLE` is allowed."""
+    """`mark`: the mesh is a mark, so a line in `MARK_LINE_ROLE` is
+    allowed."""
     if problem := malformed(mesh, "line", style, ("width", "opacity"), len(inks)):
         return [problem]
     ink = inks[int(str(style["ink"]))]
-    mark_line = wash_mark and ink.role == MARK_ROLE
+    mark_line = mark and ink.role == MARK_LINE_ROLE
     found = [None if mark_line else ink_finding(mesh, "line", ink)]
     width = float(str(style["width"]))
     if not any(
@@ -187,9 +184,9 @@ def check(scene: dict[str, object]) -> tuple[int, list[Finding]]:
         name = str(mesh["name"])
         if mesh["fill"] is not None:
             findings += fill_findings(name, mesh["fill"], inks)
-        wash_mark = is_wash_mark(mesh["fill"], inks)
+        mark = is_mark(mesh["fill"], inks)
         for style in mesh["lineStyles"]:
-            findings += style_findings(name, style, inks, wash_mark)
+            findings += style_findings(name, style, inks, mark)
     seen: set[tuple[str, str]] = set()
     unique = []
     for finding in findings:  # the same fault in several meshes is one line each

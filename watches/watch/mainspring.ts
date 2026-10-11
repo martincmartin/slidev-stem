@@ -12,14 +12,12 @@
 //   released: the outer end is let go, and the spring uncoils to its rest
 //   barrel: in the barrel, the key winds it again; the watch starts when the
 //     key starts to turn
-//   barrel again: a trial, to compare `barrel` in another view: the spring
-//     is let down at once, the watch stops, and the key winds it again
 //   run down: a time-lapse: the watch runs fast until the barrel has turned
 //     once, and the spring is let down. Then the watch stops
-// The stages up to `barrel again` are places on one line of story time
-// (s). A step forward plays the line from where it is, from when the stage's
-// change ends (the stud fades in, then the key winds); a let-down at its start
-// happens at once, at the click. A step back cuts to its stage's pose at once:
+// The stages up to `barrel` are places on one line of story time (s). A step
+// forward plays the line from where it is, from when the stage's change ends
+// (the stud fades in, then the key winds). A step back cuts to its stage's
+// pose at once:
 // going back does not run time backward, so a key never unwinds. The
 // time-lapse is a physical process: the train only goes forward, so a step
 // back during it stops the train at its next tooth. A jump goes to the target
@@ -37,17 +35,9 @@ export const MAINSPRING_STAGES = [
   "wound",
   "released",
   "barrel",
-  "barrel again",
   "run down",
 ] as const;
 export type MainspringStage = (typeof MAINSPRING_STAGES)[number];
-
-/** The stages at which the spring is wound in the barrel, and the watch
- *  runs: `barrel` and its trials. */
-export const BARREL_STAGES: ReadonlySet<MainspringStage> = new Set([
-  "barrel",
-  "barrel again",
-]);
 
 /** s: each turn of the key, and the pause after it. */
 export const KEY_TURN_SECONDS = 0.5;
@@ -66,8 +56,6 @@ export const UNCOIL_SECONDS = 2;
 /** How fast the uncoil settles: a critically damped spring's return, with
  *  this many time constants in UNCOIL_SECONDS. */
 const UNCOIL_RATE = 7;
-/** s: a let-down at once: the line needs a length for it. */
-const LET_DOWN_SECONDS = 0.001;
 /** s: before the time-lapse starts, while its words fade in. */
 export const LAPSE_WAIT_SECONDS = 0.5;
 /** s: "6 hours in 6 seconds": one turn of the barrel. */
@@ -86,18 +74,14 @@ export interface MainspringPose {
 }
 
 /** A part of the line: the key's turns (which wind the spring, and start
- *  the watch if it is in the barrel), the uncoil, or a let-down at once
- *  (which stops the watch). */
+ *  the watch if it is in the barrel), or the uncoil. */
 type Segment =
   | { kind: "key"; starts: boolean; seconds: number }
-  | { kind: "uncoil"; seconds: number }
-  | { kind: "let down"; seconds: number };
+  | { kind: "uncoil"; seconds: number };
 
 const LINE: readonly Segment[] = [
   { kind: "key", starts: false, seconds: KEY_SECONDS },
   { kind: "uncoil", seconds: UNCOIL_SECONDS },
-  { kind: "key", starts: true, seconds: KEY_SECONDS },
-  { kind: "let down", seconds: LET_DOWN_SECONDS },
   { kind: "key", starts: true, seconds: KEY_SECONDS },
 ];
 
@@ -119,35 +103,21 @@ const STAGE_PLACES = new Map<MainspringStage, number>([
   ["wound", placeOf(1)],
   ["released", placeOf(2)],
   ["barrel", placeOf(3)],
-  ["barrel again", placeOf(5)],
 ]);
 
-/** The places where the key has wound the spring in the barrel: a
- *  time-lapse starts from one, and ends where its key started. */
-const WOUND_IN_BARREL = [placeOf(3), placeOf(5)];
-
-/** How the watch runs: from the first turn of a key that starts it to the
- *  end of the next let-down, as story times. */
-const RUNS: readonly [number, number][] = LINE.flatMap((segment, index) => {
-  if (segment.kind !== "key" || !segment.starts) return [];
-  const next = LINE.findIndex(
-    (later, laterIndex) => laterIndex > index && later.kind === "let down",
-  );
-  return [
-    [
-      placeOf(index) + FADE_SECONDS,
-      next === -1 ? Infinity : placeOf(next + 1),
-    ] as [number, number],
-  ];
-});
+/** Story times from which the watch runs: the first turn of each key that
+ *  starts it. Nothing on the line stops it: only the time-lapse lets the
+ *  spring down. */
+const RUNS_FROM: readonly number[] = LINE.flatMap((segment, index) =>
+  segment.kind === "key" && segment.starts
+    ? [placeOf(index) + FADE_SECONDS]
+    : [],
+);
 
 /** The place of a stage on the line. `run down` is a time-lapse from the
- *  first place at or after `from` where the spring is wound in the barrel. */
-function placeFor(stage: MainspringStage, from: number): number {
-  if (stage === "run down") {
-    const wound = WOUND_IN_BARREL.find((place) => place >= from - 1e-9);
-    return wound ?? placeOf(PLACES.length - 1);
-  }
+ *  end of the line, where the key has wound the spring in the barrel. */
+function placeFor(stage: MainspringStage): number {
+  if (stage === "run down") return placeOf(PLACES.length - 1);
   const place = STAGE_PLACES.get(stage);
   if (place === undefined) throw new Error(`no place for ${stage}`);
   return place;
@@ -183,11 +153,8 @@ export function linePose(time: number): MainspringPose {
   let start = 0;
   for (const segment of LINE) {
     const local = Math.min(Math.max(time - start, 0), segment.seconds);
-    if (segment.kind === "uncoil" || segment.kind === "let down") {
-      const fraction = local / segment.seconds;
-      const left =
-        wind *
-        (1 - (segment.kind === "uncoil" ? uncoiled(fraction) : fraction));
+    if (segment.kind === "uncoil") {
+      const left = wind * (1 - uncoiled(local / segment.seconds));
       if (time < start + segment.seconds) return { arbor, wind: left, key: 0 };
       wind = 0;
     } else {
@@ -352,35 +319,28 @@ export class MainspringClock {
     }
     if (instantly || fromTarget === null) {
       // nothing of the story was on the screen: it starts at its stage
-      this.cut(placeFor(stage, 0), now);
+      this.cut(placeFor(stage), now);
       this.runDown = stage === "run down";
       return;
     }
     const lapsing = this.running(now)?.kind === "lapse";
     if (stage === "run down" && (lapsing || this.runDown)) return;
     const from = this.lineAt(now);
-    const to = placeFor(stage, from);
+    const to = placeFor(stage);
     if (stage !== "run down" && (lapsing || this.runDown || to <= from)) {
       // a step back cuts to its stage: time does not run backward
       this.cut(to, now);
       return;
     }
-    // a step forward plays from where the line is; a let-down at its start
-    // happens at once
+    // a step forward plays from where the line is
     this.cut(from, now);
-    let start = from;
-    const next = LINE[PLACES.indexOf(from)];
-    if (next?.kind === "let down" && to >= from + next.seconds) {
-      start += next.seconds;
-      this.time = start;
-    }
     const startMs = Math.max(after, now);
-    this.moves.push({ kind: "play", from: start, to, startMs });
+    this.moves.push({ kind: "play", from, to, startMs });
     if (stage === "run down") {
       this.moves.push({
         kind: "lapse",
         from: to,
-        startMs: startMs + (to - start) * 1000,
+        startMs: startMs + (to - from) * 1000,
       });
     }
   }
@@ -396,14 +356,14 @@ export class MainspringClock {
   }
 
   /** Whether the watch runs at `now`: from the key's first turn in the
-   *  barrel to a let-down or the end of the time-lapse; `null` on a slide
+   *  barrel to the end of the time-lapse; `null` on a slide
    *  without the story, which sets it itself. */
   runs(now: number): boolean | null {
     if (this.target === null) return null;
     if (this.lapseAt(now) !== null) return true;
     if (this.runDown) return false;
     const time = this.lineAt(now);
-    return RUNS.some(([from, to]) => time >= from && time < to);
+    return RUNS_FROM.some((from) => time >= from);
   }
 
   /** The beats that the time-lapses have moved the mechanism on, at `now`.
@@ -435,6 +395,6 @@ export class MainspringClock {
 
 /** The pose that a stage shows once its moves end: for a still. */
 export function stagePose(stage: MainspringStage): MainspringPose {
-  const line = linePose(placeFor(stage, 0));
+  const line = linePose(placeFor(stage));
   return stage === "run down" ? { arbor: line.arbor, wind: 0, key: 0 } : line;
 }

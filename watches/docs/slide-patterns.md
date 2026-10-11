@@ -189,12 +189,11 @@ camera jumps, and the fourth wheel and the escape wheel's pinion fade in
 four teeth on each gear flash, and then stay in the flash's colours (the
 span). Clicks 2 to 4 add the text one line at a
 time: a callout to the small gear, a callout to the big gear, and the rule
-([watch.md](watch.md#the-gears-slide)). At click 5, the span is
-solid, and the text stays: two styles to compare. At click 6,
+([watch.md](watch.md#the-gears-slide)). At click 5,
 the rest of the Escapement slide's mechanism fades in around them, the span
 and the callouts go, the rule stays, and the gears tick with it (`watchClicks`). The drive arrow
 moves from the escape wheel to the fourth wheel: the push still comes from
-something the audience cannot see. At click 7, the
+something the audience cannot see. At click 6, the
 seconds hand fades in, and then its text, under the rule. Each click
 that adds text dims the text before it ([Text dims](#text-dims)).
 The Gear Train slide follows it: the camera zooms out from the same picture,
@@ -219,9 +218,8 @@ the dashed rest shape fades in, and it flashes; a key winds it, and
 and the spring uncoils to its rest shape. At click 3 the camera zooms out
 to the whole movement, as tall as the slide, behind the title; the barrel
 and the rest of the watch fade in, still, and the key winds the spring,
-which starts the watch; "Unwinding drives barrel" fades in. Click 4 plays
-click 3 again with the movement under the title (clicks 3 and 4 are trials,
-to choose the zoom). At click 5, a time-lapse, "6 hours in 6 seconds", lets
+which starts the watch; "Unwinding drives barrel" fades in. At click 4, a
+time-lapse, "6 hours in 6 seconds", lets
 the spring down, and the watch stops. Each click that adds text dims the
 text before it ([Text dims](#text-dims)). Going back cuts to the earlier click's state: no key
 unwinds the spring.

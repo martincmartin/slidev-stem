@@ -20,7 +20,7 @@
 //   watchTickTock: true: the words "tick" and "tock" show at each strike of
 //     the jewel on the fork; false (default): they do not (`tickTockState`)
 //   watchMainspring: a stage of the Mainspring slide's story (free, wound,
-//     released, barrel, barrel again, run down: watch/mainspring.ts); it also says
+//     released, barrel, run down: watch/mainspring.ts); it also says
 //     when the balance swings, so it is not set with watchAtRest
 //   watchDim: pieces drawn dimmed (WATCH_DIM), to keep the eye on the
 //     others; false (default): none
@@ -46,7 +46,7 @@ import type { Mesh, Piece, View } from "../webgl/scene.ts";
 import type { MoveWith, StageState } from "../webgl/timeline.ts";
 import { FIT_BANDS, fittedView } from "./generate.ts";
 import type { FitBand, Watch } from "./generate.ts";
-import { BARREL_STAGES, MAINSPRING_STAGES } from "./mainspring.ts";
+import { MAINSPRING_STAGES } from "./mainspring.ts";
 import type { MainspringStage } from "./mainspring.ts";
 import type { WatchModelState } from "./model.ts";
 
@@ -424,7 +424,7 @@ export function watchState(
     settled:
       mainspring === null
         ? (now.watchAtRest ?? false)
-        : !BARREL_STAGES.has(mainspring),
+        : mainspring !== "barrel",
     spin: now.watchSpin ?? null,
     mainspring,
     dim: now.watchDim ?? null,
