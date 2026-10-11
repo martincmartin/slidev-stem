@@ -359,7 +359,7 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
 
 <WatchCallout v-click="3" class="gears-callout" bent :to="marks.wheel" :stop="LEADER_GAP" :clear="[marks.wheelTips]" :left="560" :top="233"><span class="callout-word">A quarter of the big gear</span></WatchCallout>
 
-<div v-click="4" class="gears-sentence gears-rule">Twice the radius, half<br>the speed.  Exactly.</div>
+<div v-click="4" class="gears-sentence gears-rule">Twice the circumference,<br>half the speed.  Exactly.</div>
 
 </div>
 
@@ -521,11 +521,13 @@ clicks: 4
 
 From once a minute to once an hour
 
-<!-- Each text waits for the watch's change at its click to end, with its
-flash (after-watch, style.css): it reads what the picture has just shown. -->
+<!-- Click 1's text fades in at the click, as the camera starts to move: it
+says why the camera untilts and zooms out. Each later text waits for the
+watch's change at its click to end, with its flash (after-watch, style.css):
+it reads what the picture has just shown. -->
 
 <div v-click.hide="2" class="gt-sentence">
-  <div v-click="1" class="after-watch">60:1 gear ratio</div>
+  <div v-click="1">minute:hour = 60:1</div>
 </div>
 
 <!-- The stages stay at click 4, dimmed, above the minute hand's text: a
@@ -588,7 +590,7 @@ The camera zooms out, to make room for the wheels that drive the fourth wheel. T
 
 The second hand turns once a minute. A minute hand must turn once an hour: sixty times slower.
 
-[click] One gear could do it: sixty times the teeth of the small gear, 240 teeth. The camera pulls back, and the arrow goes. The gear and the small gear that it drives fade in, then the watch around them, and the two gears flash: the big one is bigger than the watch. Then the text: a 60 to 1 gear ratio.
+[click] The text comes first: minute to hour is 60 to 1. One gear could do it: sixty times the teeth of the small gear, 240 teeth. The camera pulls back, and the arrow goes. The gear and the small gear that it drives fade in, then the watch around them, and the two gears flash: the big one is bigger than the watch.
 
 [click] So it takes two more pairs of gears. The third wheel, and the small gear on the fourth wheel that it drives, fade in and flash. The arrow is on the third wheel now: the push comes from further back. 30 teeth drive 4: seven and a half times slower. Then the text: two stages, 7.5 to 1.
 

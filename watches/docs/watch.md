@@ -391,9 +391,9 @@ spin.
     leader are in the second too, and would merge with the span.
 - **The text reads the span** (in `slides.md`, on the right of the gears),
   one line a click (clicks 2 to 4): "Half of the small gear", "A quarter
-  of the big gear", "Twice the radius, half the speed. Exactly." The same length
-  of rim is half of one gear and a quarter of the other, so the big gear is
-  twice the size; the rule follows. "Twice … half" says the direction of
+  of the big gear", "Twice the circumference, half the speed. Exactly." The same
+  length of rim is half of one gear and a quarter of the other, so the big
+  gear has twice the circumference; the rule follows. "Twice … half" says the direction of
   the ratio (the speeds go as the sizes, upside down), and "exactly" holds
   because teeth cannot slip. The words say "small gear" and "big gear", not
   "pinion" and "wheel": the audience does not know those words. The text is
@@ -498,13 +498,16 @@ leaves: $7.5 \times 8 = 60$.
   top and the right of the slide, through the title, and the crown is at the
   right edge. The strap and the lugs are off the slide. The hands show 3:44
   (`design.hands`), so most of the minute hand is off the slide on the left.
-- **The text reads each click's picture**, on the right, where the Gears
-  slide's text is: "60:1 gear ratio" at click 1; "Two stages:" and "7.5:1"
-  at click 2; "8:1" below them at click 3. The ratios are those of the wheels
-  that the click adds. At click 4, "Makes a full turn once an hour. The
-  minute hand!" comes below the stages, as the Gears slide says it of the
-  second hand. Each text comes after all the motion of its click, flash
-  included (`after-watch`, [slide-patterns.md](slide-patterns.md#text-fades)).
+- **Click 1's text comes first**: "minute:hour = 60:1", on the right, where
+  the Gears slide's text is. It fades in at the click, as the camera starts
+  to untilt and zoom out, so the audience knows why the camera moves.
+- **The later texts read each click's picture**, in the same place:
+  "Two stages:" and "7.5:1" at click 2; "8:1" below them at click 3. The
+  ratios are those of the wheels that the click adds. At click 4, "Makes a
+  full turn once an hour. The minute hand!" comes below the stages, as the
+  Gears slide says it of the second hand. Each of these texts comes after all
+  the motion of its click, flash included (`after-watch`,
+  [slide-patterns.md](slide-patterns.md#text-fades)).
 - **At click 4 the stages stay, dimmed to 0.5**, as the Escapement slide's
   earlier callouts are: a recap for anyone who missed clicks 2 and 3, while
   the new text stays the focus. They dim when the new text fades in. The
