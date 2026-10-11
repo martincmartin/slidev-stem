@@ -162,16 +162,17 @@ second the pallet comes back and stops it.
 The Gears slide follows it: the Escapement slide's picture fades out, the
 camera jumps, and the fourth wheel and the escape wheel's pinion fade in
 (`watchMoveWith: none`), turning freely (`watchSpin`). At click 1,
-four teeth on each gear turn the second (the span), in the flash's colours,
-and clicks 2 to 4 add the text one line at a time: a callout to the small
-gear, a callout to the big gear, and the rule
+four teeth on each gear flash, and then stay in the flash's colours (the
+span). Clicks 2 to 4 add the text one line at a
+time: a callout to the small gear, a callout to the big gear, and the rule
 ([watch.md](watch.md#the-gears-slide)). At click 5, the span is
 solid, and the text stays: two styles to compare. At click 6,
 the rest of the Escapement slide's mechanism fades in around them, the span
-and the text go, and the gears tick with it (`watchClicks`). The drive arrow
+and the callouts go, the rule stays, and the gears tick with it (`watchClicks`). The drive arrow
 moves from the escape wheel to the fourth wheel: the push still comes from
 something the audience cannot see. At click 7, the
-seconds hand fades in, and then its text.
+seconds hand fades in, and then its text, under the rule. Each click
+that adds text dims the text before it to 0.5.
 The Gear Train slide follows it: the camera zooms out from the same picture,
 to frame the train from the escape wheel to the centre wheel. Click 1 zooms
 out to the case and shows one wheel that is 60 times slower, larger than the

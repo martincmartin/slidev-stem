@@ -128,7 +128,13 @@ The widths are set in
 level, runs a fixed distance (`LeaderDesign` from `start` to `elbow`, and
 `ELBOW_RUN` in `WatchCallout.vue`; keep them equal), and then turns straight
 to the part, at one round-joined corner. Bend a leader when a straight one
-would cross another line of its label.
+would cross another line of its label. A straight leader leaves its label on
+the side that faces the part. A leader from the start of a one-line label,
+to a part on its left or below, aims at a point half the cap height in from
+the label's left edge and up from its baseline. It starts 4 px outside the
+quarter-plane that the left edge and the baseline bound. So, followed back,
+it runs into the first letter, whatever the words are (`fromEnd` on
+`WatchCallout.vue`; the Gears slide of `watches`).
 
 **A leader ends where only one part can be meant.** By default, it ends on
 the paper, 10 px outside the outline of its part (slide px, as for the

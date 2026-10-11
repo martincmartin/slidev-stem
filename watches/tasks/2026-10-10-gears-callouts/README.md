@@ -5,6 +5,10 @@ big gear" callouts, and drop the flash that came when each line had faded in.
 That flash competed with the text: the eye goes to the new words, so it
 either misses the flash, or the two pull against each other.
 
+2026-10-11: the callouts are now in the callout type, next to their gears,
+and they go with the span at click 6. They were in the text's column only
+because they started as text lines, with no leaders.
+
 ## What changed
 
 - Each of the two lines is a `WatchCallout` with an ink leader to its gear:

@@ -10,7 +10,12 @@
 // outlines, in slide px), it stops `stop` px short of where it first meets
 // one of them instead, so it ends outside them. A `bent` leader leaves the word's side that faces `to`, runs level for ELBOW_RUN
 // px, and turns there to `to`: for a word with another line of the label
-// under or over it, which a straight leader would cross. With `showLeader`
+// under or over it, which a straight leader would cross. A `fromEnd` leader
+// is for a one-line label with its part to the left or below: it aims at a
+// point half the cap height in from the label's left edge and up from its
+// baseline, and starts GAP outside the quarter-plane that the left edge and
+// the baseline bound. So, followed back, it runs into the first letter, and
+// its start does not depend on the words. With `showLeader`
 // false, the leader fades out and the label stays: for a part that moves
 // away from where the leader ends.
 //
@@ -39,6 +44,7 @@ const props = withDefaults(
     stop?: number;
     clear?: readonly (readonly Point2[])[];
     bent?: boolean;
+    fromEnd?: boolean;
     showLeader?: boolean;
     keyword?: boolean;
   }>(),
@@ -46,6 +52,7 @@ const props = withDefaults(
     stop: 0,
     clear: () => [],
     bent: false,
+    fromEnd: false,
     showLeader: true,
     keyword: false,
   },
@@ -56,6 +63,15 @@ const GAP = 4;
 /** A bent leader's level run, in px: the Hairspring slide's (`LeaderDesign`, from `start`
  *  to `elbow`, in art/diving_board.py). Keep them equal. */
 const ELBOW_RUN = 40;
+/** The label's type: the theme's sans, IBM Plex Sans, at this size (px) and
+ *  line height. Set here, not in a stylesheet, as a `fromEnd` leader is
+ *  placed from them. */
+const LABEL_SIZE = 28;
+const LABEL_LINE_HEIGHT = 1.2;
+/** IBM Plex Sans's metrics, in ems (its OS/2 and hhea tables). The font sets
+ *  USE_TYPO_METRICS, and its typo and hhea ascent and descent agree, so every
+ *  browser lays a line out with them. */
+const PLEX_SANS = { ascent: 1.025, descent: 0.275, capHeight: 0.698 };
 
 const label = useTemplateRef<HTMLDivElement>("label");
 /** The word's box in slide px: left, top, width, height. */
@@ -112,24 +128,53 @@ function straightStart(centre: Point2, width: number, height: number): Point2 {
   return [centre[0] + dx * reach, centre[1] + dy * reach];
 }
 
-const leader = computed(() => {
+/** Where a `fromEnd` leader starts: on the line from its aim, half the cap
+ *  height in from the label's left edge and up from its first baseline, to
+ *  `to`, GAP outside the quarter-plane right of the edge and above the
+ *  baseline. */
+function fromEndStart(): Point2 {
+  const halfLeading =
+    (LABEL_LINE_HEIGHT - PLEX_SANS.ascent - PLEX_SANS.descent) / 2;
+  const baseline = props.top + (halfLeading + PLEX_SANS.ascent) * LABEL_SIZE;
+  const halfCap = (PLEX_SANS.capHeight * LABEL_SIZE) / 2;
+  const aim: Point2 = [props.left + halfCap, baseline - halfCap];
+  const [dx, dy] = [props.to[0] - aim[0], props.to[1] - aim[1]];
+  const reach = Math.min(
+    dx < 0 ? (halfCap + GAP) / -dx : Infinity,
+    dy > 0 ? (halfCap + GAP) / dy : Infinity,
+  );
+  if (reach === Infinity) {
+    throw new Error("a fromEnd leader's part must be left of or below it");
+  }
+  return [aim[0] + dx * reach, aim[1] + dy * reach];
+}
+
+/** Where the leader leaves the label, then its corner if it bends; or
+ *  `undefined` while the word is not measured. */
+function corners(): Point2[] | undefined {
+  if (props.fromEnd) return [fromEndStart()];
   if (!word.value) return undefined;
   const [left, top, width, height] = word.value;
   const centre: Point2 = [left + width / 2, top + height / 2];
   // a bent leader: level from the side of the word that faces `to`
   const side = Math.sign(props.to[0] - centre[0]) || 1;
-  const corners: Point2[] = props.bent
+  return props.bent
     ? [
         [centre[0] + side * (width / 2 + GAP), centre[1]],
         [centre[0] + side * (width / 2 + GAP + ELBOW_RUN), centre[1]],
       ]
     : [straightStart(centre, width, height)];
+}
+
+const leader = computed(() => {
+  const points = corners();
+  if (!points) return undefined;
   // the last straight part ends at `to`, or short of it
-  const from = at(corners, corners.length - 1);
+  const from = at(points, points.length - 1);
   const length = Math.hypot(props.to[0] - from[0], props.to[1] - from[1]);
   const meets = firstCrossing(from, props.to, props.clear) ?? 1;
   const end = toward(from, props.to, meets * length - props.stop);
-  return `M${[...corners, end].map((point) => point.join(" ")).join(" L")}`;
+  return `M${[...points, end].map((point) => point.join(" ")).join(" L")}`;
 });
 </script>
 
@@ -153,7 +198,12 @@ const leader = computed(() => {
       ref="label"
       class="callout-label"
       :class="{ 'callout-keyword': keyword }"
-      :style="{ left: `${String(left)}px`, top: `${String(top)}px` }"
+      :style="{
+        left: `${String(left)}px`,
+        top: `${String(top)}px`,
+        fontSize: `${String(LABEL_SIZE)}px`,
+        lineHeight: String(LABEL_LINE_HEIGHT),
+      }"
     >
       <slot />
     </div>
@@ -191,9 +241,7 @@ const leader = computed(() => {
 }
 .callout-label {
   position: absolute;
-  font-size: 28px;
   font-weight: 600;
-  line-height: 1.2;
   white-space: nowrap;
 }
 .callout-keyword .callout-leader {

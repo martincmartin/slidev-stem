@@ -262,8 +262,11 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 -->
 
 ---
-watch: &gears [fourth wheel, fourth arbor, escape pinion, escape arbor]
-watchView: *gears # the camera stays when a click adds pieces
+# the camera stays when a click adds pieces
+watchView: &gears [fourth wheel, fourth arbor, escape pinion, escape arbor]
+# the span, in the gears' own colours: it cannot be seen until click 1
+# flashes it
+watch: [*gears, fourth wheel span plain, escape pinion span plain]
 # the fourth wheel's teeth reach 70 px short of the text (.gears-sentence,
 # left: 560px): this edge, plus half the outline, is 70 px left of the "A"
 watchRight: 489
@@ -282,10 +285,20 @@ watchClicks:
   # turn on. Two styles, to compare (a trial): first the flash's colours
   # (second-wash faces, second outline), while the text comes one line a
   # click (clicks 2 to 4: two callouts, then a sentence); then solid second
-  # with the gear's outline, with the text still up. No flash: each callout's
-  # leader shows which gear it means
+  # with the gear's outline, with the text still up. The span comes in
+  # with a flash, not a fade: its plain teeth flash, and when the flash
+  # ends, they go and the span shows, at once. No flash for the text: each
+  # callout's leader shows which gear it means
   1:
     watch: [*gears, fourth wheel span wash, escape pinion span wash]
+    watchFlash: [fourth wheel span plain, escape pinion span plain]
+    watchCut:
+      [
+        fourth wheel span plain,
+        escape pinion span plain,
+        fourth wheel span wash,
+        escape pinion span wash,
+      ]
   5:
     watch: [*gears, fourth wheel span, escape pinion span]
   # the rest of the Escapement slide's mechanism fades in, in this view
@@ -331,31 +344,32 @@ const marks = gearsMarks(WATCH, useSlideContext().$frontmatter);
 the label is all one callout word, in ink: not a keyword callout, whose
 second would merge with the span (docs/watch.md, "The Gears slide"). -->
 
-<div v-click.hide="6" class="gears-reading">
+<WatchCallout v-click="[2, 6]" class="gears-callout" from-end :to="marks.pinion" :stop="LEADER_GAP" :clear="[marks.pinionTips]" :left="380" :top="165"><span class="callout-word">Half of the small gear</span></WatchCallout>
 
-<WatchCallout v-click="2" class="gears-callout" :to="marks.pinion" :stop="LEADER_GAP" :clear="[marks.pinionTips]" :left="560" :top="165"><span class="callout-word">Half of the small gear</span></WatchCallout>
-
-<WatchCallout v-click="3" class="gears-callout" bent :to="marks.wheel" :stop="LEADER_GAP" :clear="[marks.wheelTips]" :left="560" :top="233"><span class="callout-word">A quarter of the big gear</span></WatchCallout>
+<WatchCallout v-click="[3, 6]" class="gears-callout" from-end :to="marks.wheel" :stop="LEADER_GAP" :clear="[marks.wheelTips]" :left="500" :top="222"><span class="callout-word">A quarter of the big gear</span></WatchCallout>
 
 <div v-click="4" class="gears-sentence gears-rule">Twice the circumference,<br>half the speed.  Exactly.</div>
 
-</div>
-
-<div v-click="7" class="gears-sentence after-watch-fade">
-  <div>Makes a full turn<br>once a minute.</div>
+<div v-click="7" class="gears-sentence gears-minute after-watch-fade">
+  <div>One turn a minute</div>
   <div>The second hand!</div>
 </div>
 
 <style>
 /* On the right of the gears, 70 px from the fourth wheel's teeth: the
-   frontmatter's watchRight follows this left, and the callouts' :left.
-   The three lines are one type, 0.7em apart: the callouts' :top steps by
-   one line and the gap (35 * 1.25 + 0.7 * 35 = 68 px), and so does the
-   rule's top.
+   frontmatter's watchRight follows this left. The callouts are in the
+   callout type, next to their gears, above the rule: not in this column.
+   The second hand's text is under the rule, 0.7em below it
+   (301 + 2 * 43.75 + 24.5 = 413 px).
    The second hand's text waits for the hand (after-watch-fade, style.css):
    so the fade is in longhands, which keep that rule's delay. */
-.slidev-layout.gears .gears-sentence,
-.slidev-layout.gears .gears-callout :deep(.callout-label) {
+/* At click 7 the seconds hand turns under the text: the paper's outline
+   keeps it legible over the hand, as on the Gear Train slide. */
+.slidev-layout.gears .gears-sentence {
+  -webkit-text-stroke: 6px var(--palette-background);
+  paint-order: stroke fill;
+}
+.slidev-layout.gears .gears-sentence {
   font-size: 35px;
   font-weight: 600;
   line-height: 1.25;
@@ -369,21 +383,40 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
 .slidev-layout.gears .gears-sentence.gears-rule {
   top: 301px;
 }
+.slidev-layout.gears .gears-sentence.gears-minute {
+  top: 413px;
+}
 .slidev-layout.gears .gears-sentence > div + div {
   margin-top: 0.7em;
 }
-.slidev-layout.gears .gears-reading.slidev-vclick-target,
-.slidev-layout.gears .gears-reading > .slidev-vclick-target,
+.slidev-layout.gears .gears-callout.slidev-vclick-target,
 .slidev-layout.gears .gears-sentence.slidev-vclick-target {
   transition-property: opacity;
   transition-duration: var(--text-fade);
+}
+/* When a click adds text, the text before it dims to 0.5, as the Escapement
+   slide's earlier callouts do (--esc-dim). Text not shown yet stays hidden:
+   vclick.css's opacity is !important. At click 7 the dim waits for the
+   hand, as the new text does (after-watch-fade). Going back, the text comes
+   back at once. */
+.slidev-layout.gears
+  :is(.gears-callout, .gears-sentence):has(
+    ~ :is(.gears-callout, .gears-sentence):not(.slidev-vclick-hidden)
+  ) {
+  opacity: 0.5;
+}
+.slidev-layout.gears
+  :is(.gears-callout, .gears-sentence):has(
+    ~ .gears-minute:not(.slidev-vclick-hidden)
+  ) {
+  transition-delay: var(--watch-fade, 0s);
 }
 </style>
 
 <!--
 The escapement fades out. The fourth wheel and the escape wheel's pinion fade in, and turn: the pinion twice for each turn of the wheel.
 
-[click] Four teeth on each gear are coloured: the same length of rim. They go through the mesh together, tooth for tooth, once each turn of the wheel. Four teeth are half the pinion, but a quarter of the wheel. Between, the pinion's coloured half comes round again on its own. (A trial: the colours of the flash. Wait for one pass before the next click.)
+[click] Four teeth on each gear are coloured: the same length of rim. They go through the mesh together, tooth for tooth, once each turn of the wheel. Four teeth are half the pinion, but a quarter of the wheel. Between, the pinion's coloured half comes round again on its own. The four teeth on each gear flash, and stay coloured. (A trial: the colours of the flash. Wait for one pass before the next click.)
 
 [click] Half of the small gear: count them, four of its eight teeth. (The callout's leader points at the small gear.)
 
@@ -393,9 +426,9 @@ The escapement fades out. The fourth wheel and the escape wheel's pinion fade in
 
 [click] The same teeth, solid; the text stays. (A trial: compare with click 1, and keep one style.)
 
-[click] The rest of the escapement comes back, and the gears now advance one tick at a time: the escapement controls the whole train. (The arrow is on the big gear now: something we can't see yet still pushes it.)
+[click] The rest of the escapement comes back, and the gears now advance one tick at a time: the escapement controls the whole train. (The text stays. The arrow is on the big gear now: something we can't see yet still pushes it.)
 
-[click] Put a hand on the big gear's arbor. The gear turns once a minute, so the hand is the second hand: the first part of the watch that we read. (The hand fades in first, then the text.)
+[click] Put a hand on the big gear's arbor. The gear turns once a minute, so the hand is the second hand: the first part of the watch that we read. (The hand fades in first, then the text, under the rule.)
 
 IF ASKED: This watch ticks once a second. Most real mechanical watches tick 5 to 8 times a second, so their second hands seem to sweep.
 

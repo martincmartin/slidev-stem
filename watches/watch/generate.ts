@@ -2490,6 +2490,9 @@ export function generate(design: Design = DESIGN): Watch {
       fill: paint.secondWash,
       line: paint.secondLine,
     },
+    // the span in the gear's own colours: it cannot be seen, but a flash
+    // draws it in the flash's colours (docs/watch.md, "The Gears slide")
+    { name: "span plain", fill: paint.subjectWash, line: paint.line },
   ];
   const spans = spanStyles.map((style) => {
     const span = spanMeshes(

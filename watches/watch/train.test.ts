@@ -246,7 +246,11 @@ test("the Escapement slide's spin shows the escape wheel as the slide shows it",
 
 test("on the Gears slide, the gears spin from the start, and start to fade in as the spin starts", () => {
   const gears = stageAt(GEARS_SLIDE, 0);
-  assert.deepEqual(watchState(GEARS_SLIDE, 0)?.show, GEARS_SLIDE["watch"]);
+  // the slide's list, with the view's names in it (a YAML alias) flattened
+  assert.deepEqual(
+    watchState(GEARS_SLIDE, 0)?.show,
+    (GEARS_SLIDE["watch"] as unknown[]).flat(),
+  );
   const timeline = new Timeline();
   timeline.show(escapementAt(Number(ESCAPEMENT_SLIDE["clicks"])), 0, true);
   timeline.show(gears, 1000, false);
@@ -260,15 +264,15 @@ test("on the Gears slide, the gears spin from the start, and start to fade in as
   assert.deepEqual(after.fade, gears.shown);
 });
 
-test("on the Gears slide, the span fades in while the gears turn on at full speed", () => {
+test("on the Gears slide, the span comes in while the gears turn on at full speed", () => {
   const spanClick = 1;
   const [plain, span] = [0, spanClick].map(
     (click) => watchState(GEARS_SLIDE, click) ?? assert.fail("no watch"),
   ) as [WatchState, WatchState];
   assert.ok(plain.spin !== null && span.spin === plain.spin);
-  assert.ok(
-    stageAt(GEARS_SLIDE, spanClick).shown.size >
-      stageAt(GEARS_SLIDE, 0).shown.size,
+  assert.notDeepEqual(
+    stageAt(GEARS_SLIDE, spanClick).shown,
+    stageAt(GEARS_SLIDE, 0).shown,
   );
   const beats = mechanism();
   const train = new TrainClock();
