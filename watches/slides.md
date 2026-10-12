@@ -4,46 +4,38 @@ theme: ledger
 title: What Every Nerd Should Know About Watches
 # art/favicon.py writes it; without this line Slidev links its own icon on a CDN
 favicon: /favicon.ico
-# Slidev takes the headmatter from the first slide's frontmatter. Its
-# `transition` is the default of every slide and also that slide's own. The
-# default is text-fade, but the cover's transition is watch-zoom, and one
-# block cannot set both. So the headmatter is a first slide of its own, with
-# no content, and hidden; the cover is the second block.
+# Keep deck metadata in a hidden block, separate from the visible cover.
+# transition sets the default for all slides. Mechanical Marvels overrides it.
 # text-fade: the old text fades out before the new text fades in (style.css).
 transition: text-fade
 hide: true
 ---
 
 ---
-# The watch under this slide is live, in WebGL: see docs/webgl.md. The move from
-# this slide to the next has the watch-zoom transition (global-bottom.vue); no
-# other move does.
-class: cover-watch
+# The live watch stays in the same view on the cover and section.
+layout: cover
+class: cover-left
 watch: all
 watchView: cover
-transition: watch-zoom
 ---
 
 # What Every Nerd Should Know About Mechanical Watches
 
 Martin C. Martin
 
-<style>
-/* The watch fills the canvas and leaves its left half empty for the title. */
-.cover-watch {
-  place-content: center start;
-  text-align: left;
-}
-.slidev-layout.cover-watch h1,
-.slidev-layout.cover-watch h1 + p {
-  text-align: left; /* the one title that is not centred: the watch is beside it */
-  max-width: 480px; /* three lines; the widest, "What Every Nerd", is 464 px */
-}
-</style>
-
 <!--
 Speaker notes here
 -->
+
+---
+layout: section
+eyebrow: PART 1
+watch: all
+watchView: cover
+transition: watch-zoom
+---
+
+# Mechanical Marvels
 
 ---
 src: ./pages/hairspring.md

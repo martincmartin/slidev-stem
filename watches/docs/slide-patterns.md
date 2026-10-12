@@ -30,8 +30,8 @@ Five rules for a slide:
   on each slide. `uv run ../tools/validate.py` performs a fast forward smoke walk.
   Use exhaustive navigation only to investigate an actual or suspected problem.
 - **Every slide's title and subtitle are centred**, by `style.css` (a Slidev
-  project file). The cover's are the one exception: they sit left of the
-  watch (`.slidev-layout.cover-watch h1` in `slides.md`).
+  project file). The cover and section titles sit left of the
+  watch. The theme's shared `cover-left` class sets their alignment and width.
 - **Use a markdown `#` heading for the title.** The theme styles `h1` as the
   slide title. Inside a flex layout, set `margin: 0` on it. A paragraph right
   after the title is its subtitle: the theme styles `h1 + p`, as Slidev's
@@ -49,7 +49,7 @@ Five rules for a slide:
   (`class: palette-campfire`; [theme.md](../../docs/theme.md#palette-classes-a-slide-in-another-palette)).
   The watch and the diving board follow it. To compare palettes, import the
   slide once for each palette.
-- **`layout: full` plus a class, not a custom layout.** It keeps each slide's layout
+- **For content slides, use `layout: full` plus a class.** It keeps each slide's layout
   next to its content, which has been worth more than the duplication costs — the
   slide you are reading is the slide you are editing.
 
@@ -59,6 +59,13 @@ files into `dist/`. The deck makes no outside requests, so it needs no network
 at the venue. `fonts.css` imports only the weights the talks use. **If you use a
 new weight, add its import to the theme in the same change.** If you do not, the
 browser uses the nearest imported weight or fakes a bold, and gives no error.
+
+## Section slides
+
+Use `layout: section`, an `eyebrow` frontmatter label, and a Markdown title.
+The theme sets the type and placement in `themes/ledger/styles/ledger.css` at the repo root.
+For a section with the cover's picture, use `watch: all` and `watchView: cover`.
+Mechanical Marvels uses this state, so the watch stays in place when the cover text changes.
 
 ## `TimekeeperCard.vue`
 
@@ -140,7 +147,7 @@ reason next to it.
   ([watch.md](watch.md#the-diving-board)).
 - **Not an oversight: the Escapement slide's "tick" and "tock" cut in**, because they
   are a sound. They fade out ([watch.md](watch.md#tick-and-tock)).
-- **Not an oversight:** the cover's move to the Hairspring slide has its own transition,
+- **Not an oversight:** the Mechanical Marvels section's move to the Hairspring slide has its own transition,
   `watch-zoom`, because its title fades while the watch flashes
   ([watch.md](watch.md)).
 

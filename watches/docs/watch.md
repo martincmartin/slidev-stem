@@ -1235,11 +1235,11 @@ at load with the key's name.
   opposite extreme.
 - **Keep text out of the watch's way.** On the Hairspring slide the hairspring is about 105
   to 445 px across, on the left. Callouts go on the right.
-- **The cover's title fades as the watch flashes**: the `watch-zoom`
-  transition, between the cover and the Hairspring slide only. The new slide's text comes
+- **The Mechanical Marvels section title fades as the watch flashes**: the `watch-zoom`
+  transition, between Mechanical Marvels and the Hairspring slide only. The new slide's text comes
   in after the camera's move, in either direction: `global-bottom.vue` sets
   `--watch-text-delay` from the stage (`viewEndAt` in `webgl/timeline.ts`).
-  Forward, the text waits for the flash and camera move. Back to the cover,
+  Forward, the text waits for the flash and camera move. Back to Mechanical Marvels,
   it waits for the fade, tilt, and camera move.
 - **A click's text can wait for the balance to rest.** `global-bottom.vue`
   sets `--watch-rest-delay` from the model (`untilRest` in `watch/model.ts`)
@@ -1250,11 +1250,9 @@ at load with the key's name.
   `webgl/stage.ts`) at each change of state: the time until its last
   fade, camera move, flash or story move ends, or 0 if nothing is still to
   come.
-- **The first block of `slides.md` is a hidden slide with no content.** Slidev
-  takes the headmatter from the first slide's frontmatter, and its
-  `transition` is both the default of every slide and that slide's own. The
-  default is `text-fade` and the cover's is `watch-zoom`, so the headmatter has
-  its own block, with `hide: true`. Do not merge it with the cover's block.
+- **The first block of `slides.md` is hidden and has no content.**
+  It keeps deck metadata separate from the visible cover. Its `transition`
+  sets the default for all slides. Mechanical Marvels overrides that default.
 - **A click that changes the watch needs a `[click]` line** in the speaker
   notes, as for any click.
 - **The watch's layer paints the paper behind a `watch:` slide**, because that
