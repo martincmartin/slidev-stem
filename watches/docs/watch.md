@@ -135,7 +135,7 @@ in the wheel's piece, so it shows and fades with the wheel (`paperDiscs` and
   in their wheels' groups: a disc that the case cuts is not round.
 - **Nothing that a click shows rises through a paper disc that it shows**
   (`deck.test.ts`): it would show in the wheel's openings. For this, the
-  barrel arbor leaves the Hour Hand slide at clicks 1 and 2
+  barrel arbor ends level with the barrel's top
   ([The Hour Hand slide](#the-hour-hand-slide)). `generate.test.ts` checks
   that each disc is flat, at its wheel's bottom and inside the case, and that
   the parts under it stand more than `HOLDOUT_TOLERANCE` below it. Both
@@ -783,15 +783,15 @@ The Hour Hand slide follows the Mainspring slide. It shows why the hour
 hand needs two stages: one wheel 12 times slower puts the hand off centre.
 The stages go out from the centre and come back.
 
-| Click | What shows                                                                                                                                                                                         |
-| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0     | the whole watch as the Mainspring slide leaves it, but the hour hand, in its view: the camera does not move                                                                                        |
-| 1     | the barrel arbor goes; the cannon pinion and the one-step hour wheel fade in and flash                                                                                                             |
-| 2     | and the one-step hour hand, on that wheel's arbor: off centre                                                                                                                                      |
-| 3     | the one-step wheel, its hand and the cannon pinion go, and the barrel arbor comes back; the camera zooms in on the centre wheel; then all but the centre wheel, its arbor and the minute hand dims |
-| 4     | and the cannon pinion and the minute wheel, which fade in and flash                                                                                                                                |
-| 5     | and the minute pinion and the hour wheel, which fade in and flash                                                                                                                                  |
-| 6     | the camera zooms back out to click 0's view, the dim ends, and the hour hand fades in; the stages' text dims                                                                                       |
+| Click | What shows                                                                                                                                                        |
+| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0     | the whole watch as the Mainspring slide leaves it, but the hour hand, in its view: the camera does not move                                                       |
+| 1     | the cannon pinion and the one-step hour wheel fade in and flash                                                                                                   |
+| 2     | and the one-step hour hand, on that wheel's arbor: off centre                                                                                                     |
+| 3     | the one-step wheel, its hand and the cannon pinion go; the camera zooms in on the centre wheel; then all but the centre wheel, its arbor and the minute hand dims |
+| 4     | and the cannon pinion and the minute wheel, which fade in and flash                                                                                               |
+| 5     | and the minute pinion and the hour wheel, which fade in and flash                                                                                                 |
+| 6     | the camera zooms back out to click 0's view, the dim ends, and the hour hand fades in; the stages' text dims                                                      |
 
 The tilt is 20 at every click, so the stack of the motion works shows.
 
@@ -811,11 +811,14 @@ The tilt is 20 at every click, so the stack of the motion works shows.
   the barrel there, and its hand's pivot is clear of the minute hand. Any
   place would be off centre. Its hand is the hour hand's shape, at its
   height. `all` leaves both out.
-- **The barrel arbor leaves while the one-step hour wheel shows** (clicks 1
-  and 2). The arbor (up to 18.5) and its square (up to 22.5) rise through the
-  wheel (17 to 20). Not an oversight: every place where the wheel covers
-  only the barrel meets the arbor, and the places clear of it cover the
-  balance, or put the hand through the chapter ring
+- **The barrel arbor ends level with the barrel's top, and its square is a
+  flat outline on it** (a decal, `arborSquareMesh`). So the arbor stays at
+  every click: the one-step hour wheel's paper disc, `STACK_GAP` above,
+  covers it as the wheel fades in, as it covers the barrel. Not an
+  oversight: an arbor or a square that rises through the wheel shows in
+  its openings. The wheel cannot move clear of the arbor: every place where
+  it covers only the barrel meets the arbor, and the places clear of it
+  cover the balance, or put the hand through the chapter ring
   ([`2026-10-11-paper-discs`](../tasks/2026-10-11-paper-discs/PLAN.md)).
 - **The one-step hand turns backwards.** A wheel turns the other way from the
   pinion that drives it. At the mechanism's speed an hour hand moves 0.5° a

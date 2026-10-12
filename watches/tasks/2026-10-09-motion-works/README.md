@@ -10,6 +10,12 @@ The options, the evidence and the steps are in [PLAN.md](PLAN.md).
   8 o'clock: the places clear of the arbor cover the balance, or put the
   hand through the chapter ring. See
   [`../2026-10-11-paper-discs/PLAN.md`](../2026-10-11-paper-discs/PLAN.md).
+- 2026-10-12, later: the barrel arbor stays on the Hour Hand slide at every
+  click. It ends level with the barrel's top, and its square is a flat
+  outline on it (a decal), so the one-step hour wheel's paper disc covers
+  it. This is the paper-discs task's other way, without its cost to the
+  Mainspring slide: the square stays, flat, and the key's pipe stands on
+  the arbor. See `docs/watch.md`, "The Hour Hand slide".
 - 2026-10-12: paper discs replace the clip discs of steps 4 and 5. The
   motion works' discs still end half way across the rim, and the 6 px rims
   are kept, though the paper discs do not slide. The hour wheel stands a

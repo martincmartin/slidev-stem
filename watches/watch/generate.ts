@@ -828,7 +828,9 @@ function makeParts({ barrel, centre, third, fourth, escape }: Train): Parts {
             "barrel",
             {
               body: recipe(5),
-              circle: recipe(5, "body", 1.5),
+              // the arbor: level with the barrel's top, under the one-step
+              // hour wheel's paper disc (docs/watch.md, "The Hour Hand slide")
+              circle: recipe(5, "body"),
               other: recipe(5),
               stroke: recipe(5, "body", 0, true),
             },
@@ -1343,9 +1345,9 @@ function studMesh(
 }
 
 // ---- the Mainspring slide's props ----------------------------------------------------
-/** The square on the barrel arbor's top, which the key fits: its side, and how
- *  far it rises. It shows the arbor turn. */
-const ARBOR_SQUARE = { side: 12, height: 4 };
+/** The side of the square on the barrel arbor's top, which the key fits. It
+ *  shows the arbor turn. */
+const ARBOR_SQUARE_SIDE = 12;
 /** The winding key, an antique clock key: a pipe over the arbor's square, and
  *  a flat bow on it, upright, to turn it by (in the bow's plane: across, and
  *  up from the pipe). Two round lobes, each with a hole, and a dip between. */
@@ -1365,10 +1367,11 @@ const KEY = {
  *  tilt 0; at the slide's tilt they are a little longer. */
 const REST_DASH = { dash: 8, gap: 6, width: 4 };
 
-/** The barrel arbor's square, on top of the arbor's disc. */
+/** The barrel arbor's square: an outline that lies on the arbor's top (a
+ *  decal). It does not rise, so the one-step hour wheel's paper disc covers
+ *  it (docs/watch.md, "The Hour Hand slide"). */
 function arborSquareMesh(arborTop: number, group: Group, paint: Paint): Mesh {
-  const half = ARBOR_SQUARE.side / 2;
-  const top = arborTop + ARBOR_SQUARE.height;
+  const half = ARBOR_SQUARE_SIDE / 2;
   return extrude(
     ringsOf([
       polygon([
@@ -1380,15 +1383,16 @@ function arborSquareMesh(arborTop: number, group: Group, paint: Paint): Mesh {
       paint.line(2),
     ]),
     arborTop,
-    top,
+    arborTop,
     {
       name: "barrel arbor square (added)",
       part: "barrel arbor",
       group,
-      fill: paint.subjectWash,
-      lineOrder: top,
+      fill: null,
+      lineOrder: arborTop,
       inDrawing: false,
     },
+    { decal: true },
   );
 }
 
@@ -2603,11 +2607,7 @@ export function generate(design: Design = DESIGN): Watch {
   const mainspringHeights = heightOf(mainspringSolid);
   const arborTop = heightOf(barrelArborSolid).top;
   const arborSquare = arborSquareMesh(arborTop, tree.groups.barrelArbor, paint);
-  const keys = keyMeshes(
-    arborTop + ARBOR_SQUARE.height,
-    tree.groups.barrelArbor,
-    paint,
-  );
+  const keys = keyMeshes(arborTop, tree.groups.barrelArbor, paint);
   const mainspringStud = studMesh(
     "mainspring stud",
     restMainspring,

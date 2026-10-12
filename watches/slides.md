@@ -773,34 +773,32 @@ watch:
   &watch [
     &faint [
       barrel arbor,
-      &faintKept [
-        mainspring,
-        barrel,
-        centre pinion,
-        escape wheel,
-        escape pinion,
-        escape arbor,
-        fourth wheel,
-        fourth pinion,
-        fourth arbor,
-        third wheel,
-        third pinion,
-        third arbor,
-        balance wheel,
-        balance staff,
-        hairspring,
-        collet,
-        stud,
-        roller,
-        impulse jewel,
-        pallet fork,
-        seconds hand,
-        chapter ring,
-        case band,
-        lug,
-        crown,
-        strap,
-      ],
+      mainspring,
+      barrel,
+      centre pinion,
+      escape wheel,
+      escape pinion,
+      escape arbor,
+      fourth wheel,
+      fourth pinion,
+      fourth arbor,
+      third wheel,
+      third pinion,
+      third arbor,
+      balance wheel,
+      balance staff,
+      hairspring,
+      collet,
+      stud,
+      roller,
+      impulse jewel,
+      pallet fork,
+      seconds hand,
+      chapter ring,
+      case band,
+      lug,
+      crown,
+      strap,
     ],
     &lit [centre wheel, centre arbor, minute hand, centre pivot],
   ]
@@ -820,17 +818,16 @@ watchTilt: 20
 class: hour-hand
 watchClicks:
   # one wheel, 12 times slower: a pinion on the centre arbor (the cannon
-  # pinion) and a wheel with 12 times its leaves. They fade in and flash.
-  # The barrel arbor goes first: it would rise through the wheel
+  # pinion) and a wheel with 12 times its leaves. They fade in and flash
   1:
-    watch: [*faintKept, *lit, &oneStep [cannon pinion, one-step hour wheel]]
+    watch: [*watch, &oneStep [cannon pinion, one-step hour wheel]]
     watchFlash: *oneStep
   # the hour hand on that wheel's arbor: off centre
   2:
-    watch: [*faintKept, *lit, *oneStep, one-step hour hand]
-  # the one-step wheel, its hand and its pinion go, and the barrel arbor
-  # comes back; the camera zooms in on the centre wheel, in the picture band,
-  # and then all but the centre wheel and the minute hand dims
+    watch: [*watch, *oneStep, one-step hour hand]
+  # the one-step wheel, its hand and its pinion go; the camera zooms in on
+  # the centre wheel, in the picture band, and then all but the centre wheel
+  # and the minute hand dims
   3:
     watch: *watch
     watchView: [centre wheel]
