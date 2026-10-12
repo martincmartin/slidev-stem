@@ -88,3 +88,10 @@ pieces), so it runs only on these two versions.
 
 The deck's trace after these changes is identical to the refactor's in all
 150 steps.
+
+## Later decisions
+
+- 2026-10-11: the one rule's order for the camera (zooming in: move, then
+  tilt; otherwise the reverse) is now a choice of look, not a limit. A slide
+  may move and tilt at the same time. `stem/docs/webgl.md`, "Motion and
+  slides", says so.

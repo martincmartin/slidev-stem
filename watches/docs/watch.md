@@ -725,8 +725,7 @@ about the same arbor (`MotionWorks` in `art/watch_design.py`):
   the train's for this (`MOTION_DRAWINGS`): at tilt 20 the slide is up to
   about 3 px. A disc out to the root circle cut slivers out of the centre
   wheel, and a disc out to the openings showed a crescent of it in each one.
-  The barrel arbor's square has the barrel's discs, so it does not show
-  through the one-step hour wheel. The hour wheel hides the cannon pinion and
+  The hour wheel hides the cannon pinion and
   the minute wheel under its openings in the same way.
 - **`all` leaves them out**, so the cover does not show them: they would
   crowd it. A slide names them to show them.
@@ -742,15 +741,15 @@ The Hour Hand slide follows the Mainspring slide. It shows why the hour
 hand needs two stages: one wheel 12 times slower puts the hand off centre.
 The stages go out from the centre and come back.
 
-| Click | What shows                                                                                                                                                        |
-| ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0     | the whole watch as the Mainspring slide leaves it, but the hour hand, in its view: the camera does not move                                                       |
-| 1     | and the cannon pinion and the one-step hour wheel, which fade in and flash                                                                                        |
-| 2     | and the one-step hour hand, on that wheel's arbor: off centre                                                                                                     |
-| 3     | the one-step wheel, its hand and the cannon pinion go; the camera zooms in on the centre wheel; then all but the centre wheel, its arbor and the minute hand dims |
-| 4     | and the cannon pinion and the minute wheel, which fade in and flash                                                                                               |
-| 5     | and the minute pinion and the hour wheel, which fade in and flash                                                                                                 |
-| 6     | the camera zooms back out to click 0's view, the dim ends, and the hour hand fades in; the stages' text dims                                                      |
+| Click | What shows                                                                                                                                                                                         |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0     | the whole watch as the Mainspring slide leaves it, but the hour hand, in its view: the camera does not move                                                                                        |
+| 1     | the barrel arbor goes; the cannon pinion and the one-step hour wheel fade in and flash                                                                                                             |
+| 2     | and the one-step hour hand, on that wheel's arbor: off centre                                                                                                                                      |
+| 3     | the one-step wheel, its hand and the cannon pinion go, and the barrel arbor comes back; the camera zooms in on the centre wheel; then all but the centre wheel, its arbor and the minute hand dims |
+| 4     | and the cannon pinion and the minute wheel, which fade in and flash                                                                                                                                |
+| 5     | and the minute pinion and the hour wheel, which fade in and flash                                                                                                                                  |
+| 6     | the camera zooms back out to click 0's view, the dim ends, and the hour hand fades in; the stages' text dims                                                                                       |
 
 The tilt is 20 at every click, so the stack of the motion works shows.
 
@@ -770,6 +769,11 @@ The tilt is 20 at every click, so the stack of the motion works shows.
   the barrel there, and its hand's pivot is clear of the minute hand. Any
   place would be off centre. Its hand is the hour hand's shape, at its
   height. `all` leaves both out.
+- **The barrel arbor leaves while the one-step hour wheel shows** (clicks 1
+  and 2). The arbor (up to 18.5) and its square (up to 22.5) rise through the
+  wheel (17 to 20). Not an oversight: every place where the wheel covers
+  only the barrel meets the arbor, and the places clear of it cover the
+  balance, or put the hand through the chapter ring.
 - **The one-step hand turns backwards.** A wheel turns the other way from the
   pinion that drives it. At the mechanism's speed an hour hand moves 0.5° a
   minute, so it does not show; the speaker notes say it.
@@ -946,7 +950,9 @@ as the tilted camera shows it, with that piece's own heights: at a tilt, the
 plan is foreshortened, a low part shows lower and a high part higher. So a
 picture fills its band at any tilt, with the same margins as at tilt 0. The
 camera is orthographic (`viewProjection` in `webgl/renderer.ts`), so this is
-exact for each extent. So every picture at a tilt shows in the same band as
+exact for each extent. The projection and the tilt's axis are choices of
+look, not limits ([webgl.md](../../docs/webgl.md), "The house style in
+3D"). So every picture at a tilt shows in the same band as
 the Gears slide's gears: a fit of the plan alone left about 29 px under the
 whole movement.
 
@@ -965,7 +971,8 @@ the pieces on the screen while the camera moves:
    each).
 2. The camera moves (1.8 s) and tilts (1.5 s): zooming in, it moves and then
    tilts; otherwise it untilts and then moves. If D is empty, nothing is on
-   the screen, so the camera jumps.
+   the screen, so the camera jumps. The order is a choice of look, not a
+   limit ([webgl.md](../../docs/webgl.md), "Motion and slides").
 3. D becomes B, as in 1. Of the pieces that fade in, those that the click
    names in `watchLater` fade in after the others.
 

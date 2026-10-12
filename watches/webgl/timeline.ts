@@ -10,7 +10,8 @@
 //      meshes of D that are not in A fade in.
 //   2. The camera moves and tilts, eased: zooming in, it moves and then
 //      tilts; otherwise it untilts and then moves. If D is empty, nothing is
-//      on the screen, and the camera jumps.
+//      on the screen, and the camera jumps. The order is a choice of look,
+//      not a limit (stem/docs/webgl.md, "One rule for every change").
 //   3. D becomes B, as in 1; of the meshes that fade in, those in
 //      `StageState.later` fade in after the others.
 // The meshes in `StageState.cut` do not fade: they go, or come, at once,

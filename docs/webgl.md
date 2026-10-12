@@ -116,6 +116,28 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   run (`erasableSyntaxOnly`), and a bare string would be a name to look up.
 - **Not an oversight: the palette is not in the design file.** It was once,
   and the art kept old colours until someone ran the script again.
+- **The camera is orthographic, and it tilts about the slide's horizontal
+  axis** (`viewProjection` in `webgl/renderer.ts`). These are choices of
+  look, not limits. They come from the plan to draw the 3D watch in SVG
+  ([`watches/tasks/2026-09-27-canvas-2d-planning/`](../watches/tasks/2026-09-27-canvas-2d-planning/PLAN.md)),
+  and WebGL does not need them. At the tilts so far (20° at most), a
+  perspective camera at a usual focal length looks almost the same. A slide
+  can turn the camera about another axis, or use perspective, when that
+  shows more: for example, a recap that shows the whole model in 3D. To
+  change them:
+  - **Another axis:** `viewProjection`, the tilt (one angle in `Frame` and in
+    the frontmatter), and `fittedView` in `watches/watch/generate.ts`, which
+    takes a tilt about x.
+  - **Perspective:** the line shader divides by $w$, and clips a segment at
+    the near plane. It interpolates the plan point along a segment (for the
+    clip discs) in $1/w$. The silhouette test takes the direction to the
+    camera at each vertex, not one direction for the frame.
+    `HIDDEN_LINE_TOLERANCE` is then not the same distance at every depth.
+    `fittedView` takes the camera's distance. `checkAffine` stays: it checks
+    the group matrices, which place the parts.
+  - **A steeper tilt, about any axis:** a clip disc slides against the part
+    above it by the height between them times $\tan t$
+    ([`watches/docs/watch.md`](../watches/docs/watch.md), "The motion works").
 - **Line widths are CSS px on the screen, at every zoom:** 2, 2.5, 3 or 4, the
   stroke ladder. When the camera zooms, a 2 px line stays 2 px. So parts must
   not meet only through their ink: they touch in the model.
@@ -169,7 +191,10 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   camera moves (`StageState.moveWith`: those of both by default, all of
   either, or none): A becomes D (fade out, then fade in), the camera moves
   and tilts (zooming in: move, then tilt; otherwise the reverse), and D
-  becomes B. Of the meshes that fade in as D becomes B, those in
+  becomes B. The order of the move and the tilt is a choice of look, not a
+  limit: a slide can move and tilt at the same time (for example, a recap
+  that shows the whole model in 3D). The timeline has only this order now,
+  so such a slide adds an option to `webgl/timeline.ts`. Of the meshes that fade in as D becomes B, those in
   `StageState.later` fade in after the others. The meshes in
   `StageState.cut` go or come at once, with no fade. The meshes in
   `StageState.goLater` stay on the screen while the camera moves, and go

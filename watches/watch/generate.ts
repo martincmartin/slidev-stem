@@ -2747,9 +2747,9 @@ export function fittedView(
   const pivotZ = (bottom + top) / 2;
   // Up and down on the slide, from the pivot, before the scale: each piece
   // as the tilted camera shows it, so that the band's margins are on the
-  // screen. The camera is orthographic: a point shows at (y - pivot y)
-  // cos(tilt) - (z - pivot z) sin(tilt) (`viewProjection` in
-  // webgl/renderer.ts).
+  // screen. The camera is orthographic and tilts about x, a choice of look
+  // (stem/docs/webgl.md): a point shows at (y - pivot y) cos(tilt) -
+  // (z - pivot z) sin(tilt) (`viewProjection` in webgl/renderer.ts).
   const across = radians(tilt);
   const shownY = (y: number, z: number): number =>
     (y - middle[1]) * Math.cos(across) - (z - pivotZ) * Math.sin(across);

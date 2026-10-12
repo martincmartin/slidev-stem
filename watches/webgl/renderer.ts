@@ -2,8 +2,10 @@
 // The choices are in watches/tasks/2026-09-28-webgl-planning/PLAN.md and in
 // stem/docs/webgl.md. It knows nothing about what a scene shows.
 //
-// The camera is orthographic (`viewProjection`), and each group matrix is
-// affine: the line shader has no perspective divide.
+// The camera is orthographic, and it tilts about the slide's horizontal axis
+// (`viewProjection`). Both are choices of look, not limits: stem/docs/webgl.md,
+// "The house style in 3D", says what a change needs. Each group matrix is
+// affine, and the line shader has no perspective divide.
 //
 // Faces: the triangles of each mesh, with the depth test, in a flat colour,
 // seen from both sides.
@@ -328,7 +330,7 @@ export interface Camera {
 }
 
 /** A view is a tilt about the horizontal axis through its pivot, then the
- *  slide's zoom. Screen y = pivot.y + (y - pivot.y) cos t - (z - pivot.z) sin t;
+ *  slide's zoom, orthographic: a choice of look (see the top). Screen y = pivot.y + (y - pivot.y) cos t - (z - pivot.z) sin t;
  *  depth (larger is nearer) = (y - pivot.y) sin t + (z - pivot.z) cos t. */
 export function viewProjection(
   view: View,

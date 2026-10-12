@@ -28,3 +28,7 @@ PLAN.md, section 14, gives the commands that reproduce the evidence.
   live slides are built, and the watch's SVG is removed; the checks pass and
   the measurements are in the implementation task's `PLAN.md`
   (`../2026-09-29-webgl-watch/PLAN.md`).
+- 2026-10-11: the camera that this plan took from the 2D plan (orthographic,
+  a tilt about x) is now a choice of look, not a limit. A slide may turn the
+  camera about another axis or use perspective. `stem/docs/webgl.md`, "The
+  house style in 3D", says what each change needs.
