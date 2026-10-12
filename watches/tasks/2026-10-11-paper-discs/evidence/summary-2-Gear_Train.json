@@ -1,0 +1,586 @@
+{
+ "discs": {
+  "clip-0.25": [],
+  "clip-gap-0.15": [],
+  "paper-gap-0.15": [
+   {
+    "group": "fourth wheel",
+    "radius": 28,
+    "z": 3.1500000953674316,
+    "under": "fourth wheel 1",
+    "pieces": [
+     "fourth wheel"
+    ]
+   },
+   {
+    "group": "third wheel",
+    "radius": 41.05109169583038,
+    "z": 6.300000190734863,
+    "under": "third wheel 1",
+    "pieces": [
+     "third wheel"
+    ]
+   },
+   {
+    "group": "one-step wheel",
+    "radius": 349.0510916958304,
+    "z": 6.300000190734863,
+    "under": "one-step wheel body",
+    "pieces": [
+     "one-step wheel"
+    ]
+   },
+   {
+    "group": "centre wheel",
+    "radius": 46.8584073464102,
+    "z": 9.449999809265137,
+    "under": "centre wheel 1",
+    "pieces": [
+     "centre wheel"
+    ]
+   },
+   {
+    "group": "hour wheel",
+    "radius": 14.486725877128166,
+    "z": 20.899999618530273,
+    "under": "hour wheel 1",
+    "pieces": [
+     "hour wheel"
+    ]
+   },
+   {
+    "group": "barrel wheel",
+    "radius": 70,
+    "z": 12.600000381469727,
+    "under": "barrel 1",
+    "pieces": [
+     "barrel"
+    ]
+   },
+   {
+    "group": "minute wheel",
+    "radius": 12.608407346410207,
+    "z": 17.75,
+    "under": "minute wheel 1",
+    "pieces": [
+     "minute wheel"
+    ]
+   },
+   {
+    "group": "one-step hour wheel",
+    "radius": 68.8584073464102,
+    "z": 17.75,
+    "under": "one-step hour body",
+    "pieces": [
+     "one-step hour wheel"
+    ]
+   }
+  ],
+  "clip-gap-0.3": [],
+  "paper-gap-0.3": [
+   {
+    "group": "fourth wheel",
+    "radius": 28,
+    "z": 3.299999952316284,
+    "under": "fourth wheel 1",
+    "pieces": [
+     "fourth wheel"
+    ]
+   },
+   {
+    "group": "third wheel",
+    "radius": 41.05109169583038,
+    "z": 6.599999904632568,
+    "under": "third wheel 1",
+    "pieces": [
+     "third wheel"
+    ]
+   },
+   {
+    "group": "one-step wheel",
+    "radius": 349.0510916958304,
+    "z": 6.599999904632568,
+    "under": "one-step wheel body",
+    "pieces": [
+     "one-step wheel"
+    ]
+   },
+   {
+    "group": "centre wheel",
+    "radius": 46.8584073464102,
+    "z": 9.899999618530273,
+    "under": "centre wheel 1",
+    "pieces": [
+     "centre wheel"
+    ]
+   },
+   {
+    "group": "hour wheel",
+    "radius": 14.486725877128166,
+    "z": 21.799999237060547,
+    "under": "hour wheel 1",
+    "pieces": [
+     "hour wheel"
+    ]
+   },
+   {
+    "group": "barrel wheel",
+    "radius": 70,
+    "z": 13.199999809265137,
+    "under": "barrel 1",
+    "pieces": [
+     "barrel"
+    ]
+   },
+   {
+    "group": "minute wheel",
+    "radius": 12.608407346410207,
+    "z": 18.5,
+    "under": "minute wheel 1",
+    "pieces": [
+     "minute wheel"
+    ]
+   },
+   {
+    "group": "one-step hour wheel",
+    "radius": 68.8584073464102,
+    "z": 18.5,
+    "under": "one-step hour body",
+    "pieces": [
+     "one-step hour wheel"
+    ]
+   }
+  ],
+  "clip-gap-0.5": [],
+  "paper-gap-0.5": [
+   {
+    "group": "fourth wheel",
+    "radius": 28,
+    "z": 3.5,
+    "under": "fourth wheel 1",
+    "pieces": [
+     "fourth wheel"
+    ]
+   },
+   {
+    "group": "third wheel",
+    "radius": 41.05109169583038,
+    "z": 7,
+    "under": "third wheel 1",
+    "pieces": [
+     "third wheel"
+    ]
+   },
+   {
+    "group": "one-step wheel",
+    "radius": 349.0510916958304,
+    "z": 7,
+    "under": "one-step wheel body",
+    "pieces": [
+     "one-step wheel"
+    ]
+   },
+   {
+    "group": "centre wheel",
+    "radius": 46.8584073464102,
+    "z": 10.5,
+    "under": "centre wheel 1",
+    "pieces": [
+     "centre wheel"
+    ]
+   },
+   {
+    "group": "hour wheel",
+    "radius": 14.486725877128166,
+    "z": 23,
+    "under": "hour wheel 1",
+    "pieces": [
+     "hour wheel"
+    ]
+   },
+   {
+    "group": "barrel wheel",
+    "radius": 70,
+    "z": 14,
+    "under": "barrel 1",
+    "pieces": [
+     "barrel"
+    ]
+   },
+   {
+    "group": "minute wheel",
+    "radius": 12.608407346410207,
+    "z": 19.5,
+    "under": "minute wheel 1",
+    "pieces": [
+     "minute wheel"
+    ]
+   },
+   {
+    "group": "one-step hour wheel",
+    "radius": 68.8584073464102,
+    "z": 19.5,
+    "under": "one-step hour body",
+    "pieces": [
+     "one-step hour wheel"
+    ]
+   }
+  ]
+ },
+ "differences": {
+  "clip-gap-0.15": {
+   "reference": "clip-0.25",
+   "frames": [
+    {
+     "frame": "Gear Train 0",
+     "differ": 9337,
+     "visible": 3431,
+     "lighter": 1650
+    },
+    {
+     "frame": "Gear Train 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 2",
+     "differ": 18353,
+     "visible": 9227,
+     "lighter": 4589
+    },
+    {
+     "frame": "Gear Train 3",
+     "differ": 30392,
+     "visible": 17614,
+     "lighter": 8770
+    },
+    {
+     "frame": "Gear Train 4",
+     "differ": 57552,
+     "visible": 35622,
+     "lighter": 17768
+    },
+    {
+     "frame": "Gear Train 5",
+     "differ": 57254,
+     "visible": 18236,
+     "lighter": 9178
+    },
+    {
+     "frame": "Gear Train 0 tilt 45",
+     "differ": 17694,
+     "visible": 11957,
+     "lighter": 5952
+    },
+    {
+     "frame": "Gear Train 0 tilt 60",
+     "differ": 30417,
+     "visible": 23770,
+     "lighter": 11900
+    },
+    {
+     "frame": "Gear Train 0 tilt 75",
+     "differ": 47730,
+     "visible": 40528,
+     "lighter": 20495
+    }
+   ]
+  },
+  "paper-gap-0.15": {
+   "reference": "clip-gap-0.15",
+   "frames": [
+    {
+     "frame": "Gear Train 0",
+     "differ": 496,
+     "visible": 464,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 1",
+     "differ": 1398,
+     "visible": 1310,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 2",
+     "differ": 3298,
+     "visible": 3126,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 3",
+     "differ": 6505,
+     "visible": 6137,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 4",
+     "differ": 6505,
+     "visible": 6136,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 5",
+     "differ": 6493,
+     "visible": 5575,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 45",
+     "differ": 615,
+     "visible": 572,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 60",
+     "differ": 626,
+     "visible": 590,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 75",
+     "differ": 3099,
+     "visible": 2760,
+     "lighter": 2760
+    }
+   ]
+  },
+  "clip-gap-0.3": {
+   "reference": "clip-0.25",
+   "frames": [
+    {
+     "frame": "Gear Train 0",
+     "differ": 10619,
+     "visible": 5793,
+     "lighter": 2858
+    },
+    {
+     "frame": "Gear Train 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 2",
+     "differ": 22113,
+     "visible": 14103,
+     "lighter": 7037
+    },
+    {
+     "frame": "Gear Train 3",
+     "differ": 38177,
+     "visible": 26570,
+     "lighter": 13253
+    },
+    {
+     "frame": "Gear Train 4",
+     "differ": 76724,
+     "visible": 56476,
+     "lighter": 28186
+    },
+    {
+     "frame": "Gear Train 5",
+     "differ": 76663,
+     "visible": 38194,
+     "lighter": 19182
+    },
+    {
+     "frame": "Gear Train 0 tilt 45",
+     "differ": 23688,
+     "visible": 18172,
+     "lighter": 9032
+    },
+    {
+     "frame": "Gear Train 0 tilt 60",
+     "differ": 45278,
+     "visible": 38838,
+     "lighter": 19445
+    },
+    {
+     "frame": "Gear Train 0 tilt 75",
+     "differ": 74047,
+     "visible": 67524,
+     "lighter": 34023
+    }
+   ]
+  },
+  "paper-gap-0.3": {
+   "reference": "clip-gap-0.3",
+   "frames": [
+    {
+     "frame": "Gear Train 0",
+     "differ": 124,
+     "visible": 109,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 2",
+     "differ": 1009,
+     "visible": 932,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 3",
+     "differ": 2017,
+     "visible": 1846,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 4",
+     "differ": 2017,
+     "visible": 1846,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 5",
+     "differ": 2009,
+     "visible": 1640,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 45",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 60",
+     "differ": 27,
+     "visible": 3,
+     "lighter": 3
+    },
+    {
+     "frame": "Gear Train 0 tilt 75",
+     "differ": 3227,
+     "visible": 2859,
+     "lighter": 2859
+    }
+   ]
+  },
+  "clip-gap-0.5": {
+   "reference": "clip-0.25",
+   "frames": [
+    {
+     "frame": "Gear Train 0",
+     "differ": 12290,
+     "visible": 7859,
+     "lighter": 3877
+    },
+    {
+     "frame": "Gear Train 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 2",
+     "differ": 26856,
+     "visible": 19345,
+     "lighter": 9684
+    },
+    {
+     "frame": "Gear Train 3",
+     "differ": 48085,
+     "visible": 36943,
+     "lighter": 18462
+    },
+    {
+     "frame": "Gear Train 4",
+     "differ": 98051,
+     "visible": 79679,
+     "lighter": 39897
+    },
+    {
+     "frame": "Gear Train 5",
+     "differ": 98276,
+     "visible": 63030,
+     "lighter": 31605
+    },
+    {
+     "frame": "Gear Train 0 tilt 45",
+     "differ": 31512,
+     "visible": 26283,
+     "lighter": 13100
+    },
+    {
+     "frame": "Gear Train 0 tilt 60",
+     "differ": 62593,
+     "visible": 56737,
+     "lighter": 28386
+    },
+    {
+     "frame": "Gear Train 0 tilt 75",
+     "differ": 94019,
+     "visible": 88566,
+     "lighter": 44376
+    }
+   ]
+  },
+  "paper-gap-0.5": {
+   "reference": "clip-gap-0.5",
+   "frames": [
+    {
+     "frame": "Gear Train 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 3",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 4",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 5",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 45",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 60",
+     "differ": 108,
+     "visible": 57,
+     "lighter": 57
+    },
+    {
+     "frame": "Gear Train 0 tilt 75",
+     "differ": 3335,
+     "visible": 2944,
+     "lighter": 2944
+    }
+   ]
+  }
+ }
+}

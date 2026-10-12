@@ -1,0 +1,710 @@
+{
+ "chromium": [
+  {
+   "slide": 1,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 2,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 2,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 2,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 2,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 3,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 3,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 3,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 3,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 5,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 6,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 5,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 5,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 6,
+   "differ": 0,
+   "visible": 0
+  }
+ ],
+ "firefox": [
+  {
+   "slide": 1,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 2,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 2,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 2,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 2,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 3,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 3,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 3,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 3,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 5,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 6,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 5,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 5,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 6,
+   "differ": 0,
+   "visible": 0
+  }
+ ],
+ "webkit": [
+  {
+   "slide": 1,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 2,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 2,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 2,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 2,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 3,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 3,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 3,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 3,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 4,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 5,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 5,
+   "click": 6,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 6,
+   "click": 5,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 7,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 0,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 1,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 2,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 3,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 4,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 5,
+   "differ": 0,
+   "visible": 0
+  },
+  {
+   "slide": 8,
+   "click": 6,
+   "differ": 0,
+   "visible": 0
+  }
+ ]
+}

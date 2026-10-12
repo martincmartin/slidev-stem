@@ -6,7 +6,9 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { deckSlides } from "./deck.ts";
 import { generate } from "./generate.ts";
+import { AtRest, discOutline } from "./at-rest.ts";
 import { moveWithBefore, stageState, watchState } from "./state.ts";
+import type { Mesh, Piece } from "../webgl/scene.ts";
 
 const watch = generate();
 const slides = await deckSlides();
@@ -92,4 +94,61 @@ test("the Gears slide's gears show where they set the picture band: its view is 
     Math.abs(view.shift[1] - shiftY) < 0.05,
     `shift ${String(view.shift[1])}`,
   );
+});
+
+test("no part that a click shows rises through a paper disc that it shows", () => {
+  // A paper disc hides only what is under it (docs/watch.md, "Paper discs"):
+  // a part that rose through it would show in the wheel's openings. Not the
+  // wheel's own parts, such as its arbor. The watch is at rest: a part that
+  // turns keeps its heights, but a part that is not round about its axis
+  // is checked only where it is at rest.
+  const atRest = new AtRest(watch);
+  const { scene } = watch;
+  const piece = (name: string): Piece =>
+    scene.pieces.find((candidate) => candidate.name === name) ??
+    assert.fail(name);
+  const discOf = (wheel: Piece): Mesh =>
+    [...wheel.meshes].find((mesh) => mesh.holdout) ?? assert.fail(wheel.name);
+  // the centre arbor rises through the hour wheel's pipe, which hides it
+  const allowed = new Map([
+    [discOf(piece("hour wheel")), piece("centre arbor").meshes],
+  ]);
+  // each disc, and the parts that rise through it, found once
+  const crossings = scene.meshes
+    .filter((mesh) => mesh.holdout)
+    .map((disc) => {
+      const height = atRest.heights(disc)[0];
+      const outline = discOutline(atRest, disc);
+      // the wheel's groups; the disc itself is in the watch's
+      const own = new Set(
+        scene.pieces
+          .filter((each) => each.meshes.has(disc))
+          .flatMap((each) => [...each.meshes].map((mesh) => mesh.group)),
+      );
+      own.delete(disc.group);
+      const through = scene.meshes.filter((mesh) => {
+        if (mesh.holdout || own.has(mesh.group)) return false;
+        if (allowed.get(disc)?.has(mesh)) return false;
+        const over = outline.heightsOver(atRest.points(mesh));
+        return over !== null && over[0] < height && over[1] > height;
+      });
+      return { disc, through };
+    });
+  for (const { title, frontmatter } of slides) {
+    const clicks = Number(frontmatter["clicks"] ?? 0);
+    for (let click = 0; click <= clicks; click++) {
+      const state = watchState(frontmatter, click);
+      if (!state) continue;
+      const { shown } = stageState(watch, state);
+      for (const { disc, through } of crossings) {
+        if (!shown.has(disc)) continue;
+        for (const mesh of through) {
+          assert.ok(
+            !shown.has(mesh),
+            `${title} @${String(click)}: ${mesh.name} rises through ${disc.name}`,
+          );
+        }
+      }
+    }
+  }
 });

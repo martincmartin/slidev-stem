@@ -1,0 +1,1486 @@
+[
+ {
+  "name": "What Every Nerd Should Know About Mechanical Watches 0",
+  "state": {
+   "view": "cover",
+   "tilt": 0,
+   "show": "all",
+   "fit": "all",
+   "right": null,
+   "band": "picture",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Hairspring 0",
+  "state": {
+   "view": "hairspring",
+   "tilt": 20,
+   "show": [
+    "hairspring",
+    "collet",
+    "stud"
+   ],
+   "fit": [
+    "hairspring",
+    "collet",
+    "stud"
+   ],
+   "right": null,
+   "band": "picture",
+   "flash": [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel"
+   ],
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Hairspring 1",
+  "state": {
+   "view": "hairspring",
+   "tilt": 20,
+   "show": [
+    "hairspring",
+    "collet",
+    "stud"
+   ],
+   "fit": [
+    "hairspring",
+    "collet",
+    "stud"
+   ],
+   "right": null,
+   "band": "picture",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Hairspring 2",
+  "state": {
+   "view": "hairspring",
+   "tilt": 20,
+   "show": [
+    "hairspring",
+    "collet",
+    "stud"
+   ],
+   "fit": [
+    "hairspring",
+    "collet",
+    "stud"
+   ],
+   "right": null,
+   "band": "picture",
+   "settled": true,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Hairspring 3",
+  "state": {
+   "view": "hairspring",
+   "tilt": 20,
+   "show": [
+    "hairspring",
+    "collet",
+    "stud"
+   ],
+   "fit": [
+    "hairspring",
+    "collet",
+    "stud"
+   ],
+   "right": null,
+   "band": "picture",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Balance Wheel 0",
+  "state": {
+   "view": "hairspring",
+   "tilt": 20,
+   "show": [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud"
+   ],
+   "fit": [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud"
+   ],
+   "right": null,
+   "band": "picture",
+   "flash": [
+    "balance wheel",
+    "balance staff"
+   ],
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Escapement 0",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "escape arbor"
+   ],
+   "fit": [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "escape arbor"
+   ],
+   "right": null,
+   "band": "picture",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Escapement 1",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "escape wheel",
+    "escape arbor",
+    "escape wheel drive"
+   ],
+   "fit": [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "escape arbor"
+   ],
+   "right": null,
+   "band": "picture",
+   "settled": false,
+   "spin": 135,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Escapement 2",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "escape arbor",
+    "escape wheel drive"
+   ],
+   "fit": [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "escape arbor"
+   ],
+   "right": null,
+   "band": "picture",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Escapement 3",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "escape arbor",
+    "escape wheel drive"
+   ],
+   "fit": [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "escape arbor"
+   ],
+   "right": null,
+   "band": "picture",
+   "settled": true,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Escapement 4",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "escape arbor",
+    "escape wheel drive"
+   ],
+   "fit": [
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "escape arbor"
+   ],
+   "right": null,
+   "band": "picture",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Gears 0",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel span plain",
+    "escape pinion span plain"
+   ],
+   "fit": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor"
+   ],
+   "right": 489,
+   "band": "picture",
+   "settled": false,
+   "spin": 90,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Gears 1",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel span",
+    "escape pinion span"
+   ],
+   "fit": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor"
+   ],
+   "right": 489,
+   "band": "picture",
+   "flash": [
+    "fourth wheel span plain",
+    "escape pinion span plain"
+   ],
+   "cut": [
+    "fourth wheel span plain",
+    "escape pinion span plain",
+    "fourth wheel span",
+    "escape pinion span"
+   ],
+   "settled": false,
+   "spin": 90,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Gears 2",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel span",
+    "escape pinion span"
+   ],
+   "fit": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor"
+   ],
+   "right": 489,
+   "band": "picture",
+   "settled": false,
+   "spin": 90,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Gears 5",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "fourth wheel drive",
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel"
+   ],
+   "fit": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor"
+   ],
+   "right": 489,
+   "band": "picture",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Gears 6",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "fourth wheel drive",
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "seconds hand"
+   ],
+   "fit": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor"
+   ],
+   "right": 489,
+   "band": "picture",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Gear Train 0",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "seconds hand",
+    "fourth wheel drive"
+   ],
+   "fit": [
+    "escape wheel",
+    "fourth wheel",
+    "third wheel",
+    "centre wheel"
+   ],
+   "right": 489,
+   "band": "picture",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Gear Train 1",
+  "state": {
+   "view": null,
+   "tilt": 0,
+   "show": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "seconds hand",
+    "fourth pinion",
+    "one-step wheel",
+    "case band",
+    "lug",
+    "crown",
+    "raised strap",
+    "chapter ring"
+   ],
+   "fit": [
+    "case band"
+   ],
+   "right": 489,
+   "band": "picture",
+   "flash": [
+    "one-step wheel",
+    "fourth pinion"
+   ],
+   "later": [
+    "case band",
+    "lug",
+    "crown",
+    "raised strap",
+    "chapter ring"
+   ],
+   "goLater": [
+    "fourth wheel drive"
+   ],
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Gear Train 2",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "seconds hand",
+    "fourth pinion",
+    "third wheel",
+    "third arbor",
+    "third wheel drive"
+   ],
+   "fit": [
+    "escape wheel",
+    "fourth wheel",
+    "third wheel",
+    "centre wheel"
+   ],
+   "right": 489,
+   "band": "picture",
+   "flash": [
+    "fourth pinion",
+    "third wheel",
+    "third arbor"
+   ],
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Gear Train 3",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "seconds hand",
+    "fourth pinion",
+    "third wheel",
+    "third arbor",
+    "third pinion",
+    "centre wheel",
+    "centre arbor",
+    "centre wheel drive"
+   ],
+   "fit": [
+    "escape wheel",
+    "fourth wheel",
+    "third wheel",
+    "centre wheel"
+   ],
+   "right": 489,
+   "band": "picture",
+   "flash": [
+    "third pinion",
+    "centre wheel",
+    "centre arbor"
+   ],
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Gear Train 4",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "seconds hand",
+    "fourth pinion",
+    "third wheel",
+    "third arbor",
+    "third pinion",
+    "centre wheel",
+    "centre arbor",
+    "centre wheel drive",
+    "centre pivot",
+    "minute hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap"
+   ],
+   "fit": [
+    "escape wheel",
+    "fourth wheel",
+    "third wheel",
+    "centre wheel"
+   ],
+   "right": 489,
+   "band": "picture",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Gear Train 5",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "seconds hand",
+    "fourth pinion",
+    "third wheel",
+    "third arbor",
+    "third pinion",
+    "centre wheel",
+    "centre arbor",
+    "centre wheel drive",
+    "centre pivot",
+    "minute hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap"
+   ],
+   "fit": [
+    "escape wheel",
+    "fourth wheel",
+    "third wheel",
+    "centre wheel"
+   ],
+   "right": 489,
+   "band": "picture",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": [
+    "fourth wheel",
+    "fourth arbor",
+    "escape pinion",
+    "escape arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "escape wheel",
+    "seconds hand",
+    "fourth pinion",
+    "third wheel",
+    "third arbor",
+    "third pinion",
+    "minute hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap"
+   ]
+  }
+ },
+ {
+  "name": "Mainspring 0",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "mainspring",
+    "barrel arbor"
+   ],
+   "fit": [
+    "mainspring",
+    "barrel arbor"
+   ],
+   "right": null,
+   "band": "picture",
+   "linger": [
+    {
+     "pieces": [
+      "centre wheel",
+      "centre arbor",
+      "centre pivot"
+     ],
+     "seconds": 1
+    },
+    {
+     "pieces": [
+      "centre wheel drive"
+     ],
+     "seconds": 1
+    }
+   ],
+   "settled": true,
+   "spin": null,
+   "mainspring": "free",
+   "dim": null
+  }
+ },
+ {
+  "name": "Mainspring 1",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "mainspring",
+    "barrel arbor",
+    "mainspring stud",
+    "mainspring rest"
+   ],
+   "fit": [
+    "mainspring",
+    "barrel arbor"
+   ],
+   "right": null,
+   "band": "picture",
+   "flash": [
+    "mainspring stud"
+   ],
+   "settled": true,
+   "spin": null,
+   "mainspring": "wound",
+   "dim": null
+  }
+ },
+ {
+  "name": "Mainspring 2",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "mainspring",
+    "barrel arbor",
+    "mainspring rest"
+   ],
+   "fit": [
+    "mainspring",
+    "barrel arbor"
+   ],
+   "right": null,
+   "band": "picture",
+   "flash": [
+    "mainspring stud"
+   ],
+   "cut": [
+    "mainspring stud"
+   ],
+   "settled": true,
+   "spin": null,
+   "mainspring": "released",
+   "dim": null
+  }
+ },
+ {
+  "name": "Mainspring 3",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "mainspring",
+    "barrel arbor",
+    "barrel",
+    "escape wheel",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel",
+    "fourth pinion",
+    "fourth arbor",
+    "third wheel",
+    "third pinion",
+    "third arbor",
+    "centre wheel",
+    "centre pinion",
+    "centre arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "seconds hand",
+    "minute hand",
+    "centre pivot",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap"
+   ],
+   "fit": [
+    "barrel",
+    "centre wheel",
+    "third wheel",
+    "fourth wheel",
+    "escape wheel",
+    "balance wheel",
+    "hairspring",
+    "stud"
+   ],
+   "right": null,
+   "band": "slide",
+   "flash": [
+    "barrel",
+    "centre pinion"
+   ],
+   "settled": false,
+   "spin": null,
+   "mainspring": "barrel",
+   "dim": null
+  }
+ },
+ {
+  "name": "Mainspring 4",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "mainspring",
+    "barrel arbor",
+    "barrel",
+    "escape wheel",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel",
+    "fourth pinion",
+    "fourth arbor",
+    "third wheel",
+    "third pinion",
+    "third arbor",
+    "centre wheel",
+    "centre pinion",
+    "centre arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "seconds hand",
+    "minute hand",
+    "centre pivot",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap"
+   ],
+   "fit": [
+    "barrel",
+    "centre wheel",
+    "third wheel",
+    "fourth wheel",
+    "escape wheel",
+    "balance wheel",
+    "hairspring",
+    "stud"
+   ],
+   "right": null,
+   "band": "slide",
+   "settled": true,
+   "spin": null,
+   "mainspring": "run down",
+   "dim": null
+  }
+ },
+ {
+  "name": "Hour Hand 0",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "barrel arbor",
+    "mainspring",
+    "barrel",
+    "centre pinion",
+    "escape wheel",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel",
+    "fourth pinion",
+    "fourth arbor",
+    "third wheel",
+    "third pinion",
+    "third arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "seconds hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap",
+    "centre wheel",
+    "centre arbor",
+    "minute hand",
+    "centre pivot"
+   ],
+   "fit": [
+    "barrel",
+    "centre wheel",
+    "third wheel",
+    "fourth wheel",
+    "escape wheel",
+    "balance wheel",
+    "hairspring",
+    "stud"
+   ],
+   "right": null,
+   "band": "slide",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Hour Hand 1",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "mainspring",
+    "barrel",
+    "centre pinion",
+    "escape wheel",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel",
+    "fourth pinion",
+    "fourth arbor",
+    "third wheel",
+    "third pinion",
+    "third arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "seconds hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap",
+    "centre wheel",
+    "centre arbor",
+    "minute hand",
+    "centre pivot",
+    "cannon pinion",
+    "one-step hour wheel"
+   ],
+   "fit": [
+    "barrel",
+    "centre wheel",
+    "third wheel",
+    "fourth wheel",
+    "escape wheel",
+    "balance wheel",
+    "hairspring",
+    "stud"
+   ],
+   "right": null,
+   "band": "slide",
+   "flash": [
+    "cannon pinion",
+    "one-step hour wheel"
+   ],
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Hour Hand 2",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "mainspring",
+    "barrel",
+    "centre pinion",
+    "escape wheel",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel",
+    "fourth pinion",
+    "fourth arbor",
+    "third wheel",
+    "third pinion",
+    "third arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "seconds hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap",
+    "centre wheel",
+    "centre arbor",
+    "minute hand",
+    "centre pivot",
+    "cannon pinion",
+    "one-step hour wheel",
+    "one-step hour hand"
+   ],
+   "fit": [
+    "barrel",
+    "centre wheel",
+    "third wheel",
+    "fourth wheel",
+    "escape wheel",
+    "balance wheel",
+    "hairspring",
+    "stud"
+   ],
+   "right": null,
+   "band": "slide",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ },
+ {
+  "name": "Hour Hand 3",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "barrel arbor",
+    "mainspring",
+    "barrel",
+    "centre pinion",
+    "escape wheel",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel",
+    "fourth pinion",
+    "fourth arbor",
+    "third wheel",
+    "third pinion",
+    "third arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "seconds hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap",
+    "centre wheel",
+    "centre arbor",
+    "minute hand",
+    "centre pivot"
+   ],
+   "fit": [
+    "centre wheel"
+   ],
+   "right": null,
+   "band": "picture",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": [
+    "barrel arbor",
+    "mainspring",
+    "barrel",
+    "centre pinion",
+    "escape wheel",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel",
+    "fourth pinion",
+    "fourth arbor",
+    "third wheel",
+    "third pinion",
+    "third arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "seconds hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap"
+   ]
+  }
+ },
+ {
+  "name": "Hour Hand 4",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "barrel arbor",
+    "mainspring",
+    "barrel",
+    "centre pinion",
+    "escape wheel",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel",
+    "fourth pinion",
+    "fourth arbor",
+    "third wheel",
+    "third pinion",
+    "third arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "seconds hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap",
+    "centre wheel",
+    "centre arbor",
+    "minute hand",
+    "centre pivot",
+    "cannon pinion",
+    "minute wheel",
+    "minute arbor"
+   ],
+   "fit": [
+    "centre wheel"
+   ],
+   "right": null,
+   "band": "picture",
+   "flash": [
+    "cannon pinion",
+    "minute wheel"
+   ],
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": [
+    "barrel arbor",
+    "mainspring",
+    "barrel",
+    "centre pinion",
+    "escape wheel",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel",
+    "fourth pinion",
+    "fourth arbor",
+    "third wheel",
+    "third pinion",
+    "third arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "seconds hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap"
+   ]
+  }
+ },
+ {
+  "name": "Hour Hand 5",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "barrel arbor",
+    "mainspring",
+    "barrel",
+    "centre pinion",
+    "escape wheel",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel",
+    "fourth pinion",
+    "fourth arbor",
+    "third wheel",
+    "third pinion",
+    "third arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "seconds hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap",
+    "centre wheel",
+    "centre arbor",
+    "minute hand",
+    "centre pivot",
+    "cannon pinion",
+    "minute wheel",
+    "minute arbor",
+    "minute pinion",
+    "hour wheel"
+   ],
+   "fit": [
+    "centre wheel"
+   ],
+   "right": null,
+   "band": "picture",
+   "flash": [
+    "minute pinion",
+    "hour wheel"
+   ],
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": [
+    "barrel arbor",
+    "mainspring",
+    "barrel",
+    "centre pinion",
+    "escape wheel",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel",
+    "fourth pinion",
+    "fourth arbor",
+    "third wheel",
+    "third pinion",
+    "third arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "seconds hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap"
+   ]
+  }
+ },
+ {
+  "name": "Hour Hand 6",
+  "state": {
+   "view": null,
+   "tilt": 20,
+   "show": [
+    "barrel arbor",
+    "mainspring",
+    "barrel",
+    "centre pinion",
+    "escape wheel",
+    "escape pinion",
+    "escape arbor",
+    "fourth wheel",
+    "fourth pinion",
+    "fourth arbor",
+    "third wheel",
+    "third pinion",
+    "third arbor",
+    "balance wheel",
+    "balance staff",
+    "hairspring",
+    "collet",
+    "stud",
+    "roller",
+    "impulse jewel",
+    "pallet fork",
+    "seconds hand",
+    "chapter ring",
+    "case band",
+    "lug",
+    "crown",
+    "strap",
+    "centre wheel",
+    "centre arbor",
+    "minute hand",
+    "centre pivot",
+    "cannon pinion",
+    "minute wheel",
+    "minute arbor",
+    "minute pinion",
+    "hour wheel",
+    "hour hand"
+   ],
+   "fit": [
+    "barrel",
+    "centre wheel",
+    "third wheel",
+    "fourth wheel",
+    "escape wheel",
+    "balance wheel",
+    "hairspring",
+    "stud"
+   ],
+   "right": null,
+   "band": "slide",
+   "settled": false,
+   "spin": null,
+   "mainspring": null,
+   "dim": null
+  }
+ }
+]

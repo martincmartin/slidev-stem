@@ -16,7 +16,9 @@ frontmatter keys and measurements), read
 [`watches/tasks/2026-09-30-flash/`](../watches/tasks/2026-09-30-flash/PLAN.md)
 (inks as a uniform, the recolour, the flash phase),
 [`watches/tasks/2026-10-07-watch-primitives/`](../watches/tasks/2026-10-07-watch-primitives/PLAN.md)
-(pieces, fitted views, one rule for every change).
+(pieces, fitted views, one rule for every change),
+[`watches/tasks/2026-10-11-paper-discs/`](../watches/tasks/2026-10-11-paper-discs/PLAN.md)
+(holdouts, the exact line test next to them).
 
 ## When to use it
 
@@ -129,15 +131,12 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
     the frontmatter), and `fittedView` in `watches/watch/generate.ts`, which
     takes a tilt about x.
   - **Perspective:** the line shader divides by $w$, and clips a segment at
-    the near plane. It interpolates the plan point along a segment (for the
-    clip discs) in $1/w$. The silhouette test takes the direction to the
-    camera at each vertex, not one direction for the frame.
-    `HIDDEN_LINE_TOLERANCE` is then not the same distance at every depth.
+    the near plane. The silhouette test takes the direction to the camera at
+    each vertex, not one direction for the frame. `HIDDEN_LINE_TOLERANCE`
+    and `HOLDOUT_TOLERANCE` are then not the same distance at every depth.
     `fittedView` takes the camera's distance. `checkAffine` stays: it checks
-    the group matrices, which place the parts.
-  - **A steeper tilt, about any axis:** a clip disc slides against the part
-    above it by the height between them times $\tan t$
-    ([`watches/docs/watch.md`](../watches/docs/watch.md), "The motion works").
+    the group matrices, which place the parts. The holdouts (below) need no
+    change: a flat face's window depth is linear on the screen.
 - **Line widths are CSS px on the screen, at every zoom:** 2, 2.5, 3 or 4, the
   stroke ladder. When the camera zooms, a 2 px line stays 2 px. So parts must
   not meet only through their ink: they touch in the model.
@@ -153,7 +152,8 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   sits on a face, and must hide that face's lines, stands higher than the
   tolerance.
 - **Heights:** parts sit where they touch. A part that floats above another
-  looks wrong when the view tilts.
+  looks wrong when the view tilts. A part with a holdout (below) is the
+  exception: it stands a small gap above what it covers.
 - **Faces:** flat fills, no lighting, no textures. A curved surface reads
   through its silhouette lines.
 - **An overlay** (`Mesh.overlay`) is a mark on another mesh's surface, at the
@@ -163,13 +163,36 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   depth test. Its lines are drawn in the usual order: give it the
   `lineOrder` of the mesh it covers, and put it after that mesh, so its
   lines cover the other's.
-- **Clip discs:** a part can be hidden inside a disc, at every height (in the
-  watch, each lower wheel inside the root circle of the wheel above it). A
-  disc names the group of the part that covers it (`Disc.by`). It hides only
-  in a picture that draws a mesh of that group, so when the covering part
-  fades out, the whole part under it shows.
-  So do not put a part in the covering part's group if it can show
-  without the covering part: its disc then hides with nothing over it.
+- **Holdouts** (`Mesh.holdout`): a part that must look solid, such as a
+  wheel with spoke openings over another wheel, has a flat face at its
+  bottom in the paper's colour. It hides what is under it, faces and lines,
+  by the depth test, at any tilt, about any axis. It has no fill and no
+  lines, and the renderer draws it in the paper's colour, whatever the dim
+  or the flash. Put it in its part's piece, so it shows and fades with the
+  part.
+  - **The line test takes its depth exactly.** The face pass also writes
+    each holdout's number to an R8 picture, which every WebGL2 can draw. For
+    each picture, the renderer gives the line shader each holdout's depth
+    as a plane in the window. A holdout is flat and not dynamic, so three of
+    its points give the plane. Next to a holdout, the line test takes the
+    holdout's depth at the line's centre from its plane, and uses
+    `HOLDOUT_TOLERANCE` (in `renderer.ts`), not `HIDDEN_LINE_TOLERANCE`. So a
+    part under a holdout must stand more than that below it, and the
+    holdout's own part, level with it, shows its outline. Not an oversight:
+    the other faces keep today's test. With the exact test, the facets of a
+    curved wall, the overlays and the decals hid their own lines.
+  - **A scene has at most `MAX_HOLDOUTS`** (in `renderer.ts`): the length of
+    the shader's array of planes. The renderer refuses a scene with more.
+    The browser check "a holdout hides a part two HOLDOUT_TOLERANCEs under
+    it" (`watches/webgl/probe/checks.ts`) draws the rule at tilts 0 to 75.
+  - **Not an oversight: no float pictures.** The depth slopes of each
+    pixel, in a float picture, gave the same pictures, but need
+    `EXT_color_buffer_float`. Without it, the parts under a holdout showed
+    their lines through the openings.
+  - **Not an oversight: no clip discs.** A part hidden inside a vertical
+    cylinder came before. At a tilt, the cylinder slid against the part
+    above by the height between them times $\tan t$: 8 px at 45° at the
+    watch's motion works.
 - **A dim** (`Frame.dim`) draws a mesh with its colours mixed toward the
   paper, faces and lines, by a weight from 0 to 1. It is not an opacity: a
   dimmed mesh still hides what is under it, and shows none of its own hidden

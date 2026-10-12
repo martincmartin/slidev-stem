@@ -1,0 +1,2026 @@
+{
+ "discs": {
+  "clip-0.25": [],
+  "clip-gap-0.03": [],
+  "exact-paper-gap-0.03-tol-0.015": [
+   {
+    "group": "fourth wheel",
+    "radius": 28,
+    "z": 3.0299999713897705,
+    "under": "fourth wheel 1",
+    "pieces": [
+     "fourth wheel"
+    ]
+   },
+   {
+    "group": "third wheel",
+    "radius": 41.05109169583038,
+    "z": 6.059999942779541,
+    "under": "third wheel 1",
+    "pieces": [
+     "third wheel"
+    ]
+   },
+   {
+    "group": "one-step wheel",
+    "radius": 349.0510916958304,
+    "z": 6.059999942779541,
+    "under": "one-step wheel body",
+    "pieces": [
+     "one-step wheel"
+    ]
+   },
+   {
+    "group": "centre wheel",
+    "radius": 46.8584073464102,
+    "z": 9.09000015258789,
+    "under": "centre wheel 1",
+    "pieces": [
+     "centre wheel"
+    ]
+   },
+   {
+    "group": "hour wheel",
+    "radius": 14.486725877128166,
+    "z": 20.18000030517578,
+    "under": "hour wheel 1",
+    "pieces": [
+     "hour wheel"
+    ]
+   },
+   {
+    "group": "barrel wheel",
+    "radius": 70,
+    "z": 12.119999885559082,
+    "under": "barrel 1",
+    "pieces": [
+     "barrel"
+    ]
+   },
+   {
+    "group": "minute wheel",
+    "radius": 12.608407346410207,
+    "z": 17.149999618530273,
+    "under": "minute wheel 1",
+    "pieces": [
+     "minute wheel"
+    ]
+   },
+   {
+    "group": "one-step hour wheel",
+    "radius": 68.8584073464102,
+    "z": 17.149999618530273,
+    "under": "one-step hour body",
+    "pieces": [
+     "one-step hour wheel"
+    ]
+   }
+  ],
+  "clip-gap-0.05": [],
+  "exact-paper-gap-0.05-tol-0.025": [
+   {
+    "group": "fourth wheel",
+    "radius": 28,
+    "z": 3.049999952316284,
+    "under": "fourth wheel 1",
+    "pieces": [
+     "fourth wheel"
+    ]
+   },
+   {
+    "group": "third wheel",
+    "radius": 41.05109169583038,
+    "z": 6.099999904632568,
+    "under": "third wheel 1",
+    "pieces": [
+     "third wheel"
+    ]
+   },
+   {
+    "group": "one-step wheel",
+    "radius": 349.0510916958304,
+    "z": 6.099999904632568,
+    "under": "one-step wheel body",
+    "pieces": [
+     "one-step wheel"
+    ]
+   },
+   {
+    "group": "centre wheel",
+    "radius": 46.8584073464102,
+    "z": 9.149999618530273,
+    "under": "centre wheel 1",
+    "pieces": [
+     "centre wheel"
+    ]
+   },
+   {
+    "group": "hour wheel",
+    "radius": 14.486725877128166,
+    "z": 20.299999237060547,
+    "under": "hour wheel 1",
+    "pieces": [
+     "hour wheel"
+    ]
+   },
+   {
+    "group": "barrel wheel",
+    "radius": 70,
+    "z": 12.199999809265137,
+    "under": "barrel 1",
+    "pieces": [
+     "barrel"
+    ]
+   },
+   {
+    "group": "minute wheel",
+    "radius": 12.608407346410207,
+    "z": 17.25,
+    "under": "minute wheel 1",
+    "pieces": [
+     "minute wheel"
+    ]
+   },
+   {
+    "group": "one-step hour wheel",
+    "radius": 68.8584073464102,
+    "z": 17.25,
+    "under": "one-step hour body",
+    "pieces": [
+     "one-step hour wheel"
+    ]
+   }
+  ],
+  "clip-gap-0.1": [],
+  "exact-paper-gap-0.1-tol-0.05": [
+   {
+    "group": "fourth wheel",
+    "radius": 28,
+    "z": 3.0999999046325684,
+    "under": "fourth wheel 1",
+    "pieces": [
+     "fourth wheel"
+    ]
+   },
+   {
+    "group": "third wheel",
+    "radius": 41.05109169583038,
+    "z": 6.199999809265137,
+    "under": "third wheel 1",
+    "pieces": [
+     "third wheel"
+    ]
+   },
+   {
+    "group": "one-step wheel",
+    "radius": 349.0510916958304,
+    "z": 6.199999809265137,
+    "under": "one-step wheel body",
+    "pieces": [
+     "one-step wheel"
+    ]
+   },
+   {
+    "group": "centre wheel",
+    "radius": 46.8584073464102,
+    "z": 9.300000190734863,
+    "under": "centre wheel 1",
+    "pieces": [
+     "centre wheel"
+    ]
+   },
+   {
+    "group": "hour wheel",
+    "radius": 14.486725877128166,
+    "z": 20.600000381469727,
+    "under": "hour wheel 1",
+    "pieces": [
+     "hour wheel"
+    ]
+   },
+   {
+    "group": "barrel wheel",
+    "radius": 70,
+    "z": 12.399999618530273,
+    "under": "barrel 1",
+    "pieces": [
+     "barrel"
+    ]
+   },
+   {
+    "group": "minute wheel",
+    "radius": 12.608407346410207,
+    "z": 17.5,
+    "under": "minute wheel 1",
+    "pieces": [
+     "minute wheel"
+    ]
+   },
+   {
+    "group": "one-step hour wheel",
+    "radius": 68.8584073464102,
+    "z": 17.5,
+    "under": "one-step hour body",
+    "pieces": [
+     "one-step hour wheel"
+    ]
+   }
+  ]
+ },
+ "differences": {
+  "clip-gap-0.03": {
+   "reference": "clip-0.25",
+   "frames": [
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 3",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Balance Wheel 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 0",
+     "differ": 208,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 1",
+     "differ": 208,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 2",
+     "differ": 208,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 3",
+     "differ": 208,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 4",
+     "differ": 208,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 0",
+     "differ": 19148,
+     "visible": 397,
+     "lighter": 186
+    },
+    {
+     "frame": "Gears 1",
+     "differ": 19498,
+     "visible": 319,
+     "lighter": 146
+    },
+    {
+     "frame": "Gears 2",
+     "differ": 19498,
+     "visible": 319,
+     "lighter": 146
+    },
+    {
+     "frame": "Gears 5",
+     "differ": 19280,
+     "visible": 298,
+     "lighter": 147
+    },
+    {
+     "frame": "Gears 6",
+     "differ": 20270,
+     "visible": 237,
+     "lighter": 112
+    },
+    {
+     "frame": "Gear Train 0",
+     "differ": 8068,
+     "visible": 36,
+     "lighter": 23
+    },
+    {
+     "frame": "Gear Train 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 2",
+     "differ": 15020,
+     "visible": 315,
+     "lighter": 163
+    },
+    {
+     "frame": "Gear Train 3",
+     "differ": 23478,
+     "visible": 1233,
+     "lighter": 615
+    },
+    {
+     "frame": "Gear Train 4",
+     "differ": 40344,
+     "visible": 4666,
+     "lighter": 2461
+    },
+    {
+     "frame": "Gear Train 5",
+     "differ": 39287,
+     "visible": 1076,
+     "lighter": 532
+    },
+    {
+     "frame": "Mainspring 0",
+     "differ": 35933,
+     "visible": 20142,
+     "lighter": 10025
+    },
+    {
+     "frame": "Mainspring 1",
+     "differ": 50796,
+     "visible": 22650,
+     "lighter": 11215
+    },
+    {
+     "frame": "Mainspring 2",
+     "differ": 38454,
+     "visible": 16377,
+     "lighter": 8176
+    },
+    {
+     "frame": "Mainspring 3",
+     "differ": 53478,
+     "visible": 5212,
+     "lighter": 2563
+    },
+    {
+     "frame": "Mainspring 4",
+     "differ": 53962,
+     "visible": 5350,
+     "lighter": 2579
+    },
+    {
+     "frame": "Hour Hand 0",
+     "differ": 53962,
+     "visible": 5350,
+     "lighter": 2579
+    },
+    {
+     "frame": "Hour Hand 1",
+     "differ": 53006,
+     "visible": 7400,
+     "lighter": 3696
+    },
+    {
+     "frame": "Hour Hand 2",
+     "differ": 54248,
+     "visible": 8051,
+     "lighter": 4025
+    },
+    {
+     "frame": "Hour Hand 3",
+     "differ": 69573,
+     "visible": 10897,
+     "lighter": 5436
+    },
+    {
+     "frame": "Hour Hand 4",
+     "differ": 74746,
+     "visible": 14023,
+     "lighter": 7014
+    },
+    {
+     "frame": "Hour Hand 5",
+     "differ": 77418,
+     "visible": 17708,
+     "lighter": 8878
+    },
+    {
+     "frame": "Hour Hand 6",
+     "differ": 56759,
+     "visible": 7108,
+     "lighter": 3490
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 45",
+     "differ": 37693,
+     "visible": 8562,
+     "lighter": 4040
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 60",
+     "differ": 34839,
+     "visible": 13384,
+     "lighter": 6610
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 75",
+     "differ": 26212,
+     "visible": 12522,
+     "lighter": 6304
+    },
+    {
+     "frame": "Escapement 0 tilt 45",
+     "differ": 253,
+     "visible": 57,
+     "lighter": 24
+    },
+    {
+     "frame": "Escapement 0 tilt 60",
+     "differ": 303,
+     "visible": 163,
+     "lighter": 79
+    },
+    {
+     "frame": "Escapement 0 tilt 75",
+     "differ": 232,
+     "visible": 154,
+     "lighter": 81
+    },
+    {
+     "frame": "Gear Train 0 tilt 45",
+     "differ": 12793,
+     "visible": 986,
+     "lighter": 490
+    },
+    {
+     "frame": "Gear Train 0 tilt 60",
+     "differ": 18100,
+     "visible": 9719,
+     "lighter": 4882
+    },
+    {
+     "frame": "Gear Train 0 tilt 75",
+     "differ": 23556,
+     "visible": 15897,
+     "lighter": 8078
+    },
+    {
+     "frame": "Hour Hand 0 tilt 45",
+     "differ": 87413,
+     "visible": 48328,
+     "lighter": 24234
+    },
+    {
+     "frame": "Hour Hand 0 tilt 60",
+     "differ": 124674,
+     "visible": 88844,
+     "lighter": 44409
+    },
+    {
+     "frame": "Hour Hand 0 tilt 75",
+     "differ": 148218,
+     "visible": 112173,
+     "lighter": 56815
+    },
+    {
+     "frame": "Hour Hand 3 tilt 45",
+     "differ": 106245,
+     "visible": 44394,
+     "lighter": 22233
+    },
+    {
+     "frame": "Hour Hand 3 tilt 60",
+     "differ": 154818,
+     "visible": 94424,
+     "lighter": 47387
+    },
+    {
+     "frame": "Hour Hand 3 tilt 75",
+     "differ": 195466,
+     "visible": 138831,
+     "lighter": 69836
+    }
+   ]
+  },
+  "exact-paper-gap-0.03-tol-0.015": {
+   "reference": "clip-gap-0.03",
+   "frames": [
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0",
+     "differ": 11,
+     "visible": 4,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 3",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Balance Wheel 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 3",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 4",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 5",
+     "differ": 14,
+     "visible": 8,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 6",
+     "differ": 14,
+     "visible": 8,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0",
+     "differ": 7,
+     "visible": 4,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 2",
+     "differ": 13,
+     "visible": 5,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 3",
+     "differ": 17,
+     "visible": 8,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 4",
+     "differ": 17,
+     "visible": 8,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 5",
+     "differ": 16,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 3",
+     "differ": 36,
+     "visible": 25,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 4",
+     "differ": 36,
+     "visible": 23,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 0",
+     "differ": 36,
+     "visible": 23,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 1",
+     "differ": 12,
+     "visible": 4,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 2",
+     "differ": 12,
+     "visible": 4,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 3",
+     "differ": 57,
+     "visible": 29,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 4",
+     "differ": 57,
+     "visible": 29,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 5",
+     "differ": 539,
+     "visible": 434,
+     "lighter": 190
+    },
+    {
+     "frame": "Hour Hand 6",
+     "differ": 105,
+     "visible": 68,
+     "lighter": 14
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 45",
+     "differ": 84,
+     "visible": 52,
+     "lighter": 1
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 60",
+     "differ": 1387,
+     "visible": 999,
+     "lighter": 942
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 75",
+     "differ": 418,
+     "visible": 272,
+     "lighter": 254
+    },
+    {
+     "frame": "Escapement 0 tilt 45",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 0 tilt 60",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 0 tilt 75",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 45",
+     "differ": 6,
+     "visible": 4,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 60",
+     "differ": 4,
+     "visible": 2,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 75",
+     "differ": 2954,
+     "visible": 2637,
+     "lighter": 2629
+    },
+    {
+     "frame": "Hour Hand 0 tilt 45",
+     "differ": 78,
+     "visible": 50,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 0 tilt 60",
+     "differ": 3756,
+     "visible": 3425,
+     "lighter": 3368
+    },
+    {
+     "frame": "Hour Hand 0 tilt 75",
+     "differ": 6620,
+     "visible": 5851,
+     "lighter": 5828
+    },
+    {
+     "frame": "Hour Hand 3 tilt 45",
+     "differ": 142,
+     "visible": 72,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 3 tilt 60",
+     "differ": 14697,
+     "visible": 2590,
+     "lighter": 2467
+    },
+    {
+     "frame": "Hour Hand 3 tilt 75",
+     "differ": 14662,
+     "visible": 2317,
+     "lighter": 2308
+    }
+   ]
+  },
+  "clip-gap-0.05": {
+   "reference": "clip-0.25",
+   "frames": [
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 3",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Balance Wheel 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 0",
+     "differ": 214,
+     "visible": 6,
+     "lighter": 4
+    },
+    {
+     "frame": "Escapement 1",
+     "differ": 214,
+     "visible": 6,
+     "lighter": 4
+    },
+    {
+     "frame": "Escapement 2",
+     "differ": 214,
+     "visible": 6,
+     "lighter": 4
+    },
+    {
+     "frame": "Escapement 3",
+     "differ": 214,
+     "visible": 6,
+     "lighter": 4
+    },
+    {
+     "frame": "Escapement 4",
+     "differ": 214,
+     "visible": 6,
+     "lighter": 4
+    },
+    {
+     "frame": "Gears 0",
+     "differ": 20013,
+     "visible": 2764,
+     "lighter": 1336
+    },
+    {
+     "frame": "Gears 1",
+     "differ": 20361,
+     "visible": 2533,
+     "lighter": 1206
+    },
+    {
+     "frame": "Gears 2",
+     "differ": 20361,
+     "visible": 2533,
+     "lighter": 1206
+    },
+    {
+     "frame": "Gears 5",
+     "differ": 20122,
+     "visible": 2329,
+     "lighter": 1203
+    },
+    {
+     "frame": "Gears 6",
+     "differ": 21156,
+     "visible": 2233,
+     "lighter": 1156
+    },
+    {
+     "frame": "Gear Train 0",
+     "differ": 8380,
+     "visible": 98,
+     "lighter": 50
+    },
+    {
+     "frame": "Gear Train 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 2",
+     "differ": 15729,
+     "visible": 1469,
+     "lighter": 752
+    },
+    {
+     "frame": "Gear Train 3",
+     "differ": 24756,
+     "visible": 6042,
+     "lighter": 3044
+    },
+    {
+     "frame": "Gear Train 4",
+     "differ": 43379,
+     "visible": 14160,
+     "lighter": 7115
+    },
+    {
+     "frame": "Gear Train 5",
+     "differ": 42619,
+     "visible": 5486,
+     "lighter": 2760
+    },
+    {
+     "frame": "Mainspring 0",
+     "differ": 40154,
+     "visible": 27529,
+     "lighter": 13755
+    },
+    {
+     "frame": "Mainspring 1",
+     "differ": 56561,
+     "visible": 34265,
+     "lighter": 17141
+    },
+    {
+     "frame": "Mainspring 2",
+     "differ": 42880,
+     "visible": 25297,
+     "lighter": 12809
+    },
+    {
+     "frame": "Mainspring 3",
+     "differ": 57053,
+     "visible": 19672,
+     "lighter": 9797
+    },
+    {
+     "frame": "Mainspring 4",
+     "differ": 57443,
+     "visible": 19891,
+     "lighter": 9872
+    },
+    {
+     "frame": "Hour Hand 0",
+     "differ": 57443,
+     "visible": 19891,
+     "lighter": 9872
+    },
+    {
+     "frame": "Hour Hand 1",
+     "differ": 56693,
+     "visible": 19661,
+     "lighter": 9777
+    },
+    {
+     "frame": "Hour Hand 2",
+     "differ": 58153,
+     "visible": 20575,
+     "lighter": 10251
+    },
+    {
+     "frame": "Hour Hand 3",
+     "differ": 77527,
+     "visible": 21215,
+     "lighter": 10695
+    },
+    {
+     "frame": "Hour Hand 4",
+     "differ": 83589,
+     "visible": 25635,
+     "lighter": 12934
+    },
+    {
+     "frame": "Hour Hand 5",
+     "differ": 87136,
+     "visible": 30089,
+     "lighter": 15146
+    },
+    {
+     "frame": "Hour Hand 6",
+     "differ": 60600,
+     "visible": 21960,
+     "lighter": 10923
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 45",
+     "differ": 41351,
+     "visible": 19899,
+     "lighter": 9836
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 60",
+     "differ": 38879,
+     "visible": 20907,
+     "lighter": 10467
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 75",
+     "differ": 29982,
+     "visible": 17879,
+     "lighter": 9019
+    },
+    {
+     "frame": "Escapement 0 tilt 45",
+     "differ": 270,
+     "visible": 131,
+     "lighter": 63
+    },
+    {
+     "frame": "Escapement 0 tilt 60",
+     "differ": 339,
+     "visible": 219,
+     "lighter": 106
+    },
+    {
+     "frame": "Escapement 0 tilt 75",
+     "differ": 258,
+     "visible": 187,
+     "lighter": 103
+    },
+    {
+     "frame": "Gear Train 0 tilt 45",
+     "differ": 13612,
+     "visible": 5843,
+     "lighter": 2887
+    },
+    {
+     "frame": "Gear Train 0 tilt 60",
+     "differ": 20150,
+     "visible": 12941,
+     "lighter": 6550
+    },
+    {
+     "frame": "Gear Train 0 tilt 75",
+     "differ": 27709,
+     "visible": 20231,
+     "lighter": 10271
+    },
+    {
+     "frame": "Hour Hand 0 tilt 45",
+     "differ": 101127,
+     "visible": 66384,
+     "lighter": 33135
+    },
+    {
+     "frame": "Hour Hand 0 tilt 60",
+     "differ": 154928,
+     "visible": 121301,
+     "lighter": 60666
+    },
+    {
+     "frame": "Hour Hand 0 tilt 75",
+     "differ": 194869,
+     "visible": 159434,
+     "lighter": 80747
+    },
+    {
+     "frame": "Hour Hand 3 tilt 45",
+     "differ": 131297,
+     "visible": 72641,
+     "lighter": 36414
+    },
+    {
+     "frame": "Hour Hand 3 tilt 60",
+     "differ": 207638,
+     "visible": 149184,
+     "lighter": 74704
+    },
+    {
+     "frame": "Hour Hand 3 tilt 75",
+     "differ": 273036,
+     "visible": 220362,
+     "lighter": 110606
+    }
+   ]
+  },
+  "exact-paper-gap-0.05-tol-0.025": {
+   "reference": "clip-gap-0.05",
+   "frames": [
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0",
+     "differ": 11,
+     "visible": 4,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 3",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Balance Wheel 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 3",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 4",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 5",
+     "differ": 14,
+     "visible": 6,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 6",
+     "differ": 14,
+     "visible": 6,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0",
+     "differ": 8,
+     "visible": 4,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 2",
+     "differ": 14,
+     "visible": 10,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 3",
+     "differ": 19,
+     "visible": 14,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 4",
+     "differ": 19,
+     "visible": 14,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 5",
+     "differ": 18,
+     "visible": 1,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 3",
+     "differ": 19,
+     "visible": 10,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 4",
+     "differ": 50,
+     "visible": 33,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 0",
+     "differ": 50,
+     "visible": 33,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 1",
+     "differ": 17,
+     "visible": 3,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 2",
+     "differ": 17,
+     "visible": 3,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 3",
+     "differ": 59,
+     "visible": 28,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 4",
+     "differ": 59,
+     "visible": 28,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 5",
+     "differ": 551,
+     "visible": 444,
+     "lighter": 198
+    },
+    {
+     "frame": "Hour Hand 6",
+     "differ": 129,
+     "visible": 87,
+     "lighter": 19
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 45",
+     "differ": 47,
+     "visible": 27,
+     "lighter": 0
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 60",
+     "differ": 308,
+     "visible": 217,
+     "lighter": 163
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 75",
+     "differ": 599,
+     "visible": 366,
+     "lighter": 347
+    },
+    {
+     "frame": "Escapement 0 tilt 45",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 0 tilt 60",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 0 tilt 75",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 45",
+     "differ": 7,
+     "visible": 4,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 60",
+     "differ": 3,
+     "visible": 1,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 75",
+     "differ": 2978,
+     "visible": 2655,
+     "lighter": 2655
+    },
+    {
+     "frame": "Hour Hand 0 tilt 45",
+     "differ": 37,
+     "visible": 26,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 0 tilt 60",
+     "differ": 3766,
+     "visible": 3429,
+     "lighter": 3398
+    },
+    {
+     "frame": "Hour Hand 0 tilt 75",
+     "differ": 6750,
+     "visible": 6012,
+     "lighter": 5998
+    },
+    {
+     "frame": "Hour Hand 3 tilt 45",
+     "differ": 133,
+     "visible": 84,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 3 tilt 60",
+     "differ": 14798,
+     "visible": 2538,
+     "lighter": 2467
+    },
+    {
+     "frame": "Hour Hand 3 tilt 75",
+     "differ": 14834,
+     "visible": 2297,
+     "lighter": 2297
+    }
+   ]
+  },
+  "clip-gap-0.1": {
+   "reference": "clip-0.25",
+   "frames": [
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 3",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Balance Wheel 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 0",
+     "differ": 232,
+     "visible": 79,
+     "lighter": 38
+    },
+    {
+     "frame": "Escapement 1",
+     "differ": 232,
+     "visible": 79,
+     "lighter": 38
+    },
+    {
+     "frame": "Escapement 2",
+     "differ": 232,
+     "visible": 79,
+     "lighter": 38
+    },
+    {
+     "frame": "Escapement 3",
+     "differ": 232,
+     "visible": 79,
+     "lighter": 38
+    },
+    {
+     "frame": "Escapement 4",
+     "differ": 232,
+     "visible": 79,
+     "lighter": 38
+    },
+    {
+     "frame": "Gears 0",
+     "differ": 21970,
+     "visible": 11471,
+     "lighter": 5676
+    },
+    {
+     "frame": "Gears 1",
+     "differ": 22330,
+     "visible": 11468,
+     "lighter": 5681
+    },
+    {
+     "frame": "Gears 2",
+     "differ": 22330,
+     "visible": 11468,
+     "lighter": 5681
+    },
+    {
+     "frame": "Gears 5",
+     "differ": 22103,
+     "visible": 11533,
+     "lighter": 5768
+    },
+    {
+     "frame": "Gears 6",
+     "differ": 23216,
+     "visible": 11570,
+     "lighter": 5667
+    },
+    {
+     "frame": "Gear Train 0",
+     "differ": 8888,
+     "visible": 1312,
+     "lighter": 655
+    },
+    {
+     "frame": "Gear Train 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 2",
+     "differ": 17104,
+     "visible": 6290,
+     "lighter": 3140
+    },
+    {
+     "frame": "Gear Train 3",
+     "differ": 27612,
+     "visible": 12778,
+     "lighter": 6395
+    },
+    {
+     "frame": "Gear Train 4",
+     "differ": 50531,
+     "visible": 26310,
+     "lighter": 13154
+    },
+    {
+     "frame": "Gear Train 5",
+     "differ": 50094,
+     "visible": 11405,
+     "lighter": 5846
+    },
+    {
+     "frame": "Mainspring 0",
+     "differ": 50401,
+     "visible": 38988,
+     "lighter": 19432
+    },
+    {
+     "frame": "Mainspring 1",
+     "differ": 70238,
+     "visible": 50975,
+     "lighter": 25626
+    },
+    {
+     "frame": "Mainspring 2",
+     "differ": 53332,
+     "visible": 38153,
+     "lighter": 18999
+    },
+    {
+     "frame": "Mainspring 3",
+     "differ": 65386,
+     "visible": 35730,
+     "lighter": 17849
+    },
+    {
+     "frame": "Mainspring 4",
+     "differ": 65844,
+     "visible": 35928,
+     "lighter": 17910
+    },
+    {
+     "frame": "Hour Hand 0",
+     "differ": 65844,
+     "visible": 35928,
+     "lighter": 17910
+    },
+    {
+     "frame": "Hour Hand 1",
+     "differ": 65427,
+     "visible": 35975,
+     "lighter": 17931
+    },
+    {
+     "frame": "Hour Hand 2",
+     "differ": 67397,
+     "visible": 37636,
+     "lighter": 18762
+    },
+    {
+     "frame": "Hour Hand 3",
+     "differ": 96329,
+     "visible": 44101,
+     "lighter": 22085
+    },
+    {
+     "frame": "Hour Hand 4",
+     "differ": 104583,
+     "visible": 50697,
+     "lighter": 25417
+    },
+    {
+     "frame": "Hour Hand 5",
+     "differ": 110045,
+     "visible": 57012,
+     "lighter": 28575
+    },
+    {
+     "frame": "Hour Hand 6",
+     "differ": 70003,
+     "visible": 38978,
+     "lighter": 19450
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 45",
+     "differ": 50681,
+     "visible": 31386,
+     "lighter": 15662
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 60",
+     "differ": 49453,
+     "visible": 32467,
+     "lighter": 16310
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 75",
+     "differ": 39190,
+     "visible": 27534,
+     "lighter": 13989
+    },
+    {
+     "frame": "Escapement 0 tilt 45",
+     "differ": 312,
+     "visible": 206,
+     "lighter": 98
+    },
+    {
+     "frame": "Escapement 0 tilt 60",
+     "differ": 421,
+     "visible": 309,
+     "lighter": 151
+    },
+    {
+     "frame": "Escapement 0 tilt 75",
+     "differ": 364,
+     "visible": 269,
+     "lighter": 145
+    },
+    {
+     "frame": "Gear Train 0 tilt 45",
+     "differ": 15640,
+     "visible": 9590,
+     "lighter": 4846
+    },
+    {
+     "frame": "Gear Train 0 tilt 60",
+     "differ": 25318,
+     "visible": 18562,
+     "lighter": 9268
+    },
+    {
+     "frame": "Gear Train 0 tilt 75",
+     "differ": 37852,
+     "visible": 30542,
+     "lighter": 15458
+    },
+    {
+     "frame": "Hour Hand 0 tilt 45",
+     "differ": 134351,
+     "visible": 102755,
+     "lighter": 51362
+    },
+    {
+     "frame": "Hour Hand 0 tilt 60",
+     "differ": 228380,
+     "visible": 195779,
+     "lighter": 97892
+    },
+    {
+     "frame": "Hour Hand 0 tilt 75",
+     "differ": 301293,
+     "visible": 268847,
+     "lighter": 136115
+    },
+    {
+     "frame": "Hour Hand 3 tilt 45",
+     "differ": 192817,
+     "visible": 136861,
+     "lighter": 68477
+    },
+    {
+     "frame": "Hour Hand 3 tilt 60",
+     "differ": 305973,
+     "visible": 252564,
+     "lighter": 126256
+    },
+    {
+     "frame": "Hour Hand 3 tilt 75",
+     "differ": 367571,
+     "visible": 311638,
+     "lighter": 156434
+    }
+   ]
+  },
+  "exact-paper-gap-0.1-tol-0.05": {
+   "reference": "clip-gap-0.1",
+   "frames": [
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0",
+     "differ": 11,
+     "visible": 4,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hairspring 3",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Balance Wheel 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 3",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 4",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 5",
+     "differ": 12,
+     "visible": 7,
+     "lighter": 0
+    },
+    {
+     "frame": "Gears 6",
+     "differ": 12,
+     "visible": 7,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0",
+     "differ": 8,
+     "visible": 3,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 2",
+     "differ": 16,
+     "visible": 4,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 3",
+     "differ": 17,
+     "visible": 4,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 4",
+     "differ": 17,
+     "visible": 4,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 5",
+     "differ": 16,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 0",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 1",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 2",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 3",
+     "differ": 13,
+     "visible": 10,
+     "lighter": 0
+    },
+    {
+     "frame": "Mainspring 4",
+     "differ": 13,
+     "visible": 6,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 0",
+     "differ": 13,
+     "visible": 6,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 1",
+     "differ": 4,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 2",
+     "differ": 4,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 3",
+     "differ": 36,
+     "visible": 19,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 4",
+     "differ": 36,
+     "visible": 19,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 5",
+     "differ": 542,
+     "visible": 459,
+     "lighter": 222
+    },
+    {
+     "frame": "Hour Hand 6",
+     "differ": 94,
+     "visible": 59,
+     "lighter": 19
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 45",
+     "differ": 30,
+     "visible": 20,
+     "lighter": 0
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 60",
+     "differ": 285,
+     "visible": 205,
+     "lighter": 160
+    },
+    {
+     "frame": "What Every Nerd Should Know About Mechanical Watches 0 tilt 75",
+     "differ": 406,
+     "visible": 263,
+     "lighter": 247
+    },
+    {
+     "frame": "Escapement 0 tilt 45",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 0 tilt 60",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Escapement 0 tilt 75",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 45",
+     "differ": 2,
+     "visible": 1,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 60",
+     "differ": 0,
+     "visible": 0,
+     "lighter": 0
+    },
+    {
+     "frame": "Gear Train 0 tilt 75",
+     "differ": 3039,
+     "visible": 2708,
+     "lighter": 2708
+    },
+    {
+     "frame": "Hour Hand 0 tilt 45",
+     "differ": 44,
+     "visible": 22,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 0 tilt 60",
+     "differ": 3829,
+     "visible": 3519,
+     "lighter": 3511
+    },
+    {
+     "frame": "Hour Hand 0 tilt 75",
+     "differ": 7148,
+     "visible": 6367,
+     "lighter": 6347
+    },
+    {
+     "frame": "Hour Hand 3 tilt 45",
+     "differ": 29,
+     "visible": 14,
+     "lighter": 0
+    },
+    {
+     "frame": "Hour Hand 3 tilt 60",
+     "differ": 15117,
+     "visible": 2490,
+     "lighter": 2483
+    },
+    {
+     "frame": "Hour Hand 3 tilt 75",
+     "differ": 15216,
+     "visible": 2294,
+     "lighter": 2294
+    }
+   ]
+  }
+ }
+}

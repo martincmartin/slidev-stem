@@ -1,6 +1,6 @@
 // Checks of the renderer, the stage and the stills that need a browser:
 // context loss, dispose, a dynamic mesh drawn last, the fade, a recolour,
-// a dim, the flash, and the contract of each input. They draw small scenes of their own, not the
+// a dim, the flash, a holdout, and the contract of each input. They draw small scenes of their own, not the
 // watch. `window.webglChecks()` runs them all; art/watch_stills.py calls it.
 
 import { check } from "../checked.ts";
@@ -13,7 +13,7 @@ import {
   smoothRing,
 } from "../mesh.ts";
 import type { Point2 } from "../mesh.ts";
-import { Renderer } from "../renderer.ts";
+import { HOLDOUT_TOLERANCE, Renderer } from "../renderer.ts";
 import { FLASH_INKS, INKS, hexRgb } from "../scene.ts";
 import type {
   Frame,
@@ -272,6 +272,59 @@ function expected(
   } finally {
     fresh.dispose();
   }
+}
+
+/** A holdout (a paper disc) at height 10, a box whose top is two
+ *  HOLDOUT_TOLERANCEs under it (the watch's STACK_GAP), and a box that stands
+ *  on it (a wheel), all inside it at every tilt to 75. */
+function holdoutScene(): {
+  group: Group;
+  view: Scene["views"][number];
+  holdout: Mesh;
+  under: Mesh;
+  above: Mesh;
+} {
+  const group: Group = { name: "root", parent: null };
+  const height = 10;
+  // a square from (60, 15) to (140, 95), as two triangles
+  const corners = square(60, 15, 80).map(([x, y]) => [x, y, height]);
+  const holdout: Mesh = {
+    name: "holdout",
+    part: "holdout",
+    group,
+    fill: null,
+    holdout: true,
+    triangles: new Float32Array(
+      [0, 1, 2, 0, 2, 3].flatMap((index) => corners[index] ?? []),
+    ),
+    lines: [],
+    silhouetteEdges: [],
+    lineOrder: height,
+    inDrawing: false,
+    overlay: false,
+    dynamic: false,
+  };
+  const box = (
+    name: string,
+    outline: Point2[],
+    bottom: number,
+    top: number,
+  ): Mesh =>
+    extrude([polygonRing(outline, STYLE)], bottom, top, {
+      name,
+      part: name,
+      group,
+      fill: { ink: INKS.subjectWash, opacity: 1 },
+      lineOrder: top,
+    });
+  const underTop = height - 2 * HOLDOUT_TOLERANCE;
+  return {
+    group,
+    view: { name: "all", scale: 1, shift: [0, 0], pivot: [100, 55, height] },
+    holdout,
+    under: box("under", square(95, 40, 30), underTop - 4, underTop),
+    above: box("above", square(65, 45, 20), height, height + 4),
+  };
 }
 
 /** Keep `thing` until the check ends, and dispose it then, even if the check
@@ -781,6 +834,48 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
         stage.show(flashing, null) === 0,
         "a state that changes no channel flashed",
       );
+    },
+  ],
+  [
+    "a holdout hides a part two HOLDOUT_TOLERANCEs under it, and changes nothing that stands on it, at tilts 0 to 75",
+    () => {
+      const test = holdoutScene();
+      const picture = (meshes: Mesh[], tilt: number): Uint8Array => {
+        const scene: Scene = {
+          slide: SIZE,
+          meshes,
+          groups: [test.group],
+          views: [test.view],
+          pieces: [],
+        };
+        const target = canvas();
+        const drawn = renderer(target, scene);
+        try {
+          drawn.render({
+            view: test.view,
+            tilt,
+            groupMatrices: new Map([[test.group, IDENTITY]]),
+            size: SIZE,
+          });
+          noError(target);
+          return pixels(target);
+        } finally {
+          drawn.dispose();
+        }
+      };
+      for (const tilt of [0, 20, 45, 60, 75]) {
+        const { holdout, under, above } = test;
+        same(
+          picture([holdout, under], tilt),
+          picture([holdout], tilt),
+          `the part under it, at tilt ${String(tilt)}`,
+        );
+        same(
+          picture([holdout, above], tilt),
+          picture([above], tilt),
+          `the part on it, at tilt ${String(tilt)}`,
+        );
+      }
     },
   ],
   [

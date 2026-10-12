@@ -129,11 +129,37 @@ test("checkScene takes a good scene, and names what is wrong with a bad one", ()
       },
     ],
     [
-      /a disc of radius/,
+      /a holdout has no fill and no lines/,
+      { ...GOOD, meshes: [{ ...MESH, holdout: true }] },
+    ],
+    [
+      /a holdout is not flat/,
       {
         ...GOOD,
         meshes: [
-          { ...MESH, hiddenInside: [{ centre: [0, 0], radius: 0, by: ROOT }] },
+          {
+            ...MESH,
+            holdout: true,
+            fill: null,
+            lines: [],
+            silhouetteEdges: [],
+          },
+        ],
+      },
+    ],
+    [
+      /a holdout is not dynamic/,
+      {
+        ...GOOD,
+        meshes: [
+          {
+            ...MESH,
+            holdout: true,
+            dynamic: true,
+            fill: null,
+            lines: [],
+            silhouetteEdges: [],
+          },
         ],
       },
     ],

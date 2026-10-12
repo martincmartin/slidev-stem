@@ -3,8 +3,9 @@ import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import { transformPoint } from "../webgl/math.ts";
 import type { Point2 } from "../webgl/mesh.ts";
-import { viewProjection } from "../webgl/renderer.ts";
+import { HOLDOUT_TOLERANCE, viewProjection } from "../webgl/renderer.ts";
 import type { Wheel } from "./design.ts";
+import { AtRest, discOutline } from "./at-rest.ts";
 import type { Mesh, Piece } from "../webgl/scene.ts";
 import { INKS } from "../webgl/scene.ts";
 import {
@@ -70,13 +71,21 @@ test("each wheel has four corners for each tooth", () => {
   }
 });
 
-test("a pinion is level with the wheel that drives it", () => {
+test("a pinion stands on its wheel and reaches the top of the wheel that drives it", () => {
+  // the driving wheel stands a gap above the pinion's wheel, which it covers
   for (const wheel of design.wheels) {
     const driver = design.wheels.find((other) => other.driven === wheel);
     if (!driver) continue;
-    const pinion = at(partMeshes(partNameOf(wheel)), 2);
+    const [body, , pinion] = partMeshes(partNameOf(wheel));
     const driverBody = at(partMeshes(partNameOf(driver)), 0);
-    assert.deepEqual(heights(pinion), heights(driverBody), wheel.name);
+    assert.ok(body && pinion, wheel.name);
+    const [driverBottom, driverTop] = heights(driverBody);
+    assert.deepEqual(
+      heights(pinion),
+      [heights(body)[1], driverTop],
+      wheel.name,
+    );
+    assert.ok(driverBottom > heights(body)[1], wheel.name);
   }
 });
 
@@ -106,7 +115,7 @@ test("the spring is a ribbon on the balance, and the stud is not in the drawing"
   assert.ok(piece("stud").meshes.has(stud));
 });
 
-test("every mesh is finite, and every hidden-inside disc is a disc", () => {
+test("every mesh is finite", () => {
   for (const mesh of scene.meshes) {
     assert.ok(mesh.triangles.every(Number.isFinite), `${mesh.name} triangles`);
     for (const line of mesh.lines) {
@@ -127,43 +136,62 @@ test("every mesh is finite, and every hidden-inside disc is a disc", () => {
         `${mesh.name} silhouette edges`,
       );
     }
-    for (const disc of mesh.hiddenInside) {
-      assert.ok(disc.radius > 0 && disc.centre.every(Number.isFinite));
+  }
+});
+
+/** Each paper disc, with the piece that shows it: its wheel's. */
+function paperDiscs(): { disc: Mesh; piece: Piece }[] {
+  return scene.meshes
+    .filter((mesh) => mesh.holdout)
+    .map((disc) => {
+      const pieces = scene.pieces.filter((each) => each.meshes.has(disc));
+      assert.equal(pieces.length, 1, disc.name);
+      return { disc, piece: at(pieces, 0) };
+    });
+}
+
+test("each paper disc is flat, at its wheel's bottom, inside the case, and shows with its wheel", () => {
+  const atRest = new AtRest(watch);
+  const discs = paperDiscs();
+  assert.ok(discs.length > 0, "no paper disc");
+  const [centreX, centreY] = design.watchCentre;
+  for (const { disc, piece: shownWith } of discs) {
+    const [bottom, top] = atRest.heights(disc);
+    assert.equal(bottom, top, `${disc.name} is not flat`);
+    const wheel = [...shownWith.meshes].filter((mesh) => mesh !== disc);
+    assert.ok(wheel.length > 0, disc.name);
+    const wheelBottom = Math.min(
+      ...wheel.map((mesh) => atRest.heights(mesh)[0]),
+    );
+    assert.ok(Math.abs(bottom - wheelBottom) < 1e-9, disc.name);
+    for (const [x, y] of atRest.points(disc)) {
+      assert.ok(
+        // the mesh's points are 32-bit floats
+        Math.hypot(x - centreX, y - centreY) <= design.case.bezelRadius + 1e-3,
+        `${disc.name} reaches past the case`,
+      );
     }
   }
 });
 
-test("the cover draws the group of a clip disc only with a part that covers the disc", () => {
-  // A disc hides while any mesh of its group is drawn (docs/webgl.md, "Clip
-  // discs"). So a part that the cover shows must not share a group with a
-  // covering part that the cover leaves out. A mesh covers a disc if, in every
-  // sector about the group's arbor, it reaches the disc's edge.
-  const SECTORS = 16;
-  const onCover = new Set(
-    scene.pieces
-      .filter((each) => each.inAll)
-      .flatMap((each) => [...each.meshes]),
-  );
-  const covers = (mesh: Mesh, radius: number): boolean => {
-    const reached = new Array<number>(SECTORS).fill(0);
-    for (let index = 0; index < mesh.triangles.length; index += 3) {
-      const x = at(mesh.triangles, index);
-      const y = at(mesh.triangles, index + 1);
-      const sector =
-        Math.floor((Math.atan2(y, x) / (2 * Math.PI) + 1) * SECTORS) % SECTORS;
-      reached[sector] = Math.max(at(reached, sector), Math.hypot(x, y));
-    }
-    return reached.every((reach) => reach >= radius);
-  };
-  for (const mesh of onCover) {
-    for (const disc of mesh.hiddenInside) {
-      const drawn = scene.meshes.filter(
-        (each) => each.group === disc.by && onCover.has(each),
-      );
-      if (drawn.length === 0) continue;
+test("the parts under a paper disc stand more than the line test's tolerance below it", () => {
+  // The line test takes a holdout's depth exactly, with HOLDOUT_TOLERANCE: a
+  // part closer under it would show its lines through the wheel's openings
+  // (webgl/renderer.ts, "Holdouts").
+  const atRest = new AtRest(watch);
+  for (const { disc, piece: shownWith } of paperDiscs()) {
+    const height = atRest.heights(disc)[0];
+    const outline = discOutline(atRest, disc);
+    for (const mesh of scene.meshes) {
+      if (mesh.holdout || shownWith.meshes.has(mesh)) continue;
+      const over = outline.heightsOver(atRest.points(mesh));
+      if (!over) continue;
+      const top = over[1];
+      // a part that reaches above the disc is the deck test's
+      if (top > height + 1e-9) continue;
       assert.ok(
-        drawn.some((each) => each.fill !== null && covers(each, disc.radius)),
-        `${mesh.name}: the cover draws ${disc.by.name}, but not the part that covers its disc`,
+        top < height - HOLDOUT_TOLERANCE,
+        `${mesh.name} is ${String(height - top)} px under ${disc.name}`,
       );
     }
   }
@@ -198,7 +226,12 @@ test("each wheel of the train is three pieces: the wheel with its hub, the pinio
     // the wheel, its hub, its pinion and its arbor, in the drawing's order
     const [body, hub, pinion, arbor] = partMeshes(`${wheel} wheel`);
     assert.ok(body && hub && pinion && arbor);
-    assert.deepEqual(piece(`${wheel} wheel`).meshes, new Set([body, hub]));
+    // and the wheel's paper disc, if it covers a wheel
+    const wheelMeshes = [...piece(`${wheel} wheel`).meshes];
+    assert.deepEqual(
+      new Set(wheelMeshes.filter((mesh) => !mesh.holdout)),
+      new Set([body, hub]),
+    );
     assert.deepEqual(piece(`${wheel} pinion`).meshes, new Set([pinion]));
     assert.deepEqual(piece(`${wheel} arbor`).meshes, new Set([arbor]));
     // the arbor stands on the wheel: without the pinion it does not float
@@ -224,7 +257,6 @@ test("the Gears slide's spans are whole teeth of their gears, in the flash's col
       assert.equal(meshes.length, 1, name);
       const span = at(meshes, 0);
       assert.equal(span.group, gear.group, name);
-      assert.deepEqual(span.hiddenInside, gear.hiddenInside, name);
       assert.equal(span.inDrawing, false, name);
       const [bottom, top] = heights(span);
       // the whole tooth, drawn over the gear's faces

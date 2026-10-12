@@ -38,8 +38,13 @@
 // scene order, so a later line covers an earlier one where they cross. That
 // is depth order only if `lineOrder` follows the depth of the view.
 //
-// Hidden inside: a mesh is not drawn inside its discs, in world x and y, at
-// any height, in a picture that draws a mesh of the disc's group (`Disc.by`).
+// Holdouts (`Mesh.holdout`): flat faces in the paper's colour, under a part
+// that must look solid, such as a wheel. They hide what is under them by the
+// depth test. The face pass also writes each holdout's number (an R8
+// picture, which every WebGL2 can draw), and each picture gives the line
+// test each holdout's depth plane. So next to a holdout the line test takes
+// its depth at the line's exact centre, with HOLDOUT_TOLERANCE: a part a
+// little under the holdout is hidden, and the holdout's own part shows.
 //
 // A fade (`keep` and `rest` of the frame) shows the meshes in `keep`, and the
 // other meshes at opacity `rest`, as one image, as SVG's group opacity does:
@@ -59,7 +64,6 @@
 import type {
   Colour,
   Frame,
-  Group,
   Ink,
   Mesh,
   MeshGeometry,
@@ -78,7 +82,7 @@ import {
   hexRgb,
 } from "./scene.ts";
 import { at, check, checkFinite } from "./checked.ts";
-import { IDENTITY, checkAffine, normalMatrix } from "./math.ts";
+import { IDENTITY, checkAffine, normalMatrix, transformPoint } from "./math.ts";
 import type { Matrix4 } from "./math.ts";
 
 const DEPTH_RANGE = 2000; // slide px: world depth maps to clip z = -depth / range
@@ -86,7 +90,16 @@ const DEPTH_RANGE = 2000; // slide px: world depth maps to clip z = -depth / ran
  *  it is more than this in front of the line's centre. So a part that must
  *  hide the lines of the face that it sits on stands higher than this. */
 export const HIDDEN_LINE_TOLERANCE = 0.25;
-const MAX_DISCS = 4;
+/** Slide px of depth, for the centre-line test next to a holdout: there the
+ *  face's depth at the line's centre is exact, so the test needs only this.
+ *  So a part under a holdout stands more than this below it. It must be more
+ *  than the depth error of the faces next to the holdout, about 0.015
+ *  (tasks/2026-10-11-paper-discs). A binary fraction: heights made from it
+ *  stay exact in a Float32Array. */
+export const HOLDOUT_TOLERANCE = 1 / 32;
+/** The most holdouts a scene may have: the length of the line shader's
+ *  `holdoutPlanes`. The numbers picture could hold 255. */
+export const MAX_HOLDOUTS = 32;
 /** The polygon offset of an overlay's faces (`Mesh.overlay`): toward the
  *  camera by its slope and by two steps of the depth buffer, more than the
  *  rounding between two triangulations of one face. */
@@ -119,38 +132,23 @@ const INSTANCE_FLOATS = INSTANCE_LAYOUT.reduce(
 );
 const LINE_ATTRIBUTES = ["corner", ...INSTANCE_LAYOUT.map(([name]) => name)];
 
-const DISC_GLSL = `
-uniform vec3 discs[${String(MAX_DISCS)}];  // x, y, radius in slide px
-uniform int discCount;
-bool hidden(vec2 plan) {
-  for (int index = 0; index < ${String(MAX_DISCS)}; index++) {
-    if (index >= discCount) break;
-    if (distance(plan, discs[index].xy) < discs[index].z) return true;
-  }
-  return false;
-}`;
-const DISC_UNIFORMS = ["discs", "discCount"];
-
 const FILL_VS = `#version 300 es
 in vec3 position;
 uniform mat4 model;
 uniform mat4 viewProj;
-out vec2 plan;
 void main() {
-  vec4 world = model * vec4(position, 1.0);
-  plan = world.xy;
-  gl_Position = viewProj * world;
+  gl_Position = viewProj * model * vec4(position, 1.0);
 }`;
 
 const FILL_FS = `#version 300 es
 precision highp float;
-in vec2 plan;
 uniform vec4 color;
-out vec4 fragColor;
-${DISC_GLSL}
+uniform float holdoutNumber;  // a holdout's number, 1 to MAX_HOLDOUTS; else 0
+layout(location = 0) out vec4 fragColor;
+layout(location = 1) out vec4 holdout;  // the number, / 255
 void main() {
-  if (hidden(plan)) discard;
   fragColor = color;
+  holdout = vec4(holdoutNumber / 255.0, 0.0, 0.0, 1.0);
 }`;
 
 const LINE_VS = `#version 300 es
@@ -174,8 +172,6 @@ flat out vec2 screenStart;
 flat out vec2 screenEnd;
 flat out float depthStart;
 flat out float depthEnd;
-flat out vec2 planStart;
-flat out vec2 planEnd;
 flat out vec4 lineColour;
 flat out float halfWidth;
 void main() {
@@ -207,8 +203,6 @@ void main() {
   screenEnd = last;
   depthStart = clipStart.z * 0.5 + 0.5;
   depthEnd = clipEnd.z * 0.5 + 0.5;
-  planStart = worldStart.xy;
-  planEnd = worldEnd.xy;
   lineColour = vec4(inks[int(ink)], opacity);
 }`;
 
@@ -218,14 +212,15 @@ flat in vec2 screenStart;
 flat in vec2 screenEnd;
 flat in float depthStart;
 flat in float depthEnd;
-flat in vec2 planStart;
-flat in vec2 planEnd;
 flat in vec4 lineColour;
 flat in float halfWidth;
-uniform float tolerance;     // window depth
+uniform float tolerance;          // window depth
+uniform float holdoutTolerance;   // window depth, next to a holdout
 uniform highp sampler2D faceDepth;
+uniform highp sampler2D holdoutNumbers;
+// each holdout's window depth: dot(plane.xy, device px) + plane.z
+uniform vec3 holdoutPlanes[${String(MAX_HOLDOUTS)}];
 out vec4 fragColor;
-${DISC_GLSL}
 void main() {
   vec2 pixel = gl_FragCoord.xy;
   vec2 along = screenEnd - screenStart;
@@ -234,18 +229,42 @@ void main() {
   vec2 centre = screenStart + t * along;
   float coverage = clamp(halfWidth + 0.5 - distance(pixel, centre), 0.0, 1.0);
   if (coverage <= 0.0) discard;
-  if (hidden(mix(planStart, planEnd, t))) discard;
   float centreDepth = mix(depthStart, depthEnd, t);
   ivec2 size = textureSize(faceDepth, 0);
   ivec2 texel = ivec2(floor(centre - 0.5));
+  // the farthest face of the 2 x 2 texels; and apart, a holdout's at the
+  // line's centre (on its plane), and the others'
   float farthest = 0.0;
+  float holdoutFarthest = 0.0;
+  float otherFarthest = 0.0;
+  bool nextToHoldout = false;
   for (int dy = 0; dy < 2; dy++) {
     for (int dx = 0; dx < 2; dx++) {
       ivec2 at = clamp(texel + ivec2(dx, dy), ivec2(0), size - 1);
-      farthest = max(farthest, texelFetch(faceDepth, at, 0).r);
+      float faceAt = texelFetch(faceDepth, at, 0).r;
+      farthest = max(farthest, faceAt);
+      int number = int(round(texelFetch(holdoutNumbers, at, 0).r * 255.0));
+      if (number > 0) {
+        nextToHoldout = true;
+        vec3 plane = holdoutPlanes[number - 1];
+        holdoutFarthest = max(holdoutFarthest, dot(plane.xy, centre) + plane.z);
+      } else {
+        otherFarthest = max(otherFarthest, faceAt);
+      }
     }
   }
-  if (centreDepth > farthest + tolerance) discard;
+  // Next to a holdout, it decides: a line at it or in front of it shows, and
+  // a line behind it is hidden, unless another of the texels is farther
+  // still (what shows past the holdout's edge). The other texels count at
+  // their own depth, with no tolerance: they hide nothing that the holdout
+  // does not.
+  if (nextToHoldout) {
+    if (centreDepth > max(holdoutFarthest, otherFarthest) + holdoutTolerance) {
+      discard;
+    }
+  } else if (centreDepth > farthest + tolerance) {
+    discard;
+  }
   fragColor = vec4(lineColour.rgb, lineColour.a * coverage);
 }`;
 
@@ -390,6 +409,8 @@ interface MeshResources {
 interface Target {
   size: [number, number];
   colour: WebGLTexture;
+  /** R8: the number of the holdout at each pixel / 255, or 0. */
+  holdouts: WebGLTexture;
   depth: WebGLTexture;
   framebuffer: WebGLFramebuffer;
 }
@@ -410,6 +431,13 @@ interface Resources {
 /** What the renderer computes once for each mesh, from the scene. */
 interface DrawnMesh {
   mesh: Mesh;
+  /** `null` if the mesh is not a holdout. */
+  holdout: {
+    /** 1 to MAX_HOLDOUTS: what the face pass writes for it. */
+    number: number;
+    /** Three of its points, apart: its plane. */
+    corners: [Vec3, Vec3, Vec3];
+  } | null;
 }
 
 /** What one picture needs: the camera, where each mesh is, and its inks. */
@@ -427,6 +455,56 @@ function modelOf(picture: Picture, mesh: Mesh): Matrix4 {
   const model = picture.models.get(mesh);
   check(model !== undefined, `${mesh.name} is not in the picture`);
   return model;
+}
+
+/** Three points of a holdout, far apart, that give its plane: its first
+ *  point, the point farthest from that, and the point farthest from the line
+ *  through those two. A holdout is flat (`checkHoldout`), so x and y say how
+ *  far. */
+function planeCorners(mesh: Mesh): [Vec3, Vec3, Vec3] {
+  const { triangles } = mesh;
+  const points: Vec3[] = [];
+  for (let index = 0; index + 2 < triangles.length; index += 3) {
+    points.push([
+      at(triangles, index),
+      at(triangles, index + 1),
+      at(triangles, index + 2),
+    ]);
+  }
+  const first = at(points, 0);
+  const farthest = (distance: (point: Vec3) => number): Vec3 =>
+    points.reduce((best, point) =>
+      distance(point) > distance(best) ? point : best,
+    );
+  const second = farthest((point) =>
+    Math.hypot(point[0] - first[0], point[1] - first[1]),
+  );
+  const [ex, ey] = [second[0] - first[0], second[1] - first[1]];
+  const fromLine = (point: Vec3): number =>
+    Math.abs(ex * (point[1] - first[1]) - ey * (point[0] - first[0]));
+  const third = farthest(fromLine);
+  check(fromLine(third) > 0, `${mesh.name}: a holdout has no area`);
+  return [first, second, third];
+}
+
+/** A world point in the picture's window: device px from the bottom left,
+ *  and window depth (0 to 1), as the shaders have them. */
+function windowPoint(
+  viewProj: Float32Array,
+  [x, y, z]: Vec3,
+  [width, height]: [number, number],
+): Vec3 {
+  const row = (offset: number): number =>
+    at(viewProj, offset) * x +
+    at(viewProj, offset + 4) * y +
+    at(viewProj, offset + 8) * z +
+    at(viewProj, offset + 12);
+  const w = row(3);
+  return [
+    ((row(0) / w) * 0.5 + 0.5) * width,
+    ((row(1) / w) * 0.5 + 0.5) * height,
+    (row(2) / w) * 0.5 + 0.5,
+  ];
 }
 
 function appendInstance(values: number[], instance: Instance): void {
@@ -505,8 +583,6 @@ export class Renderer {
   >();
   /** In the order of their lines. */
   private readonly drawn: DrawnMesh[];
-  /** The discs of the mesh being drawn: x, y, radius each. */
-  private readonly discScratch = new Float32Array(3 * MAX_DISCS);
   /** The geometry that each mesh has now: its own, or the last that
    *  `updateMesh` gave it. */
   private readonly geometry = new Map<Mesh, MeshGeometry>();
@@ -530,20 +606,25 @@ export class Renderer {
     );
     checkScene(scene);
     const colours = paletteColours(palette);
-    for (const mesh of scene.meshes) {
-      check(
-        mesh.hiddenInside.length <= MAX_DISCS,
-        `${mesh.name} has more than ${String(MAX_DISCS)} discs`,
-      );
-    }
     this.canvas = canvas;
     this.scene = scene;
     this.paper = colours.paper;
     this.inks = colours.inks;
+    const holdouts = scene.meshes.filter((mesh) => mesh.holdout).length;
+    check(
+      holdouts <= MAX_HOLDOUTS,
+      `${String(holdouts)} holdouts: the most is ${String(MAX_HOLDOUTS)}`,
+    );
     // Lines are drawn in increasing lineOrder, then in scene order.
+    let holdoutNumber = 0;
     this.drawn = [...scene.meshes]
       .sort((first, second) => first.lineOrder - second.lineOrder)
-      .map((mesh) => this.prepare(mesh));
+      .map((mesh) => ({
+        mesh,
+        holdout: mesh.holdout
+          ? { number: ++holdoutNumber, corners: planeCorners(mesh) }
+          : null,
+      }));
     for (const mesh of scene.meshes) this.geometry.set(mesh, mesh);
     const preserveDrawingBuffer = options.preserveDrawingBuffer ?? false;
     const gl = canvas.getContext("webgl2", {
@@ -653,7 +734,7 @@ export class Renderer {
       );
       const resources: Resources = {
         fill: this.compile(FILL_VS, FILL_FS, {
-          uniforms: ["model", "viewProj", "color", ...DISC_UNIFORMS],
+          uniforms: ["model", "viewProj", "color", "holdoutNumber"],
           attributes: ["position"],
         }),
         line: this.compile(LINE_VS, LINE_FS, {
@@ -665,9 +746,11 @@ export class Renderer {
             "viewport",
             "pixelsPerSlidePx",
             "tolerance",
+            "holdoutTolerance",
             "faceDepth",
+            "holdoutNumbers",
+            "holdoutPlanes",
             "inks",
-            ...DISC_UNIFORMS,
           ],
           attributes: LINE_ATTRIBUTES,
         }),
@@ -791,10 +874,6 @@ export class Renderer {
       );
     }
     return { program, uniforms, attributes };
-  }
-
-  private prepare(mesh: Mesh): DrawnMesh {
-    return { mesh };
   }
 
   /** The map of inks that `mesh` is drawn with in `picture`, or `null`: its
@@ -947,6 +1026,7 @@ export class Renderer {
     if (old?.size[0] === width && old.size[1] === height) return old;
     if (old) {
       this.free(old.colour);
+      this.free(old.holdouts);
       this.free(old.depth);
       this.free(old.framebuffer);
       resources.targets[index] = undefined;
@@ -972,11 +1052,14 @@ export class Renderer {
       made.push(framebuffer);
       const colour = texture(gl.RGBA8);
       made.push(colour);
+      const holdouts = texture(gl.R8);
+      made.push(holdouts);
       const depth = texture(gl.DEPTH_COMPONENT24);
       made.push(depth);
       const target: Target = {
         size: [width, height],
         colour,
+        holdouts,
         depth,
         framebuffer,
       };
@@ -989,6 +1072,7 @@ export class Renderer {
         0,
       );
       this.attachDepth(target, true);
+      this.attachHoldouts(target, true);
       const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
       if (gl.isContextLost()) throw new ContextLost();
       check(
@@ -1001,6 +1085,23 @@ export class Renderer {
       for (const object of made) this.free(object);
       throw error;
     }
+  }
+
+  /** The holdouts' numbers: the faces write them, and the lines read them. */
+  private attachHoldouts(target: Target, attached: boolean): void {
+    const gl = this.gl;
+    gl.framebufferTexture2D(
+      gl.FRAMEBUFFER,
+      gl.COLOR_ATTACHMENT1,
+      gl.TEXTURE_2D,
+      attached ? target.holdouts : null,
+      0,
+    );
+    gl.drawBuffers(
+      attached
+        ? [gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1]
+        : [gl.COLOR_ATTACHMENT0],
+    );
   }
 
   private attachDepth(target: Target, attached: boolean): void {
@@ -1208,36 +1309,20 @@ export class Renderer {
     gl.clearColor(...this.paper);
     gl.clearDepth(1);
     gl.depthMask(true);
+    this.attachHoldouts(target, true);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.clearBufferfv(gl.COLOR, 1, [0, 0, 0, 1]);
     gl.disable(gl.BLEND);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LESS);
-    // a disc hides only while the part that covers it is drawn
-    const groups = new Set(meshes.map(({ mesh }) => mesh.group));
-    this.drawFaces(resources, meshes, picture, groups);
-    // The lines read the depth texture: it must not be attached while they do.
+    this.drawFaces(resources, meshes, picture);
+    // The lines read the depth texture and the holdouts' numbers: they must
+    // not be attached while they do.
     this.attachDepth(target, false);
-    this.drawLines(resources, meshes, picture, target, groups);
+    this.attachHoldouts(target, false);
+    this.drawLines(resources, meshes, picture, target);
     this.attachDepth(target, true);
     return target;
-  }
-
-  /** The discs of `drawn` whose group is in `groups`. */
-  private setDiscs(
-    program: Program,
-    drawn: DrawnMesh,
-    groups: ReadonlySet<Group | null>,
-  ): void {
-    const gl = this.gl;
-    const discs = this.discScratch;
-    let count = 0;
-    for (const disc of drawn.mesh.hiddenInside) {
-      if (!groups.has(disc.by)) continue;
-      discs.set([...disc.centre, disc.radius], 3 * count);
-      count++;
-    }
-    gl.uniform3fv(uniform(program, "discs"), discs);
-    gl.uniform1i(uniform(program, "discCount"), count);
   }
 
   private meshResourcesOf(resources: Resources, mesh: Mesh): MeshResources {
@@ -1250,7 +1335,6 @@ export class Renderer {
     resources: Resources,
     meshes: DrawnMesh[],
     picture: Picture,
-    groups: ReadonlySet<Group | null>,
   ): void {
     const gl = this.gl;
     const program = resources.fill;
@@ -1262,11 +1346,14 @@ export class Renderer {
     );
     for (const drawn of meshes) {
       const made = this.meshResourcesOf(resources, drawn.mesh);
-      const colour = this.fillColour(
-        drawn.mesh.fill,
-        this.inkMap(picture, drawn.mesh),
-        picture.dim.get(drawn.mesh) ?? 1,
-      );
+      // a holdout is the paper, whatever the dim or the flash
+      const colour = drawn.mesh.holdout
+        ? this.paper
+        : this.fillColour(
+            drawn.mesh.fill,
+            this.inkMap(picture, drawn.mesh),
+            picture.dim.get(drawn.mesh) ?? 1,
+          );
       if (!colour || made.triangleVertices === 0) continue;
       gl.uniformMatrix4fv(
         uniform(program, "model"),
@@ -1280,7 +1367,10 @@ export class Renderer {
         gl.disable(gl.POLYGON_OFFSET_FILL);
       }
       gl.uniform4fv(uniform(program, "color"), colour);
-      this.setDiscs(program, drawn, groups);
+      gl.uniform1f(
+        uniform(program, "holdoutNumber"),
+        drawn.holdout?.number ?? 0,
+      );
       gl.bindVertexArray(made.faces);
       gl.drawArrays(gl.TRIANGLES, 0, made.triangleVertices);
     }
@@ -1288,12 +1378,55 @@ export class Renderer {
     gl.bindVertexArray(null);
   }
 
+  /** The line shader's `holdoutPlanes`: for each holdout in `meshes`, at its
+   *  number, (depth a device px in x, depth a device px in y, depth at
+   *  (0, 0)): its window depth at device px (x, y) is their dot product with
+   *  (x, y, 1). A holdout seen edge on covers no texel: it keeps (0, 0, 0). */
+  private holdoutPlanes(meshes: DrawnMesh[], picture: Picture): Float32Array {
+    const planes = new Float32Array(3 * MAX_HOLDOUTS);
+    for (const { mesh, holdout } of meshes) {
+      if (!holdout) continue;
+      const model = modelOf(picture, mesh);
+      const [first, second, third] = holdout.corners.map((corner) =>
+        windowPoint(
+          picture.camera.matrix,
+          transformPoint(model, corner),
+          picture.size,
+        ),
+      ) as [Vec3, Vec3, Vec3];
+      // depth - first's = depthPerX (x - first's) + depthPerY (y - first's),
+      // at second and third
+      const [ux, uy, uz] = [
+        second[0] - first[0],
+        second[1] - first[1],
+        second[2] - first[2],
+      ];
+      const [vx, vy, vz] = [
+        third[0] - first[0],
+        third[1] - first[1],
+        third[2] - first[2],
+      ];
+      const across = ux * vy - uy * vx;
+      if (Math.abs(across) < 1e-6) continue;
+      const depthPerX = (uz * vy - uy * vz) / across;
+      const depthPerY = (ux * vz - vx * uz) / across;
+      planes.set(
+        [
+          depthPerX,
+          depthPerY,
+          first[2] - depthPerX * first[0] - depthPerY * first[1],
+        ],
+        3 * (holdout.number - 1),
+      );
+    }
+    return planes;
+  }
+
   private drawLines(
     resources: Resources,
     meshes: DrawnMesh[],
     picture: Picture,
     target: Target,
-    groups: ReadonlySet<Group | null>,
   ): void {
     const gl = this.gl;
     const program = resources.line;
@@ -1313,6 +1446,17 @@ export class Renderer {
       uniform(program, "tolerance"),
       HIDDEN_LINE_TOLERANCE / (2 * DEPTH_RANGE),
     );
+    gl.uniform1f(
+      uniform(program, "holdoutTolerance"),
+      HOLDOUT_TOLERANCE / (2 * DEPTH_RANGE),
+    );
+    gl.uniform3fv(
+      uniform(program, "holdoutPlanes"),
+      this.holdoutPlanes(meshes, picture),
+    );
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, target.holdouts);
+    gl.uniform1i(uniform(program, "holdoutNumbers"), 1);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, target.depth);
     gl.uniform1i(uniform(program, "faceDepth"), 0);
@@ -1339,11 +1483,13 @@ export class Renderer {
         uniform(program, "inks"),
         this.meshInks(picture, drawn.mesh),
       );
-      this.setDiscs(program, drawn, groups);
       gl.bindVertexArray(made.segments);
       gl.drawArraysInstanced(gl.TRIANGLE_STRIP, 0, 4, made.lineCount);
     }
     gl.bindVertexArray(null);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.disable(gl.BLEND);
     gl.depthMask(true);

@@ -45,7 +45,7 @@ ruler that the diving board replaced),
 
 | Path                                                     | What it holds                                                                                                                                                           |
 | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `webgl/scene.ts`                                         | the types of a scene: `INKS`, meshes, lines, silhouette edges, clip discs, groups, views, pieces, the palette; `checkScene`, `checkPalette`                             |
+| `webgl/scene.ts`                                         | the types of a scene: `INKS`, meshes, lines, silhouette edges, holdouts, groups, views, pieces, the palette; `checkScene`, `checkPalette`                               |
 | `webgl/renderer.ts`, `mesh.ts`, `stage.ts`, `stills.ts`  | the renderer; extrusions, ribbons and their triangles (earcut); the stage (renderer, model and frame loop); the stills                                                  |
 | `webgl/timeline.ts`                                      | the choreography, with no DOM: the one rule for every move (fades, camera, tilt), and the flash; the durations                                                          |
 | `webgl/math.ts`, `checked.ts`                            | matrices; `at` and `check`, for what is a bug if it is false                                                                                                            |
@@ -58,6 +58,7 @@ ruler that the diving board replaced),
 | `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism, the balance's settle and the train's free spin; frontmatter to state; the watch's stills; the shared instance                                            |
 | `watch/mainspring.ts`                                    | the Mainspring slide's story: the key, the spring's wind and the time-lapse, at each moment                                                                             |
 | `watch/deck.ts`, `deck.test.ts`                          | slides.md as Slidev reads it, for the tests; the check that every slide's pieces and view exist                                                                         |
+| `watch/at-rest.ts`                                       | the meshes in the world at rest, and a face's heights over an outline, for the tests that check where parts are against each other                                      |
 | `global-bottom.vue`, `slide-bottom.vue`                  | the live canvas and the live diving board, and the kind of each move; the still and the posed board on each printed page                                                |
 | `watch/board.ts`, `components/DivingBoard.vue`           | the board's frontmatter to its target, and its clock (`BoardClock`); the component that inlines the SVG and sets its time                                               |
 | `watch/navigation.ts`, `slide-state.ts`                  | a step forward, a step back or a jump; `window.slideState()` for `tools/navcheck.py` ([`navigation.md`](../../docs/navigation.md))                                      |
@@ -100,6 +101,47 @@ before: the layout changed only what is inside the case.
 
 Use the ETA reference for the gross layout.
 Choose individual part details for clear motion and fit with the drawing style.
+
+## Paper discs
+
+A wheel over another wheel looks solid, as in the 2D art: through its spoke
+openings the paper shows, not the wheel under it. A paper disc does this: a
+holdout ([webgl.md](../../docs/webgl.md), "Holdouts") at the wheel's bottom,
+in the wheel's piece, so it shows and fades with the wheel (`paperDiscs` and
+`paperDiscMesh` in `watch/generate.ts`).
+
+- **Which wheels have one:** each wheel that covers a wheel under it. In the
+  train's stack, a wheel covers each wheel below it that reaches inside its
+  root circle; the one-step wheel covers the fourth wheel; the motion works
+  and the one-step hour wheel cover the train. A disc hides all that is
+  under it: the hour wheel's also hides the cannon pinion and the minute
+  wheel. The train's discs go out to the root circle, and the motion works'
+  to half way across the rim.
+- **Each covering wheel stands `STACK_GAP` above the wheel under it**, in the
+  train and in the motion works: twice `HOLDOUT_TOLERANCE`, so the line test
+  hides the lower wheel's lines too. A pinion reaches across the gap to the
+  top of the wheel that drives it. The six levels raise the hands by
+  0.375 px. A real watch has this clearance.
+- **A disc ends at the case's inside** (the bezel's radius, less
+  `FLATNESS`: the case's wall is flattened, so its sides are up to that
+  inside the circle): the one-step wheel reaches past the case, and its disc
+  must not hide the crown's outline. So the discs are in the watch's group, which does not move, not
+  in their wheels' groups: a disc that the case cuts is not round.
+- **Nothing that a click shows rises through a paper disc that it shows**
+  (`deck.test.ts`): it would show in the wheel's openings. For this, the
+  barrel arbor leaves the Hour Hand slide at clicks 1 and 2
+  ([The Hour Hand slide](#the-hour-hand-slide)). `generate.test.ts` checks
+  that each disc is flat, at its wheel's bottom and inside the case, and that
+  the parts under it stand more than `HOLDOUT_TOLERANCE` below it. Both
+  tests clip each face to the disc's outline (`Outline` in
+  `watch/at-rest.ts`), so a face that crosses the disc with no corner inside
+  it counts. They check the watch at rest: a part that turns and is not
+  round about its axis is checked only where it is at rest.
+- **Not an oversight: no clip discs.** Before the paper discs, a lower wheel
+  was hidden inside a vertical cylinder about the wheel above. At a tilt, the
+  cylinder slid against the openings: up to 3 px at 20°, and 8 px at 45°, at
+  the motion works
+  ([`2026-10-11-paper-discs`](../tasks/2026-10-11-paper-discs/PLAN.md)).
 
 ## The teeth
 
@@ -491,8 +533,8 @@ leaves: $7.5 \times 8 = 60$.
   the same strap, just under the chapter ring's top (`raised strap`, which
   `all` leaves out). At tilt 0 the two straps look the same.
 - **The one-step wheel is above the fourth wheel**, as the third wheel is:
-  the fourth wheel is hidden inside its root circle while it shows
-  (`clipDiscs`).
+  its paper disc hides the fourth wheel under its openings
+  ([Paper discs](#paper-discs)). The disc ends at the case's inside.
 - **The view frames the train from the escape wheel to the centre wheel**
   (`watchView`) at clicks 0 and 2 to 5, with the same criteria as the Gears
   slide: the train is tall, so its height sets the zoom, and its right edge
@@ -701,9 +743,7 @@ about the same arbor (`MotionWorks` in `art/watch_design.py`):
 - **The minute pinion**, 4 leaves on the minute wheel's arbor, drives the
   **hour wheel**, 16 teeth: 1 to 4. The hour wheel turns on the centre arbor,
   in a group of its own with the hand's step, and carries the hand on its
-  pipe. The wheel and the hand are not in one group: a clip disc hides
-  while any mesh of its group is drawn, and the cover draws the hand
-  without the wheel (`generate.test.ts` checks this for every disc).
+  pipe.
 - **The two stages go out from the centre and come back to it**, so their
   centre distances are equal. The second stage's teeth are finer: their size
   follows from that distance. `validate_watch_design.py` checks the distances,
@@ -713,20 +753,16 @@ about the same arbor (`MotionWorks` in `art/watch_design.py`):
   that the hands can be set. The talk does not set the hands.
 - **They are on the dial side**: above all of the train that they overlap,
   and under the hands (`assignHeights`). The cannon pinion and the minute wheel
-  are at one height, and the minute pinion and the hour wheel above them. So
-  from above, the hour wheel covers the cannon pinion and the inside of the
-  minute wheel.
-- **Each hides the train's wheels under its openings, as a train wheel hides
-  the wheel below it** (`clipDiscs`). They are far above the train, so at a
-  tilt a disc in the plan slides against the wheel above it: by the height
-  between them times the tilt's tangent. So a disc ends half way across the
-  rim, not at the root circle: it covers the openings, and the rim covers its
-  edge, while the slide is less than half the rim. Their rims are wider than
-  the train's for this (`MOTION_DRAWINGS`): at tilt 20 the slide is up to
-  about 3 px. A disc out to the root circle cut slivers out of the centre
-  wheel, and a disc out to the openings showed a crescent of it in each one.
-  The hour wheel hides the cannon pinion and
-  the minute wheel under its openings in the same way.
+  are at one height, and the minute pinion and the hour wheel above them,
+  `STACK_GAP` higher. So from above, the hour wheel covers the cannon pinion
+  and the inside of the minute wheel.
+- **Each has a paper disc**, which hides the train's wheels under its
+  openings, as a train wheel's does ([Paper discs](#paper-discs)); the hour
+  wheel's also hides the cannon pinion and the minute wheel. The disc ends
+  half way across the rim, under it. Their rims are wider than the train's
+  (`MOTION_DRAWINGS`): the clip discs that came before slid against them at
+  a tilt, and the rim hid that. The paper discs do not slide; the rims are
+  kept, so the slides do not change.
 - **`all` leaves them out**, so the cover does not show them: they would
   crowd it. A slide names them to show them.
 - **Not an oversight: they do not use the existing centre pinion.** It has 6
@@ -773,7 +809,8 @@ The tilt is 20 at every click, so the stack of the motion works shows.
   and 2). The arbor (up to 18.5) and its square (up to 22.5) rise through the
   wheel (17 to 20). Not an oversight: every place where the wheel covers
   only the barrel meets the arbor, and the places clear of it cover the
-  balance, or put the hand through the chapter ring.
+  balance, or put the hand through the chapter ring
+  ([`2026-10-11-paper-discs`](../tasks/2026-10-11-paper-discs/PLAN.md)).
 - **The one-step hand turns backwards.** A wheel turns the other way from the
   pinion that drives it. At the mechanism's speed an hour hand moves 0.5° a
   minute, so it does not show; the speaker notes say it.

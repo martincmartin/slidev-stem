@@ -1,0 +1,797 @@
+diff --git a/watches/docs/watch.md b/watches/docs/watch.md
+index a004324..84a5618 100644
+--- a/watches/docs/watch.md
++++ b/watches/docs/watch.md
+@@ -773,7 +773,8 @@ The tilt is 20 at every click, so the stack of the motion works shows.
+   and 2). The arbor (up to 18.5) and its square (up to 22.5) rise through the
+   wheel (17 to 20). Not an oversight: every place where the wheel covers
+   only the barrel meets the arbor, and the places clear of it cover the
+-  balance, or put the hand through the chapter ring.
++  balance, or put the hand through the chapter ring
++  ([`2026-10-11-paper-discs`](../tasks/2026-10-11-paper-discs/PLAN.md)).
+ - **The one-step hand turns backwards.** A wheel turns the other way from the
+   pinion that drives it. At the mechanism's speed an hour hand moves 0.5° a
+   minute, so it does not show; the speaker notes say it.
+diff --git a/watches/global-bottom.vue b/watches/global-bottom.vue
+index 635a432..5cab589 100644
+--- a/watches/global-bottom.vue
++++ b/watches/global-bottom.vue
+@@ -54,7 +54,7 @@ import { jewelStrikes } from "./watch/callouts.ts";
+ import type { BoardTarget } from "./watch/board.ts";
+ import { WatchModel } from "./watch/model.ts";
+ import type { WatchModelState } from "./watch/model.ts";
+-import { WATCH, watchStills } from "./watch/instance.ts";
++import { RENDERER_OPTIONS, WATCH, watchStills } from "./watch/instance.ts";
+ import { moveOf } from "./watch/navigation.ts";
+ import type { Move, Place } from "./watch/navigation.ts";
+ import { slidePalette } from "./watch/palette.ts";
+@@ -243,6 +243,7 @@ onMounted(() => {
+     WATCH.scene,
+     palette.value.palette,
+     model.value,
++    RENDERER_OPTIONS,
+   );
+   window.watchStage = stage;
+   window.slideState = () => slideState(stage, canvas.value, shownWatch);
+diff --git a/watches/watch/generate.ts b/watches/watch/generate.ts
+index c5332ce..9ae7407 100644
+--- a/watches/watch/generate.ts
++++ b/watches/watch/generate.ts
+@@ -2323,7 +2323,20 @@ function staffSolid(kit: Kit): Solid {
+ }
+ 
+ // ---- the generator -------------------------------------------------------------------------
+-export function generate(design: Design = DESIGN): Watch {
++/** What a caller can tune in `generate`. Prototype:
++ *  tasks/2026-10-11-paper-discs. */
++export interface GenerateOptions {
++  /** Slide px between a wheel and the wheel under it that it covers: the
++   *  train's levels and the motion works' (0: they touch). */
++  readonly stackGap: number;
++}
++
++export const DEFAULT_GENERATE: GenerateOptions = { stackGap: 0 };
++
++export function generate(
++  design: Design = DESIGN,
++  options: GenerateOptions = DEFAULT_GENERATE,
++): Watch {
+   const { watchCentre } = design;
+   const paint = paintOf();
+   const train = trainOf(design);
+@@ -2367,7 +2380,7 @@ export function generate(design: Design = DESIGN): Watch {
+   const solids = list.solids;
+ 
+   // ---- heights ----
+-  const heights = assignHeights(solids, {
++  const heights = assignHeights(solids, options.stackGap, {
+     springSolid,
+     staff,
+     ringSolid,
+@@ -2880,6 +2893,7 @@ const MESHING_OVERHANG = 0;
+  *  cover's changes to them (movement). */
+ function assignHeights(
+   solids: Solid[],
++  stackGap: number,
+   found: HeightParts,
+ ): Map<Solid, Heights> {
+   const { partsOf } = found;
+@@ -2902,6 +2916,7 @@ function assignHeights(
+     let bottom: number;
+     let top: number;
+     const meshed = trainHeights(
++      stackGap,
+       owner,
+       each.role,
+       own,
+@@ -3006,9 +3021,11 @@ function assignHeights(
+         overlaps(wheel, each),
+       ),
+   );
+-  const motionBottom = Math.max(...under.map((each) => heightOf(each).top));
++  const motionBottom =
++    Math.max(...under.map((each) => heightOf(each).top)) + stackGap;
+   const firstTop = motionBottom + thicknessOf(motion.minuteBody);
+-  const secondTop = firstTop + thicknessOf(motion.hourBody);
++  const secondBottom = firstTop + stackGap;
++  const secondTop = secondBottom + thicknessOf(motion.hourBody);
+   const level = (each: Solid, bottom: number, top: number): void => {
+     heights.set(each, { bottom, top });
+   };
+@@ -3018,8 +3035,8 @@ function assignHeights(
+   level(motion.minuteHub, motionBottom, firstTop);
+   level(motion.minutePinion, firstTop, secondTop);
+   level(motion.minuteArbor, firstTop, secondTop + ARBOR_CAP);
+-  level(motion.hourBody, firstTop, secondTop);
+-  level(motion.hourPipe, firstTop, secondTop);
++  level(motion.hourBody, secondBottom, secondTop);
++  level(motion.hourPipe, secondBottom, secondTop);
+ 
+   const centreOf = (each: Solid): Point2 => each.pivot;
+   const sweepsOver = (hand: Solid, other: Solid): boolean =>
+@@ -3069,7 +3086,7 @@ function assignHeights(
+   const hourTop = stack(hour, hourBottom);
+   raiseArbor(partsOf.centre, hourBottom);
+   // the hour wheel's pipe carries the hour hand
+-  heights.set(motion.hourPipe, { bottom: firstTop, top: hourBottom });
++  heights.set(motion.hourPipe, { bottom: secondBottom, top: hourBottom });
+   // The minute hand is longer than the hour hand: it may sweep over more.
+   const minute = ofPart(partsOf.minute);
+   const minuteHand = at(minute, 0);
+@@ -3096,6 +3113,7 @@ function failNoBody(owner: Part): never {
+  *  rules place it. A wheel's shapes come in the drawing's order: the wheel, its
+  *  hub, its pinion, then its arbor's end. */
+ function trainHeights(
++  stackGap: number,
+   owner: Part,
+   role: Role,
+   own: Recipe,
+@@ -3109,7 +3127,7 @@ function trainHeights(
+     // the first shape: on the wheel that this one's teeth drive
+     const driven = owner.wheel.driven;
+     const drivenBody = driven ? bodyByWheel(bodyOf, driven) : undefined;
+-    const base = drivenBody ? heightOf(drivenBody).top : 0;
++    const base = drivenBody ? heightOf(drivenBody).top + stackGap : 0;
+     return [base, base + own.thickness];
+   }
+   const bodyHeights = heightOf(body);
+@@ -3118,6 +3136,7 @@ function trainHeights(
+     return [
+       bodyHeights.top,
+       bodyHeights.top +
++        stackGap +
+         (owner.driver.recipes.body?.thickness ?? 0) +
+         MESHING_OVERHANG,
+     ];
+diff --git a/watches/watch/instance.ts b/watches/watch/instance.ts
+index 69d74c8..78150ca 100644
+--- a/watches/watch/instance.ts
++++ b/watches/watch/instance.ts
+@@ -1,16 +1,48 @@
+ // The watch of the talk, made once at load, and its stills: the two Vue
+ // layers (global-bottom.vue and slide-bottom.vue) share them.
+ 
+-import { generate } from "./generate.ts";
++import type { RendererOptions } from "../webgl/renderer.ts";
++import { DEFAULT_GENERATE, generate } from "./generate.ts";
++import { addPaperDiscs } from "./paper-discs.ts";
+ import { WatchStills } from "./stills.ts";
+ 
+-export const WATCH = generate();
++/** Prototype (tasks/2026-10-11-paper-discs): `?paper` in the page's address
++ *  when it loads draws paper discs, with a gap under each covering wheel and
++ *  the exact line test, instead of clip discs. Read once, at load. */
++export const PAPER =
++  typeof location !== "undefined" &&
++  new URLSearchParams(location.search).has("paper");
++/** Slide px: the gap, and the line test's tolerance next to a paper disc
++ *  (the task's round 6). */
++const PAPER_GAP = 0.05;
++const PAPER_TOLERANCE = 0.025;
++
++function makeWatch(): ReturnType<typeof generate> {
++  if (!PAPER) return generate();
++  const watch = generate(undefined, {
++    ...DEFAULT_GENERATE,
++    stackGap: PAPER_GAP,
++  });
++  addPaperDiscs(watch, { raise: 0, holdout: true, overlay: false });
++  return watch;
++}
++
++export const WATCH = makeWatch();
++
++/** The options of every renderer that draws WATCH. */
++export const RENDERER_OPTIONS: RendererOptions = PAPER
++  ? {
++      clipDiscs: false,
++      exactLineDepth: true,
++      hiddenLineTolerance: PAPER_TOLERANCE,
++    }
++  : {};
+ 
+ let stills: WatchStills | undefined;
+ 
+ /** The stills that all pages share, made at the first call. Call it only in
+  *  the browser. */
+ export function watchStills(): WatchStills {
+-  stills ??= new WatchStills(WATCH);
++  stills ??= new WatchStills(WATCH, RENDERER_OPTIONS);
+   return stills;
+ }
+diff --git a/watches/watch/paper-discs.ts b/watches/watch/paper-discs.ts
+new file mode 100644
+index 0000000..8082889
+--- /dev/null
++++ b/watches/watch/paper-discs.ts
+@@ -0,0 +1,171 @@
++// Prototype (tasks/2026-10-11-paper-discs): paper discs instead of clip discs.
++// Under each part that covers a clip disc today, a face in the paper's colour
++// hides what is under it, by the depth test, at any tilt. The deck shows them
++// with `?paper` in the URL (watch/instance.ts).
++
++import { INKS } from "../webgl/scene.ts";
++import type { Group, Mesh } from "../webgl/scene.ts";
++import type { Point2 } from "../webgl/mesh.ts";
++import type { Watch } from "./generate.ts";
++import { Motion } from "./model.ts";
++
++/** How the discs are made. */
++export interface PaperDiscOptions {
++  /** Slide px above the covering part's bottom. */
++  readonly raise: number;
++  /** The renderer's holdout flag (`Mesh.holdout`): with the exact line test,
++   *  the line test takes the disc's depth exactly. */
++  readonly holdout: boolean;
++  /** `Mesh.overlay`: a polygon offset toward the camera. */
++  readonly overlay: boolean;
++}
++
++/** What `addPaperDiscs` made: one disc for each covering part. */
++export interface PaperDisc {
++  readonly cover: Group;
++  readonly radius: number;
++  /** Slide px: the disc's height. */
++  readonly height: number;
++  /** The covering part's lowest mesh: the disc joins its pieces. */
++  readonly under: Mesh;
++  readonly mesh: Mesh;
++}
++
++/** Sides of a disc's polygon. */
++const SEGMENTS = 128;
++
++function circle(centre: readonly number[], radius: number): Point2[] {
++  return Array.from({ length: SEGMENTS }, (_, index): Point2 => {
++    const angle = (2 * Math.PI * index) / SEGMENTS;
++    return [
++      (centre[0] ?? 0) + radius * Math.cos(angle),
++      (centre[1] ?? 0) + radius * Math.sin(angle),
++    ];
++  });
++}
++
++/** The part of the convex polygon `subject` inside the convex polygon `clip`
++ *  (Sutherland and Hodgman). Both anticlockwise in x and y. */
++function clipPolygon(subject: Point2[], clip: Point2[]): Point2[] {
++  let result = subject;
++  for (const [index, [ax, ay]] of clip.entries()) {
++    const [bx, by] = clip[(index + 1) % clip.length] ?? [ax, ay];
++    const [ex, ey] = [bx - ax, by - ay];
++    const inside = ([x, y]: Point2): boolean =>
++      ex * (y - ay) - ey * (x - ax) >= 0;
++    const cross = ([px, py]: Point2, [qx, qy]: Point2): Point2 => {
++      const t =
++        (ex * (ay - py) - ey * (ax - px)) / (ex * (qy - py) - ey * (qx - px));
++      return [px + t * (qx - px), py + t * (qy - py)];
++    };
++    const input = result;
++    result = [];
++    for (const [at, current] of input.entries()) {
++      const previous = input[(at + input.length - 1) % input.length] ?? current;
++      if (inside(current)) {
++        if (!inside(previous)) result.push(cross(previous, current));
++        result.push(current);
++      } else if (inside(previous)) {
++        result.push(cross(previous, current));
++      }
++    }
++  }
++  return result;
++}
++
++/** Add a paper disc under each part that covers a clip disc today, to the
++ *  scene and to every piece that shows the part's lowest mesh: the clip
++ *  disc's centre and radius, inside the case (the bezel's radius), `raise`
++ *  above the part's bottom. The discs are in the case's group, which does not
++ *  move. It changes `watch.scene`: call it once, before a renderer reads the
++ *  scene. */
++export function addPaperDiscs(
++  watch: Watch,
++  options: PaperDiscOptions,
++): PaperDisc[] {
++  const rest = new Motion(watch).matrices(0, 0);
++  const covers = new Map<Group, { centre: Point2; radius: number }>();
++  for (const mesh of watch.scene.meshes) {
++    for (const disc of mesh.hiddenInside) {
++      covers.set(disc.by, { centre: [...disc.centre], radius: disc.radius });
++    }
++  }
++  const caseBand = watch.scene.meshes.find((mesh) => mesh.name === "case band");
++  if (!caseBand?.group) throw new Error("no case band");
++  const still = rest.get(caseBand.group);
++  if (!still) throw new Error("no matrix for the case band");
++  const [identity, shift] = [
++    [0, 1, 2, 4, 5, 6, 8, 9, 10].every(
++      (index, order) =>
++        Math.abs((still[index] ?? 0) - (order % 4 === 0 ? 1 : 0)) < 1e-6,
++    ),
++    [still[12] ?? 0, still[13] ?? 0, still[14] ?? 0] as const,
++  ];
++  if (!identity) throw new Error("the case's group turns or scales");
++  const made: PaperDisc[] = [];
++  for (const [cover, disc] of covers) {
++    const matrix = rest.get(cover);
++    if (!matrix) throw new Error(`no matrix for ${cover.name}`);
++    let under: Mesh | null = null;
++    let bottom = Infinity;
++    for (const mesh of watch.scene.meshes) {
++      if (mesh.group !== cover) continue;
++      for (let index = 2; index < mesh.triangles.length; index += 3) {
++        const [x, y, z] = [
++          mesh.triangles[index - 2] ?? 0,
++          mesh.triangles[index - 1] ?? 0,
++          mesh.triangles[index] ?? 0,
++        ];
++        const height =
++          (matrix[2] ?? 0) * x +
++          (matrix[6] ?? 0) * y +
++          (matrix[10] ?? 0) * z +
++          (matrix[14] ?? 0);
++        if (height < bottom) {
++          bottom = height;
++          under = mesh;
++        }
++      }
++    }
++    if (!under) throw new Error(`no mesh in ${cover.name}`);
++    const height = bottom + options.raise;
++    const outline = clipPolygon(
++      circle(disc.centre, disc.radius),
++      circle(watch.design.watchCentre, watch.design.case.bezelRadius),
++    ).map(([x, y]): Point2 => [x - shift[0], y - shift[1]]);
++    const z = height - shift[2];
++    const [middleX, middleY] = [0, 1].map(
++      (axis) =>
++        outline.reduce((sum, point) => sum + (point[axis] ?? 0), 0) /
++        outline.length,
++    );
++    const triangles: number[] = [];
++    for (const [index, [ax, ay]] of outline.entries()) {
++      const [bx, by] = outline[(index + 1) % outline.length] ?? [ax, ay];
++      triangles.push(middleX ?? 0, middleY ?? 0, z, ax, ay, z, bx, by, z);
++    }
++    const mesh: Mesh = {
++      name: `${cover.name} paper disc`,
++      part: "paper disc",
++      group: caseBand.group,
++      // opacity 0: the paper's colour, opaque
++      fill: { ink: INKS.subjectWash, opacity: 0 },
++      hiddenInside: [],
++      lineOrder: under.lineOrder,
++      inDrawing: false,
++      overlay: options.overlay,
++      holdout: options.holdout,
++      dynamic: false,
++      triangles: new Float32Array(triangles),
++      lines: [],
++      silhouetteEdges: [],
++    };
++    // Prototype: the scene's lists are read-only in their types, not in fact
++    (watch.scene.meshes as Mesh[]).push(mesh);
++    for (const piece of watch.scene.pieces) {
++      if (piece.meshes.has(under)) (piece.meshes as Set<Mesh>).add(mesh);
++    }
++    made.push({ cover, radius: disc.radius, height, under, mesh });
++  }
++  return made;
++}
+diff --git a/watches/watch/stills.ts b/watches/watch/stills.ts
+index 405ea6b..10f4116 100644
+--- a/watches/watch/stills.ts
++++ b/watches/watch/stills.ts
+@@ -3,6 +3,7 @@
+ // all (webgl/stills.ts).
+ 
+ import { Stills } from "../webgl/stills.ts";
++import type { RendererOptions } from "../webgl/renderer.ts";
+ import type { Palette } from "../webgl/scene.ts";
+ import type { Watch } from "./generate.ts";
+ import { linePose, stagePose } from "./mainspring.ts";
+@@ -18,10 +19,10 @@ export class WatchStills {
+   private readonly motion: Motion;
+   private readonly stills: Stills;
+ 
+-  constructor(watch: Watch) {
++  constructor(watch: Watch, options: RendererOptions = {}) {
+     this.watch = watch;
+     this.motion = new Motion(watch);
+-    this.stills = new Stills(watch.scene);
++    this.stills = new Stills(watch.scene, options);
+   }
+ 
+   /** Free the renderer and revoke the stills' URLs. */
+diff --git a/watches/webgl/renderer.ts b/watches/webgl/renderer.ts
+index 3e9e230..48da1f5 100644
+--- a/watches/webgl/renderer.ts
++++ b/watches/webgl/renderer.ts
+@@ -86,6 +86,9 @@ const DEPTH_RANGE = 2000; // slide px: world depth maps to clip z = -depth / ran
+  *  it is more than this in front of the line's centre. So a part that must
+  *  hide the lines of the face that it sits on stands higher than this. */
+ export const HIDDEN_LINE_TOLERANCE = 0.25;
++/** Slide px of depth: a holdout (`Mesh.holdout`) hides a line that is no
++ *  more than this in front of it (prototype: tasks/2026-10-11-paper-discs). */
++const HOLDOUT_COPLANAR = 0.01;
+ const MAX_DISCS = 4;
+ /** The polygon offset of an overlay's faces (`Mesh.overlay`): toward the
+  *  camera by its slope and by two steps of the depth buffer, more than the
+@@ -146,11 +149,16 @@ const FILL_FS = `#version 300 es
+ precision highp float;
+ in vec2 plan;
+ uniform vec4 color;
+-out vec4 fragColor;
++uniform float holdout;       // 1 for a holdout's faces (Mesh.holdout)
++layout(location = 0) out vec4 fragColor;
++layout(location = 1) out vec4 holdoutFlag;
++layout(location = 2) out vec4 depthSlope;  // window depth a device px, in x and y
+ ${DISC_GLSL}
+ void main() {
+   if (hidden(plan)) discard;
+   fragColor = color;
++  holdoutFlag = vec4(holdout, 0.0, 0.0, 1.0);
++  depthSlope = vec4(dFdx(gl_FragCoord.z), dFdy(gl_FragCoord.z), 0.0, 1.0);
+ }`;
+ 
+ const LINE_VS = `#version 300 es
+@@ -223,7 +231,12 @@ flat in vec2 planEnd;
+ flat in vec4 lineColour;
+ flat in float halfWidth;
+ uniform float tolerance;     // window depth
++uniform float coplanar;      // window depth: a holdout hides a line this near it
+ uniform highp sampler2D faceDepth;
++uniform highp sampler2D holdouts;
++uniform highp sampler2D slopes;   // the faces' depth slopes (exact)
++uniform float exact;              // 1: take each texel's face depth at the centre
++uniform float ownTolerance;       // window depth: for faces that are not a holdout's (exact)
+ out vec4 fragColor;
+ ${DISC_GLSL}
+ void main() {
+@@ -238,14 +251,46 @@ void main() {
+   float centreDepth = mix(depthStart, depthEnd, t);
+   ivec2 size = textureSize(faceDepth, 0);
+   ivec2 texel = ivec2(floor(centre - 0.5));
++  // the farthest face of the 2 x 2 texels; of those that are a holdout's,
++  // and of the others
+   float farthest = 0.0;
++  float holdoutFarthest = 0.0;
++  float otherFarthest = 0.0;
++  bool anyHoldout = false;
++  bool allHoldout = true;
+   for (int dy = 0; dy < 2; dy++) {
+     for (int dx = 0; dx < 2; dx++) {
+       ivec2 at = clamp(texel + ivec2(dx, dy), ivec2(0), size - 1);
+-      farthest = max(farthest, texelFetch(faceDepth, at, 0).r);
++      float faceAt = texelFetch(faceDepth, at, 0).r;
++      bool isHoldout = texelFetch(holdouts, at, 0).r > 0.5;
++      farthest = max(farthest, faceAt);
++      if (isHoldout) {
++        // a paper disc is flat: its depth carried on its plane to the
++        // line's centre is exact
++        anyHoldout = true;
++        holdoutFarthest = max(
++          holdoutFarthest,
++          faceAt + dot(texelFetch(slopes, at, 0).rg, centre - (vec2(at) + 0.5))
++        );
++      } else {
++        otherFarthest = max(otherFarthest, faceAt);
++      }
++      allHoldout = allHoldout && isHoldout;
+     }
+   }
+-  if (centreDepth > farthest + tolerance) discard;
++  if (exact > 0.5) {
++    // Next to a paper disc, the disc decides: a line at it or in front of it
++    // shows, a line behind it is hidden, unless another face is farther
++    // still (what shows past the disc's edge). Elsewhere, today's test.
++    if (anyHoldout) {
++      if (centreDepth > max(holdoutFarthest, otherFarthest) + tolerance) discard;
++    } else if (centreDepth > farthest + ownTolerance) {
++      discard;
++    }
++  } else {
++    if (centreDepth > farthest + tolerance) discard;
++    if (allHoldout && centreDepth > farthest - coplanar) discard;
++  }
+   fragColor = vec4(lineColour.rgb, lineColour.a * coverage);
+ }`;
+ 
+@@ -375,6 +420,16 @@ export function viewProjection(
+ export interface RendererOptions {
+   /** For screenshots and stills. */
+   preserveDrawingBuffer?: boolean;
++  /** Slide px (default HIDDEN_LINE_TOLERANCE). Prototype:
++   *  tasks/2026-10-11-paper-discs. */
++  hiddenLineTolerance?: number;
++  /** `false`: draw no clip discs (default `true`). Prototype:
++   *  tasks/2026-10-11-paper-discs. */
++  clipDiscs?: boolean;
++  /** `true`: the line test takes each nearby face's depth at the line's
++   *  centre, from the face's depth slopes (needs EXT_color_buffer_float).
++   *  Prototype: tasks/2026-10-11-paper-discs. */
++  exactLineDepth?: boolean;
+ }
+ 
+ /** A mesh's buffers and vertex arrays, made once for each context. */
+@@ -390,6 +445,10 @@ interface MeshResources {
+ interface Target {
+   size: [number, number];
+   colour: WebGLTexture;
++  /** R8: 1 where the nearest face is a holdout's. */
++  holdout: WebGLTexture;
++  /** RG32F: the nearest face's depth slopes, with `exactLineDepth`. */
++  slope: WebGLTexture | null;
+   depth: WebGLTexture;
+   framebuffer: WebGLFramebuffer;
+ }
+@@ -514,6 +573,11 @@ export class Renderer {
+   private readonly owned = new Map<object, () => void>();
+   private resources: Resources | null = null;
+   private disposed = false;
++  /** Slide px: `RendererOptions.hiddenLineTolerance`. */
++  private readonly tolerance: number;
++  private readonly clipDiscs: boolean;
++  /** `RendererOptions.exactLineDepth`. */
++  private readonly exact: boolean;
+ 
+   /** Checks the scene and its palette, and takes the canvas's WebGL2
+    *  context. The canvas must not have another renderer until that one's
+@@ -546,6 +610,9 @@ export class Renderer {
+       .map((mesh) => this.prepare(mesh));
+     for (const mesh of scene.meshes) this.geometry.set(mesh, mesh);
+     const preserveDrawingBuffer = options.preserveDrawingBuffer ?? false;
++    this.tolerance = options.hiddenLineTolerance ?? HIDDEN_LINE_TOLERANCE;
++    this.exact = options.exactLineDepth ?? false;
++    this.clipDiscs = options.clipDiscs ?? true;
+     const gl = canvas.getContext("webgl2", {
+       antialias: false,
+       alpha: false,
+@@ -643,6 +710,11 @@ export class Renderer {
+     const gl = this.gl;
+     this.freeAll();
+     if (gl.isContextLost()) return null;
++    // a float picture for the depth slopes; again after a context loss
++    check(
++      !this.exact || gl.getExtension("EXT_color_buffer_float") !== null,
++      "exactLineDepth needs EXT_color_buffer_float",
++    );
+     try {
+       const corners = this.makeBuffer();
+       gl.bindBuffer(gl.ARRAY_BUFFER, corners);
+@@ -653,7 +725,7 @@ export class Renderer {
+       );
+       const resources: Resources = {
+         fill: this.compile(FILL_VS, FILL_FS, {
+-          uniforms: ["model", "viewProj", "color", ...DISC_UNIFORMS],
++          uniforms: ["model", "viewProj", "color", "holdout", ...DISC_UNIFORMS],
+           attributes: ["position"],
+         }),
+         line: this.compile(LINE_VS, LINE_FS, {
+@@ -665,7 +737,12 @@ export class Renderer {
+             "viewport",
+             "pixelsPerSlidePx",
+             "tolerance",
++            "coplanar",
+             "faceDepth",
++            "holdouts",
++            "slopes",
++            "exact",
++            "ownTolerance",
+             "inks",
+             ...DISC_UNIFORMS,
+           ],
+@@ -947,6 +1024,8 @@ export class Renderer {
+     if (old?.size[0] === width && old.size[1] === height) return old;
+     if (old) {
+       this.free(old.colour);
++      this.free(old.holdout);
++      if (old.slope) this.free(old.slope);
+       this.free(old.depth);
+       this.free(old.framebuffer);
+       resources.targets[index] = undefined;
+@@ -972,11 +1051,17 @@ export class Renderer {
+       made.push(framebuffer);
+       const colour = texture(gl.RGBA8);
+       made.push(colour);
++      const holdout = texture(gl.R8);
++      made.push(holdout);
++      const slope = this.exact ? texture(gl.RG32F) : null;
++      if (slope) made.push(slope);
+       const depth = texture(gl.DEPTH_COMPONENT24);
+       made.push(depth);
+       const target: Target = {
+         size: [width, height],
+         colour,
++        holdout,
++        slope,
+         depth,
+         framebuffer,
+       };
+@@ -989,6 +1074,7 @@ export class Renderer {
+         0,
+       );
+       this.attachDepth(target, true);
++      this.attachHoldout(target, true);
+       const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+       if (gl.isContextLost()) throw new ContextLost();
+       check(
+@@ -1003,6 +1089,34 @@ export class Renderer {
+     }
+   }
+ 
++  /** The holdout flags: the faces write them, and the lines read them. */
++  private attachHoldout(target: Target, attached: boolean): void {
++    const gl = this.gl;
++    gl.framebufferTexture2D(
++      gl.FRAMEBUFFER,
++      gl.COLOR_ATTACHMENT1,
++      gl.TEXTURE_2D,
++      attached ? target.holdout : null,
++      0,
++    );
++    if (target.slope) {
++      gl.framebufferTexture2D(
++        gl.FRAMEBUFFER,
++        gl.COLOR_ATTACHMENT2,
++        gl.TEXTURE_2D,
++        attached ? target.slope : null,
++        0,
++      );
++    }
++    gl.drawBuffers(
++      attached
++        ? target.slope
++          ? [gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1, gl.COLOR_ATTACHMENT2]
++          : [gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1]
++        : [gl.COLOR_ATTACHMENT0],
++    );
++  }
++
+   private attachDepth(target: Target, attached: boolean): void {
+     const gl = this.gl;
+     gl.framebufferTexture2D(
+@@ -1204,19 +1318,24 @@ export class Renderer {
+     const target = this.target(resources, index, width, height);
+     gl.bindFramebuffer(gl.FRAMEBUFFER, target.framebuffer);
+     this.attachDepth(target, true);
++    this.attachHoldout(target, true);
+     gl.viewport(0, 0, width, height);
+     gl.clearColor(...this.paper);
+     gl.clearDepth(1);
+     gl.depthMask(true);
+     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
++    gl.clearBufferfv(gl.COLOR, 1, [0, 0, 0, 0]);
++    if (target.slope) gl.clearBufferfv(gl.COLOR, 2, [0, 0, 0, 0]);
+     gl.disable(gl.BLEND);
+     gl.enable(gl.DEPTH_TEST);
+     gl.depthFunc(gl.LESS);
+     // a disc hides only while the part that covers it is drawn
+     const groups = new Set(meshes.map(({ mesh }) => mesh.group));
+     this.drawFaces(resources, meshes, picture, groups);
+-    // The lines read the depth texture: it must not be attached while they do.
++    // The lines read the depth texture and the holdout flags: they must not
++    // be attached while they do.
+     this.attachDepth(target, false);
++    this.attachHoldout(target, false);
+     this.drawLines(resources, meshes, picture, target, groups);
+     this.attachDepth(target, true);
+     return target;
+@@ -1232,7 +1351,7 @@ export class Renderer {
+     const discs = this.discScratch;
+     let count = 0;
+     for (const disc of drawn.mesh.hiddenInside) {
+-      if (!groups.has(disc.by)) continue;
++      if (!this.clipDiscs || !groups.has(disc.by)) continue;
+       discs.set([...disc.centre, disc.radius], 3 * count);
+       count++;
+     }
+@@ -1280,6 +1399,7 @@ export class Renderer {
+         gl.disable(gl.POLYGON_OFFSET_FILL);
+       }
+       gl.uniform4fv(uniform(program, "color"), colour);
++      gl.uniform1f(uniform(program, "holdout"), drawn.mesh.holdout ? 1 : 0);
+       this.setDiscs(program, drawn, groups);
+       gl.bindVertexArray(made.faces);
+       gl.drawArrays(gl.TRIANGLES, 0, made.triangleVertices);
+@@ -1311,11 +1431,28 @@ export class Renderer {
+     );
+     gl.uniform1f(
+       uniform(program, "tolerance"),
+-      HIDDEN_LINE_TOLERANCE / (2 * DEPTH_RANGE),
++      this.tolerance / (2 * DEPTH_RANGE),
++    );
++    gl.uniform1f(
++      uniform(program, "coplanar"),
++      HOLDOUT_COPLANAR / (2 * DEPTH_RANGE),
+     );
+     gl.activeTexture(gl.TEXTURE0);
+     gl.bindTexture(gl.TEXTURE_2D, target.depth);
+     gl.uniform1i(uniform(program, "faceDepth"), 0);
++    gl.activeTexture(gl.TEXTURE1);
++    gl.bindTexture(gl.TEXTURE_2D, target.holdout);
++    gl.uniform1i(uniform(program, "holdouts"), 1);
++    gl.activeTexture(gl.TEXTURE2);
++    // without slopes, the holdout flags stand in: `exact` is 0, so unread
++    gl.bindTexture(gl.TEXTURE_2D, target.slope ?? target.holdout);
++    gl.uniform1i(uniform(program, "slopes"), 2);
++    gl.uniform1f(uniform(program, "exact"), target.slope ? 1 : 0);
++    gl.uniform1f(
++      uniform(program, "ownTolerance"),
++      HIDDEN_LINE_TOLERANCE / (2 * DEPTH_RANGE),
++    );
++    gl.activeTexture(gl.TEXTURE0);
+     gl.disable(gl.DEPTH_TEST);
+     gl.depthMask(false);
+     gl.enable(gl.BLEND);
+diff --git a/watches/webgl/scene.ts b/watches/webgl/scene.ts
+index 43e2527..c7e7c1c 100644
+--- a/watches/webgl/scene.ts
++++ b/watches/webgl/scene.ts
+@@ -142,6 +142,10 @@ export interface Mesh extends MeshGeometry {
+    *  the same place as the other mesh's, its own show. The renderer moves
+    *  its faces' depth a little toward the camera (a polygon offset). */
+   readonly overlay: boolean;
++  /** `true` for a holdout: a line under its faces is hidden even at their
++   *  depth, if its 2 x 2 texels are all the holdout's (prototype:
++   *  tasks/2026-10-11-paper-discs). */
++  readonly holdout?: boolean;
+   /** `true` if `Renderer.updateMesh` may change its geometry. */
+   readonly dynamic: boolean;
+ }
+diff --git a/watches/webgl/stage.ts b/watches/webgl/stage.ts
+index 0b5b7ec..c9d3f88 100644
+--- a/watches/webgl/stage.ts
++++ b/watches/webgl/stage.ts
+@@ -22,6 +22,7 @@
+ 
+ import { check } from "./checked.ts";
+ import { Renderer } from "./renderer.ts";
++import type { RendererOptions } from "./renderer.ts";
+ import { FLASH_INKS } from "./scene.ts";
+ import type { Group, Mesh, Palette, Scene } from "./scene.ts";
+ import { Timeline } from "./timeline.ts";
+@@ -109,10 +110,11 @@ export class Stage<ModelState> {
+     scene: Scene,
+     palette: Palette,
+     model: Model<ModelState>,
++    options: RendererOptions = {},
+   ) {
+     this.canvas = canvas;
+     this.model = model;
+-    this.renderer = new Renderer(canvas, scene, palette);
++    this.renderer = new Renderer(canvas, scene, palette, options);
+   }
+ 
+   /** Go to a slide's state: at once, or one channel at a time from where the
+diff --git a/watches/webgl/stills.ts b/watches/webgl/stills.ts
+index cb8f6f6..b4fc0d9 100644
+--- a/watches/webgl/stills.ts
++++ b/watches/webgl/stills.ts
+@@ -6,6 +6,7 @@
+ 
+ import { check } from "./checked.ts";
+ import { Renderer } from "./renderer.ts";
++import type { RendererOptions } from "./renderer.ts";
+ import type { Palette, Scene } from "./scene.ts";
+ 
+ export class Stills {
+@@ -17,8 +18,11 @@ export class Stills {
+   private readonly urls = new Set<string>();
+   private disposed = false;
+ 
+-  constructor(scene: Scene) {
++  private readonly options: RendererOptions;
++
++  constructor(scene: Scene, options: RendererOptions = {}) {
+     this.scene = scene;
++    this.options = options;
+   }
+ 
+   /** A picture as an object URL, in `palette`'s colours. `key` says what the
+@@ -40,6 +44,7 @@ export class Stills {
+         document.createElement("canvas"),
+         this.scene,
+         palette,
++        this.options,
+       );
+     }
+     const renderer = this.renderer;

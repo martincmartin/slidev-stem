@@ -97,17 +97,6 @@ export interface SilhouetteEdge {
   readonly style: LineStyle;
 }
 
-/** A disc in plan, in world x and y (slide px), after the mesh's group
- *  matrix: it does not move with the mesh. */
-export interface Disc {
-  readonly centre: readonly [number, number];
-  readonly radius: number;
-  /** The group of the part that covers the disc. The disc hides only in a
-   *  picture that draws a mesh of this group: when that part has faded out,
-   *  what was under it shows. */
-  readonly by: Group;
-}
-
 /** Its matrix comes with each frame. */
 export interface Group {
   readonly name: string;
@@ -130,10 +119,12 @@ export interface Mesh extends MeshGeometry {
    *  hold several pieces, and their names can differ. */
   readonly part: string;
   readonly group: Group | null;
-  /** `null`: lines only (a decal). */
+  /** `null`: lines only (a decal), or a holdout. */
   readonly fill: Colour | null;
-  /** Not drawn inside these discs, at any height. */
-  readonly hiddenInside: readonly Disc[];
+  /** `true` for a holdout: a flat face in the paper's colour, with no fill
+   *  and no lines, under a part that must look solid (a wheel). It hides what
+   *  is under it, faces and lines, at any view (webgl/renderer.ts). */
+  readonly holdout: boolean;
   /** The order of the lines: a later mesh's lines cover an earlier one's. */
   readonly lineOrder: number;
   /** `false` for a part that the 2D drawing did not have. */
@@ -220,6 +211,25 @@ export function hexRgb(hex: string): Vec3 {
   ];
 }
 
+/** A holdout is flat (one height), has faces, has no fill and no lines, and
+ *  is not dynamic: the renderer draws it in the paper's colour, and takes its
+ *  exact depth from the plane of its own faces. */
+function checkHoldout(mesh: Mesh): void {
+  check(
+    mesh.fill === null &&
+      mesh.lines.length === 0 &&
+      mesh.silhouetteEdges.length === 0,
+    `${mesh.name}: a holdout has no fill and no lines`,
+  );
+  check(!mesh.dynamic, `${mesh.name}: a holdout is not dynamic`);
+  const { triangles } = mesh;
+  check(triangles.length > 0, `${mesh.name}: a holdout has no faces`);
+  const height = triangles[2];
+  for (let index = 2; index < triangles.length; index += 3) {
+    check(triangles[index] === height, `${mesh.name}: a holdout is not flat`);
+  }
+}
+
 function checkOpacity(opacity: number, what: string): void {
   check(
     opacity >= 0 && opacity <= 1,
@@ -293,17 +303,7 @@ export function checkScene(scene: Scene): void {
       checkInk(mesh.fill.ink, mesh.name);
       checkOpacity(mesh.fill.opacity, mesh.name);
     }
-    for (const disc of mesh.hiddenInside) {
-      checkFinite([...disc.centre, disc.radius], `${mesh.name}'s disc`);
-      check(
-        disc.radius > 0,
-        `${mesh.name}: a disc of radius ${String(disc.radius)}`,
-      );
-      check(
-        groups.has(disc.by),
-        `${mesh.name}: a disc's group is not in the scene`,
-      );
-    }
+    if (mesh.holdout) checkHoldout(mesh);
     checkFinite([mesh.lineOrder], `${mesh.name}'s line order`);
     checkGeometry(mesh, mesh.name);
   }

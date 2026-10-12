@@ -1,5 +1,5 @@
 // The design becomes a scene: the parts as meshes, with heights where they
-// touch, the 2D art's line styles, the clip discs, the pieces that slides name,
+// touch, the 2D art's line styles, the paper discs, the pieces that slides name,
 // and the views.
 //
 // Ported from the spike of watches/tasks/2026-09-28-webgl-planning/
@@ -20,7 +20,6 @@ import {
 import type { MeshInfo, Ring } from "../webgl/mesh.ts";
 import type {
   Colour,
-  Disc,
   Group,
   LineStyle,
   Mesh,
@@ -31,7 +30,7 @@ import type {
 } from "../webgl/scene.ts";
 import { INKS } from "../webgl/scene.ts";
 import { at } from "../webgl/checked.ts";
-import { HIDDEN_LINE_TOLERANCE } from "../webgl/renderer.ts";
+import { HIDDEN_LINE_TOLERANCE, HOLDOUT_TOLERANCE } from "../webgl/renderer.ts";
 import type { Design, DrivenWheel, Wheel } from "./design.ts";
 import { DESIGN, hourRatio } from "./design.ts";
 import {
@@ -41,7 +40,7 @@ import {
   SPRING_TURNS,
 } from "./model.ts";
 import type { Spring } from "./model.ts";
-import { Path, circlePath } from "./path.ts";
+import { FLATNESS, Path, circlePath } from "./path.ts";
 import type { Contour } from "./path.ts";
 import {
   clock,
@@ -233,7 +232,6 @@ interface Solid {
   /** How far it reaches from `pivot`, at any time. */
   reach: number;
   ribbon: boolean;
-  discs: Disc[];
   inDrawing: boolean;
 }
 
@@ -323,8 +321,7 @@ export interface WatchGroups {
   /** The hour hand, about the centre arbor. */
   readonly hour: Group;
   /** The hour wheel, about the centre arbor, with the hour hand's step. It is
-   *  not in the hand's group: its clip disc hides only while its group is
-   *  drawn, and the cover draws the hand without the wheel. */
+   *  not in the hand's group: the cover draws the hand without the wheel. */
   readonly hourWheel: Group;
   readonly minute: Group;
   /** The minute wheel and its pinion, about its arbor. */
@@ -536,9 +533,10 @@ function oneStepMeshes(
  *  for the story: every one is off centre. */
 const ONE_STEP_HOUR_ANGLE = 150;
 /** The motion works' wheels are drawn as the train's are. A rim is wider
- *  than the train's: at tilt 20 the disc that hides the wheels below slides
- *  up to about 3 px against the wheel above (`clipDiscs`), and the rim must
- *  be twice that. */
+ *  than the train's: the clip discs that came before the paper discs slid
+ *  against it at a tilt, and the rim hid that (tasks/2026-10-09-motion-works).
+ *  The paper discs do not slide; the rims are kept, so the slides do not
+ *  change. */
 const MOTION_DRAWINGS = {
   minute: { rim: 6, hub: 6, spokeWidth: 3 },
   hour: { rim: 6, hub: 7, spokeWidth: 3 },
@@ -621,13 +619,6 @@ function motionWorksSolids(kit: Kit): MotionSolids {
   const piece = (name: string): BuiltPiece =>
     kit.pieces.make(name, { inAll: false });
   const centreGroup = lookup(groups.wheels, train.centre, "centre group");
-  // the hour wheel is above the cannon pinion and the minute wheel: they
-  // are hidden under its openings, as the train is
-  const underHour = {
-    discs: [
-      motionDisc(design, hour, MOTION_DRAWINGS.hour.rim, groups.hourWheel),
-    ],
-  };
   const cannonSolid = solids.add(
     piece("cannon pinion"),
     parts.cannon,
@@ -635,7 +626,6 @@ function motionWorksSolids(kit: Kit): MotionSolids {
     centreGroup,
     ringsOf([drivingPinionLeaves(cannon), line(LEAVES_LINE)]),
     subjectWash,
-    underHour,
   );
   const minutePiece = piece("minute wheel");
   const minuteBody = solids.add(
@@ -645,7 +635,6 @@ function motionWorksSolids(kit: Kit): MotionSolids {
     groups.minuteWheel,
     drivenWheelRings(minute, MOTION_DRAWINGS.minute, paint),
     subjectWash,
-    underHour,
   );
   const minuteHub = solids.add(
     minutePiece,
@@ -907,15 +896,34 @@ function makeParts({ barrel, centre, third, fourth, escape }: Train): Parts {
   };
 }
 
-// ---- clip discs ------------------------------------------------------------------------
-/** A lower wheel is hidden inside the root circle of each round part above it
- *  that overlaps it. */
-function clipDiscs(
+// ---- paper discs ----------------------------------------------------------------------
+// A wheel over other wheels must look solid: through its spoke openings, the
+// paper, not the wheel under it. A paper disc at its bottom (a holdout,
+// `Mesh.holdout`) hides what is under it by the depth test, at any view.
+// Each wheel stands STACK_GAP above the wheel that it covers, so the line
+// test hides that wheel's lines too (docs/watch.md, "Paper discs").
+
+/** A paper disc: under the wheel of `wheelGroup`, about `centre`, out to
+ *  `radius`, in world x and y. */
+interface PaperDisc {
+  readonly wheelGroup: Group;
+  readonly centre: Point2;
+  readonly radius: number;
+}
+
+/** The paper discs: one under each wheel that covers a wheel under it. A
+ *  wheel of the train's stack (or the balance) covers each wheel below it
+ *  that reaches inside its root circle; the one-step wheel covers the wheel
+ *  that it drives; the motion works and the one-step hour wheel cover the
+ *  train, and their discs end half way across their rims, under the rim. A
+ *  disc hides all that is under it: the hour wheel's also hides the cannon
+ *  pinion and the minute wheel. */
+function paperDiscs(
   design: Design,
   groups: WatchGroups,
   oneStep: Wheel,
   oneStepHour: DrivenWheel,
-): Map<Wheel, Disc[]> {
+): PaperDisc[] {
   interface Round {
     wheel: Wheel | null;
     group: Group;
@@ -924,6 +932,10 @@ function clipDiscs(
     outer: number;
   }
   const { watchCentre } = design;
+  const world = (arbor: Point2): Point2 => [
+    watchCentre[0] + arbor[0],
+    watchCentre[1] + arbor[1],
+  ];
   const rounds: Round[] = design.stack.map((entry) =>
     entry === "balance"
       ? {
@@ -945,84 +957,147 @@ function clipDiscs(
           outer: entry.outer,
         },
   );
-  const discsOver = new Map<Wheel, Disc[]>();
-  for (const [index, lower] of rounds.entries()) {
-    if (lower.wheel === null) continue;
-    discsOver.set(
-      lower.wheel,
-      rounds
-        .slice(index + 1)
-        .filter(
-          (upper) =>
-            Math.hypot(
-              lower.arbor[0] - upper.arbor[0],
-              lower.arbor[1] - upper.arbor[1],
-            ) <
-            lower.outer + upper.inner,
-        )
-        .map((upper) => ({
-          centre: [
-            watchCentre[0] + upper.arbor[0],
-            watchCentre[1] + upper.arbor[1],
-          ],
-          radius: upper.inner,
-          by: upper.group,
-        })),
-    );
+  const reaches = (lower: Round, arbor: Point2, radius: number): boolean =>
+    Math.hypot(lower.arbor[0] - arbor[0], lower.arbor[1] - arbor[1]) <
+    lower.outer + radius;
+  const discs = new Map<Group, PaperDisc>();
+  for (const [index, upper] of rounds.entries()) {
+    const covers = rounds
+      .slice(0, index)
+      .some(
+        (lower) =>
+          lower.wheel !== null && reaches(lower, upper.arbor, upper.inner),
+      );
+    if (covers) {
+      discs.set(upper.group, {
+        wheelGroup: upper.group,
+        centre: world(upper.arbor),
+        radius: upper.inner,
+      });
+    }
   }
   // the one-step wheel is above the pinion's wheel, as the third wheel is
   if (oneStep.driven) {
-    discsOver.get(oneStep.driven)?.push({
-      centre: [
-        watchCentre[0] + oneStep.arbor[0],
-        watchCentre[1] + oneStep.arbor[1],
-      ],
+    discs.set(groups.oneStep, {
+      wheelGroup: groups.oneStep,
+      centre: world(oneStep.arbor),
       radius: oneStep.inner,
-      by: groups.oneStep,
     });
   }
-  // The motion works and the one-step hour wheel are far above the train. At
-  // a tilt, a disc in the plan slides against the wheel above it, by the
-  // height between them times the tilt's tangent. A disc out to the root
-  // circle then cuts a sliver out of the wheel below, beside the rim, and a
-  // disc out to the openings shows a crescent of it in each opening. So
-  // their discs end half way across their rims: they cover the openings,
-  // and the rim covers their edges, while the slide is less than half the
-  // rim (docs/watch.md, "The motion works").
   const { minute, hour } = design.motionWorks;
   const above: [DrivenWheel, number, Group][] = [
     [minute, MOTION_DRAWINGS.minute.rim, groups.minuteWheel],
     [hour, MOTION_DRAWINGS.hour.rim, groups.hourWheel],
     [oneStepHour, MOTION_DRAWINGS.oneStepHour.rim, groups.oneStepHour],
   ];
-  for (const lower of rounds) {
-    if (lower.wheel === null) continue;
-    for (const [upper, rim, by] of above) {
-      const disc = motionDisc(design, upper, rim, by);
-      const apart = Math.hypot(
-        lower.arbor[0] - upper.arbor[0],
-        lower.arbor[1] - upper.arbor[1],
-      );
-      if (apart >= lower.outer + disc.radius) continue;
-      discsOver.get(lower.wheel)?.push(disc);
+  for (const [upper, rim, group] of above) {
+    const radius = upper.inner - rim / 2;
+    if (rounds.some((lower) => reaches(lower, upper.arbor, radius))) {
+      discs.set(group, {
+        wheelGroup: group,
+        centre: world(upper.arbor),
+        radius,
+      });
     }
   }
-  return discsOver;
+  return [...discs.values()];
 }
 
-/** The disc inside which a wheel of the motion works, or the one-step hour
- *  wheel, hides what is below it: half way across its rim (`clipDiscs`). */
-function motionDisc(
+/** Sides of a paper disc's circle, before the case cuts it. At the
+ *  hairspring's zoom, the 70 px barrel disc is within 0.1 px of its circle;
+ *  the rim covers its edge. */
+const PAPER_DISC_SIDES = 128;
+
+/** A circle as a polygon, anticlockwise in x and y. */
+function circlePolygon(centre: Point2, radius: number): Point2[] {
+  return Array.from({ length: PAPER_DISC_SIDES }, (_, index): Point2 => {
+    const angle = (2 * Math.PI * index) / PAPER_DISC_SIDES;
+    return [
+      centre[0] + radius * Math.cos(angle),
+      centre[1] + radius * Math.sin(angle),
+    ];
+  });
+}
+
+/** The part of the convex polygon `subject` inside the convex polygon `clip`
+ *  (Sutherland and Hodgman). Both anticlockwise in x and y. */
+function clipConvex(subject: Point2[], clip: Point2[]): Point2[] {
+  let result = subject;
+  for (const [index, [ax, ay]] of clip.entries()) {
+    const [bx, by] = at(clip, (index + 1) % clip.length);
+    const [ex, ey] = [bx - ax, by - ay];
+    const inside = ([x, y]: Point2): boolean =>
+      ex * (y - ay) - ey * (x - ax) >= 0;
+    const crossing = ([px, py]: Point2, [qx, qy]: Point2): Point2 => {
+      const t =
+        (ex * (ay - py) - ey * (ax - px)) / (ex * (qy - py) - ey * (qx - px));
+      return [px + t * (qx - px), py + t * (qy - py)];
+    };
+    const input = result;
+    result = [];
+    for (const [step, current] of input.entries()) {
+      const previous = at(input, (step + input.length - 1) % input.length);
+      if (inside(current)) {
+        if (!inside(previous)) result.push(crossing(previous, current));
+        result.push(current);
+      } else if (inside(previous)) {
+        result.push(crossing(previous, current));
+      }
+    }
+  }
+  return result;
+}
+
+/** The lowest height of a mesh's faces. A wheel's group turns it about the
+ *  vertical and moves it in the plan, so this is its height in the world
+ *  (`generate.test.ts` checks it for each paper disc). */
+function meshBottom(mesh: Mesh): number {
+  let bottom = Infinity;
+  for (let index = 2; index < mesh.triangles.length; index += 3) {
+    bottom = Math.min(bottom, at(mesh.triangles, index));
+  }
+  return bottom;
+}
+
+/** The mesh of a paper disc at `height`, inside the case (the bezel's
+ *  radius, less FLATNESS: the case's wall is flattened, so its sides are up
+ *  to FLATNESS inside the circle): the one-step wheel reaches past the case,
+ *  and its disc must not hide the case or the crown. It is in `root`, the group about the watch's
+ *  centre, which does not move: a disc that the case cuts is not round. */
+function paperDiscMesh(
   design: Design,
-  wheel: DrivenWheel,
-  rim: number,
-  by: Group,
-): Disc {
+  disc: PaperDisc,
+  height: number,
+  root: Group,
+): Mesh {
   const { watchCentre } = design;
+  const outline = clipConvex(
+    circlePolygon(disc.centre, disc.radius),
+    circlePolygon(watchCentre, design.case.bezelRadius - FLATNESS),
+  ).map(([x, y]): Point2 => [x - watchCentre[0], y - watchCentre[1]]);
+  // a fan from the middle: the outline is convex
+  const middle = outline
+    .reduce(([sx, sy], [x, y]): Point2 => [sx + x, sy + y], [0, 0])
+    .map((sum) => sum / outline.length);
+  const [mx, my] = [at(middle, 0), at(middle, 1)];
+  const triangles: number[] = [];
+  for (const [index, [ax, ay]] of outline.entries()) {
+    const [bx, by] = at(outline, (index + 1) % outline.length);
+    triangles.push(mx, my, height, ax, ay, height, bx, by, height);
+  }
   return {
-    centre: [watchCentre[0] + wheel.arbor[0], watchCentre[1] + wheel.arbor[1]],
-    radius: wheel.inner - rim / 2,
-    by,
+    name: `${disc.wheelGroup.name} paper disc`,
+    part: "paper disc",
+    group: root,
+    fill: null,
+    holdout: true,
+    triangles: new Float32Array(triangles),
+    lines: [],
+    silhouetteEdges: [],
+    lineOrder: height,
+    inDrawing: false,
+    overlay: false,
+    dynamic: false,
   };
 }
 
@@ -1041,7 +1116,6 @@ function solidMeshes(
         part: each.part.name,
         group: each.group,
         fill: each.fill,
-        hiddenInside: each.discs,
         lineOrder: top,
         inDrawing: each.inDrawing,
         dynamic: dynamic.has(each),
@@ -1290,15 +1364,8 @@ const KEY = {
  *  tilt 0; at the slide's tilt they are a little longer. */
 const REST_DASH = { dash: 8, gap: 6, width: 4 };
 
-/** The arbor's square, on top of the arbor's disc. */
-/** The barrel arbor's square, hidden inside `hiddenInside`: the barrel's
- *  discs, as the arbor is. */
-function arborSquareMesh(
-  arborTop: number,
-  group: Group,
-  paint: Paint,
-  hiddenInside: Disc[],
-): Mesh {
+/** The barrel arbor's square, on top of the arbor's disc. */
+function arborSquareMesh(arborTop: number, group: Group, paint: Paint): Mesh {
   const half = ARBOR_SQUARE.side / 2;
   const top = arborTop + ARBOR_SQUARE.height;
   return extrude(
@@ -1318,7 +1385,6 @@ function arborSquareMesh(
       part: "barrel arbor",
       group,
       fill: paint.subjectWash,
-      hiddenInside,
       lineOrder: top,
       inDrawing: false,
     },
@@ -1588,16 +1654,10 @@ class SolidList {
   private readonly counts = new Map<Part, number>();
   private readonly origins: ReadonlyMap<Group, Point2>;
   private readonly watchCentre: Point2;
-  private readonly discsOver: ReadonlyMap<Wheel, Disc[]>;
 
-  constructor(
-    origins: ReadonlyMap<Group, Point2>,
-    watchCentre: Point2,
-    discsOver: ReadonlyMap<Wheel, Disc[]>,
-  ) {
+  constructor(origins: ReadonlyMap<Group, Point2>, watchCentre: Point2) {
     this.origins = origins;
     this.watchCentre = watchCentre;
-    this.discsOver = discsOver;
   }
 
   add(
@@ -1608,7 +1668,7 @@ class SolidList {
     rings: Ring[],
     fill: Colour | null,
     extra: Partial<
-      Pick<Solid, "pivot" | "reach" | "ribbon" | "inDrawing" | "discs">
+      Pick<Solid, "pivot" | "reach" | "ribbon" | "inDrawing">
     > = {},
   ): Solid {
     const { watchCentre } = this;
@@ -1637,9 +1697,6 @@ class SolidList {
             : [0, 0],
         ),
       ribbon: extra.ribbon ?? false,
-      discs:
-        extra.discs ??
-        (owner.wheel ? (this.discsOver.get(owner.wheel) ?? []) : []),
       inDrawing: extra.inDrawing ?? true,
     };
     this.solids.push(made);
@@ -1836,7 +1893,6 @@ function spanMeshes(
       part: solid.part.name,
       group: solid.group,
       fill: style.fill,
-      hiddenInside: solid.discs,
       lineOrder: top,
       inDrawing: false,
       overlay: true,
@@ -2336,8 +2392,7 @@ export function generate(design: Design = DESIGN): Watch {
     lookup(parts.wheels, wheel, `part for the ${wheel.name} wheel`);
 
   // ---- the solids of the movement, in the drawing's order ----
-  const discsOver = clipDiscs(design, tree.groups, oneStep, oneStepHour);
-  const list = new SolidList(tree.origins, watchCentre, discsOver);
+  const list = new SolidList(tree.origins, watchCentre);
   const kit: Kit = {
     design,
     paint,
@@ -2546,12 +2601,7 @@ export function generate(design: Design = DESIGN): Watch {
   );
   const mainspringHeights = heightOf(mainspringSolid);
   const arborTop = heightOf(barrelArborSolid).top;
-  const arborSquare = arborSquareMesh(
-    arborTop,
-    tree.groups.barrelArbor,
-    paint,
-    discsOver.get(train.barrel) ?? [],
-  );
+  const arborSquare = arborSquareMesh(arborTop, tree.groups.barrelArbor, paint);
   const keys = keyMeshes(
     arborTop + ARBOR_SQUARE.height,
     tree.groups.barrelArbor,
@@ -2575,6 +2625,26 @@ export function generate(design: Design = DESIGN): Watch {
     paint,
   );
   meshes.push(arborSquare, ...keys, mainspringStud.mesh, restDashes);
+
+  // ---- the paper discs, each at its wheel's bottom ----
+  const papers = paperDiscs(design, tree.groups, oneStep, oneStepHour).map(
+    (disc) => {
+      const own = meshes.filter((mesh) => mesh.group === disc.wheelGroup);
+      const lowest = own.reduce<{ mesh: Mesh; bottom: number } | null>(
+        (best, mesh) => {
+          const bottom = meshBottom(mesh);
+          return best && best.bottom <= bottom ? best : { mesh, bottom };
+        },
+        null,
+      );
+      if (!lowest) throw new Error(`${disc.wheelGroup.name} has no mesh`);
+      return {
+        wheelMesh: lowest.mesh,
+        mesh: paperDiscMesh(design, disc, lowest.bottom, root),
+      };
+    },
+  );
+  meshes.push(...papers.map(({ mesh }) => mesh));
 
   // ---- the pieces: what a slide names (watch/state.ts) ----
   for (const [solid, mesh] of movementMeshes) solid.piece.meshes.add(mesh);
@@ -2606,6 +2676,12 @@ export function generate(design: Design = DESIGN): Watch {
     });
     for (const mesh of arrow.meshes) piece.meshes.add(mesh);
   }
+  // a paper disc shows with its wheel
+  for (const piece of kit.pieces.pieces) {
+    for (const { wheelMesh, mesh } of papers) {
+      if (piece.meshes.has(wheelMesh)) piece.meshes.add(mesh);
+    }
+  }
   const pieces: readonly Piece[] = kit.pieces.pieces;
   for (const piece of pieces) {
     if (piece.meshes.size === 0) throw new Error(`${piece.name} has no mesh`);
@@ -2616,10 +2692,13 @@ export function generate(design: Design = DESIGN): Watch {
   const extents = new Map(
     pieces.map((piece): [Piece, Extent] => [
       piece,
+      // a paper disc is inside its wheel: it does not widen the piece
       extentOf(
-        [...piece.meshes].map((mesh) =>
-          meshExtent(mesh, solidOf.get(mesh), tree, watchCentre),
-        ),
+        [...piece.meshes]
+          .filter((mesh) => !mesh.holdout)
+          .map((mesh) =>
+            meshExtent(mesh, solidOf.get(mesh), tree, watchCentre),
+          ),
       ),
     ]),
   );
@@ -2875,6 +2954,12 @@ interface HeightParts {
 
 /** Where the train touches: a pinion is level with the wheel that drives it. */
 const MESHING_OVERHANG = 0;
+/** Slide px between a wheel and the wheel under it that it covers, in the
+ *  train and in the motion works: its paper disc then hides that wheel's
+ *  lines, by more than the line test's tolerance next to a holdout. A real
+ *  watch has this clearance. The six levels add up: the hands stand 0.375 px
+ *  higher than with none (tasks/2026-10-11-paper-discs). */
+const STACK_GAP = 2 * HOLDOUT_TOLERANCE;
 
 /** The heights of every solid: the 2D plan's rules (build_solids), then the
  *  cover's changes to them (movement). */
@@ -2902,6 +2987,7 @@ function assignHeights(
     let bottom: number;
     let top: number;
     const meshed = trainHeights(
+      STACK_GAP,
       owner,
       each.role,
       own,
@@ -3006,9 +3092,12 @@ function assignHeights(
         overlaps(wheel, each),
       ),
   );
-  const motionBottom = Math.max(...under.map((each) => heightOf(each).top));
+  const motionBottom =
+    Math.max(...under.map((each) => heightOf(each).top)) + STACK_GAP;
   const firstTop = motionBottom + thicknessOf(motion.minuteBody);
-  const secondTop = firstTop + thicknessOf(motion.hourBody);
+  // the hour wheel covers the cannon pinion and the minute wheel
+  const secondBottom = firstTop + STACK_GAP;
+  const secondTop = secondBottom + thicknessOf(motion.hourBody);
   const level = (each: Solid, bottom: number, top: number): void => {
     heights.set(each, { bottom, top });
   };
@@ -3018,8 +3107,8 @@ function assignHeights(
   level(motion.minuteHub, motionBottom, firstTop);
   level(motion.minutePinion, firstTop, secondTop);
   level(motion.minuteArbor, firstTop, secondTop + ARBOR_CAP);
-  level(motion.hourBody, firstTop, secondTop);
-  level(motion.hourPipe, firstTop, secondTop);
+  level(motion.hourBody, secondBottom, secondTop);
+  level(motion.hourPipe, secondBottom, secondTop);
 
   const centreOf = (each: Solid): Point2 => each.pivot;
   const sweepsOver = (hand: Solid, other: Solid): boolean =>
@@ -3069,7 +3158,7 @@ function assignHeights(
   const hourTop = stack(hour, hourBottom);
   raiseArbor(partsOf.centre, hourBottom);
   // the hour wheel's pipe carries the hour hand
-  heights.set(motion.hourPipe, { bottom: firstTop, top: hourBottom });
+  heights.set(motion.hourPipe, { bottom: secondBottom, top: hourBottom });
   // The minute hand is longer than the hour hand: it may sweep over more.
   const minute = ofPart(partsOf.minute);
   const minuteHand = at(minute, 0);
@@ -3096,6 +3185,7 @@ function failNoBody(owner: Part): never {
  *  rules place it. A wheel's shapes come in the drawing's order: the wheel, its
  *  hub, its pinion, then its arbor's end. */
 function trainHeights(
+  stackGap: number,
   owner: Part,
   role: Role,
   own: Recipe,
@@ -3106,18 +3196,20 @@ function trainHeights(
   if (owner.wheel === null) return null;
   const body = bodyOf.get(owner);
   if (body === undefined) {
-    // the first shape: on the wheel that this one's teeth drive
+    // the first shape: the gap above the wheel that this one's teeth drive
     const driven = owner.wheel.driven;
     const drivenBody = driven ? bodyByWheel(bodyOf, driven) : undefined;
-    const base = drivenBody ? heightOf(drivenBody).top : 0;
+    const base = drivenBody ? heightOf(drivenBody).top + stackGap : 0;
     return [base, base + own.thickness];
   }
   const bodyHeights = heightOf(body);
   if (owner.driver === null) return null;
   if (role === "other") {
+    // up to the top of the wheel that drives it, the gap above this one
     return [
       bodyHeights.top,
       bodyHeights.top +
+        stackGap +
         (owner.driver.recipes.body?.thickness ?? 0) +
         MESHING_OVERHANG,
     ];

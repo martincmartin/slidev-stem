@@ -32,3 +32,7 @@ PLAN.md, section 14, gives the commands that reproduce the evidence.
   a tilt about x) is now a choice of look, not a limit. A slide may turn the
   camera about another axis or use perspective. `stem/docs/webgl.md`, "The
   house style in 3D", says what each change needs.
+- 2026-10-12: paper discs (holdouts) replace the clip discs that this plan
+  kept (section 13, item 3). The look at tilt 20 is the same; at a steeper
+  tilt the clip discs slid against the wheel above. See
+  [`../2026-10-11-paper-discs/PLAN.md`](../2026-10-11-paper-discs/PLAN.md).

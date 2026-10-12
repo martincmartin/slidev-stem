@@ -22,7 +22,6 @@ import {
 import type { Matrix4 } from "./math.ts";
 import type {
   Colour,
-  Disc,
   Group,
   Line,
   LineStyle,
@@ -58,7 +57,6 @@ export interface MeshInfo {
   part: string;
   group: Group | null;
   fill: Colour | null;
-  hiddenInside?: Disc[];
   lineOrder?: number;
   inDrawing?: boolean;
   overlay?: boolean;
@@ -273,7 +271,7 @@ function makeMesh(info: MeshInfo, triangles: number[], lines: Lines): Mesh {
     triangles: new Float32Array(triangles),
     lines: lines.lines,
     silhouetteEdges: lines.silhouetteEdges,
-    hiddenInside: info.hiddenInside ?? [],
+    holdout: false,
     lineOrder: info.lineOrder ?? 0,
     inDrawing: info.inDrawing ?? true,
     overlay: info.overlay ?? false,
@@ -357,7 +355,7 @@ export function ribbonGeometry(
 
 /** The mesh with its triangles, lines and silhouette edges moved by
  *  `matrix`, once (the crown is an extrusion along x: make it along z, then
- *  turn it). Its clip discs do not move: they are in world x and y. */
+ *  turn it). */
 export function transformMesh(mesh: Mesh, matrix: Matrix4): Mesh {
   checkAffine(matrix, "the mesh's matrix");
   const turn = normalMatrix(matrix);
