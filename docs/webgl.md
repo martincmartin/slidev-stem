@@ -118,18 +118,23 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   run (`erasableSyntaxOnly`), and a bare string would be a name to look up.
 - **Not an oversight: the palette is not in the design file.** It was once,
   and the art kept old colours until someone ran the script again.
-- **The camera is orthographic, and it tilts about the slide's horizontal
-  axis** (`viewProjection` in `webgl/renderer.ts`). These are choices of
-  look, not limits. They come from the plan to draw the 3D watch in SVG
+- **The camera is orthographic. It turns about the world's z axis, then
+  tilts about the slide's horizontal axis**, both through the view's pivot
+  (`CameraAngles` in `webgl/scene.ts`, `viewProjection` in
+  `webgl/renderer.ts`). The turn is clockwise on the slide: at 90°, the
+  world's +x is at the bottom, nearest the camera when it tilts. So the
+  model's z axis stays up on the screen, as when you look at a watch on a
+  table from one side. The turn came for the recap, which looks at the train
+  from several sides
+  ([`watches/tasks/2026-10-12-victory-lap/`](../watches/tasks/2026-10-12-victory-lap/PLAN.md)).
+  The orthographic camera and the order of the angles are choices of look,
+  not limits. They come from the plan to draw the 3D watch in SVG
   ([`watches/tasks/2026-09-27-canvas-2d-planning/`](../watches/tasks/2026-09-27-canvas-2d-planning/PLAN.md)),
-  and WebGL does not need them. At the tilts so far (20° at most), a
-  perspective camera at a usual focal length looks almost the same. A slide
-  can turn the camera about another axis, or use perspective, when that
-  shows more: for example, a recap that shows the whole model in 3D. To
-  change them:
-  - **Another axis:** `viewProjection`, the tilt (one angle in `Frame` and in
-    the frontmatter), and `fittedView` in `watches/watch/generate.ts`, which
-    takes a tilt about x.
+  and WebGL does not need them. To change them:
+  - **A fitted view at a turn:** `fittedView` in
+    `watches/watch/generate.ts` fits the pieces' boxes in the plan at turn 0.
+    So a turn needs a named view, and the deck refuses a turn with a fitted
+    view. To fit at a turn, turn each extent's box before the fit.
   - **Perspective:** the line shader divides by $w$, and clips a segment at
     the near plane. The silhouette test takes the direction to the camera at
     each vertex, not one direction for the frame. `HIDDEN_LINE_TOLERANCE`
@@ -184,7 +189,10 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   - **A scene has at most `MAX_HOLDOUTS`** (in `renderer.ts`): the length of
     the shader's array of planes. The renderer refuses a scene with more.
     The browser check "a holdout hides a part two HOLDOUT_TOLERANCEs under
-    it" (`watches/webgl/probe/checks.ts`) draws the rule at tilts 0 to 75.
+    it" (`watches/webgl/probe/checks.ts`) draws the rule at tilts 0 to 85,
+    and at three turns. At a steep tilt, a part under a holdout shows past
+    its edge, as a real part does: the check's part is thin and in the
+    middle, so that it stays inside the edge to 85°.
   - **Not an oversight: no float pictures.** The depth slopes of each
     pixel, in a float picture, gave the same pictures, but need
     `EXT_color_buffer_float`. Without it, the parts under a holdout showed
@@ -213,11 +221,13 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   From the shown meshes A to B, with D the meshes on the screen while the
   camera moves (`StageState.moveWith`: those of both by default, all of
   either, or none): A becomes D (fade out, then fade in), the camera moves
-  and tilts (zooming in: move, then tilt; otherwise the reverse), and D
-  becomes B. The order of the move and the tilt is a choice of look, not a
-  limit: a slide can move and tilt at the same time (for example, a recap
-  that shows the whole model in 3D). The timeline has only this order now,
-  so such a slide adds an option to `webgl/timeline.ts`. Of the meshes that fade in as D becomes B, those in
+  and changes its angles (it tilts and turns at the same time; zooming in:
+  move, then the angles; otherwise the reverse), and D becomes B. The order
+  of the move and the angles is a choice of look, not a limit: a state with
+  `StageState.move` `together` moves, zooms, tilts and turns the camera at
+  the same time (`mixCamera`; the watch talk's Recap slide). That mix takes
+  the scale evenly in its logarithm, and moves the pivot so that it crosses
+  the screen at an even speed. Of the meshes that fade in as D becomes B, those in
   `StageState.later` fade in after the others. The meshes in
   `StageState.cut` go or come at once, with no fade. The meshes in
   `StageState.goLater` stay on the screen while the camera moves, and go

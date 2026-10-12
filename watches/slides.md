@@ -944,6 +944,92 @@ The minute hand turns once an hour. The hour hand must turn twelve times slower:
 -->
 
 ---
+# A tour of the train with no text, from the motion works to the balance:
+# the watch fills the slide. Each click is a stop. The camera moves, zooms,
+# tilts and turns at the same time (watchMove: together), and the mechanism
+# runs at the stop's speed-up: the slower of the two parts that touch turns
+# once in 30 s (watchLapse). The views put each touch at the middle of the
+# slide (watch/recap.ts; docs/watch.md, "The Recap slide")
+title: Recap
+watch:
+  [all, cannon pinion, minute wheel, minute pinion, minute arbor, hour wheel]
+watchView: recap motion works
+watchTilt: 30
+watchMove: together
+watchLapse: 1440
+watchTimeScale: true
+watchClicks:
+  # the barrel and its spring: the barrel turns once in 6 hours
+  1:
+    watchView: recap barrel
+    watchLapse: 720
+  # the barrel's teeth on the centre pinion, low, from about 3:40
+  2:
+    watchView: recap barrel touch
+    watchTurn: 80
+    watchTilt: 80
+  # back up over the movement: the centre wheel on the third pinion, with
+  # the next touch behind it, as at each stop from here
+  3:
+    watchView: recap centre touch
+    watchTurn: -10
+    watchTilt: 45
+    watchLapse: 120
+  4:
+    watchView: recap third touch
+    watchTurn: 15
+    watchLapse: 15
+  # the fourth wheel turns once in 30 s, the escape wheel once in 15 s
+  5:
+    watchView: recap fourth touch
+    watchTurn: 75
+    watchLapse: 2
+  # from here, the mechanism at its own speed
+  6:
+    watchView: recap pallet
+    watchTurn: 90
+    watchLapse: 1
+  7:
+    watchView: recap jewel
+  # where the Hairspring slide shows it, on the left
+  8:
+    watchView: hairspring
+    watchTurn: 0
+    watchTilt: 20
+    watchTimeScale: false
+  # the cover, and what it shows: the reverse of the step from the cover to
+  # the Hairspring slide, so the camera tilts to 0 and then zooms out
+  9:
+    watch: all
+    watchView: cover
+    watchTilt: 0
+    watchMove: ordered
+clicks: 9
+---
+
+<!--
+The whole train, one touch at a time. The motion works, a day a minute: the hour wheel turns once in 30 seconds, on the minute pinion.
+
+[click] The barrel, and the spring inside it. Six hours a turn.
+
+[click] Down low, from the side: the barrel's teeth on the centre pinion.
+
+[click] Back up: the centre wheel on the third pinion. The next touch is behind it.
+
+[click] The third wheel on the fourth pinion.
+
+[click] The fourth wheel, the seconds hand's, on the escape pinion: twice its speed, once in 15 seconds.
+
+[click] Real time now. The escape wheel on the pallet's stones.
+
+[click] The impulse jewel in the fork.
+
+[click] The balance wheel and its hairspring, where we started.
+
+[click] And the whole watch.
+-->
+
+---
 layout: section
 ---
 

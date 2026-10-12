@@ -9,9 +9,11 @@ import {
   FLASH_ON_SECONDS,
   FLASH_SECONDS,
   MOVE_SECONDS,
-  TILT_SECONDS,
+  ANGLES_SECONDS,
+  TOGETHER_SECONDS,
   Timeline,
   flashIsOn,
+  mixCamera,
 } from "./timeline.ts";
 import type { StageState } from "./timeline.ts";
 
@@ -59,6 +61,7 @@ const set = (...meshes: Mesh[]): ReadonlySet<Mesh> => new Set(meshes);
 function state(options: Partial<StageState> & { view: View }): StageState {
   return {
     tilt: 0,
+    turn: 0,
     shown: ALL,
     flash: null,
     later: set(),
@@ -70,7 +73,8 @@ function state(options: Partial<StageState> & { view: View }): StageState {
 }
 
 const MOVE = MOVE_SECONDS * 1000;
-const TILT = TILT_SECONDS * 1000;
+const ANGLES = ANGLES_SECONDS * 1000;
+const TOGETHER = TOGETHER_SECONDS * 1000;
 const FADE = FADE_SECONDS * 1000;
 
 function timelineAt(initial: StageState): Timeline {
@@ -221,6 +225,7 @@ test("the first state is shown at once, with no phase", () => {
   assert.deepEqual(timeline.valuesAt(0), {
     view: CLOSE,
     tilt: 20,
+    turn: 0,
     keep: set(SPRING),
     fade: set(),
     rest: 1,
@@ -274,6 +279,7 @@ test("by default the old meshes fade out, the camera moves with the common ones,
   assert.deepEqual(timeline.valuesAt(2 * FADE + MOVE), {
     view: CLOSE,
     tilt: 0,
+    turn: 0,
     keep: set(SPRING, BALANCE),
     fade: set(),
     rest: 1,
@@ -312,16 +318,33 @@ test("a dim eases after the camera moves and the old meshes fade out, before the
   assert.equal(timeline.phaseAt(30_000), null);
 });
 
-test("zooming in, the camera moves and then tilts; zooming out, it untilts and then moves", () => {
+test("the camera tilts and turns at the same time, in one phase", () => {
+  const timeline = timelineAt(state({ view: CLOSE }));
+  timeline.show(state({ view: CLOSE, tilt: 30, turn: 90 }), 0);
+  assert.equal(timeline.phaseAt(0), "angles");
+  const half = timeline.valuesAt(ANGLES / 2);
+  // eased the same: each is the same fraction of its way
+  assert.ok(half.tilt > 0 && half.tilt < 30, `tilt ${String(half.tilt)}`);
+  assert.equal(half.turn / 90, half.tilt / 30);
+  const end = timeline.valuesAt(ANGLES);
+  assert.equal(end.tilt, 30);
+  assert.equal(end.turn, 90);
+  // a turn alone is a change of the angles too
+  timeline.show(state({ view: CLOSE, tilt: 30, turn: -45 }), ANGLES);
+  assert.equal(timeline.phaseAt(ANGLES), "angles");
+  assert.equal(timeline.valuesAt(2 * ANGLES).turn, -45);
+});
+
+test("zooming in, the camera moves and then changes its angles; zooming out, the reverse", () => {
   const timeline = timelineAt(state({ view: WIDE }));
   timeline.show(state({ view: CLOSE, tilt: 30 }), 0);
   assert.equal(timeline.phaseAt(0), "view");
-  assert.equal(timeline.phaseAt(MOVE), "tilt");
-  assert.equal(timeline.valuesAt(MOVE + TILT).tilt, 30);
+  assert.equal(timeline.phaseAt(MOVE), "angles");
+  assert.equal(timeline.valuesAt(MOVE + ANGLES).tilt, 30);
   timeline.show(state({ view: WIDE }), 10_000);
-  assert.equal(timeline.phaseAt(10_000), "tilt");
-  assert.equal(timeline.phaseAt(10_000 + TILT), "view");
-  assert.equal(timeline.valuesAt(10_000 + TILT + MOVE).view, WIDE);
+  assert.equal(timeline.phaseAt(10_000), "angles");
+  assert.equal(timeline.phaseAt(10_000 + ANGLES), "view");
+  assert.equal(timeline.valuesAt(10_000 + ANGLES + MOVE).view, WIDE);
 });
 
 test("with moveWith all, the new meshes fade in first and the camera moves with both", () => {
@@ -388,16 +411,16 @@ test("in another view: the camera moves with the smaller set, then the differenc
     state({ view: WIDE, tilt: 20, shown: set(SPRING, BALANCE) }),
     0,
   );
-  assert.equal(timeline.phaseAt(0), "tilt");
-  assert.equal(timeline.phaseAt(TILT), "view");
-  assert.deepEqual(timeline.valuesAt(TILT + MOVE / 2).keep, set(SPRING));
-  assert.equal(timeline.viewEndAt(0), TILT + MOVE);
-  assert.equal(timeline.phaseAt(TILT + MOVE), "fade");
-  const back = TILT + MOVE + FADE;
+  assert.equal(timeline.phaseAt(0), "angles");
+  assert.equal(timeline.phaseAt(ANGLES), "view");
+  assert.deepEqual(timeline.valuesAt(ANGLES + MOVE / 2).keep, set(SPRING));
+  assert.equal(timeline.viewEndAt(0), ANGLES + MOVE);
+  assert.equal(timeline.phaseAt(ANGLES + MOVE), "fade");
+  const back = ANGLES + MOVE + FADE;
   timeline.show(state({ view: CLOSE, shown: set(SPRING) }), back);
   assert.equal(timeline.phaseAt(back), "fade");
   assert.equal(timeline.phaseAt(back + FADE), "view");
-  assert.equal(timeline.phaseAt(back + FADE + MOVE), "tilt");
+  assert.equal(timeline.phaseAt(back + FADE + MOVE), "angles");
   assert.equal(timeline.viewEndAt(back), back + FADE + MOVE);
 });
 
@@ -480,10 +503,10 @@ test("a flash of meshes on the screen plays first, and the change waits for it",
   assert.equal(timeline.flashingAt(FLASH_ON_SECONDS * 1000), null);
   assert.equal(timeline.valuesAt(flashEnd - 1).view, WIDE);
   assert.equal(timeline.phaseAt(flashEnd), "view");
-  assert.equal(timeline.phaseAt(flashEnd + MOVE), "tilt");
-  assert.equal(timeline.phaseAt(flashEnd + MOVE + TILT), "fade");
+  assert.equal(timeline.phaseAt(flashEnd + MOVE), "angles");
+  assert.equal(timeline.phaseAt(flashEnd + MOVE + ANGLES), "fade");
   assert.deepEqual(
-    timeline.valuesAt(flashEnd + MOVE + TILT + FADE).keep,
+    timeline.valuesAt(flashEnd + MOVE + ANGLES + FADE).keep,
     set(SPRING),
   );
 });
@@ -577,7 +600,7 @@ test("text waits for the camera: first towards a close view, last away from it",
   );
   assert.equal(timeline.viewEndAt(1000), 1000 + MOVE);
   timeline.show(state({ view: WIDE, moveWith: "all" }), 10_000);
-  assert.equal(timeline.viewEndAt(10_000), 10_000 + FADE + TILT + MOVE);
+  assert.equal(timeline.viewEndAt(10_000), 10_000 + FADE + ANGLES + MOVE);
   // after the move, or with no move, there is nothing to wait for
   assert.equal(timeline.viewEndAt(20_000), 20_000);
 });
@@ -619,4 +642,64 @@ test("a cut mesh goes at once, and the others then fade as usual", () => {
   timeline.show(state({ view: WIDE, cut: set(BALANCE) }), 5000);
   const back = timeline.valuesAt(5000);
   assert.ok(back.keep.has(BALANCE));
+});
+
+test("with move: together, the camera moves, zooms, tilts and turns in one phase", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  timeline.show(
+    state({ view: CLOSE, tilt: 40, turn: 80, move: "together" }),
+    0,
+  );
+  assert.equal(timeline.phaseAt(0), "camera");
+  const half = timeline.valuesAt(TOGETHER / 2);
+  // the scale evenly in its logarithm; the angles evenly
+  assert.ok(
+    Math.abs(half.view.scale - Math.sqrt(WIDE.scale * CLOSE.scale)) < 1e-9,
+  );
+  assert.ok(Math.abs(half.tilt - 20) < 1e-9);
+  assert.ok(Math.abs(half.turn - 40) < 1e-9);
+  assert.equal(timeline.viewEndAt(0), TOGETHER);
+  const end = timeline.valuesAt(TOGETHER);
+  assert.equal(end.view, CLOSE);
+  assert.equal(end.tilt, 40);
+  assert.equal(end.turn, 80);
+  assert.equal(timeline.phaseAt(TOGETHER), null);
+});
+
+test("mixCamera keeps each end, and moves the pivot's place on the slide evenly", () => {
+  const first = {
+    view: { name: "a", scale: 2, shift: [100, 50], pivot: [10, 20, 0] },
+    tilt: 0,
+    turn: 0,
+  } as const;
+  const second = {
+    view: { name: "b", scale: 8, shift: [-300, -100], pivot: [60, 40, 5] },
+    tilt: 80,
+    turn: -10,
+  } as const;
+  const onSlide = (view: View): [number, number] => [
+    view.scale * view.pivot[0] + view.shift[0],
+    view.scale * view.pivot[1] + view.shift[1],
+  ];
+  for (const [fraction, end] of [
+    [0, first],
+    [1, second],
+  ] as const) {
+    const mixed = mixCamera(first, second, fraction);
+    assert.ok(Math.abs(mixed.view.scale - end.view.scale) < 1e-9);
+    for (const [axis, value] of mixed.view.pivot.entries()) {
+      assert.ok(Math.abs(value - (end.view.pivot[axis] ?? NaN)) < 1e-9);
+    }
+    for (const [axis, value] of mixed.view.shift.entries()) {
+      assert.ok(Math.abs(value - (end.view.shift[axis] ?? NaN)) < 1e-9);
+    }
+  }
+  const [startX] = onSlide(first.view);
+  const [endX] = onSlide(second.view);
+  const [middleX] = onSlide(mixCamera(first, second, 0.5).view);
+  assert.ok(Math.abs(middleX - (startX + endX) / 2) < 1e-9);
+  // zooming in, the pivot has gone more than half its way in the world at
+  // the middle: the screen shows it at an even speed
+  const pivotX = mixCamera(first, second, 0.5).view.pivot[0];
+  assert.ok(pivotX > 35, `pivot ${String(pivotX)}`);
 });

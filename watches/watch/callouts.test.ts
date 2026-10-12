@@ -27,11 +27,16 @@ const { view } = stageState(
 
 test("onSlide is the view's zoom and shift, and a tilt lifts a higher point", () => {
   const point: [number, number, number] = [700, 150, 5];
-  const [x, y] = onSlide(view, 0, scene.slide, point);
+  const [x, y] = onSlide(view, { tilt: 0, turn: 0 }, scene.slide, point);
   assert.ok(Math.abs(x - (view.scale * 700 + view.shift[0])) < 1e-3);
   assert.ok(Math.abs(y - (view.scale * 150 + view.shift[1])) < 1e-3);
-  const low = onSlide(view, 20, scene.slide, [700, 150, 0]);
-  const high = onSlide(view, 20, scene.slide, [700, 150, 10]);
+  const low = onSlide(view, { tilt: 20, turn: 0 }, scene.slide, [700, 150, 0]);
+  const high = onSlide(
+    view,
+    { tilt: 20, turn: 0 },
+    scene.slide,
+    [700, 150, 10],
+  );
   assert.ok(high[1] < low[1]);
 });
 
@@ -87,9 +92,14 @@ test("the Gears slide's marks: the small gear above the big one, each inside its
 });
 
 test("a fitted view tilts about its pieces' middle: the middle stays where it is, at any tilt", () => {
-  const [, still] = onSlide(view, 0, scene.slide, view.pivot);
+  const [, still] = onSlide(
+    view,
+    { tilt: 0, turn: 0 },
+    scene.slide,
+    view.pivot,
+  );
   for (const tilt of [20, 45]) {
-    const [, y] = onSlide(view, tilt, scene.slide, view.pivot);
+    const [, y] = onSlide(view, { tilt, turn: 0 }, scene.slide, view.pivot);
     assert.ok(Math.abs(y - still) < 1e-3, `tilt ${String(tilt)}`);
   }
 });
@@ -129,7 +139,11 @@ test("each window's strike is at the horn ahead of the jewel, not where it enter
     const swing =
       timing.amplitude * Math.cos((2 * Math.PI * time) / timing.period);
     const [x, y] = polar(radius, design.balance.pinDirection + swing, arbor);
-    return onSlide(view, 20, scene.slide, [x, y, watch.escapementTops.jewel]);
+    return onSlide(view, { tilt: 20, turn: 0 }, scene.slide, [
+      x,
+      y,
+      watch.escapementTops.jewel,
+    ]);
   };
   const strikes = jewelStrikes(watch, ESCAPEMENT_SLIDE);
   tickWindows(timing).forEach(([start], window) => {

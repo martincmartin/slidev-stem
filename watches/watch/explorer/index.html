@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Watch explorer</title>
+    <link rel="stylesheet" href="./explorer.css" />
+  </head>
+  <body>
+    <main>
+      <div id="slide">
+        <canvas id="stage"></canvas>
+        <svg id="guides" viewBox="0 0 980 552" aria-hidden="true"></svg>
+      </div>
+      <aside>
+        <h1>Watch explorer</h1>
+        <section>
+          <h2>Pieces</h2>
+          <div id="groups"></div>
+          <details>
+            <summary>Each piece</summary>
+            <div id="pieces"></div>
+          </details>
+        </section>
+        <section>
+          <h2>Camera</h2>
+          <div id="frames"></div>
+          <pre id="readout"></pre>
+          <button id="copy" type="button">Copy the view</button>
+        </section>
+        <section>
+          <h2>The deck</h2>
+          <label>
+            Pose
+            <select id="pose">
+              <option value="" disabled selected>
+                (choose a slide and click)
+              </option>
+            </select>
+          </label>
+          <p>A slide's camera, pieces and motion, at a click.</p>
+        </section>
+        <section>
+          <h2>Time</h2>
+          <label>
+            Speed-up
+            <select id="speed"></select>
+          </label>
+          <button id="play" type="button">Pause</button>
+          <button id="restart" type="button">Restart</button>
+        </section>
+        <section class="keys">
+          <h2>Keys</h2>
+          <p>
+            <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> move ·
+            <kbd>Q</kbd> <kbd>E</kbd> tilt · <kbd>←</kbd> <kbd>→</kbd> turn ·
+            <kbd>Z</kbd> <kbd>X</kbd> zoom · <kbd>Shift</kbd> faster ·
+            <kbd>1</kbd>–<kbd>5</kbd> the groups · <kbd>Space</kbd> pause ·
+            <kbd>G</kbd> guides. Drag to move; the wheel zooms at the pointer.
+          </p>
+          <p>
+            Tilt, turn and zoom keep what is at the cross in place: where a
+            fitted view puts the middle of a narrow picture. The guides are the
+            picture band and the left 60% of the slide.
+          </p>
+        </section>
+      </aside>
+    </main>
+    <script type="module" src="./explorer.ts"></script>
+  </body>
+</html>

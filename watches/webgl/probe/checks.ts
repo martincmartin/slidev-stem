@@ -16,6 +16,7 @@ import type { Point2 } from "../mesh.ts";
 import { HOLDOUT_TOLERANCE, Renderer } from "../renderer.ts";
 import { FLASH_INKS, INKS, hexRgb } from "../scene.ts";
 import type {
+  CameraAngles,
   Frame,
   Group,
   Mesh,
@@ -144,6 +145,7 @@ function stateOf(
   return {
     view,
     tilt: 0,
+    turn: 0,
     shown,
     flash,
     later: new Set(),
@@ -164,6 +166,7 @@ function frameOf(test: TestScene, extra: Partial<Frame> = {}): Frame {
       pivot: [0, 0, 0],
     },
     tilt: 30,
+    turn: 0,
     groupMatrices: new Map([[test.group, IDENTITY]]),
     size: SIZE,
     ...extra,
@@ -274,9 +277,14 @@ function expected(
   }
 }
 
-/** A holdout (a paper disc) at height 10, a box whose top is two
+/** A holdout (a paper disc) at height 10, a thin box whose top is two
  *  HOLDOUT_TOLERANCEs under it (the watch's STACK_GAP), and a box that stands
- *  on it (a wheel), all inside it at every tilt to 75. */
+ *  on it (a wheel). On the screen, the thin box is inside the holdout at
+ *  every tilt to 85 and at any turn: the holdout's edge is at least R = 40
+ *  from the pivot, the box at most r = 14.1, and the box's bottom dz =
+ *  0.5625 under it, so the margin is s ((R - r) cos t - dz sin t) = 3.4 px at
+ *  85, at the view's zoom s = 2: more than half a line. A deeper box shows
+ *  past the edge at a steep tilt, as a real part does. */
 function holdoutScene(): {
   group: Group;
   view: Scene["views"][number];
@@ -320,9 +328,15 @@ function holdoutScene(): {
   const underTop = height - 2 * HOLDOUT_TOLERANCE;
   return {
     group,
-    view: { name: "all", scale: 1, shift: [0, 0], pivot: [100, 55, height] },
+    // the pivot at the middle of the canvas
+    view: {
+      name: "all",
+      scale: 2,
+      shift: [100 - 2 * 100, 50 - 2 * 55],
+      pivot: [100, 55, height],
+    },
     holdout,
-    under: box("under", square(95, 40, 30), underTop - 4, underTop),
+    under: box("under", square(90, 45, 20), underTop - 0.5, underTop),
     above: box("above", square(65, 45, 20), height, height + 4),
   };
 }
@@ -837,10 +851,10 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
     },
   ],
   [
-    "a holdout hides a part two HOLDOUT_TOLERANCEs under it, and changes nothing that stands on it, at tilts 0 to 75",
+    "a holdout hides a part two HOLDOUT_TOLERANCEs under it, and changes nothing that stands on it, at tilts 0 to 85, turned",
     () => {
       const test = holdoutScene();
-      const picture = (meshes: Mesh[], tilt: number): Uint8Array => {
+      const picture = (meshes: Mesh[], angles: CameraAngles): Uint8Array => {
         const scene: Scene = {
           slide: SIZE,
           meshes,
@@ -853,7 +867,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
         try {
           drawn.render({
             view: test.view,
-            tilt,
+            ...angles,
             groupMatrices: new Map([[test.group, IDENTITY]]),
             size: SIZE,
           });
@@ -863,17 +877,28 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
           drawn.dispose();
         }
       };
-      for (const tilt of [0, 20, 45, 60, 75]) {
+      // the victory lap looks at 75 to 85 degrees, from other sides
+      const tilts = [0, 20, 45, 60, 75, 80, 85].map((tilt) => ({
+        tilt,
+        turn: 0,
+      }));
+      const turned = [
+        { tilt: 45, turn: -60 },
+        { tilt: 75, turn: 90 },
+        { tilt: 85, turn: 135 },
+      ];
+      for (const angles of [...tilts, ...turned]) {
         const { holdout, under, above } = test;
+        const at = `at tilt ${String(angles.tilt)}, turn ${String(angles.turn)}`;
         same(
-          picture([holdout, under], tilt),
-          picture([holdout], tilt),
-          `the part under it, at tilt ${String(tilt)}`,
+          picture([holdout, under], angles),
+          picture([holdout], angles),
+          `the part under it, ${at}`,
         );
         same(
-          picture([holdout, above], tilt),
-          picture([above], tilt),
-          `the part on it, at tilt ${String(tilt)}`,
+          picture([holdout, above], angles),
+          picture([above], angles),
+          `the part on it, ${at}`,
         );
       }
     },

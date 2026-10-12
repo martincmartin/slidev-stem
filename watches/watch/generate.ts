@@ -41,6 +41,7 @@ import {
 } from "./model.ts";
 import type { Spring } from "./model.ts";
 import { FLATNESS, Path, circlePath } from "./path.ts";
+import { recapViews } from "./recap.ts";
 import type { Contour } from "./path.ts";
 import {
   clock,
@@ -127,9 +128,9 @@ const HAIRSPRING_TARGET: Point2 = [275, 276];
  *  middle of the slide's left FIT_FOCUS, but their left edge is never left of
  *  FIT_LEFT. The main focus of a slide is on its left; the callouts use the
  *  room on the right. */
-const FIT_LEFT = 16;
+export const FIT_LEFT = 16;
 const FIT_WIDTH = 948;
-const FIT_FOCUS = 0.6;
+export const FIT_FOCUS = 0.6;
 /** The picture band, in slide px, on the screen (docs/watch.md, "Fitted
  *  views"): where the Gears slide's gears show, under the subtitle. They set
  *  it: their plan filled 420 px halfway between the subtitle's baseline
@@ -2708,17 +2709,32 @@ export function generate(design: Design = DESIGN): Watch {
   const lowest = Math.min(caseBottom, allHeights.bottom);
   const highest = Math.max(ringTop, stud.top, allHeights.top);
   const springMiddle = (springHeights.bottom + springHeights.top) / 2;
+  /** The heights of a part's body: the solid that its teeth or its rim are. */
+  const bodyLayer = (owner: Part): Heights => {
+    const body = solids.find(
+      (each) => each.part === owner && each.role === "body",
+    );
+    if (body === undefined) throw new Error(`${owner.name} has no body`);
+    return lookup(heights, body, `heights of ${body.name}`);
+  };
   const scene: Scene = {
     slide: [design.canvas.width, design.canvas.height],
     meshes,
     groups: tree.all,
-    views: views(
-      design,
-      (lowest + highest) / 2,
-      springMiddle,
-      middle,
-      crownCentreX,
-    ),
+    views: [
+      ...views(
+        design,
+        (lowest + highest) / 2,
+        springMiddle,
+        middle,
+        crownCentreX,
+      ),
+      ...recapViews(design, {
+        wheel: (wheel) => bodyLayer(partOf(wheel)),
+        hourWheel: bodyLayer(parts.hourWheel),
+        jewel: bodyLayer(parts.jewel),
+      }),
+    ],
     pieces,
   };
 

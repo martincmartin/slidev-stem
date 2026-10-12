@@ -2,8 +2,9 @@
 // The choices are in watches/tasks/2026-09-28-webgl-planning/PLAN.md and in
 // stem/docs/webgl.md. It knows nothing about what a scene shows.
 //
-// The camera is orthographic, and it tilts about the slide's horizontal axis
-// (`viewProjection`). Both are choices of look, not limits: stem/docs/webgl.md,
+// The camera is orthographic. It turns about the world's z axis, then tilts
+// about the slide's horizontal axis (`viewProjection`). These are choices of
+// look, not limits: stem/docs/webgl.md,
 // "The house style in 3D", says what a change needs. Each group matrix is
 // affine, and the line shader has no perspective divide.
 //
@@ -62,6 +63,7 @@
 // last geometry of each dynamic mesh.
 
 import type {
+  CameraAngles,
   Colour,
   Frame,
   Ink,
@@ -348,36 +350,54 @@ export interface Camera {
   toCamera: Vec3;
 }
 
-/** A view is a tilt about the horizontal axis through its pivot, then the
- *  slide's zoom, orthographic: a choice of look (see the top). Screen y = pivot.y + (y - pivot.y) cos t - (z - pivot.z) sin t;
- *  depth (larger is nearer) = (y - pivot.y) sin t + (z - pivot.z) cos t. */
+/** A view is a turn about the z axis through its pivot (clockwise on the
+ *  slide, by `turn` u), then a tilt about the horizontal axis through it (by
+ *  `tilt` t), then the slide's zoom, orthographic: a choice of look (see the
+ *  top). The turned point: x' = x cos u - y sin u, y' = x sin u + y cos u,
+ *  about the pivot. Screen x = x'; screen y = pivot.y + (y' - pivot.y) cos t
+ *  - (z - pivot.z) sin t; depth (larger is nearer) = (y' - pivot.y) sin t +
+ *  (z - pivot.z) cos t. At turn 0, each number is the one that the tilt
+ *  alone gave (art/pixel_regression.py). */
 export function viewProjection(
   view: View,
-  tiltDegrees: number,
+  angles: CameraAngles,
   slide: readonly [number, number],
 ): Camera {
   const [width, height] = slide;
-  const tilt = (tiltDegrees * Math.PI) / 180;
+  const tilt = (angles.tilt * Math.PI) / 180;
   const cosine = Math.cos(tilt);
   const sine = Math.sin(tilt);
-  const [, pivotY, pivotZ] = view.pivot;
+  const turn = (angles.turn * Math.PI) / 180;
+  const turnCosine = Math.cos(turn);
+  const turnSine = Math.sin(turn);
+  const [pivotX, pivotY, pivotZ] = view.pivot;
+  // the turned point's constant terms: 0 at turn 0
+  const turnedX = pivotX - turnCosine * pivotX + turnSine * pivotY;
+  const turnedY = pivotY - turnSine * pivotX - turnCosine * pivotY;
+  const scaleX = (2 * view.scale) / width;
   const scaleY = (2 * view.scale) / height;
   const rows = [
-    [(2 * view.scale) / width, 0, 0, (2 * view.shift[0]) / width - 1],
     [
+      scaleX * turnCosine,
+      -scaleX * turnSine,
       0,
-      -scaleY * cosine,
+      (2 * view.shift[0]) / width - 1 + scaleX * turnedX,
+    ],
+    [
+      -scaleY * cosine * turnSine,
+      -scaleY * cosine * turnCosine,
       scaleY * sine,
       1 -
         (2 / height) *
-          (view.scale * (pivotY - pivotY * cosine + pivotZ * sine) +
+          (view.scale *
+            (pivotY - pivotY * cosine + pivotZ * sine + cosine * turnedY) +
             view.shift[1]),
     ],
     [
-      0,
-      -sine / DEPTH_RANGE,
+      (-sine * turnSine) / DEPTH_RANGE,
+      (-sine * turnCosine) / DEPTH_RANGE,
       -cosine / DEPTH_RANGE,
-      (pivotY * sine + pivotZ * cosine) / DEPTH_RANGE,
+      (pivotY * sine + pivotZ * cosine - sine * turnedY) / DEPTH_RANGE,
     ],
     [0, 0, 0, 1],
   ] as const;
@@ -387,7 +407,10 @@ export function viewProjection(
       matrix[column * 4 + row] = value;
     }
   }
-  return { matrix, toCamera: [0, sine, cosine] };
+  return {
+    matrix,
+    toCamera: [sine * turnSine, sine * turnCosine, cosine],
+  };
 }
 
 // ---- the renderer --------------------------------------------------------------------
@@ -1127,7 +1150,7 @@ export class Renderer {
     );
     const { view } = frame;
     checkFinite(
-      [frame.tilt, view.scale, ...view.shift, ...view.pivot],
+      [frame.tilt, frame.turn, view.scale, ...view.shift, ...view.pivot],
       `the frame's view ${view.name}`,
     );
     check(view.scale > 0, `${view.name}: scale ${String(view.scale)}`);
@@ -1169,7 +1192,7 @@ export class Renderer {
       );
     }
     return {
-      camera: viewProjection(view, frame.tilt, this.scene.slide),
+      camera: viewProjection(view, frame, this.scene.slide),
       models,
       size: [width, height],
       pixelsPerSlidePx: width / this.scene.slide[0],

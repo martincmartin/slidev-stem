@@ -7,7 +7,7 @@ import { at } from "../webgl/checked.ts";
 import { transformPoint } from "../webgl/math.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import { viewProjection } from "../webgl/renderer.ts";
-import type { Vec3, View } from "../webgl/scene.ts";
+import type { CameraAngles, Vec3, View } from "../webgl/scene.ts";
 import type { Design, Wheel } from "./design.ts";
 import {
   forkOutlineLocal,
@@ -42,15 +42,15 @@ export interface EscapementMarks {
   readonly escapeTips: readonly Point2[];
 }
 
-/** Where the view, at `tilt` degrees, shows a point of the world on a slide
- *  of `slide` px. The renderer's own camera: a change to it moves these too. */
+/** Where the view, at `angles`, shows a point of the world on a slide of
+ *  `slide` px. The renderer's own camera: a change to it moves these too. */
 export function onSlide(
   view: View,
-  tilt: number,
+  angles: CameraAngles,
   slide: readonly [number, number],
   point: Vec3,
 ): Point2 {
-  const camera = viewProjection(view, tilt, slide);
+  const camera = viewProjection(view, angles, slide);
   const [x, y] = transformPoint(camera.matrix, point);
   return [((x + 1) / 2) * slide[0], ((1 - y) / 2) * slide[1]];
 }
@@ -184,17 +184,17 @@ function worldOf(design: Design, [x, y]: Point2): Point2 {
 }
 
 /** Where the slide whose frontmatter is `frontmatter` shows a point of the
- *  world's plan at height `z`, with its view and its tilt. Throws if the slide
- *  shows no watch. */
+ *  world's plan at height `z`, with its view and its angles. Throws if the
+ *  slide shows no watch. */
 function slideProjection(
   watch: Watch,
   frontmatter: Record<string, unknown>,
 ): (point: Point2, z: number) => Point2 {
   const state = watchState(frontmatter, 0);
   if (!state) throw new Error("a slide's callouts need a `watch:`");
-  const { view, tilt } = stageState(watch, state);
+  const stage = stageState(watch, state);
   return (point, z) =>
-    onSlide(view, tilt, watch.scene.slide, [point[0], point[1], z]);
+    onSlide(stage.view, stage, watch.scene.slide, [point[0], point[1], z]);
 }
 
 /** The impulse jewel's deepest point in the world's plan, with the balance

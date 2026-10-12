@@ -14,16 +14,19 @@
 // board covers the live watch. This layer is outside the slide's
 // `.slidev-layout`, so it takes the slide's palette as global-bottom.vue does:
 // the still is drawn in its colours, and the board gets its variables.
+// With the still, the time scale at the page's click (components/
+// TimeScale.vue), where the slide shows it (`watchTimeScale`).
 // A printed page of one slide (`/N?print=clicks`) mounts every slide but shows
 // only its own: the others draw no still. Each page of the PDF has a nav of its
 // own, whose slide is the page's, so every page draws its still.
 import { useNav, useSlideContext } from "@slidev/client";
 import { computed, ref, watch as onChange } from "vue";
 import DivingBoard from "./components/DivingBoard.vue";
+import TimeScale from "./components/TimeScale.vue";
 import { boardState } from "./watch/board.ts";
 import { WATCH, watchStills } from "./watch/instance.ts";
 import { slidePalette } from "./watch/palette.ts";
-import { watchState } from "./watch/state.ts";
+import { timeScaleState, watchState } from "./watch/state.ts";
 
 const { $frontmatter, $renderContext, $clicks, $page } = useSlideContext();
 const LIVE = ["slide", "presenter"];
@@ -40,6 +43,12 @@ const needsStill = computed(
   () => state.value !== undefined && notLive.value && !hiddenInPrint.value,
 );
 const posed = computed(() => boardState($frontmatter, $clicks.value));
+/** The click's speed-up, where the still shows the time scale. */
+const timeScale = computed(() =>
+  needsStill.value && state.value && timeScaleState($frontmatter, $clicks.value)
+    ? state.value.lapse
+    : undefined,
+);
 /** Read only where a still or a posed board needs it. */
 const palette = computed(() => slidePalette($frontmatter["class"]));
 const board = computed(() =>
@@ -81,6 +90,12 @@ onChange(
   >
     <img v-if="source" class="watch-still-image" :src="source" alt="" />
   </div>
+  <TimeScale
+    v-if="timeScale !== undefined"
+    :style="palette.variables"
+    :model="undefined"
+    :shown="timeScale"
+  />
   <DivingBoard
     v-if="board"
     :style="palette.variables"

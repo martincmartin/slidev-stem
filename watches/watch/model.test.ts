@@ -7,6 +7,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
+import type { Renderer } from "../webgl/renderer.ts";
+import type { Group } from "../webgl/scene.ts";
 import { DESIGN } from "./design.ts";
 import { generate } from "./generate.ts";
 import {
@@ -274,7 +276,11 @@ test("the model gives each strike the moment it happened, between two frames", (
   assert.equal(at(after.strikes, 0).window, 0);
   assert.ok(Math.abs(at(after.strikes, 0).at - strikeMs) < 1e-6);
   // a jump puts the mechanism's time back: no strikes
-  model.show({ settled: false, spin: null, mainspring: null }, 2000, true);
+  model.show(
+    { settled: false, spin: null, mainspring: null, lapse: 1 },
+    2000,
+    true,
+  );
   assert.deepEqual(model.strikes({ now: 1990, time: 1.99 }, 2010).strikes, []);
 });
 
@@ -324,4 +330,170 @@ test("at the time-lapse's full speed, the shutter shows the balance across its s
     const instant = shutterInstant(1000, frameMs, frame);
     assert.ok(instant <= 1000 && instant > 1000 - frameMs);
   }
+});
+
+test("watchLapse: at 1440x a second turns the centre wheel 144 degrees; at 2x the balance swings twice as fast", () => {
+  const watch = generate();
+  const renderer = { updateMesh: () => undefined } as unknown as Renderer;
+  /** Degrees that `group` is turned, at `now`. */
+  const turned = (model: WatchModel, group: Group, now: number): number => {
+    const matrix = model.frame(now, renderer).get(group) ?? assert.fail();
+    return (Math.atan2(at(matrix, 1), at(matrix, 0)) * 180) / Math.PI;
+  };
+  const fast = new WatchModel(watch, 0);
+  fast.show(
+    { settled: false, spin: null, mainspring: null, lapse: 1440 },
+    0,
+    true,
+  );
+  const start = turned(fast, watch.groups.minute, 0);
+  const second = turned(fast, watch.groups.minute, 1000);
+  // an hour a turn, 1440 times faster: 144 degrees, within the shutter's
+  // spread (50 ms, 7.2 degrees)
+  const moved = (((second - start) % 360) + 360) % 360;
+  assert.ok(
+    Math.abs(moved - 144) < 8,
+    `the centre wheel turned ${String(moved)}`,
+  );
+  // at 1x, the balance is half a period from its extreme after 0.5 s: at 0;
+  // at 2x, a whole period: at its extreme again
+  for (const [lapse, expected] of [
+    [1, 0],
+    [2, 1],
+  ] as const) {
+    const model = new WatchModel(watch, 0);
+    model.show(
+      { settled: false, spin: null, mainspring: null, lapse },
+      0,
+      true,
+    );
+    turned(model, watch.groups.balance, 0);
+    const swing = turned(model, watch.groups.balance, 500);
+    const amplitude = DESIGN.timing.amplitude;
+    assert.ok(
+      Math.abs(
+        Math.cos((swing * Math.PI) / 180) -
+          Math.cos((expected * amplitude * Math.PI) / 180),
+      ) < 1e-3,
+      `at ${String(lapse)}x the balance is at ${String(swing)}`,
+    );
+  }
+});
+
+test("at 15x the train steps at each beat, as the escapement lets it: the whole mechanism runs fast", () => {
+  const watch = generate();
+  const renderer = { updateMesh: () => undefined } as unknown as Renderer;
+  const model = new WatchModel(watch, 0);
+  model.show(
+    { settled: false, spin: null, mainspring: null, lapse: 15 },
+    0,
+    true,
+  );
+  // the seconds hand, on the fourth wheel's arbor: 6 degrees a beat, 15
+  // beats a second, 4 frames a beat
+  const angle = (now: number): number => {
+    const matrix =
+      model.frame(now, renderer).get(watch.groups.seconds) ?? assert.fail();
+    return (Math.atan2(at(matrix, 1), at(matrix, 0)) * 180) / Math.PI;
+  };
+  let last = angle(0);
+  const steps = Array.from({ length: 120 }, (_, index) => {
+    const now = angle(((index + 1) * 1000) / 60);
+    const step = Math.abs(((((now - last) % 360) + 540) % 360) - 180);
+    last = now;
+    return step;
+  });
+  // it ticks: most frames stand still. A frame's instant in its shutter
+  // can fall inside a tick, which then shows over two frames
+  assert.ok(steps.filter((step) => step < 1e-3).length >= 80);
+  // 2 s at 15x: 30 beats, 180 degrees, within a beat
+  const turned = steps.reduce((sum, step) => sum + step, 0);
+  assert.ok(Math.abs(turned - 180) <= 6, `it turned ${String(turned)}`);
+});
+
+test("a time-lapse that ends hands its time to the balance's clock: no jump, and the balance can rest again", () => {
+  const watch = generate();
+  const renderer = { updateMesh: () => undefined } as unknown as Renderer;
+  const model = new WatchModel(watch, 0);
+  const running = { settled: false, spin: null, mainspring: null };
+  model.show({ ...running, lapse: 120 }, 0, true);
+  const frame = 1000 / 60;
+  /** The minute hand's angle, at each frame up to `end`. */
+  const angles: number[] = [];
+  let now = 0;
+  const runTo = (end: number): void => {
+    for (; now <= end; now += frame) {
+      const matrix =
+        model.frame(now, renderer).get(watch.groups.minute) ?? assert.fail();
+      angles.push((Math.atan2(at(matrix, 1), at(matrix, 0)) * 180) / Math.PI);
+    }
+  };
+  runTo(1000);
+  model.show({ ...running, lapse: 1 }, now, false);
+  // the change eases for TOGETHER_SECONDS, then hands its time over
+  runTo(5000);
+  for (const [index, angle] of angles.entries()) {
+    if (index === 0) continue;
+    const step = Math.abs(angle - (angles[index - 1] ?? angle));
+    // the minute hand turns 0.2 degrees a frame at 120x, and the shutter's
+    // spread can double a frame's step; a lost lead would jump 12 degrees
+    assert.ok(step < 0.45, `frame ${String(index)}: ${String(step)}`);
+  }
+  model.show({ ...running, settled: true, lapse: 1 }, now, false);
+  runTo(9000);
+  assert.equal(model.untilRest(now), 0);
+});
+
+test("a rest asked for while the balance resumes in a time-lapse waits for the hand-over: it rests in its rest pose, with no jump", () => {
+  const watch = generate();
+  const renderer = { updateMesh: () => undefined } as unknown as Renderer;
+  const model = new WatchModel(watch, 0);
+  const running = { settled: false, spin: null, mainspring: null };
+  const frame = 1000 / 60;
+  /** Degrees: the minute hand's and the balance's angles at `now`. */
+  const anglesAt = (now: number): { minute: number; balance: number } => {
+    const matrices = model.frame(now, renderer);
+    const angleOf = (group: Group): number => {
+      const matrix = matrices.get(group) ?? assert.fail();
+      return (Math.atan2(at(matrix, 1), at(matrix, 0)) * 180) / Math.PI;
+    };
+    return {
+      minute: angleOf(watch.groups.minute),
+      balance: angleOf(watch.groups.balance),
+    };
+  };
+  model.show({ ...running, settled: true, lapse: 1 }, 0, true);
+  // the balance resumes for 0.78 s, and the time-lapse starts with it
+  let now = 0;
+  model.show({ ...running, lapse: 120 }, now, false);
+  for (; now < 300; now += frame) anglesAt(now);
+  model.show({ ...running, settled: true, lapse: 1 }, now, false);
+  const expected = model.untilRest(now) ?? assert.fail("not going to rest");
+  const restAt = now + expected;
+  const { amplitude, period } = watch.design.timing;
+  /** Degrees: the most that the balance turns in a frame. */
+  const fastest = ((amplitude * 2 * Math.PI) / period) * (frame / 1000);
+  let last = anglesAt(now);
+  for (now += frame; now < restAt + 1000; now += frame) {
+    const angles = anglesAt(now);
+    // the minute hand ticks 0.1 degrees a beat, over a few frames: a time
+    // ahead lost, or rounded to whole periods, would jump it in one
+    assert.ok(
+      Math.abs(angles.minute - last.minute) < 0.05,
+      `${String(now)} ms`,
+    );
+    assert.ok(
+      Math.abs(angles.balance - last.balance) <= fastest,
+      `${String(now)} ms`,
+    );
+    // it rests when it said it would
+    assert.equal(
+      model.untilRest(now) === 0,
+      now >= restAt,
+      `${String(now)} ms`,
+    );
+    last = angles;
+  }
+  assert.equal(model.phase(now), "balance rest");
+  assert.ok(Math.abs(last.balance) < 1e-9, `${String(last.balance)} degrees`);
 });

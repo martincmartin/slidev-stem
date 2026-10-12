@@ -1,0 +1,94 @@
+/* The explorer's page. The palette is Ledger's, from the theme's own rule
+   (`slidePalette()` reads it), so the watch has the slide's colours. */
+@import "slidev-theme-ledger/styles/ledger.css";
+
+body {
+  margin: 0;
+  background: #e8e4dc;
+  color: #2a2520;
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
+}
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 16px;
+  padding: 16px;
+  align-items: start;
+}
+
+/* The slide, at its own shape: 980 x 552 slide px. */
+#slide {
+  position: relative;
+  aspect-ratio: 980 / 552;
+  max-height: calc(100vh - 32px);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.25);
+}
+
+#stage,
+#guides {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#stage {
+  cursor: grab;
+  touch-action: none;
+}
+
+#stage:active {
+  cursor: grabbing;
+}
+
+#guides {
+  pointer-events: none;
+}
+
+#guides line {
+  stroke: #b5601e;
+  stroke-width: 1;
+  stroke-dasharray: 6 4;
+}
+
+aside h1 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+aside h2 {
+  font-size: 14px;
+  margin: 16px 0 4px;
+}
+
+aside label {
+  display: block;
+}
+
+#frames {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+#readout {
+  font-size: 12px;
+  background: #faf7f0;
+  padding: 6px;
+  white-space: pre-wrap;
+}
+
+.keys p {
+  margin: 4px 0;
+}
+
+kbd {
+  font-size: 12px;
+  border: 1px solid #888;
+  border-radius: 3px;
+  padding: 0 3px;
+}

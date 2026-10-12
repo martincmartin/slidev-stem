@@ -17,6 +17,8 @@ interface ProbeOptions {
   view: string;
   /** Degrees. */
   tilt: number;
+  /** Degrees (`CameraAngles`); default 0. */
+  turn?: number;
   /** s: the mechanism's clock. */
   time: number;
   /** Degrees: the balance's angle. */
@@ -91,6 +93,7 @@ window.watchProbe = {
     renderer.render({
       view,
       tilt: options.tilt,
+      turn: options.turn ?? 0,
       groupMatrices: motion.matrices(options.time, options.swing),
       size: options.size,
       ...(kept ? { keep: kept } : {}),

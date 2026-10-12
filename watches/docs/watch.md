@@ -1,7 +1,7 @@
 # The live watch and the diving board
 
 **Covers:** this talk's live art: the skeleton watch in WebGL (its files, its
-design, how a slide shows it: pieces, views and moves, the frontmatter keys, line widths when zooming, its
+design, how a slide shows it: pieces, views and moves, the frontmatter keys, the explorer, line widths when zooming, its
 measured budgets) and the diving board on the Hairspring slide.
 **Read before** you change `watch/`, `art/`, the watch's frontmatter,
 `global-bottom.vue`, `slide-bottom.vue`, the diving board, or the slides that show
@@ -43,28 +43,31 @@ ruler that the diving board replaced),
 
 ## The files
 
-| Path                                                     | What it holds                                                                                                                                                           |
-| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `webgl/scene.ts`                                         | the types of a scene: `INKS`, meshes, lines, silhouette edges, holdouts, groups, views, pieces, the palette; `checkScene`, `checkPalette`                               |
-| `webgl/renderer.ts`, `mesh.ts`, `stage.ts`, `stills.ts`  | the renderer; extrusions, ribbons and their triangles (earcut); the stage (renderer, model and frame loop); the stills                                                  |
-| `webgl/timeline.ts`                                      | the choreography, with no DOM: the one rule for every move (fades, camera, tilt), and the flash; the durations                                                          |
-| `webgl/math.ts`, `checked.ts`                            | matrices; `at` and `check`, for what is a bug if it is false                                                                                                            |
-| `webgl/probe/`                                           | a page with one canvas and `window.watchProbe.render(options)`, for the pixel and fade checks; `checks.ts`: `window.webglChecks()`, the renderer's browser checks       |
-| `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand. `art/watch_design.py --check` compares what the file means, not its bytes (`pnpm format` rewrites its spacing)    |
-| `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights, pieces and their extents, the named views, `fittedView`                                                       |
-| `watch/teeth.ts`, `teeth.test.ts`                        | the teeth: cycloidal wheel teeth and the pinion leaves they mesh with, also a few at a time (a span); tests that each pair meshes without overlap                       |
-| `watch/palette.ts`                                       | which theme variable colours each ink; `slidePalette()` reads them from the page, as a slide's classes change them, and the browser works out a recipe (`color-mix()`)  |
-| `art/theme.py`                                           | Ledger's palette for the scripts that write files (`diving_board.py`, `favicon.py`), whichever house theme the talk names: it works out each recipe as the browser does |
-| `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism, the balance's settle and the train's free spin; frontmatter to state; the watch's stills; the shared instance                                            |
-| `watch/mainspring.ts`                                    | the Mainspring slide's story: the key, the spring's wind and the time-lapse, at each moment                                                                             |
-| `watch/deck.ts`, `deck.test.ts`                          | slides.md as Slidev reads it, for the tests; the check that every slide's pieces and view exist                                                                         |
-| `watch/at-rest.ts`                                       | the meshes in the world at rest, and a face's heights over an outline, for the tests that check where parts are against each other                                      |
-| `global-bottom.vue`, `slide-bottom.vue`                  | the live canvas and the live diving board, and the kind of each move; the still and the posed board on each printed page                                                |
-| `watch/board.ts`, `components/DivingBoard.vue`           | the board's frontmatter to its target, and its clock (`BoardClock`); the component that inlines the SVG and sets its time                                               |
-| `watch/navigation.ts`, `slide-state.ts`                  | a step forward, a step back or a jump; `window.slideState()` for `tools/navcheck.py` ([`navigation.md`](../../docs/navigation.md))                                      |
-| `watch/callouts.ts`, `components/WatchCallout.vue`       | where the slides' leaders end, on the slide (`escapementMarks`, `gearsMarks`, `gearTrainMarks`); a callout: a label, and a leader from one of its words                 |
-| `components/TickTock.vue`                                | the words "tick" and "tock" at each strike of the jewel, in the watch's layer; where they start (`jewelStrikes` in `watch/callouts.ts`)                                 |
-| `types/`                                                 | two small `.d.ts` files, mapped by `tsconfig.json` `paths` to `@slidev/client`. `vue-tsc` would otherwise check Slidev's own source, which fails our strict settings.   |
+| Path                                                     | What it holds                                                                                                                                                                      |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `webgl/scene.ts`                                         | the types of a scene: `INKS`, meshes, lines, silhouette edges, holdouts, groups, views, pieces, the palette; `checkScene`, `checkPalette`                                          |
+| `webgl/renderer.ts`, `mesh.ts`, `stage.ts`, `stills.ts`  | the renderer; extrusions, ribbons and their triangles (earcut); the stage (renderer, model and frame loop); the stills                                                             |
+| `webgl/timeline.ts`                                      | the choreography, with no DOM: the one rule for every move (fades, camera, tilt), and the flash; the durations                                                                     |
+| `webgl/math.ts`, `checked.ts`                            | matrices; `at` and `check`, for what is a bug if it is false                                                                                                                       |
+| `webgl/probe/`                                           | a page with one canvas and `window.watchProbe.render(options)`, for the pixel and fade checks; `checks.ts`: `window.webglChecks()`, the renderer's browser checks                  |
+| `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand. `art/watch_design.py --check` compares what the file means, not its bytes (`pnpm format` rewrites its spacing)               |
+| `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights, pieces and their extents, the named views, `fittedView`                                                                  |
+| `watch/teeth.ts`, `teeth.test.ts`                        | the teeth: cycloidal wheel teeth and the pinion leaves they mesh with, also a few at a time (a span); tests that each pair meshes without overlap                                  |
+| `watch/palette.ts`                                       | which theme variable colours each ink; `slidePalette()` reads them from the page, as a slide's classes change them, and the browser works out a recipe (`color-mix()`)             |
+| `art/theme.py`                                           | Ledger's palette for the scripts that write files (`diving_board.py`, `favicon.py`), whichever house theme the talk names: it works out each recipe as the browser does            |
+| `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism, the balance's settle and the train's free spin; frontmatter to state; the watch's stills; the shared instance                                                       |
+| `watch/mainspring.ts`                                    | the Mainspring slide's story: the key, the spring's wind and the time-lapse, at each moment                                                                                        |
+| `watch/deck.ts`, `deck.test.ts`                          | slides.md as Slidev reads it, for the tests; the check that every slide's pieces and view exist                                                                                    |
+| `watch/explorer/`                                        | the [explorer](#the-explorer): a page to choose a view and its angles, with a camera that you move, and the deck's poses and speed-ups (`deck-poses.ts`); `pnpm explore` serves it |
+| `watch/recap.ts`, `watch/lapse.ts`                       | the Recap slide's views, made from the touches; the time-lapse's clock at a speed-up ([The Recap slide](#the-recap-slide))                                                         |
+| `watch/at-rest.ts`                                       | the meshes in the world at rest, and a face's heights over an outline, for the tests that check where parts are against each other                                                 |
+| `global-bottom.vue`, `slide-bottom.vue`                  | the live canvas and the live diving board, and the kind of each move; the still and the posed board on each printed page                                                           |
+| `watch/board.ts`, `components/DivingBoard.vue`           | the board's frontmatter to its target, and its clock (`BoardClock`); the component that inlines the SVG and sets its time                                                          |
+| `watch/navigation.ts`, `slide-state.ts`                  | a step forward, a step back or a jump; `window.slideState()` for `tools/navcheck.py` ([`navigation.md`](../../docs/navigation.md))                                                 |
+| `watch/callouts.ts`, `components/WatchCallout.vue`       | where the slides' leaders end, on the slide (`escapementMarks`, `gearsMarks`, `gearTrainMarks`); a callout: a label, and a leader from one of its words                            |
+| `components/TickTock.vue`                                | the words "tick" and "tock" at each strike of the jewel, in the watch's layer; where they start (`jewelStrikes` in `watch/callouts.ts`)                                            |
+| `components/TimeScale.vue`                               | the time scale: the time-lapse's speed-up, live, in the watch's layer, as "1440×" (`watchTimeScale`; [The Recap slide](#the-recap-slide))                                          |
+| `types/`                                                 | two small `.d.ts` files, mapped by `tsconfig.json` `paths` to `@slidev/client`. `vue-tsc` would otherwise check Slidev's own source, which fails our strict settings.              |
 
 ## Changing the design
 
@@ -821,6 +824,75 @@ The tilt is 20 at every click, so the stack of the motion works shows.
   fit the centre wheel, in the picture band. The text is where the Gear Train slide's is.
   Each text comes after the motion of its click (`after-watch`).
 
+## The Recap slide
+
+The Recap slide follows the Hour Hand slide. Its only text is the time
+scale: a tour of the train, one touch at a time, from the motion works to the balance, and then
+back to the cover. The watch fills the slide, so the left 60% rule and the
+picture band do not apply. The options and the evidence are in
+[`2026-10-12-victory-lap`](../tasks/2026-10-12-victory-lap/PLAN.md).
+
+- **Each click is a stop.** The stops: the hour wheel on the minute
+  pinion; the barrel and its spring; the barrel on the centre pinion; the
+  centre wheel on the third pinion; the third wheel on the fourth pinion;
+  the fourth wheel on the escape pinion; the escape wheel on the pallet's
+  stones; the impulse jewel in the fork; the balance and its hairspring,
+  as the Hairspring slide shows them, on the left; and the cover.
+- **A stop's view is made from its touch** (`recapViews` in
+  `watch/recap.ts`): the touch's place comes from the design, at the middle
+  of the height of the wheel whose teeth make it, and it shows at the
+  middle of the slide. So a stop follows its touch when the design changes.
+  The zoom of each stop is in `watch/recap.ts`; the tilt and the turn are
+  in the frontmatter. The user chose them in the [explorer](#the-explorer).
+- **The camera moves, zooms, tilts and turns at the same time**
+  (`watchMove: together`, `mixCamera` in `webgl/timeline.ts`), in 2.5 s.
+  The scale changes by the same factor at each step, and the touch crosses
+  the screen at an even speed.
+- **From the centre wheel on, the camera looks from the side away from the
+  next touch**, so that the next touch shows behind the current one. That
+  is why the turn changes: the train goes toward 9 o'clock after the fourth
+  wheel, and the camera goes to about 3 o'clock.
+- **The barrel's touch is seen from low, at about 3:40** (turn 80, tilt
+  80): along its tangent, under the hour wheel and over the chapter ring.
+- **Each stop runs the mechanism at its speed-up** (`watchLapse`): the
+  slower of the two parts that touch turns once in 30 s, the escape wheel's
+  own speed. So the motion works run at 1440×, the barrel at 720×, the
+  centre wheel at 120×, the third wheel at 15×, the fourth wheel at 2×,
+  and the escapement and the balance at 1×. At 15×, the train ticks 15
+  times a second, each tick shorter than a frame: it can look like a low
+  frame rate, but it is what the escapement does. The user keeps it.
+- **The whole mechanism runs at the speed-up, in step**, by the Mainspring
+  slide's rule ([The Mainspring slide](#the-mainspring-slide)): the
+  mechanism's time is ahead of the balance's clock by the time that the
+  speed-up adds (`watch/lapse.ts`), and each frame shows it at an instant
+  in its shutter. So at 120× and more, the balance and the fork blur, as
+  on film. A change of speed-up eases while the camera moves. When the
+  time-lapse has ended, its time ahead goes into the balance's clock
+  (`advanceBy`), so a later slide can rest the balance. Only a free swing
+  takes it: a rest asked for while the balance starts to swing again lets
+  it swing freely, take the time ahead, and then rest
+  (`WatchModel.settle`). Not an oversight:
+  a balance at its own speed with the train ahead by whole periods (a
+  stroboscope) showed the pallet flipping once a second while the train ran
+  at 120×.
+- **The time scale shows the speed-up** (`watchTimeScale: true`,
+  `components/TimeScale.vue`), in the lower right corner, from the first
+  click to the jewel's: the words "time scale" in muted, 17 px (the floor
+  for muted text, [`theme.md`](../../docs/theme.md)), and under them the
+  number and "×" in ink, 22 px. Both have the paper's outline. The number
+  is the model's speed-up at each frame (`WatchModel.speedUp`), to the
+  nearest whole number, so while the speed-up eases, the number goes
+  through the speed-ups between: from 2× to 1×, it changes where the
+  speed-up crosses 1.5. Not an oversight: all other text fades, but a gauge
+  does not, and the user chose it. The time scale fades out at the
+  hairspring's click (`watchTimeScale: false`). It is in the watch's
+  layer, as the words "tick" and "tock" are; a printed page shows the
+  click's speed-up (`slide-bottom.vue`).
+- **The last click shows what the cover shows** (`watch: all`), and moves
+  in order (`watchMove: ordered`): the reverse of the step from the cover to
+  the Hairspring slide. The motion works fade out, the camera tilts to 0,
+  and then it zooms out. A click back from the cover reverses it.
+
 ## Balance rim motion
 
 Four radial screws make the rim's swing visible on the cover and the Balance Wheel slide.
@@ -902,8 +974,8 @@ piece or a view that does not exist.
 
 A slide gives the watch's state at click 0. A click changes it from that click
 on, with the same keys, in a block under `watchClicks`; a later block changes
-it again. A block holds the keys that say a state (the first ten in
-[The keys](#the-keys)), and its step keys: the flash settings, `watchLater`,
+it again. A block holds the keys that say a state (`CLICK_KEYS` in
+`watch/state.ts`; each is in [The keys](#the-keys)), and its step keys: the flash settings, `watchLater`,
 `watchCut` and `watchGoLater`. These are
 about the step into their click (or into the slide, on the slide), so they
 do not carry on to later clicks. `watchMoveWith` is about the step into the slide, so it is on the
@@ -932,7 +1004,9 @@ A list repeats less with YAML anchors and aliases: `watch: &gears [...]`
 names the list, and `*gears` uses it again. A list of pieces can hold lists,
 which are flattened, and a piece that is there twice shows once. So
 `[*gears, pallet fork]` is the gears and the fork. An anchor holds only
-within one slide's frontmatter.
+within one slide's frontmatter. A list can hold `all`: every piece that
+`watch: all` shows. So `[all, hour wheel]` is the whole watch and a mark
+that `all` leaves out (the Recap slide).
 
 ```yaml
 watch: &gears [fourth wheel, fourth arbor, escape pinion, escape arbor]
@@ -996,7 +1070,10 @@ whole movement.
 The named views (`cover`, `hairspring`, `crown`; `views()` in
 `watch/generate.ts`) are for pictures that must match other art: the cover's
 title, and the diving board, whose numbers are copied from the hairspring
-view (`art/diving_board.py`).
+view (`art/diving_board.py`). The Recap slide's views (`recap motion
+works`, `recap barrel`, and the rest: `recapViews` in `watch/recap.ts`)
+each frame one touch ([The Recap slide](#the-recap-slide)). Only a named
+view can turn (`watchTurn`).
 
 ### The one rule
 
@@ -1006,8 +1083,12 @@ the pieces on the screen while the camera moves:
 
 1. A becomes D: what is not in D fades out, then what D adds fades in (0.8 s
    each).
-2. The camera moves (1.8 s) and tilts (1.5 s): zooming in, it moves and then
-   tilts; otherwise it untilts and then moves. If D is empty, nothing is on
+2. The camera moves (1.8 s) and changes its angles, its tilt and its turn
+   at the same time (1.5 s): zooming in, it moves and then changes its
+   angles; otherwise the reverse. With `watchMove: together`, it does all
+   at the same time (2.5 s; the Recap slide). The later click of the step
+   says which, in either direction (`stepMove`), so a step back is the step
+   forward, reversed. If D is empty, nothing is on
    the screen, so the camera jumps. The order is a choice of look, not a
    limit ([webgl.md](../../docs/webgl.md), "Motion and slides").
 3. D becomes B, as in 1. Of the pieces that fade in, those that the click
@@ -1108,25 +1189,29 @@ which dims halfway (`--text-dimmed`;
 
 ### The keys
 
-| Key                                                         | Meaning                                                                                                                                                                                                                                   |
-| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `watch: [hairspring, collet, stud]`                         | the pieces shown, or `all` (but the marks: [Pieces](#pieces)); no key hides the watch. A list may hold lists (YAML aliases)                                                                                                               |
-| `watchView: hairspring`                                     | what the camera frames: a named view (`cover`, `hairspring`, `crown`), or a list of pieces to fit; none: the [fitted view](#fitted-views) of what shows                                                                                   |
-| `watchRight: 489`                                           | px of the slide: where a [fitted view](#fitted-views) puts its pieces' right edge; none: centred in the left 60%, or at `FIT_LEFT`. Only with a fitted view                                                                               |
-| `watchBand: slide`                                          | the band whose height a [fitted view](#fitted-views) fills: `picture` (default), or `slide`, the slide's height with the same margins, on the screen. Only with a fitted view                                                             |
-| `watchTilt: 20`                                             | degrees, towards the viewer's side (default 0)                                                                                                                                                                                            |
-| `watchAtRest: true`                                         | the balance is at rest, and the mechanism with it; `false` (default): it swings. To rest, it waits for its next extreme                                                                                                                   |
-| `watchSpin: 135`                                            | the train spins freely, at this speed in degrees a second of the escape wheel, faster than the mechanism's 12 ([The free spin](#the-free-spin)); `false` (default): it follows the mechanism, and a spin stops at the pallet              |
-| `watchMainspring: wound`                                    | the Mainspring slide's stage: `free`, `wound`, `released`, `barrel` or `run down` ([The Mainspring slide](#the-mainspring-slide)); it says when the watch runs, so not with `watchAtRest`                                                 |
-| `watchDim: [barrel]`                                        | the pieces drawn dimmed, as at opacity 0.35 over the paper (`WATCH_DIM`), from that click on; `false` (default): none ([Dimmed pieces](#dimmed-pieces))                                                                                   |
-| `watchTickTock: true`                                       | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `false` (default): they do not                                                                                                            |
-| `watchFlash: [balance wheel]`                               | pieces that flash, on the step forward into the slide (on the slide) or into the block's click (in `watchClicks`) only; it does not carry on to later clicks ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash")       |
-| `watchMoveWith: all`                                        | on the slide only: what is on the screen while the camera moves, on the step between this slide and the previous one: `common` (default), `all` or `none`                                                                                 |
-| `watchCut: [mainspring stud]`                               | of the pieces that go or come on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that do so at once, with no fade, before the others fade; it does not carry on to later clicks                  |
-| `watchLater: [case band]`                                   | of the pieces that fade in on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that fade in after the others; it does not carry on to later clicks                                                |
-| `watchGoLater: [fourth wheel drive]`                        | of the pieces that go on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that stay on the screen while the camera moves, and go after it; it does not carry on to later clicks                   |
-| `watchLinger: [{pieces: [centre wheel drive], seconds: 1}]` | ordered outgoing groups; each pauses for its declared seconds, then fades out before the next group pauses; the camera waits for all groups; applies only at the declared click                                                           |
-| `watchClicks: {1: {watch: […]}}`                            | on the slide only: for a click, the values of the first ten keys from that click on, and its flash settings, `watchLater`, `watchCut`, `watchGoLater` and `watchLinger` ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way)) |
+| Key                                                         | Meaning                                                                                                                                                                                                                                                         |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `watch: [hairspring, collet, stud]`                         | the pieces shown, or `all` (but the marks: [Pieces](#pieces)); no key hides the watch. A list may hold lists (YAML aliases)                                                                                                                                     |
+| `watchView: hairspring`                                     | what the camera frames: a named view (`cover`, `hairspring`, `crown`), or a list of pieces to fit; none: the [fitted view](#fitted-views) of what shows                                                                                                         |
+| `watchRight: 489`                                           | px of the slide: where a [fitted view](#fitted-views) puts its pieces' right edge; none: centred in the left 60%, or at `FIT_LEFT`. Only with a fitted view                                                                                                     |
+| `watchBand: slide`                                          | the band whose height a [fitted view](#fitted-views) fills: `picture` (default), or `slide`, the slide's height with the same margins, on the screen. Only with a fitted view                                                                                   |
+| `watchTilt: 20`                                             | degrees, towards the viewer's side (default 0)                                                                                                                                                                                                                  |
+| `watchTurn: 90`                                             | degrees: the watch turns clockwise on the slide, about the view's pivot, before the tilt; at 90, 3 o'clock is nearest the viewer (default 0). Only with a named view ([webgl.md](../../docs/webgl.md), "The house style in 3D")                                 |
+| `watchMove: together`                                       | how the camera goes on the step between the click before and this one, in either direction: `ordered` (default): it moves, then tilts and turns, or the reverse ([The one rule](#the-one-rule)); `together`: all at the same time, in 2.5 s (`mixCamera`)       |
+| `watchAtRest: true`                                         | the balance is at rest, and the mechanism with it; `false` (default): it swings. To rest, it waits for its next extreme                                                                                                                                         |
+| `watchSpin: 135`                                            | the train spins freely, at this speed in degrees a second of the escape wheel, faster than the mechanism's 12 ([The free spin](#the-free-spin)); `false` (default): it follows the mechanism, and a spin stops at the pallet                                    |
+| `watchMainspring: wound`                                    | the Mainspring slide's stage: `free`, `wound`, `released`, `barrel` or `run down` ([The Mainspring slide](#the-mainspring-slide)); it says when the watch runs, so not with `watchAtRest`                                                                       |
+| `watchLapse: 1440`                                          | the time-lapse's speed-up, 1 (default) or more; a change eases while the camera moves ([The Recap slide](#the-recap-slide)). Not with `watchSpin`, `watchMainspring` or `watchAtRest: true`                                                                     |
+| `watchDim: [barrel]`                                        | the pieces drawn dimmed, as at opacity 0.35 over the paper (`WATCH_DIM`), from that click on; `false` (default): none ([Dimmed pieces](#dimmed-pieces))                                                                                                         |
+| `watchTickTock: true`                                       | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `false` (default): they do not                                                                                                                                  |
+| `watchTimeScale: true`                                      | the time scale shows the speed-up, live, in the lower right corner ([The Recap slide](#the-recap-slide)); `false` (default): it does not                                                                                                                        |
+| `watchFlash: [balance wheel]`                               | pieces that flash, on the step forward into the slide (on the slide) or into the block's click (in `watchClicks`) only; it does not carry on to later clicks ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash")                             |
+| `watchMoveWith: all`                                        | on the slide only: what is on the screen while the camera moves, on the step between this slide and the previous one: `common` (default), `all` or `none`                                                                                                       |
+| `watchCut: [mainspring stud]`                               | of the pieces that go or come on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that do so at once, with no fade, before the others fade; it does not carry on to later clicks                                        |
+| `watchLater: [case band]`                                   | of the pieces that fade in on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that fade in after the others; it does not carry on to later clicks                                                                      |
+| `watchGoLater: [fourth wheel drive]`                        | of the pieces that go on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that stay on the screen while the camera moves, and go after it; it does not carry on to later clicks                                         |
+| `watchLinger: [{pieces: [centre wheel drive], seconds: 1}]` | ordered outgoing groups; each pauses for its declared seconds, then fades out before the next group pauses; the camera waits for all groups; applies only at the declared click                                                                                 |
+| `watchClicks: {1: {watch: […]}}`                            | on the slide only: for a click, the values of the keys that say a state (`CLICK_KEYS`) from that click on, and its flash settings, `watchLater`, `watchCut`, `watchGoLater` and `watchLinger` ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way)) |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
 at load with the key's name.
@@ -1175,6 +1260,47 @@ at load with the key's name.
   left the page's white behind the Hairspring slide while the watch was hidden.
 - **The slide's text paints over the watch** because the slide's layout is
   positioned. A slide with its own layout must keep that.
+
+## The explorer
+
+`pnpm explore` opens a page (`watch/explorer/`) that shows the live watch with
+a camera that you move. Use it to choose a slide's view and tilt before you
+write its frontmatter or a named view.
+
+- **The keys:** W, A, S and D move the picture, Q and E tilt it, the left
+  and right arrows turn it, and Z and X zoom. With Shift, each is 4 times faster. A drag moves the picture, and the
+  mouse wheel zooms about the pointer. Keys 1 to 5 show or hide the case, the
+  chapter ring, the strap, the motion works and the hands; "Each piece" lists
+  every piece.
+- **The tilt, the turn and the keys' zoom keep what is at the cross in
+  place**: where a fitted view puts the middle of a narrow picture ([Fitted
+  views](#fitted-views)). So a picture that "Fit what shows" frames stays
+  in place while it tilts. The fit is at turn 0, as a slide's is: at a turn,
+  the picture keeps its size, and its box may not fit.
+- **The mechanism runs as in the deck**: the page runs the deck's own
+  model (`WatchModel`), at one of the deck's speed-ups (`watchLapse`), and
+  a change of speed eases as in the deck. The menu lists each speed-up with
+  the slides and clicks that use it.
+- **"Pose" shows a slide at a click as the deck does**: its camera, its
+  pieces, the pieces that it dims, and its motion (`deck-poses.ts` reads
+  `slides.md` and the pages that it imports, in the browser, with Slidev's
+  parser). "Restart" runs the pose's motion again from its start. A change
+  of the speed-up ends the pose's motion, and a change of the pieces ends
+  its dim; a change of the camera ends neither.
+- **The page shows the view that it draws**: the tilt, the turn, and the
+  view's scale, shift and pivot. "Copy the view" copies them as JSON, which a named view
+  (`views()` in `watch/generate.ts`) can take. The address holds the page's
+  state, with the pose whose motion runs and the pose whose dim shows, so a
+  reload or a link opens the same picture (`address.ts`).
+- **The guides** are the picture band, the left 60% of the slide and its
+  middle, and `FIT_LEFT`. G shows or hides them.
+
+The page draws with the deck's renderer and model, in Ledger's palette: it
+imports the theme's CSS, and `slidePalette()` reads it. It is not part of the
+deck, but validation checks its code: `pnpm typecheck`, `pnpm lint`, and
+`pnpm test` for the address (`address.test.ts`). Its
+`vite.config.ts` lets the server read the whole repo, because the theme is a
+link out of the talk.
 
 ## Line widths when the view zooms
 

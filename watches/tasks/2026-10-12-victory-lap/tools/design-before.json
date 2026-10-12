@@ -1,0 +1,201 @@
+{
+  "format": 1,
+  "canvas": {
+    "width": 980,
+    "height": 552
+  },
+  "watchCentre": [798, 276],
+  "timing": {
+    "period": 2.0,
+    "amplitude": 150.0,
+    "pinArc": 25.0,
+    "bank": 9.0,
+    "unlock": 0.5,
+    "fourthLoop": 60.0
+  },
+  "wheels": [
+    {
+      "name": "barrel",
+      "teeth": 36,
+      "pitchRadius": 74,
+      "inner": 70.0,
+      "outer": 78.0,
+      "depth": 4.0,
+      "pitch": 12.915436464758038,
+      "spokes": 0,
+      "leaves": 0,
+      "pinionRadius": null,
+      "step": -0.01666666666666667,
+      "arbor": [-32.341035898240406, 80.0468727775993],
+      "driven": "centre",
+      "toothPhase": -68.0,
+      "pinionPhase": null
+    },
+    {
+      "name": "centre",
+      "teeth": 32,
+      "pitchRadius": 50,
+      "inner": 46.8584073464102,
+      "outer": 53.1415926535898,
+      "depth": 3.141592653589793,
+      "pitch": 9.817477042468104,
+      "spokes": 5,
+      "leaves": 6,
+      "pinionRadius": 12.333333333333334,
+      "step": 0.1,
+      "arbor": [0.0, 0.0],
+      "driven": "third",
+      "toothPhase": -18.45,
+      "pinionPhase": 142.0
+    },
+    {
+      "name": "third",
+      "teeth": 30,
+      "pitchRadius": 44,
+      "inner": 41.05109169583038,
+      "outer": 46.94890830416962,
+      "depth": 2.9489083041696187,
+      "pitch": 9.215338450530059,
+      "spokes": 4,
+      "leaves": 4,
+      "pinionRadius": 6.25,
+      "step": -0.8,
+      "arbor": [53.35876094768464, -17.80182940396422],
+      "driven": "fourth",
+      "toothPhase": -70.95,
+      "pinionPhase": 206.55
+    },
+    {
+      "name": "fourth",
+      "teeth": 16,
+      "pitchRadius": 32,
+      "inner": 28.0,
+      "outer": 36.0,
+      "depth": 4.0,
+      "pitch": 12.566370614359172,
+      "spokes": 4,
+      "leaves": 4,
+      "pinionRadius": 5.866666666666666,
+      "step": 6.0,
+      "arbor": [69.63489941085581, -64.93750337996805],
+      "driven": "escape",
+      "toothPhase": -115.95000000000002,
+      "pinionPhase": 154.05
+    },
+    {
+      "name": "escape",
+      "teeth": 15,
+      "pitchRadius": 27,
+      "inner": 23,
+      "outer": 33,
+      "depth": 3.6191147369354417,
+      "pitch": 11.309733552923255,
+      "spokes": 5,
+      "leaves": 8,
+      "pinionRadius": 16.0,
+      "step": -12.0,
+      "arbor": [48.630740969302906, -108.09796362035638],
+      "driven": null,
+      "toothPhase": 0.0,
+      "pinionPhase": 86.54999999999998
+    }
+  ],
+  "escapeSolid": true,
+  "escapePhase": -171.45,
+  "balance": {
+    "radius": 56,
+    "arbor": [-61.3541389299252, -106.27417811970969],
+    "impulsePinRadius": 15,
+    "pinDirection": -0.9499999999999839,
+    "studAngle": 210.00132887586108
+  },
+  "fork": {
+    "pivot": [8.636239187765412, -107.4347688928485],
+    "heading": 179.05000000000004,
+    "outline": [
+      [38.0, 4.5],
+      [45.0, 11],
+      [58.0, 12.5],
+      [61.5, 8.5],
+      [48.0, 6.8],
+      [48.0, -6.8],
+      [61.5, -8.5],
+      [58.0, -12.5],
+      [45.0, -11],
+      [38.0, -4.5],
+      [6, -4.5],
+      [6, -26],
+      [1, -35],
+      [-8.415425867120813, -28.794245659990352],
+      [-15.080420897322492, -25.35508278984492],
+      [-14.349922181275572, -20.66825319769483],
+      [-7.684927151073893, -24.10741606784026],
+      [-4, -18],
+      [-2, -6],
+      [-2, 6],
+      [-4, 16],
+      [-6.272781558021297, 25.49486275849129],
+      [-12.125510880836867, 20.804920384233924],
+      [-16.1100221699544, 23.3785695030718],
+      [-10.257292847138826, 28.06851187732916],
+      [-6, 36],
+      [3, 33],
+      [6, 18],
+      [6, 4.5]
+    ]
+  },
+  "stack": ["escape", "fourth", "third", "centre", "barrel", "balance"],
+  "case": {
+    "caseRadius": 250,
+    "bezelRadius": 228,
+    "ringRadius": 192
+  },
+  "hands": {
+    "hour": 3,
+    "minute": 44
+  },
+  "motionWorks": {
+    "cannon": {
+      "name": "cannon",
+      "arbor": [0.0, 0.0],
+      "leaves": 4,
+      "radius": 6.25,
+      "step": 0.1,
+      "phase": -85.0
+    },
+    "minute": {
+      "name": "minute",
+      "teeth": 12,
+      "pitchRadius": 18.75,
+      "inner": 15.608407346410207,
+      "outer": 21.891592653589793,
+      "depth": 3.141592653589793,
+      "pitch": 9.817477042468104,
+      "spokes": 4,
+      "step": -0.03333333333333333,
+      "toothPhase": 49.99999999999999,
+      "arbor": [-16.069690242163485, -19.15111107797445],
+      "pinion": {
+        "name": "minute",
+        "arbor": [-16.069690242163485, -19.15111107797445],
+        "leaves": 4,
+        "radius": 5.0,
+        "step": -0.03333333333333333,
+        "phase": 95.0
+      }
+    },
+    "hour": {
+      "name": "hour",
+      "teeth": 16,
+      "pitchRadius": 20.0,
+      "inner": 17.486725877128166,
+      "outer": 22.513274122871834,
+      "depth": 2.5132741228718345,
+      "pitch": 7.853981633974483,
+      "spokes": 4,
+      "step": 0.008333333333333333,
+      "toothPhase": -130.0,
+      "arbor": [0.0, 0.0]
+    }
+  }
+}

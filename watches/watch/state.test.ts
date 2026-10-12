@@ -9,6 +9,7 @@ import {
   moveWithBefore,
   stageState,
   tickTockState,
+  timeScaleState,
   WATCH_DIM,
   watchState,
 } from "./state.ts";
@@ -23,6 +24,7 @@ test("the fields and their defaults", () => {
   assert.deepEqual(watchState({ watch: "all" }, 0), {
     view: null,
     tilt: 0,
+    turn: 0,
     show: "all",
     fit: "all",
     right: null,
@@ -35,6 +37,8 @@ test("the fields and their defaults", () => {
     spin: null,
     mainspring: null,
     dim: null,
+    lapse: 1,
+    move: "ordered",
   });
   const frontmatter = {
     watch: ["hairspring", "collet", "stud"],
@@ -48,6 +52,7 @@ test("the fields and their defaults", () => {
   assert.deepEqual(watchState(frontmatter, 1), {
     view: "hairspring",
     tilt: 20,
+    turn: 0,
     show: ["hairspring", "collet", "stud"],
     fit: ["hairspring", "collet", "stud"],
     right: null,
@@ -60,6 +65,8 @@ test("the fields and their defaults", () => {
     spin: null,
     mainspring: null,
     dim: null,
+    lapse: 1,
+    move: "ordered",
   });
 });
 
@@ -183,8 +190,9 @@ test("a click block changes the motion from its click on, as the slide sets it f
     watchClicks: {
       1: { watchSpin: false, watchAtRest: true },
       2: { watchSpin: 120, watchTilt: 20 },
-      3: { watchAtRest: false, watchTickTock: true },
+      3: { watchAtRest: false, watchTickTock: true, watchTimeScale: true },
       5: { watchTickTock: false },
+      4: { watchTimeScale: false },
     },
   };
   const at = (clicks: number) => watchState(frontmatter, clicks);
@@ -204,6 +212,10 @@ test("a click block changes the motion from its click on, as the slide sets it f
   assert.deepEqual(
     clicks.map((click) => tickTockState(frontmatter, click)),
     [false, false, false, true, true, false],
+  );
+  assert.deepEqual(
+    clicks.map((click) => timeScaleState(frontmatter, click)),
+    [false, false, false, true, false, false],
   );
   // a block that says what is already so changes nothing
   assert.equal(
@@ -377,6 +389,23 @@ test("watchRight puts a fitted view's right edge there, and needs a fitted view"
   );
 });
 
+test("watchTurn turns a named view's camera, and a fitted view refuses it", () => {
+  const turned = { watch: "all", watchView: "cover", watchTurn: 90 };
+  const state = watchState(turned, 0) ?? assert.fail();
+  assert.equal(state.turn, 90);
+  assert.equal(stageState(watch, state).turn, 90);
+  assert.throws(
+    () => watchState({ watch: "all", watchTurn: 90 }, 0),
+    /^Error: watchTurn: .*set only with a named view/,
+  );
+  // turn 0 is the default, so a fitted view may say it
+  assert.equal(watchState({ watch: "all", watchTurn: 0 }, 0)?.turn, 0);
+  assert.throws(
+    () => watchState({ watch: "all", watchView: "cover", watchTurn: "90" }, 0),
+    /^Error: watchTurn/,
+  );
+});
+
 test("watchMoveWith names what shows while the camera moves into the slide", () => {
   assert.equal(moveWithBefore({ watch: "all" }), "common");
   for (const value of ["common", "all", "none"]) {
@@ -397,6 +426,7 @@ test("a key that a click can change needs watch on the slide", () => {
     [{ watchSpin: 45 }, "watchSpin"],
     [{ watchAtRest: true }, "watchAtRest"],
     [{ watchTickTock: true }, "watchTickTock"],
+    [{ watchTimeScale: true }, "watchTimeScale"],
     [{ watchRight: 489 }, "watchRight"],
     [{ watchFlash: ["stud"] }, "watchFlash"],
     [{ watchLater: ["stud"] }, "watchLater"],
@@ -408,6 +438,7 @@ test("a key that a click can change needs watch on the slide", () => {
       JSON.stringify(frontmatter),
     );
     assert.throws(() => tickTockState(frontmatter, 0), /set only with watch/);
+    assert.throws(() => timeScaleState(frontmatter, 0), /set only with watch/);
   }
 });
 
@@ -440,6 +471,8 @@ test("a field of the wrong kind throws, with its name", () => {
     ["watchSpin", Number.POSITIVE_INFINITY],
     ["watchTickTock", "plain"],
     ["watchTickTock", 1],
+    ["watchTimeScale", "yes"],
+    ["watchTimeScale", 1],
     ["watchRight", "489"],
     ["watchRight", true],
     ["watchRight", Number.NaN],
@@ -484,6 +517,7 @@ test("the Mainspring slide's stage says when the watch runs: only in the barrel,
     settled: false,
     spin: null,
     mainspring: "barrel",
+    lapse: 1,
   });
   // the story says when the balance swings: watchAtRest would say it twice
   assert.throws(
@@ -522,4 +556,53 @@ test("watchBand: slide fits the slide's height, with the picture band's bottom m
       watchState({ watch: pieces, watchView: "cover", watchBand: "slide" }, 0),
     /^Error: watchBand: "slide" should be set only with a fitted view/,
   );
+});
+
+test("watchLapse, watchMove, and all in a list of pieces", () => {
+  const frontmatter = {
+    watch: ["all", "hour wheel"],
+    watchView: "recap motion works",
+    watchLapse: 1440,
+    watchMove: "together",
+    watchClicks: { 1: { watchLapse: 2 } },
+  };
+  const first = watchState(frontmatter, 0) ?? assert.fail();
+  assert.equal(first.lapse, 1440);
+  assert.equal(first.move, "together");
+  assert.equal(watchState(frontmatter, 1)?.lapse, 2);
+  assert.equal(watchState(frontmatter, 1)?.move, "together");
+  assert.equal(modelState(first).lapse, 1440);
+  const stage = stageState(watch, first);
+  assert.equal(stage.move, "together");
+  // all that `all` shows, and the hour wheel, which `all` leaves out
+  const all = stageState(
+    watch,
+    watchState({ watch: "all" }, 0) ?? assert.fail(),
+  ).shown;
+  const hourWheel =
+    watch.scene.pieces.find((piece) => piece.name === "hour wheel") ??
+    assert.fail();
+  assert.deepEqual(stage.shown, new Set([...all, ...hourWheel.meshes]));
+  for (const [key, value] of [
+    ["watchLapse", 0.5],
+    ["watchLapse", "fast"],
+    ["watchMove", "sideways"],
+  ] as const) {
+    assert.throws(
+      () => watchState({ watch: "all", [key]: value }, 0),
+      new RegExp(`^Error: ${key}`),
+    );
+  }
+  // the lapse moves the train its own way: not with a spin, the story, or a
+  // balance at rest
+  for (const other of [
+    { watchSpin: 135 },
+    { watchMainspring: "barrel" },
+    { watchAtRest: true },
+  ]) {
+    assert.throws(
+      () => watchState({ watch: "all", watchLapse: 2, ...other }, 0),
+      /^Error: watchLapse/,
+    );
+  }
 });

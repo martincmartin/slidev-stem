@@ -219,6 +219,7 @@ export class Stage<ModelState> {
     this.renderer.render({
       view: values.view,
       tilt: values.tilt,
+      turn: values.turn,
       groupMatrices,
       keep,
       fade,

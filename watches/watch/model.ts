@@ -6,10 +6,11 @@ import { ribbonGeometry, smoothRing } from "../webgl/mesh.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import type { Renderer } from "../webgl/renderer.ts";
 import type { Extra, Model } from "../webgl/stage.ts";
-import { FADE_SECONDS } from "../webgl/timeline.ts";
+import { FADE_SECONDS, TOGETHER_SECONDS } from "../webgl/timeline.ts";
 import type { Group, MeshGeometry } from "../webgl/scene.ts";
 import type { Timing, Wheel } from "./design.ts";
 import type { Watch, WatchGroups } from "./generate.ts";
+import { LapseClock } from "./lapse.ts";
 import { MainspringClock, WOUND } from "./mainspring.ts";
 import type { MainspringPose, MainspringStage } from "./mainspring.ts";
 import { polar, radians } from "./shapes.ts";
@@ -572,13 +573,19 @@ export class BalanceClock {
     return (-this.mode.from * 6 * u * (1 - u)) / this.settleSeconds;
   }
 
-  /** Wait for the next extreme (they come every half period), then settle. */
+  /** The mechanism's time (s) of the first extreme at or after `time`:
+   *  they come every half period. */
+  nextExtreme(time: number): number {
+    const half = this.period / 2;
+    return Math.ceil(time / half) * half;
+  }
+
+  /** Wait for the next extreme, then settle. */
   settle(now: number): void {
     this.advance(now);
     const mode = this.mode;
     if (mode.kind === "free") {
-      const half = this.period / 2;
-      const extreme = Math.ceil(this.time(now) / half) * half;
+      const extreme = this.nextExtreme(this.time(now));
       this.mode = {
         kind: "waiting",
         anchor: mode.anchor,
@@ -609,6 +616,23 @@ export class BalanceClock {
     }
   }
 
+  /** The mode's kind at `now`. */
+  kindAt(now: number): Mode["kind"] {
+    this.advance(now);
+    return this.mode.kind;
+  }
+
+  /** While a resume runs at `now`: when it ends (ms), and the mechanism's
+   *  time (s) then, at the opposite extreme. `null` otherwise. */
+  resumeEnd(now: number): { at: number; time: number } | null {
+    this.advance(now);
+    if (this.mode.kind !== "resuming") return null;
+    return {
+      at: this.mode.start + this.settleSeconds * 1000,
+      time: this.mode.extreme + this.period / 2,
+    };
+  }
+
   /** How long (ms) from `now` until the balance is at rest: 0 at rest, and
    *  `null` if it is not going to rest. */
   untilRest(now: number): number | null {
@@ -630,6 +654,13 @@ export class BalanceClock {
         // on to the opposite extreme, then a settle from there
         return mode.settleAfter ? restAt(mode.start + milliseconds) : null;
     }
+  }
+
+  /** Move a free swing's time on by `seconds`, at once: a time-lapse that
+   *  has ended hands over its time ahead (`WatchModel`). */
+  advanceBy(seconds: number): void {
+    check(this.mode.kind === "free", "only a free swing moves on at once");
+    this.mode = { ...this.mode, from: this.mode.from + seconds };
   }
 
   /** At once: for a slide reached directly, and for stills. */
@@ -835,6 +866,8 @@ export interface WatchModelState {
   spin: number | null;
   /** The Mainspring slide's stage (watch/mainspring.ts), or `null`. */
   mainspring: MainspringStage | null;
+  /** The time-lapse's speed-up (watch/lapse.ts): 1, none. */
+  lapse: number;
 }
 
 /** The train's beats in one turn of the barrel: one time-lapse. */
@@ -849,9 +882,15 @@ export class WatchModel implements Model<WatchModelState> {
   private readonly clock: BalanceClock;
   private readonly train = new TrainClock();
   private readonly story: MainspringClock;
+  /** The time-lapse: the whole mechanism runs ahead of the balance's clock
+   *  (`clock`) by the time that the speed-up adds (watch/lapse.ts). */
+  private readonly lapse: LapseClock;
   /** Whether the balance swings, as the story last had it; `null` off the
    *  story. */
   private runs: boolean | null = null;
+  /** A settle that waits for the time-lapse's hand-over: it was asked for
+   *  while the balance resumed with time ahead (`settle`). */
+  private settleAfterLapse = false;
   /** The mainspring's last pose drawn, so that an unchanged one is not
    *  drawn again. */
   private drawn: MainspringPose | null = null;
@@ -865,6 +904,48 @@ export class WatchModel implements Model<WatchModelState> {
     this.motion = new Motion(watch);
     this.clock = new BalanceClock(watch.design.timing, now);
     this.story = new MainspringClock(barrelTurnBeats(watch));
+    this.lapse = new LapseClock(now);
+  }
+
+  /** The beats that the time-lapse has moved the mechanism on, at `now`: a
+   *  beat for each half period of its time ahead (watch/lapse.ts). */
+  private lapseBeats(now: number): number {
+    const { period } = this.watch.design.timing;
+    return (2 * this.lapse.ahead(now)) / period;
+  }
+
+  /** Once the time-lapse has ended, move its time ahead into the balance's
+   *  clock: the mechanism's time does not change, and the balance can rest
+   *  again (`BalanceClock.advanceBy`). Only a free swing can take it, and a
+   *  time-lapse runs only on one (`watchLapse`). Then a settle that waited
+   *  for it starts. */
+  private endLapse(now: number): void {
+    if (this.clock.kindAt(now) !== "free") return;
+    const ahead = this.lapse.takeAhead(now);
+    if (ahead !== 0) this.clock.advanceBy(ahead);
+    if (this.settleAfterLapse && this.lapse.ahead(now) === 0) {
+      this.settleAfterLapse = false;
+      this.clock.settle(now);
+    }
+  }
+
+  /** Bring the balance to rest. A resume ends at an extreme of the balance's
+   *  clock, which with time ahead is not one of the mechanism: so a settle
+   *  that comes while it resumes with time ahead lets it end in a free
+   *  swing, which takes the time ahead (`endLapse`), and settles from
+   *  there. Not an oversight: a settle at once would rest the balance and
+   *  the train off their rest pose, and a time ahead rounded to whole
+   *  periods would jump the mechanism. */
+  private settle(now: number): void {
+    if (this.clock.kindAt(now) === "resuming" && this.lapse.ahead(now) !== 0) {
+      this.clock.resume(now);
+      this.settleAfterLapse = true;
+    } else this.clock.settle(now);
+  }
+
+  private resume(now: number): void {
+    this.settleAfterLapse = false;
+    this.clock.resume(now);
   }
 
   show(
@@ -874,12 +955,20 @@ export class WatchModel implements Model<WatchModelState> {
     after = now,
   ): void {
     this.story.show(state.mainspring, now, instantly, after);
+    // a change of speed-up eases while the camera moves; a balance that
+    // goes to rest needs the time-lapse ended first
+    if (instantly) this.lapse.jump(state.lapse, now);
+    else {
+      this.lapse.show(state.lapse, now, state.settled ? 0 : TOGETHER_SECONDS);
+    }
+    this.endLapse(now);
     if (instantly) {
       this.clock.place(state.settled, now);
+      this.settleAfterLapse = false;
       this.runs = state.mainspring === null ? null : !state.settled;
     } else if (state.mainspring === null) {
-      if (state.settled) this.clock.settle(now);
-      else this.clock.resume(now);
+      if (state.settled) this.settle(now);
+      else this.resume(now);
       this.runs = null;
     }
     // on the story, the frame starts and stops the balance when the story
@@ -900,13 +989,13 @@ export class WatchModel implements Model<WatchModelState> {
     );
     this.lastFrame = now;
     this.frames += 1;
-    const lapse = this.story.trainBeats(
-      shutterInstant(now, shutter, this.frames),
-    );
+    this.endLapse(now);
+    const instant = shutterInstant(now, shutter, this.frames);
+    const lapse = this.story.trainBeats(instant) + this.lapseBeats(instant);
     const runs = this.story.runs(now);
     if (runs !== null && runs !== this.runs) {
-      if (runs) this.clock.resume(now);
-      else this.clock.settle(now);
+      if (runs) this.resume(now);
+      else this.settle(now);
       this.runs = runs;
     }
     const { time, swing } = mechanismAt(this.clock, now, lapse);
@@ -939,10 +1028,28 @@ export class WatchModel implements Model<WatchModelState> {
     return this.story.moving(now);
   }
 
+  /** The time-lapse's speed-up at `now`: while it changes, between the two
+   *  (watch/lapse.ts). */
+  speedUp(now: number): number {
+    return this.lapse.speedUp(now);
+  }
+
   /** How long (ms) from `now` until the balance is at rest: 0 at rest, and
    *  `null` if it is not going to rest. */
   untilRest(now: number): number | null {
-    return this.clock.untilRest(now);
+    if (!this.settleAfterLapse) return this.clock.untilRest(now);
+    // the resume ends in a free swing, which takes the time ahead, waits
+    // for its next extreme, and settles
+    const end = this.clock.resumeEnd(now) ?? {
+      at: now,
+      time: this.clock.time(now),
+    };
+    const time = end.time + this.lapse.ahead(end.at);
+    return (
+      Math.max(0, end.at - now) +
+      (this.clock.nextExtreme(time) - time) * 1000 +
+      this.clock.settleSeconds * 1000
+    );
   }
 
   /** The jewel's strikes on the fork from `from` to `now` (ms), and the

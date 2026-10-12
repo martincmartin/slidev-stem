@@ -223,6 +223,11 @@ time-lapse, "6 hours in 6 seconds", lets
 the spring down, and the watch stops. Each click that adds text dims the
 text before it ([Text dims](#text-dims)). Going back cuts to the earlier click's state: no key
 unwinds the spring.
+The Recap slide comes after the Hour Hand slide. Its only text is the time
+scale in the lower right corner, so the watch fills the slide, and the rule that the focus is on the left does not
+apply. Each click moves, zooms, tilts and turns the camera at the same time
+to the next touch of the train, at that touch's time-lapse speed. Its last
+click goes back to the cover's picture.
 They are described in [watch.md](watch.md).
 
 ## Where things go on a slide

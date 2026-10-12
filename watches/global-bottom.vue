@@ -10,7 +10,8 @@
 // hairspring takes the board's place when the curl ends, with no click.
 // Above both, the words "tick" and "tock" at each strike of the jewel
 // (components/TickTock.vue), where a slide's `watchTickTock` shows them: they follow
-// the model's clock.
+// the model's clock. And the time scale (components/TimeScale.vue), where a
+// slide's `watchTimeScale` shows it: it reads the model's speed-up.
 //
 // A slide names targets, not moves (../docs/navigation.md). At each change of
 // slide or click, this decides the kind of move (watch/navigation.ts): a step
@@ -18,7 +19,8 @@
 // the target at once. A flash plays only on the step forward into the slide
 // or the click that names it.
 // On a step between two slides, the later one says what shows while the
-// camera moves (`watchMoveWith`), in either direction.
+// camera moves (`watchMoveWith`), in either direction. On any step, the later
+// click says how the camera moves (`watchMove`, `stepMove`).
 // The new slide's text waits for the camera, in either direction
 // (`--watch-text-delay`, from the stage). A click's text can wait for the
 // balance to come to rest (`--watch-rest-delay`, from the model), or for the
@@ -47,6 +49,7 @@ import {
 } from "vue";
 import DivingBoard from "./components/DivingBoard.vue";
 import TickTock from "./components/TickTock.vue";
+import TimeScale from "./components/TimeScale.vue";
 import { Stage } from "./webgl/stage.ts";
 import { FADE_SECONDS } from "./webgl/timeline.ts";
 import { boardState } from "./watch/board.ts";
@@ -64,11 +67,13 @@ import {
   modelState,
   moveWithBefore,
   stageState,
+  stepMove,
   tickTockState,
+  timeScaleState,
   watchState,
 } from "./watch/state.ts";
 import type { WatchState } from "./watch/state.ts";
-import type { MoveWith } from "./webgl/timeline.ts";
+import type { CameraMove, MoveWith } from "./webgl/timeline.ts";
 
 declare global {
   interface Window {
@@ -104,6 +109,15 @@ const tickTock = computed(() =>
     ? { strikes: jewelStrikes(WATCH, frontmatter.value) }
     : undefined,
 );
+/** The time-lapse's speed-up at the click, while the slide shows the time
+ *  scale. */
+const timeScale = computed(() =>
+  state.value &&
+  timeScaleState(frontmatter.value, slidev.nav.clicks) &&
+  !hidden.value
+    ? state.value.lapse
+    : undefined,
+);
 /** Set while the canvas fades out: then the stage goes out of sight. */
 let hideTimer: ReturnType<typeof setTimeout> | undefined;
 /** The last state given to the stage. */
@@ -119,6 +133,8 @@ function showWatch(
   now: WatchState | undefined,
   move: Move,
   moveWith: MoveWith,
+  /** How the camera moves on this step (`stepMove`). */
+  cameraMove: CameraMove | undefined,
 ): void {
   // a flash points to where the camera goes, or to what fades in: only on
   // the step forward into the slide or the click that names it. It is not
@@ -157,7 +173,11 @@ function showWatch(
   if (hideTimer !== undefined || hidden.value) goOutOfSight();
   // a slide reached from a slide without the watch starts at its state
   stage.show(
-    stageState(WATCH, { ...now, flash }, moveWith),
+    stageState(
+      WATCH,
+      { ...now, flash, move: cameraMove ?? now.move },
+      moveWith,
+    ),
     modelState(now),
     move === "jump" || old === "null",
   );
@@ -263,8 +283,16 @@ onMounted(() => {
         place && intoSlide
           ? moveWithBefore(frontmatterOf(Math.max(place.slide, to.slide)))
           : "common";
+      const from = place
+        ? watchState(frontmatterOf(place.slide), place.clicks)
+        : undefined;
       place = to;
-      showWatch(state.value, move, moveWith);
+      showWatch(
+        state.value,
+        move,
+        moveWith,
+        state.value && stepMove(from, state.value, move),
+      );
       showBoard(to.clicks, move);
     },
     { immediate: true },
@@ -331,6 +359,7 @@ onMounted(() => {
       @cover="(covers: boolean) => (covered = covers)"
     />
     <TickTock :model="model" :shown="tickTock" />
+    <TimeScale :model="model" :shown="timeScale" />
   </div>
 </template>
 

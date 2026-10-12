@@ -162,12 +162,21 @@ export interface Scene {
   readonly pieces: readonly Piece[];
 }
 
+/** Which way the camera looks (`viewProjection` in renderer.ts), in
+ *  degrees. The world turns about the z axis through the view's pivot, then
+ *  tilts about the slide's horizontal axis through it. */
+export interface CameraAngles {
+  /** Toward the viewer: the bottom of the slide comes nearer. */
+  readonly tilt: number;
+  /** Clockwise on the slide, before the tilt. At 90, the world's +x (3
+   *  o'clock, on a watch) is at the bottom, nearest when the camera tilts. */
+  readonly turn: number;
+}
+
 /** What the renderer takes for each frame. */
-export interface Frame {
+export interface Frame extends CameraAngles {
   /** Or an eased mix of two views. */
   readonly view: View;
-  /** Degrees. */
-  readonly tilt: number;
   /** The world matrix of each group that a drawn mesh has: 4 x 4,
    *  column-major, affine. The renderer does not compose `Group.parent`. */
   readonly groupMatrices: ReadonlyMap<Group, Float32Array>;

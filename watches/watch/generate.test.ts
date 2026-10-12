@@ -479,7 +479,7 @@ test("at a tilt, a fitted view fills its band on the screen, as the camera shows
     ["slide", margin, height - margin],
   ] as const) {
     const view = fittedView(watch, movement, null, band, 20);
-    const camera = viewProjection(view, 20, scene.slide);
+    const camera = viewProjection(view, { tilt: 20, turn: 0 }, scene.slide);
     const ys = movement.flatMap((each) => {
       const extent = watch.extents.get(each) ?? assert.fail();
       return [extent.box.top, extent.box.bottom].flatMap((y) =>

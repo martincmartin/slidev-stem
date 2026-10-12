@@ -7,11 +7,33 @@ import { test } from "node:test";
 import { deckSlides } from "./deck.ts";
 import { generate } from "./generate.ts";
 import { AtRest, discOutline } from "./at-rest.ts";
-import { moveWithBefore, stageState, watchState } from "./state.ts";
+import { moveWithBefore, stageState, stepMove, watchState } from "./state.ts";
+import type { WatchState } from "./state.ts";
+import type { Move } from "./navigation.ts";
 import type { Mesh, Piece } from "../webgl/scene.ts";
+import { Timeline } from "../webgl/timeline.ts";
+import type { MoveWith } from "../webgl/timeline.ts";
 
 const watch = generate();
 const slides = await deckSlides();
+
+/** The watch's piece called `name`. */
+function pieceNamed(name: string): Piece {
+  return (
+    watch.scene.pieces.find((piece) => piece.name === name) ??
+    assert.fail(`no piece ${name}`)
+  );
+}
+const PALLET_FORK = pieceNamed("pallet fork");
+const BARREL = pieceNamed("barrel");
+const MAINSPRING_STUD = pieceNamed("mainspring stud");
+
+/** Whether the stage shows the piece: what it draws, as the state resolves
+ *  it (`stageState`). */
+function shows(state: WatchState, piece: Piece): boolean {
+  const { shown } = stageState(watch, state);
+  return [...piece.meshes].every((mesh) => shown.has(mesh));
+}
 
 test("every slide's pieces and view exist, at every click", () => {
   let shown = 0;
@@ -34,10 +56,7 @@ test("no slide spins the train while the pallet fork shows: the escape wheel wou
     for (let click = 0; click <= clicks; click++) {
       const state = watchState(frontmatter, click);
       if (!state?.spin) continue; // a spin's speed is never 0
-      assert.ok(
-        state.show !== "all" && !state.show.includes("pallet fork"),
-        `${title} @${String(click)}`,
-      );
+      assert.ok(!shows(state, PALLET_FORK), `${title} @${String(click)}`);
     }
   }
 });
@@ -50,11 +69,9 @@ test("the mainspring winds only where its outer end is held: by the stud, or in 
       const state = watchState(frontmatter, click);
       if (!state?.mainspring) continue;
       seen++;
-      const shows = (piece: string): boolean =>
-        state.show === "all" || state.show.includes(piece);
-      const holder = shows("barrel")
+      const holder = shows(state, BARREL)
         ? "barrel"
-        : shows("mainspring stud")
+        : shows(state, MAINSPRING_STUD)
           ? "stud"
           : "nothing";
       const wanted = {
@@ -151,4 +168,74 @@ test("no part that a click shows rises through a paper disc that it shows", () =
       }
     }
   }
+});
+
+/** The camera's phases on a step from `from` to `to`: each channel that
+ *  moves it, and for how long (ms), in order, from the timeline at 10 ms. */
+function cameraPhases(
+  from: WatchState,
+  to: WatchState,
+  move: Move,
+  moveWith: MoveWith,
+): { channel: string; milliseconds: number }[] {
+  const timeline = new Timeline();
+  timeline.show(stageState(watch, from, moveWith), 0, true);
+  timeline.show(
+    stageState(watch, { ...to, move: stepMove(from, to, move) }, moveWith),
+    0,
+  );
+  const phases: { channel: string; milliseconds: number }[] = [];
+  for (let time = 0; time < timeline.endAt(0); time += 10) {
+    const channel = timeline.phaseAt(time);
+    if (channel !== "view" && channel !== "angles" && channel !== "camera") {
+      continue;
+    }
+    const last = phases.at(-1);
+    if (last?.channel === channel) last.milliseconds += 10;
+    else phases.push({ channel, milliseconds: 10 });
+  }
+  return phases;
+}
+
+test("each step back moves the camera as the step forward does, reversed", () => {
+  const places = slides
+    .filter(({ frontmatter }) => frontmatter["hide"] !== true)
+    .flatMap(({ title, frontmatter }, slide) =>
+      Array.from(
+        { length: Number(frontmatter["clicks"] ?? 0) + 1 },
+        (_, click) => ({ title, frontmatter, slide, click }),
+      ),
+    );
+  let compared = 0;
+  for (const [index, earlier] of places.entries()) {
+    const later = places[index + 1];
+    if (!later) break;
+    const before = watchState(earlier.frontmatter, earlier.click);
+    const after = watchState(later.frontmatter, later.click);
+    if (!before || !after) continue;
+    const moveWith =
+      earlier.slide === later.slide
+        ? "common"
+        : moveWithBefore(later.frontmatter);
+    const forward = cameraPhases(before, after, "forward", moveWith);
+    const back = cameraPhases(after, before, "back", moveWith);
+    assert.deepEqual(
+      back,
+      forward.toReversed(),
+      `${earlier.title} @${String(earlier.click)} and ${later.title} @${String(later.click)}`,
+    );
+    compared++;
+  }
+  assert.ok(compared > 0, "no step moves the watch");
+});
+
+test("the Recap slide's last step, to the cover, moves in order both ways", () => {
+  const recap = slides.find(({ title }) => title === "Recap")?.frontmatter;
+  assert.ok(recap);
+  const clicks = Number(recap["clicks"]);
+  const hairspring = watchState(recap, clicks - 1);
+  const cover = watchState(recap, clicks);
+  assert.ok(hairspring && cover);
+  assert.equal(stepMove(hairspring, cover, "forward"), "ordered");
+  assert.equal(stepMove(cover, hairspring, "back"), "ordered");
 });

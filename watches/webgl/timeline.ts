@@ -8,10 +8,13 @@
 // A in `StageState.goLater`):
 //   1. A becomes D: the meshes of A that are not in D fade out; then the
 //      meshes of D that are not in A fade in.
-//   2. The camera moves and tilts, eased: zooming in, it moves and then
-//      tilts; otherwise it untilts and then moves. If D is empty, nothing is
+//   2. The camera moves, and changes its angles (`CameraAngles`: it tilts
+//      and turns at the same time), eased: zooming in, it moves and then
+//      changes its angles; otherwise the reverse. If D is empty, nothing is
 //      on the screen, and the camera jumps. The order is a choice of look,
-//      not a limit (stem/docs/webgl.md, "One rule for every change").
+//      not a limit (stem/docs/webgl.md, "One rule for every change"). A
+//      state with `move: together` moves, zooms, tilts and turns the camera
+//      at the same time instead, in TOGETHER_SECONDS (`mixCamera`).
 //   3. D becomes B, as in 1; of the meshes that fade in, those in
 //      `StageState.later` fade in after the others.
 // The meshes in `StageState.cut` do not fade: they go, or come, at once,
@@ -35,14 +38,18 @@
 // slide (../../docs/navigation.md): the timeline does not know which way a
 // change goes.
 
-import type { Mesh, View } from "./scene.ts";
+import type { CameraAngles, Mesh, View } from "./scene.ts";
 import { check } from "./checked.ts";
 
 export const MOVE_SECONDS = 1.8;
 export const FADE_SECONDS = 0.8;
 /** A dim, or its end, eases in this time. */
 export const DIM_SECONDS = FADE_SECONDS;
-export const TILT_SECONDS = 1.5;
+/** A change of the camera's angles: its tilt and its turn. */
+export const ANGLES_SECONDS = 1.5;
+/** A move of the camera with `move: together`: the move, the zoom and the
+ *  angles at the same time. Longer than each alone: it has more to show. */
+export const TOGETHER_SECONDS = 2.5;
 /** A flash: on (in FLASH_INKS), then off (in its own inks), this many times. */
 export const FLASH_ON_SECONDS = 0.25;
 export const FLASH_OFF_SECONDS = 0.25;
@@ -56,16 +63,22 @@ export function flashIsOn(elapsed: number): boolean {
   return elapsed % (FLASH_ON_SECONDS + FLASH_OFF_SECONDS) < FLASH_ON_SECONDS;
 }
 
+/** How the camera goes to a state: its move and its change of angles one
+ *  after the other (the rule at the top), or `together`: it moves, zooms,
+ *  tilts and turns at the same time (`mixCamera`). */
+export const CAMERA_MOVES = ["ordered", "together"] as const;
+export type CameraMove = (typeof CAMERA_MOVES)[number];
+
 /** What is on the screen while the camera moves: the meshes that the old and
  *  the new state both show, all the meshes of either, or none (the camera
  *  jumps). */
 export type MoveWith = "common" | "all" | "none";
 
 /** What the camera and the fade show. */
-export interface StageState {
+export interface StageState extends CameraAngles {
   view: View;
-  /** Degrees. */
-  tilt: number;
+  /** How the camera goes to this state. Default: `ordered`. */
+  move?: CameraMove;
   /** The meshes on the screen; the others are faded out. */
   shown: ReadonlySet<Mesh>;
   /** Flashed before the change if they are on the screen, else after it;
@@ -93,7 +106,9 @@ export interface StageState {
 /** Where each channel is. */
 export interface Values {
   view: View;
+  /** Degrees (`CameraAngles`). */
   tilt: number;
+  turn: number;
   /** Drawn at full opacity. */
   keep: ReadonlySet<Mesh>;
   /** Drawn at opacity `rest`, as one picture: the meshes that fade in or
@@ -117,7 +132,8 @@ type Phase = {
 } & (
   | { channel: "hold" }
   | { channel: "view"; from: View; to: View }
-  | { channel: "tilt"; from: number; to: number }
+  | { channel: "angles"; from: CameraAngles; to: CameraAngles }
+  | { channel: "camera"; from: CameraPose; to: CameraPose }
   | {
       channel: "fade";
       keep: ReadonlySet<Mesh>;
@@ -156,6 +172,51 @@ export function mixView(first: View, second: View, fraction: number): View {
       mix(first.pivot[1], second.pivot[1], fraction),
       mix(first.pivot[2], second.pivot[2], fraction),
     ],
+  };
+}
+
+/** Where the camera is and which way it looks. */
+export interface CameraPose extends CameraAngles {
+  readonly view: View;
+}
+
+/** An eased mix of two cameras that move, zoom, tilt and turn at the same
+ *  time (`move: together`). The angles mix evenly. The scale mixes evenly in
+ *  its logarithm, so each step zooms by the same factor. The pivot moves
+ *  through the world at a speed that falls as the scale grows, so that it
+ *  crosses the screen at an even speed: with r the ratio of the scales, it
+ *  has gone (1 - r^-u) / (1 - r^-1) of its way at u. Its place on the slide
+ *  mixes evenly. */
+export function mixCamera(
+  first: CameraPose,
+  second: CameraPose,
+  fraction: number,
+): CameraPose {
+  const from = first.view;
+  const to = second.view;
+  const ratio = to.scale / from.scale;
+  const scale = from.scale * ratio ** fraction;
+  const along =
+    Math.abs(Math.log(ratio)) < 1e-9
+      ? fraction
+      : (1 - ratio ** -fraction) / (1 - 1 / ratio);
+  const pivot = [0, 1, 2].map((axis) =>
+    mix(from.pivot[axis] ?? 0, to.pivot[axis] ?? 0, along),
+  ) as [number, number, number];
+  const onSlide = (view: View, axis: 0 | 1): number =>
+    view.scale * view.pivot[axis] + view.shift[axis];
+  return {
+    view: {
+      name: `${from.name} to ${to.name}`,
+      scale,
+      shift: [
+        mix(onSlide(from, 0), onSlide(to, 0), fraction) - scale * pivot[0],
+        mix(onSlide(from, 1), onSlide(to, 1), fraction) - scale * pivot[1],
+      ],
+      pivot,
+    },
+    tilt: mix(first.tilt, second.tilt, fraction),
+    turn: mix(first.turn, second.turn, fraction),
   };
 }
 
@@ -232,8 +293,20 @@ function applyPhase(values: Values, phase: Phase, now: number): void {
     case "view":
       values.view = done ? phase.to : mixView(phase.from, phase.to, eased);
       break;
-    case "tilt":
-      values.tilt = done ? phase.to : mix(phase.from, phase.to, eased);
+    case "camera": {
+      const pose = done ? phase.to : mixCamera(phase.from, phase.to, eased);
+      values.view = pose.view;
+      values.tilt = pose.tilt;
+      values.turn = pose.turn;
+      break;
+    }
+    case "angles":
+      values.tilt = done
+        ? phase.to.tilt
+        : mix(phase.from.tilt, phase.to.tilt, eased);
+      values.turn = done
+        ? phase.to.turn
+        : mix(phase.from.turn, phase.to.turn, eased);
       break;
     case "fade":
       values.keep = done ? phase.after : phase.keep;
@@ -284,6 +357,7 @@ export class Timeline {
       this.values = {
         view: state.view,
         tilt: state.tilt,
+        turn: state.turn,
         keep: state.shown,
         fade: NOTHING,
         rest: 1,
@@ -373,8 +447,8 @@ export class Timeline {
       }
     };
     const moves = !sameView(current.view, state.view);
-    const tilts = current.tilt !== state.tilt;
-    if (moves || tilts) {
+    const turns = current.tilt !== state.tilt || current.turn !== state.turn;
+    if (moves || turns) {
       const moveWith =
         state.moveWith === "all"
           ? union(shown, state.shown)
@@ -398,21 +472,29 @@ export class Timeline {
           seconds: seen ? MOVE_SECONDS : 0,
         });
       };
-      const tilt = (): void => {
-        if (!tilts) return;
+      const turn = (): void => {
+        if (!turns) return;
         add({
-          channel: "tilt",
-          from: current.tilt,
-          to: state.tilt,
+          channel: "angles",
+          from: { tilt: current.tilt, turn: current.turn },
+          to: { tilt: state.tilt, turn: state.turn },
           start,
-          seconds: seen ? TILT_SECONDS : 0,
+          seconds: seen ? ANGLES_SECONDS : 0,
         });
       };
-      if (state.view.scale > current.view.scale) {
+      if (state.move === "together") {
+        add({
+          channel: "camera",
+          from: { view: current.view, tilt: current.tilt, turn: current.turn },
+          to: { view: state.view, tilt: state.tilt, turn: state.turn },
+          start,
+          seconds: seen ? TOGETHER_SECONDS : 0,
+        });
+      } else if (state.view.scale > current.view.scale) {
         move();
-        tilt();
+        turn();
       } else {
-        tilt();
+        turn();
         move();
       }
     }
@@ -470,7 +552,7 @@ export class Timeline {
    *  last. After a jump, the text waits for the old picture to go. */
   viewEndAt(now: number): number {
     const ends = this.phases
-      .filter((phase) => phase.channel === "view")
+      .filter((phase) => phase.channel === "view" || phase.channel === "camera")
       .map((phase) => phase.start + phase.seconds * 1000);
     return Math.max(now, ...ends);
   }

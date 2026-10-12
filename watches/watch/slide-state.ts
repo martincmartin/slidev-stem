@@ -73,6 +73,7 @@ export function slideState(
       // a hidden watch keeps its last values: they are not on the screen
       settled["view"] = values.view.name;
       settled["tilt"] = values.tilt;
+      settled["turn"] = values.turn;
       // what is on the screen, once nothing fades
       settled["shown"] = [...values.keep]
         .map((mesh) => mesh.name)
@@ -80,6 +81,7 @@ export function slideState(
         .join(", ");
       continuous["view scale"] = values.view.scale;
       continuous["tilt"] = values.tilt;
+      continuous["turn"] = values.turn;
     }
     busy = stage.movingAt(now);
   }
@@ -88,6 +90,15 @@ export function slideState(
   const tickTock = document.querySelector<HTMLElement>(".tick-tock");
   const words = tickTock?.dataset["shown"];
   if (words !== undefined) settled["tick-tock"] = words;
+  // the time scale (components/TimeScale.vue): its number is a gauge, which
+  // changes at once, not a fade, so it is `settled`; it waits for the
+  // number to reach the click's speed-up. The time scale itself fades
+  const timeScale = document.querySelector<HTMLElement>(".time-scale");
+  if (timeScale) {
+    settled["time scale"] = Number(timeScale.dataset["speedUp"]);
+    continuous["time scale opacity"] = seen * shownOpacity(timeScale);
+    if (timeScale.dataset["busy"] === "true") busy = true;
+  }
   for (const host of boards) {
     const phase = host.dataset["phase"];
     if (phase !== undefined) settled["board"] = phase;

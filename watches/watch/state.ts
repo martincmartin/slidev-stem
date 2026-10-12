@@ -5,7 +5,8 @@
 // with the same keys, in a block under `watchClicks` (CLICK_KEYS):
 //   watch: the pieces shown ([hairspring, collet, stud]), or `all`; no key
 //     on the slide hides the watch. A list of pieces may hold lists (YAML
-//     aliases: [*gears, pallet fork]); they are flattened
+//     aliases: [*gears, pallet fork]); they are flattened. It may hold
+//     `all`: every piece that `all` shows ([all, hour wheel])
 //   watchView: what the camera frames: a named view (cover, hairspring,
 //     crown), or a list of pieces, which the view fits (`fittedView`); none:
 //     the view fits the pieces shown
@@ -14,14 +15,24 @@
 //   watchBand: picture (default) or slide: the band whose height a fitted
 //     view fills (`fittedView`)
 //   watchTilt: degrees (default 0)
+//   watchTurn: degrees, clockwise on the slide, before the tilt (default 0;
+//     `CameraAngles`); only with a named view
+//   watchMove: ordered (default): the camera moves, then tilts and turns,
+//     or the reverse; together: all at the same time (`CameraMove`). It is
+//     the move of the step between this click and the one before, in either
+//     direction (`stepMove`)
 //   watchAtRest: true: the balance is at rest; false (default): it swings
 //   watchSpin: degrees a second of the escape wheel: the train spins freely
 //     (`TrainClock`); false (default): it follows the mechanism
 //   watchTickTock: true: the words "tick" and "tock" show at each strike of
 //     the jewel on the fork; false (default): they do not (`tickTockState`)
+//   watchTimeScale: true: the time scale shows the speed-up, live, in the
+//     lower right corner; false (default): it does not (`timeScaleState`)
 //   watchMainspring: a stage of the Mainspring slide's story (free, wound,
 //     released, barrel, run down: watch/mainspring.ts); it also says
 //     when the balance swings, so it is not set with watchAtRest
+//   watchLapse: the time-lapse's speed-up (default 1: none; watch/lapse.ts);
+//     not with watchSpin, watchMainspring or watchAtRest: true
 //   watchDim: pieces drawn dimmed (WATCH_DIM), to keep the eye on the
 //     others; false (default): none
 // On the slide or in a block, about the step into that click, so they do
@@ -43,10 +54,12 @@
 //     ({1: {watch: [*gears, pallet fork], watchSpin: false}})
 
 import type { Mesh, Piece, View } from "../webgl/scene.ts";
-import type { MoveWith, StageState } from "../webgl/timeline.ts";
+import { CAMERA_MOVES } from "../webgl/timeline.ts";
+import type { CameraMove, MoveWith, StageState } from "../webgl/timeline.ts";
 import { FIT_BANDS, fittedView } from "./generate.ts";
 import type { FitBand, Watch } from "./generate.ts";
 import { MAINSPRING_STAGES } from "./mainspring.ts";
+import type { Move } from "./navigation.ts";
 import type { MainspringStage } from "./mainspring.ts";
 import type { WatchModelState } from "./model.ts";
 
@@ -61,8 +74,11 @@ export const WATCH_DIM = 0.35;
 export interface WatchState {
   /** A named view, or `null`: the view that fits `fit`. */
   view: string | null;
+  /** Degrees (`CameraAngles`). */
   tilt: number;
-  /** The names of the pieces shown at this click, or "all". */
+  turn: number;
+  /** The names of the pieces shown at this click, or "all". A list may
+   *  hold "all": every piece that "all" shows. */
   show: readonly string[] | "all";
   /** The names of the pieces that the fitted view fits, or "all": the
    *  `watchView` list, or else the pieces shown. */
@@ -92,6 +108,11 @@ export interface WatchState {
   mainspring: MainspringStage | null;
   /** The names of the pieces drawn dimmed, or `null`: none. */
   dim: readonly string[] | null;
+  /** The time-lapse's speed-up: 1, the mechanism's own speed, or more
+   *  (`watchLapse`; watch/lapse.ts). */
+  lapse: number;
+  /** How the camera goes to this click. */
+  move: CameraMove;
   /** Outgoing groups that pause before their fade, on this step only. */
   linger?: readonly {
     readonly pieces: readonly string[];
@@ -129,7 +150,8 @@ function namesOf(name: string, value: unknown): readonly string[] {
   return [...new Set(flat as string[])];
 }
 
-/** The pieces shown: a list of pieces, or `all`. */
+/** The pieces shown: a list of pieces, or `all`. The list may hold `all`
+ *  too: every piece that `all` shows, and the others in the list. */
 function shownOf(name: string, value: unknown): readonly string[] | "all" {
   return value === "all" ? "all" : namesOf(name, value);
 }
@@ -157,7 +179,7 @@ function bandOf(name: string, value: unknown): FitBand {
   return found;
 }
 
-function tiltOf(name: string, value: unknown): number {
+function degreesOf(name: string, value: unknown): number {
   if (typeof value !== "number" || !Number.isFinite(value)) {
     return wrong(name, value, "a number of degrees");
   }
@@ -167,6 +189,21 @@ function tiltOf(name: string, value: unknown): number {
 function booleanOf(name: string, value: unknown): boolean {
   if (typeof value !== "boolean") return wrong(name, value, "true or false");
   return value;
+}
+
+/** A time-lapse's speed-up: 1 or more. */
+function lapseOf(name: string, value: unknown): number {
+  if (typeof value !== "number" || !(value >= 1) || !Number.isFinite(value)) {
+    return wrong(name, value, "a speed-up of 1 or more");
+  }
+  return value;
+}
+
+function moveOf(name: string, value: unknown): CameraMove {
+  const found = CAMERA_MOVES.find((move) => move === value);
+  if (found === undefined)
+    return wrong(name, value, CAMERA_MOVES.join(", or "));
+  return found;
 }
 
 /** Degrees a second, or `null`: the train follows the mechanism. */
@@ -240,11 +277,15 @@ const CLICK_KEYS = {
   watchView: viewOf,
   watchRight: rightOf,
   watchBand: bandOf,
-  watchTilt: tiltOf,
+  watchTilt: degreesOf,
+  watchTurn: degreesOf,
+  watchMove: moveOf,
   watchAtRest: booleanOf,
   watchSpin: spinOf,
   watchTickTock: booleanOf,
+  watchTimeScale: booleanOf,
   watchMainspring: mainspringOf,
+  watchLapse: lapseOf,
   watchDim: dimOf,
 } as const;
 type ClickKey = keyof typeof CLICK_KEYS;
@@ -399,6 +440,11 @@ export function watchState(
   if (now.watchBand !== undefined && "view" in framed) {
     return wrong("watchBand", now.watchBand, "set only with a fitted view");
   }
+  // a fitted view fits the pieces' boxes in the plan, as the camera shows
+  // them at turn 0 (`fittedView`)
+  if ((now.watchTurn ?? 0) !== 0 && !("view" in framed)) {
+    return wrong("watchTurn", now.watchTurn, "set only with a named view");
+  }
   const mainspring = now.watchMainspring ?? null;
   if (mainspring !== null && now.watchAtRest !== undefined) {
     return wrong(
@@ -407,9 +453,25 @@ export function watchState(
       "left out where watchMainspring is set",
     );
   }
+  // the time-lapse moves the train on with the balance: a spin, the
+  // Mainspring slide's story and a balance at rest move it their own ways
+  const lapse = now.watchLapse ?? 1;
+  if (
+    lapse !== 1 &&
+    ((now.watchSpin ?? null) !== null ||
+      mainspring !== null ||
+      now.watchAtRest === true)
+  ) {
+    return wrong(
+      "watchLapse",
+      lapse,
+      "1 where watchSpin, watchMainspring or watchAtRest: true is set",
+    );
+  }
   return {
     view: "view" in framed ? framed.view : null,
     tilt: now.watchTilt ?? 0,
+    turn: now.watchTurn ?? 0,
     show,
     fit: "fit" in framed ? framed.fit : show,
     right: now.watchRight ?? null,
@@ -428,7 +490,21 @@ export function watchState(
     spin: now.watchSpin ?? null,
     mainspring,
     dim: now.watchDim ?? null,
+    lapse,
+    move: now.watchMove ?? "ordered",
   };
+}
+
+/** The camera's move (`watchMove`) on a step from `from` to `to`: the later
+ *  one's, so that a step back is the step forward, reversed
+ *  (../docs/navigation.md). `move` is the step's (`moveOf`); `from` is
+ *  `undefined` if it shows no watch. */
+export function stepMove(
+  from: WatchState | undefined,
+  to: WatchState,
+  move: Move,
+): CameraMove {
+  return move === "back" && from ? from.move : to.move;
 }
 
 /** Whether the words "tick" and "tock" show at each strike, at `clicks`
@@ -438,6 +514,15 @@ export function tickTockState(
   clicks: number,
 ): boolean {
   return atClick(frontmatter, clicks).watchTickTock ?? false;
+}
+
+/** Whether the time scale shows, at `clicks` (`watchTimeScale`). Throws as
+ *  `watchState` does. */
+export function timeScaleState(
+  frontmatter: Record<string, unknown>,
+  clicks: number,
+): boolean {
+  return atClick(frontmatter, clicks).watchTimeScale ?? false;
 }
 
 /** The camera's and the fade's state, with the names turned into objects.
@@ -457,10 +542,13 @@ export function stageState(
     });
   const meshesOf = (pieces: readonly Piece[]): ReadonlySet<Mesh> =>
     new Set(pieces.flatMap((piece) => [...piece.meshes]));
+  const all = scene.pieces.filter((piece) => piece.inAll);
   const piecesOf = (names: readonly string[] | "all"): readonly Piece[] =>
     names === "all"
-      ? scene.pieces.filter((piece) => piece.inAll)
-      : piecesNamed("watch", names);
+      ? all
+      : names.flatMap((name) =>
+          name === "all" ? all : piecesNamed("watch", [name]),
+        );
   const namedView = (name: string): View => {
     const found = scene.views.find((candidate) => candidate.name === name);
     if (!found) throw new Error(`watchView: no watch view "${name}"`);
@@ -479,6 +567,8 @@ export function stageState(
   return {
     view,
     tilt: state.tilt,
+    turn: state.turn,
+    move: state.move,
     shown: meshesOf(piecesOf(state.show)),
     flash: state.flash
       ? meshesOf(piecesNamed("watchFlash", state.flash))
@@ -516,5 +606,6 @@ export function modelState(state: WatchState): WatchModelState {
     settled: state.settled,
     spin: state.spin,
     mainspring: state.mainspring,
+    lapse: state.lapse,
   };
 }

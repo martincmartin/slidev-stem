@@ -40,6 +40,7 @@ export class WatchStills {
     const key = JSON.stringify([
       state.view,
       state.tilt,
+      state.turn,
       state.show,
       state.fit,
       state.right,
@@ -68,6 +69,7 @@ export class WatchStills {
       renderer.render({
         view: stage.view,
         tilt: stage.tilt,
+        turn: stage.turn,
         groupMatrices: this.motion.matrices(
           time,
           swing,
