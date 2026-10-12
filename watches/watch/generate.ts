@@ -376,7 +376,7 @@ export interface Watch {
 interface Paint {
   /** The subject's faces. */
   subjectWash: Colour;
-  /** A small dark part of the subject, solid: the jewel, the seconds hand. */
+  /** A small dark part of the subject, solid: the jewel. */
   subjectFill: Colour;
   /** Muted, solid: the hands. */
   mutedFill: Colour;
@@ -2237,7 +2237,7 @@ function forkSolids(kit: Kit): void {
  *  Returns the chapter ring. */
 function dialSolids(kit: Kit): Solid {
   const { design, paint, parts, groups, solids } = kit;
-  const { subjectWash, subjectFill, mutedFill, mutedLine, line } = paint;
+  const { subjectWash, mutedFill, mutedLine, line } = paint;
   const {
     root,
     seconds: secondsGroup,
@@ -2276,8 +2276,8 @@ function dialSolids(kit: Kit): Solid {
     secondsPart,
     "circle",
     secondsGroup,
-    ringsOf([circlePath(0, 0, 2.5), null]),
-    subjectFill,
+    ringsOf([circlePath(0, 0, 2.5), line(2)]),
+    subjectWash,
   );
 
   // the chapter ring: what is left of the dial

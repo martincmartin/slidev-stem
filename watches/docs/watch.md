@@ -94,6 +94,9 @@ until the balance is at 11 o'clock. The barrel is at `BARREL_ANGLE`, as near
 The hands still turn clockwise: the layout moves the arbors, not the turning
 directions. `art/watch_design.py` holds the numbers, and `LAYOUT` the angles.
 
+The seconds-hand cap and the centre cap use the subject wash for their faces
+and the subject colour for their outlines (`dialSolids` in `watch/generate.ts`).
+
 The minute wheel is at `minute_angle` in `LAYOUT`, about 10:40. It is above
 the train, so only the chapter ring limits it, and the search does not move
 it. At 10:40 it covers nothing of the train that the hour wheel does not
