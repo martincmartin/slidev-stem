@@ -190,6 +190,22 @@ shaped to drive, so the contact opens a little as each tooth leaves: the
 test allows 0.4 px there, not 0.3 px (`MAX_DRIVEN_GAP` in `teeth.test.ts`
 says why).
 
+**The arbors that carry a pinion have one radius, `ARBOR_RADIUS`.** Two
+limits set it:
+
+- **The wheel tips.** In a 4-leaf pinion, the wheel tips reach to
+  $r \approx 2.5$ (the pinion's pitch radius less the wheel's `depth`). A
+  thicker arbor cuts into the tips. `watch/generate.test.ts` fails if a tip
+  reaches more than 0.05 px into the arbor: on the screen, that much is
+  inside the arbor's outline.
+- **Legibility.** The outline stays 2 px wide at every zoom, so a thinner
+  arbor fills with ink at the smallest scales. For example, the Gear Train
+  slide's click 1 is at scale 0.8.
+
+**Not an oversight:** a 4-leaf pinion's root circle ($r \approx 1.7$–$2.1$)
+is inside its arbor. So the leaves seem to grow out of the arbor. The wheel
+tips must reach into the gaps, so the root cannot move out past the arbor.
+
 The escape wheel's club teeth are separate: they act on the pallet stones.
 `escapeOutline` in `watch/shapes.ts` makes them.
 

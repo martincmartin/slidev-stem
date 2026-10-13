@@ -70,6 +70,10 @@ import {
  *  runs up from its wheel, through the pinion, so that a view without the
  *  pinion (the Escapement slide's escape wheel) shows no floating arbor. */
 const ARBOR_CAP = 3;
+/** The radius of each arbor that carries a pinion (docs/watch.md, "The
+ *  teeth"): thin enough that the wheel tips in a 4-leaf pinion's gaps stay
+ *  out of it, thick enough to show as a ring when the view is small. */
+export const ARBOR_RADIUS = 2.5;
 const STRAP_THICKNESS = 4;
 /** From the watch centre: off the slide up to a tilt of about 75 degrees. */
 const STRAP_LENGTH = 1100;
@@ -658,7 +662,7 @@ function motionWorksSolids(kit: Kit): MotionSolids {
     parts.minuteWheel,
     "circle",
     groups.minuteWheel,
-    ringsOf([circlePath(0, 0, 3), line(2)]),
+    ringsOf([circlePath(0, 0, ARBOR_RADIUS), line(2)]),
     subjectWash,
   );
   const hourPiece = piece("hour wheel");
@@ -1793,7 +1797,7 @@ function trainSolids(kit: Kit): void {
       owner,
       "circle",
       group,
-      ringsOf([circlePath(0, 0, 3), line(2)]),
+      ringsOf([circlePath(0, 0, ARBOR_RADIUS), line(2)]),
       subjectWash,
     );
   }

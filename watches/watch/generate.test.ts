@@ -9,11 +9,14 @@ import { AtRest, discOutline } from "./at-rest.ts";
 import type { Mesh, Piece } from "../webgl/scene.ts";
 import { INKS } from "../webgl/scene.ts";
 import {
+  ARBOR_RADIUS,
   driveArrowShape,
   fittedView,
   generate,
   JEWEL_FLAT_OFFSET,
   JEWEL_RADIUS,
+  oneStepHourWheel,
+  oneStepWheel,
   PICTURE_BAND,
 } from "./generate.ts";
 
@@ -55,6 +58,38 @@ test("each wheel is one mesh distance from the pinion it drives", () => {
         distance - (wheel.pitchRadius + (wheel.driven.pinionRadius ?? 0)),
       ) < 1e-9,
       `${wheel.name} to ${wheel.driven.name}`,
+    );
+  }
+});
+
+test("each wheel's tips stay out of the arbor of the pinion that it meshes with", () => {
+  // The hour wheel's tips reach 0.013 px into the minute arbor. Up to 0.05 px
+  // does not show: at scale 15 (for example, the Recap slide's closest view)
+  // it is 0.75 px, inside the arbor's outline, which reaches 1 px out
+  const allowed = 0.05;
+  const { minute, hour } = design.motionWorks;
+  const meshes: [string, number, number][] = [
+    ...[...design.wheels, oneStepWheel(design)].flatMap(
+      (wheel): [string, number, number][] =>
+        wheel.driven === null
+          ? []
+          : [[wheel.name, wheel.driven.pinionRadius ?? 0, wheel.depth]],
+    ),
+    ...[minute, hour, oneStepHourWheel(design)].map(
+      (wheel): [string, number, number] => [
+        wheel.name,
+        wheel.driver.radius,
+        wheel.depth,
+      ],
+    ),
+  ];
+  for (const [name, pinionRadius, depth] of meshes) {
+    assert.ok(pinionRadius > 0, name);
+    // a tip on the line of centres is this far from the pinion's centre
+    const reach = pinionRadius - depth;
+    assert.ok(
+      reach > ARBOR_RADIUS - allowed,
+      `the ${name} wheel's tips reach ${reach.toFixed(3)} px from the arbor's centre`,
     );
   }
 });
