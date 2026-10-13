@@ -11,7 +11,7 @@ import type { Group, MeshGeometry } from "../webgl/scene.ts";
 import type { Timing, Wheel } from "./design.ts";
 import type { Watch, WatchGroups } from "./generate.ts";
 import { LapseClock } from "./lapse.ts";
-import { MainspringClock, WOUND } from "./mainspring.ts";
+import { MainspringClock, runningSpringPose, WOUND } from "./mainspring.ts";
 import type { MainspringPose, MainspringStage } from "./mainspring.ts";
 import { polar, radians } from "./shapes.ts";
 
@@ -868,6 +868,10 @@ export interface WatchModelState {
   mainspring: MainspringStage | null;
   /** The time-lapse's speed-up (watch/lapse.ts): 1, none. */
   lapse: number;
+  /** Unwind with the barrel, without stopping at zero wind. Default false. */
+  unwind?: boolean;
+  /** Wind at this click before the camera moves. Default false. */
+  wind?: boolean;
 }
 
 /** The train's beats in one turn of the barrel: one time-lapse. */
@@ -894,6 +898,9 @@ export class WatchModel implements Model<WatchModelState> {
   /** The mainspring's last pose drawn, so that an unchanged one is not
    *  drawn again. */
   private drawn: MainspringPose | null = null;
+  /** The barrel's angle when the running spring was wound, or null off
+   *  that state. */
+  private woundAt: number | null = null;
   /** ms: the last frame's `now`, for the next frame's shutter. */
   private lastFrame: number | null = null;
   /** The frames drawn, to spread their instants over their shutters. */
@@ -978,6 +985,29 @@ export class WatchModel implements Model<WatchModelState> {
       now,
       instantly,
     );
+    if (!state.unwind) this.woundAt = null;
+    else if (instantly || state.wind || this.woundAt === null) {
+      this.woundAt = this.barrelAngle(this.mechanismAt(now).beats);
+    }
+  }
+
+  /** The mechanism and train at `now`, with the lapse in beats. */
+  private mechanismAt(
+    now: number,
+    lapse = this.story.trainBeats(now) + this.lapseBeats(now),
+  ): {
+    time: number;
+    swing: number;
+    beats: number;
+  } {
+    const { time, swing } = mechanismAt(this.clock, now, lapse);
+    const beats = this.train.position(now, this.motion.beats(time));
+    return { time, swing, beats };
+  }
+
+  /** Degrees: the barrel at the train's position. */
+  private barrelAngle(beats: number): number {
+    return at(this.watch.design.wheels, 0).step * beats;
   }
 
   frame(now: number, renderer: Renderer): Map<Group, Float32Array> {
@@ -998,9 +1028,12 @@ export class WatchModel implements Model<WatchModelState> {
       else this.settle(now);
       this.runs = runs;
     }
-    const { time, swing } = mechanismAt(this.clock, now, lapse);
+    const { time, swing, beats } = this.mechanismAt(now, lapse);
     renderer.updateMesh(this.watch.spring, this.motion.springGeometry(swing));
-    const pose = this.story.pose(now);
+    const pose =
+      this.woundAt === null
+        ? this.story.pose(now)
+        : runningSpringPose(this.woundAt, this.barrelAngle(beats));
     const drawn = this.drawn;
     if (drawn?.arbor !== pose.arbor || drawn.wind !== pose.wind) {
       renderer.updateMesh(
@@ -1009,7 +1042,6 @@ export class WatchModel implements Model<WatchModelState> {
       );
       this.drawn = pose;
     }
-    const beats = this.train.position(now, this.motion.beats(time));
     return this.motion.matrices(time, swing, beats, pose.arbor);
   }
 

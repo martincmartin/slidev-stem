@@ -73,6 +73,20 @@ export interface MainspringPose {
   key: number;
 }
 
+/** A running spring, wound at `woundAt` degrees of the barrel. The arbor
+ *  stays fixed. At zero wind, the spring stays at rest; this pose does not
+ *  stop the mechanism. The barrel turns anticlockwise. */
+export function runningSpringPose(
+  woundAt: number,
+  barrelAngle: number,
+): MainspringPose {
+  return {
+    arbor: woundAt - WOUND,
+    wind: Math.max(0, Math.min(WOUND, WOUND + barrelAngle - woundAt)),
+    key: 0,
+  };
+}
+
 /** A part of the line: the key's turns (which wind the spring, and start
  *  the watch if it is in the barrel), or the uncoil. */
 type Segment =

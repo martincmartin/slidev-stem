@@ -33,6 +33,8 @@
 //     when the balance swings, so it is not set with watchAtRest
 //   watchLapse: the time-lapse's speed-up (default 1: none; watch/lapse.ts);
 //     not with watchSpin, watchMainspring or watchAtRest: true
+//   watchUnwind: true: the spring unwinds with the barrel; at rest, the
+//     mechanism keeps moving. Entering this state or jumping winds it
 //   watchDim: pieces drawn dimmed (WATCH_DIM), to keep the eye on the
 //     others; false (default): none
 // On the slide or in a block, about the step into that click, so they do
@@ -47,6 +49,8 @@
 //     that stay on the screen while the camera moves, and go after it
 //   watchLinger: ordered outgoing groups; each pauses, then fades out,
 //     before the camera moves
+//   watchWind: true: wind the running spring at once at this click, before
+//     the camera moves; only with watchUnwind
 // On the slide only, about the step into it:
 //   watchMoveWith: what shows while the camera moves, on the step between
 //     this slide and the previous one, in either direction (`moveWithBefore`)
@@ -111,6 +115,10 @@ export interface WatchState {
   /** The time-lapse's speed-up: 1, the mechanism's own speed, or more
    *  (`watchLapse`; watch/lapse.ts). */
   lapse: number;
+  /** The spring unwinds with the barrel without stopping the watch. */
+  unwind: boolean;
+  /** Wind at this click only, before the camera moves. */
+  wind: boolean;
   /** How the camera goes to this click. */
   move: CameraMove;
   /** Outgoing groups that pause before their fade, on this step only. */
@@ -286,6 +294,7 @@ const CLICK_KEYS = {
   watchTimeScale: booleanOf,
   watchMainspring: mainspringOf,
   watchLapse: lapseOf,
+  watchUnwind: booleanOf,
   watchDim: dimOf,
 } as const;
 type ClickKey = keyof typeof CLICK_KEYS;
@@ -298,6 +307,7 @@ const STEP_KEYS = {
   watchCut: namesOf,
   watchGoLater: namesOf,
   watchLinger: lingerGroupsOf,
+  watchWind: booleanOf,
 } as const;
 type StepKey = keyof typeof STEP_KEYS;
 type StepValues = { [Key in StepKey]?: ReturnType<(typeof STEP_KEYS)[Key]> };
@@ -456,6 +466,22 @@ export function watchState(
   // the time-lapse moves the train on with the balance: a spin, the
   // Mainspring slide's story and a balance at rest move it their own ways
   const lapse = now.watchLapse ?? 1;
+  const unwind = now.watchUnwind ?? false;
+  if (
+    unwind &&
+    (mainspring !== null ||
+      (now.watchSpin ?? null) !== null ||
+      now.watchAtRest === true)
+  ) {
+    return wrong(
+      "watchUnwind",
+      unwind,
+      "false where watchMainspring, watchSpin or watchAtRest: true is set",
+    );
+  }
+  if (now.watchWind === true && !unwind) {
+    return wrong("watchWind", now.watchWind, "set only with watchUnwind: true");
+  }
   if (
     lapse !== 1 &&
     ((now.watchSpin ?? null) !== null ||
@@ -491,6 +517,8 @@ export function watchState(
     mainspring,
     dim: now.watchDim ?? null,
     lapse,
+    unwind,
+    wind: now.watchWind ?? false,
     move: now.watchMove ?? "ordered",
   };
 }
@@ -607,5 +635,7 @@ export function modelState(state: WatchState): WatchModelState {
     spin: state.spin,
     mainspring: state.mainspring,
     lapse: state.lapse,
+    unwind: state.unwind,
+    wind: state.wind,
   };
 }

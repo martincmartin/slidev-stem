@@ -38,6 +38,8 @@ test("the fields and their defaults", () => {
     mainspring: null,
     dim: null,
     lapse: 1,
+    unwind: false,
+    wind: false,
     move: "ordered",
   });
   const frontmatter = {
@@ -66,6 +68,8 @@ test("the fields and their defaults", () => {
     mainspring: null,
     dim: null,
     lapse: 1,
+    unwind: false,
+    wind: false,
     move: "ordered",
   });
 });
@@ -518,6 +522,8 @@ test("the Mainspring slide's stage says when the watch runs: only in the barrel,
     spin: null,
     mainspring: "barrel",
     lapse: 1,
+    unwind: false,
+    wind: false,
   });
   // the story says when the balance swings: watchAtRest would say it twice
   assert.throws(

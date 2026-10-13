@@ -943,15 +943,19 @@ title: Recap
 watch:
   [all, cannon pinion, minute wheel, minute pinion, minute arbor, hour wheel]
 watchView: recap motion works
+watchUnwind: true
+watchWind: true
 watchTilt: 30
 watchMove: together
 watchLapse: 1440
 watchTimeScale: true
 watchClicks:
-  # the barrel and its spring: the barrel turns once in 6 hours
+  # Wind before moving here, even after a long pause at the first stop.
+  # The barrel turns once in 6 hours.
   1:
     watchView: recap barrel
     watchLapse: 720
+    watchWind: true
   # the barrel's teeth on the centre pinion, low, from about 3:40
   2:
     watchView: recap barrel touch
