@@ -65,6 +65,12 @@ class: balance-wheel
 </div>
 
 <style>
+/* Match the Gear Train title and subtitle outline over the watch. */
+.slidev-layout.balance-wheel h1,
+.slidev-layout.balance-wheel h1 + p {
+  -webkit-text-stroke: 6px var(--palette-background);
+  paint-order: stroke fill;
+}
 /* The sentence is where the Hairspring slide's was, in the same type: its
    left edge is the board's sentence's (DivingBoard.vue, --label-x), and its
    first line's glyphs are where that sentence's first line was, so the new

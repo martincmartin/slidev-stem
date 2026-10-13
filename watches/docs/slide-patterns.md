@@ -186,6 +186,7 @@ A slide that shows the watch names its pieces in the frontmatter, and needs no
 code: the view fits them, and the watch moves from the last slide's picture by
 one rule ([watch.md](watch.md#how-a-slide-shows-the-watch)).
 The Hairspring slide uses the diving board to explain the spring, and the Balance Wheel slide fades its rest shape out as the balance wheel fades in.
+The Balance Wheel title and any subtitle use the Gear Train outline style to stay legible over the watch.
 On the Balance Wheel slide, each click adds text, and no text leaves: at the last click, all of the slide's text is on the slide. Click 1 adds "and steadily" after "slowly", in a space that is kept for it, so no word moves. Click 2 adds the accuracy of a calibrated watch (99.99%) below the explanation. Click 3 adds what that is in seconds a day, so the audience takes in the percentage first. When a paragraph shows, the paragraphs before it dim ([Text dims](#text-dims)), as the Escapement slide's earlier callouts do. All the text is in the sentence's type, single-spaced; only the stat is larger, in the accent.
 The Escapement slide zooms out, and then the rest of the escapement fades in. Its
 callouts point to parts of the watch, one at each click. At its first click
