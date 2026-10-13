@@ -246,7 +246,9 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   ([`watches/docs/watch.md`](../watches/docs/watch.md), "The one rule").
 - **A state can flash meshes during a change** (`StageState.flash`). If they
   are on the screen, the flash plays first, and the change starts as soon as
-  it ends; if they fade in, it plays when they are in. It flashes only in a
+  it ends; if they fade in, it plays when they are in.
+  With `StageState.flashAfterMove`, it waits for the camera and fades to finish.
+  The watch talk uses this option only on Recap. It flashes only in a
   transition that changes a channel, not in a state shown at once. A key
   press during the flash does not start it again. `Stage.show` (from
   `Timeline.show`) returns the seconds until the flash ends.

@@ -229,6 +229,8 @@ its own colours.
   coils into the wheel behind them, and pale lines on a dark fill read as a
   negative: both were drawn and rejected (the flash task).
 - **When.** Before a camera move to the part, or after the part fades in, to point at what is new.
+  A tour can flash after the camera finishes, so the cue shows at its final view
+  (the watch talk's Recap slide; `watchFlashAfterMove` in its [watch docs](../watches/docs/watch.md#the-recap-slide)).
   Never while a keyword callout shows: its leader is in the second too. Only on the step
   forward into the slide or the click that names it: a slide or a click
   reached by a jump, or by a step back, shows its state with no flash

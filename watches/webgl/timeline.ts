@@ -31,7 +31,8 @@
 // times. If they are all on the screen already, at full opacity, the flash
 // plays before the change, and the change waits for it: it points to where
 // the camera goes. If not, it plays when the change ends, on the meshes that
-// have faded in. A new state with the same flash lets a flash that has
+// have faded in. `flashAfterMove` waits for the change even if the meshes
+// are already visible. A new state with the same flash lets a flash that has
 // started go on, and places one that is still waiting again. Only in a
 // transition: a state shown at once, or one that changes nothing,
 // does not flash. The caller names a flash only on the step forward into its
@@ -84,6 +85,8 @@ export interface StageState extends CameraAngles {
   /** Flashed before the change if they are on the screen, else after it;
    *  `null`: none. */
   flash: ReadonlySet<Mesh> | null;
+  /** Wait for the camera and fades before flashing. Default: false. */
+  flashAfterMove?: boolean;
   /** Of the meshes that fade in at the end of the change, these fade in
    *  after the others. */
   later: ReadonlySet<Mesh>;
@@ -510,8 +513,9 @@ export class Timeline {
       });
     });
     if (!state.flash || this.phases.length === 0) return 0;
-    // only meshes at full opacity are on the screen: a fading one is not, yet
-    const onScreen = within(state.flash, current.keep);
+    // Only fully visible meshes can flash first; an explicit request waits.
+    const flashFirst =
+      !state.flashAfterMove && within(state.flash, current.keep);
     // a flash of the same meshes that has started goes on: a click during it
     // does not start it again. One that is still waiting is placed again.
     const goesOn =
@@ -521,10 +525,10 @@ export class Timeline {
       now < running.start + FLASH_SECONDS * 1000
         ? running
         : null;
-    const flashStart = goesOn ? goesOn.start : onScreen ? now : start;
+    const flashStart = goesOn ? goesOn.start : flashFirst ? now : start;
     this.flash = { meshes: state.flash, start: flashStart };
     // flashing and moving never happen together
-    if (onScreen || goesOn) {
+    if (flashFirst || goesOn) {
       const delay = flashStart + FLASH_SECONDS * 1000 - now;
       for (const phase of this.phases) phase.start += delay;
     }

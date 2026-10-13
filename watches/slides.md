@@ -943,6 +943,8 @@ title: Recap
 watch:
   [all, cannon pinion, minute wheel, minute pinion, minute arbor, hour wheel]
 watchView: recap motion works
+watchFlash: [hour wheel, minute wheel, minute pinion]
+watchFlashAfterMove: true
 watchUnwind: true
 watchWind: true
 watchTilt: 30
@@ -954,39 +956,56 @@ watchClicks:
   # The barrel turns once in 6 hours.
   1:
     watchView: recap barrel
+    watchFlash: [barrel, mainspring, barrel arbor]
     watchLapse: 720
     watchWind: true
   # the barrel's teeth on the centre pinion, low, from about 3:40
   2:
     watchView: recap barrel touch
+    watchFlash: [barrel, centre pinion]
     watchTurn: 80
     watchTilt: 80
   # back up over the movement: the centre wheel on the third pinion, with
   # the next touch behind it, as at each stop from here
   3:
     watchView: recap centre touch
+    watchFlash: [centre wheel, third pinion]
     watchTurn: -10
     watchTilt: 45
     watchLapse: 120
   4:
     watchView: recap third touch
+    watchFlash: [third wheel, fourth pinion]
     watchTurn: 15
     watchLapse: 15
   # the fourth wheel turns once in 30 s, the escape wheel once in 15 s
   5:
     watchView: recap fourth touch
+    watchFlash: [fourth wheel, escape pinion]
     watchTurn: 75
     watchLapse: 2
   # from here, the mechanism at its own speed
   6:
     watchView: recap pallet
+    watchFlash: [escape wheel, pallet fork]
     watchTurn: 90
     watchLapse: 1
   7:
     watchView: recap jewel
+    watchFlash: [impulse jewel, pallet fork]
   # where the Hairspring slide shows it, on the left
   8:
     watchView: hairspring
+    watchFlash:
+      [
+        balance wheel,
+        balance staff,
+        hairspring,
+        collet,
+        stud,
+        roller,
+        impulse jewel,
+      ]
     watchTurn: 0
     watchTilt: 20
     watchTimeScale: false

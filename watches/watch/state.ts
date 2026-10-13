@@ -21,6 +21,8 @@
 //     or the reverse; together: all at the same time (`CameraMove`). It is
 //     the move of the step between this click and the one before, in either
 //     direction (`stepMove`)
+//   watchFlashAfterMove: true: flash after the camera and fades finish;
+//     false (default): use the ordinary flash order
 //   watchAtRest: true: the balance is at rest; false (default): it swings
 //   watchSpin: degrees a second of the escape wheel: the train spins freely
 //     (`TrainClock`); false (default): it follows the mechanism
@@ -95,6 +97,8 @@ export interface WatchState {
   /** The names of the pieces that flash on the step forward into this
    *  click, or `undefined`. */
   flash: readonly string[] | undefined;
+  /** Wait for the camera and fades before flashing. */
+  flashAfterMove: boolean;
   /** The names of the pieces that fade in after the others, on a step into
    *  this click, or `undefined`. */
   later: readonly string[] | undefined;
@@ -288,6 +292,7 @@ const CLICK_KEYS = {
   watchTilt: degreesOf,
   watchTurn: degreesOf,
   watchMove: moveOf,
+  watchFlashAfterMove: booleanOf,
   watchAtRest: booleanOf,
   watchSpin: spinOf,
   watchTickTock: booleanOf,
@@ -503,6 +508,7 @@ export function watchState(
     right: now.watchRight ?? null,
     band: now.watchBand ?? "picture",
     flash: now.watchFlash,
+    flashAfterMove: now.watchFlashAfterMove ?? false,
     later: now.watchLater,
     cut: now.watchCut,
     goLater: now.watchGoLater,
@@ -601,6 +607,7 @@ export function stageState(
     flash: state.flash
       ? meshesOf(piecesNamed("watchFlash", state.flash))
       : null,
+    flashAfterMove: state.flashAfterMove,
     later: state.later
       ? meshesOf(piecesNamed("watchLater", state.later))
       : new Set(),

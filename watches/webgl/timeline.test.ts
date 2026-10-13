@@ -511,6 +511,62 @@ test("a flash of meshes on the screen plays first, and the change waits for it",
   );
 });
 
+test("flashAfterMove waits for pan, zoom, tilt and turn of visible meshes", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  const seconds = timeline.show(
+    state({
+      view: CLOSE,
+      tilt: 20,
+      turn: 90,
+      move: "together",
+      flash: set(SPRING),
+      flashAfterMove: true,
+    }),
+    0,
+  );
+  assert.equal(seconds, TOGETHER_SECONDS + FLASH_SECONDS);
+  assert.equal(timeline.phaseAt(0), "camera");
+  assert.equal(timeline.flashingAt(TOGETHER - 1), null);
+  assert.deepEqual(timeline.flashingAt(TOGETHER), set(SPRING));
+  const settled = timeline.valuesAt(TOGETHER);
+  assert.equal(settled.view, CLOSE);
+  assert.equal(settled.tilt, 20);
+  assert.equal(settled.turn, 90);
+  assert.equal(timeline.phaseAt(TOGETHER), "flash");
+  assert.equal(timeline.phaseAt(TOGETHER + FLASH_SECONDS * 1000), null);
+});
+
+test("an interrupted flashAfterMove waits for the new target", () => {
+  const timeline = timelineAt(state({ view: WIDE }));
+  const flashed = { flash: set(SPRING), flashAfterMove: true };
+  timeline.show(state({ view: CLOSE, ...flashed }), 0);
+  timeline.show(state({ view: FAR, ...flashed }), MOVE / 2);
+  const end = MOVE / 2 + MOVE;
+  assert.equal(timeline.flashingAt(MOVE), null);
+  assert.equal(timeline.flashingAt(end - 1), null);
+  assert.deepEqual(timeline.flashingAt(end), set(SPRING));
+  assert.equal(timeline.valuesAt(end).view, FAR);
+  timeline.show(state({ view: WIDE, ...flashed }), end + 100, true);
+  assert.equal(timeline.flashingAt(end + 100), null);
+});
+
+test("flashAfterMove waits for the final fade too", () => {
+  const timeline = timelineAt(state({ view: WIDE, shown: set(SPRING) }));
+  timeline.show(
+    state({
+      view: CLOSE,
+      shown: set(SPRING, BALANCE),
+      flash: set(SPRING, BALANCE),
+      flashAfterMove: true,
+    }),
+    0,
+  );
+  const end = MOVE + FADE;
+  assert.equal(timeline.flashingAt(end - 1), null);
+  assert.deepEqual(timeline.flashingAt(end), set(SPRING, BALANCE));
+  assert.deepEqual(timeline.valuesAt(end).keep, set(SPRING, BALANCE));
+});
+
 test("a flash of meshes that fade in plays when they are in", () => {
   const timeline = timelineAt(state({ view: CLOSE, shown: set(SPRING) }));
   const seconds = timeline.show(

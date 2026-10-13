@@ -229,6 +229,16 @@ test("each step back moves the camera as the step forward does, reversed", () =>
   assert.ok(compared > 0, "no step moves the watch");
 });
 
+test("only Recap flashes after the camera finishes, at every stop", () => {
+  for (const { title, frontmatter } of slides) {
+    for (let click = 0; click <= Number(frontmatter["clicks"] ?? 0); click++) {
+      const state = watchState(frontmatter, click);
+      if (!state) continue;
+      assert.equal(state.flashAfterMove, title === "Recap");
+    }
+  }
+});
+
 test("the step from the Recap slide to the cover's picture moves in order both ways", () => {
   const index = slides.findIndex(({ title }) => title === "Recap");
   const recap = slides[index]?.frontmatter;

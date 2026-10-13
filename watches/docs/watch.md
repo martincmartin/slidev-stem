@@ -875,6 +875,16 @@ picture band do not apply. The options and the evidence are in
   the fourth wheel on the escape pinion; the escape wheel on the pallet's
   stones; the impulse jewel in the fork; and the balance and its hairspring,
   as the Hairspring slide shows them, on the left.
+- **Each focus flashes after the camera finishes**, on a forward step only
+  (`watchFlashAfterMove: true` in `slides.md`). Each wheel flashes with the pinion it meets.
+  The first stop also flashes the minute wheel with its pinion and the hour wheel.
+  The barrel flashes with its mainspring and arbor, including the arbor's square.
+  The escape wheel flashes with the whole pallet fork, whose outline includes
+  the stones. Its pinion and arbor do not flash at this stop.
+  The impulse jewel flashes with the pallet fork. Its solid subject fill uses
+  `second`, the flash's line colour, rather than `secondWash`.
+  The last stop flashes the balance wheel, staff, hairspring, collet, stud,
+  roller and impulse jewel. The flash timing is in `webgl/timeline.ts`.
 - **A stop's view is made from its touch** (`recapViews` in
   `watch/recap.ts`): the touch's place comes from the design, at the middle
   of the height of the wheel whose teeth make it, and it shows at the
@@ -1163,7 +1173,9 @@ this.
 
 **Flashing and zooming must not happen together: the combined motion is too
 visually busy and confusing.** A flash of pieces that are on the screen plays
-first, and the change starts when it ends (the Hairspring slide). A flash of
+first, and the change starts when it ends (the Hairspring slide). With
+`watchFlashAfterMove: true`, it plays after the camera and fades finish (the Recap slide).
+A flash of
 pieces that fade in plays when they are in (the Balance Wheel slide).
 `webgl/timeline.ts` holds the flash count and all durations.
 
@@ -1247,6 +1259,7 @@ which dims halfway (`--text-dimmed`;
 | `watchTickTock: true`                                       | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `false` (default): they do not                                                                                                                                               |
 | `watchTimeScale: true`                                      | the time scale shows the speed-up, live, in the lower right corner ([The Recap slide](#the-recap-slide)); `false` (default): it does not                                                                                                                                     |
 | `watchFlash: [balance wheel]`                               | pieces that flash, on the step forward into the slide (on the slide) or into the block's click (in `watchClicks`) only; it does not carry on to later clicks ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash")                                          |
+| `watchFlashAfterMove: true`                                 | flash after the camera and fades finish; false (default): use the ordinary flash order. This setting carries to later clicks. The Recap slide uses it.                                                                                                                       |
 | `watchMoveWith: all`                                        | on the slide only: what is on the screen while the camera moves, on the step between this slide and the previous one: `common` (default), `all` or `none`                                                                                                                    |
 | `watchCut: [mainspring stud]`                               | of the pieces that go or come on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that do so at once, with no fade, before the others fade; it does not carry on to later clicks                                                     |
 | `watchLater: [case band]`                                   | of the pieces that fade in on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that fade in after the others; it does not carry on to later clicks                                                                                   |

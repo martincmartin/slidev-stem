@@ -30,6 +30,7 @@ test("the fields and their defaults", () => {
     right: null,
     band: "picture",
     flash: undefined,
+    flashAfterMove: false,
     later: undefined,
     cut: undefined,
     goLater: undefined,
@@ -60,6 +61,7 @@ test("the fields and their defaults", () => {
     right: null,
     band: "picture",
     flash: undefined,
+    flashAfterMove: false,
     later: undefined,
     cut: undefined,
     goLater: undefined,
@@ -151,6 +153,23 @@ test("watchLinger resolves its pieces and applies only at the declared click", (
       /watchLinger/,
     );
   }
+});
+
+test("watchFlashAfterMove carries to later clicks and resolves to the stage", () => {
+  const frontmatter = {
+    watch: "all",
+    watchFlashAfterMove: true,
+    watchClicks: { 2: { watchFlashAfterMove: false } },
+  };
+  for (const click of [0, 1, 2, 3]) {
+    const parsed = watchState(frontmatter, click) ?? assert.fail();
+    assert.equal(parsed.flashAfterMove, click < 2);
+    assert.equal(stageState(watch, parsed).flashAfterMove, click < 2);
+  }
+  assert.throws(
+    () => watchState({ watch: "all", watchFlashAfterMove: "true" }, 0),
+    /watchFlashAfterMove/,
+  );
 });
 
 test("a flash is of one click: the slide's at click 0, a block's at its click", () => {
