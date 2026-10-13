@@ -8,7 +8,7 @@
 import type { Point2 } from "../webgl/mesh.ts";
 import { at } from "../webgl/checked.ts";
 import type { DrivenWheel, DrivingPinion, Wheel } from "./design.ts";
-import { Path } from "./path.ts";
+import { circlePath, Path } from "./path.ts";
 import { polar, radians } from "./shapes.ts";
 
 /** What a wheel's teeth are made from: a train wheel or a wheel of the
@@ -440,6 +440,52 @@ export function drivingPinionLeaves(
 ): Path {
   // it drives, so it has no lead
   return leavesOutline(pinion, form);
+}
+
+/** Where an arbor of `radius` comes up through the top of the pinion on
+ *  `owner`'s arbor: the parts of its circle that lie on the pinion. */
+export function pinionSeam(
+  owner: Wheel,
+  radius: number,
+  form: ToothForm = TOOTH_FORM,
+): Path {
+  return seam(trainPinion(owner, form), radius, form);
+}
+
+/** Where an arbor of `radius` comes up through the top of a pinion of the
+ *  motion works: as `pinionSeam`. */
+export function drivingPinionSeam(
+  pinion: DrivingPinion,
+  radius: number,
+  form: ToothForm = TOOTH_FORM,
+): Path {
+  return seam(pinion, radius, form);
+}
+
+/** The whole circle if it is inside the root circle. Else, one open arc
+ *  across each leaf, between its radial flanks: in the gaps the arbor goes
+ *  on down to the wheel (docs/watch.md, "Where an arbor comes up through a
+ *  face"). */
+function seam(pinion: Leaved, radius: number, form: ToothForm): Path {
+  const leaf = pinionLeaf(pinion, form);
+  if (radius <= leaf.rootRadius) return circlePath(0, 0, radius);
+  if (!(radius < pinion.radius)) {
+    throw new Error(
+      `an arbor of radius ${String(radius)} is past the ${pinion.name} pinion's flanks`,
+    );
+  }
+  const leafRadians = (2 * Math.PI) / pinion.leaves;
+  // the lower flank's angle, at any radius from the root to the pitch circle
+  const flank = Math.atan2(leaf.lowerRoot[1], leaf.lowerRoot[0]);
+  const lower: Point2 = [radius * Math.cos(flank), radius * Math.sin(flank)];
+  const path = new Path();
+  for (let index = 0; index < pinion.leaves; index++) {
+    const centre = leaf.first + index * leafRadians;
+    path
+      .moveTo(...turned(lower, centre))
+      .arcTo(radius, false, true, ...turned(mirrored(lower), centre));
+  }
+  return path;
 }
 
 function leavesOutline(pinion: Leaved, form: ToothForm): Path {

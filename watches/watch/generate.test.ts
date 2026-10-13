@@ -38,6 +38,16 @@ function partNameOf(wheel: Wheel): string {
   return wheel.name === "barrel" ? "barrel" : `${wheel.name} wheel`;
 }
 
+/** A seam's line, where an arbor comes up through a face (`seamMesh`). */
+function isSeam(mesh: Mesh): boolean {
+  return mesh.name.endsWith(" seam (added)");
+}
+
+/** The meshes of a piece but its seam. */
+function withoutSeam(name: string): Set<Mesh> {
+  return new Set([...piece(name).meshes].filter((mesh) => !isSeam(mesh)));
+}
+
 function heights(mesh: Mesh): [number, number] {
   const z = Array.from({ length: mesh.triangles.length / 3 }, (_, index) =>
     at(mesh.triangles, 3 * index + 2),
@@ -267,11 +277,61 @@ test("each wheel of the train is three pieces: the wheel with its hub, the pinio
       new Set(wheelMeshes.filter((mesh) => !mesh.holdout)),
       new Set([body, hub]),
     );
-    assert.deepEqual(piece(`${wheel} pinion`).meshes, new Set([pinion]));
+    assert.deepEqual(withoutSeam(`${wheel} pinion`), new Set([pinion]));
     assert.deepEqual(piece(`${wheel} arbor`).meshes, new Set([arbor]));
     // the arbor stands on the wheel: without the pinion it does not float
     assert.equal(heights(arbor)[0], heights(body)[1]);
     assert.ok(heights(arbor)[1] > heights(pinion)[1]);
+  }
+});
+
+test("where an arbor comes up through a face, a line lies on the face's top, in its piece", () => {
+  // docs/watch.md, "Where an arbor comes up through a face"
+  const faces = [
+    "escape pinion",
+    "fourth pinion",
+    "third pinion",
+    "centre pinion",
+    "cannon pinion",
+    "minute pinion",
+    "hour wheel",
+    "one-step hour wheel",
+    "collet",
+  ];
+  const seams = scene.meshes.filter(isSeam);
+  assert.equal(seams.length, faces.length);
+  for (const name of faces) {
+    const own = [...piece(name).meshes].filter(isSeam);
+    assert.equal(own.length, 1, name);
+    const seam = at(own, 0);
+    // a decal: lines only
+    assert.equal(seam.triangles.length, 0, name);
+    assert.equal(seam.fill, null, name);
+    // on the top of a face of its piece, which turns with it
+    const top = Math.max(
+      ...seam.lines.flatMap((line) => line.points.map((point) => point[2])),
+    );
+    const face = [...withoutSeam(name)].find(
+      (mesh) => mesh.group === seam.group && heights(mesh)[1] === top,
+    );
+    assert.ok(face, name);
+    // each other line runs down a crease, from the face's bottom to its top
+    const flat = seam.lines.filter((line) =>
+      line.points.every((point) => point[2] === top),
+    );
+    assert.ok(flat.length > 0, name);
+    for (const line of seam.lines) {
+      if (flat.includes(line)) continue;
+      assert.deepEqual(
+        line.points.map((point) => point[2]),
+        [heights(face)[0], top],
+        name,
+      );
+    }
+    // a 4-leaf pinion: an arc on each leaf, with a crease at each end
+    if (flat.length > 1) {
+      assert.equal(seam.lines.length, 3 * flat.length, name);
+    }
   }
 });
 
@@ -331,7 +391,7 @@ test("the oscillator's pieces: the balance wheel holds its screws; the spring, c
   const [spring, collet, staff] = partMeshes("hairspring");
   assert.ok(spring && collet && staff);
   assert.deepEqual(piece("hairspring").meshes, new Set([spring]));
-  assert.deepEqual(piece("collet").meshes, new Set([collet]));
+  assert.deepEqual(withoutSeam("collet"), new Set([collet]));
   assert.deepEqual(piece("balance staff").meshes, new Set([staff]));
   assert.equal(piece("stud").meshes.size, 1);
   assert.deepEqual(

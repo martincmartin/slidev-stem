@@ -57,9 +57,11 @@ import {
 import {
   drivenWheelTeeth,
   drivingPinionLeaves,
+  drivingPinionSeam,
   meshedSpan,
   pinionLeafShapes,
   pinionLeaves,
+  pinionSeam,
   wheelTeeth,
   wheelToothShapes,
 } from "./teeth.ts";
@@ -616,7 +618,7 @@ function drivenWheelRings(
  *  so the cover does not show them. Their heights are set in
  *  `assignHeights`. */
 function motionWorksSolids(kit: Kit): MotionSolids {
-  const { design, paint, train, parts, groups, solids } = kit;
+  const { design, paint, train, parts, groups, solids, seams } = kit;
   const { subjectWash, line } = paint;
   const { cannon, minute, hour } = design.motionWorks;
   const minutePinion = minute.pinion;
@@ -632,6 +634,11 @@ function motionWorksSolids(kit: Kit): MotionSolids {
     ringsOf([drivingPinionLeaves(cannon), line(LEAVES_LINE)]),
     subjectWash,
   );
+  // the centre arbor comes up through it
+  seams.push({
+    face: cannonSolid,
+    outline: drivingPinionSeam(cannon, ARBOR_RADIUS),
+  });
   const minutePiece = piece("minute wheel");
   const minuteBody = solids.add(
     minutePiece,
@@ -657,6 +664,10 @@ function motionWorksSolids(kit: Kit): MotionSolids {
     ringsOf([drivingPinionLeaves(minutePinion), line(LEAVES_LINE)]),
     subjectWash,
   );
+  seams.push({
+    face: minutePinionSolid,
+    outline: drivingPinionSeam(minutePinion, ARBOR_RADIUS),
+  });
   const minuteArbor = solids.add(
     piece("minute arbor"),
     parts.minuteWheel,
@@ -682,6 +693,7 @@ function motionWorksSolids(kit: Kit): MotionSolids {
     ringsOf([circlePath(0, 0, HOUR_PIPE_RADIUS), line(2)]),
     subjectWash,
   );
+  seams.push({ face: hourBody, outline: circlePath(0, 0, HOUR_PIPE_RADIUS) });
   return {
     cannon: cannonSolid,
     minuteBody,
@@ -724,6 +736,7 @@ function oneStepHourMeshes(
     inDrawing: false,
   });
   const { body, hand: handHeights } = heights;
+  const arbor = circlePath(0, 0, 4);
   return {
     wheel: [
       extrude(
@@ -733,10 +746,18 @@ function oneStepHourMeshes(
         info("body", body.top, subjectWash),
       ),
       extrude(
-        ringsOf([circlePath(0, 0, 4), line(2)]),
+        ringsOf([arbor, line(2)]),
         body.bottom,
         handHeights.bottom,
         info("arbor", handHeights.bottom, subjectWash),
+      ),
+      // where the arbor comes up through the wheel (`seamMesh`)
+      extrude(
+        ringsOf([arbor, line(2)]),
+        body.top,
+        body.top,
+        { ...info("seam (added)", body.top, subjectWash), fill: null },
+        { decal: true },
       ),
     ],
     hand: [
@@ -1400,6 +1421,29 @@ function arborSquareMesh(arborTop: number, group: Group, paint: Paint): Mesh {
   );
 }
 
+/** A seam's line, on its face's top (a decal). Where the arbor goes on down
+ *  in a pinion's gap, each arc also has a line down each crease between a
+ *  leaf and the arbor. It is in the face's piece, so it shows, dims and
+ *  flashes with the face, and not with the arbor: the Hour Hand slide shows
+ *  the minute arbor before the minute pinion. */
+function seamMesh(seam: Seam, { bottom, top }: Heights, paint: Paint): Mesh {
+  const { face } = seam;
+  return extrude(
+    ringsOf([seam.outline, paint.line(2)]),
+    bottom,
+    top,
+    {
+      name: `${face.name} seam (added)`,
+      part: face.part.name,
+      group: face.group,
+      fill: null,
+      lineOrder: top,
+      inDrawing: false,
+    },
+    { decal: true, endLines: true },
+  );
+}
+
 /** The key's bow, in its own plane: across (x) and up (y), from the pipe. */
 function keyBowRings(paint: Paint): Ring[] {
   const { neck, lobeCentre, lobeRadius, holeRadius, dip, lobePoints } = KEY;
@@ -1635,6 +1679,14 @@ interface Kit {
   groups: WatchGroups;
   solids: SolidList;
   pieces: PieceList;
+  seams: Seam[];
+}
+
+/** Where an arbor comes up through the top of a solid (docs/watch.md, "Where
+ *  an arbor comes up through a face"): `outline` lies on `face`'s top. */
+interface Seam {
+  readonly face: Solid;
+  readonly outline: Path;
 }
 
 /** A piece while the watch is built: each mesh joins its piece where it is
@@ -1725,7 +1777,7 @@ const LEAVES_LINE = 2;
 /** The train's wheels but the barrel, back to front: escape wheel, fourth,
  *  third, centre. */
 function trainSolids(kit: Kit): void {
-  const { design, paint, train, parts, groups, solids } = kit;
+  const { design, paint, train, parts, groups, solids, seams } = kit;
   const { subjectWash, line } = paint;
   const { centre, third, fourth, escape } = train;
   interface Drawing {
@@ -1784,7 +1836,7 @@ function trainSolids(kit: Kit): void {
       ringsOf([circlePath(0, 0, 4), line(2)]),
       subjectWash,
     );
-    solids.add(
+    const pinion = solids.add(
       kit.pieces.make(`${wheel.name} pinion`),
       owner,
       "other",
@@ -1792,6 +1844,7 @@ function trainSolids(kit: Kit): void {
       ringsOf([pinionLeaves(wheel), line(LEAVES_LINE)]),
       subjectWash,
     );
+    seams.push({ face: pinion, outline: pinionSeam(wheel, ARBOR_RADIUS) });
     solids.add(
       kit.pieces.make(`${wheel.name} arbor`),
       owner,
@@ -2031,7 +2084,7 @@ interface BalanceSolids {
 
 /** The balance, its hairspring and collet, and the impulse jewel. */
 function balanceSolids(kit: Kit): BalanceSolids {
-  const { design, paint, parts, groups, solids } = kit;
+  const { design, paint, parts, groups, solids, seams } = kit;
   const { subjectWash, subjectFill, line } = paint;
   const { balance: balancePart, spring: springPart, jewel: jewelPart } = parts;
   const { balance: balanceGroup, springBase } = groups;
@@ -2095,7 +2148,7 @@ function balanceSolids(kit: Kit): BalanceSolids {
 
   // the collet, which the drawing lacks: the spring's inner end is fixed to
   // it, and it turns with the balance
-  solids.add(
+  const collet = solids.add(
     kit.pieces.make("collet"),
     springPart,
     "circle",
@@ -2104,6 +2157,8 @@ function balanceSolids(kit: Kit): BalanceSolids {
     subjectWash,
     { inDrawing: false },
   );
+  // the balance staff comes up through it
+  seams.push({ face: collet, outline: circlePath(0, 0, STAFF_RADIUS) });
 
   // The roller and jewel turn with the balance. The roller supports the
   // jewel's full footprint and joins it to the staff above the hairspring.
@@ -2410,6 +2465,7 @@ export function generate(design: Design = DESIGN): Watch {
     groups: tree.groups,
     solids: list,
     pieces: new PieceList(),
+    seams: [],
   };
   trainSolids(kit);
   const {
@@ -2498,6 +2554,11 @@ export function generate(design: Design = DESIGN): Watch {
     new Set([springSolid, mainspringSolid]),
   );
   meshes.push(...movementMeshes.values());
+  for (const seam of kit.seams) {
+    const mesh = seamMesh(seam, heightOf(seam.face), paint);
+    seam.face.piece.meshes.add(mesh);
+    meshes.push(mesh);
+  }
   // after the fourth pinion: a wheel's teeth are painted over the pinion
   // that it drives
   const oneStepPiece = kit.pieces.make(oneStep.name, { inAll: false });

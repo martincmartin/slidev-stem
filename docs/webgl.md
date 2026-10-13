@@ -147,7 +147,11 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   not meet only through their ink: they touch in the model.
 - **Which edges have a line.** An outline's top and bottom edges, and its
   corners, always. A curved wall's vertical edges only on its silhouette. Lines
-  on a face (minute ticks) are drawn on it.
+  on a face (minute ticks) are drawn on it, as a decal. No line is drawn where
+  two solids cross: to show one, add a decal there. A decal with `endLines`
+  (`webgl/mesh.ts`) also draws a vertical line at each end of an open
+  outline, for the crease where two walls meet (in `watches`, "Where an
+  arbor comes up through a face").
 - **Hidden lines:** a line is drawn at its full width where its centre is
   visible, and not at all where its centre is hidden, as in the 2D art. Other
   methods were measured and are worse at these widths (a constant depth bias

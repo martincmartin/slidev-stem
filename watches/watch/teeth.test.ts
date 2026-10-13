@@ -14,16 +14,18 @@ import {
   type DrivingPinion,
   type Wheel,
 } from "./design.ts";
-import { oneStepWheel } from "./generate.ts";
+import { ARBOR_RADIUS, oneStepWheel } from "./generate.ts";
 import { FLATNESS, type Path } from "./path.ts";
 import {
   drivenLead,
   drivenWheelTeeth,
   drivingPinionLeaves,
+  drivingPinionSeam,
   meshedSpan,
   pinionLead,
   pinionLeafShapes,
   pinionLeaves,
+  pinionSeam,
   pinionTip,
   TOOTH_FORM,
   turned,
@@ -361,6 +363,71 @@ test("a pinion's tip circle is where its leaves reach", () => {
     );
     assert.ok(Math.abs(pinionTip(owner) - reach) < FLATNESS, owner.name);
   }
+});
+
+test("an arbor's seam lies on its pinion's leaves: a circle, or an arc across each leaf", () => {
+  const { cannon, minute } = design.motionWorks;
+  const minutePinion = minute.pinion;
+  assert.ok(minutePinion);
+  const pinions: [string, number, Path, Path][] = [
+    ...meshes.map(([, owner]): [string, number, Path, Path] => [
+      owner.name,
+      owner.leaves,
+      pinionLeaves(owner),
+      pinionSeam(owner, ARBOR_RADIUS),
+    ]),
+    ...[cannon, minutePinion].map((pinion): [string, number, Path, Path] => [
+      pinion.name,
+      pinion.leaves,
+      drivingPinionLeaves(pinion),
+      drivingPinionSeam(pinion, ARBOR_RADIUS),
+    ]),
+  ];
+  const kinds = new Set<boolean>();
+  for (const [name, leaves, outlinePath, seam] of pinions) {
+    const leafOutline = outline(outlinePath);
+    const contours = seam.contours();
+    const whole = contours.length === 1 && at(contours, 0).closed;
+    kinds.add(whole);
+    if (!whole) {
+      assert.equal(contours.length, leaves, name);
+      assert.ok(
+        contours.every((contour) => !contour.closed),
+        name,
+      );
+    }
+    for (const { points, closed } of contours) {
+      for (const point of points) {
+        assert.ok(Math.abs(Math.hypot(...point) - ARBOR_RADIUS) < 1e-9, name);
+      }
+      // each chord's middle is on the leaf; an arc ends on a flank
+      for (let index = 1; index < points.length; index++) {
+        const [startX, startY] = at(points, index - 1);
+        const [endX, endY] = at(points, index);
+        assert.ok(
+          insidePolygon(
+            [(startX + endX) / 2, (startY + endY) / 2],
+            leafOutline,
+          ),
+          name,
+        );
+      }
+      if (!closed) {
+        for (const end of [at(points, 0), at(points, points.length - 1)]) {
+          assert.ok(nearestOn(end, leafOutline)[0] < 1e-9, name);
+        }
+      }
+    }
+  }
+  // the large pinions take the circle, the 4-leaf pinions the arcs
+  assert.deepEqual(kinds, new Set([true, false]));
+});
+
+test("an arbor past a pinion's flanks throws", () => {
+  const [, owner] = at(meshes, 0);
+  const radius = owner.pinionRadius;
+  assert.ok(radius !== null);
+  assert.throws(() => pinionSeam(owner, radius), /past the .* pinion's flanks/);
 });
 
 function assertRejectedForm(form: ToothForm, message: RegExp): void {

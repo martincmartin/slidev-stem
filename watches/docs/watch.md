@@ -8,6 +8,7 @@ measured budgets) and the diving board on the Hairspring slide.
 them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
+[`2026-10-13-arbor-seams`](../tasks/2026-10-13-arbor-seams/PLAN.md) (a line where an arbor comes up through a face),
 [`2026-10-09-motion-works`](../tasks/2026-10-09-motion-works/PLAN.md) (the motion works, and the Hour Hand slide),
 [`2026-10-10-gears-callouts`](../tasks/2026-10-10-gears-callouts/README.md) (the Gears slide's callouts, in place of its text cues),
 [`2026-10-09-gears-text-flash`](../tasks/2026-10-09-gears-text-flash/PLAN.md) (inverse cues after the Gears text),
@@ -207,14 +208,46 @@ limits set it:
   slide's click 1 is at scale 0.8.
 
 **Not an oversight:** a 4-leaf pinion's root circle ($r \approx 1.7$–$2.1$)
-is inside its arbor. So the leaves seem to grow out of the arbor. The wheel
-tips must reach into the gaps, so the root cannot move out past the arbor.
+is inside its arbor. So each leaf's flanks run into the arbor's wall, and
+[seam lines](#where-an-arbor-comes-up-through-a-face) show where they meet.
+The wheel tips must reach into the gaps, so the root cannot move out past
+the arbor.
 
 The escape wheel's club teeth are separate: they act on the pallet stones.
 `escapeOutline` in `watch/shapes.ts` makes them.
 
 **Not an oversight:** the pinion has no cycloidal face, and wheel tips stop at the tip circle.
 Engineering cycloids on both gears looked less like a watch; full pointed tips changed the layout's circles.
+
+## Where an arbor comes up through a face
+
+The renderer draws each solid's own edges, and no line where two solids
+cross ([`webgl.md`](../../docs/webgl.md), "Which edges have a line"). So
+where an arbor comes up through a face, the model adds the line:
+
+- **A seam.** Each function that makes such a face adds a `Seam` to the
+  `Kit`: the face, and the line on its top. When the heights are known,
+  `seamMesh` makes a decal of it on the face's top. The faces are the
+  pinions of the train, the cannon pinion (the centre arbor), the minute
+  pinion, the hour wheel (its pipe), the one-step hour wheel (its arbor,
+  in `oneStepHourMeshes`) and the collet (the balance staff).
+- **On a pinion, only on the leaves.** If the pinion's root circle is outside
+  the arbor, the line is the arbor's circle (`pinionSeam` and
+  `drivingPinionSeam` in `watch/teeth.ts`). If it is inside, as on a
+  4-leaf pinion, the arbor goes on down to the wheel in each gap. Then the
+  line is an arc across each leaf, between its flanks. Each arc also has a
+  vertical line at each end, from the pinion's bottom to its top: the crease
+  where the flank meets the arbor (`endLines`). This is the line that a
+  larger pinion draws at the corner of its root and its flank.
+- **In the face's piece.** A seam shows, dims and flashes with the face,
+  not with the arbor. The Hour Hand slide shows the minute arbor one click
+  before the minute pinion, and the Escapement slide shows the escape arbor
+  with no pinion. An arbor that stands on a part (the fork, the barrel and
+  the one-step wheel) has its own bottom edge there, and needs no seam.
+
+`watch/generate.test.ts` checks each seam: its piece, its height and its
+creases. `watch/teeth.test.ts` checks that a seam lies on its pinion's
+leaves and ends on their flanks.
 
 ## Oscillator geometry and framing
 

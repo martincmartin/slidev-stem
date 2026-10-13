@@ -146,6 +146,39 @@ test("a decal has only top lines", () => {
   assert.equal(mesh.lines.length, 1);
 });
 
+test("a decal's open ring can have a vertical line at each end; a closed ring has none", () => {
+  const open = smoothRing(square(0, 0, 3), STYLE, false);
+  const mesh = extrude([open], 1, 2, INFO, { decal: true, endLines: true });
+  assert.equal(mesh.triangles.length, 0);
+  assert.equal(mesh.lines.length, 3);
+  const ends = mesh.lines.slice(1).map((line) => line.points);
+  assert.deepEqual(ends, [
+    [
+      [...at(open.points, 0), 1],
+      [...at(open.points, 0), 2],
+    ],
+    [
+      [...at(open.points, 3), 1],
+      [...at(open.points, 3), 2],
+    ],
+  ]);
+  const closed = polygonRing(square(0, 0, 3), STYLE);
+  const closedMesh = extrude([closed], 1, 2, INFO, {
+    decal: true,
+    endLines: true,
+  });
+  assert.equal(closedMesh.lines.length, 1);
+  // end lines need a height, and a decal
+  assert.throws(
+    () => extrude([open], 1, 1, INFO, { decal: true, endLines: true }),
+    /below/,
+  );
+  assert.throws(
+    () => extrude([open], 1, 2, INFO, { endLines: true }),
+    /for a decal/,
+  );
+});
+
 test("a ring must have enough points, a flag for each, and no zero-length edge", () => {
   const good = square(0, 0, 1);
   assert.doesNotThrow(() => {

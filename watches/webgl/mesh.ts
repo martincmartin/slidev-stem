@@ -66,6 +66,10 @@ export interface MeshInfo {
 export interface ExtrudeOptions {
   /** Lines only, on the top face: no walls, no fill, no bottom edges. */
   decal?: boolean;
+  /** With `decal`: a vertical line from `bottom` to `top` at each end of an
+   *  open ring. It draws a crease between two solids, which no outline
+   *  draws: where a wall meets another wall that rises through it. */
+  endLines?: boolean;
 }
 
 /** A ring with no sharp corners (a circle, a spiral). */
@@ -221,13 +225,15 @@ interface Lines {
 
 /** The lines of one outline: its top edges and bottom edges, and its vertical
  *  edges: at a corner, or at the end of an open outline, always; at any other
- *  point only on a silhouette. A decal has its top edges only. */
+ *  point only on a silhouette. A decal has its top edges only, and its end
+ *  lines if it asks for them (`ExtrudeOptions.endLines`). */
 function ringLines(
   ring: Ring,
   closed: boolean,
   bottom: number,
   top: number,
   decal: boolean,
+  endLines: boolean,
 ): Lines {
   const result: Lines = { lines: [], silhouetteEdges: [] };
   const style = ring.style;
@@ -235,7 +241,22 @@ function ringLines(
   const pointsAtHeight = (z: number): Vec3[] =>
     ring.points.map(([x, y]): Vec3 => [x, y, z]);
   result.lines.push({ points: pointsAtHeight(top), closed, style });
-  if (decal) return result;
+  if (decal) {
+    if (endLines && !closed) {
+      const last = ring.points.length - 1;
+      for (const [x, y] of [at(ring.points, 0), at(ring.points, last)]) {
+        result.lines.push({
+          points: [
+            [x, y, bottom],
+            [x, y, top],
+          ],
+          closed: false,
+          style,
+        });
+      }
+    }
+    return result;
+  }
   result.lines.push({ points: pointsAtHeight(bottom), closed, style });
   const count = ring.points.length;
   for (const [index, [x, y]] of ring.points.entries()) {
@@ -300,7 +321,10 @@ export function extrude(
   options: ExtrudeOptions = {},
 ): Mesh {
   const decal = options.decal ?? false;
-  checkHeights(bottom, top, decal);
+  const endLines = options.endLines ?? false;
+  check(!endLines || decal, "end lines are for a decal");
+  // end lines need a height to run along
+  checkHeights(bottom, top, decal && !endLines);
   rings.forEach(checkRing);
   const triangles: number[] = [];
   const lines: Lines = { lines: [], silhouetteEdges: [] };
@@ -314,7 +338,7 @@ export function extrude(
     if (!decal) {
       append(triangles, wallTriangles(ring, ring.closed, bottom, top));
     }
-    const made = ringLines(ring, ring.closed, bottom, top, decal);
+    const made = ringLines(ring, ring.closed, bottom, top, decal, endLines);
     append(lines.lines, made.lines);
     append(lines.silhouetteEdges, made.silhouetteEdges);
   }
@@ -333,7 +357,7 @@ export function ribbon(
   return makeMesh(
     info,
     wallTriangles(polyline, false, bottom, top),
-    ringLines(polyline, false, bottom, top, false),
+    ringLines(polyline, false, bottom, top, false, false),
   );
 }
 
@@ -345,7 +369,7 @@ export function ribbonGeometry(
 ): MeshGeometry {
   checkHeights(bottom, top);
   checkRing(polyline);
-  const lines = ringLines(polyline, false, bottom, top, false);
+  const lines = ringLines(polyline, false, bottom, top, false, false);
   return {
     triangles: new Float32Array(wallTriangles(polyline, false, bottom, top)),
     lines: lines.lines,
