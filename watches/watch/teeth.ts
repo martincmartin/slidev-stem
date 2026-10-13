@@ -378,7 +378,8 @@ function pinionLeaf(pinion: Leaved, form: ToothForm): LeafShape {
   checkToothForm(form);
   const { radius, leaves } = pinion;
   const leafPitch = (2 * Math.PI * radius) / leaves;
-  // as deep as the trapezoid leaves were: past the wheel's tips
+  // deeper than the wheel's tips reach, so that white shows between a tip
+  // and the root when the view is zoomed in (docs/watch.md, "The teeth")
   const rootRadius = radius - Math.min(4.5, 0.42 * leafPitch);
   if (!(rootRadius > 0)) {
     throw new Error(`the ${pinion.name} pinion's gaps reach its centre`);

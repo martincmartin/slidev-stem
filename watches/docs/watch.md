@@ -160,6 +160,10 @@ The tip and root circles are `outer` and `inner` in `watch/design.ts`.
 The layout's clearance checks use these circles, so the teeth must not extend beyond them.
 A pinion leaf has radial flanks and a round end.
 Its width on the pitch circle is `TOOTH_FORM.leafWidth` modules.
+The gaps between the leaves go deeper than the wheel's tips reach.
+For example, the 4-leaf pinions have about 0.3 modules of clearance.
+When the view is zoomed in, white then shows between a tip and the root, as on a real pinion.
+With no clearance, the two lines would touch, and the tooth would seem to hit the bottom.
 
 `ToothForm.faceSegments` must be a positive integer.
 `leafWidth` must be finite and positive; `contactSlack` must be finite and nonnegative.
