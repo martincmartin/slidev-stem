@@ -39,6 +39,9 @@
 //     mechanism keeps moving. Entering this state or jumping winds it
 //   watchDim: pieces drawn dimmed (WATCH_DIM), to keep the eye on the
 //     others; false (default): none
+//   watchHide: pieces that `watch` shows but that do not show here, nor
+//     count in a fitted view (the Recap slide's hands: `watch: [all, ...]`
+//     with no other way to leave a piece out); false (default): none
 // On the slide or in a block, about the step into that click, so they do
 // not carry on to later clicks (STEP_KEYS):
 //   watchFlash: pieces that flash, on the step forward into the slide (on
@@ -56,6 +59,9 @@
 // On the slide only, about the step into it:
 //   watchMoveWith: what shows while the camera moves, on the step between
 //     this slide and the previous one, in either direction (`moveWithBefore`)
+//   watchMoveAlso: pieces of either slide that also show while the camera
+//     moves on that step: they come before the camera moves into this
+//     slide, and go after it moves back
 //   watchClicks: for a click, the keys that change from that click on
 //     ({1: {watch: [*gears, pallet fork], watchSpin: false}})
 
@@ -70,6 +76,16 @@ import type { MainspringStage } from "./mainspring.ts";
 import type { WatchModelState } from "./model.ts";
 
 const MOVES_WITH: readonly MoveWith[] = ["common", "all", "none"];
+
+/** What shows while the camera moves on a step (`watchMoveWith`), and the
+ *  pieces that show then too (`watchMoveAlso`). */
+export interface StepMoveWith {
+  readonly rule: MoveWith;
+  readonly also: readonly string[];
+}
+
+/** A step within a slide: the pieces that both clicks show. */
+export const MOVE_WITH_COMMON: StepMoveWith = { rule: "common", also: [] };
 
 /** The weight of a dimmed piece's own colours against the paper
  *  (`watchDim`): it looks as it would at this opacity. The "Before clocks"
@@ -116,6 +132,9 @@ export interface WatchState {
   mainspring: MainspringStage | null;
   /** The names of the pieces drawn dimmed, or `null`: none. */
   dim: readonly string[] | null;
+  /** The names of the pieces that `show` holds but that do not show, or
+   *  `null`: none. */
+  hide: readonly string[] | null;
   /** The time-lapse's speed-up: 1, the mechanism's own speed, or more
    *  (`watchLapse`; watch/lapse.ts). */
   lapse: number;
@@ -227,8 +246,11 @@ function spinOf(name: string, value: unknown): number | null {
   return value;
 }
 
-/** The pieces dimmed, or `null`: none. */
-function dimOf(name: string, value: unknown): readonly string[] | null {
+/** A list of pieces, or `null` for `false`: none. */
+function piecesOrNoneOf(
+  name: string,
+  value: unknown,
+): readonly string[] | null {
   return value === false ? null : namesOf(name, value);
 }
 
@@ -300,7 +322,8 @@ const CLICK_KEYS = {
   watchMainspring: mainspringOf,
   watchLapse: lapseOf,
   watchUnwind: booleanOf,
-  watchDim: dimOf,
+  watchDim: piecesOrNoneOf,
+  watchHide: piecesOrNoneOf,
 } as const;
 type ClickKey = keyof typeof CLICK_KEYS;
 type ClickValues = { [Key in ClickKey]?: ReturnType<(typeof CLICK_KEYS)[Key]> };
@@ -422,19 +445,34 @@ function atClick(
 /** What shows while the camera moves on the step between this slide and the
  *  previous one, in either direction: the pieces that both show (`common`,
  *  the default), all the pieces of either (`all`), or none (`none`: the
- *  camera jumps). Throws if `watchMoveWith` is not one of these, or if the
+ *  camera jumps); and the pieces of either that show then too
+ *  (`watchMoveAlso`). Throws if `watchMoveWith` is not one of these, if
+ *  `watchMoveAlso` is not a list of pieces or is set with `all`, or if the
  *  slide has no `watch`. */
-export function moveWithBefore(frontmatter: Record<string, unknown>): MoveWith {
-  const value = frontmatter["watchMoveWith"];
-  if (value === undefined) return "common";
-  const found = MOVES_WITH.find((each) => each === value);
-  if (found === undefined) {
+export function moveWithBefore(
+  frontmatter: Record<string, unknown>,
+): StepMoveWith {
+  const value = frontmatter["watchMoveWith"] ?? "common";
+  const rule = MOVES_WITH.find((each) => each === value);
+  if (rule === undefined) {
     return wrong("watchMoveWith", value, MOVES_WITH.join(", or "));
   }
-  if (frontmatter["watch"] === undefined) {
-    return wrong("watchMoveWith", value, "set only with watch");
+  const alsoValue = frontmatter["watchMoveAlso"];
+  const also =
+    alsoValue === undefined ? [] : namesOf("watchMoveAlso", alsoValue);
+  if (also.length > 0 && rule === "all") {
+    return wrong(
+      "watchMoveAlso",
+      alsoValue,
+      "left out with watchMoveWith: all",
+    );
   }
-  return found;
+  for (const key of ["watchMoveWith", "watchMoveAlso"]) {
+    if (frontmatter[key] !== undefined && frontmatter["watch"] === undefined) {
+      return wrong(key, frontmatter[key], "set only with watch");
+    }
+  }
+  return { rule, also };
 }
 
 /** The slide's watch state at `clicks`, or `undefined` if the slide has
@@ -522,6 +560,7 @@ export function watchState(
     spin: now.watchSpin ?? null,
     mainspring,
     dim: now.watchDim ?? null,
+    hide: now.watchHide ?? null,
     lapse,
     unwind,
     wind: now.watchWind ?? false,
@@ -561,11 +600,11 @@ export function timeScaleState(
 
 /** The camera's and the fade's state, with the names turned into objects.
  *  `moveWith` is the step's (`moveWithBefore`). Throws if a name is not a
- *  piece or a view of the watch. */
+ *  piece or a view of the watch, or if a hidden piece is not shown. */
 export function stageState(
   watch: Watch,
   state: WatchState,
-  moveWith: MoveWith = "common",
+  moveWith: StepMoveWith = MOVE_WITH_COMMON,
 ): StageState {
   const { scene } = watch;
   const piecesNamed = (key: string, names: readonly string[]): Piece[] =>
@@ -577,12 +616,21 @@ export function stageState(
   const meshesOf = (pieces: readonly Piece[]): ReadonlySet<Mesh> =>
     new Set(pieces.flatMap((piece) => [...piece.meshes]));
   const all = scene.pieces.filter((piece) => piece.inAll);
-  const piecesOf = (names: readonly string[] | "all"): readonly Piece[] =>
+  const listed = (names: readonly string[] | "all"): readonly Piece[] =>
     names === "all"
       ? all
       : names.flatMap((name) =>
           name === "all" ? all : piecesNamed("watch", [name]),
         );
+  const hidden = new Set(piecesNamed("watchHide", state.hide ?? []));
+  const shown = listed(state.show);
+  for (const piece of hidden) {
+    if (!shown.includes(piece)) {
+      throw new Error(`watchHide: "${piece.name}" is not in watch`);
+    }
+  }
+  const piecesOf = (names: readonly string[] | "all"): readonly Piece[] =>
+    listed(names).filter((piece) => !hidden.has(piece));
   const namedView = (name: string): View => {
     const found = scene.views.find((candidate) => candidate.name === name);
     if (!found) throw new Error(`watchView: no watch view "${name}"`);
@@ -615,7 +663,8 @@ export function stageState(
     goLater: state.goLater
       ? meshesOf(piecesNamed("watchGoLater", state.goLater))
       : new Set(),
-    moveWith,
+    moveWith: moveWith.rule,
+    moveAlso: meshesOf(piecesNamed("watchMoveAlso", moveWith.also)),
     ...(state.linger
       ? {
           linger: state.linger.map((group) => ({

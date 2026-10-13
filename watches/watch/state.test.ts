@@ -6,6 +6,7 @@ import { test } from "node:test";
 import { generate, PICTURE_BAND } from "./generate.ts";
 import {
   modelState,
+  MOVE_WITH_COMMON,
   moveWithBefore,
   stageState,
   tickTockState,
@@ -38,6 +39,7 @@ test("the fields and their defaults", () => {
     spin: null,
     mainspring: null,
     dim: null,
+    hide: null,
     lapse: 1,
     unwind: false,
     wind: false,
@@ -69,6 +71,7 @@ test("the fields and their defaults", () => {
     spin: null,
     mainspring: null,
     dim: null,
+    hide: null,
     lapse: 1,
     unwind: false,
     wind: false,
@@ -102,6 +105,70 @@ test("watchDim dims pieces from its click on, until false; the stage gets their 
   assert.throws(
     () => stageState(watch, { ...dimmed, dim: ["no such piece"] }),
     /watchDim/,
+  );
+});
+
+test("watchHide leaves pieces of watch out from its click on, until false, and out of a fitted view", () => {
+  const frontmatter = {
+    watch: ["all", "hour wheel"],
+    watchClicks: {
+      1: { watchHide: ["hour hand"] },
+      2: { watchHide: ["hour hand", "minute hand"] },
+      3: { watchHide: false },
+    },
+  };
+  const piece = (name: string) =>
+    watch.scene.pieces.find((each) => each.name === name) ?? assert.fail(name);
+  const hourHand = piece("hour hand");
+  const minuteHand = piece("minute hand");
+  const shownAt = (click: number) =>
+    stageState(watch, watchState(frontmatter, click) ?? assert.fail()).shown;
+  const showsPiece = (click: number, shown: typeof hourHand) =>
+    [...shown.meshes].every((mesh) => shownAt(click).has(mesh));
+  assert.equal(watchState(frontmatter, 0)?.hide, null);
+  assert.deepEqual(watchState(frontmatter, 1)?.hide, ["hour hand"]);
+  assert.ok(showsPiece(0, hourHand) && showsPiece(0, minuteHand));
+  assert.ok(!showsPiece(1, hourHand) && showsPiece(1, minuteHand));
+  assert.ok(!showsPiece(2, hourHand) && !showsPiece(2, minuteHand));
+  assert.ok(showsPiece(3, hourHand) && showsPiece(3, minuteHand));
+  assert.ok(showsPiece(1, piece("hour wheel")));
+  assert.equal(
+    shownAt(1).size,
+    shownAt(0).size - hourHand.meshes.size,
+    "only the hidden piece goes",
+  );
+  // a fitted view of the shown pieces does not fit a hidden one
+  const fitted = (hide: readonly string[] | null) =>
+    stageState(watch, {
+      ...(watchState({ watch: ["hour hand", "stud"] }, 0) ?? assert.fail()),
+      hide,
+    }).view;
+  assert.deepEqual(
+    fitted(["hour hand"]),
+    stageState(watch, watchState({ watch: ["stud"] }, 0) ?? assert.fail()).view,
+  );
+  assert.notDeepEqual(fitted(null), fitted(["hour hand"]));
+  assert.throws(
+    () => watchState({ watch: "all", watchHide: true }, 0),
+    /^Error: watchHide:/,
+  );
+  assert.throws(
+    () =>
+      stageState(
+        watch,
+        watchState({ watch: ["stud"], watchHide: ["hour hand"] }, 0) ??
+          assert.fail(),
+      ),
+    /^Error: watchHide: "hour hand" is not in watch/,
+  );
+  assert.throws(
+    () =>
+      stageState(
+        watch,
+        watchState({ watch: "all", watchHide: ["no such piece"] }, 0) ??
+          assert.fail(),
+      ),
+    /^Error: watchHide: no watch piece/,
   );
 });
 
@@ -430,9 +497,12 @@ test("watchTurn turns a named view's camera, and a fitted view refuses it", () =
 });
 
 test("watchMoveWith names what shows while the camera moves into the slide", () => {
-  assert.equal(moveWithBefore({ watch: "all" }), "common");
+  assert.deepEqual(moveWithBefore({ watch: "all" }), MOVE_WITH_COMMON);
   for (const value of ["common", "all", "none"]) {
-    assert.equal(moveWithBefore({ watch: "all", watchMoveWith: value }), value);
+    assert.deepEqual(moveWithBefore({ watch: "all", watchMoveWith: value }), {
+      rule: value,
+      also: [],
+    });
   }
   assert.throws(
     () => watchState({ watch: "all", watchMoveWith: "some" }, 0),
@@ -441,6 +511,54 @@ test("watchMoveWith names what shows while the camera moves into the slide", () 
   assert.throws(
     () => watchState({ watchMoveWith: "all" }, 0),
     /set only with watch/,
+  );
+});
+
+test("watchMoveAlso names pieces that also show while the camera moves into the slide", () => {
+  const moveWith = moveWithBefore({
+    watch: "all",
+    watchMoveAlso: ["hour hand", "minute hand"],
+  });
+  assert.deepEqual(moveWith, {
+    rule: "common",
+    also: ["hour hand", "minute hand"],
+  });
+  const hands = watch.scene.pieces.filter((piece) =>
+    ["hour hand", "minute hand"].includes(piece.name),
+  );
+  assert.equal(hands.length, 2);
+  assert.deepEqual(
+    stageState(
+      watch,
+      watchState({ watch: "all" }, 0) ?? assert.fail(),
+      moveWith,
+    ).moveAlso,
+    new Set(hands.flatMap((piece) => [...piece.meshes])),
+  );
+  assert.throws(
+    () => moveWithBefore({ watch: "all", watchMoveAlso: "hour hand" }),
+    /^Error: watchMoveAlso:/,
+  );
+  assert.throws(
+    () =>
+      moveWithBefore({
+        watch: "all",
+        watchMoveWith: "all",
+        watchMoveAlso: ["hour hand"],
+      }),
+    /^Error: watchMoveAlso:.*watchMoveWith: all/,
+  );
+  assert.throws(
+    () => moveWithBefore({ watchMoveAlso: ["hour hand"] }),
+    /^Error: watchMoveAlso:.*set only with watch/,
+  );
+  assert.throws(
+    () =>
+      stageState(watch, watchState({ watch: "all" }, 0) ?? assert.fail(), {
+        rule: "common",
+        also: ["no such piece"],
+      }),
+    /^Error: watchMoveAlso:/,
   );
 });
 

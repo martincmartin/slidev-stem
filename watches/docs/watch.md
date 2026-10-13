@@ -8,6 +8,7 @@ measured budgets) and the diving board on the Hairspring slide.
 them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
+[`2026-10-13-recap-hands`](../tasks/2026-10-13-recap-hands/PLAN.md) (the hands hidden from the Recap slide's slow stops),
 [`2026-10-13-arbor-seams`](../tasks/2026-10-13-arbor-seams/PLAN.md) (a line where an arbor comes up through a face),
 [`2026-10-09-motion-works`](../tasks/2026-10-09-motion-works/PLAN.md) (the motion works, and the Hour Hand slide),
 [`2026-10-10-gears-callouts`](../tasks/2026-10-10-gears-callouts/README.md) (the Gears slide's callouts, in place of its text cues),
@@ -968,11 +969,24 @@ picture band do not apply. The options and the evidence are in
   hairspring's click (`watchTimeScale: false`). It is in the watch's
   layer, as the words "tick" and "tock" are; a printed page shows the
   click's speed-up (`slide-bottom.vue`).
+- **The hour hand goes at the centre wheel's stop, and the minute hand at
+  the third wheel's** (`watchHide`). From 120×, the hour hand moves so
+  slowly that it can cover the touch for most of a stop (up to 25 s at
+  120×), and from 15× so can the minute hand. Each goes after the camera
+  arrives (`watchGoLater`), while the eye follows the move. The minute hand
+  stays at the centre wheel's stop: it is that wheel's own hand, and at 120×
+  it passes over the touch in under 2 s. The seconds hand stays: at the
+  fourth wheel's stop it is the subject, and it passes over the touch in
+  3 s. Not an oversight: hands that fade only while they cover the touch,
+  or that are transparent, were rejected. The audience has seen only solid
+  hands, and a hand that fades with no cause draws the eye
+  ([`2026-10-13-recap-hands`](../tasks/2026-10-13-recap-hands/PLAN.md)).
 - **The Changed The World section shows what the cover shows** (`watch: all`,
   `watchView: cover`). The step to it from the last click moves in order
   (`watchMove: ordered`, the default): the reverse of the step from
-  Mechanical Marvels to the Hairspring slide. The motion works fade out, the
-  camera tilts to 0, and then it zooms out. The section's title comes in
+  Mechanical Marvels to the Hairspring slide. The motion works fade out,
+  the hands fade in (`watchMoveAlso`), the camera tilts to 0, and then it
+  zooms out. The section's title comes in
   after the move (`--watch-text-delay`). A step back reverses it.
 
 ## Balance rim motion
@@ -1060,7 +1074,7 @@ it again. A block holds the keys that say a state (`CLICK_KEYS` in
 `watch/state.ts`; each is in [The keys](#the-keys)), and its step keys: the flash settings, `watchLater`,
 `watchCut` and `watchGoLater`. These are
 about the step into their click (or into the slide, on the slide), so they
-do not carry on to later clicks. `watchMoveWith` is about the step into the slide, so it is on the
+do not carry on to later clicks. `watchMoveWith` and `watchMoveAlso` are about the step into the slide, so they are on the
 slide only. A value says what is so, not
 what to do: `watchAtRest: true`, not "settle". So a block can repeat what is
 already so, and the layer decides how to get there (the settle waits for the
@@ -1191,8 +1205,11 @@ A jump skips the pause. A new target cancels the remaining pause and starts from
 D is the pieces that A and B both show (the default), all the pieces of
 either (`watchMoveWith: all`: the opening, which zooms in with the whole
 watch on the screen), or none (`watchMoveWith: none`: the Gears slide).
-`watchMoveWith` is on the later of two slides and applies to the step between
-them in either direction. Without a camera move, A becomes B directly. So the
+`watchMoveAlso` adds pieces of either slide to D: on the step forward they
+come before the camera moves, and on the step back they go after it (the
+hands, on the step from the Recap slide to the cover's picture).
+`watchMoveWith` and `watchMoveAlso` are on the later of two slides and apply
+to the step between them in either direction. Without a camera move, A becomes B directly. So the
 Balance Wheel slide's balance fades in alone; on the way to the Escapement
 slide, the camera zooms out with the Balance Wheel slide's picture, and then
 the escapement fades in; going back runs it in reverse.
@@ -1289,11 +1306,13 @@ which dims halfway (`--text-dimmed`;
 | `watchWind: true`                                           | Wind the running spring instantly at the declared click, before the camera moves. Requires `watchUnwind: true`. This setting does not carry to later clicks.                                                                                                                 |
 | `watchLapse: 1440`                                          | the time-lapse's speed-up, 1 (default) or more; a change eases while the camera moves ([The Recap slide](#the-recap-slide)). Not with `watchSpin`, `watchMainspring` or `watchAtRest: true`                                                                                  |
 | `watchDim: [barrel]`                                        | the pieces drawn dimmed, as at opacity 0.35 over the paper (`WATCH_DIM`), from that click on; `false` (default): none ([Dimmed pieces](#dimmed-pieces))                                                                                                                      |
+| `watchHide: [hour hand]`                                    | pieces that `watch` holds but that do not show, nor count in a fitted view, from that click on; `false` (default): none. Each must be in `watch` ([The Recap slide](#the-recap-slide))                                                                                       |
 | `watchTickTock: true`                                       | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `false` (default): they do not                                                                                                                                               |
 | `watchTimeScale: true`                                      | the time scale shows the speed-up, live, in the lower right corner ([The Recap slide](#the-recap-slide)); `false` (default): it does not                                                                                                                                     |
 | `watchFlash: [balance wheel]`                               | pieces that flash, on the step forward into the slide (on the slide) or into the block's click (in `watchClicks`) only; it does not carry on to later clicks ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash")                                          |
 | `watchFlashAfterMove: true`                                 | flash after the camera and fades finish; false (default): use the ordinary flash order. This setting carries to later clicks. The Recap slide uses it.                                                                                                                       |
 | `watchMoveWith: all`                                        | on the slide only: what is on the screen while the camera moves, on the step between this slide and the previous one: `common` (default), `all` or `none`                                                                                                                    |
+| `watchMoveAlso: [hour hand]`                                | on the slide only: pieces of either slide that are also on the screen while the camera moves, on the step between this slide and the previous one: they come before the camera moves into this slide, and go after it moves back. Not with `watchMoveWith: all`              |
 | `watchCut: [mainspring stud]`                               | of the pieces that go or come on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that do so at once, with no fade, before the others fade; it does not carry on to later clicks                                                     |
 | `watchLater: [case band]`                                   | of the pieces that fade in on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that fade in after the others; it does not carry on to later clicks                                                                                   |
 | `watchGoLater: [fourth wheel drive]`                        | of the pieces that go on a step into the slide (on the slide) or into the block's click (in `watchClicks`), those that stay on the screen while the camera moves, and go after it; it does not carry on to later clicks                                                      |

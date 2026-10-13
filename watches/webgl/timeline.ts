@@ -5,7 +5,7 @@
 // ONE RULE. A state names the meshes that it shows. From the shown set A to
 // the shown set B, with D the meshes on the screen while the camera moves
 // (`StageState.moveWith`: by default the meshes of both; and the meshes of
-// A in `StageState.goLater`):
+// A in `StageState.goLater`, and of A or B in `StageState.moveAlso`):
 //   1. A becomes D: the meshes of A that are not in D fade out; then the
 //      meshes of D that are not in A fade in.
 //   2. The camera moves, and changes its angles (`CameraAngles`: it tilts
@@ -96,6 +96,11 @@ export interface StageState extends CameraAngles {
    *  and go after it. */
   goLater: ReadonlySet<Mesh>;
   moveWith: MoveWith;
+  /** Of the meshes of the screen and of this state, these are on the screen
+   *  too while the camera moves: those that come, come before it, and those
+   *  that go, go after it. So the step back is the step forward, reversed.
+   *  Default: none. */
+  moveAlso?: ReadonlySet<Mesh>;
   /** The dimmed meshes: the weight of each one's own colours against the
    *  paper (`Frame.dim`). Default: none. */
   dim?: ReadonlyMap<Mesh, number>;
@@ -458,9 +463,15 @@ export class Timeline {
           : state.moveWith === "none"
             ? NOTHING
             : new Set([...shown].filter((mesh) => state.shown.has(mesh)));
+      const moveAlso = state.moveAlso ?? NOTHING;
       const during = union(
-        moveWith,
-        new Set([...shown].filter((mesh) => state.goLater.has(mesh))),
+        union(
+          moveWith,
+          new Set([...shown].filter((mesh) => state.goLater.has(mesh))),
+        ),
+        new Set(
+          [...union(shown, state.shown)].filter((mesh) => moveAlso.has(mesh)),
+        ),
       );
       become(during);
       // a move that nobody sees is a jump

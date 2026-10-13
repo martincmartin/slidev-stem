@@ -51,6 +51,7 @@ export class WatchStills {
       state.mainspring,
       state.unwind,
       state.dim,
+      state.hide,
       size,
     ]);
     return this.stills.of(key, palette, (renderer) => {

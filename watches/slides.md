@@ -966,18 +966,25 @@ watchClicks:
     watchTurn: 80
     watchTilt: 80
   # back up over the movement: the centre wheel on the third pinion, with
-  # the next touch behind it, as at each stop from here
+  # the next touch behind it, as at each stop from here. From here the hour
+  # hand moves too slowly to pass over a touch during a stop, so it goes
+  # when the camera arrives; the minute hand, the centre wheel's own, stays
+  # one stop more
   3:
     watchView: recap centre touch
     watchFlash: [centre wheel, third pinion]
     watchTurn: -10
     watchTilt: 45
     watchLapse: 120
+    watchHide: [hour hand]
+    watchGoLater: [hour hand]
   4:
     watchView: recap third touch
     watchFlash: [third wheel, fourth pinion]
     watchTurn: 15
     watchLapse: 15
+    watchHide: [hour hand, minute hand]
+    watchGoLater: [minute hand]
   # the fourth wheel turns once in 30 s, the escape wheel once in 15 s
   5:
     watchView: recap fourth touch
@@ -1036,11 +1043,13 @@ The whole train, one touch at a time. The motion works, a day a minute: the hour
 # the cover's picture, as on Mechanical Marvels. The step from the Recap
 # slide's last click moves in order (the default watchMove), the reverse of
 # the step from Mechanical Marvels to the Hairspring slide: the motion works
-# fade out, the camera tilts to 0, and then it zooms out
+# fade out, the hands that the Recap slide hid fade in, the camera tilts to
+# 0, and then it zooms out
 layout: section
 eyebrow: PART 2
 watch: all
 watchView: cover
+watchMoveAlso: [hour hand, minute hand]
 ---
 
 # Changed The World

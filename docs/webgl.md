@@ -235,7 +235,10 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   `StageState.later` fade in after the others. The meshes in
   `StageState.cut` go or come at once, with no fade. The meshes in
   `StageState.goLater` stay on the screen while the camera moves, and go
-  after it. `StageState.linger` lists outgoing groups in their fade order.
+  after it. The meshes of either state in `StageState.moveAlso` are on the
+  screen while the camera moves: those that come, come before it, and
+  those that go, go after it, so the step back is the step forward,
+  reversed. `StageState.linger` lists outgoing groups in their fade order.
   Meshes outside the groups fade first. Each group then pauses for its declared seconds and fades out.
   Later groups remain visible until their turn. The camera waits until all groups have faded out.
   Each pause starts when the preceding fade ends. A jump skips it; a new target cancels the remaining pause.

@@ -19,8 +19,9 @@
 // the target at once. A flash plays only on the step forward into the slide
 // or the click that names it.
 // On a step between two slides, the later one says what shows while the
-// camera moves (`watchMoveWith`), in either direction. On any step, the later
-// click says how the camera moves (`watchMove`, `stepMove`).
+// camera moves (`watchMoveWith`, `watchMoveAlso`), in either direction. On
+// any step, the later click says how the camera moves (`watchMove`,
+// `stepMove`).
 // The new slide's text waits for the camera, in either direction
 // (`--watch-text-delay`, from the stage). A click's text can wait for the
 // balance to come to rest (`--watch-rest-delay`, from the model), or for the
@@ -65,6 +66,7 @@ import { slideState } from "./watch/slide-state.ts";
 import type { SlideState } from "./watch/slide-state.ts";
 import {
   modelState,
+  MOVE_WITH_COMMON,
   moveWithBefore,
   stageState,
   stepMove,
@@ -72,8 +74,8 @@ import {
   timeScaleState,
   watchState,
 } from "./watch/state.ts";
-import type { WatchState } from "./watch/state.ts";
-import type { CameraMove, MoveWith } from "./webgl/timeline.ts";
+import type { StepMoveWith, WatchState } from "./watch/state.ts";
+import type { CameraMove } from "./webgl/timeline.ts";
 
 declare global {
   interface Window {
@@ -132,7 +134,7 @@ let shownPicture = "null";
 function showWatch(
   now: WatchState | undefined,
   move: Move,
-  moveWith: MoveWith,
+  moveWith: StepMoveWith,
   /** How the camera moves on this step (`stepMove`). */
   cameraMove: CameraMove | undefined,
 ): void {
@@ -282,7 +284,7 @@ onMounted(() => {
       const moveWith =
         place && intoSlide
           ? moveWithBefore(frontmatterOf(Math.max(place.slide, to.slide)))
-          : "common";
+          : MOVE_WITH_COMMON;
       const from = place
         ? watchState(frontmatterOf(place.slide), place.clicks)
         : undefined;

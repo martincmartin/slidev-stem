@@ -363,6 +363,32 @@ test("with moveWith all, the new meshes fade in first and the camera moves with 
   assert.deepEqual(timeline.valuesAt(2 * FADE + MOVE).keep, set(BALANCE));
 });
 
+test("with moveAlso, its meshes come before the camera moves and go after it, so the step back is the step forward, reversed", () => {
+  // forward: the spring goes and the case comes; the case is in moveAlso
+  const forward = timelineAt(
+    state({ view: CLOSE, shown: set(SPRING, BALANCE) }),
+  );
+  const into = { view: WIDE, shown: set(BALANCE, CASE), moveAlso: set(CASE) };
+  forward.show(state(into), 0);
+  assert.deepEqual(forward.valuesAt(FADE / 2).fade, set(SPRING));
+  assert.deepEqual(forward.valuesAt(FADE + FADE / 2).fade, set(CASE));
+  assert.deepEqual(
+    forward.valuesAt(2 * FADE + MOVE / 2).keep,
+    set(BALANCE, CASE),
+  );
+  assert.equal(forward.phaseAt(2 * FADE + MOVE), null);
+  // back: the case goes after the camera moves, and then the spring comes
+  const back = timelineAt(state(into));
+  back.show(
+    state({ view: CLOSE, shown: set(SPRING, BALANCE), moveAlso: set(CASE) }),
+    0,
+  );
+  assert.deepEqual(back.valuesAt(MOVE / 2).keep, set(BALANCE, CASE));
+  assert.deepEqual(back.valuesAt(MOVE + FADE / 2).fade, set(CASE));
+  assert.deepEqual(back.valuesAt(MOVE + FADE + FADE / 2).fade, set(SPRING));
+  assert.equal(back.phaseAt(MOVE + 2 * FADE), null);
+});
+
 test("with nothing on the screen during the move, the camera jumps", () => {
   for (const [moveWith, from, to] of [
     ["none", set(SPRING, CASE), set(SPRING, BALANCE)],

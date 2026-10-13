@@ -7,12 +7,17 @@ import { test } from "node:test";
 import { deckSlides } from "./deck.ts";
 import { generate } from "./generate.ts";
 import { AtRest, discOutline } from "./at-rest.ts";
-import { moveWithBefore, stageState, stepMove, watchState } from "./state.ts";
-import type { WatchState } from "./state.ts";
+import {
+  MOVE_WITH_COMMON,
+  moveWithBefore,
+  stageState,
+  stepMove,
+  watchState,
+} from "./state.ts";
+import type { StepMoveWith, WatchState } from "./state.ts";
 import type { Move } from "./navigation.ts";
 import type { Mesh, Piece } from "../webgl/scene.ts";
 import { Timeline } from "../webgl/timeline.ts";
-import type { MoveWith } from "../webgl/timeline.ts";
 
 const watch = generate();
 const slides = await deckSlides();
@@ -176,7 +181,7 @@ function cameraPhases(
   from: WatchState,
   to: WatchState,
   move: Move,
-  moveWith: MoveWith,
+  moveWith: StepMoveWith,
 ): { channel: string; milliseconds: number }[] {
   const timeline = new Timeline();
   timeline.show(stageState(watch, from, moveWith), 0, true);
@@ -215,7 +220,7 @@ test("each step back moves the camera as the step forward does, reversed", () =>
     if (!before || !after) continue;
     const moveWith =
       earlier.slide === later.slide
-        ? "common"
+        ? MOVE_WITH_COMMON
         : moveWithBefore(later.frontmatter);
     const forward = cameraPhases(before, after, "forward", moveWith);
     const back = cameraPhases(after, before, "back", moveWith);
@@ -249,4 +254,95 @@ test("the step from the Recap slide to the cover's picture moves in order both w
   assert.ok(hairspring && cover);
   assert.equal(stepMove(hairspring, cover, "forward"), "ordered");
   assert.equal(stepMove(cover, hairspring, "back"), "ordered");
+});
+
+/** What is on the screen at the start and at the end of the camera's move,
+ *  on a step from `from` to `to`, and when the step ends: from the timeline
+ *  at 10 ms. */
+function aroundMove(
+  from: WatchState,
+  to: WatchState,
+  move: Move,
+  moveWith: StepMoveWith,
+): {
+  start: ReadonlySet<Mesh>;
+  end: ReadonlySet<Mesh>;
+  after: ReadonlySet<Mesh>;
+} {
+  const timeline = new Timeline();
+  timeline.show(stageState(watch, from, moveWith), 0, true);
+  timeline.show(
+    stageState(watch, { ...to, move: stepMove(from, to, move) }, moveWith),
+    0,
+  );
+  const moving: number[] = [];
+  for (let time = 0; time < timeline.endAt(0); time += 10) {
+    const channel = timeline.phaseAt(time);
+    if (channel === "view" || channel === "angles" || channel === "camera") {
+      moving.push(time);
+    }
+  }
+  const onScreen = (time: number): ReadonlySet<Mesh> => {
+    const { keep, fade, rest } = timeline.valuesAt(time);
+    return rest > 0 ? new Set([...keep, ...fade]) : keep;
+  };
+  assert.ok(moving.length > 0, "the camera does not move");
+  return {
+    start: onScreen(moving[0] ?? 0),
+    end: onScreen(moving.at(-1) ?? 0),
+    after: timeline.valuesAt(timeline.endAt(0)).keep,
+  };
+}
+
+test("the Recap slide hides the hour hand from the centre wheel's stop and the minute hand from the third wheel's; the cover's picture brings both back", () => {
+  const index = slides.findIndex(({ title }) => title === "Recap");
+  const recap = slides[index]?.frontmatter;
+  const section = slides[index + 1]?.frontmatter;
+  assert.ok(recap && section);
+  const hourHand = pieceNamed("hour hand");
+  const minuteHand = pieceNamed("minute hand");
+  const clicks = Number(recap["clicks"]);
+  const at = (click: number) =>
+    watchState(recap, click) ?? assert.fail(`Recap @${String(click)}`);
+  for (let click = 0; click <= clicks; click++) {
+    assert.equal(
+      shows(at(click), hourHand),
+      click < 3,
+      `hour @${String(click)}`,
+    );
+    assert.equal(
+      shows(at(click), minuteHand),
+      click < 4,
+      `minute @${String(click)}`,
+    );
+  }
+  const cover = watchState(section, 0) ?? assert.fail();
+  assert.ok(shows(cover, hourHand) && shows(cover, minuteHand));
+  const has = (meshes: ReadonlySet<Mesh>, piece: Piece): boolean =>
+    [...piece.meshes].every((mesh) => meshes.has(mesh));
+  // each hand goes after the camera arrives at its click, and comes back
+  // before it leaves on the step back
+  for (const [click, hand] of [
+    [3, hourHand],
+    [4, minuteHand],
+  ] as const) {
+    const forward = aroundMove(
+      at(click - 1),
+      at(click),
+      "forward",
+      MOVE_WITH_COMMON,
+    );
+    assert.ok(has(forward.end, hand) && !has(forward.after, hand));
+    const back = aroundMove(at(click), at(click - 1), "back", MOVE_WITH_COMMON);
+    assert.ok(!has(back.start, hand) && has(back.after, hand));
+  }
+  // into the cover's picture, both hands come before the camera moves; on
+  // the step back, they go after it
+  const moveWith = moveWithBefore(section);
+  const forward = aroundMove(at(clicks), cover, "forward", moveWith);
+  const back = aroundMove(cover, at(clicks), "back", moveWith);
+  for (const hand of [hourHand, minuteHand]) {
+    assert.ok(has(forward.start, hand), `${hand.name}: forward`);
+    assert.ok(has(back.end, hand) && !has(back.after, hand), hand.name);
+  }
 });
