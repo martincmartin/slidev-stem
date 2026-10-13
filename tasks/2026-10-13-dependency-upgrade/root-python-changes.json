@@ -1,0 +1,32 @@
+[
+  {
+    "package": "ast-serialize",
+    "before": "0.11.2",
+    "after": "0.13.0"
+  },
+  {
+    "package": "iniconfig",
+    "before": "2.3.0",
+    "after": "2.3.1"
+  },
+  {
+    "package": "librt",
+    "before": "0.15.0",
+    "after": "0.16.0"
+  },
+  {
+    "package": "mypy",
+    "before": "2.3.1",
+    "after": "2.4.0"
+  },
+  {
+    "package": "numpy",
+    "before": "2.5.3",
+    "after": "2.5.4"
+  },
+  {
+    "package": "ruff",
+    "before": "0.16.9",
+    "after": "0.17.0"
+  }
+]

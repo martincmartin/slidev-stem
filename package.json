@@ -5,12 +5,12 @@
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "26.10.0",
+      "version": "26.11.1",
       "onFail": "download"
     },
     "packageManager": {
       "name": "pnpm",
-      "version": "12.6.0",
+      "version": "12.11.2",
       "onFail": "download"
     }
   },
@@ -19,7 +19,7 @@
     "format:check": "prettier --check docs themes tools \"*.{md,json,yaml}\""
   },
   "devDependencies": {
-    "prettier": "^3.9.9",
+    "prettier": "^3.9.10",
     "prettier-plugin-slidev": "^1.0.5"
   }
 }

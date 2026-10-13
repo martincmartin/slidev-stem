@@ -1,7 +1,7 @@
 """House constants and the colour/legibility maths every other tool here uses.
 
 Stdlib only, deliberately, so the checks that gate new content start at once and
-need no packages. Like every tool here, it needs Python 3.14: run it with
+need no packages. Use the Python version pinned in `.python-version`. Run it with
 `uv run` in stem/, or with stem/.venv/bin/python3 (`uv sync` makes it). The tools
 that render (`barroom.py`, `contact.py`, `motion.py`) need packages too, and say
 so.

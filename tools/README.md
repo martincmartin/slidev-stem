@@ -82,7 +82,7 @@ Every check exits non-zero on failure, so it works in `validate.py`, a
 pre-commit hook or CI. `barroom.py` fails if a drawing is below the gate, and
 `motion.py` if a drawing moves only in a wash. They also print their scores as
 JSON with `--json`: a program that reads the scores (such as a talk's validator)
-must use that, not their tables. All of them need Python 3.14: run them with `uv run`, which makes
+must use that, not their tables. All of them use the Python version pinned in `.python-version`. Run them with `uv run`, which makes
 `stem/.venv` first. The
 "needs" column above lists the packages. The tools that render install their required browser engines
 the first time they run, into Playwright's cache for your user, which every
@@ -186,7 +186,7 @@ These look like things to improve. Each was considered and chosen; the options
 and the evidence are in
 [`../tasks/2026-09-25-tools-cleanup/PLAN.md`](../tasks/2026-09-25-tools-cleanup/PLAN.md).
 
-- **Every tool needs Python 3.14, even the three that use no packages.** They used
+- **Every tool uses the pinned Python, even the three that use no packages.** They used
   to run on macOS's own Python 3.9, but nothing depended on that, and one version
   lets all the code use the same features and checks.
 - **Palette roles are strings (`"ink"`, `"panel"`), not fields of a class.** They

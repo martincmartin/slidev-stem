@@ -13,8 +13,8 @@ Keep TypeScript within the range that `typescript-eslint` supports.
 Keep Python Playwright and `playwright-chromium` at the same release.
 This lets the checks and exports use the same Chromium build.
 
-`pnpm-workspace.yaml` pins UnoCSS's magic-string dependency.
-The current UnoCSS directive transformer duplicates CSS with the newer release.
-This breaks Slidev builds, as described in
-[UnoCSS issue 5373](https://github.com/unocss/unocss/issues/5373).
-Before you remove the pin, confirm an upstream fix and run full validation.
+The resolved UnoCSS directive transformer includes the
+[upstream fix](https://github.com/unocss/unocss/pull/5375) for duplicate CSS.
+It can use the current magic-string release without an override.
+The [house and Watches upgrade](../../tasks/2026-10-13-dependency-upgrade/PLAN.md)
+records the compatibility checks and validation.

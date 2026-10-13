@@ -48,3 +48,6 @@ Only the documented TypeScript and JavaScript Playwright exceptions remain in
 `pnpm outdated`.
 
 No commit was made.
+
+2026-10-13: The [next upgrade](../../../tasks/2026-10-13-dependency-upgrade/PLAN.md)
+removes the magic-string override after the upstream fix.

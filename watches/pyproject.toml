@@ -9,9 +9,9 @@
 [project]
 name = "watches"
 version = "0"
-requires-python = "==3.14.*"
+requires-python = "==3.15.*"
 dependencies = [
-  "numpy>=2.5.3",
+  "numpy>=2.5.4",
   "pillow>=12.3.0",
   # screenshots, in the scripts of tasks/
   "playwright>=1.63.0",
@@ -35,7 +35,7 @@ package = false
 python-preference = "only-managed"
 
 [tool.ruff]
-target-version = "py314"
+target-version = "py315"
 # A bare `ruff format` must not change a task: a finished task is frozen. (ruff
 # uses the nearest config for each file, so `include` cannot keep it out: a
 # task keeps its own copies of pyproject.toml.) tools/validate.py gives ruff
@@ -52,12 +52,12 @@ include = ["*.py", "*.pyi"]
 extend-select = ["I", "UP", "B", "SIM", "C4", "PTH", "N", "PERF", "RUF"]
 
 [tool.mypy]
-python_version = "3.14"
+python_version = "3.15"
 strict = true
 files = ["art"]
 
 [tool.pyright]
-pythonVersion = "3.14"
+pythonVersion = "3.15"
 include = ["art"]
 venvPath = "."
 venv = ".venv"

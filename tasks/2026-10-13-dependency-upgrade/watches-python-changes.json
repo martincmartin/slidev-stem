@@ -1,0 +1,12 @@
+[
+  {
+    "package": "ast-serialize",
+    "before": "0.12.1",
+    "after": "0.13.0"
+  },
+  {
+    "package": "numpy",
+    "before": "2.5.3",
+    "after": "2.5.4"
+  }
+]

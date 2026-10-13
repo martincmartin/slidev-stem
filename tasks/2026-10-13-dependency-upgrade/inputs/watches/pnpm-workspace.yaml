@@ -1,0 +1,23 @@
+# This talk is a separate pnpm project, with its own pnpm-lock.yaml and
+# node_modules, so that it keeps its own versions. See "Given talks and
+# versions" in ../AGENTS.md. Run `pnpm install` here, in the talk's directory.
+#
+# This file makes the talk a pnpm root: without it, pnpm would use the
+# workspace in ../. The house theme is not a member: package.json links it
+# from ../themes/ledger.
+
+# Slidev's starter sets this; some Slidev dependencies expect a flat
+# node_modules.
+shamefullyHoist: true
+
+# `playwright-chromium` is needed for `slidev export` (PDF/PNG/PPTX) and has a
+# postinstall script that downloads the browser. pnpm errors on unapproved
+# build scripts by default (`strictDepBuilds: true`), so allowlist it up-front.
+allowBuilds:
+  playwright-chromium: true
+
+# UnoCSS duplicates CSS declarations with magic-string 1.4.3.
+# Keep the 1.x line at 1.4.2 until UnoCSS fixes its directive transformer.
+# See docs/packages.md and https://github.com/unocss/unocss/issues/5373.
+overrides:
+  "magic-string@^1.4.1": 1.4.2

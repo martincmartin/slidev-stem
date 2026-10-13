@@ -1,0 +1,315 @@
+[
+  {
+    "name": "stem-talks",
+    "path": "/Users/martin/Develop/slidev/stem/work2",
+    "private": true,
+    "devDependencies": {
+      "node": {
+        "from": "node",
+        "version": "26.10.0",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/node@runtime+26.10.0/node_modules/node"
+      },
+      "prettier": {
+        "from": "prettier",
+        "version": "3.9.9",
+        "resolved": "https://registry.npmjs.org/prettier/-/prettier-3.9.9.tgz",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier@3.9.9/node_modules/prettier"
+      },
+      "prettier-plugin-slidev": {
+        "from": "prettier-plugin-slidev",
+        "version": "1.0.5",
+        "resolved": "https://registry.npmjs.org/prettier-plugin-slidev/-/prettier-plugin-slidev-1.0.5.tgz",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev",
+        "dependencies": {
+          "@slidev/parser": {
+            "from": "@slidev/parser",
+            "version": "0.47.5",
+            "resolved": "https://registry.npmjs.org/@slidev/parser/-/parser-0.47.5.tgz",
+            "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/@slidev+parser@0.47.5/node_modules/@slidev/parser",
+            "dependencies": {
+              "@slidev/types": {
+                "from": "@slidev/types",
+                "version": "0.47.5",
+                "resolved": "https://registry.npmjs.org/@slidev/types/-/types-0.47.5.tgz",
+                "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/@slidev+types@0.47.5/node_modules/@slidev/types"
+              },
+              "js-yaml": {
+                "from": "js-yaml",
+                "version": "4.3.2",
+                "resolved": "https://registry.npmjs.org/js-yaml/-/js-yaml-4.3.2.tgz",
+                "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/js-yaml@4.3.2/node_modules/js-yaml",
+                "dependencies": {
+                  "argparse": {
+                    "from": "argparse",
+                    "version": "2.0.1",
+                    "resolved": "https://registry.npmjs.org/argparse/-/argparse-2.0.1.tgz",
+                    "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/argparse@2.0.1/node_modules/argparse"
+                  }
+                }
+              }
+            }
+          },
+          "prettier": {
+            "from": "prettier",
+            "version": "3.9.9",
+            "resolved": "https://registry.npmjs.org/prettier/-/prettier-3.9.9.tgz",
+            "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier@3.9.9/node_modules/prettier"
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "slidev-theme-after-hours",
+    "version": "0.1.0",
+    "path": "/Users/martin/Develop/slidev/stem/work2/themes/after-hours",
+    "private": true,
+    "dependencies": {
+      "slidev-theme-ledger": {
+        "from": "slidev-theme-ledger",
+        "version": "link:../ledger",
+        "path": "/Users/martin/Develop/slidev/stem/work2/themes/ledger",
+        "dependencies": {
+          "@fontsource/fraunces": {
+            "from": "@fontsource/fraunces",
+            "version": "5.3.0",
+            "resolved": "https://registry.npmjs.org/@fontsource/fraunces/-/fraunces-5.3.0.tgz",
+            "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/@fontsource+fraunces@5.3.0/node_modules/@fontsource/fraunces"
+          },
+          "@fontsource/ibm-plex-mono": {
+            "from": "@fontsource/ibm-plex-mono",
+            "version": "5.3.0",
+            "resolved": "https://registry.npmjs.org/@fontsource/ibm-plex-mono/-/ibm-plex-mono-5.3.0.tgz",
+            "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/@fontsource+ibm-plex-mono@5.3.0/node_modules/@fontsource/ibm-plex-mono"
+          },
+          "@fontsource/ibm-plex-sans": {
+            "from": "@fontsource/ibm-plex-sans",
+            "version": "5.3.0",
+            "resolved": "https://registry.npmjs.org/@fontsource/ibm-plex-sans/-/ibm-plex-sans-5.3.0.tgz",
+            "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/@fontsource+ibm-plex-sans@5.3.0/node_modules/@fontsource/ibm-plex-sans"
+          }
+        }
+      }
+    },
+    "unsavedDependencies": {
+      "node": {
+        "from": "node",
+        "version": "link:../../node_modules/.pnpm/node@runtime+26.10.0/node_modules/node",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/node@runtime+26.10.0/node_modules/node"
+      },
+      "prettier": {
+        "from": "prettier",
+        "version": "link:../../node_modules/.pnpm/prettier@3.9.9/node_modules/prettier",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier@3.9.9/node_modules/prettier"
+      },
+      "prettier-plugin-slidev": {
+        "from": "prettier-plugin-slidev",
+        "version": "link:../../node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev"
+      }
+    }
+  },
+  {
+    "name": "slidev-theme-beacon",
+    "version": "0.1.0",
+    "path": "/Users/martin/Develop/slidev/stem/work2/themes/beacon",
+    "private": true,
+    "dependencies": {
+      "slidev-theme-ledger": {
+        "from": "slidev-theme-ledger",
+        "version": "link:../ledger",
+        "path": "/Users/martin/Develop/slidev/stem/work2/themes/ledger",
+        "deduped": true,
+        "dedupedDependenciesCount": 3
+      }
+    },
+    "unsavedDependencies": {
+      "node": {
+        "from": "node",
+        "version": "link:../../node_modules/.pnpm/node@runtime+26.10.0/node_modules/node",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/node@runtime+26.10.0/node_modules/node"
+      },
+      "prettier": {
+        "from": "prettier",
+        "version": "link:../../node_modules/.pnpm/prettier@3.9.9/node_modules/prettier",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier@3.9.9/node_modules/prettier"
+      },
+      "prettier-plugin-slidev": {
+        "from": "prettier-plugin-slidev",
+        "version": "link:../../node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev"
+      }
+    }
+  },
+  {
+    "name": "slidev-theme-campfire",
+    "version": "0.1.0",
+    "path": "/Users/martin/Develop/slidev/stem/work2/themes/campfire",
+    "private": true,
+    "dependencies": {
+      "slidev-theme-ledger": {
+        "from": "slidev-theme-ledger",
+        "version": "link:../ledger",
+        "path": "/Users/martin/Develop/slidev/stem/work2/themes/ledger",
+        "deduped": true,
+        "dedupedDependenciesCount": 3
+      }
+    },
+    "unsavedDependencies": {
+      "node": {
+        "from": "node",
+        "version": "link:../../node_modules/.pnpm/node@runtime+26.10.0/node_modules/node",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/node@runtime+26.10.0/node_modules/node"
+      },
+      "prettier": {
+        "from": "prettier",
+        "version": "link:../../node_modules/.pnpm/prettier@3.9.9/node_modules/prettier",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier@3.9.9/node_modules/prettier"
+      },
+      "prettier-plugin-slidev": {
+        "from": "prettier-plugin-slidev",
+        "version": "link:../../node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev"
+      }
+    }
+  },
+  {
+    "name": "slidev-theme-electric-terracotta",
+    "version": "0.1.0",
+    "path": "/Users/martin/Develop/slidev/stem/work2/themes/electric-terracotta",
+    "private": true,
+    "dependencies": {
+      "slidev-theme-ledger": {
+        "from": "slidev-theme-ledger",
+        "version": "link:../ledger",
+        "path": "/Users/martin/Develop/slidev/stem/work2/themes/ledger",
+        "deduped": true,
+        "dedupedDependenciesCount": 3
+      }
+    },
+    "unsavedDependencies": {
+      "node": {
+        "from": "node",
+        "version": "link:../../node_modules/.pnpm/node@runtime+26.10.0/node_modules/node",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/node@runtime+26.10.0/node_modules/node"
+      },
+      "prettier": {
+        "from": "prettier",
+        "version": "link:../../node_modules/.pnpm/prettier@3.9.9/node_modules/prettier",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier@3.9.9/node_modules/prettier"
+      },
+      "prettier-plugin-slidev": {
+        "from": "prettier-plugin-slidev",
+        "version": "link:../../node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev"
+      }
+    }
+  },
+  {
+    "name": "slidev-theme-field-notes",
+    "version": "0.1.0",
+    "path": "/Users/martin/Develop/slidev/stem/work2/themes/field-notes",
+    "private": true,
+    "dependencies": {
+      "slidev-theme-ledger": {
+        "from": "slidev-theme-ledger",
+        "version": "link:../ledger",
+        "path": "/Users/martin/Develop/slidev/stem/work2/themes/ledger",
+        "deduped": true,
+        "dedupedDependenciesCount": 3
+      }
+    },
+    "unsavedDependencies": {
+      "node": {
+        "from": "node",
+        "version": "link:../../node_modules/.pnpm/node@runtime+26.10.0/node_modules/node",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/node@runtime+26.10.0/node_modules/node"
+      },
+      "prettier": {
+        "from": "prettier",
+        "version": "link:../../node_modules/.pnpm/prettier@3.9.9/node_modules/prettier",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier@3.9.9/node_modules/prettier"
+      },
+      "prettier-plugin-slidev": {
+        "from": "prettier-plugin-slidev",
+        "version": "link:../../node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev"
+      }
+    }
+  },
+  {
+    "name": "slidev-theme-kraft-ink",
+    "version": "0.1.0",
+    "path": "/Users/martin/Develop/slidev/stem/work2/themes/kraft-ink",
+    "private": true,
+    "dependencies": {
+      "slidev-theme-ledger": {
+        "from": "slidev-theme-ledger",
+        "version": "link:../ledger",
+        "path": "/Users/martin/Develop/slidev/stem/work2/themes/ledger",
+        "deduped": true,
+        "dedupedDependenciesCount": 3
+      }
+    },
+    "unsavedDependencies": {
+      "node": {
+        "from": "node",
+        "version": "link:../../node_modules/.pnpm/node@runtime+26.10.0/node_modules/node",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/node@runtime+26.10.0/node_modules/node"
+      },
+      "prettier": {
+        "from": "prettier",
+        "version": "link:../../node_modules/.pnpm/prettier@3.9.9/node_modules/prettier",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier@3.9.9/node_modules/prettier"
+      },
+      "prettier-plugin-slidev": {
+        "from": "prettier-plugin-slidev",
+        "version": "link:../../node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev"
+      }
+    }
+  },
+  {
+    "name": "slidev-theme-ledger",
+    "version": "0.1.0",
+    "path": "/Users/martin/Develop/slidev/stem/work2/themes/ledger",
+    "private": true,
+    "dependencies": {
+      "@fontsource/fraunces": {
+        "from": "@fontsource/fraunces",
+        "version": "5.3.0",
+        "resolved": "https://registry.npmjs.org/@fontsource/fraunces/-/fraunces-5.3.0.tgz",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/@fontsource+fraunces@5.3.0/node_modules/@fontsource/fraunces"
+      },
+      "@fontsource/ibm-plex-mono": {
+        "from": "@fontsource/ibm-plex-mono",
+        "version": "5.3.0",
+        "resolved": "https://registry.npmjs.org/@fontsource/ibm-plex-mono/-/ibm-plex-mono-5.3.0.tgz",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/@fontsource+ibm-plex-mono@5.3.0/node_modules/@fontsource/ibm-plex-mono"
+      },
+      "@fontsource/ibm-plex-sans": {
+        "from": "@fontsource/ibm-plex-sans",
+        "version": "5.3.0",
+        "resolved": "https://registry.npmjs.org/@fontsource/ibm-plex-sans/-/ibm-plex-sans-5.3.0.tgz",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/@fontsource+ibm-plex-sans@5.3.0/node_modules/@fontsource/ibm-plex-sans"
+      }
+    },
+    "unsavedDependencies": {
+      "node": {
+        "from": "node",
+        "version": "link:../../node_modules/.pnpm/node@runtime+26.10.0/node_modules/node",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/node@runtime+26.10.0/node_modules/node"
+      },
+      "prettier": {
+        "from": "prettier",
+        "version": "link:../../node_modules/.pnpm/prettier@3.9.9/node_modules/prettier",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier@3.9.9/node_modules/prettier"
+      },
+      "prettier-plugin-slidev": {
+        "from": "prettier-plugin-slidev",
+        "version": "link:../../node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev",
+        "path": "/Users/martin/Develop/slidev/stem/work2/node_modules/.pnpm/prettier-plugin-slidev@1.0.5_prettier@3.9.9/node_modules/prettier-plugin-slidev"
+      }
+    }
+  }
+]
