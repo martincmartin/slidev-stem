@@ -8,6 +8,7 @@ measured budgets) and the diving board on the Hairspring slide.
 them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
+[`2026-10-13-hand-periods`](../tasks/2026-10-13-hand-periods/PLAN.md) (the Three Hands slide: how often each hand turns),
 [`2026-10-13-recap-hands`](../tasks/2026-10-13-recap-hands/PLAN.md) (the hands hidden from the Recap slide's slow stops),
 [`2026-10-13-arbor-seams`](../tasks/2026-10-13-arbor-seams/PLAN.md) (a line where an arbor comes up through a face),
 [`2026-10-09-motion-works`](../tasks/2026-10-09-motion-works/PLAN.md) (the motion works, and the Hour Hand slide),
@@ -421,6 +422,61 @@ the spin starts and stops is in [The free spin](#the-free-spin).
   never points at empty space. The callout has the class `after-watch-fade`
   (`style.css`, and [slide-patterns.md](slide-patterns.md#text-fades)).
 
+## The Three Hands slide
+
+The Three Hands slide follows the Escapement slide. It says how often each
+hand makes a full turn. That confused people who saw the talk: "the
+**second** hand turns once a **minute**" puts two units in one phrase. So the
+slide works through one case, the second hand, and then states the other two
+in a table.
+
+| Click | What shows                                                                        |
+| ----- | --------------------------------------------------------------------------------- |
+| 0     | the seconds hand alone, on its arbor, ticking once a second                       |
+| 1     | "Second hand: a tick a second"                                                    |
+| 2     | "60 ticks a turn: once a minute"; the line before it dims                         |
+| 3     | the table: each hand, and how often it makes a full turn; the lines before it dim |
+
+- **The hand is alone**, so the eye has only its ticks to count. The watch
+  beats once a second, so the hand steps 6° once a second, and 60 steps
+  make a turn. The case, the dial and the other hands would take the eye from
+  it.
+- **Its arbor shows as a post under its cap, at tilt 20**, as on the Gears
+  slide: the hand is pinned there, and it reads less as an arrow. At tilt 0
+  the arbor is hidden exactly under the cap, so the arbor shows only at a
+  tilt.
+- **The view fits the hand's whole turn** (`watchView: [seconds hand]`; a
+  turning piece's extent is its whole circle, [Fitted
+  views](#fitted-views)), so every pose of the hand is on the slide. At this
+  zoom a step moves its tip about 22 px; in a view of the whole watch it
+  would be about 5 px.
+- **The hand's circle is against the left edge** (`watchRight`), so that the
+  text gets the room on the right. A fitted view fills the picture band's
+  height, so the circle cannot be smaller. The widest line ("60 ticks a
+  turn: once a minute") and the table are each about 483 px wide, and they
+  end where the Gears slide's text ends. So the text's left is 44 px from
+  the circle's edge, which only the tip reaches, at 3 o'clock. The slide's
+  comment and its style give the numbers; if you move the circle or the
+  text, check both.
+- **The table comes whole, at click 3.** Its first row is what the audience
+  has just worked out, and its other rows state the same rule for the other
+  two hands. The title row is in the subtitle's type, muted, so that it reads
+  as labels. The rows say "Second Hand", not "Second", for people who skim
+  it.
+- **The one accent is the answer: how long a full turn takes**: the
+  table's second column, and "once a minute" in the line above it, which
+  dims with its line ([A full turn's
+  time](slide-patterns.md#a-full-turns-time)). Not an oversight: the column
+  titles stay muted. In the accent, they draw the eye to "Hand" and "A full
+  turn", which carry no news.
+- **The hour hand turns "Twice a day"**, as the Hour Hand slide's subtitle
+  says. Not an oversight: "Once in 12 hours" (273 px) does not fit in the
+  column at the sentence's size.
+- **Both steps jump the camera.** The Escapement slide does not show the hand
+  or the fourth arbor, and the Gears slide jumps (`watchMoveWith: none`;
+  [The Gears slide](#the-gears-slide)). At its click 6, the same hand comes
+  back, on its wheel.
+
 ## The Gears slide
 
 The pair meshes without overlap throughout its motion ([The teeth](#the-teeth)).
@@ -440,11 +496,13 @@ spin.
 | 5     | the gears and the rest of the Escapement slide's mechanism; the span and the callouts go, and the rule stays   | tick with it |
 | 6     | and the seconds hand, and then its text                                                                        | tick with it |
 
-- **The step from the Escapement slide, and back, jumps the camera.** The
-  audience has not seen these pieces, so their place in the watch does not
+- **The step from the Three Hands slide, and back, jumps the camera.** The
+  audience has not seen these gears, so their place in the watch does not
   matter. With `watchMoveWith: none`, nothing is on the screen while the
-  camera moves, so it jumps: the Escapement slide's picture fades out, and
-  the gears fade in ([The one rule](#the-one-rule)). The new slide's text
+  camera moves, so it jumps: the Three Hands slide's hand fades out, and
+  the gears fade in ([The one rule](#the-one-rule)). The fourth arbor is on
+  both slides, so without the key it would stay on the screen alone while
+  the camera moves. The new slide's text
   waits for the old picture to go.
 - **The view fits the pair.** The pinion is above the fourth wheel in the
   movement's layout, and a view does not turn, so the pair is tall: its
@@ -458,7 +516,7 @@ spin.
   smoothly, not a tick at a time. Its value is the speed, in degrees a second
   of the escape wheel: the slide's comment says how many seconds a turn of the
   pinion and of the fourth wheel take. The pinion turns twice for each turn
-  of the fourth wheel. From the Escapement slide, the spin starts when the old
+  of the fourth wheel. From the Three Hands slide, the spin starts when the old
   picture has faded out, so the gears start to turn as they fade in.
 - The tilt shows the arbors as posts.
 - **At clicks 1 to 4, the span shows: the same four teeth on each gear, in
@@ -529,8 +587,10 @@ spin.
   the escape wheel.
 - **At click 6, the seconds hand fades in**, on the fourth wheel's arbor. The
   fourth wheel turns once a minute as the mechanism ticks, so the hand keeps
-  real time. Then its text fades in, under the rule: "One turn a minute",
-  "The second hand!" So all the slide's text shows at the end. Each line
+  real time. Then its text fades in, under the rule: "Turns once a
+  minute.", "The second hand!", with the turn's time in the accent
+  ([A full turn's time](slide-patterns.md#a-full-turns-time)). So all the
+  slide's text shows at the end. Each line
   is one line, to fit above the slide's bottom edge. It waits for the hand
   (`after-watch-fade`).
   The words say "second hand", the everyday word, not the watchmaker's
@@ -539,6 +599,11 @@ spin.
 - **The rule and the second hand's text have an outline in the paper's
   colour**, as on the Gear Train slide: at click 6 the seconds hand turns
   under them.
+- **Not an oversight: the camera does not zoom out for the hand at click 6.** In the gears' view the hand's tip goes off the slide's bottom for
+  about a quarter of each minute, and under the text for about a sixth. A
+  view that also fits the hand (3.51 times, not 4.31) keeps it all on the
+  slide, but the user kept the gears' zoom (the
+  [`hand-periods`](../tasks/2026-10-13-hand-periods/PLAN.md) task).
 - **When a click adds text (clicks 2, 3, 4 and 6), the text before it dims**
   ([slide-patterns.md](slide-patterns.md#text-dims)), as on the Escapement slide: the newest line is the one to read.
   At click 6 the dim waits for the hand, as the new text does.

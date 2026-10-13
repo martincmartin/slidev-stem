@@ -264,6 +264,111 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 -->
 
 ---
+# the seconds hand alone, so that the eye has only its ticks to count, one
+# a second (docs/watch.md, "The Three Hands slide"). Its arbor shows as a
+# post under its cap at tilt 20, as on the Gears slide: the hand is pinned
+# there. The view fits the hand's whole turn; its circle is against the left
+# edge (FIT_LEFT, 16 px, plus its width at this tilt, about 421.6 px), so
+# that the table, 483 px wide, fits on the right. Neither the Escapement
+# slide nor the Gears slide shows these pieces at the step, so both steps
+# jump the camera
+watch: [seconds hand, fourth arbor]
+watchView: [seconds hand]
+watchRight: 438
+watchTilt: 20
+class: three-hands
+clicks: 3
+---
+
+# Three Hands
+
+Named for what they count
+
+<!-- Each click adds text, and none leaves. The text before the newest dims
+(style.css, "TEXT DIMS"). The table comes whole at click 3: its first row is
+what the audience has just worked out, and its other rows state the same
+rule for the other two hands. -->
+
+<div class="th-sentence">
+  <div v-click="1" class="th-line text-dims">Second hand: a tick a second</div>
+  <div v-click="2" class="th-line text-dims">60 ticks a turn: <span class="turn-time">once a minute</span></div>
+  <table v-click="3" class="th-table">
+    <thead><tr><th>Hand</th><th>A full turn</th></tr></thead>
+    <tbody>
+      <tr><td>Second Hand</td><td class="turn-time">Once a minute</td></tr>
+      <tr><td>Minute Hand</td><td class="turn-time">Once an hour</td></tr>
+      <tr><td>Hour Hand</td><td class="turn-time">Twice a day</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<style>
+/* Where the Gears slide's text is, and the same type, but further left:
+   44 px right of the hand's circle (the frontmatter's watchRight). The
+   circle's edge is where the tip reaches at 3 o'clock only. The widest
+   line, "60 ticks a turn: once a minute", and the table (216 + 32 + 235 px)
+   are each about 483 px: they end at 965 px, as the Gears slide's rule
+   does. The cells are left-aligned, so the eye runs down each column. */
+.slidev-layout.three-hands .th-sentence {
+  position: absolute;
+  left: 482px;
+  top: 165px;
+  font-size: 35px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.slidev-layout.three-hands .th-line + .th-line,
+.slidev-layout.three-hands .th-table {
+  margin-top: 0.7em;
+}
+.slidev-layout.three-hands .th-table {
+  border-collapse: collapse;
+  color: var(--palette-ink);
+}
+/* no rules between the rows: Slidev's tables have them */
+.slidev-layout.three-hands .th-table :is(thead, tbody, tr, th, td) {
+  border: 0;
+}
+.slidev-layout.three-hands .th-table :is(th, td) {
+  padding: 0;
+  text-align: left;
+  font-weight: 600;
+}
+.slidev-layout.three-hands .th-table :is(th, td) + :is(th, td) {
+  padding-left: 32px;
+}
+/* The title row labels the columns: the subtitle's type (22 px, muted, the
+   theme's `h1 + p`), so that it does not read as one more row. */
+.slidev-layout.three-hands .th-table th {
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--palette-muted);
+}
+.slidev-layout.three-hands .th-table.slidev-vclick-target {
+  transition: opacity var(--text-fade);
+}
+/* When text shows, the lines before it dim, as on the Mainspring slide. */
+.slidev-layout.three-hands
+  .th-line:has(~ :is(.th-line, .th-table):not(.slidev-vclick-hidden)) {
+  --text-dim: var(--text-dimmed);
+}
+</style>
+
+<!--
+A quick one, because it trips people up. (Optional: first ask the room how long the second hand takes to go round.) Here is the second hand, alone, pinned on its arbor.
+
+[click] Each tick of the escapement moves it one step: one tick, one second.
+
+[click] Sixty ticks bring it all the way round. Sixty seconds is a minute, so the second hand turns once a minute. It is named for what it counts, not for how long a turn takes.
+
+[click] The same goes for the others. The minute hand counts minutes: sixty of them, so it turns once an hour. The hour hand counts hours, and the dial has twelve: once in twelve hours, twice a day.
+
+IF ASKED: On most watches the second hand is in the middle, with the other two. On this one it has its own arbor, off centre, as on many older watches: a "small seconds".
+-->
+
+---
 # the camera stays when a click adds pieces
 watchView: &gears [fourth wheel, fourth arbor, escape pinion, escape arbor]
 # the span, in the gears' own colours: it cannot be seen until click 1
@@ -273,9 +378,9 @@ watch: [*gears, fourth wheel span plain, escape pinion span plain]
 # left: 560px): this edge, plus half the outline, is 70 px left of the "A"
 watchRight: 489
 watchTilt: 20
-# the audience has not seen these pieces, so their place in the watch does
-# not matter: the Escapement slide's picture fades out, the camera jumps, and
-# this one fades in, both ways (docs/watch.md, "The Gears slide")
+# the audience has not seen these gears, so their place in the watch does
+# not matter: the Three Hands slide's picture fades out, the camera jumps,
+# and this one fades in, both ways (docs/watch.md, "The Gears slide")
 watchMoveWith: none
 # the gears turn freely, from the start: the pinion once in 4 s (360 / 4 = 90
 # degrees a second), so the fourth wheel once in 8 s
@@ -350,7 +455,7 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
 <div v-click="4" class="gears-sentence gears-rule text-dims">Twice the circumference,<br>half the speed.  Exactly.</div>
 
 <div v-click="6" class="gears-sentence gears-minute after-watch-fade text-dims">
-  <div>One turn a minute</div>
+  <div>Turns <span class="turn-time">once a minute</span>.</div>
   <div>The second hand!</div>
 </div>
 
@@ -407,7 +512,7 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
 </style>
 
 <!--
-The escapement fades out. The fourth wheel and the escape wheel's pinion fade in, and turn: the pinion twice for each turn of the wheel.
+The second hand fades out. The fourth wheel and the escape wheel's pinion fade in, and turn: the pinion twice for each turn of the wheel.
 
 [click] Four teeth on each gear are coloured: the same length of rim. They go through the mesh together, tooth for tooth, once each turn of the wheel. Four teeth are half the pinion, but a quarter of the wheel. Between, the pinion's coloured half comes round again on its own. The four teeth on each gear flash, and stay coloured. (Wait for one pass before the next click.)
 
@@ -419,7 +524,7 @@ The escapement fades out. The fourth wheel and the escape wheel's pinion fade in
 
 [click] The rest of the escapement comes back, and the gears now advance one tick at a time: the escapement controls the whole train. (The text stays. The arrow is on the big gear now: something we can't see yet still pushes it.)
 
-[click] Put a hand on the big gear's arbor. The gear turns once a minute, so the hand is the second hand: the first part of the watch that we read. (The hand fades in first, then the text, under the rule.)
+[click] The big gear turns once a minute: just what the second hand needs. So put the hand from two slides back on the gear's arbor: the first part of the watch that we read. (The hand fades in first, then the text, under the rule: "Turns once a minute. The second hand!")
 
 IF ASKED: This watch ticks once a second. Most real mechanical watches tick 5 to 8 times a second, so their second hands seem to sweep.
 
@@ -549,7 +654,7 @@ recap for anyone who missed clicks 2 and 3. -->
   </div>
   <div v-click="3" class="after-watch gt-stage text-dims">8:1</div>
   <div v-click="4" class="after-watch">
-    <div>Makes a full turn<br>once an hour.</div>
+    <div>Makes a full turn<br><span class="turn-time">once an hour</span>.</div>
     <div>The minute hand!</div>
   </div>
 </div>
@@ -608,7 +713,7 @@ recap for anyone who missed clicks 2 and 3. -->
 <!--
 The camera zooms out, to make room for the wheels that drive the fourth wheel. The third wheel and the centre wheel do not show yet.
 
-The second hand turns once a minute. A minute hand must turn once an hour: sixty times slower.
+The second hand turns once a minute. The minute hand must turn once an hour, as the table said: sixty times slower.
 
 [click] The text comes first: minute to hour is 60 to 1. One gear could do it: sixty times the teeth of the small gear, 240 teeth. The camera pulls back, and the arrow goes. The gear and the small gear that it drives fade in, then the watch around them, and the two gears flash: the big one is bigger than the watch.
 
@@ -879,7 +984,7 @@ recap, as on the Gear Train slide. -->
     <div>3 × 4 = 12</div>
   </div>
   <div v-click="6" class="after-watch">
-    <div>Twice a day,<br>in the middle.</div>
+    <div><span class="turn-time">Twice a day</span>,<br>in the middle.</div>
     <div>The hour hand!</div>
   </div>
 </div>
@@ -923,7 +1028,7 @@ recap, as on the Gear Train slide. -->
 </style>
 
 <!--
-The minute hand turns once an hour. The hour hand must turn twelve times slower: once in twelve hours, twice a day.
+The minute hand turns once an hour. The hour hand must turn twice a day, as the table said: once in twelve hours, twelve times slower.
 
 [click] Twelve to one is not much more than the eight to one of the last stage. One pinion on the centre arbor, and a wheel with twelve times its teeth: forty-eight. They fade in and flash. Only one and a half times the centre wheel's size.
 

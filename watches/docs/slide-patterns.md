@@ -180,6 +180,21 @@ the audience can look back. The mechanism is in `style.css` ("TEXT DIMS"):
 Not for the "Before clocks" cards: a card is a panel with art, not text over
 a picture, so it dims with an opacity ([Clicks](#clicks)).
 
+## A full turn's time
+
+**From the Three Hands slide to the Hour Hand slide, how long a hand takes
+to make a full turn is the slide's one accent**
+([theme.md](../../docs/theme.md#the-roles), "One accent per slide"): "once
+a minute", "once an hour", "twice a day". The Three Hands slide's table
+gives all three. Each later slide colours the one that it builds, so the
+eye links it back to the table.
+
+- **Give the words the class `turn-time`** (`style.css`). Its colour is a
+  mix with `--text-dim`, so it dims with its text
+  ([Text dims](#text-dims)).
+- **Only the time is in the accent**, not the rest of its sentence: "Turns
+  _once a minute_."
+
 ## The live watch and the diving board
 
 A slide that shows the watch names its pieces in the frontmatter, and needs no
@@ -192,7 +207,11 @@ The Escapement slide zooms out, and then the rest of the escapement fades in. It
 callouts point to parts of the watch, one at each click. At its first click
 the wheel's callout appears and the escape wheel spins alone, and at the
 second the pallet comes back and stops it.
-The Gears slide follows it: the Escapement slide's picture fades out, the
+The Three Hands slide follows it: the seconds hand alone, on its arbor,
+ticks once a second. Two lines work through why it turns once a minute,
+and then a table states how often each hand turns
+([watch.md](watch.md#the-three-hands-slide)).
+The Gears slide follows it: the hand fades out, the
 camera jumps, and the fourth wheel and the escape wheel's pinion fade in
 (`watchMoveWith: none`), turning freely (`watchSpin`). At click 1,
 four teeth on each gear flash, and then stay in the flash's colours (the

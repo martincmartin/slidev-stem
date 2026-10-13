@@ -78,3 +78,14 @@
   transition-property: opacity, --text-dim;
   transition-duration: var(--text-fade);
 }
+
+/* A FULL TURN'S TIME: from the Three Hands slide to the Hour Hand slide,
+   how long a hand takes to make a full turn is the slide's one accent
+   (docs/slide-patterns.md, "A full turn's time"). It dims with its text. */
+.slidev-layout .turn-time {
+  color: color-mix(
+    in srgb,
+    var(--palette-accent),
+    var(--palette-background) var(--text-dim)
+  );
+}
