@@ -78,8 +78,8 @@ const CROWN_CLEARANCE = 1;
 /** The 2D crown is a rectangle 22 by 34 px: a cylinder of this radius along x. */
 const CROWN_RADIUS = 17;
 const CROWN_LENGTH = 22;
-/** The fork sits this far above the escape wheel's teeth. */
-const PALLET_STEP = 1;
+/** The fork's height offset from the escape wheel's teeth. */
+const PALLET_STEP = 0;
 const STAFF_RADIUS = 3;
 /** The balance: its rim's width, its hub's radius, its arms' width. */
 const BALANCE_RIM = 8;

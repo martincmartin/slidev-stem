@@ -74,6 +74,24 @@ the balance at each end of its swing, and the escapement one step on. One
 second is half the balance's 2 s period. `motion.py`'s default (30 s) is a
 whole number of periods, so the escapement would look still.
 
+## Oscillator height alignment
+
+Checked 2026-10-12 after the pallet stones were aligned with the escape teeth
+([Oscillator geometry and framing](watch.md#oscillator-geometry-and-framing)).
+The comparison used generated meshes, the deck's cameras, and rendered stills.
+Chromium, Firefox, and WebKit used fresh non-persistent contexts with outside requests blocked.
+
+- The Hairspring and Balance Wheel views retain their screen positions and zoom.
+  Bitmap differences are at most one channel step out of 255.
+- The diving board generator produces byte-identical SVG. Its curl still matches the hairspring.
+- The Gears view is pixel-identical before the oscillator returns.
+  When it returns, the oscillator moves down by 1.47 CSS px.
+- The Gear Train view retains its zoom. The oscillator moves down by 0.76 CSS px.
+- The full-watch views on Mainspring and Hour Hand increase their zoom by 0.12%.
+  Projected mesh bounds change by at most 2.10 CSS px.
+- In the Recap's pallet close-up, the pallet moves down by 7.07 CSS px.
+  The jewel view's pivot follows the oscillator. The final hairspring view retains the oscillator's screen position.
+
 ## Balance rim motion
 
 Measured 2026-10-04 at `TV 55in @7m`, from 55 frame pairs separated by 100 ms:

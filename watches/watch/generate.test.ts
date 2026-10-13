@@ -408,6 +408,10 @@ test("the lowered oscillator connects to the upper roller and jewel with clearan
   const [rollerBottom, rollerTop] = heights(at(partMeshes("roller"), 0));
   const [jewelBottom, jewelTop] = heights(at(partMeshes("impulse jewel"), 0));
   const [forkBottom, forkTop] = heights(at(partMeshes("pallet fork"), 0));
+  assert.deepEqual(
+    [forkBottom, forkTop],
+    heights(at(partMeshes("escape wheel"), 0)),
+  );
   const staff = partMeshes("hairspring").find(
     (mesh) => mesh.name === "hairspring 3",
   );
@@ -461,7 +465,7 @@ test("the spring's height and the hairspring view's pivot are what art/diving_bo
   const view = scene.views.find((candidate) => candidate.name === "hairspring");
   assert.deepEqual(
     [watch.springHeights.bottom, watch.springHeights.top, view?.pivot[2]],
-    [-11, -3, -7],
+    [-12, -4, -8],
   );
 });
 

@@ -199,6 +199,7 @@ Engineering cycloids on both gears looked less like a watch; full pointed tips c
 ## Oscillator geometry and framing
 
 The balance wheel sits below the hairspring. The roller sits above the spring.
+The pallet stones and escape teeth have the same bottom and top heights.
 The jewel rises from the roller to meet the pallet fork at escape-wheel height.
 The jewel is a D, as in a Swiss lever: a circle with a flat that faces the fork.
 It is as wide as its circle, so it fits the fork's notch as a round jewel would.
