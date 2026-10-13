@@ -229,12 +229,13 @@ test("each step back moves the camera as the step forward does, reversed", () =>
   assert.ok(compared > 0, "no step moves the watch");
 });
 
-test("the Recap slide's last step, to the cover, moves in order both ways", () => {
-  const recap = slides.find(({ title }) => title === "Recap")?.frontmatter;
-  assert.ok(recap);
-  const clicks = Number(recap["clicks"]);
-  const hairspring = watchState(recap, clicks - 1);
-  const cover = watchState(recap, clicks);
+test("the step from the Recap slide to the cover's picture moves in order both ways", () => {
+  const index = slides.findIndex(({ title }) => title === "Recap");
+  const recap = slides[index]?.frontmatter;
+  const section = slides[index + 1];
+  assert.ok(recap && section?.title === "Changed The World");
+  const hairspring = watchState(recap, Number(recap["clicks"]));
+  const cover = watchState(section.frontmatter, 0);
   assert.ok(hairspring && cover);
   assert.equal(stepMove(hairspring, cover, "forward"), "ordered");
   assert.equal(stepMove(cover, hairspring, "back"), "ordered");

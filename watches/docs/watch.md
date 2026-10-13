@@ -833,8 +833,8 @@ The tilt is 20 at every click, so the stack of the motion works shows.
 ## The Recap slide
 
 The Recap slide follows the Hour Hand slide. Its only text is the time
-scale: a tour of the train, one touch at a time, from the motion works to the balance, and then
-back to the cover. The watch fills the slide, so the left 60% rule and the
+scale: a tour of the train, one touch at a time, from the motion works to the balance.
+The next slide, the Changed The World section, goes back to the cover's picture. The watch fills the slide, so the left 60% rule and the
 picture band do not apply. The options and the evidence are in
 [`2026-10-12-victory-lap`](../tasks/2026-10-12-victory-lap/PLAN.md).
 
@@ -842,8 +842,8 @@ picture band do not apply. The options and the evidence are in
   pinion; the barrel and its spring; the barrel on the centre pinion; the
   centre wheel on the third pinion; the third wheel on the fourth pinion;
   the fourth wheel on the escape pinion; the escape wheel on the pallet's
-  stones; the impulse jewel in the fork; the balance and its hairspring,
-  as the Hairspring slide shows them, on the left; and the cover.
+  stones; the impulse jewel in the fork; and the balance and its hairspring,
+  as the Hairspring slide shows them, on the left.
 - **A stop's view is made from its touch** (`recapViews` in
   `watch/recap.ts`): the touch's place comes from the design, at the middle
   of the height of the wheel whose teeth make it, and it shows at the
@@ -894,10 +894,12 @@ picture band do not apply. The options and the evidence are in
   hairspring's click (`watchTimeScale: false`). It is in the watch's
   layer, as the words "tick" and "tock" are; a printed page shows the
   click's speed-up (`slide-bottom.vue`).
-- **The last click shows what the cover shows** (`watch: all`), and moves
-  in order (`watchMove: ordered`): the reverse of the step from the cover to
-  the Hairspring slide. The motion works fade out, the camera tilts to 0,
-  and then it zooms out. A click back from the cover reverses it.
+- **The Changed The World section shows what the cover shows** (`watch: all`,
+  `watchView: cover`). The step to it from the last click moves in order
+  (`watchMove: ordered`, the default): the reverse of the step from
+  Mechanical Marvels to the Hairspring slide. The motion works fade out, the
+  camera tilts to 0, and then it zooms out. The section's title comes in
+  after the move (`--watch-text-delay`). A step back reverses it.
 
 ## Balance rim motion
 

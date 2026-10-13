@@ -986,14 +986,7 @@ watchClicks:
     watchTurn: 0
     watchTilt: 20
     watchTimeScale: false
-  # the cover, and what it shows: the reverse of the step from the cover to
-  # the Hairspring slide, so the camera tilts to 0 and then zooms out
-  9:
-    watch: all
-    watchView: cover
-    watchTilt: 0
-    watchMove: ordered
-clicks: 9
+clicks: 8
 ---
 
 <!--
@@ -1014,15 +1007,24 @@ The whole train, one touch at a time. The motion works, a day a minute: the hour
 [click] The impulse jewel in the fork.
 
 [click] The balance wheel and its hairspring, where we started.
-
-[click] And the whole watch.
 -->
 
 ---
+# the cover's picture, as on Mechanical Marvels. The step from the Recap
+# slide's last click moves in order (the default watchMove), the reverse of
+# the step from Mechanical Marvels to the Hairspring slide: the motion works
+# fade out, the camera tilts to 0, and then it zooms out
 layout: section
+eyebrow: PART 2
+watch: all
+watchView: cover
 ---
 
-# History
+# Changed The World
+
+<!--
+And the whole watch.
+-->
 
 ---
 layout: full

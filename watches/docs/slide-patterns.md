@@ -66,6 +66,7 @@ Use `layout: section`, an `eyebrow` frontmatter label, and a Markdown title.
 The theme sets the type and placement in `themes/ledger/styles/ledger.css` at the repo root.
 For a section with the cover's picture, use `watch: all` and `watchView: cover`.
 Mechanical Marvels uses this state, so the watch stays in place when the cover text changes.
+Changed The World uses it too: the Recap slide's tour ends there.
 
 ## `TimekeeperCard.vue`
 
@@ -233,8 +234,8 @@ unwinds the spring.
 The Recap slide comes after the Hour Hand slide. Its only text is the time
 scale in the lower right corner, so the watch fills the slide, and the rule that the focus is on the left does not
 apply. Each click moves, zooms, tilts and turns the camera at the same time
-to the next touch of the train, at that touch's time-lapse speed. Its last
-click goes back to the cover's picture.
+to the next touch of the train, at that touch's time-lapse speed. The next
+slide, the Changed The World section, goes back to the cover's picture.
 They are described in [watch.md](watch.md).
 
 ## Where things go on a slide
