@@ -20,7 +20,7 @@ import { boardState } from "./board.ts";
 import type { BoardState } from "./board.ts";
 import { onSlide } from "./callouts.ts";
 import type { Watch } from "./generate.ts";
-import { stageState, watchState, wrong } from "./state.ts";
+import { stageState, viewOf, watchState, wrong } from "./state.ts";
 import type { WatchState } from "./state.ts";
 
 /** A box on the slide, in px. */
@@ -42,6 +42,9 @@ export interface FigureSettings {
    *  none. `null`: the default. */
   readonly mark: readonly string[] | null;
   readonly slider: SliderKind | null;
+  /** The figure's camera, in place of the slide's: a named view, or the
+   *  pieces that a fitted view fits (as `watchView`). `null`: the slide's. */
+  readonly view: { view: string } | { fit: readonly string[] } | null;
 }
 
 /** px: room around the picture, for the lines' width and the words that
@@ -55,7 +58,8 @@ export const BOX_MARGIN = 16;
 const BOARD_BOX: SlideBox = { left: 0, top: 70, right: 980, bottom: 552 };
 const CURLING_BOARD_BOX: SlideBox = { ...BOARD_BOX, top: 0 };
 
-const NO_SETTINGS: FigureSettings = { mark: null, slider: null };
+const NO_SETTINGS: FigureSettings = { mark: null, slider: null, view: null };
+const SETTING_KEYS = ["mark", "slider", "view"];
 
 function isMap(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -84,16 +88,17 @@ export function figureSettings(
     return wrong(`article.${String(clicks)}`, block, "a map of settings");
   }
   for (const key of Object.keys(block)) {
-    if (key !== "mark" && key !== "slider") {
+    if (!SETTING_KEYS.includes(key)) {
       return wrong(
         `article.${String(clicks)}.${key}`,
         block[key],
-        "mark or slider",
+        SETTING_KEYS.join(", or "),
       );
     }
   }
   const mark = block["mark"];
   const slider = block["slider"];
+  const view = block["view"];
   if (
     mark !== undefined &&
     mark !== false &&
@@ -115,7 +120,26 @@ export function figureSettings(
   return {
     mark: mark === undefined ? null : mark === false ? [] : mark,
     slider: (slider as SliderKind | undefined) ?? null,
+    view:
+      view === undefined
+        ? null
+        : viewOf(`article.${String(clicks)}.view`, view),
   };
+}
+
+/** The watch's state in a figure at `clicks`: the slide's, with the camera
+ *  of the `article` setting `view` if the slide sets one. A fitted view is
+ *  centred in the slide's left part, at turn 0 (`fittedView`). */
+export function figureState(
+  frontmatter: Record<string, unknown>,
+  clicks: number,
+): WatchState | undefined {
+  const state = watchState(frontmatter, clicks);
+  const { view } = figureSettings(frontmatter, clicks);
+  if (!state || !view) return state;
+  return "view" in view
+    ? { ...state, view: view.view }
+    : { ...state, view: null, fit: view.fit, right: null, turn: 0 };
 }
 
 /** What a click's picture is, for comparing two clicks. */
@@ -124,12 +148,15 @@ interface Picture {
   readonly board: BoardState | undefined;
 }
 
+/** The slide's picture at `clicks`, as the talk shows it, or, with
+ *  `figure`, as its figure shows it (`figureState`). */
 function pictureAt(
   frontmatter: Record<string, unknown>,
   clicks: number,
+  figure = false,
 ): Picture {
   return {
-    watch: watchState(frontmatter, clicks),
+    watch: (figure ? figureState : watchState)(frontmatter, clicks),
     board: boardState(frontmatter, clicks),
   };
 }
@@ -202,7 +229,7 @@ export function pictureKey(
   frontmatter: Record<string, unknown>,
   clicks: number,
 ): string | null {
-  const { watch: state, board } = pictureAt(frontmatter, clicks);
+  const { watch: state, board } = pictureAt(frontmatter, clicks, true);
   if (!state && !board) return null;
   return JSON.stringify({
     frame: frameOf(state),
@@ -261,7 +288,7 @@ export function pictureBox(
   frontmatter: Record<string, unknown>,
   clicks: number,
 ): SlideBox | null {
-  const { watch: state, board } = pictureAt(frontmatter, clicks);
+  const { watch: state, board } = pictureAt(frontmatter, clicks, true);
   let box: SlideBox | null = !board?.rest
     ? null
     : board.curling

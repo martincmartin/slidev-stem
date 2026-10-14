@@ -38,7 +38,7 @@ import TickTock from "./TickTock.vue";
 import TimeScale from "./TimeScale.vue";
 import { SharedView } from "../webgl/shared.ts";
 import type { Mesh } from "../webgl/scene.ts";
-import { figureMarks, figureSettings } from "../watch/article.ts";
+import { figureMarks, figureSettings, figureState } from "../watch/article.ts";
 import { boardState } from "../watch/board.ts";
 import type { BoardTarget } from "../watch/board.ts";
 import { jewelStrikes } from "../watch/callouts.ts";
@@ -98,7 +98,7 @@ const clicks = computed(() => {
     windTime.value <= placeFor("wound") ? "wound" : "released",
   );
 });
-const state = computed(() => watchState(frontmatter.value, clicks.value));
+const state = computed(() => figureState(frontmatter.value, clicks.value));
 
 const covered = ref(false);
 const hidden = computed(() => !state.value || covered.value);

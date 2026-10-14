@@ -188,7 +188,7 @@ function shownOf(name: string, value: unknown): readonly string[] | "all" {
 }
 
 /** What the camera frames: a named view, or the pieces that it fits. */
-function viewOf(
+export function viewOf(
   name: string,
   value: unknown,
 ): { view: string } | { fit: readonly string[] } {

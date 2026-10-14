@@ -160,6 +160,13 @@ article:
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `mark`   | a list of pieces, or `false`                                                                                                                                                    |
 | `slider` | `curl`: the diving board's curl and the edit after it (the Hairspring slide); `wind`: the Mainspring slide's story, from the bare spring through the key's turns to the release |
+| `view`   | the figure's camera, in place of the slide's, with the values of `watchView`: a named view, or the pieces that a fitted view fits                                               |
+
+**Use `view` when the slide cuts the picture.** The crop stops at the
+slide's edge, so a watch that the slide cuts shows cut and off centre in the
+figure. A fitted view puts the whole watch inside the slide, and the crop
+centres it. The cover uses `view: [case band]`: its slide puts the watch
+partly past the right edge, beside the title.
 
 ## The sliders and the playing figure
 
@@ -243,7 +250,6 @@ WebKit (the task's `experiments/page/`).
 
 - Math in the narration (KaTeX).
 - A print stylesheet or a PDF of the article.
-- The hero figure is the cover's picture, which the slide's right edge cuts.
 - Part 2 has no narration: its slides show as figures with no text.
 - A whole-slide figure repeats its slide's title under the page's heading.
 - Labels do not grow on a phone; reading on a phone is a later goal.

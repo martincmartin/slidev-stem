@@ -51,11 +51,15 @@ test("a slide with no watch and no board is one run, with no box", () => {
   assert.equal(pictureKey(frontmatter, 5), null);
 });
 
-test("the cover and the next section show the same picture", async () => {
+test("the cover's figure shows the whole watch, which the slide cuts", () => {
   const cover = slides.find((slide) => slide.frontmatter["layout"] === "cover");
-  const section = await slideFrontmatter("Mechanical Marvels");
   assert.ok(cover);
-  assert.equal(pictureKey(cover.frontmatter, 0), pictureKey(section, 0));
+  const [width] = watch.scene.slide;
+  const talk = { ...cover.frontmatter, article: undefined };
+  assert.equal(pictureBox(watch, talk, 0)?.right, width);
+  const box = pictureBox(watch, cover.frontmatter, 0);
+  assert.ok(box && box.left > 0 && box.right < width);
+  assert.notEqual(pictureKey(cover.frontmatter, 0), pictureKey(talk, 0));
 });
 
 test("a figure marks what its run flashed, but not when that is everything", async () => {
@@ -92,15 +96,28 @@ test("an article setting replaces the default mark", () => {
 });
 
 test("the article settings are checked", () => {
-  assert.deepEqual(figureSettings({}, 0), { mark: null, slider: null });
+  assert.deepEqual(figureSettings({}, 0), {
+    mark: null,
+    slider: null,
+    view: null,
+  });
   assert.deepEqual(figureSettings({ article: { 2: { slider: "curl" } } }, 2), {
     mark: null,
     slider: "curl",
+    view: null,
   });
+  assert.deepEqual(
+    figureSettings({ article: { 0: { view: ["case band"] } } }, 0).view,
+    { fit: ["case band"] },
+  );
   assert.throws(() => figureSettings({ article: { x: {} } }, 0), /article/);
   assert.throws(
     () => figureSettings({ article: { 1: { zoom: 2 } } }, 1),
-    /mark or slider/,
+    /mark, or slider, or view/,
+  );
+  assert.throws(
+    () => figureSettings({ article: { 1: { view: 3 } } }, 1),
+    /article\.1\.view/,
   );
   assert.throws(
     () => figureSettings({ article: { 1: { slider: "spin" } } }, 1),

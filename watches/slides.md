@@ -27,6 +27,10 @@ layout: cover
 side: left
 watch: all
 watchView: cover
+# the slide's right edge cuts the watch: the article shows it whole
+article:
+  0:
+    view: [case band]
 ---
 
 # What Every Nerd Should Know About Mechanical Watches
@@ -34,17 +38,23 @@ watchView: cover
 Martin C. Martin
 
 <!-- narration
-A mechanical watch keeps time with no battery and no chip: a spring, a few
-wheels, and a small wheel that swings back and forth. This page builds one,
-part by part, the way the talk did. Every picture on it is live: the watch in
-each one runs.
+
+Mechanical watches have kept time for 500 years.  This page explains how a
+modern one works.  I personally think its fascinating that a purely mechanical
+device can keep time with 99.9% accuracy for $20.
+
+This presentation were partially inspried by Bartosz Ciechanowski's [Mechanical
+Watch](https://ciechanow.ski/mechanical-watch/) page.  You can think of this
+talk as a simpler introduction or background.  When you're finished with this,
+that page gives more depth.
 
 [figure: The whole watch, running: its wheels, its balance wheel and its
 hands, inside the case.]
 -->
 
 <!--
-Speaker notes here
+- 500 years
+- $20 • 99.9% accurate
 -->
 
 ---
