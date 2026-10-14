@@ -25,6 +25,10 @@ build the article.
 - Some figures have controls: steps (‹ ›), a slider, or a tour that plays by
   itself, with captions. Every figure has a pause button.
 
+`pnpm dev` prints the article's URL last, after Slidev's own list and its
+shortcuts (`addons/narration/vite.config.ts`). Slidev has no hook to add a
+URL to its list.
+
 The page puts the desktop first. A phone can read it, but its figures are
 small: reading on a phone is a goal for later, not a constraint now.
 
@@ -177,14 +181,14 @@ again. The flash after each move stays: the reader is watching the figure.
 
 ## How the code is split
 
-| Where                                                           | What                                                                                                                                                |
-| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `addons/narration/` (a Slidev addon; the headmatter's `addons`) | the narration's parser, the preparser, the page model, the `/article` route, the page and its figures, the prerender. It knows nothing of the watch |
-| `addons/narration/figure.ts`                                    | what the addon and the talk say to each other: `FIGURE` (a figure's click, pause, controls) and `ARTICLE_HOOKS` (the talk's rules)                  |
-| `setup/main.ts`                                                 | gives the article the talk's rules (`ARTICLE_HOOKS`)                                                                                                |
-| `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, marks, the `article` settings                                                           |
-| `global-bottom.vue`, `components/FigureLayer.vue`               | in a figure, the layer is the figure's: the watch at the figure's click, the board, "tick" and "tock", the time scale                               |
-| `webgl/shared.ts`, `watch/instance.ts`                          | one renderer, one WebGL context, for all the figures (`sharedStage`)                                                                                |
+| Where                                                           | What                                                                                                                                                                           |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `addons/narration/` (a Slidev addon; the headmatter's `addons`) | the narration's parser, the preparser, the page model, the `/article` route and its line in `pnpm dev`, the page and its figures, the prerender. It knows nothing of the watch |
+| `addons/narration/figure.ts`                                    | what the addon and the talk say to each other: `FIGURE` (a figure's click, pause, controls) and `ARTICLE_HOOKS` (the talk's rules)                                             |
+| `setup/main.ts`                                                 | gives the article the talk's rules (`ARTICLE_HOOKS`)                                                                                                                           |
+| `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, marks, the `article` settings                                                                                      |
+| `global-bottom.vue`, `components/FigureLayer.vue`               | in a figure, the layer is the figure's: the watch at the figure's click, the board, "tick" and "tock", the time scale                                                          |
+| `webgl/shared.ts`, `watch/instance.ts`                          | one renderer, one WebGL context, for all the figures (`sharedStage`)                                                                                                           |
 
 **One renderer for the page.** A browser keeps about 16 WebGL contexts on a
 page. Each figure is a 2D canvas, with its own timeline and model, and the
