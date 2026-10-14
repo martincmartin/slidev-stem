@@ -2,6 +2,14 @@
 
 **Date:** 2026-09-23 · **Status:** Part 1 done (the user accepted it on 2026-09-23). Part 2 not started: it waits for its trigger (below)
 
+- 2026-10-14: the shared pnpm workspace at `stem/` (option A) was replaced
+  by one pnpm and uv project for each talk
+  (`tasks/2026-09-28-per-talk-dependencies/`). Part 2 was done in another
+  form, before its trigger: palette classes
+  (`tasks/2026-10-07-palette-preview/`), then one house theme for each
+  palette (2026-10-10, `docs/theme.md`, "The house themes"). No palette was
+  compared on code, a chart or a photo.
+
 ## The request
 
 - Ledger is the look for every STEM talk.

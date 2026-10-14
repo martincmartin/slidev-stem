@@ -431,10 +431,15 @@ used before the washes had names, is in the flash task
 ## Dark themes
 
 Four dark themes were built and measured on rendered pixels (the
-animation-style task, §7 and §8.5). **Room light does not favour light
-themes:** measured without clipping, the best dark candidate beat Ledger at
-every level of flare. So "keep it light because the room may be bright" is
-not a reason. The reason for Ledger is pasted content, above.
+animation-style task, §7 and §8.5). **Room light does not favour a light
+theme's ink:** measured without clipping, the best dark candidate's ink on
+its paper beat Ledger's at every level of flare. **It does favour a light
+theme's muted text:** on the panel, Ledger's muted text keeps 3:1 up to a
+flare of 0.156, and the dark house themes' only up to 0.061–0.107 (as
+examples, on 2026-10-14; `uv run tools/palette.py` prints each theme's
+"room light" table). So a bright room is not a reason to keep Ledger, but in
+a dark theme it is a reason to keep muted text large. The reason for Ledger
+is pasted content, above.
 
 One dark slide is fine and is recommended: **a full-bleed dark slide at the
 talk's turning point.** A dark _card_ inside a light slide reads as a

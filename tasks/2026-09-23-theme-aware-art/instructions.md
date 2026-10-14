@@ -4,6 +4,14 @@
 states the problem and every option found. The session that does the task
 writes `PLAN.md` here, asks the user at each **Decision**, and then builds.
 
+- 2026-10-14: done, but not as §8 ranks it, and with no `PLAN.md`. The
+  diving board (2026-10-01) and the timekeepers (2026-10-10) are inlined in
+  the page, with an id suffix for each copy of a slide (O6a), and each mark
+  is `var(--palette-<role>, <Ledger's hex>)`. Faces are named solid washes,
+  not opacities (`stem/tasks/2026-10-07-theme-colour-system/`). The current
+  rules: `stem/docs/illustrations.md`, "The page's theme paints the
+  drawing".
+
 **Paths:** `stem/…` is the repo root. `./` is this task directory.
 
 This task goes further than item E1's "Decision (art)" in
