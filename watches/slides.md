@@ -30,7 +30,7 @@ watchView: cover
 # the slide's right edge cuts the watch: the article shows it whole
 article:
   0:
-    view: [case band]
+    view: centred cover
 ---
 
 # What Every Nerd Should Know About Mechanical Watches
@@ -40,10 +40,10 @@ Martin C. Martin
 <!-- narration
 
 Mechanical watches have kept time for 500 years.  This page explains how a
-modern one works.  I personally think its fascinating that a purely mechanical
+modern one works.  I personally think it's fascinating that a purely mechanical
 device can keep time with 99.9% accuracy for $20.
 
-This presentation were partially inspried by Bartosz Ciechanowski's [Mechanical
+This presentation was partially inspired by Bartosz Ciechanowski's [Mechanical
 Watch](https://ciechanow.ski/mechanical-watch/) page.  You can think of this
 talk as a simpler introduction or background.  When you're finished with this,
 that page gives more depth.

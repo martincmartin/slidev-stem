@@ -164,9 +164,11 @@ article:
 
 **Use `view` when the slide cuts the picture.** The crop stops at the
 slide's edge, so a watch that the slide cuts shows cut and off centre in the
-figure. A fitted view puts the whole watch inside the slide, and the crop
-centres it. The cover uses `view: [case band]`: its slide puts the watch
-partly past the right edge, beside the title.
+figure. A view that puts the whole picture inside the slide makes the crop centre
+it. The cover's slide puts the watch partly past the right edge, beside the
+title. Its figure uses `view: centred cover`: the cover's view, moved so that
+the watch is in the slide's middle, so it shows as much of the strap as the
+talk does.
 
 ## The sliders and the playing figure
 

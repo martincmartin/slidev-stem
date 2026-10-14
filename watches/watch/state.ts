@@ -7,9 +7,9 @@
 //     on the slide hides the watch. A list of pieces may hold lists (YAML
 //     aliases: [*gears, pallet fork]); they are flattened. It may hold
 //     `all`: every piece that `all` shows ([all, hour wheel])
-//   watchView: what the camera frames: a named view (cover, hairspring,
-//     crown), or a list of pieces, which the view fits (`fittedView`); none:
-//     the view fits the pieces shown
+//   watchView: what the camera frames: a named view (`views()` in
+//     generate.ts: cover, hairspring, crown), or a list of pieces, which the
+//     view fits (`fittedView`); none: the view fits the pieces shown
 //   watchRight: slide px: where a fitted view puts its pieces' right edge;
 //     none: they are centred in the slide's left 60% (`fittedView`)
 //   watchBand: picture (default) or slide: the band whose height a fitted

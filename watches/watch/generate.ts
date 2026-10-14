@@ -2878,6 +2878,15 @@ function views(
       ],
       pivot: [centreX + crownCentreX, centreY, caseMiddle],
     },
+    // the cover's view, moved so that the watch's centre is at the slide's:
+    // the article's cover figure shows the whole case, and as much of the
+    // strap as the cover does
+    {
+      name: "centred cover",
+      scale: 1,
+      shift: [width / 2 - centreX, 0],
+      pivot: [centreX, centreY, coverMiddle],
+    },
   ];
 }
 

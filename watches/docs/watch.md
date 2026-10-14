@@ -1230,9 +1230,10 @@ look, not limits ([webgl.md](../../docs/webgl.md), "The house style in
 the Gears slide's gears: a fit of the plan alone left about 29 px under the
 whole movement.
 
-The named views (`cover`, `hairspring`, `crown`; `views()` in
-`watch/generate.ts`) are for pictures that must match other art: the cover's
-title, and the diving board, whose numbers are copied from the hairspring
+The named views (`cover`, `hairspring`, `crown`, `centred cover`; `views()`
+in `watch/generate.ts`) are for pictures that must match other art: the
+cover's title, the cover in the article's first figure (`centred cover`),
+and the diving board, whose numbers are copied from the hairspring
 view (`art/diving_board.py`). The Recap slide's views (`recap motion
 works`, `recap barrel`, and the rest: `recapViews` in `watch/recap.ts`)
 each frame one touch ([The Recap slide](#the-recap-slide)). Only a named
@@ -1360,7 +1361,7 @@ which dims halfway (`--text-dimmed`;
 | Key                                                         | Meaning                                                                                                                                                                                                                                                                      |
 | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `watch: [hairspring, collet, stud]`                         | the pieces shown, or `all` (but the marks: [Pieces](#pieces)); no key hides the watch. A list may hold lists (YAML aliases)                                                                                                                                                  |
-| `watchView: hairspring`                                     | what the camera frames: a named view (`cover`, `hairspring`, `crown`), or a list of pieces to fit; none: the [fitted view](#fitted-views) of what shows                                                                                                                      |
+| `watchView: hairspring`                                     | what the camera frames: a named view (`cover`, `hairspring`, `crown`, `centred cover`), or a list of pieces to fit; none: the [fitted view](#fitted-views) of what shows                                                                                                     |
 | `watchRight: 489`                                           | px of the slide: where a [fitted view](#fitted-views) puts its pieces' right edge; none: centred in the left 60%, or at `FIT_LEFT`. Only with a fitted view                                                                                                                  |
 | `watchBand: slide`                                          | the band whose height a [fitted view](#fitted-views) fills: `picture` (default), or `slide`, the slide's height with the same margins, on the screen. Only with a fitted view                                                                                                |
 | `watchTilt: 20`                                             | degrees, towards the viewer's side (default 0)                                                                                                                                                                                                                               |
