@@ -58,7 +58,7 @@ def instance(
 
 
 def build_html(files: list[pathlib.Path], times: list[float]) -> str:
-    palette = lib.LEDGER
+    palette = lib.REFERENCE
     page_parts = [
         "<!doctype html><meta charset=utf-8><style>",
         (

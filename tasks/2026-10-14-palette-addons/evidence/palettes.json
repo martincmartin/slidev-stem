@@ -1,0 +1,177 @@
+{
+  "after-hours": {
+    "expected background": "#17202a",
+    "html": "palette-after-hours dark",
+    "background": {
+      "1": "#17202a",
+      "2": "#17202a",
+      "3": "#17202a",
+      "4": "#17202a",
+      "5": "#17202a"
+    },
+    "eyebrow": [
+      [
+        1,
+        "PART 1"
+      ],
+      [
+        2,
+        "PART 1"
+      ],
+      [
+        3,
+        "PART 1"
+      ]
+    ]
+  },
+  "beacon": {
+    "expected background": "#0f1c33",
+    "html": "palette-beacon dark",
+    "background": {
+      "1": "#0f1c33",
+      "2": "#0f1c33",
+      "3": "#0f1c33",
+      "4": "#0f1c33",
+      "5": "#0f1c33"
+    },
+    "eyebrow": [
+      [
+        1,
+        "PART 1"
+      ],
+      [
+        2,
+        "PART 1"
+      ],
+      [
+        3,
+        "PART 1"
+      ]
+    ]
+  },
+  "campfire": {
+    "expected background": "#241e1a",
+    "html": "palette-campfire dark",
+    "background": {
+      "1": "#241e1a",
+      "2": "#241e1a",
+      "3": "#241e1a",
+      "4": "#241e1a",
+      "5": "#241e1a"
+    },
+    "eyebrow": [
+      [
+        1,
+        "PART 1"
+      ],
+      [
+        2,
+        "PART 1"
+      ],
+      [
+        3,
+        "PART 1"
+      ]
+    ]
+  },
+  "electric-terracotta": {
+    "expected background": "#f6e7d8",
+    "html": "palette-electric-terracotta light",
+    "background": {
+      "1": "#f6e7d8",
+      "2": "#f6e7d8",
+      "3": "#f6e7d8",
+      "4": "#f6e7d8",
+      "5": "#f6e7d8"
+    },
+    "eyebrow": [
+      [
+        1,
+        "PART 1"
+      ],
+      [
+        2,
+        "PART 1"
+      ],
+      [
+        3,
+        "PART 1"
+      ]
+    ]
+  },
+  "field-notes": {
+    "expected background": "#f8f5ec",
+    "html": "palette-field-notes light",
+    "background": {
+      "1": "#f8f5ec",
+      "2": "#f8f5ec",
+      "3": "#f8f5ec",
+      "4": "#f8f5ec",
+      "5": "#f8f5ec"
+    },
+    "eyebrow": [
+      [
+        1,
+        "PART 1"
+      ],
+      [
+        2,
+        "PART 1"
+      ],
+      [
+        3,
+        "PART 1"
+      ]
+    ]
+  },
+  "kraft-ink": {
+    "expected background": "#efe1ca",
+    "html": "palette-kraft-ink light",
+    "background": {
+      "1": "#efe1ca",
+      "2": "#efe1ca",
+      "3": "#efe1ca",
+      "4": "#efe1ca",
+      "5": "#efe1ca"
+    },
+    "eyebrow": [
+      [
+        1,
+        "PART 1"
+      ],
+      [
+        2,
+        "PART 1"
+      ],
+      [
+        3,
+        "PART 1"
+      ]
+    ]
+  },
+  "ledger": {
+    "expected background": "#faf7f0",
+    "html": "palette-ledger light",
+    "background": {
+      "1": "#faf7f0",
+      "2": "#faf7f0",
+      "3": "#faf7f0",
+      "4": "#faf7f0",
+      "5": "#faf7f0"
+    },
+    "eyebrow": [
+      [
+        1,
+        "PART 1"
+      ],
+      [
+        2,
+        "PART 1"
+      ],
+      [
+        3,
+        "PART 1"
+      ]
+    ]
+  }
+}

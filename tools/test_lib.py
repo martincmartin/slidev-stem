@@ -1,4 +1,6 @@
+import json
 import math
+import re
 from pathlib import Path
 
 import lib
@@ -79,117 +81,136 @@ def test_black_and_white_differ_by_about_100_in_lab() -> None:
     assert math.isfinite(lib.cvd(BLACK, WHITE))
 
 
-# ---- the theme's CSS -------------------------------------------------------------
-THEME = """
-/* .slidev-layout { --palette-ink: #111111; } is a comment */
-.slidev-layout {
-  --palette-ink: #2A2520;
-  --palette-accent: #c0451c;
-}
-.slidev-layout.warm {
-  --palette-ink: #FFFFFF;
-}
-"""
+# ---- the palettes ----------------------------------------------------------------
+def palette_rule(name: str, roles: dict[str, str]) -> str:
+    body = "".join(f"  --palette-{role}: {value};\n" for role, value in roles.items())
+    return (
+        f"/* .slidev-layout.palette-{name} {{ --palette-ink: #111111; }} */\n"
+        f":where(.palette-{name}) .slidev-layout,\n.slidev-layout.palette-{name} {{\n"
+        f'  --preview-name: "{name}";\n{body}}}\n'
+    )
 
 
-def test_css_palette_reads_the_one_rule_and_skips_comments(tmp_path: Path) -> None:
-    palette = lib.css_palette(write(tmp_path / "theme.css", THEME))
-    assert palette == {
-        "ink": Colour(0x2A, 0x25, 0x20),
-        "accent": Colour(0xC0, 0x45, 0x1C),
+def every_role(**changed: str) -> dict[str, str]:
+    """The reference palette's roles, with some changed."""
+    return dict(lib.REFERENCE_RECIPES) | {
+        role.replace("_", "-"): value for role, value in changed.items()
     }
 
 
-def test_css_palette_is_none_without_the_rule(tmp_path: Path) -> None:
-    css = write(tmp_path / "theme.css", ".other { --palette-ink: #000000; }")
-    assert lib.css_palette(css) is None
-
-
-def test_css_palette_rejects_a_value_that_is_not_a_colour(tmp_path: Path) -> None:
-    css = write(tmp_path / "theme.css", ".slidev-layout { --palette-ink: red; }")
-    with pytest.raises(ValueError, match="6-digit"):
-        lib.css_palette(css)
-
-
-def test_a_palette_class_changes_its_roles_and_their_recipes(tmp_path: Path) -> None:
-    css = write(
-        tmp_path / "palettes.css",
-        THEME
-        + ".slidev-layout.dark { --palette-accent: var(--palette-ink); }\n"
-        + ".slidev-layout.label { position: relative; }",
+def test_css_recipes_reads_its_palettes_rule_and_skips_comments(tmp_path: Path) -> None:
+    path = write(
+        tmp_path / "warm" / "palette.css", palette_rule("warm", {"ink": "#2A2520"})
     )
-    warm, dark = lib.css_palette_classes(css)
-    assert (warm.name, dark.name) == ("warm", "dark")
-    theme = {"ink": "#2A2520", "accent": "#c0451c", "same": "var(--palette-ink)"}
-    assert warm.palette(theme)["same"] == WHITE
-    assert dark.palette(theme)["accent"] == Colour(0x2A, 0x25, 0x20)
+    assert lib.css_recipes(path) == {"ink": "#2A2520"}
 
 
-def test_a_palette_class_may_set_only_the_themes_roles() -> None:
-    palette_class = lib.PaletteClass("odd", {"glow": "#FFFFFF"})
+def test_css_recipes_is_none_without_the_rule_of_its_directory(tmp_path: Path) -> None:
+    path = write(
+        tmp_path / "warm" / "palette.css", palette_rule("cool", {"ink": "#000000"})
+    )
+    assert lib.css_recipes(path) is None
+
+
+def test_a_palette_must_set_every_role(tmp_path: Path) -> None:
+    roles = every_role()
+    del roles["ground-wash"]
+    write(tmp_path / "warm" / "palette.css", palette_rule("warm", roles))
+    with pytest.raises(ValueError, match="ground-wash"):
+        lib.palette_recipes("warm", tmp_path)
+
+
+def test_a_palette_may_set_no_other_role(tmp_path: Path) -> None:
+    write(
+        tmp_path / "warm" / "palette.css",
+        palette_rule("warm", every_role(glow="#FFFFFF")),
+    )
     with pytest.raises(ValueError, match="glow"):
-        palette_class.palette({"ink": "#000000"})
+        lib.palette_recipes("warm", tmp_path)
 
 
-def test_the_house_palette_classes_set_only_the_themes_roles() -> None:
-    for palette_class in lib.css_palette_classes():
-        palette_class.palette(lib.THEME_RECIPES)
+def test_a_name_that_is_not_a_palette_is_an_error(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="not a house palette"):
+        lib.palette_recipes("no-such-palette", tmp_path)
 
 
-# ---- the house themes -----------------------------------------------------------
-def test_ledger_is_the_first_house_theme() -> None:
-    themes = lib.house_themes()
-    assert themes[0] == lib.HOUSE_THEME
-    assert lib.theme_recipes(lib.HOUSE_THEME) == lib.THEME_RECIPES
-    assert {"campfire", "after-hours", "beacon"} <= set(themes)
-
-
-@pytest.mark.parametrize("name", lib.house_themes()[1:])
-def test_each_theme_is_its_palette_class(name: str) -> None:
-    """A theme and its palette class set the same roles to the same values, so
-    a slide previewed in the class looks as the theme would show it."""
-    house_class = next(
-        found for found in lib.css_palette_classes() if found.name == f"palette-{name}"
+def test_a_palette_value_that_is_not_a_colour_is_an_error(tmp_path: Path) -> None:
+    write(
+        tmp_path / "warm" / "palette.css", palette_rule("warm", every_role(ink="red"))
     )
-    assert lib.THEME_RECIPES | house_class.recipes == lib.theme_recipes(name)
+    with pytest.raises(ValueError, match="6-digit"):
+        lib.resolve(lib.palette_recipes("warm", tmp_path))
 
 
-@pytest.mark.parametrize("name", lib.house_themes()[1:])
-def test_each_theme_has_ledgers_layouts(name: str) -> None:
-    """Slidev takes layouts only from the active theme, and uses its own layout
-    of the same name, with no error, in place of a missing one. So a theme
-    built on Ledger re-exports each of Ledger's layouts."""
-    ledger = lib.THEMES_DIR / lib.HOUSE_THEME / "layouts"
-    for layout in sorted(ledger.glob("*.vue")):
-        stub = lib.THEMES_DIR / name / "layouts" / f"{layout.stem}.ts"
-        assert stub.is_file(), f"{name} needs {stub.name}: copy campfire's"
-        source = f'"../../{lib.HOUSE_THEME}/layouts/{layout.name}"'
-        assert f"export {{ default }} from {source};" in stub.read_text("utf-8")
+# ---- the house palettes -----------------------------------------------------------
+def test_the_reference_palette_is_the_first_house_palette() -> None:
+    palettes = lib.house_palettes()
+    assert palettes[0] == lib.REFERENCE_PALETTE
+    assert lib.palette_recipes(lib.REFERENCE_PALETTE) == lib.REFERENCE_RECIPES
+    assert {"campfire", "after-hours", "beacon"} <= set(palettes)
 
 
-@pytest.mark.parametrize("name", lib.house_themes())
-def test_each_house_theme_passes_every_gate(name: str) -> None:
-    palette = lib.resolve(lib.theme_recipes(name))
+@pytest.mark.parametrize("name", lib.house_palettes())
+def test_each_house_palette_passes_every_gate(name: str) -> None:
+    palette = lib.resolve(lib.palette_recipes(name))
     assert [
         gate for gate in lib.GATES if gate.required and not gate.passes(palette)
     ] == []
     assert all(gate.passes(palette) for gate in lib.HUE_GATES)
 
 
-def test_a_theme_that_is_not_a_house_theme_is_an_error() -> None:
-    with pytest.raises(ValueError, match="not a house theme"):
-        lib.theme_recipes("no-such-theme")
+@pytest.mark.parametrize("name", lib.house_palettes())
+def test_each_palettes_addon_makes_it_the_talks(name: str) -> None:
+    """The addon's index.html puts the palette's class on <html>, and its
+    package is the name a talk's `addons:` resolves (`palette-<name>`)."""
+    directory = lib.PALETTES_DIR / name
+    page = (directory / "index.html").read_text("utf-8")
+    assert re.search(rf'<html class="palette-{name}">', page)
+    package = json.loads((directory / "package.json").read_text("utf-8"))
+    assert package["name"] == f"slidev-addon-palette-{name}"
 
 
-def test_a_talk_names_its_theme_in_its_headmatter(tmp_path: Path) -> None:
-    write(tmp_path / "slides.md", "---\n# a comment\ntheme: campfire # dark\n---\n")
-    assert lib.talk_theme(tmp_path) == "campfire"
+def test_the_house_theme_sets_no_role() -> None:
+    """The colours are the palettes'. A role that the theme set would hide a
+    palette's value, with no error."""
+    found = lib.talk_palette_declarations(
+        [lib.ROOT / "themes/house"], lib.REFERENCE_RECIPES
+    )
+    assert found.faults == [] and found.overrides == []
 
 
-def test_a_talk_without_a_theme_is_an_error(tmp_path: Path) -> None:
-    write(tmp_path / "slides.md", "---\ntitle: x\n---\n\ntheme: ledger\n")
-    with pytest.raises(ValueError, match="names no theme"):
-        lib.talk_theme(tmp_path)
+def test_light_and_dark_paper() -> None:
+    assert lib.paper_schema(lib.resolve(lib.palette_recipes("ledger"))) == "light"
+    assert lib.paper_schema(lib.resolve(lib.palette_recipes("campfire"))) == "dark"
+
+
+# ---- a talk's palette ---------------------------------------------------------------
+def test_a_talk_names_its_palette_and_schema_in_its_headmatter(tmp_path: Path) -> None:
+    write(
+        tmp_path / "slides.md",
+        "---\ntheme: house\ncolorSchema: dark # Campfire\naddons:\n"
+        '  - "@/addons/narration"\n  - palette-campfire # the palette\n---\n',
+    )
+    assert lib.talk_palette(tmp_path) == "campfire"
+    assert lib.talk_color_schema(tmp_path) == "dark"
+
+
+@pytest.mark.parametrize(
+    "addons",
+    ["", "addons:\n  - other\n", "addons:\n  - palette-ledger\n  - palette-beacon\n"],
+)
+def test_a_talk_must_load_one_palette(tmp_path: Path, addons: str) -> None:
+    write(
+        tmp_path / "slides.md",
+        f"---\ntheme: house\n{addons}---\n\naddons:\n  - palette-x\n",
+    )
+    with pytest.raises(ValueError, match="one palette addon"):
+        lib.talk_palette(tmp_path)
+
+
+def test_a_talk_without_a_schema_has_none(tmp_path: Path) -> None:
+    write(tmp_path / "slides.md", "---\ntheme: house\n---\n")
+    assert lib.talk_color_schema(tmp_path) is None
 
 
 # ---- recipes ------------------------------------------------------------------------
@@ -210,10 +231,11 @@ def test_a_recipe_is_a_role_or_a_mix_of_roles() -> None:
 
 
 def test_ledger_washes_are_their_recipes() -> None:
-    muted, paper = lib.LEDGER["muted"], lib.LEDGER["background"]
-    assert lib.LEDGER["muted-wash"] == muted.blend(paper, 0.18)
-    assert lib.LEDGER["ground-wash"] == lib.LEDGER["muted-wash"]
-    assert lib.LEDGER["water"] == lib.LEDGER["subject"]
+    ledger = lib.resolve(lib.palette_recipes("ledger"))
+    muted, paper = ledger["muted"], ledger["background"]
+    assert ledger["muted-wash"] == muted.blend(paper, 0.18)
+    assert ledger["ground-wash"] == ledger["muted-wash"]
+    assert ledger["water"] == ledger["subject"]
 
 
 @pytest.mark.parametrize(
@@ -231,9 +253,9 @@ def test_a_bad_recipe_is_an_error(recipes: dict[str, str], message: str) -> None
 
 
 def test_a_wash_variation_is_a_wash_moved_toward_its_line_or_the_paper() -> None:
-    wash, muted = lib.LEDGER["muted-wash"], lib.LEDGER["muted"]
+    wash, muted = lib.REFERENCE["muted-wash"], lib.REFERENCE["muted"]
     shaded = muted.blend(wash, 0.1)
-    lit = lib.LEDGER["background"].blend(wash, 0.2)
+    lit = lib.REFERENCE["background"].blend(wash, 0.2)
     assert lib.wash_variation(shaded) == "muted-wash"
     assert lib.wash_variation(lit) == "muted-wash"
     assert lib.wash_variation(Colour(0xC0, 0x45, 0x1C)) is None
@@ -241,8 +263,8 @@ def test_a_wash_variation_is_a_wash_moved_toward_its_line_or_the_paper() -> None
 
 def test_the_hue_gates_tell_water_from_mud() -> None:
     water = next(gate for gate in lib.HUE_GATES if gate.role == "water")
-    assert water.passes(lib.LEDGER)
-    assert not water.passes(lib.LEDGER | {"water": lib.LEDGER["second"]})
+    assert water.passes(lib.REFERENCE)
+    assert not water.passes(lib.REFERENCE | {"water": lib.REFERENCE["second"]})
 
 
 # ---- sizes -------------------------------------------------------------------------
@@ -287,7 +309,7 @@ def test_shown_size_is_none_when_the_root_does_not_say(source: str) -> None:
 
 # ---- the palette in a talk's files ----------------------------------------------------
 def declarations(talk: Path) -> lib.PaletteDeclarations:
-    return lib.talk_palette_declarations([talk], lib.THEME_RECIPES)
+    return lib.talk_palette_declarations([talk], lib.REFERENCE_RECIPES)
 
 
 OVERRIDE = ".slidev-layout.warm { --palette-ink: #112233; }\n"
@@ -299,7 +321,7 @@ def test_a_slide_class_may_set_a_role(tmp_path: Path) -> None:
     found = declarations(tmp_path)
     assert found.faults == []
     assert [rule.selector for rule in found.overrides] == [".slidev-layout.warm"]
-    assert found.overrides[0].palette(lib.THEME_RECIPES)["ink"] == Colour(
+    assert found.overrides[0].palette(lib.REFERENCE_RECIPES)["ink"] == Colour(
         0x11, 0x22, 0x33
     )
 
@@ -309,9 +331,9 @@ def test_a_slide_class_that_sets_a_role_changes_its_recipes_too(tmp_path: Path) 
         tmp_path / "slides.md",
         "---\n---\n<style>\n.slidev-layout.blue { --palette-muted: #2040A0; }\n</style>\n",
     )
-    palette = declarations(tmp_path).overrides[0].palette(lib.THEME_RECIPES)
+    palette = declarations(tmp_path).overrides[0].palette(lib.REFERENCE_RECIPES)
     assert palette["muted-wash"] == Colour(0x20, 0x40, 0xA0).blend(
-        lib.LEDGER["background"], 0.18
+        lib.REFERENCE["background"], 0.18
     )
 
 

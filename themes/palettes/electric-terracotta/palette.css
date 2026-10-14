@@ -1,0 +1,40 @@
+/* Electric Terracotta: peach paper, terracotta, indigo. A light house palette.
+
+   Every role is set here, and only here. This rule is the palette of a talk
+   that loads this addon (its index.html puts the class on <html>), and of
+   any slide whose `class:` names it. stem/tools/lib.py reads it, and `uv run
+   tools/palette.py` (in stem/) measures it against every gate. How to make a
+   palette: stem/docs/theme.md.
+
+   From a candidate of watches/tasks/2026-09-18-theme-colors, tuned to pass the gates, with the art roles derived by tools/derive_palette.py.
+
+   Tuned from the candidate, each by the least that passes its gate: the
+   accent is darker, a rust (#c95c3f was 3.07:1 on the panel, under 4.5), and
+   so is the ink (#302d36 was 10.05:1 on the panel, under 12). */
+:where(.palette-electric-terracotta) .slidev-layout,
+.slidev-layout.palette-electric-terracotta {
+  --preview-name: "Electric Terracotta"; /* for .palette-preview (house.css) */
+  --palette-background: #f6e7d8; /* a pale peach */
+  --palette-panel: #eadcce; /* a light peach-beige */
+  --palette-border: #d2c6bb; /* a light taupe */
+  --palette-ink: #211e27; /* a near-black violet-grey */
+  --palette-muted: #655f62; /* a warm grey */
+  --palette-accent: #a74026; /* a rust terracotta */
+  --palette-second: #5252a3; /* an indigo */
+  --palette-subject: #631400; /* a dark oxblood */
+  --palette-subject-wash: #d6c9c5; /* a pale rose-grey */
+  --palette-second-wash: #d4c9cd; /* a pale mauve-grey */
+  --palette-water: var(--palette-second);
+  /* muted at 18% over the paper */
+  --palette-muted-wash: color-mix(
+    in srgb,
+    var(--palette-muted) 18%,
+    var(--palette-background)
+  );
+  --palette-ground: var(--palette-muted);
+  --palette-ground-wash: color-mix(
+    in srgb,
+    var(--palette-ground) 18%,
+    var(--palette-background)
+  );
+}

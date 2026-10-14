@@ -89,10 +89,10 @@ these additions.
   `INKS` (`webgl/scene.ts`): `subject`, `subjectWash`, `muted`, `mutedWash`
   and `ink` for the scene, and `second` and `secondWash` for a flash and a
   mark. Each is
-  an art role of the theme ([theme.md](theme.md), "The roles"). A role may be
+  an art role of the palette ([theme.md](theme.md), "The roles"). A role may be
   a recipe (`color-mix()`): `watch/palette.ts` resolves each one with computed
   CSS style, converts it to sRGB, and makes its hexadecimal value. Canvas
-  pixel reads cannot give exact theme colours under fingerprinting protection. `new
+  pixel reads cannot give exact palette colours under fingerprinting protection. `new
 Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   `#rrggbb` for each ink) and turns the inks into colours once, when it
   starts. `InkName` is the one list of the inks: `Palette` is a `Record` over
@@ -104,10 +104,10 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   ([illustrations.md](illustrations.md), "Flash"). Without a recolour, the
   pixels are the same as when the colours were in the buffers:
   `watches/art/pixel_regression.py` checks it.
-- **The page gives the palette.** The talk reads it from the theme's
+- **The page gives the palette.** The talk reads it from the palette's
   `--palette-*` variables, as the current slide's classes change them (in
   `watches`, `slidePalette()` in `watch/palette.ts`, which says which variable
-  gives each ink). So a new theme, or a slide's palette class
+  gives each ink). So a new palette, or a slide's palette class
   ([theme.md](theme.md), "Palette classes"), reaches the art with no other
   step. `Renderer.setPalette` (and `Stage.setPalette`) changes the colours
   from the next frame: no colour is in a GL buffer, so only the ink uniforms

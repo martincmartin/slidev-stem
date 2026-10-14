@@ -1,0 +1,93 @@
+warning: `VIRTUAL_ENV=watches/.venv` does not match the project environment path `.venv` and will be ignored; use `--active` to target the active environment instead
+{
+  "chromium": {
+    "1": {
+      "html": "palette-probe dark",
+      "layout": "slidev-layout cover",
+      "roles": {
+        "--probe-from-addon": "\"addon\"",
+        "--palette-background": "#faf7f0",
+        "--palette-ink": "#2a2520"
+      }
+    },
+    "2": {
+      "html": "palette-probe dark",
+      "layout": "slidev-layout default palette-other",
+      "roles": {
+        "--probe-from-addon": "\"addon\"",
+        "--palette-background": "#fed",
+        "--palette-ink": "#123"
+      }
+    },
+    "3": {
+      "html": "palette-probe dark",
+      "layout": "slidev-layout section cover-left",
+      "roles": {
+        "--probe-from-addon": "\"addon\"",
+        "--palette-background": "#faf7f0",
+        "--palette-ink": "#2a2520"
+      }
+    },
+    "static": "palette-probe"
+  },
+  "firefox": {
+    "1": {
+      "html": "palette-probe dark",
+      "layout": "slidev-layout cover",
+      "roles": {
+        "--probe-from-addon": "\"addon\"",
+        "--palette-background": "#faf7f0",
+        "--palette-ink": "#2a2520"
+      }
+    },
+    "2": {
+      "html": "palette-probe dark",
+      "layout": "slidev-layout default palette-other",
+      "roles": {
+        "--probe-from-addon": "\"addon\"",
+        "--palette-background": "#fed",
+        "--palette-ink": "#123"
+      }
+    },
+    "3": {
+      "html": "palette-probe dark",
+      "layout": "slidev-layout section cover-left",
+      "roles": {
+        "--probe-from-addon": "\"addon\"",
+        "--palette-background": "#faf7f0",
+        "--palette-ink": "#2a2520"
+      }
+    },
+    "static": "palette-probe"
+  },
+  "webkit": {
+    "1": {
+      "html": "palette-probe dark",
+      "layout": "slidev-layout cover",
+      "roles": {
+        "--probe-from-addon": "\"addon\"",
+        "--palette-background": "#faf7f0",
+        "--palette-ink": "#2a2520"
+      }
+    },
+    "2": {
+      "html": "palette-probe dark",
+      "layout": "slidev-layout default palette-other",
+      "roles": {
+        "--probe-from-addon": "\"addon\"",
+        "--palette-background": "#fed",
+        "--palette-ink": "#123"
+      }
+    },
+    "3": {
+      "html": "palette-probe dark",
+      "layout": "slidev-layout section cover-left",
+      "roles": {
+        "--probe-from-addon": "\"addon\"",
+        "--palette-background": "#faf7f0",
+        "--palette-ink": "#2a2520"
+      }
+    },
+    "static": "palette-probe"
+  }
+}

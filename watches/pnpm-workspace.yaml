@@ -4,8 +4,8 @@
 # directory.
 #
 # This file makes the talk a pnpm root: without it, pnpm would use the
-# workspace in ../. The house theme is not a member: package.json links it
-# from ../themes/ledger.
+# workspace in ../. The house theme and the palettes are not members:
+# package.json links them from ../themes/.
 
 # Slidev's starter sets this; some Slidev dependencies expect a flat
 # node_modules.

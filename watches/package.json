@@ -35,13 +35,14 @@
   "dependencies": {
     "@slidev/cli": "^53.0.0",
     "earcut": "^3.2.4",
-    "slidev-theme-after-hours": "link:../themes/after-hours",
-    "slidev-theme-beacon": "link:../themes/beacon",
-    "slidev-theme-campfire": "link:../themes/campfire",
-    "slidev-theme-electric-terracotta": "link:../themes/electric-terracotta",
-    "slidev-theme-field-notes": "link:../themes/field-notes",
-    "slidev-theme-kraft-ink": "link:../themes/kraft-ink",
-    "slidev-theme-ledger": "link:../themes/ledger",
+    "slidev-addon-palette-after-hours": "link:../themes/palettes/after-hours",
+    "slidev-addon-palette-beacon": "link:../themes/palettes/beacon",
+    "slidev-addon-palette-campfire": "link:../themes/palettes/campfire",
+    "slidev-addon-palette-electric-terracotta": "link:../themes/palettes/electric-terracotta",
+    "slidev-addon-palette-field-notes": "link:../themes/palettes/field-notes",
+    "slidev-addon-palette-kraft-ink": "link:../themes/palettes/kraft-ink",
+    "slidev-addon-palette-ledger": "link:../themes/palettes/ledger",
+    "slidev-theme-house": "link:../themes/house",
     "vue": "^3.5.43"
   },
   "devDependencies": {

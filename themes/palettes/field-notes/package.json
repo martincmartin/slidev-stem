@@ -1,0 +1,13 @@
+{
+  "name": "slidev-addon-palette-field-notes",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Field Notes: a colour palette for the house Slidev theme of the STEM talks.",
+  "keywords": [
+    "slidev-addon",
+    "slidev"
+  ],
+  "engines": {
+    "slidev": ">=53.0.0"
+  }
+}

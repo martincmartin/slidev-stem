@@ -7,7 +7,7 @@ that render (`barroom.py`, `contact.py`, `motion.py`) need packages too, and say
 so.
 
 WHAT LIVES HERE AND WHAT DOES NOT. This file holds the *current* framework for
-every STEM talk: the gates for the Ledger palette, the Line-weighted drawing
+every STEM talk: the gates for every palette, the Line-weighted drawing
 grammar, the venue model and the thresholds new work has to clear. It does not
 hold the alternatives, the losing candidates or the reasoning that picked these —
 those are in the talks' `tasks/`, and you should not need them to make a new
@@ -16,7 +16,7 @@ slide. See `docs/README.md`.
 Everything here is a number someone can change. When you change one, change it
 here and nowhere else: the tools read these constants rather than repeating them,
 so a threshold cannot drift between tools. The palette values are the exception:
-they are read from the theme's CSS, so they exist in one place only.
+they are read from each palette's CSS, so they exist in one place only.
 """
 
 import math
@@ -27,6 +27,12 @@ from dataclasses import dataclass
 from enum import Enum
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]  # stem/
+
+
+def display_path(file: str | pathlib.Path) -> pathlib.Path:
+    """A path for printing: relative to stem/ when it is inside it."""
+    path = pathlib.Path(file).resolve()
+    return path.relative_to(ROOT) if ROOT in path.parents else path
 
 
 # --------------------------------------------------------------------------
@@ -115,12 +121,35 @@ Palette = dict[str, Colour]  # role -> colour; the roles are the CSS names
 Recipes = dict[str, str]
 
 # --------------------------------------------------------------------------
-# The theme: Ledger. Chosen 2026-09-19. docs/theme.md is the prose version.
-# The values are read from the theme's CSS, the one place they are set.
+# The palettes (docs/theme.md, "Palettes"). Each is an addon,
+# themes/palettes/<name>/, whose palette.css holds one rule that sets every
+# role: for a talk that loads the addon, and for any slide whose `class:`
+# names it. The values are read from there, the one place they are set.
 # --------------------------------------------------------------------------
-THEME_CSS = ROOT / "themes/ledger/styles/ledger.css"
-THEME_SELECTOR = ".slidev-layout"  # the rule in THEME_CSS that holds the palette
-PALETTE_PREFIX = "--palette-"  # every theme fills the same roles: --palette-ink, ...
+PALETTES_DIR = ROOT / "themes/palettes"
+PALETTE_PREFIX = "--palette-"  # every palette fills the same roles: --palette-ink, ...
+SLIDE_SELECTOR = ".slidev-layout"  # Slidev's class on each slide's root element
+# The roles that every palette sets (docs/theme.md, "The roles").
+ROLES = (
+    "background",
+    "ink",
+    "muted",
+    "accent",
+    "second",
+    "panel",
+    "border",
+    "subject",
+    "subject-wash",
+    "muted-wash",
+    "second-wash",
+    "water",
+    "ground",
+    "ground-wash",
+)
+# The palette of the art's fallback colours, and of the tools that measure the
+# art (docs/theme.md, "The reference palette"). A choice, not the structure:
+# no palette and no theme file refers to it.
+REFERENCE_PALETTE = "ledger"
 
 
 def _block_recipes(block: str) -> Recipes:
@@ -138,50 +167,29 @@ def _without_comments(path: pathlib.Path) -> str:
     return re.sub(r"/\*.*?\*/", "", path.read_text(), flags=re.DOTALL)
 
 
-def css_recipes(path: pathlib.Path = THEME_CSS) -> Recipes | None:
-    """The PALETTE_PREFIX variables that the THEME_SELECTOR rule in `path` sets,
-    as {role: CSS value}. None if there is no such rule."""
+def palette_css(name: str, palettes: pathlib.Path = PALETTES_DIR) -> pathlib.Path:
+    """The file that sets the palette `name`, of the palettes in `palettes`."""
+    return palettes / name / "palette.css"
+
+
+def palette_selector(name: str) -> str:
+    """The selector of the palette `name`'s rule: every slide under the class
+    (the talk's palette, from <html>), and a slide with the class (a preview).
+    The first is the weaker, so a slide's own class wins."""
+    return f":where(.palette-{name}) {SLIDE_SELECTOR}, {SLIDE_SELECTOR}.palette-{name}"
+
+
+def css_recipes(path: pathlib.Path) -> Recipes | None:
+    """The roles that the palette rule in `path` sets, as {role: CSS value}.
+    None if `path` has no rule with the selector of its directory's palette."""
+    selector = r"\s*,\s*".join(
+        re.escape(part).replace(r"\ ", r"\s+")
+        for part in palette_selector(path.parent.name).split(", ")
+    )
     block = re.search(
-        r"(?m)^\s*" + re.escape(THEME_SELECTOR) + r"\s*\{([^}]*)\}",
-        _without_comments(path),
+        r"(?m)^\s*" + selector + r"\s*\{([^}]*)\}", _without_comments(path)
     )
     return None if not block else _block_recipes(block.group(1))
-
-
-# The theme's palette classes: other palettes, which a slide shows with
-# `class: <name>` (docs/theme.md, "Palette classes").
-PALETTE_CLASSES_CSS = ROOT / "themes/ledger/styles/palettes.css"
-
-
-@dataclass(frozen=True)
-class PaletteClass:
-    """A rule `.slidev-layout.<name>` of PALETTE_CLASSES_CSS: the roles it sets.
-    A role that it does not set keeps the theme's recipe."""
-
-    name: str  # the class, for a report: "palette-campfire"
-    recipes: Recipes
-
-    def palette(self, theme: Recipes) -> Palette:
-        """What a slide with this class shows. Its roles must be the theme's."""
-        unknown = set(self.recipes) - set(theme)
-        if unknown:
-            raise ValueError(
-                f"{self.name} sets roles that the theme does not: {sorted(unknown)}"
-            )
-        return resolve(theme | self.recipes)
-
-
-def css_palette_classes(path: pathlib.Path = PALETTE_CLASSES_CSS) -> list[PaletteClass]:
-    """Each `.slidev-layout.<class>` rule of `path` that sets a role, in the
-    file's order. A rule that sets none (`palette-preview`) is not a palette."""
-    found = [
-        PaletteClass(rule.group(1), _block_recipes(rule.group(2)))
-        for rule in re.finditer(
-            r"(?m)^\s*" + re.escape(THEME_SELECTOR) + r"\.([\w-]+)\s*\{([^}]*)\}",
-            _without_comments(path),
-        )
-    ]
-    return [palette_class for palette_class in found if palette_class.recipes]
 
 
 def _arguments(text: str) -> list[str]:
@@ -246,7 +254,7 @@ def resolve(recipes: Recipes) -> Palette:
                 f"the roles refer to each other: {' -> '.join((*chain, name))}"
             )
         if name not in recipes:
-            raise ValueError(f"{PALETTE_PREFIX}{name} is not a role of the theme")
+            raise ValueError(f"{PALETTE_PREFIX}{name} is not a role of the palette")
         if name not in palette:
             palette[name] = colour_of_value(recipes[name], (*chain, name))
         return palette[name]
@@ -256,74 +264,82 @@ def resolve(recipes: Recipes) -> Palette:
     return {name: palette[name] for name in recipes}
 
 
-def css_palette(path: pathlib.Path = THEME_CSS) -> Palette | None:
-    """The colours of the palette that `path` sets. None if it sets none."""
-    recipes = css_recipes(path)
-    return None if recipes is None else resolve(recipes)
-
-
-_recipes = css_recipes()
-if not _recipes:
-    raise SystemExit(
-        f"no `{THEME_SELECTOR} {{ {PALETTE_PREFIX}... }}` rule in {THEME_CSS}"
-    )
-THEME_RECIPES: Recipes = _recipes
-LEDGER: Palette = resolve(THEME_RECIPES)
-
-# The house themes: Ledger, and the themes built on it (docs/theme.md, "The
-# house themes"). Each is themes/<name>/, and a talk names it in its
-# headmatter: `theme: campfire`. A theme other than Ledger sets the roles that
-# it changes in the THEME_SELECTOR rule of themes/<name>/styles/<name>.css.
-THEMES_DIR = ROOT / "themes"
-HOUSE_THEME = "ledger"
-
-
-def theme_css(name: str) -> pathlib.Path:
-    """The file of the house theme `name` that sets its palette."""
-    return THEMES_DIR / name / "styles" / f"{name}.css"
-
-
-def house_themes() -> list[str]:
-    """Ledger, then each theme built on it, by name."""
+def house_palettes(palettes: pathlib.Path = PALETTES_DIR) -> list[str]:
+    """The reference palette, then each other palette in `palettes`, by name."""
     return [
-        HOUSE_THEME,
+        REFERENCE_PALETTE,
         *sorted(
             directory.name
-            for directory in THEMES_DIR.iterdir()
-            if directory.name != HOUSE_THEME and theme_css(directory.name).is_file()
+            for directory in palettes.iterdir()
+            if directory.name != REFERENCE_PALETTE
+            and palette_css(directory.name, palettes).is_file()
         ),
     ]
 
 
-def theme_recipes(name: str) -> Recipes:
-    """The roles of the house theme `name`: Ledger's, with each role that the
-    theme's own rule sets replaced. A recipe of Ledger's that uses a replaced
-    role follows it, as in CSS."""
-    if name == HOUSE_THEME:
-        return THEME_RECIPES
-    path = theme_css(name)
-    own = css_recipes(path) if path.is_file() else None
-    if not own:
+def palette_recipes(name: str, palettes: pathlib.Path = PALETTES_DIR) -> Recipes:
+    """The roles of the palette `name` in `palettes`, as its rule sets them.
+    Every palette sets every role: a role that a preview class left unset
+    would come from the talk's palette, not from the class's."""
+    path = palette_css(name, palettes)
+    recipes = css_recipes(path) if path.is_file() else None
+    if not recipes:
         raise ValueError(
-            f"{name!r} is not a house theme: no `{THEME_SELECTOR} {{ "
+            f"{name!r} is not a house palette: no `{palette_selector(name)} {{ "
             f"{PALETTE_PREFIX}... }}` rule in {display_path(path)}"
         )
-    unknown = set(own) - set(THEME_RECIPES)
-    if unknown:
-        raise ValueError(f"{name} sets roles that Ledger does not: {sorted(unknown)}")
-    return THEME_RECIPES | own
+    missing, unknown = set(ROLES) - set(recipes), set(recipes) - set(ROLES)
+    if missing or unknown:
+        raise ValueError(
+            f"{display_path(path)} must set every role and no other: "
+            f"missing {sorted(missing)}, unknown {sorted(unknown)}"
+        )
+    return {role: recipes[role] for role in ROLES}
 
 
-def talk_theme(talk: pathlib.Path) -> str:
-    """The theme that the headmatter of `talk`'s slides.md names."""
+REFERENCE_RECIPES: Recipes = palette_recipes(REFERENCE_PALETTE)
+REFERENCE: Palette = resolve(REFERENCE_RECIPES)
+
+
+def _headmatter(talk: pathlib.Path) -> str:
     slides = talk / "slides.md"
     head = re.match(r"---\n(.*?)\n---", slides.read_text(), flags=re.DOTALL)
-    found = head and re.search(
-        r"""(?m)^theme:\s*["']?([\w-]+)["']?\s*(?:#.*)?$""", head.group(1)
+    if not head:
+        raise ValueError(f"{display_path(slides)} has no headmatter")
+    return head.group(1)
+
+
+def talk_palette(talk: pathlib.Path) -> str:
+    """The palette whose addon the headmatter of `talk`'s slides.md loads:
+    the one `palette-<name>` in its `addons:` list."""
+    addons = re.search(r"(?m)^addons:\s*\n((?:\s+-.*\n?)+)", _headmatter(talk))
+    names: list[str] = re.findall(
+        r"""(?m)^\s+-\s*["']?palette-([\w-]+)["']?\s*(?:#.*)?$""",
+        addons.group(1) if addons else "",
     )
-    if not found:
-        raise ValueError(f"{display_path(slides)} names no theme in its headmatter")
-    return found.group(1)
+    if len(names) != 1:
+        raise ValueError(
+            f"{display_path(talk / 'slides.md')} must load one palette addon "
+            f"(`addons: [palette-<name>]`), not {len(names)}"
+        )
+    return names[0]
+
+
+def talk_color_schema(talk: pathlib.Path) -> str | None:
+    """The `colorSchema` of `talk`'s headmatter, or None if it sets none."""
+    found = re.search(
+        r"""(?m)^colorSchema:\s*["']?(\w+)["']?\s*(?:#.*)?$""", _headmatter(talk)
+    )
+    return found.group(1) if found else None
+
+
+def paper_schema(palette: Palette) -> str:
+    """ "dark" or "light": the Slidev colorSchema that suits the palette's
+    paper, so that Slidev's own controls match it. Dark paper is paper that
+    white text stands out on more than black text does."""
+    paper = palette["background"]
+    white, black = Colour(255, 255, 255), Colour(0, 0, 0)
+    return "dark" if contrast(white, paper) > contrast(black, paper) else "light"
 
 
 # Each wash and the line colour that it is the face for (docs/theme.md, "The
@@ -515,10 +531,10 @@ _unknown_roles = (
     | {gate.role for gate in HUE_GATES}
     | set(WASH_PAIRS)
     | set(WASH_PAIRS.values())
-) - set(LEDGER)
+) - set(ROLES)
 if _unknown_roles:
     raise SystemExit(
-        f"the gates name roles that {THEME_CSS} does not set: {sorted(_unknown_roles)}"
+        f"the gates name roles that are not in ROLES: {sorted(_unknown_roles)}"
     )
 CONTRAST_FLOOR = 3.0  # WCAG non-text: the floor a drawn mark must hold
 
@@ -572,7 +588,7 @@ LADDER_TOLERANCE = 0.05
 ASPECT_TOLERANCE = 0.01  # width:height vs the viewBox's, so nothing is squashed
 
 # Every colour a Line-weighted drawing is allowed to use, and its job
-# (docs/illustrations.md, "Colour"). The values come from the theme.
+# (docs/illustrations.md, "Colour"). The values come from the reference palette.
 ART_ROLES = {
     "subject": "the subject's lines: its structure, and the thing that moves",
     "subject-wash": "the subject's faces: a solid face near the paper, read as lit",
@@ -583,13 +599,13 @@ ART_ROLES = {
     "ground": "ground and stone, where they meet another material",
     "ground-wash": "the ground's faces",
 }
-ART_INK = {LEDGER[role]: job for role, job in ART_ROLES.items()}
+ART_INK = {REFERENCE[role]: job for role, job in ART_ROLES.items()}
 DETAIL_ROLE = "ink"  # the role whose lines are at DETAIL_LINE_OPACITY
-ART_FIELD = LEDGER["panel"]  # illustrations sit on a card, not on the slide
-PAPERS = frozenset({LEDGER["background"], LEDGER["panel"]})
+ART_FIELD = REFERENCE["panel"]  # illustrations sit on a card, not on the slide
+PAPERS = frozenset({REFERENCE["background"], REFERENCE["panel"]})
 
 
-def wash_variation(colour: Colour, palette: Palette = LEDGER) -> str | None:
+def wash_variation(colour: Colour, palette: Palette = REFERENCE) -> str | None:
     """The wash that `colour` is a variation of, or None: a wash mixed toward
     its line or toward a paper (a lit or a shaded face; docs/illustrations.md,
     "Washes"). Within one 8-bit step, for rounding."""
@@ -829,12 +845,6 @@ def art_files(paths: Iterable[str]) -> list[pathlib.Path]:
     return out
 
 
-def display_path(file: str | pathlib.Path) -> pathlib.Path:
-    """A path for printing: relative to stem/ when it is inside it."""
-    path = pathlib.Path(file).resolve()
-    return path.relative_to(ROOT) if ROOT in path.parents else path
-
-
 def namespace_ids(source: str, tag: str) -> str:
     """An SVG with every id, and every url(#id) that refers to one, suffixed
     with `-tag`, so several copies of it on one page do not share ids. (If
@@ -847,16 +857,16 @@ def namespace_ids(source: str, tag: str) -> str:
     return source
 
 
-# A slide's `class:` goes on its layout's root, which has THEME_SELECTOR. So
+# A slide's `class:` goes on its layout's root, which has SLIDE_SELECTOR. So
 # `.slidev-layout.dark` is the slides with `class: dark`, and nothing else.
-SLIDE_CLASS_SELECTOR = re.compile(re.escape(THEME_SELECTOR) + r"(\.[\w-]+)+")
+SLIDE_CLASS_SELECTOR = re.compile(re.escape(SLIDE_SELECTOR) + r"(\.[\w-]+)+")
 
 
 class Fault(Enum):
     """Why a talk may not make a palette declaration."""
 
     NOT_A_SLIDE_CLASS = "outside a `.slidev-layout.<class>` rule"
-    UNKNOWN_ROLE = "a role that the theme does not set"
+    UNKNOWN_ROLE = "a role that no palette sets"
     NOT_A_COLOUR = "a value that is not a #rrggbb colour"
 
 
@@ -877,11 +887,12 @@ class SlideOverride:
     selector: str
     declarations: tuple[Declaration, ...]
 
-    def palette(self, theme: Recipes) -> Palette:
-        """`theme`, with this rule's roles replaced: what those slides show. A
-        recipe of the theme that uses a replaced role follows it, as in CSS."""
+    def palette(self, base: Recipes) -> Palette:
+        """`base` (the talk's palette), with this rule's roles replaced: what
+        those slides show. A recipe of `base` that uses a replaced role
+        follows it, as in CSS."""
         return resolve(
-            theme
+            base
             | {declaration.role: declaration.value for declaration in self.declarations}
         )
 
@@ -932,11 +943,11 @@ def talk_source_files(talk: pathlib.Path) -> list[pathlib.Path]:
 
 
 def talk_palette_declarations(
-    talks: Iterable[pathlib.Path], theme: Recipes
+    talks: Iterable[pathlib.Path], base: Recipes
 ) -> PaletteDeclarations:
     """Every PALETTE_PREFIX declaration in the source files of `talks` (talk
-    directories; see `talk_source_files`). The theme sets the palette. A talk
-    may only change roles of `theme` for the slides with a class, in a
+    directories; see `talk_source_files`). A palette addon sets the palette. A
+    talk may only change roles of `base` for the slides with a class, in a
     SLIDE_CLASS_SELECTOR rule, with #rrggbb values."""
     files = [file for talk in talks for file in talk_source_files(talk)]
     declaration_pattern = re.compile(
@@ -980,7 +991,7 @@ def talk_palette_declarations(
             )
             if rule is None:
                 faults.append((declaration, Fault.NOT_A_SLIDE_CLASS))
-            elif declaration.role not in theme:
+            elif declaration.role not in base:
                 faults.append((declaration, Fault.UNKNOWN_ROLE))
             elif not re.fullmatch(r"#[0-9A-Fa-f]{6}", declaration.value):
                 faults.append((declaration, Fault.NOT_A_COLOUR))
@@ -1003,8 +1014,10 @@ def strokes_in(source: str) -> list[float]:
 
 
 if __name__ == "__main__":
-    print(f"Ledger, and the floor at {DESIGN_VENUE.label}\n")
-    for role, colour in LEDGER.items():
+    print(
+        f"{REFERENCE_PALETTE}, the reference palette, and the floor at {DESIGN_VENUE.label}\n"
+    )
+    for role, colour in REFERENCE.items():
         print(f"  {PALETTE_PREFIX}{role:<20} {colour}   L={colour.luminance:.4f}")
     print(
         f"\n  stroke ladder {STROKE_LADDER} CSS px as shown (within {LADDER_TOLERANCE:.0%})"

@@ -1,6 +1,7 @@
-/* The explorer's page. The palette is Ledger's, from the theme's own rule
-   (`slidePalette()` reads it), so the watch has the slide's colours. */
-@import "slidev-theme-ledger/styles/ledger.css";
+/* The explorer's page. The palette is Ledger's, from its own rule, which
+   index.html selects with the class on <html>, as a talk's palette addon
+   does (`slidePalette()` reads it), so the watch has the slide's colours. */
+@import "slidev-addon-palette-ledger/palette.css";
 
 body {
   margin: 0;

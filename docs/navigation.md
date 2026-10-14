@@ -76,8 +76,8 @@ It checks startup, page errors, each declared next position, and the declared fi
 It rejects navigation stalls and walks that exceed their limit.
 It does not wait for animations or compare their settled states.
 
-The Ledger theme supplies `window.slideNavigation()` from
-`themes/ledger/setup/root.ts`. It returns the current slide and click,
+The house theme supplies `window.slideNavigation()` from
+`themes/house/setup/root.ts`. It returns the current slide and click,
 the current slide's click total, the last slide, and the next position.
 These values come from Slidev navigation. The smoke tool uses them to detect early stops.
 The observation periods and deadlines are in `tools/smokecheck.py`.

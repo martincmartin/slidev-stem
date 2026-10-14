@@ -176,43 +176,7 @@ importers:
         specifier: ^1.0.5
         version: 1.0.5(prettier@3.9.10)
 
-  themes/after-hours:
-    dependencies:
-      slidev-theme-ledger:
-        specifier: link:../ledger
-        version: link:../ledger
-
-  themes/beacon:
-    dependencies:
-      slidev-theme-ledger:
-        specifier: link:../ledger
-        version: link:../ledger
-
-  themes/campfire:
-    dependencies:
-      slidev-theme-ledger:
-        specifier: link:../ledger
-        version: link:../ledger
-
-  themes/electric-terracotta:
-    dependencies:
-      slidev-theme-ledger:
-        specifier: link:../ledger
-        version: link:../ledger
-
-  themes/field-notes:
-    dependencies:
-      slidev-theme-ledger:
-        specifier: link:../ledger
-        version: link:../ledger
-
-  themes/kraft-ink:
-    dependencies:
-      slidev-theme-ledger:
-        specifier: link:../ledger
-        version: link:../ledger
-
-  themes/ledger:
+  themes/house:
     dependencies:
       '@fontsource/fraunces':
         specifier: ^5.3.0

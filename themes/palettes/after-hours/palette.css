@@ -1,0 +1,36 @@
+/* After-Hours Observatory: navy, amber, sky blue. A dark house palette.
+
+   Every role is set here, and only here. This rule is the palette of a talk
+   that loads this addon (its index.html puts the class on <html>), and of
+   any slide whose `class:` names it. stem/tools/lib.py reads it, and `uv run
+   tools/palette.py` (in stem/) measures it against every gate. How to make a
+   palette: stem/docs/theme.md.
+
+   From a candidate of watches/tasks/2026-09-18-theme-colors, with the art roles derived in tasks/2026-10-07-palette-preview. */
+:where(.palette-after-hours) .slidev-layout,
+.slidev-layout.palette-after-hours {
+  --preview-name: "After-Hours Observatory"; /* for .palette-preview (house.css) */
+  --palette-background: #17202a; /* a near-black navy */
+  --palette-panel: #242c35; /* a dark slate blue */
+  --palette-border: #3f454b; /* a dark grey */
+  --palette-ink: #f6f0df; /* a warm off-white */
+  --palette-muted: #94948f; /* a neutral grey */
+  --palette-accent: #ffb84d; /* an amber */
+  --palette-second: #7fb3e8; /* a sky blue */
+  --palette-subject: #ffcc8c; /* a pale amber */
+  --palette-subject-wash: #3d3730; /* a dark warm grey */
+  --palette-second-wash: #29394b; /* a dark slate blue */
+  --palette-water: var(--palette-second);
+  /* muted at 18% over the paper */
+  --palette-muted-wash: color-mix(
+    in srgb,
+    var(--palette-muted) 18%,
+    var(--palette-background)
+  );
+  --palette-ground: var(--palette-muted);
+  --palette-ground-wash: color-mix(
+    in srgb,
+    var(--palette-ground) 18%,
+    var(--palette-background)
+  );
+}

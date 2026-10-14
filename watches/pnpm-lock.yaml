@@ -172,27 +172,30 @@ importers:
       earcut:
         specifier: ^3.2.4
         version: 3.2.4
-      slidev-theme-after-hours:
-        specifier: link:../themes/after-hours
-        version: link:../themes/after-hours
-      slidev-theme-beacon:
-        specifier: link:../themes/beacon
-        version: link:../themes/beacon
-      slidev-theme-campfire:
-        specifier: link:../themes/campfire
-        version: link:../themes/campfire
-      slidev-theme-electric-terracotta:
-        specifier: link:../themes/electric-terracotta
-        version: link:../themes/electric-terracotta
-      slidev-theme-field-notes:
-        specifier: link:../themes/field-notes
-        version: link:../themes/field-notes
-      slidev-theme-kraft-ink:
-        specifier: link:../themes/kraft-ink
-        version: link:../themes/kraft-ink
-      slidev-theme-ledger:
-        specifier: link:../themes/ledger
-        version: link:../themes/ledger
+      slidev-addon-palette-after-hours:
+        specifier: link:../themes/palettes/after-hours
+        version: link:../themes/palettes/after-hours
+      slidev-addon-palette-beacon:
+        specifier: link:../themes/palettes/beacon
+        version: link:../themes/palettes/beacon
+      slidev-addon-palette-campfire:
+        specifier: link:../themes/palettes/campfire
+        version: link:../themes/palettes/campfire
+      slidev-addon-palette-electric-terracotta:
+        specifier: link:../themes/palettes/electric-terracotta
+        version: link:../themes/palettes/electric-terracotta
+      slidev-addon-palette-field-notes:
+        specifier: link:../themes/palettes/field-notes
+        version: link:../themes/palettes/field-notes
+      slidev-addon-palette-kraft-ink:
+        specifier: link:../themes/palettes/kraft-ink
+        version: link:../themes/palettes/kraft-ink
+      slidev-addon-palette-ledger:
+        specifier: link:../themes/palettes/ledger
+        version: link:../themes/palettes/ledger
+      slidev-theme-house:
+        specifier: link:../themes/house
+        version: link:../themes/house
       vue:
         specifier: ^3.5.43
         version: 3.5.43(typescript@6.0.3)

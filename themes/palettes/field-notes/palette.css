@@ -1,0 +1,40 @@
+/* Field Notes: notebook cream, ink blue, moss green. A light house palette.
+
+   Every role is set here, and only here. This rule is the palette of a talk
+   that loads this addon (its index.html puts the class on <html>), and of
+   any slide whose `class:` names it. stem/tools/lib.py reads it, and `uv run
+   tools/palette.py` (in stem/) measures it against every gate. How to make a
+   palette: stem/docs/theme.md.
+
+   From the Fieldnotes candidate of watches/tasks/2026-09-18-theme-colors, with the art roles derived by tools/derive_palette.py.
+
+   The subject is at 8.5:1 on the panel, not Ledger's 9.6: darker, it is too
+   near the ink (dE76 28.8 at 9.6, under 30). Every text role is the
+   candidate's. */
+:where(.palette-field-notes) .slidev-layout,
+.slidev-layout.palette-field-notes {
+  --preview-name: "Field Notes"; /* for .palette-preview (house.css) */
+  --palette-background: #f8f5ec; /* a warm off-white */
+  --palette-panel: #f0ebde; /* a light cream */
+  --palette-border: #ded7c4; /* a light beige */
+  --palette-ink: #2a2a22; /* a near-black olive */
+  --palette-muted: #74644c; /* a warm brown-grey */
+  --palette-accent: #1b5d82; /* an ink blue */
+  --palette-second: #6f7e42; /* a moss green */
+  --palette-subject: #014667; /* a dark ink blue */
+  --palette-subject-wash: #d1d8e1; /* a very pale blue-grey */
+  --palette-second-wash: #d8d9c4; /* a pale sage */
+  --palette-water: #337fa8; /* a mid blue */
+  /* muted at 18% over the paper */
+  --palette-muted-wash: color-mix(
+    in srgb,
+    var(--palette-muted) 18%,
+    var(--palette-background)
+  );
+  --palette-ground: var(--palette-muted);
+  --palette-ground-wash: color-mix(
+    in srgb,
+    var(--palette-ground) 18%,
+    var(--palette-background)
+  );
+}

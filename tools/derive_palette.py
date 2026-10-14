@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
-"""Derive a palette class's art roles from its text roles, and print the rule.
+"""Derive a palette's art roles from its text roles, and print its rule.
 
     uv run tools/derive_palette.py campfire "Campfire" --background "#241E1A" \\
         --panel "#332A24" --border "#4A3D34" --ink "#F6EEE3" --muted "#B5A594" \\
         --accent "#FFB340" --second "#54BCD6"
 
-Prints a `.slidev-layout.palette-<name>` rule for
-themes/ledger/styles/palettes.css (docs/theme.md, "Palette classes"). Its body,
-without `--preview-name`, is also the `.slidev-layout` rule of a house theme
-built on Ledger, themes/<name>/styles/<name>.css (docs/theme.md, "The house
-themes"). Then `uv run tools/palette.py` reports its gates. Stdlib only.
+Prints the rule of themes/palettes/<name>/palette.css, which sets every role
+(docs/theme.md, "Palettes", says what else the palette's addon needs). Then
+`uv run tools/palette.py` reports its gates. Stdlib only.
 
-The steps are those of docs/theme.md, "Making a theme":
+The steps are those of docs/theme.md, "Making a palette":
 
 - subject: the accent's hue and chroma, moved away from the panel until it is
   SUBJECT_CONTRAST on it. Chroma is cut to the sRGB gamut if needed.
@@ -22,7 +20,7 @@ The steps are those of docs/theme.md, "Making a theme":
 - water: the second, if its hue reads as water (lib.HUE_GATES); otherwise a
   blue (WATER_HUE, WATER_CHROMA) at the second's contrast on the panel. On
   dark paper the subject is a pale accent, which is seldom a water colour.
-- muted-wash, ground and ground-wash keep the theme's recipes.
+- muted-wash, ground and ground-wash are the usual recipes (RECIPES).
 """
 
 import argparse
@@ -40,6 +38,13 @@ WATER_HUE = 250.0
 WATER_CHROMA = 30.0
 BISECTION_STEPS = 40
 TEXT_ROLES = ("background", "panel", "border", "ink", "muted", "accent", "second")
+# The roles that follow others by the usual recipe (docs/theme.md, "Making a
+# palette", steps 10 and 11). Tune one in the palette's file if it misses a gate.
+RECIPES = {
+    "muted-wash": "color-mix(in srgb, var(--palette-muted) 18%, var(--palette-background))",
+    "ground": "var(--palette-muted)",
+    "ground-wash": "color-mix(in srgb, var(--palette-ground) 18%, var(--palette-background))",
+}
 
 
 def from_lch(light: float, chroma: float, hue: float) -> Colour | None:
@@ -114,16 +119,16 @@ def blend_for(line: Colour, paper: Colour, surface: Colour, target: float) -> Co
 
 @dataclass(frozen=True)
 class PaletteRule:
-    """A palette class: its name, its display name, and the roles it sets."""
+    """A palette: its name, its display name, and every role."""
 
     name: str  # "campfire": the class is palette-campfire
     display_name: str  # "Campfire": a preview shows it in its corner
     recipes: lib.Recipes
 
     def css(self) -> str:
-        lines = [f".slidev-layout.palette-{self.name} {{"]
+        lines = [lib.palette_selector(self.name).replace(", ", ",\n") + " {"]
         lines.append(
-            f'  --preview-name: "{self.display_name}"; /* for .palette-preview, above */'
+            f'  --preview-name: "{self.display_name}"; /* for .palette-preview (house.css) */'
         )
         lines += [
             f"  {lib.PALETTE_PREFIX}{role}: {value.lower()};"
@@ -133,7 +138,7 @@ class PaletteRule:
 
 
 def derive(name: str, display_name: str, text: dict[str, Colour]) -> PaletteRule:
-    """The palette class whose text roles are `text` (each of TEXT_ROLES)."""
+    """The palette whose text roles are `text` (each of TEXT_ROLES)."""
     missing = set(TEXT_ROLES) - set(text)
     if missing:
         raise ValueError(f"the text roles lack {sorted(missing)}")
@@ -152,18 +157,24 @@ def derive(name: str, display_name: str, text: dict[str, Colour]) -> PaletteRule
             panel, WATER_CHROMA, WATER_HUE, lib.contrast(text["second"], panel)
         ).hex
     )
-    recipes = {role: text[role].hex for role in TEXT_ROLES} | {
-        "subject": subject.hex,
-        "subject-wash": subject_wash.hex,
-        "second-wash": second_wash.hex,
-        "water": water,
-    }
-    return PaletteRule(name, display_name, recipes)
+    recipes = (
+        {role: text[role].hex for role in TEXT_ROLES}
+        | {
+            "subject": subject.hex,
+            "subject-wash": subject_wash.hex,
+            "second-wash": second_wash.hex,
+            "water": water,
+        }
+        | RECIPES
+    )
+    return PaletteRule(name, display_name, {role: recipes[role] for role in lib.ROLES})
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n")[0])
-    parser.add_argument("name", help="the class is palette-<name>: campfire")
+    parser.add_argument(
+        "name", help="the palette's name; its class is palette-<name>: campfire"
+    )
     parser.add_argument("display_name", help="the name in a preview's corner: Campfire")
     for role in TEXT_ROLES:
         parser.add_argument(f"--{role}", required=True, metavar="HEX")

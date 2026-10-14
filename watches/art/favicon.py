@@ -16,7 +16,7 @@ The icon is not the cover SVG scaled down, and that is not an oversight: at 32
 px a 3 px line becomes a fifth of a pixel, and every wheel smears into a grey
 blur. Each map keeps only what reads at its size: the case, strap and crown;
 the barrel, balance and third wheel with whole-pixel teeth at 32 px; one gear
-at 16 px, with no hands. The colours are the cover's, from the talk's theme.
+at 16 px, with no hands. The colours are the cover's, from the reference palette.
 """
 
 import argparse
@@ -25,10 +25,10 @@ import pathlib
 import sys
 
 from PIL import IcoImagePlugin, Image
-from theme import theme_palette
+from reference_palette import reference_palette
 from watch_design import TALK
 
-PALETTE = theme_palette()
+PALETTE = reference_palette()
 LINE = PALETTE["subject"]  # the wheels, the hands' pivot, the hour ticks
 FRAME = PALETTE["muted"]  # the case, the strap, the crown; the hands
 FRAME_WASH = PALETTE["muted-wash"]  # the case's and the strap's faces

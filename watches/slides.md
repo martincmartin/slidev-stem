@@ -1,12 +1,16 @@
 ---
-# Ledger, the house theme for the STEM talks: ../themes/ledger/
-theme: ledger
+# The house theme for the STEM talks: ../themes/house/. The palette is an
+# addon, and colorSchema must match its paper: light or dark
+# (../docs/theme.md, "Palettes").
+theme: house
+colorSchema: light
 title: What Every Nerd Should Know About Watches
 author: Martin C. Martin
 # The article, at /article: the talk for readers, with its narration and live
 # figures (docs/article.md). "@/" is this talk's directory: a relative path
 # would start at its parent.
 addons:
+  - palette-ledger
   - "@/addons/narration"
 # art/favicon.py writes it; without this line Slidev links its own icon on a CDN
 favicon: /favicon.ico
@@ -1496,7 +1500,7 @@ const cards = [
 </div>
 
 <style>
-/* Colours and type come from the ledger theme. Layout stays here. */
+/* Colours come from the palette, and type from the house theme. Layout stays here. */
 .tk-timekeepers {
   padding: 52px 65px 36px;
   display: flex;

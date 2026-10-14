@@ -5,22 +5,22 @@ The rules for every STEM talk: what each doc holds. When to read each one is in
 lists in step. What is true of one talk only is in that talk's `docs/` (for
 `watches`: [`../watches/docs/`](../watches/docs/README.md)).
 
-| Doc                                                                          | What it holds                                                                                                                           |
-| ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [theme.md](theme.md)                                                         | making a theme step by step, the colour roles and their washes, their gates, a slide-class override, adding a colour; Ledger            |
-| [illustrations.md](illustrations.md)                                         | the drawing grammar (size, colour, stroke ladder, leaders, motion), theme colours in an SVG, washes, how to draw a new one              |
-| [webgl.md](webgl.md)                                                         | live 3D art: when to use it, the renderer and its contract, the house style in 3D, how slides drive it                                  |
-| [navigation.md](navigation.md)                                               | a slide names targets, not moves: going back with no extra code, the default for each kind of animation, the check                      |
-| [legibility.md](legibility.md)                                               | the venue, the resolution and contrast floors, room light, how to read the metrics, text sizes                                          |
-| [talks.md](talks.md)                                                         | each talk as its own project: set up a clone, why, validation, upgrading a talk's packages                                              |
-| [export.md](export.md)                                                       | the forms of a talk for readers (the article, a narrated mode, a PDF): which exist, the rules, the traps                                |
-| [text-display-deep-research-report.md](text-display-deep-research-report.md) | background, not rules: ways to show text on a screen (film, TV, games, explainers), the design dimensions, ranked families to prototype |
-| [../tools/README.md](../tools/README.md)                                     | each check, its commands, and which tool is the authority                                                                               |
+| Doc                                                                          | What it holds                                                                                                                                                    |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [theme.md](theme.md)                                                         | making a palette step by step, the colour roles and their washes, their gates, a slide-class override, adding a colour; Ledger; the house theme and its palettes |
+| [illustrations.md](illustrations.md)                                         | the drawing grammar (size, colour, stroke ladder, leaders, motion), theme colours in an SVG, washes, how to draw a new one                                       |
+| [webgl.md](webgl.md)                                                         | live 3D art: when to use it, the renderer and its contract, the house style in 3D, how slides drive it                                                           |
+| [navigation.md](navigation.md)                                               | a slide names targets, not moves: going back with no extra code, the default for each kind of animation, the check                                               |
+| [legibility.md](legibility.md)                                               | the venue, the resolution and contrast floors, room light, how to read the metrics, text sizes                                                                   |
+| [talks.md](talks.md)                                                         | each talk as its own project: set up a clone, why, validation, upgrading a talk's packages                                                                       |
+| [export.md](export.md)                                                       | the forms of a talk for readers (the article, a narrated mode, a PDF): which exist, the rules, the traps                                                         |
+| [text-display-deep-research-report.md](text-display-deep-research-report.md) | background, not rules: ways to show text on a screen (film, TV, games, explainers), the design dimensions, ranked families to prototype                          |
+| [../tools/README.md](../tools/README.md)                                     | each check, its commands, and which tool is the authority                                                                                                        |
 
-**The one-paragraph version.** Each talk uses the house theme (now Ledger: a
-light field, a deep blue accent, a burnt orange second), and its illustrations
-follow one grammar, "Line, weighted": four stroke weights, the theme's art
-colours, and files that state the size a slide shows them at. Art that turns
+**The one-paragraph version.** Each talk uses the house theme and one of its
+palettes (now Ledger: a light field, a deep blue accent, a burnt orange
+second), and its illustrations follow one grammar, "Line, weighted": four
+stroke weights, the palette's art colours, and files that state the size a slide shows them at. Art that turns
 in 3D or moves by rules is drawn live in WebGL, in the same grammar. Every
 threshold comes from one question, _can the back row of a bar read this_, and
 `tools/` answers it with arithmetic. Use quick mode for routine feedback.

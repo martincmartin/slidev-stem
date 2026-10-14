@@ -1,0 +1,5 @@
+/* the talk's own styles: a slide class overrides the inherited palette */
+.palette-other {
+  --palette-background: #ffeedd;
+  --palette-ink: #112233;
+}

@@ -57,7 +57,7 @@ ruler that the diving board replaced),
 | `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights, pieces and their extents, the named views, `fittedView`                                                                                         |
 | `watch/teeth.ts`, `teeth.test.ts`                        | the teeth: cycloidal wheel teeth and the pinion leaves they mesh with, also a few at a time (a span); tests that each pair meshes without overlap                                                         |
 | `watch/palette.ts`                                       | which theme variable colours each ink; `slidePalette()` reads them from the page, as a slide's classes change them, and the browser works out a recipe (`color-mix()`)                                    |
-| `art/theme.py`                                           | Ledger's palette for the scripts that write files (`diving_board.py`, `favicon.py`), whichever house theme the talk names: it works out each recipe as the browser does                                   |
+| `art/reference_palette.py`                               | the reference palette, Ledger, for the scripts that write files (`diving_board.py`, `favicon.py`), whichever palette the talk loads: it works out each recipe as the browser does                         |
 | `watch/model.ts`, `state.ts`, `stills.ts`, `instance.ts` | the mechanism, the balance's settle and the train's free spin; frontmatter to state; the watch's stills; the shared instance                                                                              |
 | `watch/mainspring.ts`                                    | the Mainspring slide's story: the key, the spring's wind and the time-lapse, at each moment                                                                                                               |
 | `watch/deck.ts`, `deck.test.ts`                          | slides.md as Slidev reads it, for the tests; the check that every slide's pieces and view exist                                                                                                           |
@@ -1467,7 +1467,8 @@ write its frontmatter or a named view.
   middle, and `FIT_LEFT`. G shows or hides them.
 
 The page draws with the deck's renderer and model, in Ledger's palette: it
-imports the theme's CSS, and `slidePalette()` reads it. It is not part of the
+imports the palette's CSS and puts its class on `<html>`, as a talk's
+palette addon does, and `slidePalette()` reads it. It is not part of the
 deck, but validation checks its code: `pnpm typecheck`, `pnpm lint`, and
 `pnpm test` for the address (`address.test.ts`). Its
 `vite.config.ts` lets the server read the whole repo, because the theme is a

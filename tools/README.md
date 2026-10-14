@@ -15,7 +15,7 @@ STEM talk. The thresholds they enforce are the ones in [`../docs/`](../docs/READ
 **All of them read `lib.py` for constants.** Change a threshold, a stroke weight or
 the venue table there and every tool follows. Nothing is repeated between tools,
 so a number cannot drift. The palette values are not in `lib.py`: it reads them
-from the house theme (`../themes/ledger/styles/ledger.css`), the one place they are
+from each palette (`../themes/palettes/<name>/palette.css`), the one place they are
 set. Each drawing's display size comes from the drawing itself (its `width` and
 `height`).
 
@@ -23,8 +23,8 @@ set. Each drawing's display size comes from the drawing itself (its `width` and
 | ---------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
 | `lib.py`               | stdlib                   | the constants themselves; run it to print them                                                                                         |
 | `browsers.py`          | playwright               | does this venv's Playwright have its browser; if not, install it (the tools that render call it)                                       |
-| `palette.py`           | stdlib                   | does the palette pass its gates, does a talk set it; can I use this colour; the palette classes' gates                                 |
-| `derive_palette.py`    | stdlib                   | a palette class's art roles, derived from its text roles, as a CSS rule                                                                |
+| `palette.py`           | stdlib                   | does each palette pass its gates; a talk's palette, its colorSchema, and does it set roles; can I use this colour                      |
+| `derive_palette.py`    | stdlib                   | a palette's art roles, derived from its text roles, as its CSS rule                                                                    |
 | `artcheck.py`          | stdlib                   | is this SVG valid, in-style, and thick enough at the size it is shown                                                                  |
 | `scenecheck.py`        | stdlib                   | does a 3D scene (a talk's WebGL art) keep to the art inks, the stroke ladder and the opacities (a face is its wash, solid)             |
 | `deck_check.py`        | playwright + PIL + numpy | does a talk's live WebGL art keep its frame rate, contexts and size in visible windows, the presenter view, the export (opens windows) |
@@ -127,7 +127,7 @@ See [browser support](../docs/talks.md#browser-support) for the requirements and
 It checks startup, page errors, outside requests, navigation stalls, and completion.
 If a talk has an `art:privacy` script, full validation also runs its live-art
 startup check with canvas pixel reads blocked.
-The Ledger theme supplies the next and final positions from Slidev navigation.
+The house theme supplies the next and final positions from Slidev navigation.
 Quick validation has no browser walk.
 
 `navcheck.py` is diagnostic only. Run it when a navigation problem is found or suspected.

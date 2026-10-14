@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import derive_palette
 import lib
 import pytest
@@ -18,20 +20,17 @@ def text_roles(values: dict[str, str]) -> dict[str, Colour]:
     return {role: Colour.from_hex(value) for role, value in values.items()}
 
 
-def test_the_house_campfire_class_is_what_the_steps_give() -> None:
+def test_the_house_campfire_palette_is_what_the_steps_give() -> None:
     derived = derive_palette.derive("campfire", "Campfire", text_roles(CAMPFIRE))
-    house = next(
-        found for found in lib.css_palette_classes() if found.name == "palette-campfire"
-    )
     assert derived.recipes == {
         role: value.upper() if value.startswith("#") else value
-        for role, value in house.recipes.items()
+        for role, value in lib.palette_recipes("campfire").items()
     }
 
 
 def test_the_subject_and_its_wash_are_at_their_contrasts() -> None:
     rule = derive_palette.derive("campfire", "Campfire", text_roles(CAMPFIRE))
-    palette = lib.resolve(lib.THEME_RECIPES | rule.recipes)
+    palette = lib.resolve(rule.recipes)
     subject = lib.contrast(palette["subject"], palette["panel"])
     wash = lib.contrast(palette["subject-wash"], palette["panel"])
     assert subject == pytest.approx(derive_palette.SUBJECT_CONTRAST, abs=0.1)
@@ -49,8 +48,23 @@ def test_a_green_second_gives_water_a_blue_of_its_own() -> None:
 
 def test_the_rule_names_its_class_and_its_title() -> None:
     css = derive_palette.derive("campfire", "Campfire", text_roles(CAMPFIRE)).css()
-    assert css.startswith(".slidev-layout.palette-campfire {")
+    assert css.startswith(
+        ":where(.palette-campfire) .slidev-layout,\n.slidev-layout.palette-campfire {"
+    )
     assert '--preview-name: "Campfire";' in css
+
+
+def test_the_rule_is_one_that_the_tools_read(tmp_path: Path) -> None:
+    css = derive_palette.derive("campfire", "Campfire", text_roles(CAMPFIRE)).css()
+    path = tmp_path / "campfire" / "palette.css"
+    path.parent.mkdir()
+    path.write_text(css)
+    assert lib.css_recipes(path) == {
+        role: value.lower()
+        for role, value in derive_palette.derive(
+            "campfire", "Campfire", text_roles(CAMPFIRE)
+        ).recipes.items()
+    }
 
 
 def test_a_missing_text_role_is_an_error() -> None:

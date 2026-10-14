@@ -26,13 +26,14 @@ tools that render install their browser the first time they run.
 
 ## What is here
 
-| Directory                          | What                                                                      |
-| ---------------------------------- | ------------------------------------------------------------------------- |
-| `<talk>/`                          | one talk, with its own package versions                                   |
-| [`themes/ledger/`](themes/ledger/) | the house Slidev theme, which every talk uses                             |
-| [`docs/`](docs/README.md)          | the house style: palette, illustrations, legibility; how to work here     |
-| [`tools/`](tools/README.md)        | the checks for the house style, and `validate.py`, which runs all of them |
-| `tasks/`, `<talk>/tasks/`          | the options and evidence behind each decision                             |
+| Directory                                       | What                                                                      |
+| ----------------------------------------------- | ------------------------------------------------------------------------- |
+| `<talk>/`                                       | one talk, with its own package versions                                   |
+| [`themes/house/`](themes/house/README.md)       | the house Slidev theme, which every talk uses                             |
+| [`themes/palettes/`](themes/palettes/README.md) | the colour palettes; a talk loads one, as an addon                        |
+| [`docs/`](docs/README.md)                       | the house style: palette, illustrations, legibility; how to work here     |
+| [`tools/`](tools/README.md)                     | the checks for the house style, and `validate.py`, which runs all of them |
+| `tasks/`, `<talk>/tasks/`                       | the options and evidence behind each decision                             |
 
 How the talks, their versions and their checks work:
 [`docs/talks.md`](docs/talks.md). The rules for working in this repo:

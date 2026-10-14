@@ -2,7 +2,7 @@ from pathlib import Path
 
 import talkcheck
 
-DECK = "---\ntheme: ledger\n---\n\n# Slide\n"
+DECK = "---\ntheme: house\n---\n\n# Slide\n"
 
 
 def write(path: Path, text: str) -> Path:

@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 """Is this colour allowed, and does the palette still pass its own gates?
 
-    .venv/bin/python3 tools/palette.py                  # each house theme, every gate, pass/fail;
-                                                        # then each palette class's gates
-    .venv/bin/python3 tools/palette.py --talk watches   # only: does this talk set it?
-                                                        # (only a slide class may)
+    .venv/bin/python3 tools/palette.py                  # each house palette, every gate, pass/fail
+    .venv/bin/python3 tools/palette.py --talk watches   # only: the talk's palette and colorSchema,
+                                                        # and does it set roles? (only a slide class may)
     .venv/bin/python3 tools/palette.py "#C0451C"        # can I use this? measured in every role
     .venv/bin/python3 tools/palette.py "#C0451C" accent # ... and specifically as the accent
 
 Stdlib only. The thresholds live in `lib.py`; this file only applies them. The
-palette values come from each theme's CSS (`lib.THEME_CSS` for Ledger,
-`lib.theme_css` for the themes built on it). A candidate colour is measured in
-Ledger.
+palette values come from each palette's CSS (`lib.palette_css`). A candidate
+colour is measured in the reference palette (`lib.REFERENCE_PALETTE`).
 
 WHY YOU WOULD RUN THIS. Sooner or later a slide wants a colour the roles do
 not cover -- a third series in a chart, a highlight on a diagram, "just this one
@@ -27,7 +25,7 @@ watches/tasks/2026-09-18-theme-colors/README.md, insights 3, 8 and 11):
     PANEL -- every gate here is stated against the surface the mark lands on;
   * measuring emphasis against the background instead of against INK. A dark
     accent beside dark ink does not read as emphasis however well it contrasts
-    with the paper behind it. Seven themes had this defect and nobody saw it;
+    with the paper behind it. Seven candidates had this defect and nobody saw it;
   * eyeballing colour-blind risk. Hand estimates were wrong in both directions.
 """
 
@@ -45,26 +43,25 @@ def rule(passed: bool) -> str:
 
 
 def show_palette() -> bool:
-    """Print each house theme and each palette class with its gates. True if
-    every one passes every required gate."""
+    """Print each house palette with its gates. True if every one sets every
+    role and passes every required gate."""
     passed = True
-    for name in lib.house_themes():
-        passed = show_theme(name) and passed
-    passed = show_palette_classes() and passed
+    for name in lib.house_palettes():
+        passed = show_house_palette(name) and passed
     print(f"\n{'ALL GATES PASS' if passed else 'SOMETHING FAILS -- see above'}")
     return passed
 
 
-def show_theme(name: str) -> bool:
-    """Print the house theme `name`: its values, its gates and its room-light
-    table. True if it passes every required gate."""
+def show_house_palette(name: str) -> bool:
+    """Print the house palette `name`: its values, its gates and its
+    room-light table. True if it passes every required gate."""
     try:
-        recipes = lib.theme_recipes(name)
+        recipes = lib.palette_recipes(name)
     except ValueError as error:
         print(f"\n{name}\n\n  FAIL {error}")
         return False
     palette = lib.resolve(recipes)
-    print(f"\n{name}, from {lib.display_path(lib.theme_css(name))}\n")
+    print(f"\n{name}, from {lib.display_path(lib.palette_css(name))}\n")
     for role, value in palette.items():
         recipe = recipes[role]
         made = "" if recipe.upper() == str(value) else f"   = {recipe}"
@@ -99,25 +96,6 @@ def show_theme(name: str) -> bool:
         + "".join(f"{lib.flare_ceiling(flare):>8.2f}" for flare in FLARES)
         + f"{0.30:>8.3f}"
     )
-    return passed
-
-
-def show_palette_classes() -> bool:
-    """Print each palette class of the theme with its gates. True if each sets
-    only the theme's roles and passes every required gate, as the theme must
-    (docs/theme.md, "Palette classes")."""
-    css_name = lib.display_path(lib.PALETTE_CLASSES_CSS)
-    print(f"\npalette classes, from {css_name}")
-    passed = True
-    for palette_class in lib.css_palette_classes():
-        print(f"\n  .{palette_class.name}\n")
-        try:
-            palette = palette_class.palette(lib.THEME_RECIPES)
-        except ValueError as error:
-            print(f"  FAIL {error}")
-            passed = False
-            continue
-        passed = show_gates(palette) and passed
     return passed
 
 
@@ -160,30 +138,42 @@ def show_gates(palette: lib.Palette) -> bool:
 
 
 def show_talks(talks: list[pathlib.Path]) -> bool:
-    """Fail if one of `talks` sets the palette, except for the slides with a
-    class, or if such a slide's palette fails a gate. Each talk's slides are
-    measured in the theme that its headmatter names."""
+    """Fail if one of `talks` does not load exactly one palette addon, if its
+    colorSchema does not suit that palette's paper, if it sets the palette
+    except for the slides with a class, or if such a slide's palette fails a
+    gate. Each talk's slides are measured in its own palette."""
     passed = True
     for talk in talks:
         try:
-            name = lib.talk_theme(talk)
-            theme = lib.theme_recipes(name)
+            name = lib.talk_palette(talk)
+            recipes = lib.palette_recipes(name)
         except ValueError as error:
             print(f"\n  FAIL {error}")
             passed = False
             continue
-        css_name = lib.display_path(lib.theme_css(name))
+        css_name = lib.display_path(lib.palette_css(name))
         print(
-            f"\n{lib.display_path(talk)}: the theme {name} sets the palette "
-            f"({css_name}); a slide class may override it\n"
+            f"\n{lib.display_path(talk)}: the palette {name} ({css_name}); "
+            "a slide class may override it\n"
         )
-        passed = show_talk(talk, theme) and passed
+        passed = show_color_schema(talk, lib.resolve(recipes)) and passed
+        passed = show_talk(talk, recipes) and passed
     return passed
 
 
-def show_talk(talk: pathlib.Path, theme: lib.Recipes) -> bool:
-    """`show_talks` for one talk, whose theme's roles are `theme`."""
-    found = lib.talk_palette_declarations([talk], theme)
+def show_color_schema(talk: pathlib.Path, palette: lib.Palette) -> bool:
+    """Fail if the talk's colorSchema is not the one that suits its palette's
+    paper. Slidev draws its own controls in it, and an addon cannot set it, so
+    the talk's headmatter must (docs/theme.md, "Palettes")."""
+    wanted, found = lib.paper_schema(palette), lib.talk_color_schema(talk)
+    ok = found == wanted
+    print(f"  {rule(ok)} colorSchema: {found} (the palette's paper is {wanted})")
+    return ok
+
+
+def show_talk(talk: pathlib.Path, base: lib.Recipes) -> bool:
+    """`show_talks` for one talk, whose palette's roles are `base`."""
+    found = lib.talk_palette_declarations([talk], base)
     for declaration, fault in found.faults:
         print(
             f"  FAIL {declaration.path}:{declaration.line} sets "
@@ -194,14 +184,14 @@ def show_talk(talk: pathlib.Path, theme: lib.Recipes) -> bool:
         first = override.declarations[0]
         roles = ", ".join(declaration.role for declaration in override.declarations)
         print(f"\n  {override.selector} ({first.path}:{first.line}) sets {roles}\n")
-        passed = show_gates(override.palette(theme)) and passed
+        passed = show_gates(override.palette(base)) and passed
     if not found.faults and not found.overrides:
         print(f"  ok   the talk declares no {lib.PALETTE_PREFIX}* variable")
     return passed
 
 
 def show_candidate(candidate: lib.Colour, role: str | None = None) -> None:
-    palette = lib.LEDGER
+    palette = lib.REFERENCE
     print(f"{candidate}  L={candidate.luminance:.4f}\n")
 
     print("  against every surface it might sit on")
@@ -220,14 +210,16 @@ def show_candidate(candidate: lib.Colour, role: str | None = None) -> None:
             f"   lightness {lib.contrast(candidate, palette[other]):.2f}x"
         )
 
-    # as a replacement: the theme with the candidate in the role, and each
+    # as a replacement: the reference palette with the candidate in the role, and each
     # recipe made from that role made again
     roles = [role] if role else list(dict.fromkeys(gate.role for gate in lib.GATES))
     print("\n  as a replacement for each role")
     for replaced in roles:
-        if replaced not in lib.THEME_RECIPES:
-            sys.exit(f"{replaced} is not a role of the theme")
-        replaced_palette = lib.resolve(lib.THEME_RECIPES | {replaced: str(candidate)})
+        if replaced not in lib.REFERENCE_RECIPES:
+            sys.exit(f"{replaced} is not a role of the palettes")
+        replaced_palette = lib.resolve(
+            lib.REFERENCE_RECIPES | {replaced: str(candidate)}
+        )
         for gate in lib.GATES:
             if replaced in (gate.role, gate.against):
                 print(
@@ -258,7 +250,8 @@ def main() -> int:
         type=pathlib.Path,
         metavar="DIR",
         help=(
-            "without a colour: check only that this talk sets the palette just "
+            "without a colour: check only this talk: that it loads one palette, "
+            "with the colorSchema of its paper, that it sets the palette just "
             "for slide classes, and that each such palette passes the gates"
         ),
     )

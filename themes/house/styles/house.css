@@ -1,0 +1,79 @@
+/* The house type, on every slide. The colours are a palette's: each palette
+   (stem/themes/palettes/<name>/palette.css) sets the --palette-* roles on
+   every slide, and this file only uses them. The roles, and how to make a
+   palette: stem/docs/theme.md. */
+.slidev-layout {
+  background: var(--palette-background);
+  color: var(--palette-ink);
+}
+
+/* Titles: Fraunces 600 in ink. 37 px is the title size in
+   stem/docs/legibility.md. */
+.slidev-layout h1 {
+  font-family: theme("fontFamily.serif");
+  font-weight: 600;
+  font-size: 37px;
+  line-height: 1.1;
+}
+
+/* A subtitle: the paragraph right after the title, as in Slidev's default
+   theme (its `h1 + p` rule). Muted, the role for secondary text; 22 px, the
+   subtitle size in stem/docs/legibility.md. */
+.slidev-layout h1 + p {
+  margin-top: -0.5rem;
+  font-size: 22px;
+  line-height: 1.3;
+  color: var(--palette-muted);
+}
+
+.slidev-layout.cover {
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+.slidev-layout.cover h1 {
+  font-size: 56px;
+}
+
+/* Cover and section text beside an illustration. */
+.slidev-layout.cover-left {
+  display: grid;
+  place-content: center start;
+  text-align: left;
+}
+.slidev-layout.cover-left h1,
+.slidev-layout.cover-left h1 + p {
+  text-align: left;
+  max-width: 480px;
+}
+
+.slidev-layout.section h1 {
+  font-size: 46px;
+  margin: 0;
+}
+.slidev-layout.section .section-eyebrow {
+  color: var(--palette-ink);
+  font-family: theme("fontFamily.sans");
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1.3;
+  margin-bottom: 16px;
+}
+
+/* A preview: with `class: palette-campfire palette-preview`, the slide names
+   its palette in its lower right corner, small and muted: the presenter can
+   find it, and the audience is not meant to notice it. So it is below the
+   17 px floor of stem/docs/legibility.md, on purpose. A slide that uses a
+   palette for real leaves out palette-preview. */
+.slidev-layout.palette-preview {
+  position: relative; /* the corner of the slide, for the name */
+}
+.slidev-layout.palette-preview::after {
+  content: var(--preview-name);
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  font-size: 12px;
+  color: var(--palette-muted);
+  pointer-events: none;
+}

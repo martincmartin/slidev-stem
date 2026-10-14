@@ -19,10 +19,10 @@ and how to work in that setup. The rules themselves are in
 
 ## The layout
 
-| Project        | Holds                                                            | Its lockfiles and environments                                             |
-| -------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `stem/`        | the house: `tools/`, `docs/`, the theme (`themes/ledger/`)       | `pnpm-lock.yaml`, `uv.lock`, `.venv`, `node_modules` (Prettier, the theme) |
-| `stem/<talk>/` | one talk: `slides.md`, `components/`, `public/`, `art/`, `docs/` | `pnpm-lock.yaml`, `uv.lock`, `.venv`, `node_modules`                       |
+| Project        | Holds                                                                | Its lockfiles and environments                                             |
+| -------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `stem/`        | the house: `tools/`, `docs/`, the theme and the palettes (`themes/`) | `pnpm-lock.yaml`, `uv.lock`, `.venv`, `node_modules` (Prettier, the theme) |
+| `stem/<talk>/` | one talk: `slides.md`, `components/`, `public/`, `art/`, `docs/`     | `pnpm-lock.yaml`, `uv.lock`, `.venv`, `node_modules`                       |
 
 Each project pins its Node and pnpm versions (`devEngines` in `package.json`) and
 its Python version (`.python-version`). pnpm downloads the pinned Node for the

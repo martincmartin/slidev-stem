@@ -1,0 +1,28 @@
+{
+  "name": "slidev-theme-house",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The house Slidev theme for the STEM talks: layouts, type (Fraunces and IBM Plex, self-hosted) and setup. Its colours come from a palette addon, themes/palettes/<name>/.",
+  "keywords": [
+    "slidev-theme",
+    "slidev"
+  ],
+  "engines": {
+    "slidev": ">=53.0.0"
+  },
+  "slidev": {
+    "defaults": {
+      "fonts": {
+        "sans": "IBM Plex Sans",
+        "serif": "Fraunces",
+        "mono": "IBM Plex Mono",
+        "provider": "none"
+      }
+    }
+  },
+  "dependencies": {
+    "@fontsource/fraunces": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0"
+  }
+}

@@ -44,7 +44,7 @@ declare global {
   }
 }
 
-// The page has no theme: these are Ledger's values, as index.html's background
+// The page has no palette: these are Ledger's values, as index.html's background
 // is. They keep the reference pictures the same from run to run.
 const PROBE_PALETTE: Palette = {
   paper: "#FAF7F0",

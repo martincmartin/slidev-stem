@@ -64,14 +64,14 @@ retired talk working.
   a uv workspace has one resolution, and a pnpm workspace with
   `shamefullyHoist` has one shared `node_modules`, so an upgrade for one talk
   would reach the others.
-- **House items have one live copy.** The house items are the themes (`themes/`: Ledger, and the themes built on it), `tools/`, `docs/` and `.prettierrc`. All talks use their
+- **House items have one live copy.** The house items are the house theme and its palettes (`themes/`), `tools/`, `docs/` and `.prettierrc`. All talks use their
   current version, and each talk's tag records the version
   that talk was given with. Before you change a house item, find the talks in
   progress that use it.
 - **Copy a house item for a breaking change that one talk must not get.**
   Sometimes a talk in progress must not get a change, for example because it is
   a week from its date. Then copy the item to a new directory with a version
-  number, for example `themes/ledger-2/`. Make the change in the copy, and point
+  number, for example `themes/house-2/`. Make the change in the copy, and point
   only the other talk at it. When no talk in progress uses the old copy, delete
   it. The tags keep it.
 - **Give each tool explicit paths.** Tell a tool in `tools/` which files or
@@ -98,22 +98,22 @@ The workflow and test limits are in [docs/talks.md](docs/talks.md).
 Read the doc before the action, not after. They are the source of truth; code
 comments point to them.
 
-| Before you…                                                                      | Read                                                         |
-| -------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| choose, compare, measure or add a colour, make a theme, or preview a palette     | `docs/theme.md`                                              |
-| draw or change any illustration (SVG), or a callout's leader                     | `docs/illustrations.md`                                      |
-| change the WebGL renderer, the watch, or its frontmatter                         | `docs/webgl.md`                                              |
-| add a click, a slide transition, or anything that moves between clicks or slides | `docs/navigation.md`                                         |
-| decide if something is big, thick or dark enough                                 | `docs/legibility.md`                                         |
-| upgrade, validate, tag or build a talk, or change browser support                | `docs/talks.md`                                              |
-| export a talk for readers, write its narration, or write speaker notes           | `docs/export.md`                                             |
-| design how body text is placed, revealed, moved or styled on slides              | `docs/text-display-deep-research-report.md` (background)     |
-| work in a talk (slides, its art, its code)                                       | `<talk>/AGENTS.md`: the talk's own index into `<talk>/docs/` |
+| Before you…                                                                                            | Read                                                         |
+| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| choose, compare, measure or add a colour, make a palette, change the house theme, or preview a palette | `docs/theme.md`                                              |
+| draw or change any illustration (SVG), or a callout's leader                                           | `docs/illustrations.md`                                      |
+| change the WebGL renderer, the watch, or its frontmatter                                               | `docs/webgl.md`                                              |
+| add a click, a slide transition, or anything that moves between clicks or slides                       | `docs/navigation.md`                                         |
+| decide if something is big, thick or dark enough                                                       | `docs/legibility.md`                                         |
+| upgrade, validate, tag or build a talk, or change browser support                                      | `docs/talks.md`                                              |
+| export a talk for readers, write its narration, or write speaker notes                                 | `docs/export.md`                                             |
+| design how body text is placed, revealed, moved or styled on slides                                    | `docs/text-display-deep-research-report.md` (background)     |
+| work in a talk (slides, its art, its code)                                                             | `<talk>/AGENTS.md`: the talk's own index into `<talk>/docs/` |
 
 ## Working in this repo
 
 Each talk is a separate project, for pnpm and for uv. The repo root, `stem/`,
-is one more project: the house theme (`themes/ledger/`), the house tools
+is one more project: the house theme and its palettes (`themes/`), the house tools
 (`tools/`) and the root's Prettier. Use pnpm for JS, because Slidev's authors
 recommend it, and uv for Python:
 
@@ -138,7 +138,8 @@ root's workspace, installs nothing for the talk, and reports no error
 these files from the newest talk: `pnpm-workspace.yaml`, `pyproject.toml`,
 `.python-version`, `.prettierignore`, `tsconfig.json`, `eslint.config.js`, and `package.json` with its `devEngines`
 and its `preinstall` script. Then run `pnpm install` and `uv sync` in the new talk's directory. A talk links
-the theme with `"slidev-theme-ledger": "link:../themes/ledger"`.
+the theme with `"slidev-theme-house": "link:../themes/house"`, and each palette
+with `"slidev-addon-palette-<name>": "link:../themes/palettes/<name>"`.
 
 The house style for every talk (palette, illustrations, legibility) is in
 `docs/`, and the checks for it are in `tools/`. Run a check at the root, with

@@ -47,16 +47,16 @@ spring's constants below. The numbers are copied from there and from
 watch/generate.ts; `art/validate_watch_design.py` does not read them, so change
 them here when the spring changes.
 
-COLOURS. The page's theme paints the drawing. Each mark has a class, and a
+COLOURS. The page's palette paints the drawing. Each mark has a class, and a
 <style> in the file gives each class `var(--palette-<role>, <hex>)`, so an
 inlined SVG takes the colours of the slide it is on, including a slide's own
 `class:`. A lit or shaded face is its wash moved toward its line or toward
 the paper, as `color-mix()` of the roles (a `Shade`). Each mark also keeps the
 hex as its attribute: the house tools (artcheck, barroom, motion) read and
 render the file on its own, where the fallback paints Ledger's pixels. The hex
-values are read from Ledger, the house theme that the others are built on
-(art/theme.py), so `--check` fails when Ledger changes, and not when the talk
-changes its theme.
+values are read from Ledger, the reference palette (art/reference_palette.py),
+so `--check` fails when Ledger changes, and not when the talk changes its
+palette.
 """
 
 import argparse
@@ -69,7 +69,7 @@ from itertools import pairwise
 
 import numpy as np
 from numpy.typing import NDArray
-from theme import mix, theme_palette
+from reference_palette import mix, reference_palette
 
 TALK = pathlib.Path(__file__).resolve().parents[1]  # watches/
 OUTPUT = TALK / "public" / "diving-board.svg"
@@ -83,7 +83,7 @@ CLASS_PREFIX = "diving-board-"  # a <style> in an inlined SVG is the page's
 
 @dataclass(frozen=True)
 class Ink:
-    """A palette role (`--palette-<role>`) and its value in the theme."""
+    """A palette role (`--palette-<role>`) and its value in the reference palette."""
 
     role: str
     value: str  # #RRGGBB
@@ -100,7 +100,7 @@ class Ink:
 class Shade:
     """One face's variation of a wash: the wash moved toward another ink by
     `share` (its line, to shade the face; the paper, to light it). It is
-    `color-mix()` of the two roles, so it follows a slide's theme
+    `color-mix()` of the two roles, so it follows a slide's palette
     (stem/docs/illustrations.md, "Washes")."""
 
     wash: Ink
@@ -156,8 +156,8 @@ class Inks:
     paper: Ink  # what a lit face moves toward
 
     @classmethod
-    def from_theme(cls, css: pathlib.Path | None = None) -> Inks:
-        palette = theme_palette(css)
+    def from_reference_palette(cls, css: pathlib.Path | None = None) -> Inks:
+        palette = reference_palette(css)
         roles = (
             "subject",
             "subject-wash",
@@ -170,7 +170,7 @@ class Inks:
         missing = [role for role in roles if role not in palette]
         if missing:
             raise SystemExit(
-                f"the theme sets no --palette-{', --palette-'.join(missing)}"
+                f"the palette sets no --palette-{', --palette-'.join(missing)}"
             )
         return cls(*(Ink(role, palette[role]) for role in roles))
 
@@ -1260,7 +1260,7 @@ def main() -> int:
         "--check", action="store_true", help="fail if the file on disk differs"
     )
     arguments = parser.parse_args()
-    inks = Inks.from_theme()
+    inks = Inks.from_reference_palette()
     text = build(inks)
     if arguments.check:
         if not OUTPUT.exists() or OUTPUT.read_bytes() != text.encode("utf-8"):

@@ -1,0 +1,41 @@
+/* Beacon: deep navy, gold, sky blue. A dark house palette.
+
+   Every role is set here, and only here. This rule is the palette of a talk
+   that loads this addon (its index.html puts the class on <html>), and of
+   any slide whose `class:` names it. stem/tools/lib.py reads it, and `uv run
+   tools/palette.py` (in stem/) measures it against every gate. How to make a
+   palette: stem/docs/theme.md.
+
+   From a candidate of watches/tasks/2026-09-18-theme-colors, with the art roles derived by tools/derive_palette.py.
+
+   The muted wash is tuned: Ledger's recipe, muted at 18%, is 1.09:1 on this
+   panel, under the 1.12 gate (stem/docs/theme.md, "Making a palette", step
+   10). At 22% it is 1.17:1. */
+:where(.palette-beacon) .slidev-layout,
+.slidev-layout.palette-beacon {
+  --preview-name: "Beacon"; /* for .palette-preview (house.css) */
+  --palette-background: #0f1c33; /* a near-black navy */
+  --palette-panel: #202c41; /* a dark navy */
+  --palette-border: #3a4558; /* a dark slate */
+  --palette-ink: #ffffff; /* white */
+  --palette-muted: #9197a1; /* a cool grey */
+  --palette-accent: #ffc24e; /* a gold */
+  --palette-second: #8fbeea; /* a sky blue */
+  --palette-subject: #ffce7e; /* a pale gold */
+  --palette-subject-wash: #3d3731; /* a dark warm grey */
+  --palette-second-wash: #263853; /* a dark slate blue */
+  /* a dark blue-grey */
+  --palette-muted-wash: color-mix(
+    in srgb,
+    var(--palette-muted) 22%,
+    var(--palette-background)
+  );
+  --palette-water: var(--palette-second);
+  /* a dark blue-grey, as the muted wash */
+  --palette-ground-wash: color-mix(
+    in srgb,
+    var(--palette-ground) 22%,
+    var(--palette-background)
+  );
+  --palette-ground: var(--palette-muted);
+}

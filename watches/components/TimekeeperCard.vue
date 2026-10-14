@@ -3,7 +3,8 @@
 // appears and dims (v-click and the slide's CSS).
 //
 // The diagram is inlined, not an <img>: an <img> is a separate document that
-// no page CSS reaches, so its colours would stay Ledger's. Inlined, its
+// no page CSS reaches, so its colours would stay the reference palette's
+// (its fallbacks). Inlined, its
 // `var(--palette-*)` classes take the slide's theme and class
 // (stem/docs/illustrations.md, "The page's theme paints the drawing").
 import { onMounted, ref, useId } from "vue";
@@ -63,8 +64,8 @@ onMounted(async () => {
 
 <style scoped>
 /* Sizes are for Slidev's default 980×552 canvas (half the 1920-wide design).
-   Colors come from the --palette-* variables and fonts from the ledger theme
-   (themes/ledger/). */
+   Colors come from the --palette-* variables and fonts from the house theme
+   (themes/house/). */
 .tk-card {
   display: flex;
   align-items: center;

@@ -1,42 +1,46 @@
-# Theme: making a theme, its colour roles and gates
+# Theme and palettes: making a palette, its colour roles and gates
 
-**Covers:** how to make a theme, step by step; the colour roles that every
-theme fills; the line colours and their washes; the gates each role must pass;
-how one slide changes a role; palette classes, which show a slide in another
-palette; and how to add a colour. Then the current theme, Ledger, as the
-example; the house themes built on it, which a talk chooses with its
-`theme:` line; and the top picks: every house theme, side by side.
+**Covers:** how to make a palette, step by step; the colour roles that every
+palette fills; the line colours and their washes; the gates each role must
+pass; how one slide changes a role; palette classes, which show a slide in
+another palette; and how to add a colour. Then the current palette, Ledger, as
+the example; how the house theme and its palettes are built, and how a talk
+chooses its palette; the reference palette; and the top picks: every house
+palette, side by side.
 **Read before** you choose, compare, measure or add a colour, make a new
-theme, or show a slide in another palette.
+palette, change the house theme (`themes/house/`), or show a slide in another
+palette.
 **Tasks:**
 [`tasks/2026-10-07-theme-colour-system/`](../tasks/2026-10-07-theme-colour-system/PLAN.md)
 (this method, the washes, the material colours, the art's gates),
 [`watches/tasks/2026-09-18-theme-colors/`](../watches/tasks/2026-09-18-theme-colors/)
 (the palette: 23 candidates, the gates),
 [`watches/tasks/2026-09-20-animation-style/`](../watches/tasks/2026-09-20-animation-style/README.md)
-§7, §8.5 (dark themes, measured),
+§7, §8.5 (dark palettes, measured),
 [`tasks/2026-09-23-house-theme/`](../tasks/2026-09-23-house-theme/PLAN.md)
 (the palette as a Slidev theme),
 [`tasks/2026-09-23-theme-aware-art/`](../tasks/2026-09-23-theme-aware-art/instructions.md)
-(the art takes its colours from the theme),
+(the art takes its colours from the page),
 [`watches/tasks/2026-09-30-flexing-ruler/`](../watches/tasks/2026-09-30-flexing-ruler/PLAN.md)
 (a slide class sets the palette),
 [`watches/tasks/2026-09-30-flash/`](../watches/tasks/2026-09-30-flash/PLAN.md)
 (`second` in the art: the flash, and its face),
 [`tasks/2026-10-07-palette-preview/`](../tasks/2026-10-07-palette-preview/PLAN.md)
-(palette classes; the watch takes the slide's palette).
+(palette classes; the watch takes the slide's palette),
+[`tasks/2026-10-14-palette-addons/`](../tasks/2026-10-14-palette-addons/PLAN.md)
+(the house theme holds no colours; each palette is an addon).
 
-The theme is not final. It will be chosen again when a deck is more complete,
-and a dark theme may be tried. So the method, the roles and the gates below are
-the rules. Ledger's values are one theme that passes them.
+The palette is not final. It will be chosen again when a deck is more
+complete, and a dark palette may be tried. So the method, the roles and the
+gates below are the rules. Ledger's values are one palette that passes them.
 
-**Write each general rule so that it holds in light and dark themes.** Say
+**Write each general rule so that it holds in light and dark palettes.** Say
 "toward the paper" and "away from the paper" (toward the ink), not "lighter"
 or "darker": on dark paper they change places.
 
-## Making a theme
+## Making a palette
 
-A theme has few free choices. You choose four things. The other colours follow
+A palette has few free choices. You choose four things. The other colours follow
 from them by a step, and a check confirms each one (see "The gates"). `uv run
 tools/palette.py` (in `stem/`) runs the checks.
 
@@ -47,14 +51,14 @@ not show this: near black or white, a "fully saturated" colour shows almost no
 colour. <span style="display:inline-block;width:1.5em;height:1.5em;background:#0A0000;border:1px solid #888;vertical-align:middle">&nbsp;</span>
 `#0A0000`, a "fully saturated" red, looks black: it is ΔE 2.8 from black.
 
-**The four choices:** light or dark, the paper, the theme's hue (the accent and
-the subject share it), and the second.
+**The four choices:** light or dark, the paper, the palette's hue (the accent
+and the subject share it), and the second.
 
 1. **Light or dark.** The content that presenters paste decides it (see "The
-   current theme: Ledger"). Contrast does not decide it: room light affects
-   light and dark themes about equally (see "Dark themes").
+   current palette: Ledger"). Contrast does not decide it: room light favours
+   a dark palette's ink and a light palette's muted text (see "Dark palettes").
 2. **The paper** (`--palette-background`). Choose a lightness near an extreme,
-   with little colour. The 23 candidate themes were L\* 90–98 or 10–22, and
+   with little colour. The 23 candidate palettes were L\* 90–98 or 10–22, and
    most had C\* below 10. Do not use a mid lightness: it limits the contrast of
    every other colour.
 3. **The ink** (`--palette-ink`) follows. It has the opposite lightness and
@@ -65,7 +69,7 @@ the subject share it), and the second.
 5. **Muted** (`--palette-muted`) follows. Move the ink toward the paper until
    muted passes its check on the panel, and no further. Its hue follows the
    ink's. It has the smallest margin in the palette.
-6. **The theme's hue:** the first choice of colour. The accent and the subject
+6. **The palette's hue:** the first choice of colour. The accent and the subject
    share it. The subject is the drawings' "look at this" colour, as the accent
    is the text's. They differ only in how far each is from the paper. Check the
    hue at both distances before you set either. At each distance a hue can
@@ -132,11 +136,10 @@ the subject share it), and the second.
 
 ## The roles
 
-A theme sets these variables on `.slidev-layout` in its CSS. For Ledger, that
-file is `themes/ledger/styles/ledger.css`; a theme built on Ledger sets the
-roles that it changes in `themes/<name>/styles/<name>.css` (see "The house
-themes"). These are the only places that set them: `tools/lib.py` reads them
-from there, and the WebGL art reads them from the page ([webgl.md](webgl.md)). A value is a `#rrggbb` colour, `var()` of another
+A palette sets every one of these variables, in one rule of its
+`themes/palettes/<name>/palette.css` (see "Palettes"). That is the only place
+that sets them: `tools/lib.py` reads them from there (`ROLES` lists them), and
+the WebGL art reads them from the page ([webgl.md](webgl.md)). A value is a `#rrggbb` colour, `var()` of another
 role, or `color-mix(in srgb, …)` of those: a recipe. A recipe follows its
 roles, so a slide class that changes a role also changes what is made from it.
 
@@ -161,7 +164,7 @@ How a drawing uses these (faces, substances, strokes) is in
 [illustrations.md](illustrations.md).
 
 **Use the variables, not values.** Components read `var(--palette-ink)` and so
-on, so everything on a slide follows the theme. An inlined SVG does the same
+on, so everything on a slide follows the palette. An inlined SVG does the same
 through its classes ([illustrations.md](illustrations.md)).
 
 **One accent per slide.** The accent is not "the blue one". It is _the thing
@@ -199,7 +202,7 @@ that line colour. `WASH_PAIRS` in `tools/lib.py` lists the pairs.
 **A material colour** (water, ground) is a role only where two materials sit
 side by side and their colours tell them apart: the pool on the Hairspring slide of
 `watches`. Water that is the subject of its drawing (a water clock) is drawn in
-the subject colour. Without material roles, a theme whose subject is brown and
+the subject colour. Without material roles, a palette whose subject is brown and
 whose muted is blue would draw the pool's water like mud.
 
 ## One slide can change a role
@@ -215,8 +218,8 @@ only:
 ```
 
 Put the rule in the talk's `styles/`, or in a `<style>` on the slide. Use a
-`#rrggbb` value and a role that the theme sets. A recipe of the theme that uses
-the role follows it: a slide that changes `--palette-muted` also changes
+`#rrggbb` value and a role of the palettes. A recipe of the talk's palette that
+uses the role follows it: a slide that changes `--palette-muted` also changes
 `--palette-muted-wash`. `uv run tools/palette.py --talk <talk>` fails if the
 talk sets a `--palette-*` variable in any other rule, in any of its source
 files (it skips only `docs/`, `tasks/`, `public/`, the READMEs and the
@@ -233,29 +236,21 @@ that changes a role reaches the watch, not only a palette class.
 
 ## Palette classes: a slide in another palette
 
-A palette class shows a slide in another whole palette: add it to the slide's
-`class:`.
+A slide shows another palette with that palette's class: add it to the
+slide's `class:`.
 
 ```yaml
 class: palette-campfire # with a layout class: `class: balance-wheel palette-campfire`
 ```
 
-For a whole talk, change the theme ("The house themes"), not the class of
+For a whole talk, change its palette addon ("Palettes"), not the class of
 each slide. Slidev's headmatter `defaults: { class: … }` cannot do it: a
 slide's own `class:` replaces the default, and does not add to it.
 
-The house palette classes are in `themes/ledger/styles/palettes.css`, for
-every talk, light or dark. Each is a rule `.slidev-layout.palette-<name>` that
-sets the roles it changes. A role that it does not set keeps the theme's
-recipe, made from the class's roles. Values may be recipes, as in the theme.
-
-**Each palette class must pass every gate, as the theme must.** `uv run
-tools/palette.py` checks each class's gates, and fails if one misses a gate
-or sets a role that the theme does not set. So any palette class can become
-the talk's theme. Each house theme other than Ledger has a palette class of
-its own name (`palette-campfire` for `theme: campfire`), with the same roles
-and values, so any slide of any talk can preview it (`tools/test_lib.py`
-checks that they match).
+Every house palette is a class, in every talk, light or dark: the house theme
+loads each palette's rule. On a slide, the class wins over the talk's palette
+(see "Palettes"). **Each palette must pass every gate**, so any palette can
+become a talk's palette. `uv run tools/palette.py` checks each one.
 
 **To preview a slide in several palettes,** import the slide once for each
 palette, and change only its class. A slide that is imported must be in its
@@ -268,20 +263,12 @@ class: palette-campfire palette-preview
 ---
 ```
 
-`palette-preview` puts the palette's name (the class's `--preview-name`) in
-the slide's lower right corner, at 12 px in muted: the presenter can find it,
-and the audience is not meant to notice it. It is below the 17 px floor of
-[legibility.md](legibility.md) on purpose. Leave it out on a slide that uses a
-palette for real.
-
-**To add a palette class,** choose its text roles by "Making a theme". Then
-`uv run tools/derive_palette.py <name> "<Display Name>" --background … --second …`
-derives the art roles by the same steps and prints the rule, with its
-`--preview-name`. Paste the rule into `palettes.css`, and run `uv run
-tools/palette.py` for its gates. On dark paper the subject is a pale version
-of the accent, which is seldom a water colour, so the tool gives water the
-second or a blue of its own. A misspelt class matches no rule, and the slide
-shows the theme's palette with no error.
+`palette-preview` (`themes/house/styles/house.css`) puts the palette's name
+(its `--preview-name`) in the slide's lower right corner, at 12 px in muted:
+the presenter can find it, and the audience is not meant to notice it. It is
+below the 17 px floor of [legibility.md](legibility.md) on purpose. Leave it
+out on a slide that uses a palette for real. A misspelt class matches no
+rule, and the slide shows the talk's palette with no error.
 
 **Known limit:** at a move between two slides with different palettes, the
 watch's layer changes colour at once, while the old slide's text fades out.
@@ -291,13 +278,13 @@ watch's layer changes colour at once, while the old slide's text fades out.
 Every gate is measured against the surface the mark sits on. Text on a card
 sits on the panel, not on the background. In Ledger the panel is the darker,
 so the harder, of the two, and `tools/lib.py` measures the text gates against
-it. **A new theme whose panel is not the harder surface needs its gates
+it. **A new palette whose panel is not the harder surface needs its gates
 measured against the background as well.** A wash has its least contrast on
-the panel and its most on the background, in light and dark themes, so its
+the panel and its most on the background, in light and dark palettes, so its
 lower bound is checked on the panel and its upper bound on the background.
 
 The thresholds are in `tools/lib.py` (`GATES` and `HUE_GATES`); this table
-gives them with their reasons. `uv run tools/palette.py` measures the theme
+gives them with their reasons. `uv run tools/palette.py` measures each palette
 against each one, and shows how much room light each pair survives.
 
 | Check                          | Threshold                                     | Why                                                                       |
@@ -318,12 +305,12 @@ against each one, and shows how much room light each pair survives.
 | water's hue                    | h 190–300, C\* ≥ 15                           | water reads as water: cyan to blue-violet                                 |
 | ground's hue                   | h 20–110, or C\* < 10                         | ground reads as earth, or as stone                                        |
 
-Of the 23 candidate themes, 5 pass every gate and 10 pass the gates for text
-alone. The art's gates fail most often in dark themes with a warm accent: the
+Of the 23 candidate palettes, 5 pass every gate and 10 pass the gates for
+text alone. The art's gates fail most often in dark palettes with a warm accent: the
 accent, moved away from dark paper, becomes a cream near the white ink. The
 data is in the task
 ([`2026-10-07-theme-colour-system`](../tasks/2026-10-07-theme-colour-system/PLAN.md),
-§4.8). The derived subject in that data used Ledger's 9.6:1; a dark theme may
+§4.8). The derived subject in that data used Ledger's 9.6:1; a dark palette may
 need less, which nobody has measured.
 
 ## Two marks of the same hue need a lightness gap
@@ -371,13 +358,12 @@ Three traps:
   One early field capped white text at 8.7:1: 40% of the contrast was gone
   before any other colour was chosen.
 
-## The current theme: Ledger
+## The current palette: Ledger
 
-Warm cream, deep blue, burnt orange, with Fraunces titles and IBM Plex text. The
-values are in `themes/ledger/styles/ledger.css`; `uv run tools/palette.py`
-prints them with each gate. The theme package and its rules are in
-[`themes/ledger/README.md`](../themes/ledger/README.md). As examples, its
-values on 2026-10-07:
+Warm cream, deep blue, burnt orange; the house theme sets Fraunces titles and
+IBM Plex text. The values are in `themes/palettes/ledger/palette.css`; `uv run
+tools/palette.py` prints them with each gate. Ledger is also the reference
+palette (see "Palettes"). As examples, its values on 2026-10-07:
 
 | Role         | Value                                                                                                                                              | Looks like            |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
@@ -407,7 +393,7 @@ over the background (the subject wash's contrast).
 charts, screenshots, papers and wiki diagrams almost all have a light
 background. A light deck takes them in; a dark deck turns each one into a
 bright rectangle aimed at the audience. If the talks turn out to be led by
-photos instead, a dark theme could win.
+photos instead, a dark palette could win.
 
 **Its thinnest margin:**
 
@@ -416,44 +402,90 @@ photos instead, a dark theme could win.
   brighter. Never make muted text smaller than 17 px, and never put muted text
   on the border (3.78:1). If a caption must be smaller, make it ink.
 
-**Consequences of a light theme:**
+**Consequences of a light palette:**
 
 - Shiki's code theme is set for the deck, not per slide. A code block renders
   light on every slide. On Ledger that seam is invisible. A guest presenter
   could undo this without noticing if the deck went dark.
 - A house frame for pasted images (padded, rounded, a little tinted) would
-  soften the seam for any theme. It is not built yet.
+  soften the seam for any palette. It is not built yet.
 
 The survey of every colour in the watches talk's art, and how each one was
 used before the washes had names, is in the flash task
 ([`COLOUR-ROLES.md`](../watches/tasks/2026-09-30-flash/COLOUR-ROLES.md)).
 
-## Dark themes
+## Dark palettes
 
-Four dark themes were built and measured on rendered pixels (the
+Four dark palettes were built and measured on rendered pixels (the
 animation-style task, §7 and §8.5). **Room light does not favour a light
-theme's ink:** measured without clipping, the best dark candidate's ink on
+palette's ink:** measured without clipping, the best dark candidate's ink on
 its paper beat Ledger's at every level of flare. **It does favour a light
-theme's muted text:** on the panel, Ledger's muted text keeps 3:1 up to a
-flare of 0.156, and the dark house themes' only up to 0.061–0.107 (as
-examples, on 2026-10-14; `uv run tools/palette.py` prints each theme's
+palette's muted text:** on the panel, Ledger's muted text keeps 3:1 up to a
+flare of 0.156, and the dark house palettes' only up to 0.061–0.107 (as
+examples, on 2026-10-14; `uv run tools/palette.py` prints each palette's
 "room light" table). So a bright room is not a reason to keep Ledger, but in
-a dark theme it is a reason to keep muted text large. The reason for Ledger
+a dark palette it is a reason to keep muted text large. The reason for Ledger
 is pasted content, above.
 
 One dark slide is fine and is recommended: **a full-bleed dark slide at the
 talk's turning point.** A dark _card_ inside a light slide reads as a
 rendering error. A dark _slide_ reads as a dark slide.
 
-## The house themes
+## Palettes
 
-**To change a talk's theme, change the `theme:` line of its headmatter**, for
-example `theme: ledger` to `theme: campfire`. Every slide takes the new theme:
-the text, the cards, the inlined drawings, and the watch (which reads the
-palette from the page). The house themes are Ledger and the six built on it,
-in `themes/`:
+**The house theme holds no colours.** `themes/house/` is the Slidev theme of
+every talk: its layouts, its type and fonts, its setup and its Vite config.
+The colours are a palette's. Each palette is an addon,
+`themes/palettes/<name>/`, with three files:
 
-| `theme:`              | Name                    | Paper | Changed from its candidate, to pass the gates                                |
+| File           | What it holds                                                                                                                                                          |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `palette.css`  | one rule that sets every role (see "The roles"), for every slide of a talk that loads the addon, and for any slide whose class names the palette                       |
+| `index.html`   | `<html class="palette-<name>">`. Slidev merges each addon's `index.html` into the page, so the talk's palette is on `<html>` in the built page too, with no JavaScript |
+| `package.json` | the package, `slidev-addon-palette-<name>`, which a talk's `addons:` names as `palette-<name>`                                                                         |
+
+**To change a talk's palette, change two lines of its headmatter:** the
+palette addon, and `colorSchema`. The `colorSchema` must suit the palette's
+paper (`dark` for dark paper), so that Slidev's own controls match it:
+
+```yaml
+theme: house
+colorSchema: dark
+addons:
+  - palette-campfire
+```
+
+An addon cannot set `colorSchema`: Slidev reads that default only from the
+theme and the headmatter. `uv run tools/palette.py --talk <talk>` fails if
+the talk loads no palette or more than one, or if its `colorSchema` does not
+suit the palette's paper. Every slide takes the new palette: the text, the
+cards, the inlined drawings, and the watch (which reads the palette from the
+page). The talk links each palette in its `package.json`
+(`"slidev-addon-palette-campfire": "link:../themes/palettes/campfire"`), so a
+change needs no install. A new talk copies these links from the newest talk.
+
+**One rule, two selectors.** A palette's rule has the selector
+`:where(.palette-<name>) .slidev-layout, .slidev-layout.palette-<name>`. The
+first is every slide of a talk whose `<html>` has the class. `:where()` makes
+it the weaker, so the second, a slide with the class (a preview), wins. The
+house theme loads every palette's rule (`themes/house/styles/index.ts`), so
+any slide can show any palette. The rule sets the roles on each slide, not on
+`<html>`, so a recipe is made from the slide's own roles, also on a slide
+whose class changes one of them.
+
+**Each palette sets every role**, recipes included. A role that a palette
+left unset would come from the talk's palette on a slide that previews it.
+`tools/test_lib.py` fails if a palette misses a role or sets one that is not
+in `ROLES` (`tools/lib.py`).
+
+Not an oversight: each palette is not a Slidev theme. A talk has one theme,
+Slidev takes layouts only from it, and each palette theme would have to
+re-export the house's layouts, setup and styles. The options are in
+[`tasks/2026-10-14-palette-addons/`](../tasks/2026-10-14-palette-addons/PLAN.md).
+
+### The house palettes
+
+| Addon (`palette-…`)   | Name                    | Paper | Changed from its candidate, to pass the gates                                |
 | --------------------- | ----------------------- | ----- | ---------------------------------------------------------------------------- |
 | `ledger`              | Ledger                  | light | (none)                                                                       |
 | `campfire`            | Campfire                | dark  | (none)                                                                       |
@@ -468,50 +500,47 @@ Each candidate's text roles are from
 `tools/derive_palette.py` derived the art roles. Each change is the least that
 passes its gate, and its file says why, gate by gate.
 
-**A theme built on Ledger** is a small package, `themes/<name>/`: its
-`styles/index.ts` loads Ledger's styles and then `styles/<name>.css`, which
-sets the roles that the theme changes on `.slidev-layout`. A role that it does
-not set keeps Ledger's recipe, made from the theme's roles, as for a palette
-class. Its `setup/root.ts`, `vite.config.mts` and each file in `layouts/`
-are Ledger's, re-exported, and its `package.json` sets Slidev's `colorSchema` (`dark` for dark paper, so that Slidev's own controls match). `uv run tools/palette.py`
-measures every house theme against every gate, and fails if one misses.
+**To add a palette,** choose its text roles by "Making a palette". Then
+`uv run tools/derive_palette.py <name> "<Display Name>" --background … --second …`
+derives the art roles by the same steps and prints the rule, with its
+`--preview-name`. Put the rule in `themes/palettes/<name>/palette.css`, and
+copy `index.html` and `package.json` from another palette, with the name
+changed. Run `uv run tools/palette.py` for its gates, and link it in each
+talk's `package.json`. On dark paper the subject is a pale version of the
+accent, which is seldom a water colour, so the tool gives water the second or
+a blue of its own.
 
-**When you add a layout to Ledger, add a one-line stub to each theme built
-on it**: `layouts/<layout>.ts`, as in `themes/campfire/layouts/`. Slidev has
-no theme that extends another theme. It takes layouts only from the active
-theme, and for a missing layout it uses its own layout of that name, if it
-has one, with no error. Without the stub, a talk in Campfire shows Slidev's
-plain `section`, with no eyebrow. `tools/test_lib.py` fails if a stub is
-missing.
+### The reference palette
 
-**The talk links each theme it may use** in its `package.json`
-(`"slidev-theme-campfire": "link:../themes/campfire"`), so changing the
-`theme:` line needs no install. A new talk copies these links from the newest
-talk.
-
-**The art's files keep Ledger's colours as their fallbacks.** An inlined SVG
+Ledger is the reference palette (`REFERENCE_PALETTE` in `tools/lib.py`).
+**The art's files keep its colours as their fallbacks.** An inlined SVG
 paints each mark with `var(--palette-<role>, <Ledger's hex>)`
-([illustrations.md](illustrations.md)), so on a slide it takes the theme's
+([illustrations.md](illustrations.md)), so on a slide it takes the palette's
 colours, and the house tools, which read and render the file on its own,
-measure it in Ledger. The gates hold each house theme to the same pairs. So a
-talk's scripts that write art (`watches/art/theme.py`) read Ledger, whichever
-theme the talk names, and changing the theme changes no file but
-`slides.md`. Two things stay Ledger's in every theme: the favicon, and an SVG
-shown in an `<img>`, which no page CSS reaches.
+measure it in Ledger. The gates hold each house palette to the same pairs. So
+a talk's scripts that write art (`watches/art/reference_palette.py`) read
+Ledger, whichever palette the talk loads, and changing the palette changes no
+file but `slides.md`. Two things stay Ledger's in every palette: the favicon,
+and an SVG shown in an `<img>`, which no page CSS reaches.
 
-**Light or dark is still the first choice** (step 1 of "Making a theme"):
-Ledger is the house theme because pasted content is mostly light. In a dark
-theme a pasted screenshot or chart is a bright rectangle.
+The reference is a choice, not the structure: no file of the theme or of
+another palette refers to it. To make another palette the reference, change
+`REFERENCE_PALETTE` and each talk's `art/reference_palette.py`, and run the
+talks' art scripts again.
+
+**Light or dark is still the first choice** (step 1 of "Making a palette"):
+Ledger is the house palette because pasted content is mostly light. With a
+dark palette a pasted screenshot or chart is a bright rectangle.
 
 ## Top picks
 
-The shortlist for when the theme is chosen again: every house theme (see
-"The house themes"). Each is also a palette class (see "Palette classes"), so
+The shortlist for when the palette is chosen again: every house palette
+(see "Palettes"). Each is also a palette class (see "Palette classes"), so
 any slide can show it, and each passes every gate. `uv run tools/palette.py`
 measures each one.
 
-The values are in `themes/ledger/styles/ledger.css` and in each theme's
-`themes/<name>/styles/<name>.css`; as examples, their values on 2026-10-10.
+The values are in each palette's `themes/palettes/<name>/palette.css`; as
+examples, their values on 2026-10-10.
 A role that is a recipe is shown as the colour that it gives, and the
 brackets say where it comes from. Water and ground are the pool on the Hairspring slide of
 `watches`. On dark paper the subject is a pale accent, which is not a water

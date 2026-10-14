@@ -11,11 +11,12 @@ the docs live; the click pattern).
 `slides.md` is the working example: the "Before clocks" slide uses every
 pattern here.
 
-## The theme
+## The theme and the palette
 
-The deck uses a house theme, named in the headmatter (now Ledger: `theme: ledger`; any house theme works there: [theme.md](../../docs/theme.md), "The house themes"). The theme sets the `--palette-*` variables
-([theme.md](../../docs/theme.md)), the slide background, the
-text colour and the fonts, on every slide. A slide needs no class to get them. So
+The deck uses the house theme (`theme: house`) and a palette, an addon named in
+the headmatter (now Ledger: `palette-ledger`; any house palette works there:
+[theme.md](../../docs/theme.md), "Palettes"). The palette sets the `--palette-*` variables,
+and the theme the slide background, the text colour and the fonts, on every slide. A slide needs no class to get them. So
 a slide's own `<style>` holds only its layout. The "Before clocks" slide in
 `slides.md` is the example: `layout: full`, `class: tk-timekeepers`, and a
 `<style>` block that lays out that class.
@@ -54,7 +55,7 @@ Five rules for a slide:
   slide you are reading is the slide you are editing.
 
 **The fonts are self-hosted.** The theme imports them from the `@fontsource/*`
-packages in `themes/ledger/styles/fonts.css`, and `pnpm build` copies the font
+packages in `themes/house/styles/fonts.css`, and `pnpm build` copies the font
 files into `dist/`. The deck makes no outside requests, so it needs no network
 at the venue. `fonts.css` imports only the weights the talks use. **If you use a
 new weight, add its import to the theme in the same change.** If you do not, the
@@ -63,7 +64,7 @@ browser uses the nearest imported weight or fakes a bold, and gives no error.
 ## Section slides
 
 Use `layout: section`, an `eyebrow` frontmatter label, and a Markdown title.
-The theme sets the type and placement in `themes/ledger/styles/ledger.css` at the repo root.
+The theme sets the type and placement in `themes/house/styles/house.css` at the repo root.
 For a section with the cover's picture, use `watch: all` and `watchView: cover`.
 Mechanical Marvels uses this state, so the watch stays in place when the cover text changes.
 Changed The World uses it too: the Recap slide's tour ends there.
@@ -74,15 +75,15 @@ One card: a drawing, a date, a name, one big number, its unit, and the catch.
 The props are typed at the top of the component, and the slide's `cards` array
 is the example. Each prop has one job:
 
-| prop      | job                                                                            |
-| --------- | ------------------------------------------------------------------------------ |
-| `name`    | the card's title                                                               |
-| `date`    | when, under the art                                                            |
-| `img`     | the SVG, inlined so the theme paints it, at the `width` and `height` it states |
-| `stat`    | **the one number**, in the accent                                              |
-| `unit`    | what the number means                                                          |
-| `problem` | the catch, in `--palette-second`                                               |
-| `unknown` | draws `stat` in muted instead of accent — for "we could not find data"         |
+| prop      | job                                                                              |
+| --------- | -------------------------------------------------------------------------------- |
+| `name`    | the card's title                                                                 |
+| `date`    | when, under the art                                                              |
+| `img`     | the SVG, inlined so the palette paints it, at the `width` and `height` it states |
+| `stat`    | **the one number**, in the accent                                                |
+| `unit`    | what the number means                                                            |
+| `problem` | the catch, in `--palette-second`                                                 |
+| `unknown` | draws `stat` in muted instead of accent — for "we could not find data"           |
 
 The sizes are in the component's CSS, and the reasons for them are in
 [legibility.md](../../docs/legibility.md#text-sizes).

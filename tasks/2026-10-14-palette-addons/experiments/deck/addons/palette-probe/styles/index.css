@@ -1,0 +1,6 @@
+/* loaded after the theme's styles: probes the order */
+.palette-probe {
+  --palette-background: #102030;
+  --palette-ink: #f0e0d0;
+  --probe-from-addon: "addon";
+}

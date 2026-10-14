@@ -20,8 +20,10 @@ You need pnpm and uv; see [`../docs/talks.md`](../docs/talks.md), "Set up a
 clone".
 
 Edit [slides.md](slides.md). The watch under the cover and the Hairspring slide is drawn
-live in WebGL: [`../docs/webgl.md`](../docs/webgl.md) says how it is built. The look comes from the house theme, Ledger, in
-[`../themes/ledger/`](../themes/ledger/), which every STEM talk shares.
+live in WebGL: [`../docs/webgl.md`](../docs/webgl.md) says how it is built. The look comes from the house theme,
+[`../themes/house/`](../themes/house/), which every STEM talk shares, and
+its colours from a palette, now Ledger
+([`../themes/palettes/ledger/`](../themes/palettes/ledger/)).
 
 ## Making new slides
 

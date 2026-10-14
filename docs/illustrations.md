@@ -194,14 +194,14 @@ own, where the `var()` fallback paints the same pixels.
   file.
 - **Namespace every class**, as for an `id`: a `<style>` in an inlined SVG
   applies to the whole page (`.diving-board-stroke-subject`).
-- **Always give `var()` its fallback.** Without the theme, a `var()` with no
+- **Always give `var()` its fallback.** Without a palette, a `var()` with no
   fallback does not use the attribute: the mark takes its parent's colour.
 - **Write the hex from Ledger, not by hand.** The fallbacks are Ledger's, the
-  house theme that the others are built on, whichever theme the talk names:
-  the tools measure the art in Ledger ([theme.md](theme.md), "The house
-  themes"). `watches/art/diving_board.py` reads the values from Ledger
-  (`watches/art/theme.py` works out its recipes), and its `--check` fails when
-  Ledger changes. It is the example.
+  reference palette, whichever palette the talk loads: the tools measure the
+  art in Ledger ([theme.md](theme.md), "The reference palette").
+  `watches/art/diving_board.py` reads the values from Ledger
+  (`watches/art/reference_palette.py` works out its recipes), and its
+  `--check` fails when Ledger changes. It is the example.
 - **A variation of a wash is `color-mix()` of the roles**, with the mixed hex
   as its fallback: `color-mix(in srgb, var(--palette-ground, #736A60) 15%,
 var(--palette-ground-wash, #E2DED6))` (`Shade` in the diving board's
