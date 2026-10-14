@@ -2,7 +2,7 @@
 
 A dark theme: espresso paper, amber accent, sky-cyan second, with Ledger's type (Fraunces titles,
 IBM Plex text). It is Ledger with another palette: it loads Ledger's styles,
-setup and Vite config from [`../ledger/`](../ledger/README.md), and sets only
+layouts, setup and Vite config from [`../ledger/`](../ledger/README.md), and sets only
 the colour roles in `styles/campfire.css`.
 
 ```yaml

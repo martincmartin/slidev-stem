@@ -154,6 +154,19 @@ def test_each_theme_is_its_palette_class(name: str) -> None:
     assert lib.THEME_RECIPES | house_class.recipes == lib.theme_recipes(name)
 
 
+@pytest.mark.parametrize("name", lib.house_themes()[1:])
+def test_each_theme_has_ledgers_layouts(name: str) -> None:
+    """Slidev takes layouts only from the active theme, and uses its own layout
+    of the same name, with no error, in place of a missing one. So a theme
+    built on Ledger re-exports each of Ledger's layouts."""
+    ledger = lib.THEMES_DIR / lib.HOUSE_THEME / "layouts"
+    for layout in sorted(ledger.glob("*.vue")):
+        stub = lib.THEMES_DIR / name / "layouts" / f"{layout.stem}.ts"
+        assert stub.is_file(), f"{name} needs {stub.name}: copy campfire's"
+        source = f'"../../{lib.HOUSE_THEME}/layouts/{layout.name}"'
+        assert f"export {{ default }} from {source};" in stub.read_text("utf-8")
+
+
 @pytest.mark.parametrize("name", lib.house_themes())
 def test_each_house_theme_passes_every_gate(name: str) -> None:
     palette = lib.resolve(lib.theme_recipes(name))

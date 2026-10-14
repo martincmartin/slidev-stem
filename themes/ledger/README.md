@@ -36,10 +36,11 @@ The eyebrow uses `--palette-ink`. Illustrations remain the talk's responsibility
 
 The other house themes (`campfire`, `after-hours`, `beacon`, `kraft-ink`,
 `field-notes`, `electric-terracotta`, in `../`) are Ledger with another palette.
-Each loads this theme's `styles/index.ts`, `setup/root.ts` and
-`vite.config.mts`, and sets only its colour roles. So a change here reaches
+Each loads this theme's `styles/index.ts`, `setup/root.ts`,
+`vite.config.mts` and layouts, and sets only its colour roles. So a change here reaches
 every house theme: before you change this theme, find the talks in progress
-that use any of them. How they are made, and how a talk changes its theme:
+that use any of them. A new layout here needs a one-line stub in each of
+them. How they are made, and how a talk changes its theme:
 [`docs/theme.md`](../../docs/theme.md), "The house themes".
 
 ## Rules

@@ -240,6 +240,10 @@ A palette class shows a slide in another whole palette: add it to the slide's
 class: palette-campfire # with a layout class: `class: balance-wheel palette-campfire`
 ```
 
+For a whole talk, change the theme ("The house themes"), not the class of
+each slide. Slidev's headmatter `defaults: { class: … }` cannot do it: a
+slide's own `class:` replaces the default, and does not add to it.
+
 The house palette classes are in `themes/ledger/styles/palettes.css`, for
 every talk, light or dark. Each is a rule `.slidev-layout.palette-<name>` that
 sets the roles it changes. A role that it does not set keeps the theme's
@@ -463,9 +467,17 @@ passes its gate, and its file says why, gate by gate.
 `styles/index.ts` loads Ledger's styles and then `styles/<name>.css`, which
 sets the roles that the theme changes on `.slidev-layout`. A role that it does
 not set keeps Ledger's recipe, made from the theme's roles, as for a palette
-class. Its `setup/root.ts` and `vite.config.mts` are Ledger's, re-exported,
-and its `package.json` sets Slidev's `colorSchema` (`dark` for dark paper, so that Slidev's own controls match). `uv run tools/palette.py`
+class. Its `setup/root.ts`, `vite.config.mts` and each file in `layouts/`
+are Ledger's, re-exported, and its `package.json` sets Slidev's `colorSchema` (`dark` for dark paper, so that Slidev's own controls match). `uv run tools/palette.py`
 measures every house theme against every gate, and fails if one misses.
+
+**When you add a layout to Ledger, add a one-line stub to each theme built
+on it**: `layouts/<layout>.ts`, as in `themes/campfire/layouts/`. Slidev has
+no theme that extends another theme. It takes layouts only from the active
+theme, and for a missing layout it uses its own layout of that name, if it
+has one, with no error. Without the stub, a talk in Campfire shows Slidev's
+plain `section`, with no eyebrow. `tools/test_lib.py` fails if a stub is
+missing.
 
 **The talk links each theme it may use** in its `package.json`
 (`"slidev-theme-campfire": "link:../themes/campfire"`), so changing the
