@@ -1,11 +1,25 @@
 # Narrated export: the files, and how to run the experiments
 
 `PLAN.md` holds the options, the measurements and the ranking.
-`instructions.md` holds the request (and the follow-up of 2026-10-04). The
-house doc that summarises the plan is
+`page-design.md` holds the design of the Bartosz-style page (2026-10-13).
+`instructions.md` holds the request (and the follow-ups of 2026-10-04 and
+2026-10-13). The house doc that summarises the plan is
 [`docs/export.md`](../../docs/export.md).
 
 ## Resume here
+
+**Status (2026-10-13): the article is built, in the watches talk.** The user
+chose the design (`page-design.md`, "Decisions (2026-10-13)"), and the
+article, its static page and Part 1's draft narration are in the talk. Its
+rules are in [`watches/docs/article.md`](../../watches/docs/article.md),
+which also lists what is not done yet. Next: the user reworks the narration
+over a few slides, and may change the marks (M1) and the italics (T1).
+
+- 2026-10-13: moved to the project: the article (`watches/addons/narration/`
+  and the talk's figure layer), the narration of Part 1, and the house rule
+  that a talk freezes when it is retired, not when it is given (`AGENTS.md`).
+
+The rest of this section is the state of 2026-10-04.
 
 **Status (2026-10-04): paused, planning finished, prototype works.** The task
 stays open. Start again when the talk's slides are stable. Nothing in the talk
@@ -77,6 +91,8 @@ before you trust a number.
 | `experiments/layout.py`              | the narrated mode's two layouts on ten screen sizes (no browser)                                                                                                                                                                                                                                                         |
 | `experiments/embed.py`               | the follow-up: live slides on one page (iframes, one document, one shared renderer), measured                                                                                                                                                                                                                            |
 | `experiments/serve.py`               | the static host that `check_build.py` and `embed.py` use                                                                                                                                                                                                                                                                 |
+| `experiments/page/`                  | 2026-10-13: the built article, checked: screenshots of its screens and figures (`shoot_article.py`), its sliders (`slider.py`), the three engines (`engines.py`), and a contact sheet of many screenshots (`contact_sheet.py`). Run them against `pnpm dev` |
+| `experiments/bartosz.py`             | 2026-10-13: measures Bartosz's "Mechanical Watch" page from its HTML (words, figures, sliders, coloured names, words between figures). Its output is `evidence/bartosz.json`; the page itself is not kept here                                                                                                          |
 | `evidence/`                          | the outputs that `PLAN.md` cites                                                                                                                                                                                                                                                                                         |
 | `out/`                               | everything the scripts write (git-ignored; run them again to remake it)                                                                                                                                                                                                                                                  |
 

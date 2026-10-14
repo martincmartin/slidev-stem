@@ -820,8 +820,8 @@ def min_opacity(
 # --------------------------------------------------------------------------
 def art_files(paths: Iterable[str]) -> list[pathlib.Path]:
     """The SVGs to check: each given file, and every SVG in each given
-    directory. There is no default of "every talk": a given talk is not
-    checked again (AGENTS.md, "Given talks and versions")."""
+    directory. There is no default of "every talk": a retired talk is not
+    checked again (AGENTS.md, "Given talks, retired talks and versions")."""
     out: list[pathlib.Path] = []
     for given in paths:
         path = pathlib.Path(given)

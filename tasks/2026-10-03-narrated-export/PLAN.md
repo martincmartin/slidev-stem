@@ -1,7 +1,11 @@
 # A narrated version of a talk, for people who did not see it
 
-**Status (2026-10-04): paused.** Planning is finished and the prototype works.
-To start again, read [README.md](README.md), "Resume here". The house doc is
+**Status (2026-10-13): reopened, and the article is built.** The goal is now
+the Bartosz-style page (F5). Its design and the user's decisions are in
+[page-design.md](page-design.md); the built article's rules are in
+[`watches/docs/article.md`](../../watches/docs/article.md). This
+file still holds the forms, the prototype and its measurements. To start
+again, read [README.md](README.md), "Resume here". The house doc is
 [`docs/export.md`](../../docs/export.md).
 
 ## The request (2026-10-03)
@@ -439,6 +443,12 @@ plan" at the end.
 3. **Where it is hosted**: a static build works on Netlify (`_redirects`) and
    GitHub Pages (`404.html`); Slidev writes both files. Not chosen yet.
 
+**Answered 2026-10-13** ([page-design.md](page-design.md), "The three
+decisions of PLAN.md, answered"): 1. a talk is tagged when given, and does
+not freeze (the house rule's new text is proposed, not applied); 2. A1, on
+the condition that the narration does not show in the speaker notes; 3. not
+chosen: keep as many hosting options open as practical.
+
 ## The experiments
 
 All on Slidev 53.0.0, on a copy of the watches talk at commit `33a2920`
@@ -631,3 +641,16 @@ without the sharing, and works for a short talk with up to 16 figures.
   stills (print mode) stay for the PDF (F3).
 - The order becomes: A1, F1, F2 with live figures, F3 (with the still fixes),
   F4.
+
+## Follow-up (2026-10-13): the page is the goal
+
+The user reopened the task to make the Bartosz-style page (F5) from the
+talk. The design is in [page-design.md](page-design.md): what a reader needs,
+what to keep, drop and replace (the flash and the zooms), the options to link
+a word to a part, which clicks become figures, the page slide by slide for
+Part 1, the author's interface, the hosting constraints, and the strategy.
+In short: one steady focus in each figure in place of the flash; figures that
+hold the picture and its labels; the end of each build-up as the default
+figure; markers in the narration to override it; and the deck's own build
+with a prerender (S1+P). The user agreed the same day, and the article was
+built in the watches talk (`page-design.md`, "Decisions (2026-10-13)").

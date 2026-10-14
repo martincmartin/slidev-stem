@@ -1,0 +1,13 @@
+{
+  "name": "slidev-addon-narration",
+  "private": true,
+  "type": "module",
+  "description": "The talk as an article: the narration, with live figures of the slides between the paragraphs.",
+  "keywords": [
+    "slidev-addon",
+    "slidev"
+  ],
+  "engines": {
+    "slidev": ">=53.0.0"
+  }
+}

@@ -69,6 +69,11 @@
 :root {
   --text-dimmed: 50%;
 }
+/* In a figure of the article, nothing dims: the reader's focus is the
+   paragraph beside the figure, not the newest label (docs/article.md). */
+.article-figure {
+  --text-dimmed: 0%;
+}
 .slidev-layout .text-dims {
   color: color-mix(
     in srgb,

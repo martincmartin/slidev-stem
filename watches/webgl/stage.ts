@@ -94,6 +94,42 @@ function withExtra(
   return { keep: extra.opacity >= 0.5 ? whole : keep, fade, rest };
 }
 
+/** Draw one frame of a timeline and a model at `now`, `size` device px,
+ *  with the renderer: the stage's frame, and each view's on a shared
+ *  renderer (shared.ts). `marked`: meshes drawn in the flash's colours for
+ *  as long as they show, as a steady flash (the article's figures). */
+export function drawFrame<ModelState>(
+  renderer: Renderer,
+  timeline: Timeline,
+  model: Model<ModelState>,
+  now: number,
+  size: [number, number],
+  marked: ReadonlySet<Mesh> = new Set(),
+): void {
+  const values = timeline.valuesAt(now);
+  const flashing = timeline.flashingAt(now);
+  const recoloured =
+    flashing && marked.size > 0
+      ? new Set([...flashing, ...marked])
+      : (flashing ?? (marked.size > 0 ? marked : null));
+  const groupMatrices = model.frame(now, renderer);
+  const { keep, fade, rest } = withExtra(values, model.extra?.(now));
+  renderer.render({
+    view: values.view,
+    tilt: values.tilt,
+    turn: values.turn,
+    groupMatrices,
+    keep,
+    fade,
+    rest,
+    ...(recoloured
+      ? { recolour: { meshes: recoloured, inks: FLASH_INKS } }
+      : {}),
+    dim: values.dim,
+    size,
+  });
+}
+
 export class Stage<ModelState> {
   readonly canvas: HTMLCanvasElement;
   readonly renderer: Renderer;
@@ -207,27 +243,12 @@ export class Stage<ModelState> {
   private readonly frame = (now: number): void => {
     this.request = null;
     const before = performance.now();
-    const values = this.valuesAt(now);
-    const flashing = this.flashingAt(now);
     const size = deviceSize(this.canvas);
     const sizeText = size.join(" x ");
     if (this.log.sizes.at(-1)?.[1] !== sizeText) {
       this.log.sizes.push([now, sizeText]);
     }
-    const groupMatrices = this.model.frame(now, this.renderer);
-    const { keep, fade, rest } = withExtra(values, this.model.extra?.(now));
-    this.renderer.render({
-      view: values.view,
-      tilt: values.tilt,
-      turn: values.turn,
-      groupMatrices,
-      keep,
-      fade,
-      rest,
-      ...(flashing ? { recolour: { meshes: flashing, inks: FLASH_INKS } } : {}),
-      dim: values.dim,
-      size,
-    });
+    drawFrame(this.renderer, this.timeline, this.model, now, size);
     this.log.starts.push(now);
     this.log.drawTimes.push(performance.now() - before);
     this.log.phases.push(this.phaseAt(now));

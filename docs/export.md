@@ -1,29 +1,31 @@
 # Exporting a talk for people who did not see it
 
-**Covers:** the forms of a talk for readers (a narrated mode, an article, a
-PDF, live figures on one page), what exists today, the plan, and the traps
-that you meet if you build or prepare for one. True for any talk.
-**Read before** you export a talk (PDF, images, a web build for readers),
-write or rewrite a slide's speaker notes, or plan a version of a talk for
-readers.
+**Covers:** the forms of a talk for readers (the article, a narrated mode, a
+PDF, a blog post, a video), which exist, the rules that hold for any talk,
+and the traps that you meet if you build one. True for any talk.
+**Read before** you export a talk (PDF, images, a web page for readers), write
+a talk's narration, write or rewrite a slide's speaker notes, or plan a
+version of a talk for readers.
 **Tasks:**
 [`tasks/2026-10-03-narrated-export/`](../tasks/2026-10-03-narrated-export/README.md)
-(open, paused: start from its README, "Resume here").
-
-**Status: planned, not built.** There is no house addon yet. The task has a
-working prototype, and every number below is from it. Nobody has chosen the
-form of the narration, so no talk has narration yet. Wait until the talk's
-slides are stable before you build anything.
+(the forms, the prototype and its measurements; the article's design in
+`page-design.md`).
 
 ## Why
 
 The best slides are pictures and a few words. They do not stand alone, and the
 speaker notes are cues, not text. So slides plus notes are not worth sending to
-a person who did not see the talk. The goal is a form of the talk that shows
-the narration (the full spoken text) with the slides.
+a person who did not see the talk. A form for readers shows the narration (the
+full text, written for readers) with the slides.
 
-## What exists today
+## What exists
 
+- **The article** (the watches talk, 2026-10-13): one long page, `/article`,
+  with the narration and the slides as live figures between the paragraphs,
+  in the style of Bartosz Ciechanowski's "Mechanical Watch". A Slidev addon
+  makes it, with a static page of the same text and stills for readers with
+  no JavaScript, for search engines and for keeping as files. How it works
+  and how to write for it: [`watches/docs/article.md`](../watches/docs/article.md).
 - Slidev's own exports: a PDF, PNG images, and `--format md`. They have no
   narration. Without `--with-clicks`, a slide is one page at its last click.
   With it, a slide is one page for each click, and in `--format md` a slide's
@@ -37,54 +39,44 @@ the narration (the full spoken text) with the slides.
   `uv run ../tools/validate.py --print` in the talk before you export it
   ([`talks.md`](talks.md#the-print-check)).
 
-## The plan (a proposal, not a rule)
-
-**Narration goes in a comment**, `<!-- narration ... -->`, before the speaker
-notes. It uses the same `[click]` markers as the notes. The notes then become
-short cues, and the presenter view shows only the cues. Slidev does not have to
-change: an addon does everything.
-
-**Forms, in the order to build them.** The sizes are estimates in focused days
-with an assistant, from a prototype of 447 lines.
-
-| Order | Form                                                                        | Days      | Keeps the motion                |
-| ----- | --------------------------------------------------------------------------- | --------- | ------------------------------- |
-| 0     | write the narration, slide by slide                                         | 0.5       | —                               |
-| 1     | the narrated mode: the live slide, with its narration beside it or below it | 1.5–2     | yes                             |
-| 2     | the article: one long page, each slide at each click, the narration between | 1–1.5     | yes, with live figures (+1–1.5) |
-| 3     | a PDF handout: the article, printed                                         | 0.25–0.75 | no (stills)                     |
-| 4     | a static blog post (Markdown or HTML with images)                           | 1–2       | only with video clips           |
-
-The code belongs in a house addon, `stem/addons/narration/`. Publish it on npm
-only after two talks use it.
-
-**Live figures on one page.** To put the live slides (the WebGL watch, the SVG
-boards) in the article, use one shared renderer: one WebGL context draws every
-figure, and each figure copies the picture into its own 2D canvas. Bartosz
-Ciechanowski's "Mechanical Watch" page does the same. Measured with 12 figures
-on a GPU: 7.5 MB of JavaScript memory, 1 context and 1.7 MB of GPU buffers. An
-iframe for each figure used 56.5 MB, 12 contexts and 20.3 MB.
+Not built: a narrated mode (the live slide, with its narration in a panel), a
+PDF of the article, a blog post with stills and clips, and a video with a
+voice that reads the narration. The task's `PLAN.md` has their sizes.
 
 ## Rules that hold now
 
-- **A frozen talk stays frozen.** If the narrated version is to come from a
-  talk's tag, the narration and the addon must be in the talk before you tag
-  it ([`../AGENTS.md`](../AGENTS.md), "Given talks and versions"). A rule for
-  narration-only changes after the tag does not exist yet.
-- **The speaker note is the last HTML comment on a slide.** A narration
-  comment must come before it.
-- **Use no separate route for the narrated mode.** Slidev's `go()` always makes
-  a play, presenter or export path, so a page at `/narrated/3` returns to `/4`
-  at the first key press. Use a query flag (`?narration`): `go()` keeps it.
+- **The narration is a comment before the speaker notes**:
+  `<!-- narration ... -->`, with the notes' `[click]` markers. Slidev takes only
+  a slide's last comment as its note, so the narration shows neither in the
+  presenter view nor on the slide. The notes become cues for the speaker.
+- **A given talk can still change.** Its tag keeps the version that you gave;
+  the narration and the page can improve after the talk
+  ([`../AGENTS.md`](../AGENTS.md), "Given talks, retired talks and versions").
+- **A figure does not flash: it marks.** A flash points at a part at the moment
+  that the speaker names it. A reader's eyes are on the words, at a moment
+  that nobody knows. So a figure draws the part in the flash's colours for as
+  long as it shows, and the text names it in italics where it first comes.
+  Not an oversight: coloured part names do not fit the house look (one accent
+  on a slide; one "look here" colour in the art, [theme.md](theme.md)).
+- **A figure has one fixed camera.** The zooms between slides do not carry to
+  a page. A figure with steps moves its camera when the reader steps it.
+- **A story animation is the reader's to play**, with a slider or a step, not a
+  loop: a loop pulls the eye from the text.
+- **A page with many live figures shares one renderer.** A browser keeps 16
+  WebGL contexts for a page (Chrome and Safari; Firefox about 300). The 17th
+  makes the oldest one blank. So never give each figure its own context.
+- **Keep the hosting open**: relative paths or Slidev's `--base`, no server
+  rewrite rules, no outside requests, and a still and alt text for each
+  figure.
+- **Use no separate route for a mode of the slides.** Slidev's `go()` always
+  makes a play, presenter or export path, so a page at `/narrated/3` returns
+  to `/4` at the first key press. Use a query flag (`?narration`): `go()` keeps
+  it. A page that is not a slide (the article) can have its own route.
 - **A relative addon path starts at the parent of the talk's directory.**
   `addons: [./addons/narration]` in `watches/slides.md` looks in `stem/`. Use
   `@/addons/narration` or a package name.
-- **A browser keeps 16 WebGL contexts for a page** (Chrome and Safari; Firefox
-  about 300). The 17th makes the oldest one blank. So never give each figure
-  its own context: share one renderer.
 - **A still follows the click of its page.** See
-  [webgl.md](webgl.md), "Mistakes that were made once". The narrated forms
-  use the same stills.
+  [webgl.md](webgl.md), "Mistakes that were made once".
 - **The addon uses some Slidev internals** (`PrintSlideClick`, `useFixedNav`,
   `createFixedClicks`). They changed 1–10 times in two years. Each talk pins
   its own Slidev, so an upgrade breaks nothing until a talk chooses it.
@@ -92,5 +84,7 @@ iframe for each figure used 56.5 MB, 12 contexts and 20.3 MB.
 ## Where the facts are
 
 The options, the measurements, the prior art (Simon Willison's annotated
-talks, reveal.js, Slidev's open issues) and the experiments are in
-[`tasks/2026-10-03-narrated-export/PLAN.md`](../tasks/2026-10-03-narrated-export/PLAN.md).
+talks, reveal.js, Bartosz's page, Slidev's open issues) and the experiments are
+in
+[`tasks/2026-10-03-narrated-export/PLAN.md`](../tasks/2026-10-03-narrated-export/PLAN.md)
+and its `page-design.md`.

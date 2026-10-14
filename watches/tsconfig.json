@@ -19,12 +19,23 @@
     "skipLibCheck": true,
     "paths": {
       "@slidev/client": ["./types/slidev-client.d.ts"],
-      "@slidev/client/constants.ts": ["./types/slidev-constants.d.ts"]
+      "@slidev/client/constants.ts": ["./types/slidev-constants.d.ts"],
+      "@slidev/client/composables/useClicks.ts": [
+        "./types/slidev-internals.d.ts"
+      ],
+      "@slidev/client/composables/useNav.ts": ["./types/slidev-internals.d.ts"],
+      "@slidev/client/env.ts": ["./types/slidev-internals.d.ts"],
+      "@slidev/client/internals/PrintSlideClick.vue": [
+        "./types/slidev-internals.d.ts"
+      ]
     }
   },
   "include": [
     "webgl/**/*.ts",
     "watch/**/*.ts",
+    "addons/**/*.ts",
+    "addons/**/*.vue",
+    "setup/*.ts",
     "types/*.d.ts",
     "*.vue",
     "components/**/*.vue"

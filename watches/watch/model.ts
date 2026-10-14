@@ -1045,6 +1045,13 @@ export class WatchModel implements Model<WatchModelState> {
     return this.motion.matrices(time, swing, beats, pose.arbor);
   }
 
+  /** Hold the Mainspring slide's story at `time` on its line (s): the
+   *  article's slider (`MainspringClock.hold`). Show a state with the story
+   *  first. */
+  scrub(time: number, now: number): void {
+    this.story.hold(time, now);
+  }
+
   /** The winding key, while the story shows it. */
   extra(now: number): Extra | null {
     const { key } = this.story.pose(now);

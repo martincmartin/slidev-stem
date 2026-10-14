@@ -25,10 +25,15 @@ first; the rest of the evening is social.
   Escapement slide", not "slide 4". A number changes when a slide is added,
   moved, hidden or previewed. A tool may number the slides of a walk.
 
-## Given talks and versions
+## Given talks, retired talks and versions
 
-A talk is _in progress_ until you give it. Then it is _given_. After that, do
-not change it on `main`.
+A talk is _in progress_ until you retire it. Giving a talk does not freeze it:
+tag it each time you give it, and the tag keeps the version that you gave. A
+talk that you have given can still change on `main`: its narration, its page
+and its slides can improve. When you stop changing a talk, retire it. Then it
+is _retired_, and you do not change it on `main`. Retiring a talk frees the
+rest of the repo: a breaking change to a house item does not have to keep a
+retired talk working.
 
 - **Tag each talk that you give.** Make an annotated tag,
   `given/<talk>/<YYYY-MM-DD>`, with the date of the talk. For example,
@@ -39,15 +44,19 @@ not change it on `main`.
   builds from its lockfiles, in the talk's directory:
   `pnpm install --frozen-lockfile && uv sync --locked && pnpm build`, and run
   `uv run ../tools/validate.py --print`.
-- **The tag is the frozen version.** To look at or rebuild a given talk, make a
+- **The tag is the version that you gave.** To look at or rebuild it, make a
   worktree at its tag:
   `git worktree add ../watches-given given/watches/2026-10-15`. Then, in the
   worktree's talk directory, run `pnpm install --frozen-lockfile` and
-  `uv sync --locked`. `main` does not have to keep a given talk working. If a
-  change to shared code breaks a given talk on `main`, do not fix the given
-  talk.
-- **No repo-wide command may touch a given talk.** A command at the repo root
-  must not change a given talk or fail because of one.
+  `uv sync --locked`.
+- **Retire a talk with a tag.** Make an annotated tag,
+  `retired/<talk>/<YYYY-MM-DD>`, on the last commit that changes the talk,
+  with the date that you retire it. Before you retire it, check that it builds
+  and validates, as before a talk is given. `main` does not have to keep a
+  retired talk working. If a change to shared code breaks a retired talk on
+  `main`, do not fix the retired talk.
+- **No repo-wide command may touch a retired talk.** A command at the repo
+  root must not change a retired talk or fail because of one.
 - **Each talk has its own third-party versions.** Each talk has its own
   lockfiles and environments, and pins its own Node, pnpm and Python versions.
   An upgrade in one talk must not change the lockfile of another talk. The
@@ -66,8 +75,8 @@ not change it on `main`.
   only the other talk at it. When no talk in progress uses the old copy, delete
   it. The tags keep it.
 - **Give each tool explicit paths.** Tell a tool in `tools/` which files or
-  directories to check. Do not check "every talk": given talks are not checked
-  again.
+  directories to check. Do not check "every talk": retired talks are not
+  checked again.
 
 How to work in this setup, including how to upgrade a talk, is in
 `docs/talks.md`. The options and the evidence are in
@@ -97,7 +106,7 @@ comments point to them.
 | add a click, a slide transition, or anything that moves between clicks or slides | `docs/navigation.md`                                         |
 | decide if something is big, thick or dark enough                                 | `docs/legibility.md`                                         |
 | upgrade, validate, tag or build a talk, or change browser support                | `docs/talks.md`                                              |
-| export a talk for readers, or write speaker notes                                | `docs/export.md`                                             |
+| export a talk for readers, write its narration, or write speaker notes           | `docs/export.md`                                             |
 | design how body text is placed, revealed, moved or styled on slides              | `docs/text-display-deep-research-report.md` (background)     |
 | work in a talk (slides, its art, its code)                                       | `<talk>/AGENTS.md`: the talk's own index into `<talk>/docs/` |
 
@@ -203,7 +212,7 @@ Independent preparation groups use a bounded worker pool. Smoke navigation runs 
 `--jobs 1` selects serial preparation; `--fix` always uses one worker.
 The summary includes timings. `--json` gives machine-readable results.
 See `docs/talks.md` for the current workflow.
-Do not run validation in a given talk.
+Do not run validation in a retired talk.
 
 The command is `uv run tools/validate.py`, not `uv run validate`. This is not
 an oversight. A `[project.scripts]` entry needs the root to be an installable

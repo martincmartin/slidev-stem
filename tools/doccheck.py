@@ -7,7 +7,7 @@
 Each PATH is a Markdown file, or a directory whose `*.md` files are checked,
 at any depth. A directory whose name starts with `.`, `node_modules`, and each
 `--skip NAME` are not entered. Give the paths explicitly: never a `tasks/`
-directory (a finished task is frozen) or a given talk. It exits 0 if it finds
+directory (a finished task is frozen) or a retired talk. It exits 0 if it finds
 nothing, 1 if it finds anything, 2 if the arguments are wrong, and 3 if it
 cannot read a PATH or fails (a bug in doccheck). validate.py runs it.
 

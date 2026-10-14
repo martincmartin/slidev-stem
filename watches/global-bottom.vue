@@ -28,6 +28,11 @@
 // watch's change to end, with its flash and the model's story
 // (`--watch-end-delay`, from the stage).
 //
+// In a figure of the article (addons/narration, which provides `FIGURE`), the
+// layer is the figure's (components/FigureLayer.vue): the slide at the
+// figure's click, drawn by the renderer that the page's figures share. The
+// live layer is not made.
+//
 // Print mode (export) has no live layer: slide-bottom.vue draws a still and a
 // posed board on each page. `data-watch` on the canvas is the state it shows,
 // for art/print_check.py. Print mode comes from the page's nav: each printed
@@ -48,7 +53,9 @@ import {
   useTemplateRef,
   watch as onChange,
 } from "vue";
+import { FIGURE } from "./addons/narration/figure.ts";
 import DivingBoard from "./components/DivingBoard.vue";
+import FigureLayer from "./components/FigureLayer.vue";
 import TickTock from "./components/TickTock.vue";
 import TimeScale from "./components/TimeScale.vue";
 import { Stage } from "./webgl/stage.ts";
@@ -89,7 +96,8 @@ declare global {
 const slidev = inject(injectionSlidevContext);
 if (!slidev) throw new Error("no Slidev context");
 const nav = useNav();
-const live = !nav.isPrintMode.value;
+const figure = inject(FIGURE, null);
+const live = !nav.isPrintMode.value && !figure;
 const frontmatter = computed(
   () => slidev.nav.currentSlideRoute.meta.slide?.frontmatter ?? {},
 );
@@ -344,8 +352,9 @@ onMounted(() => {
 </script>
 
 <template>
+  <FigureLayer v-if="figure" />
   <div
-    v-if="live"
+    v-else-if="live"
     class="slidev-layout watch-layer"
     :class="{ 'watch-off': hidden }"
     :style="palette.variables"

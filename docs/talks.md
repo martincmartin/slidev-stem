@@ -12,8 +12,9 @@ start a new talk.
 [`tasks/2026-10-10-cloud-validation/`](../tasks/2026-10-10-cloud-validation/README.md).
 
 Each talk is a separate project, with its own package versions. A talk that you
-gave is frozen. This page tells you why, and how to work in that setup. The rules
-themselves are in [`../AGENTS.md`](../AGENTS.md): "Given talks and versions" and
+gave is tagged, and a talk that you retired is frozen. This page tells you why,
+and how to work in that setup. The rules themselves are in
+[`../AGENTS.md`](../AGENTS.md): "Given talks, retired talks and versions" and
 "Working in this repo".
 
 ## The layout
@@ -90,7 +91,8 @@ A shared workspace cannot do that:
 
 So each talk has its own lockfiles, and the git tag of a given talk
 (`given/<talk>/<date>`) holds everything needed to rebuild it. `main` has to
-support only the talks in progress.
+support only the talks in progress: a talk that you gave can still change, but
+a retired talk (`retired/<talk>/<date>`) does not.
 
 The house items (the theme, `tools/`, `docs/`, `.prettierrc`) have one live
 copy, which all talks use. You make every change to them yourself, so you can

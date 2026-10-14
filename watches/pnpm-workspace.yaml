@@ -1,6 +1,7 @@
 # This talk is a separate pnpm project, with its own pnpm-lock.yaml and
-# node_modules, so that it keeps its own versions. See "Given talks and
-# versions" in ../AGENTS.md. Run `pnpm install` here, in the talk's directory.
+# node_modules, so that it keeps its own versions. See "Given talks, retired
+# talks and versions" in ../AGENTS.md. Run `pnpm install` here, in the talk's
+# directory.
 #
 # This file makes the talk a pnpm root: without it, pnpm would use the
 # workspace in ../. The house theme is not a member: package.json links it

@@ -9,6 +9,10 @@ const TALK = fileURLToPath(new URL("..", import.meta.url));
 export interface DeckSlide {
   title: string;
   frontmatter: Record<string, unknown>;
+  /** The slide's Markdown, with its comments but the last. */
+  content: string;
+  /** The last comment: the speaker note. */
+  note: string;
 }
 
 /** Every slide of slides.md, hidden ones too, in order. */
@@ -20,6 +24,8 @@ export async function deckSlides(): Promise<DeckSlide[]> {
   return deck.slides.map((slide) => ({
     title: slide.title ?? "",
     frontmatter: slide.frontmatter as Record<string, unknown>,
+    content: slide.content,
+    note: slide.note ?? "",
   }));
 }
 

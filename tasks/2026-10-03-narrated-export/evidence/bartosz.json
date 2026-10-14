@@ -1,0 +1,63 @@
+{
+  "prose_words": 8175,
+  "paragraphs": 156,
+  "paragraphs_with_a_coloured_name": 125,
+  "figures": 93,
+  "sliders": 31,
+  "section_anchors": 13,
+  "figcaptions": 0,
+  "coloured_names": 460,
+  "coloured_names_in_bold": 460,
+  "colours": 14,
+  "most_coloured_names": [
+    [
+      "barrel",
+      22
+    ],
+    [
+      "pallet fork",
+      22
+    ],
+    [
+      "mainspring",
+      21
+    ],
+    [
+      "arbor",
+      18
+    ],
+    [
+      "balance wheel",
+      17
+    ],
+    [
+      "sliding pinion",
+      17
+    ],
+    [
+      "spring",
+      15
+    ],
+    [
+      "escape wheel",
+      14
+    ],
+    [
+      "crown wheel",
+      13
+    ],
+    [
+      "gear",
+      11
+    ]
+  ],
+  "words_between_figures": {
+    "median": 77.5,
+    "quartiles": [
+      44.5,
+      120.25
+    ],
+    "max": 267
+  },
+  "global_pause_link": true
+}

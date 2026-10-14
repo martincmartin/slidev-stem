@@ -10,3 +10,6 @@ export const injectionSlidevContext: InjectionKey<{
     clicks: number;
   };
 }>;
+
+/** A click past a slide's last: every `v-click` shows. */
+export const CLICKS_MAX: number;

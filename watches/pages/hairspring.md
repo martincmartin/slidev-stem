@@ -25,12 +25,42 @@ watchClicks:
 board: 1
 boardCurl: 2
 clicks: 3
+# In the article, the figure at click 3 has a slider that curls the board
+# into the hairspring (docs/article.md)
+article:
+  3:
+    slider: curl
 ---
 
 # Hairspring
 
 <!--
   Should I mention *why* the hairspring?  It's more accurate than previous methods, plus easier to transport and use at sea than a pendulum.
+-->
+
+<!-- narration
+Start with the part that keeps time: the _hairspring_. It is a flat spiral of
+steel ribbon, finer than a hair. Its outer end is held still, and its inner
+end is free to turn. Twist the inner end and let go, and the spiral winds and
+unwinds, back and forth, at a steady beat. In this drawing it swings once
+every two seconds, and the rest of the watch follows that beat.
+
+[click] Why does a spring swing? Think of a diving board. Bend it down, and
+it pushes back: an _elastic restoring force_. Let go, and it does not stop at
+straight. It overshoots, bends the other way, and comes back again: it
+_oscillates_. With no friction, it would bounce for ever.
+
+[click] A hairspring is a diving board rolled up. The board's rest shape is a
+straight line; the hairspring's is a spiral. Take hold of the slider under
+the next picture, and drag it slowly to the right. This one move is the
+whole idea of the hairspring.
+
+[figure 3: The diving board curls up into the hairspring. A slider curls
+it.]
+
+"Bend" becomes "wind", and "straight" becomes "rest". Wind the spiral away
+from its rest shape, and it pushes back. Let it go, and it overshoots and
+swings, just as the board did.
 -->
 
 <!--

@@ -179,7 +179,8 @@ const leader = computed(() => {
 </script>
 
 <template>
-  <div class="callout">
+  <!-- in-figure: an article's figure shows it over the picture -->
+  <div class="callout in-figure">
     <svg
       class="callout-art"
       :class="{ 'callout-keyword': keyword }"

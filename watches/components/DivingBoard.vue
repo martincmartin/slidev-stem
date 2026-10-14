@@ -25,6 +25,11 @@
 // `data-phase` and `data-busy` on the host are for tools/navcheck.py
 // (watch/slide-state.ts).
 //
+// IN THE ARTICLE (components/FigureLayer.vue): `scrub`, from 0 to 1, holds
+// the board at that point of the curl and the edit after it, for a reader's
+// slider: the clock does not run. `paused` stops the clock's drawing: the
+// board keeps its pose, and the clock's time goes on.
+//
 // THE CALLOUT'S SENTENCE is here, as HTML, not in the SVG: HTML is the simpler
 // tool for text (the browser lays it out, so a strike is its word's width).
 // It is the leader's label, so it fades with the
@@ -49,10 +54,21 @@ import {
   EDIT_STEPS,
   editStep,
   pictureShown,
+  storyEnd,
 } from "../watch/board.ts";
 import type { BoardState, BoardTarget, BoardTiming } from "../watch/board.ts";
 
-const props = defineProps<{ target: BoardTarget; live: boolean }>();
+const props = withDefaults(
+  defineProps<{
+    target: BoardTarget;
+    live: boolean;
+    /** 0 to 1: where in the curl and its edit to hold the board, or `null`
+     *  for the clock. */
+    scrub?: number | null;
+    paused?: boolean;
+  }>(),
+  { scrub: null, paused: false },
+);
 const emit = defineEmits<{
   /** Whether the board's picture shows, and so covers the watch. */
   cover: [covers: boolean];
@@ -128,7 +144,18 @@ function draw(now: number): void {
   const phase = shown.value ? clock.phase(now) : "off";
   host.value.dataset["phase"] = phase;
   host.value.dataset["busy"] = String(BUSY_PHASES.has(phase));
-  if (shown.value && clock.moving(now)) frame = requestAnimationFrame(draw);
+  if (shown.value && clock.moving(now) && !props.paused) {
+    frame = requestAnimationFrame(draw);
+  }
+}
+
+/** Hold the board at `scrub` of the way through the curl and the edit. */
+function scrubTo(board: SVGSVGElement, scrub: number): void {
+  const timing = timingOf(board);
+  const time = timing.curlStart + scrub * (storyEnd(timing) - timing.curlStart);
+  board.classList.toggle(CURLING_CLASS, scrub > 0);
+  board.setCurrentTime(time);
+  drawAt(timing, time);
 }
 
 function apply(target: BoardTarget): void {
@@ -137,6 +164,12 @@ function apply(target: BoardTarget): void {
   board.pauseAnimations();
   const state = target.state;
   board.classList.toggle(CURLING_CLASS, state?.curling ?? false);
+  if (props.scrub !== null) {
+    cancelAnimationFrame(frame);
+    shown.value = state;
+    scrubTo(board, props.scrub);
+    return;
+  }
   if (!props.live) {
     shown.value = state;
     const timing = timingOf(board);
@@ -166,7 +199,9 @@ function apply(target: BoardTarget): void {
 }
 
 onMounted(async () => {
-  const source = "/diving-board.svg";
+  // under the deck's base, which is not the host's root if the deck is
+  // built with Slidev's --base
+  const source = `${import.meta.env.BASE_URL}diving-board.svg`;
   const response = await fetch(source);
   if (!response.ok) throw new Error(`${source}: ${String(response.status)}`);
   markup.value = await response.text();
@@ -179,6 +214,20 @@ watch(
   () => props.target,
   (target) => {
     apply(target);
+  },
+);
+watch(
+  () => props.scrub,
+  (scrub) => {
+    const board = svg();
+    if (board && scrub !== null) scrubTo(board, scrub);
+  },
+);
+watch(
+  () => props.paused,
+  (paused) => {
+    if (paused) cancelAnimationFrame(frame);
+    else if (props.scrub === null) draw(performance.now());
   },
 );
 watch(

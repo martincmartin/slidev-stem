@@ -87,8 +87,8 @@ must use that, not their tables. All of them use the Python version pinned in `.
 "needs" column above lists the packages. The tools that render install their required browser engines
 the first time they run, into Playwright's cache for your user, which every
 checkout shares (`browsers.py`). Each tool that checks art needs the paths
-to check: there is no default of "every talk", because a given talk is not checked
-again (`../AGENTS.md`, "Given talks and versions").
+to check: there is no default of "every talk", because a retired talk is not checked
+again (`../AGENTS.md`, "Given talks, retired talks and versions").
 
 ## Validation modes
 

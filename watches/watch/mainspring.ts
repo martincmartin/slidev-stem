@@ -128,9 +128,10 @@ const RUNS_FROM: readonly number[] = LINE.flatMap((segment, index) =>
     : [],
 );
 
-/** The place of a stage on the line. `run down` is a time-lapse from the
- *  end of the line, where the key has wound the spring in the barrel. */
-function placeFor(stage: MainspringStage): number {
+/** The place of a stage on the line (story time, s). `run down` is a
+ *  time-lapse from the end of the line, where the key has wound the spring
+ *  in the barrel. */
+export function placeFor(stage: MainspringStage): number {
   if (stage === "run down") return placeOf(PLACES.length - 1);
   const place = STAGE_PLACES.get(stage);
   if (place === undefined) throw new Error(`no place for ${stage}`);
@@ -357,6 +358,18 @@ export class MainspringClock {
         startMs: startMs + (to - from) * 1000,
       });
     }
+  }
+
+  /** Hold the story at `time` on the line (s), from `now`, in either
+   *  direction: what runs stops. For a reader who scrubs the story with a
+   *  slider (the article): not for the talk, where time does not run
+   *  backward. */
+  hold(time: number, now: number): void {
+    check(
+      Number.isFinite(time) && time >= 0 && time <= placeFor("barrel"),
+      `story time ${String(time)} is not on the line`,
+    );
+    this.cut(time, now);
   }
 
   /** The arbor, the wind and the key at `now`. */
