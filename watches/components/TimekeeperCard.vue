@@ -12,7 +12,7 @@ import { onMounted, ref, useId } from "vue";
 const props = defineProps<{
   name: string;
   date: string;
-  img: string; // SVG diagram
+  img: string; // SVG diagram: its path under public/, with no leading slash
   stat: string;
   unit: string;
   problem: string;
@@ -26,8 +26,15 @@ const markup = ref("");
 const suffix = useId();
 
 onMounted(async () => {
-  const response = await fetch(props.img);
-  if (!response.ok) throw new Error(`${props.img}: ${String(response.status)}`);
+  // Under the deck's base, which a build for a sub-path changes (`--base`).
+  if (props.img.startsWith("/")) {
+    throw new Error(
+      `${props.img}: give the path under public/, with no leading slash`,
+    );
+  }
+  const path = `${import.meta.env.BASE_URL}${props.img}`;
+  const response = await fetch(path);
+  if (!response.ok) throw new Error(`${path}: ${String(response.status)}`);
   const source = await response.text();
   const ids = [...source.matchAll(/id="([^"]+)"/g)].map(([, id]) => id ?? "");
   markup.value = ids.reduce(

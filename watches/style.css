@@ -1,5 +1,5 @@
-/* Titles and subtitles are centred unless the theme's cover-left class
-   places them beside an illustration. */
+/* Titles and subtitles are centred unless a title slide's `side: left`
+   places them beside an illustration (the house theme's layouts). */
 .slidev-layout h1,
 .slidev-layout h1 + p {
   text-align: center;

@@ -26,25 +26,26 @@
   color: var(--palette-muted);
 }
 
-.slidev-layout.cover {
+/* The title slides, cover and section. Their layouts place the text by the
+   slide's `side` (utils/side.ts): centred, or left, beside an illustration. */
+.slidev-layout.side-center {
   display: grid;
   place-content: center;
   text-align: center;
 }
-.slidev-layout.cover h1 {
-  font-size: 56px;
-}
-
-/* Cover and section text beside an illustration. */
-.slidev-layout.cover-left {
+.slidev-layout.side-left {
   display: grid;
   place-content: center start;
   text-align: left;
 }
-.slidev-layout.cover-left h1,
-.slidev-layout.cover-left h1 + p {
+.slidev-layout.side-left h1,
+.slidev-layout.side-left h1 + p {
   text-align: left;
   max-width: 480px;
+}
+
+.slidev-layout.cover h1 {
+  font-size: 56px;
 }
 
 .slidev-layout.section h1 {

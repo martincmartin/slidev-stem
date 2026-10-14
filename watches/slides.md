@@ -24,7 +24,7 @@ hide: true
 ---
 # The live watch stays in the same view on the cover and section.
 layout: cover
-class: cover-left
+side: left
 watch: all
 watchView: cover
 ---
@@ -49,6 +49,7 @@ Speaker notes here
 
 ---
 layout: section
+side: left
 eyebrow: PART 1
 watch: all
 watchView: cover
@@ -1449,6 +1450,7 @@ The whole train, one touch at a time. The motion works, a day a minute: the hour
 # fade out, the hands that the Recap slide hid fade in, the camera tilts to
 # 0, and then it zooms out
 layout: section
+side: left
 eyebrow: PART 2
 watch: all
 watchView: cover
@@ -1473,19 +1475,19 @@ class: tk-timekeepers
 // One card per click, in this order; the takeaway comes after the last card.
 const cards = [
   {
-    name: "Sundial", date: "c. 1500 BCE", img: "/timekeepers/sundial.svg",
+    name: "Sundial", date: "c. 1500 BCE", img: "timekeepers/sundial.svg",
     stat: "±16 min", unit: "the Sun vs. a steady clock", problem: "No sun, no time",
   },
   {
-    name: "Water clock", date: "c. 1400 BCE", img: "/timekeepers/water-clock.svg",
+    name: "Water clock", date: "c. 1400 BCE", img: "timekeepers/water-clock.svg",
     stat: "~15 min", unit: "per day, the best ones", problem: "Freezes in winter",
   },
   {
-    name: "Candle", date: "9th c. CE", img: "/timekeepers/candle.svg",
+    name: "Candle", date: "9th c. CE", img: "timekeepers/candle.svg",
     stat: "?", unknown: true, unit: "no good data found", problem: "Drafts speed it up",
   },
   {
-    name: "Hourglass", date: "by 1338", img: "/timekeepers/hourglass.svg",
+    name: "Hourglass", date: "by 1338", img: "timekeepers/hourglass.svg",
     stat: "?", unknown: true, unit: "no good data found", problem: "Someone must flip it",
   },
 ];

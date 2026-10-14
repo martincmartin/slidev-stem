@@ -32,7 +32,8 @@ Five rules for a slide:
   Use exhaustive navigation only to investigate an actual or suspected problem.
 - **Every slide's title and subtitle are centred**, by `style.css` (a Slidev
   project file). The cover and section titles sit left of the
-  watch. The theme's shared `cover-left` class sets their alignment and width.
+  watch: their slides set `side: left`, which the house theme's `cover` and
+  `section` layouts read for their alignment and width.
 - **Use a markdown `#` heading for the title.** The theme styles `h1` as the
   slide title. Inside a flex layout, set `margin: 0` on it. A paragraph right
   after the title is its subtitle: the theme styles `h1 + p`, as Slidev's
@@ -75,15 +76,15 @@ One card: a drawing, a date, a name, one big number, its unit, and the catch.
 The props are typed at the top of the component, and the slide's `cards` array
 is the example. Each prop has one job:
 
-| prop      | job                                                                              |
-| --------- | -------------------------------------------------------------------------------- |
-| `name`    | the card's title                                                                 |
-| `date`    | when, under the art                                                              |
-| `img`     | the SVG, inlined so the palette paints it, at the `width` and `height` it states |
-| `stat`    | **the one number**, in the accent                                                |
-| `unit`    | what the number means                                                            |
-| `problem` | the catch, in `--palette-second`                                                 |
-| `unknown` | draws `stat` in muted instead of accent — for "we could not find data"           |
+| prop      | job                                                                                                                                                                                      |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`    | the card's title                                                                                                                                                                         |
+| `date`    | when, under the art                                                                                                                                                                      |
+| `img`     | the SVG's path under `public/`, with no leading slash (`timekeepers/candle.svg`): the card adds the deck's base. Inlined so the palette paints it, at the `width` and `height` it states |
+| `stat`    | **the one number**, in the accent                                                                                                                                                        |
+| `unit`    | what the number means                                                                                                                                                                    |
+| `problem` | the catch, in `--palette-second`                                                                                                                                                         |
+| `unknown` | draws `stat` in muted instead of accent — for "we could not find data"                                                                                                                   |
 
 The sizes are in the component's CSS, and the reasons for them are in
 [legibility.md](../../docs/legibility.md#text-sizes).

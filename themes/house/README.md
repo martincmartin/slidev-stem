@@ -26,20 +26,23 @@ palette: [`docs/theme.md`](../../docs/theme.md), "Palettes".
 
 ## What it sets
 
-| file               | what                                                                                                                                                                 |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `package.json`     | the font families for Slidev, with `provider: none` (no web-font service)                                                                                            |
-| `styles/fonts.css` | the self-hosted font weights, from Fontsource                                                                                                                        |
-| `styles/house.css` | background and ink on every slide, from the palette's roles; `h1`; the subtitle (`h1 + p`); cover and section type; shared `cover-left` placement; `palette-preview` |
-| `styles/index.ts`  | Slidev's base layout styles, `fonts.css`, `house.css`, and every palette's rule, so that any slide can show any palette                                              |
-| `layouts/`         | `section.vue`                                                                                                                                                        |
-| `setup/root.ts`    | the navigation probe that the smoke check reads ([`docs/navigation.md`](../../docs/navigation.md))                                                                   |
-| `vite.config.mts`  | lets a talk's dev server and `slidev export` serve the fonts, which `pnpm install` at the repo root puts outside the talk, and the palettes                          |
+| file               | what                                                                                                                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `package.json`     | the font families for Slidev, with `provider: none` (no web-font service)                                                                                                           |
+| `styles/fonts.css` | the self-hosted font weights, from Fontsource                                                                                                                                       |
+| `styles/house.css` | background and ink on every slide, from the palette's roles; `h1`; the subtitle (`h1 + p`); cover and section type; their placement (`side-center`, `side-left`); `palette-preview` |
+| `styles/index.ts`  | Slidev's base layout styles, `fonts.css`, `house.css`, and every palette's rule, so that any slide can show any palette                                                             |
+| `layouts/`         | `cover.vue`, `section.vue`                                                                                                                                                          |
+| `utils/side.ts`    | the title layouts' `side`: its values, and the check                                                                                                                                |
+| `setup/root.ts`    | the navigation probe that the smoke check reads ([`docs/navigation.md`](../../docs/navigation.md))                                                                                  |
+| `vite.config.mts`  | lets a talk's dev server and `slidev export` serve the fonts, which `pnpm install` at the repo root puts outside the talk, and the palettes                                         |
 
-Most layouts come from Slidev's core. The theme provides `layouts/section.vue`.
-Use a Markdown title with `layout: section` and an optional `eyebrow: PART 1`.
-The section applies `cover-left`, which also positions covers with
-`class: cover-left`. This class holds the shared alignment and text width.
+Most layouts come from Slidev's core. The theme provides two title layouts,
+`cover` (in place of Slidev's) and `section`: a part's title, with an optional
+`eyebrow: PART 1` above it. Both centre their text. With `side: left`, the
+text sits on the left, at most 480 px wide, beside an illustration on the
+right. `utils/side.ts` checks the value: with any other side the slide shows
+nothing, and the browser's console says why.
 Type sizes and spacing are in `styles/house.css`; font weights are in `styles/fonts.css`.
 The eyebrow uses `--palette-ink`. Illustrations remain the talk's responsibility.
 
