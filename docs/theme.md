@@ -258,7 +258,7 @@ own file under `pages/`:
 
 ```md
 ---
-src: ./pages/hairspring.md
+src: ./pages/<slide>.md
 class: palette-campfire palette-preview
 ---
 ```
