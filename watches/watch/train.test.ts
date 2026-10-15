@@ -26,7 +26,7 @@ const { design, groups } = watch;
 const ESCAPEMENT_SLIDE = await slideFrontmatter("Escapement");
 const GEARS_SLIDE = await slideFrontmatter("Gears");
 /** The slide before the Gears slide. */
-const THREE_HANDS_SLIDE = await slideFrontmatter("Three Hands");
+const TICKS_AND_TURNS_SLIDE = await slideFrontmatter("Ticks and Turns");
 /** A slide's stage state at a click. */
 function stageAt(frontmatter: Record<string, unknown>, clicks: number) {
   return stageState(
@@ -255,13 +255,13 @@ test("on the Gears slide, the gears spin from the start, and start to fade in as
   );
   const timeline = new Timeline();
   timeline.show(
-    stageAt(THREE_HANDS_SLIDE, Number(THREE_HANDS_SLIDE["clicks"])),
+    stageAt(TICKS_AND_TURNS_SLIDE, Number(TICKS_AND_TURNS_SLIDE["clicks"])),
     0,
     true,
   );
   timeline.show(gears, 1000, false);
   // the spin starts FADE_SECONDS after the click (TrainClock.show): when the
-  // Three Hands slide's picture has faded out, and the gears start to fade in
+  // Ticks and Turns slide's picture has faded out, and the gears start to fade in
   const spinStart = 1000 + FADE_SECONDS * 1000;
   const before = timeline.valuesAt(spinStart - 1);
   assert.ok(before.fade.size > 0 && before.rest < 1e-3);

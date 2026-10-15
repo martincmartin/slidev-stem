@@ -457,7 +457,7 @@ The escapement turns back-and-forth motion into rotation in one direction.  (It 
 
 ---
 # the seconds hand alone, so that the eye has only its ticks to count, one
-# a second (docs/watch.md, "The Three Hands slide"). Its arbor shows as a
+# a second (docs/watch.md, "The Ticks and Turns slide"). Its arbor shows as a
 # post under its cap at tilt 20, as on the Gears slide: the hand is pinned
 # there. The view fits the hand's whole turn; its circle is against the left
 # edge (FIT_LEFT, 16 px, plus its width at this tilt, about 421.6 px), so
@@ -468,23 +468,23 @@ watch: [seconds hand, fourth arbor]
 watchView: [seconds hand]
 watchRight: 438
 watchTilt: 20
-class: three-hands
+class: ticks-and-turns
 clicks: 3
 ---
 
-# Three Hands
+# Ticks and Turns
 
-Named for what they count
+Named for what they count, not how long they take to turn
 
 <!-- Each click adds text, and none leaves. The text before the newest dims
 (style.css, "TEXT DIMS"). The table comes whole at click 3: its first row is
 what the audience has just worked out, and its other rows state the same
 rule for the other two hands. -->
 
-<div class="th-sentence">
-  <div v-click="1" class="th-line text-dims">Second hand: a tick a second</div>
-  <div v-click="2" class="th-line text-dims">60 ticks a turn: <span class="turn-time">once a minute</span></div>
-  <table v-click="3" class="th-table">
+<div class="tt-sentence">
+  <div v-click="1" class="tt-line text-dims">Second hand: a tick a second</div>
+  <div v-click="2" class="tt-line text-dims">60 ticks a turn: <span class="turn-time">once a minute</span></div>
+  <table v-click="3" class="tt-table">
     <thead><tr><th>Hand</th><th>A full turn</th></tr></thead>
     <tbody>
       <tr><td>Second Hand</td><td class="turn-time">Once a minute</td></tr>
@@ -501,7 +501,7 @@ rule for the other two hands. -->
    line, "60 ticks a turn: once a minute", and the table (216 + 32 + 235 px)
    are each about 483 px: they end at 965 px, as the Gears slide's rule
    does. The cells are left-aligned, so the eye runs down each column. */
-.slidev-layout.three-hands .th-sentence {
+.slidev-layout.ticks-and-turns .tt-sentence {
   position: absolute;
   left: 482px;
   top: 165px;
@@ -510,40 +510,40 @@ rule for the other two hands. -->
   line-height: 1.25;
   white-space: nowrap;
 }
-.slidev-layout.three-hands .th-line + .th-line,
-.slidev-layout.three-hands .th-table {
+.slidev-layout.ticks-and-turns .tt-line + .tt-line,
+.slidev-layout.ticks-and-turns .tt-table {
   margin-top: 0.7em;
 }
-.slidev-layout.three-hands .th-table {
+.slidev-layout.ticks-and-turns .tt-table {
   border-collapse: collapse;
   color: var(--palette-ink);
 }
 /* no rules between the rows: Slidev's tables have them */
-.slidev-layout.three-hands .th-table :is(thead, tbody, tr, th, td) {
+.slidev-layout.ticks-and-turns .tt-table :is(thead, tbody, tr, th, td) {
   border: 0;
 }
-.slidev-layout.three-hands .th-table :is(th, td) {
+.slidev-layout.ticks-and-turns .tt-table :is(th, td) {
   padding: 0;
   text-align: left;
   font-weight: 600;
 }
-.slidev-layout.three-hands .th-table :is(th, td) + :is(th, td) {
+.slidev-layout.ticks-and-turns .tt-table :is(th, td) + :is(th, td) {
   padding-left: 32px;
 }
 /* The title row labels the columns: the subtitle's type (22 px, muted, the
    theme's `h1 + p`), so that it does not read as one more row. */
-.slidev-layout.three-hands .th-table th {
+.slidev-layout.ticks-and-turns .tt-table th {
   font-size: 22px;
   font-weight: 400;
   line-height: 1.3;
   color: var(--palette-muted);
 }
-.slidev-layout.three-hands .th-table.slidev-vclick-target {
+.slidev-layout.ticks-and-turns .tt-table.slidev-vclick-target {
   transition: opacity var(--text-fade);
 }
 /* When text shows, the lines before it dim, as on the Mainspring slide. */
-.slidev-layout.three-hands
-  .th-line:has(~ :is(.th-line, .th-table):not(.slidev-vclick-hidden)) {
+.slidev-layout.ticks-and-turns
+  .tt-line:has(~ :is(.tt-line, .tt-table):not(.slidev-vclick-hidden)) {
   --text-dim: var(--text-dimmed);
 }
 </style>
@@ -601,7 +601,7 @@ watch: [*gears, fourth wheel span plain, escape pinion span plain]
 watchRight: 489
 watchTilt: 20
 # the audience has not seen these gears, so their place in the watch does
-# not matter: the Three Hands slide's picture fades out, the camera jumps,
+# not matter: the Ticks and Turns slide's picture fades out, the camera jumps,
 # and this one fades in, both ways (docs/watch.md, "The Gears slide")
 watchMoveWith: none
 # the gears turn freely, from the start: the pinion once in 4 s (360 / 4 = 90

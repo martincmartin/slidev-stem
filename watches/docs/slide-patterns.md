@@ -219,10 +219,10 @@ a picture, so it dims with an opacity ([Clicks](#clicks)).
 
 ## A full turn's time
 
-**From the Three Hands slide to the Hour Hand slide, how long a hand takes
+**From the Ticks and Turns slide to the Hour Hand slide, how long a hand takes
 to make a full turn is the slide's one accent**
 ([theme.md](../../docs/theme.md#the-roles), "One accent per slide"): "once
-a minute", "once an hour", "twice a day". The Three Hands slide's table
+a minute", "once an hour", "twice a day". The Ticks and Turns slide's table
 gives all three. Each later slide colours the one that it builds, so the
 eye links it back to the table.
 
@@ -244,10 +244,10 @@ The Escapement slide zooms out, and then the rest of the escapement fades in. It
 callouts point to parts of the watch, one at each click. At its first click
 the wheel's callout appears and the escape wheel spins alone, and at the
 second the pallet comes back and stops it.
-The Three Hands slide follows it: the seconds hand alone, on its arbor,
+The Ticks and Turns slide follows it: the seconds hand alone, on its arbor,
 ticks once a second. Two lines work through why it turns once a minute,
 and then a table states how often each hand turns
-([watch.md](watch.md#the-three-hands-slide)).
+([watch.md](watch.md#the-ticks-and-turns-slide)).
 The Gears slide follows it: the hand fades out, the
 camera jumps, and the fourth wheel and the escape wheel's pinion fade in
 (`watchMoveWith: none`), turning freely (`watchSpin`). At click 1,

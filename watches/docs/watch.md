@@ -8,7 +8,7 @@ measured budgets) and the diving board on the Hairspring slide.
 them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
-[`2026-10-13-hand-periods`](../tasks/2026-10-13-hand-periods/PLAN.md) (the Three Hands slide: how often each hand turns),
+[`2026-10-13-hand-periods`](../tasks/2026-10-13-hand-periods/PLAN.md) (the Ticks and Turns slide: how often each hand turns),
 [`2026-10-13-recap-hands`](../tasks/2026-10-13-recap-hands/PLAN.md) (the hands hidden from the Recap slide's slow stops),
 [`2026-10-13-arbor-seams`](../tasks/2026-10-13-arbor-seams/PLAN.md) (a line where an arbor comes up through a face),
 [`2026-10-09-motion-works`](../tasks/2026-10-09-motion-works/PLAN.md) (the motion works, and the Hour Hand slide),
@@ -424,9 +424,9 @@ the spin starts and stops is in [The free spin](#the-free-spin).
   never points at empty space. The callout has the class `after-watch-fade`
   (`style.css`, and [slide-patterns.md](slide-patterns.md#text-fades)).
 
-## The Three Hands slide
+## The Ticks and Turns slide
 
-The Three Hands slide follows the Escapement slide. It says how often each
+The Ticks and Turns slide follows the Escapement slide. It says how often each
 hand makes a full turn. That confused people who saw the talk: "the
 **second** hand turns once a **minute**" puts two units in one phrase. So the
 slide works through one case, the second hand, and then states the other two
@@ -498,10 +498,10 @@ spin.
 | 5     | the gears and the rest of the Escapement slide's mechanism; the span and the callouts go, and the rule stays   | tick with it |
 | 6     | and the seconds hand, and then its text                                                                        | tick with it |
 
-- **The step from the Three Hands slide, and back, jumps the camera.** The
+- **The step from the Ticks and Turns slide, and back, jumps the camera.** The
   audience has not seen these gears, so their place in the watch does not
   matter. With `watchMoveWith: none`, nothing is on the screen while the
-  camera moves, so it jumps: the Three Hands slide's hand fades out, and
+  camera moves, so it jumps: the Ticks and Turns slide's hand fades out, and
   the gears fade in ([The one rule](#the-one-rule)). The fourth arbor is on
   both slides, so without the key it would stay on the screen alone while
   the camera moves. The new slide's text
@@ -518,7 +518,7 @@ spin.
   smoothly, not a tick at a time. Its value is the speed, in degrees a second
   of the escape wheel: the slide's comment says how many seconds a turn of the
   pinion and of the fourth wheel take. The pinion turns twice for each turn
-  of the fourth wheel. From the Three Hands slide, the spin starts when the old
+  of the fourth wheel. From the Ticks and Turns slide, the spin starts when the old
   picture has faded out, so the gears start to turn as they fade in.
 - The tilt shows the arbors as posts.
 - **At clicks 1 to 4, the span shows: the same four teeth on each gear, in

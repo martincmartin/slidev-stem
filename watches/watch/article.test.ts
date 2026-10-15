@@ -38,7 +38,7 @@ test("the default figures are the end of each build-up", async () => {
   assert.deepEqual(await defaultsOf("Hairspring"), [0, 1, 3]);
   // text only after click 0: one figure, at the end
   assert.deepEqual(await defaultsOf("Balance Wheel"), [3]);
-  assert.deepEqual(await defaultsOf("Three Hands"), [3]);
+  assert.deepEqual(await defaultsOf("Ticks and Turns"), [3]);
   // the escape wheel alone (1) takes pieces away; then they come back
   assert.deepEqual(await defaultsOf("Escapement"), [0, 4]);
   // the camera zooms in at 3 and out at 6
