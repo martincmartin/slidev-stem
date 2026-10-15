@@ -74,6 +74,11 @@
 .article-figure {
   --text-dimmed: 0%;
 }
+/* The article shows a slide's history line under its heading, so a figure
+   does not (slide-top.vue). */
+.article-figure .slide-history {
+  display: none;
+}
 .slidev-layout .text-dims {
   color: color-mix(
     in srgb,

@@ -16,6 +16,7 @@ import {
   pictureBox,
   pictureKey,
 } from "./article.ts";
+import { historyOf } from "../addons/narration/history.ts";
 import { deckSlides, slideFrontmatter } from "./deck.ts";
 import { generate } from "./generate.ts";
 
@@ -173,6 +174,19 @@ test("every slide's narration parses, comes before the note, and names real piec
           `${title} @${String(click)}: no piece ${name}`,
         );
       }
+    }
+  }
+});
+
+test(`every slide's history line is text, with "c." before each year`, () => {
+  for (const { title, frontmatter } of slides) {
+    const history = historyOf(frontmatter);
+    for (const year of history?.matchAll(/(\S*\s*)\b(\d{3,4})\b/g) ?? []) {
+      assert.equal(
+        year[1],
+        "c. ",
+        `${title}: "${history ?? ""}": a bare ${year[2] ?? ""} reads as any number`,
+      );
     }
   }
 });

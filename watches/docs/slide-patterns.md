@@ -1,7 +1,8 @@
 # Slide patterns
 
 **Covers:** how a slide in this deck is built: the theme on a slide, the
-timekeeper card, clicks, speaker notes, what fits, borrowed assets.
+history line, the timekeeper card, clicks, speaker notes, what fits, borrowed
+assets.
 **Read before** you add or change a slide. For a slide that shows the watch or
 the diving board, read [watch.md](watch.md) as well.
 **Tasks:**
@@ -69,6 +70,40 @@ The theme sets the type and placement in `themes/house/styles/house.css` at the 
 For a section with the cover's picture, use `watch: all` and `watchView: cover`.
 Mechanical Marvels uses this state, so the watch stays in place when the cover text changes.
 Changed The World uses it too: the Recap slide's tour ends there.
+
+## The history line
+
+A slide can give a line of history in its frontmatter: when its subject became
+practical. The speaker does not say it; it is there for the audience to read,
+and to retell.
+
+```yaml
+history: "Minute hand: c. 1656"
+```
+
+- **Give the year it became practical, not the first known example.** A
+  second hand on a clock that drifts by minutes a day is a show piece, not
+  a second hand. So the minute hand's year is 1656: Huygens's pendulum
+  clock kept time to the minute.
+- **Write a year, not a century:** "c. 1430", not "15th century". Put "c."
+  before every year, also an exact one: a bare "1675" could be a part
+  number, a measurement or a time of day. Give no names: a name on some
+  lines and not others reads as if the others had no maker. Where the slide
+  is about how a part works rather than what it is, start with the part:
+  "Minute hand: c. 1656" on the Gear Train slide, and "Hour hand: c. 1350"
+  on the Hour Hand slide, which is about its gears.
+- **Quote the value.** YAML reads a bare `1675` as a number, and a value with
+  `: ` as a map. `historyOf` (`addons/narration/history.ts`) throws on a
+  value that is not text, and `watch/article.test.ts` checks every slide,
+  and that each year has its "c.".
+- **On the slide**, `slide-top.vue` shows it in the lower left corner, in
+  ink at the subtitle's 22 px ([legibility.md](../../docs/legibility.md)),
+  with the paper's outline, as the time scale's number in the lower right.
+  The speaker does not say it, so it must be easy to see: muted at 17 px was
+  too easy to miss. The outline keeps it legible where the watch or the
+  diving board runs under it.
+- **In the article**, it is under the slide's heading, as a dateline, and a
+  figure does not show it (`style.css`).
 
 ## `TimekeeperCard.vue`
 

@@ -103,6 +103,9 @@ clicks: 3
 article:
   3:
     slider: curl
+# the history line, in a corner of the slide and under the heading in the
+# article; the speaker does not say it (docs/slide-patterns.md)
+history: "c. 1675"
 ---
 
 # Hairspring
@@ -163,6 +166,7 @@ watchTilt: 20
 watchFlash: [balance wheel, balance staff]
 class: balance-wheel
 clicks: 3
+history: "c. 1364"
 ---
 
 # Balance Wheel
@@ -327,6 +331,7 @@ watchClicks:
     watchAtRest: false
     watchTickTock: true
 clicks: 4
+history: "c. 1275"
 ---
 
 # Escapement
@@ -647,6 +652,7 @@ watchClicks:
   6:
     watch: [*mechanism, seconds hand]
 clicks: 6
+history: "Second hand: c. 1670"
 ---
 
 # Gears
@@ -877,6 +883,7 @@ watchClicks:
   5:
     watchDim: [*trainContext, *face]
 clicks: 5
+history: "Minute hand: c. 1656"
 ---
 
 # Gear Train
@@ -1111,6 +1118,7 @@ watchClicks:
     watchMainspring: run down
 clicks: 4
 class: mainspring
+history: "c. 1430"
 ---
 
 # Mainspring
@@ -1289,6 +1297,7 @@ watchClicks:
     watchBand: slide
     watchDim: false
 clicks: 6
+history: "Hour hand: c. 1350"
 ---
 
 # Hour Hand

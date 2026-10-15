@@ -16,6 +16,7 @@ function slide(overrides: Partial<SlideInput>): SlideInput {
     title: "Escapement",
     layout: null,
     eyebrow: null,
+    history: null,
     parts: null,
     defaults: [],
     keyOf: (clicks) => `escapement ${String(clicks)}`,
@@ -69,6 +70,11 @@ test("the cover's title is the page's; a section is a part; others are headings"
     "heading Hairspring",
   ]);
   assert.equal(page[1]?.kind === "part" && page[1].eyebrow, "PART 1");
+});
+
+test("a heading carries its slide's history line", () => {
+  const [heading] = pagePlan([slide({ title: "Hairspring", history: "1675" })]);
+  assert.equal(heading?.kind === "heading" && heading.history, "1675");
 });
 
 test("a default figure goes at the start of its click's part", () => {

@@ -17,6 +17,7 @@ import { computed, inject, onBeforeUnmount, onMounted, ref } from "vue";
 import ArticleFigure from "../components/ArticleFigure.vue";
 import { ARTICLE_HOOKS, DEFAULT_HOOKS } from "../figure.ts";
 import type { Box } from "../figure.ts";
+import { historyOf } from "../history.ts";
 import { pagePlan } from "../plan.ts";
 import type {
   FigureBlock,
@@ -55,6 +56,7 @@ function inputOf(route: SlideRoute): SlideInput {
     title: route.meta.slide?.title ?? null,
     layout: text("layout"),
     eyebrow: text("eyebrow"),
+    history: historyOf(frontmatter),
     parts: Array.isArray(narration) ? (narration as RenderedPart[]) : null,
     defaults: hooks.defaultFigures(frontmatter, totalOf(route)),
     keyOf: (clicks) =>
@@ -200,6 +202,12 @@ onBeforeUnmount(() => {
         >
           {{ block.text }}
         </h3>
+        <p
+          v-if="block.kind === 'heading' && block.history"
+          class="article-history"
+        >
+          {{ block.history }}
+        </p>
         <div
           v-else-if="block.kind === 'prose'"
           class="article-prose"
@@ -317,6 +325,14 @@ html.article-mode #app {
   font-size: 1.45em;
   font-weight: 600;
   line-height: 1.25;
+}
+/* A slide's history line, close under its heading: a dateline. */
+.article-page h3:has(+ .article-history) {
+  margin-bottom: 0.15em;
+}
+.article-history {
+  margin: 0 0 1em;
+  font-weight: 600;
 }
 .article-prose p {
   margin: 0 0 1em;

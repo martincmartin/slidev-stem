@@ -36,6 +36,8 @@ export interface SlideInput {
   readonly layout: string | null;
   /** A section slide's small line above its title ("PART 1"). */
   readonly eyebrow: string | null;
+  /** The slide's history line (history.ts), or `null`. */
+  readonly history: string | null;
   /** The narration, or `null` if the slide has none. */
   readonly parts: readonly RenderedPart[] | null;
   /** The clicks that get a figure by default, in order. */
@@ -65,7 +67,13 @@ export type PageBlock =
       readonly eyebrow: string | null;
       readonly text: string;
     }
-  | { readonly kind: "heading"; readonly id: string; readonly text: string }
+  | {
+      readonly kind: "heading";
+      readonly id: string;
+      readonly text: string;
+      /** The slide's history line, under the heading. */
+      readonly history: string | null;
+    }
   | { readonly kind: "prose"; readonly html: string }
   | { readonly kind: "aside"; readonly title: string; readonly html: string }
   | FigureBlock;
@@ -229,7 +237,12 @@ export function pagePlan(slides: readonly SlideInput[]): PageBlock[] {
         text: title,
       });
     } else if (title) {
-      page.push({ kind: "heading", id: idOf(slug(title)), text: title });
+      page.push({
+        kind: "heading",
+        id: idOf(slug(title)),
+        text: title,
+        history: slide.history,
+      });
     }
     const result = slideBlocks(slide, idOf, lastKey);
     page.push(...result.blocks);

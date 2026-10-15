@@ -18,6 +18,8 @@ build the article.
 
 - The cover's title, the author, and "pause them all".
 - A table of contents: each part (a section slide) and each slide's title.
+- Under a slide's heading, its history line, if it has one
+  ([slide-patterns.md](slide-patterns.md), "The history line").
 - For each slide, its narration, its asides (in the right margin on a window
   at least 1,280 px wide, in the text on a narrower one) and its figures.
 - **A figure is the slide itself, live**, at one click: the WebGL watch, the
