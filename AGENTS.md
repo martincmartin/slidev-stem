@@ -69,8 +69,9 @@ comments point to them.
 
 Before you…
 
-- choose, compare, measure or add a colour, make a palette, change the house
-  theme, or preview a palette: `docs/theme.md`.
+- choose, compare, measure or add a colour, write a colour value in Markdown,
+  make a palette, change the house theme, or preview a palette:
+  `docs/theme.md`.
 - draw or change any illustration (SVG), or a callout's leader:
   `docs/illustrations.md`.
 - change the WebGL renderer, the watch, or its frontmatter: `docs/webgl.md`.

@@ -85,6 +85,11 @@ Playwright keeps its browsers in one cache for your user
 (`~/Library/Caches/ms-playwright` on macOS). All checkouts and worktrees share
 it, so a new one downloads no browser.
 
+A coding agent also needs the user-level instructions and skills from
+[agent-house](https://github.com/martincmartin/agent-house): run its
+`install` once on each machine. The `AGENTS.md` files here send the agent to
+its `slidev` skill before it edits a deck.
+
 ### Cloud sessions
 
 A Claude Code cloud session runs `.claude/hooks/session-start.sh` when it

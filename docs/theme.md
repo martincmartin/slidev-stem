@@ -7,9 +7,9 @@ another palette; and how to add a colour. Then the current palette, Ledger, as
 the example; how the house theme and its palettes are built, and how a talk
 chooses its palette; the reference palette; and the top picks: every house
 palette, side by side.
-**Read before** you choose, compare, measure or add a colour, make a new
-palette, change the house theme (`themes/house/`), or show a slide in another
-palette.
+**Read before** you choose, compare, measure or add a colour, write a colour
+value in Markdown, make a new palette, change the house theme
+(`themes/house/`), or show a slide in another palette.
 **Tasks:**
 [`tasks/2026-10-07-theme-colour-system/`](../tasks/2026-10-07-theme-colour-system/PLAN.md)
 (this method, the washes, the material colours, the art's gates),
@@ -37,6 +37,11 @@ gates below are the rules. Ledger's values are one palette that passes them.
 **Write each general rule so that it holds in light and dark palettes.** Say
 "toward the paper" and "away from the paper" (toward the ink), not "lighter"
 or "darker": on dark paper they change places.
+
+**In Markdown, give each RGB colour value a swatch and a plain
+description,** in docs, tasks and READMEs alike:
+`<span style="display:inline-block;width:1.5em;height:1.5em;background:#RRGGBB;border:1px solid #888;vertical-align:middle">&nbsp;</span> #RRGGBB, a dark navy blue`.
+GitHub strips the swatch, so the description must stand alone.
 
 ## Making a palette
 

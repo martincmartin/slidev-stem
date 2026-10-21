@@ -19,29 +19,49 @@ from each palette (`../themes/palettes/<name>/palette.css`), the one place they 
 set. Each drawing's display size comes from the drawing itself (its `width` and
 `height`).
 
-| tool                   | needs                    | answers                                                                                                                                |
-| ---------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `lib.py`               | stdlib                   | the constants themselves; run it to print them                                                                                         |
-| `browsers.py`          | playwright               | does this venv's Playwright have its browser; if not, install it (the tools that render call it)                                       |
-| `palette.py`           | stdlib                   | does each palette pass its gates; a talk's palette, its colorSchema, and does it set roles; can I use this colour                      |
-| `derive_palette.py`    | stdlib                   | a palette's art roles, derived from its text roles, as its CSS rule                                                                    |
-| `artcheck.py`          | stdlib                   | is this SVG valid, in-style, and thick enough at the size it is shown                                                                  |
-| `scenecheck.py`        | stdlib                   | does a 3D scene (a talk's WebGL art) keep to the art inks, the stroke ladder and the opacities (a face is its wash, solid)             |
-| `deck_check.py`        | playwright + PIL + numpy | does a talk's live WebGL art keep its frame rate, contexts and size in visible windows, the presenter view, the export (opens windows) |
-| `fade_check.py`        | playwright + PIL + numpy | is a fade of the rest of the scene continuous, and what does it cost the GPU (needs the talk's probe page)                             |
-| `contact.py`           | playwright               | what does it look like, frame by frame                                                                                                 |
-| `barroom.py`           | playwright + PIL + numpy | what does the back row of a lit room get (an SVG, or a PNG that something else drew)                                                   |
-| `motion.py`            | playwright + PIL + numpy | can the back row see the thing that moves (an SVG's animation, or two PNG frames of one)                                               |
-| `offline_check.py`     | playwright               | does a built deck make any outside request, and does it start and show its slides; its fonts and colours per slide                     |
-| `smokecheck.py`        | playwright               | does the built deck start, navigate through its declared positions, and work offline                                                   |
-| `navcheck.py`          | playwright               | diagnostic for suspected navigation problems: continuity and direct-load equality ([navigation.md](../docs/navigation.md))             |
-| `talkcheck.py`         | stdlib, pnpm             | does a talk have its own `pnpm-workspace.yaml`, and does Prettier read each of its deck files with the Slidev parser                   |
-| `check_python.py`      | ruff, mypy, pyright      | do these Python files pass the house's checks (default: every tool here)                                                               |
-| `doccheck.py`          | stdlib                   | do the docs' links and anchors resolve, does each `docs/` match its two indexes, does each named tool exist                            |
-| `validate.py`          | all of the above         | does this project (stem/ or a talk) pass its checks; full or quick mode                                                                |
-| `flatten_pnpm_list.py` | stdlib                   | every resolved JS package, one `name@version` a line: diff before and after an upgrade                                                 |
-| `compare_dist.py`      | stdlib                   | are two deck builds the same, apart from Vue scope ids and content hashes                                                              |
-| `capture_outputs.sh`   | playwright               | every tool's output, saved, to compare before and after a change to a tool                                                             |
+Each tool, with what it needs in brackets, and what it answers:
+
+- `lib.py` (stdlib): the constants themselves; run it to print them
+- `browsers.py` (playwright): does this venv's Playwright have its browser; if
+  not, install it (the tools that render call it)
+- `palette.py` (stdlib): does each palette pass its gates; a talk's palette, its
+  colorSchema, and does it set roles; can I use this colour
+- `derive_palette.py` (stdlib): a palette's art roles, derived from its text
+  roles, as its CSS rule
+- `artcheck.py` (stdlib): is this SVG valid, in-style, and thick enough at the
+  size it is shown
+- `scenecheck.py` (stdlib): does a 3D scene (a talk's WebGL art) keep to the art
+  inks, the stroke ladder and the opacities (a face is its wash, solid)
+- `deck_check.py` (playwright + PIL + numpy): does a talk's live WebGL art keep
+  its frame rate, contexts and size in visible windows, the presenter view, the
+  export (opens windows)
+- `fade_check.py` (playwright + PIL + numpy): is a fade of the rest of the scene
+  continuous, and what does it cost the GPU (needs the talk's probe page)
+- `contact.py` (playwright): what does it look like, frame by frame
+- `barroom.py` (playwright + PIL + numpy): what does the back row of a lit room
+  get (an SVG, or a PNG that something else drew)
+- `motion.py` (playwright + PIL + numpy): can the back row see the thing that
+  moves (an SVG's animation, or two PNG frames of one)
+- `offline_check.py` (playwright): does a built deck make any outside request,
+  and does it start and show its slides; its fonts and colours per slide
+- `smokecheck.py` (playwright): does the built deck start, navigate through its
+  declared positions, and work offline
+- `navcheck.py` (playwright): diagnostic for suspected navigation problems:
+  continuity and direct-load equality ([navigation.md](../docs/navigation.md))
+- `talkcheck.py` (stdlib, pnpm): does a talk have its own `pnpm-workspace.yaml`,
+  and does Prettier read each of its deck files with the Slidev parser
+- `check_python.py` (ruff, mypy, pyright): do these Python files pass the
+  house's checks (default: every tool here)
+- `doccheck.py` (stdlib): do the docs' links and anchors resolve, does each
+  `docs/` match its two indexes, does each named tool exist
+- `validate.py` (all of the above): does this project (stem/ or a talk) pass its
+  checks; full or quick mode
+- `flatten_pnpm_list.py` (stdlib): every resolved JS package, one `name@version`
+  a line: diff before and after an upgrade
+- `compare_dist.py` (stdlib): are two deck builds the same, apart from Vue scope
+  ids and content hashes
+- `capture_outputs.sh` (playwright): every tool's output, saved, to compare
+  before and after a change to a tool
 
 ```bash
 uv run tools/validate.py                                # every check of the shared files
@@ -226,5 +246,5 @@ Put the thresholds in `lib.py`, never in the tool. Before you change a tool,
 save its output with `capture_outputs.sh`; after, run `check_python.py` and
 compare. Write the docstring for someone
 who has not read the archives: say what the tool measures, what the number means,
-what it cannot see, and what a bad result should make you do. Then add a row to the
-table above and a line to the relevant file in `../docs/`.
+what it cannot see, and what a bad result should make you do. Then add an item to the
+list above and a line to the relevant file in `../docs/`.
