@@ -329,7 +329,7 @@ with `--compare BEFORE AFTER`. Two runs of the same code are byte-identical.
 ## Mistakes that were made once
 
 - **Size the drawing from the canvas's bounding box**, not `clientWidth` (the
-  `slidev` skill, "Scaling"). A drawing sized from
+  `slidev-practices` skill, "Scaling"). A drawing sized from
   `clientWidth` was stretched 1.76× on the laptop and 2× on a projector.
 - **A still shows the art at the click of its page, not at click 0.** Each
   printed page is one click of a slide. Take the click from that page, never

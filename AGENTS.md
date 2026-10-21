@@ -85,8 +85,9 @@ Before you…
 - design how body text is placed, revealed, moved or styled on slides:
   `docs/text-display-deep-research-report.md` (background).
 - edit a deck file, a layout, a global layer, an addon or the headmatter, or
-  export, print or build a deck: the `slidev` skill, Slidev's own silent traps
-  ([agent-house](https://github.com/martincmartin/agent-house/blob/main/user/skills/slidev/SKILL.md)).
+  export, print or build a deck: the `slidev-practices` skill, Slidev's own
+  silent traps
+  ([agent-house](https://github.com/martincmartin/agent-house/blob/main/user/skills/slidev-practices/SKILL.md)).
 - work in a talk (slides, its art, its code): `<talk>/AGENTS.md`, the talk's
   own index into `<talk>/docs/`.
 
@@ -108,9 +109,9 @@ uv run <script.py>    # run a script in the venv of the project that holds it
 
 Never create a `package-lock.json` or a `requirements.txt`.
 
-**A new talk needs its own `pnpm-workspace.yaml`,** or pnpm installs nothing
-for it, with no error (the `slidev` skill, "pnpm"). Follow `docs/talks.md`,
-"Start a new talk".
+**A new talk needs its own `pnpm-workspace.yaml`,** or pnpm installs nothing for
+it, with no error (the `slidev-practices` skill, "pnpm"). Follow
+`docs/talks.md`, "Start a new talk".
 
 **A new deck file must get the Slidev parser in `.prettierrc`,** or Prettier
 corrupts its frontmatter with no error. See `docs/talks.md`, "Add a deck file".

@@ -1669,11 +1669,11 @@ The swing never damps, on purpose.
 
 - **The component runs the clock, not the SVG.** A self-playing `<img>` cannot
   start on a click or play backwards on a click back.
-- **Not an oversight: one board in the watch's layer, not one on each slide.**
-  A copy on each slide cannot move between slides (the `slidev` skill, "Clicks,
-  slides and going back"). The Balance Wheel slide
-  had its own copy, and its rest shape showed at once and then faded, going
-  back from the Escapement slide
+- **Not an oversight: one board in the watch's layer, not one on each slide.** A
+  copy on each slide cannot move between slides (the `slidev-practices` skill,
+  "Clicks, slides and going back"). The Balance Wheel slide had its own copy,
+  and its rest shape showed at once and then faded, going back from the
+  Escapement slide
   ([`2026-10-04-backward-navigation`](../tasks/2026-10-04-backward-navigation/PLAN.md)).
 - **The curl waits for the bottom of the swing**, where the board is still, so
   it has no jump in position or speed (up to one period, 1 s, after the click).

@@ -61,7 +61,7 @@ packages in `themes/house/styles/fonts.css`, and `pnpm build` copies the font
 files into `dist/`. The deck makes no outside requests, so it needs no network
 at the venue. `fonts.css` imports only the weights the talks use. **If you use a
 new weight, add its import to the theme in the same change:** a missing weight
-gives no error (the `slidev` skill, "Fonts").
+gives no error (the `slidev-practices` skill, "Fonts").
 
 ## Section slides
 
@@ -142,13 +142,14 @@ line to the speaker notes too.
 
 **Dimming is CSS in the slide, not a prop.** While a card is being discussed,
 the cards before it dim. When the takeaway appears, they come back. One rule in
-the slide's `<style>` uses `v-click`'s classes (the `slidev` skill, "Clicks,
-slides and going back"): it dims each `slidev-vclick-prior` card while
+the slide's `<style>` uses `v-click`'s classes (the `slidev-practices` skill,
+"Clicks, slides and going back"): it dims each `slidev-vclick-prior` card while
 `.tk-grid` has a `slidev-vclick-current` card. The takeaway is outside
-`.tk-grid`, so on its click no card in the grid is current and nothing is dimmed.
+`.tk-grid`, so on its click no card in the grid is current and nothing is
+dimmed.
 
 **Do not bind `:class` on the card's root element:** it removes the `v-click`
-classes, and the dim rule stops working (the `slidev` skill).
+classes, and the dim rule stops working (the `slidev-practices` skill).
 
 ## Text fades
 

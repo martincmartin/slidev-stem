@@ -36,21 +36,21 @@ does not yet accept TypeScript 7).
 
 ## Start a new talk
 
-A new talk needs its own `pnpm-workspace.yaml` (the `slidev` skill, "pnpm",
-says why; `tools/talkcheck.py`, run by the talk's `validate.py`, fails without
-it). Copy
-these files from the newest talk: `pnpm-workspace.yaml`, `pyproject.toml`,
-`.python-version`, `.prettierignore`, `tsconfig.json`, `eslint.config.js`, and
-`package.json` with its `devEngines` and its `preinstall` script. Then run
-`pnpm install` and `uv sync` in the new talk's directory. A talk links the
-theme with `"slidev-theme-house": "link:../themes/house"`, and each palette
-with `"slidev-addon-palette-<name>": "link:../themes/palettes/<name>"`.
+A new talk needs its own `pnpm-workspace.yaml` (the `slidev-practices` skill,
+"pnpm", says why; `tools/talkcheck.py`, run by the talk's `validate.py`, fails
+without it). Copy these files from the newest talk: `pnpm-workspace.yaml`,
+`pyproject.toml`, `.python-version`, `.prettierignore`, `tsconfig.json`,
+`eslint.config.js`, and `package.json` with its `devEngines` and its
+`preinstall` script. Then run `pnpm install` and `uv sync` in the new talk's
+directory. A talk links the theme with `"slidev-theme-house":
+"link:../themes/house"`, and each palette with `"slidev-addon-palette-<name>":
+"link:../themes/palettes/<name>"`.
 
 ## Add a deck file
 
-`.prettierrc` sends Slidev decks to `prettier-plugin-slidev` (the
-`parser: "slidev"` override). All other Markdown goes to Prettier's normal
-Markdown parser, which breaks a slide's frontmatter with no error (the `slidev`
+`.prettierrc` sends Slidev decks to `prettier-plugin-slidev` (the `parser:
+"slidev"` override). All other Markdown goes to Prettier's normal Markdown
+parser, which breaks a slide's frontmatter with no error (the `slidev-practices`
 skill, "Prettier").
 
 The override globs are `slides.md`, `slides-*.md` and `**/pages/*.md`, in any
@@ -88,7 +88,7 @@ it, so a new one downloads no browser.
 A coding agent also needs the user-level instructions and skills from
 [agent-house](https://github.com/martincmartin/agent-house): run its
 `install` once on each machine. The `AGENTS.md` files here send the agent to
-its `slidev` skill before it edits a deck.
+its `slidev-practices` skill before it edits a deck.
 
 ### Cloud sessions
 

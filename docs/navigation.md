@@ -21,10 +21,10 @@ the one part that already followed these rules (the watch's stage).
 
 ## The rules
 
-**Follow the general rules for clicks and slides** in the `slidev` skill,
-"Clicks, slides and going back": the settled screen depends only on the slide
-and the click, a slide names targets and not moves, a visual on more than one
-slide is one element, and a step animates but a jump does not. In the watch
+**Follow the general rules for clicks and slides** in the `slidev-practices`
+skill, "Clicks, slides and going back": the settled screen depends only on the
+slide and the click, a slide names targets and not moves, a visual on more than
+one slide is one element, and a step animates but a jump does not. In the watch
 talk, the phase of a physical process (where the hands and the balance are) is
 the one thing that may differ on a settled screen.
 

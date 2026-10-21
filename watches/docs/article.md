@@ -37,10 +37,10 @@ small: reading on a phone is a goal for later, not a constraint now.
 ## Write the narration
 
 The narration is an HTML comment, `<!-- narration ... -->`, **before** the
-slide's speaker notes. So the narration shows neither in the presenter view
-nor on the slide (the `slidev` skill, "Speaker notes"). The notes stay as they
-are: the cues for the speaker. `watch/article.test.ts`
-fails if a slide's last comment is its narration.
+slide's speaker notes. So the narration shows neither in the presenter view nor
+on the slide (the `slidev-practices` skill, "Speaker notes"). The notes stay as
+they are: the cues for the speaker. `watch/article.test.ts` fails if a slide's
+last comment is its narration.
 
 The narration is Markdown, written for readers: no stage directions ("the
 camera zooms out"). `[click]` markers split it into parts, as in the notes.
