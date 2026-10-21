@@ -67,7 +67,7 @@ def test_links_and_anchors(tmp_path: Path) -> None:
 
 
 def test_indexes(tmp_path: Path) -> None:
-    write(tmp_path / "AGENTS.md", "| before you draw | `docs/art.md` |\n")
+    write(tmp_path / "AGENTS.md", "Before you…\n\n- draw: `docs/art.md`.\n")
     write(tmp_path / "docs/README.md", "- [art](art.md)\n- [theme](theme.md)\n")
     theme = write(tmp_path / "docs/theme.md", "# Theme\n")
     art = write(tmp_path / "docs/art.md", "# Art\n")

@@ -28,18 +28,11 @@ first; the rest of the evening is social.
 ## Given talks, retired talks and versions
 
 A talk is _in progress_ until you retire it. Giving a talk does not freeze it:
-tag it each time you give it, and the tag keeps the version that you gave. A
-talk that you have given can still change on `main`: its narration, its page
-and its slides can improve. When you stop changing a talk, retire it. Then it
-is _retired_, and you do not change it on `main`. Retiring a talk frees the
-rest of the repo: a breaking change to a house item does not have to keep a
-retired talk working.
+tag it each time you give it, and it can still change on `main`. When you stop
+changing a talk, retire it with a tag. Then it is _retired_, and you do not
+change it on `main`. The tag names, and the checks to run before you tag, are
+in `docs/talks.md`, "Tag, rebuild or retire a talk".
 
-- **Tag each talk that you give** with an annotated tag,
-  `given/<talk>/<YYYY-MM-DD>`, one for each date. **Retire a talk** with an
-  annotated tag, `retired/<talk>/<YYYY-MM-DD>`, on the last commit that changes
-  it. The steps and the checks to run first are in `docs/talks.md`, "Tag,
-  rebuild or retire a talk".
 - **Do not fix a retired talk.** `main` does not have to keep a retired talk
   working. If a change to shared code breaks a retired talk on `main`, do not
   fix the retired talk.
@@ -49,19 +42,11 @@ retired talk working.
   lockfiles and environments, and pins its own Node, pnpm and Python versions.
   An upgrade in one talk must not change the lockfile of another talk. The
   talks are not members of one pnpm or uv workspace. This is not an oversight:
-  a uv workspace has one resolution, and a pnpm workspace with
-  `shamefullyHoist` has one shared `node_modules`, so an upgrade for one talk
-  would reach the others.
-- **House items have one live copy.** The house items are the house theme and its palettes (`themes/`), `tools/`, `docs/` and `.prettierrc`. All talks use their
-  current version, and each talk's tag records the version
-  that talk was given with. Before you change a house item, find the talks in
-  progress that use it.
-- **Copy a house item for a breaking change that one talk must not get.**
-  Sometimes a talk in progress must not get a change, for example because it is
-  a week from its date. Then copy the item to a new directory with a version
-  number, for example `themes/house-2/`. Make the change in the copy, and point
-  only the other talk at it. When no talk in progress uses the old copy, delete
-  it. The tags keep it.
+  see `docs/talks.md`, "Why each talk is its own project".
+- **House items have one live copy.** The house items are the house theme and
+  its palettes (`themes/`), `tools/`, `docs/` and `.prettierrc`. All talks use
+  their current version. Before you change a house item, read
+  `docs/talks.md`, "Change a house item".
 - **Give each tool explicit paths.** Tell a tool in `tools/` which files or
   directories to check. Do not check "every talk": retired talks are not
   checked again.
@@ -73,31 +58,36 @@ How to work in this setup, including how to upgrade a talk, is in
 ## Browser support
 
 Every talk must work offline in Chrome, Firefox, and Safari, in regular and
-private or incognito windows. Keep the browser's default privacy protections enabled.
-When a change needs browser checks, check all three engines.
-Use Playwright Chromium, Firefox, and WebKit in fresh non-persistent contexts.
-WebKit is the automated Safari engine check; it is not Safari itself.
-For a Safari-specific failure or a change to privacy-sensitive APIs, also check
-Safari directly in regular and private windows when it is available.
-The workflow and test limits are in [docs/talks.md](docs/talks.md).
+private or incognito windows. Keep the browser's default privacy protections
+enabled. When a change needs browser checks, check all three engines. How to
+check, and the limits of the checks, are in `docs/talks.md`, "Browser support".
 
 ## House docs: read before you act
 
 Read the doc before the action, not after. They are the source of truth; code
 comments point to them.
 
-| Before you…                                                                                              | Read                                                                                                                                              |
-| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| choose, compare, measure or add a colour, make a palette, change the house theme, or preview a palette   | `docs/theme.md`                                                                                                                                   |
-| draw or change any illustration (SVG), or a callout's leader                                             | `docs/illustrations.md`                                                                                                                           |
-| change the WebGL renderer, the watch, or its frontmatter                                                 | `docs/webgl.md`                                                                                                                                   |
-| add a click, a slide transition, or anything that moves between clicks or slides                         | `docs/navigation.md`                                                                                                                              |
-| decide if something is big, thick or dark enough                                                         | `docs/legibility.md`                                                                                                                              |
-| start, upgrade, validate, tag, retire or build a talk, or change browser support                         | `docs/talks.md`                                                                                                                                   |
-| export a talk for readers, write its narration, or write speaker notes                                   | `docs/export.md`                                                                                                                                  |
-| design how body text is placed, revealed, moved or styled on slides                                      | `docs/text-display-deep-research-report.md` (background)                                                                                          |
-| edit a deck file, a layout, a global layer, an addon or the headmatter, or export, print or build a deck | the `slidev` skill: Slidev's own silent traps ([agent-house](https://github.com/martincmartin/agent-house/blob/main/user/skills/slidev/SKILL.md)) |
-| work in a talk (slides, its art, its code)                                                               | `<talk>/AGENTS.md`: the talk's own index into `<talk>/docs/`                                                                                      |
+Before you…
+
+- choose, compare, measure or add a colour, make a palette, change the house
+  theme, or preview a palette: `docs/theme.md`.
+- draw or change any illustration (SVG), or a callout's leader:
+  `docs/illustrations.md`.
+- change the WebGL renderer, the watch, or its frontmatter: `docs/webgl.md`.
+- add a click, a slide transition, or anything that moves between clicks or
+  slides: `docs/navigation.md`.
+- decide if something is big, thick or dark enough: `docs/legibility.md`.
+- start, upgrade, validate, tag, retire or build a talk, add a deck file,
+  change a house item, or change browser support: `docs/talks.md`.
+- export a talk for readers, write its narration, or write speaker notes:
+  `docs/export.md`.
+- design how body text is placed, revealed, moved or styled on slides:
+  `docs/text-display-deep-research-report.md` (background).
+- edit a deck file, a layout, a global layer, an addon or the headmatter, or
+  export, print or build a deck: the `slidev` skill, Slidev's own silent traps
+  ([agent-house](https://github.com/martincmartin/agent-house/blob/main/user/skills/slidev/SKILL.md)).
+- work in a talk (slides, its art, its code): `<talk>/AGENTS.md`, the talk's
+  own index into `<talk>/docs/`.
 
 ## Working in this repo
 
@@ -120,6 +110,9 @@ Never create a `package-lock.json` or a `requirements.txt`.
 **A new talk needs its own `pnpm-workspace.yaml`,** or pnpm installs nothing
 for it, with no error (the `slidev` skill, "pnpm"). Follow `docs/talks.md`,
 "Start a new talk".
+
+**A new deck file must get the Slidev parser in `.prettierrc`,** or Prettier
+corrupts its frontmatter with no error. See `docs/talks.md`, "Add a deck file".
 
 The house style for every talk (palette, illustrations, legibility) is in
 `docs/`, and the checks for it are in `tools/`. Run a check at the root, with
@@ -167,17 +160,3 @@ an oversight. A `[project.scripts]` entry needs the root to be an installable
 package, and each talk to depend on it. Then every talk's `uv.lock` records the
 house's dependency groups, and each house upgrade would force a re-lock of
 every talk. See `tasks/2026-09-28-validate/PLAN.md`.
-
-### `.prettierrc` must list every deck file
-
-`.prettierrc` sends Slidev decks to `prettier-plugin-slidev` (the
-`parser: "slidev"` override). All other Markdown goes to Prettier's normal
-Markdown parser, which breaks a slide's frontmatter with no error (the `slidev`
-skill, "Prettier").
-
-The override globs are `slides.md`, `slides-*.md` and `**/pages/*.md`, in any
-talk. If a new deck file does not match them, add its name to the `files` array
-in `.prettierrc` in the same change. If you format a deck without that entry,
-Prettier corrupts it. `tools/talkcheck.py` fails if a Markdown file of a talk
-that starts with frontmatter (other than the docs, the tasks and the READMEs)
-does not get the Slidev parser.

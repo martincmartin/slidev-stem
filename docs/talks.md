@@ -1,9 +1,10 @@
 # Talks as projects: versions, upgrades and checks
 
 **Covers:** each talk as its own project: the layout, setting up a clone, why
-each talk keeps its own versions, and how to upgrade a talk's packages.
+each talk keeps its own versions, how to change a house item, and how to
+upgrade a talk's packages.
 **Read before** you set up a clone, upgrade, validate, tag, retire or build a
-talk, or start a new talk.
+talk, start a new talk, add a deck file, or change a house item.
 **Tasks:**
 [`tasks/2026-09-28-per-talk-dependencies/`](../tasks/2026-09-28-per-talk-dependencies/PLAN.md),
 [`tasks/2026-09-28-validate/`](../tasks/2026-09-28-validate/PLAN.md),
@@ -44,6 +45,20 @@ these files from the newest talk: `pnpm-workspace.yaml`, `pyproject.toml`,
 `pnpm install` and `uv sync` in the new talk's directory. A talk links the
 theme with `"slidev-theme-house": "link:../themes/house"`, and each palette
 with `"slidev-addon-palette-<name>": "link:../themes/palettes/<name>"`.
+
+## Add a deck file
+
+`.prettierrc` sends Slidev decks to `prettier-plugin-slidev` (the
+`parser: "slidev"` override). All other Markdown goes to Prettier's normal
+Markdown parser, which breaks a slide's frontmatter with no error (the `slidev`
+skill, "Prettier").
+
+The override globs are `slides.md`, `slides-*.md` and `**/pages/*.md`, in any
+talk. If a new deck file does not match them, add its name to the `files` array
+in `.prettierrc` in the same change. If you format a deck without that entry,
+Prettier corrupts it. `tools/talkcheck.py` fails if a Markdown file of a talk
+that starts with frontmatter (other than the docs, the tasks and the READMEs)
+does not get the Slidev parser.
 
 ## Set up a clone
 
@@ -117,6 +132,16 @@ The house items (the theme, `tools/`, `docs/`, `.prettierrc`) have one live
 copy, which all talks use. You make every change to them yourself, so you can
 find the talks in progress that use an item before you change it. The tag
 records the version that each given talk used.
+
+## Change a house item
+
+Before you change a house item, find the talks in progress that use it.
+
+Sometimes a talk in progress must not get a breaking change, for example
+because it is a week from its date. Then copy the item to a new directory with
+a version number, for example `themes/house-2/`. Make the change in the copy,
+and point only the other talk at it. When no talk in progress uses the old
+copy, delete it. The tags keep it.
 
 ## Tag, rebuild or retire a talk
 

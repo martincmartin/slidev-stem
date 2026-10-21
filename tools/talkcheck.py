@@ -3,8 +3,8 @@
 
     uv run tools/talkcheck.py watches
 
-Two mistakes give no error (AGENTS.md, "Working in this repo"), so this tool
-looks for them:
+Two mistakes give no error (`docs/talks.md`, "Start a new talk" and "Add a
+deck file"), so this tool looks for them:
 
   * a talk with no `pnpm-workspace.yaml`: pnpm then uses the root's workspace,
     installs nothing for the talk, and says nothing;
