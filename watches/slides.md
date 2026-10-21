@@ -113,25 +113,24 @@ history: "c. 1675"
 
 # Hairspring
 
-<!--
-  Should I mention *why* the hairspring?  It's more accurate than previous methods, plus easier to transport and use at sea than a pendulum.
--->
 
 <!-- narration
-Start with the part that keeps time: the _hairspring_. It is a flat spiral of
-steel ribbon, finer than a hair. Its outer end is held still, and its inner
-end is free to turn. Twist the inner end and let go, and the spiral winds and
-unwinds, back and forth, at a steady beat. In this drawing it swings once
-every two seconds, and the rest of the watch follows that beat.
+
+Start with the part that keeps time.  In 1675 Christiaan Huygens, a Dutch
+scientist, invented the _hairspring_. It is a flat spiral of steel ribbon, finer
+than a hair. Its outer end is held still, and its inner end is free to
+turn. Twist the inner end and let go, and the spiral winds and unwinds, back and
+forth, at a steady rate. In this drawing it swings once every two seconds, and
+the rest of the watch follows that beat.
 
 [click] Why does a spring swing? Think of a diving board. Bend it down, and
 it pushes back: an _elastic restoring force_. Let go, and it does not stop at
 straight. It overshoots, bends the other way, and comes back again: it
-_oscillates_. With no friction, it would bounce for ever.
+_oscillates_. With no friction, it would oscillate for ever.
 
 [click] A hairspring is a diving board rolled up. The board's rest shape is a
 straight line; the hairspring's is a spiral. Take hold of the slider under
-the next picture, and drag it slowly to the right.
+the next picture, and drag it to the right.
 
 [figure 2: The diving board curls up into the hairspring, at rest. A slider
 curls it.]
@@ -148,23 +147,12 @@ move is the whole idea of the hairspring.
 -->
 
 <!--
-The _hairspring_ beats every 2 seconds, controlling the speed of the rest of the watch.
+- In 1675 Christiaan Huygens, a Dutch scientist, invented
 
-When bent, a diving board pushes back with _elastic restoring force_.
+- Keeps time
 
-It overshoots, then overshoots again, _oscillating_ back and forth.
+- Why swing?
 
-The diving board's rest shape is a straight line. The hairspring's is a curve.
-
-If you wind it tighter, it unwinds back to its rest shape, then overshoots, then winds up back to its rest shape, oscillating back and forth. Just like the diving board.
-
-The hairspring and the balance wheel: the part of a watch that keeps time.
-
-[click] The hairspring fades. A diving board takes its place: it bends down, and when it lets go it bounces up and down, once a second. The dashed outline is its rest shape, and the words on the right say it: bend it away from straight, it pushes back. The restoring force brings it back toward that shape, but it overshoots. With no friction it would bounce at the same height for ever. This is why a hairspring swings: it is a springboard.
-
-[click] The pool and the stand fade. The rest outline becomes a single dashed line. The board and that line curl into the hairspring, at rest in its middle position. As soon as it is curled, the board fades out and the real hairspring fades in, at rest, with the same shape. Then the words are edited: "Bend" becomes "Wind", and "straight" becomes "rest". Wind it away from rest, it pushes back.
-
-[click] The hairspring starts to swing again, as the board did. Its dashed rest shape stays still.
 -->
 
 ---
