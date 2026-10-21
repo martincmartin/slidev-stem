@@ -15,8 +15,10 @@
 // page pauses every one. A still figure has no pause button.
 //
 // THE CROP. A figure of a picture is cropped to the picture's box (the
-// talk's), widened to hold its labels: the elements with `in-figure` that
-// show at its steps, measured on the page once they are drawn.
+// talk's), widened to hold the labels: the elements with `in-figure` that
+// show at its steps, measured on the page once they are drawn. The figure
+// emits its own labels' box, and the page gives back `labels`, the box over
+// the figures that share its crop (views/ArticlePage.vue).
 import { createFixedClicks } from "@slidev/client/composables/useClicks.ts";
 import { useFixedNav } from "@slidev/client/composables/useNav.ts";
 import { slideHeight, slideWidth } from "@slidev/client/env.ts";
@@ -50,6 +52,13 @@ const props = defineProps<{
   height: number;
   /** "Pause all". */
   pausedByPage: boolean;
+  /** The labels' box, in slide px, over the figures that share this one's
+   *  crop, or `null`: none measured yet. */
+  labels: Box | null;
+}>();
+const emit = defineEmits<{
+  /** This figure's own labels' box, in slide px, once measured. */
+  labels: [box: Box | null];
 }>();
 
 /** The largest scale of a figure: its lines and text grow past the
@@ -70,8 +79,6 @@ const still = ref(false);
 provide(FIGURE, { clicks, near, paused, busyUntil, controls, still });
 const pausable = computed(() => props.figure.play || !still.value);
 
-/** The labels' box, in slide px, once measured. */
-const labels = shallowRef<Box | null>(null);
 /** px: room around a label. */
 const LABEL_MARGIN = 8;
 
@@ -93,7 +100,7 @@ const crop = computed<Box>(() => {
     bottom: slideHeight.value,
   };
   if (!props.box) return whole;
-  const box = labels.value ? union(props.box, labels.value) : props.box;
+  const box = props.labels ? union(props.box, props.labels) : props.box;
   return {
     left: Math.max(whole.left, box.left),
     top: Math.max(whole.top, box.top),
@@ -159,7 +166,7 @@ function measureLabels(): void {
       });
     }
   }
-  labels.value = box;
+  emit("labels", box);
 }
 
 /** A playing figure's next step: after the change at its click ends. */

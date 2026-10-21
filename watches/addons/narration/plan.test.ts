@@ -2,7 +2,7 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { pagePlan, slug } from "./plan.ts";
+import { cropGroups, pagePlan, slug } from "./plan.ts";
 import type {
   FigureBlock,
   PageBlock,
@@ -237,4 +237,38 @@ test("each figure has its own id, from its slide's title and its click", () => {
 test("within a slide, a default figure of the same picture stays", () => {
   const page = pagePlan([slide({ defaults: [0, 4], keyOf: () => "the same" })]);
   assert.deepEqual(outline(page).slice(1), ["figure 0", "figure 4"]);
+});
+
+test("the figures of a slide that share a camera share a crop", () => {
+  const figure = (slide: number, steps: number[]): FigureBlock => ({
+    kind: "figure",
+    id: `${String(slide)}-${steps.join("-")}`,
+    slide,
+    steps,
+    play: false,
+    alt: null,
+    captions: steps.map(() => null),
+  });
+  // slide 1: the camera zooms out at click 1, and back in at click 2; the
+  // figure of clicks 2 to 3 joins the figure of click 4 by click 3's camera
+  const frames = new Map([
+    [0, "near"],
+    [1, "far"],
+    [2, "near"],
+    [3, "close"],
+    [4, "close"],
+  ]);
+  const zero = figure(1, [0]);
+  const one = figure(1, [1]);
+  const twoToThree = figure(1, [2, 3]);
+  const four = figure(1, [4]);
+  // slide 2 has the same camera, but its figure is its own
+  const other = figure(2, [0]);
+  const groups = cropGroups([zero, one, twoToThree, four, other], (each) =>
+    each.steps.flatMap((clicks) => frames.get(clicks) ?? []),
+  );
+  assert.deepEqual(groups.get(zero), [zero, twoToThree, four]);
+  assert.deepEqual(groups.get(four), [zero, twoToThree, four]);
+  assert.deepEqual(groups.get(one), [one]);
+  assert.deepEqual(groups.get(other), [other]);
 });

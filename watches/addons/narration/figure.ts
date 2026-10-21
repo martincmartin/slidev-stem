@@ -76,6 +76,10 @@ export interface ArticleHooks {
    *  it, and the slide's text is hidden. `null`: the figure is the whole
    *  slide, with its text. */
   pictureBox(frontmatter: Record<string, unknown>, clicks: number): Box | null;
+  /** A key for the camera at a click: the figures of one slide whose clicks
+   *  share a key get one crop, so that the picture keeps its place and size
+   *  from figure to figure. `null`: the figure's crop is its own. */
+  frameKey(frontmatter: Record<string, unknown>, clicks: number): string | null;
 }
 
 export const ARTICLE_HOOKS: InjectionKey<ArticleHooks> =
@@ -87,4 +91,5 @@ export const DEFAULT_HOOKS: ArticleHooks = {
   defaultFigures: (_frontmatter, total) => [total],
   pictureKey: () => null,
   pictureBox: () => null,
+  frameKey: () => null,
 };

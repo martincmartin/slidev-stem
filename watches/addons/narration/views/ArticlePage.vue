@@ -13,12 +13,19 @@ import { CLICKS_MAX } from "@slidev/client/constants.ts";
 import { configs } from "@slidev/client/env.ts";
 import type { SlideRoute } from "@slidev/client";
 import { useWindowSize } from "@vueuse/core";
-import { computed, inject, onBeforeUnmount, onMounted, ref } from "vue";
+import {
+  computed,
+  inject,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+} from "vue";
 import ArticleFigure from "../components/ArticleFigure.vue";
 import { ARTICLE_HOOKS, DEFAULT_HOOKS } from "../figure.ts";
 import type { Box } from "../figure.ts";
 import { historyOf } from "../history.ts";
-import { pagePlan } from "../plan.ts";
+import { cropGroups, pagePlan } from "../plan.ts";
 import type {
   FigureBlock,
   PageBlock,
@@ -101,23 +108,73 @@ function stepsOf(figure: FigureBlock): number[] {
   );
 }
 
-/** The crop of a figure: the picture's box over all its steps. */
-function boxOf(figure: FigureBlock): Box | null {
+function union(first: Box | null, second: Box): Box {
+  if (!first) return second;
+  return {
+    left: Math.min(first.left, second.left),
+    top: Math.min(first.top, second.top),
+    right: Math.max(first.right, second.right),
+    bottom: Math.max(first.bottom, second.bottom),
+  };
+}
+
+/** The picture's box over all of a figure's steps, or `null`: the whole
+ *  slide. */
+function ownBoxOf(figure: FigureBlock): Box | null {
   const frontmatter = frontmatterOf(routeOfFigure(figure));
   let box: Box | null = null;
   for (const clicks of figure.steps) {
     const each = hooks.pictureBox(frontmatter, clicks);
     if (!each) return null;
-    box = box
-      ? {
-          left: Math.min(box.left, each.left),
-          top: Math.min(box.top, each.top),
-          right: Math.max(box.right, each.right),
-          bottom: Math.max(box.bottom, each.bottom),
-        }
-      : each;
+    box = union(box, each);
   }
   return box;
+}
+
+/** The figures that share each figure's crop (`cropGroups`). */
+const cropGroupOf = computed(() =>
+  cropGroups(
+    page.value.flatMap((block) => (block.kind === "figure" ? [block] : [])),
+    (figure) => {
+      const frontmatter = frontmatterOf(routeOfFigure(figure));
+      return figure.steps.flatMap(
+        (clicks) => hooks.frameKey(frontmatter, clicks) ?? [],
+      );
+    },
+  ),
+);
+
+function groupOf(figure: FigureBlock): readonly FigureBlock[] {
+  return cropGroupOf.value.get(figure) ?? [figure];
+}
+
+/** The crop of a figure: the picture's box over its crop group's steps. */
+function boxOf(figure: FigureBlock): Box | null {
+  let box: Box | null = null;
+  for (const each of groupOf(figure)) {
+    const own = ownBoxOf(each);
+    if (!own) return null;
+    box = union(box, own);
+  }
+  return box;
+}
+
+/** The labels' box of each figure, in slide px, once it has measured them. */
+const labelsOf = reactive(new Map<string, Box>());
+
+/** The labels' box over a figure's crop group. */
+function labelsBoxOf(figure: FigureBlock): Box | null {
+  let box: Box | null = null;
+  for (const each of groupOf(figure)) {
+    const labels = labelsOf.get(each.id);
+    if (labels) box = union(box, labels);
+  }
+  return box;
+}
+
+function setLabels(figure: FigureBlock, box: Box | null): void {
+  if (box) labelsOf.set(figure.id, box);
+  else labelsOf.delete(figure.id);
 }
 
 const windowSize = useWindowSize();
@@ -223,9 +280,11 @@ onBeforeUnmount(() => {
           :route="routeOfFigure(block)"
           :steps="stepsOf(block)"
           :box="boxOf(block)"
+          :labels="labelsBoxOf(block)"
           :width="figureWidth"
           :height="figureHeight"
           :paused-by-page="pausedAll"
+          @labels="(box: Box | null) => setLabels(block, box)"
         />
       </template>
     </article>

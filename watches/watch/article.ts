@@ -1,8 +1,8 @@
 // What the article (addons/narration) needs from the watch talk: which clicks
-// of a slide get a figure by default, a key for each click's picture, where
-// the picture is on the slide (the figure is cropped to it), the pieces that
-// a figure marks, and a figure's slider. docs/article.md has the rules and
-// the reasons.
+// of a slide get a figure by default, a key for each click's picture and
+// camera, where the picture is on the slide (the figure is cropped to it),
+// the pieces that a figure marks, and a figure's slider. docs/article.md has
+// the rules and the reasons.
 //
 // THE DEFAULT: THE END OF EACH BUILD-UP. A slide's clicks make runs. A run
 // ends where the next click moves the camera, makes a piece go, or changes
@@ -223,6 +223,18 @@ export function defaultFigures(
     }
   }
   return figures;
+}
+
+/** A key for the camera at `clicks`, as the figure shows it: the figures of
+ *  one slide with the same key get one crop. `null` for a slide with no
+ *  watch and no board. */
+export function frameKey(
+  frontmatter: Record<string, unknown>,
+  clicks: number,
+): string | null {
+  const { watch: state, board } = pictureAt(frontmatter, clicks, true);
+  if (!state && !board) return null;
+  return frameOf(state);
 }
 
 /** A key for the picture at `clicks`: two clicks, of any slides, with the

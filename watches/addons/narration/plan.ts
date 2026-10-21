@@ -250,3 +250,44 @@ export function pagePlan(slides: readonly SlideInput[]): PageBlock[] {
   }
   return page;
 }
+
+/** The figures that share each figure's crop, the figure too: the figures
+ *  of one slide, joined by a camera that they share. `framesOf` gives the
+ *  keys of a figure's cameras, one for each step (none: a crop of its own).
+ *  So the picture keeps its place and size from one figure to the next, as
+ *  on the slide, and an earlier figure keeps room for what comes later. */
+export function cropGroups(
+  figures: readonly FigureBlock[],
+  framesOf: (figure: FigureBlock) => readonly string[],
+): Map<FigureBlock, readonly FigureBlock[]> {
+  let groups: {
+    slide: number;
+    frames: Set<string>;
+    figures: FigureBlock[];
+  }[] = [];
+  for (const figure of figures) {
+    const frames = new Set(framesOf(figure));
+    const joined = groups.filter(
+      (group) =>
+        group.slide === figure.slide &&
+        [...frames].some((frame) => group.frames.has(frame)),
+    );
+    groups = groups.filter((group) => !joined.includes(group));
+    groups.push({
+      slide: figure.slide,
+      frames: new Set([
+        ...frames,
+        ...joined.flatMap((group) => [...group.frames]),
+      ]),
+      figures: [...joined.flatMap((group) => group.figures), figure],
+    });
+  }
+  return new Map(
+    groups.flatMap((group) =>
+      group.figures.map((figure): [FigureBlock, readonly FigureBlock[]] => [
+        figure,
+        group.figures,
+      ]),
+    ),
+  );
+}

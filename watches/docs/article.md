@@ -127,6 +127,14 @@ hidden. A label is measured by what it draws: a callout's leader is an
 the `<svg>`. The crop is 1.65 times larger on a phone than the whole slide
 would be.
 
+**The figures of one slide that share a camera share a crop** (`frameKey`
+in `watch/article.ts`, `cropGroups` in `addons/narration/plan.ts`): the box
+over all their pictures and all their labels. So a piece keeps its place
+and size from one figure to the next, as on the slide, and the reader sees
+that it is the same piece with new ones beside it. An earlier figure keeps
+empty room for what comes later. A figure after the camera moves (the Gear
+Train slide's big wheel) gets a crop of its own.
+
 **Where the slide's top or bottom cuts the watch, the crop centres it.** A
 watch that the slide's bottom cuts sits below the title's space, which the
 figure does not show. So the crop cuts its other side too, until the pieces
@@ -220,7 +228,7 @@ again. The flash after each move stays: the reader is watching the figure.
 | `addons/narration/` (a Slidev addon; the headmatter's `addons`) | the narration's parser, the preparser, the page model, the `/article` route and its line in `pnpm dev`, the page and its figures, the prerender. It knows nothing of the watch |
 | `addons/narration/figure.ts`                                    | what the addon and the talk say to each other: `FIGURE` (a figure's click, pause, controls, stillness) and `ARTICLE_HOOKS` (the talk's rules)                                  |
 | `setup/main.ts`                                                 | gives the article the talk's rules (`ARTICLE_HOOKS`)                                                                                                                           |
-| `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, marks, the `article` settings                                                                                      |
+| `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, the camera's key, marks, the `article` settings                                                                    |
 | `global-bottom.vue`, `components/FigureLayer.vue`               | in a figure, the layer is the figure's: the watch at the figure's click, the board, "tick" and "tock", the time scale                                                          |
 | `webgl/shared.ts`, `watch/instance.ts`                          | one renderer, one WebGL context, for all the figures (`sharedStage`)                                                                                                           |
 
