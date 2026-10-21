@@ -122,7 +122,7 @@ test("the article settings are checked", () => {
   );
   assert.throws(
     () => figureSettings({ article: { 1: { slider: "spin" } } }, 1),
-    /curl or wind/,
+    /curl or twist or wind/,
   );
 });
 

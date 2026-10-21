@@ -98,11 +98,14 @@ watchClicks:
 board: 1
 boardCurl: 2
 clicks: 3
-# In the article, the figure at click 3 has a slider that curls the board
-# into the hairspring (docs/article.md)
+# In the article, the figure at click 2 has a slider that curls the board
+# into the hairspring at rest, and the figure at click 3 one that winds the
+# hairspring and lets it go (docs/article.md)
 article:
-  3:
+  2:
     slider: curl
+  3:
+    slider: twist
 # the history line, in a corner of the slide and under the heading in the
 # article; the speaker does not say it (docs/slide-patterns.md)
 history: "c. 1675"
@@ -128,15 +131,20 @@ _oscillates_. With no friction, it would bounce for ever.
 
 [click] A hairspring is a diving board rolled up. The board's rest shape is a
 straight line; the hairspring's is a spiral. Take hold of the slider under
-the next picture, and drag it slowly to the right. This one move is the
-whole idea of the hairspring.
+the next picture, and drag it slowly to the right.
 
-[figure 3: The diving board curls up into the hairspring. A slider curls
-it.]
+[figure 2: The diving board curls up into the hairspring, at rest. A slider
+curls it.]
 
-"Bend" becomes "wind", and "straight" becomes "rest". Wind the spiral away
-from its rest shape, and it pushes back. Let it go, and it overshoots and
-swings, just as the board did.
+[click] "Bend" becomes "wind", and "straight" becomes "rest". Now give the
+hairspring a twist: drag the slider to wind the spiral away from its rest
+shape, and let go.
+
+[figure 3: The hairspring at rest. A slider winds it; let go, and it swings
+back and forth.]
+
+It pushes back. It overshoots and swings, just as the board did. This one
+move is the whole idea of the hairspring.
 -->
 
 <!--

@@ -158,11 +158,11 @@ article:
     mark: false # no mark
 ```
 
-| Key      | Values                                                                                                                                                                          |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `mark`   | a list of pieces, or `false`                                                                                                                                                    |
-| `slider` | `curl`: the diving board's curl and the edit after it (the Hairspring slide); `wind`: the Mainspring slide's story, from the bare spring through the key's turns to the release |
-| `view`   | the figure's camera, in place of the slide's, with the values of `watchView`: a named view, or the pieces that a fitted view fits                                               |
+| Key      | Values                                                                                                                                                                                                                                                                                                |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mark`   | a list of pieces, or `false`                                                                                                                                                                                                                                                                          |
+| `slider` | `curl`: the diving board's curl, to the hairspring at rest (the Hairspring slide); `twist`: the hairspring's wind from rest, and a swing from there when the reader lets go (the Hairspring slide); `wind`: the Mainspring slide's story, from the bare spring through the key's turns to the release |
+| `view`   | the figure's camera, in place of the slide's, with the values of `watchView`: a named view, or the pieces that a fitted view fits                                                                                                                                                                     |
 
 **Use `view` when the slide cuts the picture.** The crop stops at the
 slide's edge, so a watch that the slide cuts shows cut and off centre in the
@@ -178,7 +178,18 @@ A story animation that the talk plays at a click is under the reader's
 control in a figure. **A slider scrubs it**, as on Bartosz's pages: the
 board holds the SVG's time that the slider gives (`DivingBoard.vue`'s
 `scrub`), and the mainspring's clock holds a time on its line
-(`MainspringClock.hold`, `WatchModel.scrub`). A slider is a long track with
+(`MainspringClock.hold`, `WatchModel.scrub`).
+
+**The twist is a slider that the reader lets go.** The Hairspring slide's
+curl and its edit are one click in the talk, but two figures in the
+article: the `curl` slider curls the board into the hairspring at rest, and
+the next figure shows the edited sentence and gives the hairspring a twist.
+The `twist` slider holds the balance at an angle, up to its amplitude
+(`WatchModel.twist`). When the reader lets go of the thumb, the hairspring
+swings from that angle, with no friction, and the thumb follows it back to
+rest, in a quarter of its period: the reader can catch it and wind it
+again. A slider's `release`
+(`addons/narration/figure.ts`) tells the talk that the reader let go. A slider is a long track with
 a large thumb in the accent, with what it does written above it. Not an
 oversight: a story is not looped, as a GIF would be. A loop pulls the eye
 from the text, as the old `<blink>` did. The narration invites the reader to

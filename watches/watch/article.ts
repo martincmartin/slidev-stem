@@ -31,9 +31,10 @@ export interface SlideBox {
   readonly bottom: number;
 }
 
-/** What a figure can scrub with a slider: the diving board's curl, or the
- *  mainspring's winding and release. */
-export const SLIDERS = ["curl", "wind"] as const;
+/** What a figure can scrub with a slider: the diving board's curl, the
+ *  hairspring's twist (let go, it swings), or the mainspring's winding and
+ *  release. */
+export const SLIDERS = ["curl", "twist", "wind"] as const;
 export type SliderKind = (typeof SLIDERS)[number];
 
 /** A figure's settings at a click, from the slide's `article` block. */

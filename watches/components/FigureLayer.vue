@@ -14,7 +14,11 @@
 // words.
 //
 // THE SLIDERS (a slide's `article` settings). `curl` holds the diving board
-// at a point of its curl and the edit after it. `wind` holds the Mainspring
+// at a point of its curl. `twist` winds the hairspring from rest, by up to
+// the balance's amplitude, and holds it; when the reader lets go, it swings
+// from there, and the thumb follows it back to rest, in a quarter of the
+// balance's period, ready to catch it again.
+// `wind` holds the Mainspring
 // slide's story at a point from the bare spring, through the key's turns, to
 // the release: the stud shows until the spring is let go.
 import { injectionSlidevContext } from "@slidev/client/constants.ts";
@@ -45,7 +49,7 @@ import { jewelStrikes } from "../watch/callouts.ts";
 import { sharedStage, WATCH } from "../watch/instance.ts";
 import { placeFor } from "../watch/mainspring.ts";
 import type { MainspringStage } from "../watch/mainspring.ts";
-import { WatchModel } from "../watch/model.ts";
+import { twistAngle, WatchModel } from "../watch/model.ts";
 import type { WatchModelState } from "../watch/model.ts";
 import { moveOf } from "../watch/navigation.ts";
 import { slidePalette } from "../watch/palette.ts";
@@ -72,10 +76,51 @@ const settings = computed(() =>
 );
 const palette = computed(() => slidePalette(frontmatter.value["class"]));
 
-/** The sliders' values, 0 to 1. The board starts ready to curl; the spring
- *  starts bare. */
+/** The sliders' values, 0 to 1. The board starts ready to curl; the
+ *  hairspring at rest; the mainspring bare. */
 const curl = ref(0);
+const twist = ref(0);
 const wind = ref(0);
+
+/** Degrees: the balance's angle at the `twist` slider's value. Negative: the
+ *  coils draw in (`springPoints`). */
+function twistDegrees(value: number): number {
+  return -value * WATCH.design.timing.amplitude;
+}
+
+/** The thumb's way back to rest after a let-go: the value that it last
+ *  set, and its frame. `null` while the reader holds it or it is at rest. */
+let thumbReturn: { value: number; frame: number } | null = null;
+
+function stopThumbReturn(): void {
+  if (thumbReturn) cancelAnimationFrame(thumbReturn.frame);
+  thumbReturn = null;
+}
+
+/** The reader lets go of the `twist` slider: the hairspring swings from
+ *  where it was held, and the thumb follows it to rest, as the balance's
+ *  angle does (`twistAngle`), in a quarter period. */
+function letGo(): void {
+  stopThumbReturn();
+  const from = twist.value;
+  const start = performance.now();
+  model.value?.twist(twistDegrees(from), start, true);
+  const { period } = WATCH.design.timing;
+  const follow = (now: number): void => {
+    const seconds = (now - start) / 1000;
+    const value =
+      seconds < period / 4
+        ? twistAngle({ angle: from, letGo: start }, now, period)
+        : 0;
+    thumbReturn = {
+      value,
+      frame: value === 0 ? 0 : requestAnimationFrame(follow),
+    };
+    twist.value = value;
+    if (value === 0) thumbReturn = null;
+  };
+  follow(start);
+}
 
 /** The first click at which the slide's story is at `stage`. */
 function clickOfStage(stage: MainspringStage): number {
@@ -169,6 +214,9 @@ onMounted(() => {
   model.value = new WatchModel(WATCH);
   view = new SharedView(canvas.value, model.value, palette.value.palette);
   show(clicks.value, true);
+  if (settings.value.slider === "twist") {
+    model.value.twist(twistDegrees(twist.value), performance.now(), false);
+  }
   if (settings.value.slider === "wind") {
     model.value.scrub(windTime.value, performance.now());
   }
@@ -176,6 +224,7 @@ onMounted(() => {
   sharedStage().add(view);
 });
 onBeforeUnmount(() => {
+  stopThumbReturn();
   if (view) sharedStage().remove(view);
 });
 
@@ -186,6 +235,18 @@ onChange(clicks, (to) => {
     model.value?.scrub(windTime.value, performance.now());
   }
 });
+// at once, so that the thumb's own way back (`letGo`) is told from the
+// reader's move: the reader's move catches the hairspring and holds it
+onChange(
+  twist,
+  (value) => {
+    if (settings.value.slider !== "twist" || thumbReturn?.value === value)
+      return;
+    stopThumbReturn();
+    model.value?.twist(twistDegrees(value), performance.now(), false);
+  },
+  { flush: "sync" },
+);
 onChange(windTime, (time) => {
   if (settings.value.slider === "wind")
     model.value?.scrub(time, performance.now());
@@ -207,6 +268,15 @@ onChange(
         start: "Board",
         end: "Hairspring",
         value: curl,
+      });
+    } else if (slider === "twist") {
+      controls.push({
+        kind: "slider",
+        label: "Give it a twist, then let go",
+        start: "Rest",
+        end: "Wound",
+        value: twist,
+        release: letGo,
       });
     } else if (slider === "wind") {
       controls.push({

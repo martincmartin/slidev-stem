@@ -880,6 +880,22 @@ function barrelTurnBeats(watch: Watch): number {
   return Math.round(Math.abs(WOUND / barrel.step));
 }
 
+/** The article's twist of the balance (the `twist` slider): held at `angle`
+ *  (degrees), or, from `letGo` (ms) on, swinging from it with no friction. */
+export interface Twist {
+  readonly angle: number;
+  readonly letGo: number | null;
+}
+
+/** The balance's angle (degrees) at `now` (ms) in a twist. Let go, it starts
+ *  at rest at its angle, an extreme, and swings with the balance's `period`
+ *  (s). */
+export function twistAngle(twist: Twist, now: number, period: number): number {
+  if (twist.letGo === null) return twist.angle;
+  const seconds = (now - twist.letGo) / 1000;
+  return twist.angle * Math.cos((2 * Math.PI * seconds) / period);
+}
+
 export class WatchModel implements Model<WatchModelState> {
   private readonly watch: Watch;
   private readonly motion: Motion;
@@ -898,6 +914,8 @@ export class WatchModel implements Model<WatchModelState> {
   /** The mainspring's last pose drawn, so that an unchanged one is not
    *  drawn again. */
   private drawn: MainspringPose | null = null;
+  /** The article's twist, in place of the balance's clock; `null` off it. */
+  private twisted: Twist | null = null;
   /** The barrel's angle when the running spring was wound, or null off
    *  that state. */
   private woundAt: number | null = null;
@@ -1028,7 +1046,11 @@ export class WatchModel implements Model<WatchModelState> {
       else this.settle(now);
       this.runs = runs;
     }
-    const { time, swing, beats } = this.mechanismAt(now, lapse);
+    const mechanism = this.mechanismAt(now, lapse);
+    const { time, beats } = mechanism;
+    const swing = this.twisted
+      ? twistAngle(this.twisted, now, this.watch.design.timing.period)
+      : mechanism.swing;
     renderer.updateMesh(this.watch.spring, this.motion.springGeometry(swing));
     const pose =
       this.woundAt === null
@@ -1043,6 +1065,12 @@ export class WatchModel implements Model<WatchModelState> {
       this.drawn = pose;
     }
     return this.motion.matrices(time, swing, beats, pose.arbor);
+  }
+
+  /** Hold the balance at `angle` (degrees), in place of its clock, or with
+   *  `letGo` let it swing from there: the article's `twist` slider. */
+  twist(angle: number, now: number, letGo: boolean): void {
+    this.twisted = { angle, letGo: letGo ? now : null };
   }
 
   /** Hold the Mainspring slide's story at `time` on its line (s): the

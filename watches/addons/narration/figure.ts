@@ -28,13 +28,16 @@ export interface Box {
 }
 
 /** A slider under a figure: `value` runs from 0 to 1, from the `start`
- *  label to the `end` label. */
+ *  label to the `end` label. `release`, if given, is called when the reader
+ *  lets go of the thumb (the input's `change`: a pointer's release, or a
+ *  key's step). */
 export interface FigureSlider {
   readonly kind: "slider";
   readonly label: string;
   readonly start: string;
   readonly end: string;
   readonly value: Ref<number>;
+  readonly release?: () => void;
 }
 
 export type FigureControl = FigureSlider;

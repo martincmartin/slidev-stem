@@ -26,8 +26,9 @@
 // (watch/slide-state.ts).
 //
 // IN THE ARTICLE (components/FigureLayer.vue): `scrub`, from 0 to 1, holds
-// the board at that point of the curl and the edit after it, for a reader's
-// slider: the clock does not run. `paused` stops the clock's drawing: the
+// the board at that point of the curl, for a reader's slider: the clock does
+// not run. The edit after the curl is not scrubbed: the next figure shows it
+// done. `paused` stops the clock's drawing: the
 // board keeps its pose, and the clock's time goes on.
 //
 // THE CALLOUT'S SENTENCE is here, as HTML, not in the SVG: HTML is the simpler
@@ -54,7 +55,6 @@ import {
   EDIT_STEPS,
   editStep,
   pictureShown,
-  storyEnd,
 } from "../watch/board.ts";
 import type { BoardState, BoardTarget, BoardTiming } from "../watch/board.ts";
 
@@ -62,7 +62,7 @@ const props = withDefaults(
   defineProps<{
     target: BoardTarget;
     live: boolean;
-    /** 0 to 1: where in the curl and its edit to hold the board, or `null`
+    /** 0 to 1: where in the curl to hold the board, or `null`
      *  for the clock. */
     scrub?: number | null;
     paused?: boolean;
@@ -149,10 +149,10 @@ function draw(now: number): void {
   }
 }
 
-/** Hold the board at `scrub` of the way through the curl and the edit. */
+/** Hold the board at `scrub` of the way through the curl. */
 function scrubTo(board: SVGSVGElement, scrub: number): void {
   const timing = timingOf(board);
-  const time = timing.curlStart + scrub * (storyEnd(timing) - timing.curlStart);
+  const time = timing.curlStart + scrub * timing.curlDuration;
   board.classList.toggle(CURLING_CLASS, scrub > 0);
   board.setCurrentTime(time);
   drawAt(timing, time);

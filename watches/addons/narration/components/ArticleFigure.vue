@@ -271,6 +271,7 @@ watch([step, near, paused, busyUntil], schedule);
             min="0"
             max="1"
             step="0.001"
+            @change="control.release?.()"
           />
           <span class="article-slider-end">{{ control.end }}</span>
         </span>
@@ -282,7 +283,10 @@ watch([step, near, paused, busyUntil], schedule);
         :disabled="pausedByPage"
         @click="pausedByReader = !pausedByReader"
       >
-        {{ paused ? "Play" : "Pause" }}
+        <!-- both words in one cell: the button is as wide as the wider, so
+             nothing beside it moves when it changes -->
+        <span :class="{ 'article-pause-hidden': !paused }">Play</span>
+        <span :class="{ 'article-pause-hidden': paused }">Pause</span>
       </button>
     </div>
   </figure>
@@ -328,7 +332,10 @@ watch([step, near, paused, busyUntil], schedule);
 .article-figure-caption p {
   margin: 0;
 }
+/* the column's width, not its content's: a slider's length must not change
+   with the pause button's word or the slider's end labels */
 .article-figure-controls {
+  align-self: stretch;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -347,6 +354,15 @@ watch([step, near, paused, busyUntil], schedule);
   color: var(--palette-ink);
   font: inherit;
   cursor: pointer;
+}
+.article-pause {
+  display: inline-grid;
+}
+.article-pause > span {
+  grid-area: 1 / 1;
+}
+.article-pause-hidden {
+  visibility: hidden;
 }
 .article-button:disabled {
   opacity: 0.45;

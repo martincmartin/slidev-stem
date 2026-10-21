@@ -18,6 +18,7 @@ import {
   SHUTTER_LIMIT_MS,
   shutterInstant,
   stillPose,
+  twistAngle,
   strikesBetween,
   tickWindows,
   WatchModel,
@@ -496,4 +497,14 @@ test("a rest asked for while the balance resumes in a time-lapse waits for the h
   }
   assert.equal(model.phase(now), "balance rest");
   assert.ok(Math.abs(last.balance) < 1e-9, `${String(last.balance)} degrees`);
+});
+
+test("a twist holds its angle, and let go swings from it at the balance's period", () => {
+  const held = { angle: -90, letGo: null };
+  assert.equal(twistAngle(held, 5000, 2), -90);
+  const letGo = { angle: -90, letGo: 1000 };
+  assert.equal(twistAngle(letGo, 1000, 2), -90);
+  assert.ok(Math.abs(twistAngle(letGo, 1500, 2)) < 1e-9);
+  assert.ok(Math.abs(twistAngle(letGo, 2000, 2) - 90) < 1e-9);
+  assert.ok(Math.abs(twistAngle(letGo, 3000, 2) + 90) < 1e-9);
 });
