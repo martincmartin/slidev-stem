@@ -7,6 +7,16 @@ if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
   exit 0
 fi
 
+# The user-level instructions come from the cloud environment's setup script,
+# which installs agent-house. An environment without it gives no error of its
+# own, so say so here: this output goes into Claude's context.
+if [ ! -e "$HOME/.claude/CLAUDE.md" ]; then
+  echo "WARNING: this cloud environment has no ~/.claude/CLAUDE.md, so the" \
+    "user's own instructions are missing. Before you do anything else, tell" \
+    "the user that the environment's setup script does not install" \
+    "agent-house (see https://github.com/martincmartin/agent-house#claude-code-cloud-sessions)."
+fi
+
 cd "$CLAUDE_PROJECT_DIR"
 
 # pnpm 12 reads the lockfiles, and then switches to each project's pinned
@@ -19,12 +29,13 @@ fi
 uv self update || echo "uv self update failed; keeping $(uv --version)" >&2
 
 # Each project installs from its own lockfiles: the root, then each talk in
-# progress. A given talk (a given/<talk>/... tag) is not touched (AGENTS.md).
+# progress. A retired talk (a retired/<talk>/... tag) is not touched
+# (AGENTS.md). A talk that you gave is still in progress.
 uv sync --locked
 pnpm install --frozen-lockfile
 for slides in */slides.md; do
   talk="${slides%/slides.md}"
-  if [ -n "$(git tag --list "given/$talk/*")" ]; then
+  if [ -n "$(git tag --list "retired/$talk/*")" ]; then
     continue
   fi
   (cd "$talk" && pnpm install --frozen-lockfile && uv sync --locked)

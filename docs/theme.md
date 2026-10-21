@@ -207,9 +207,8 @@ whose muted is blue would draw the pool's water like mud.
 
 ## One slide can change a role
 
-Slidev puts a slide's `class:` on the slide's `.slidev-layout` element. A rule
-with the selector `.slidev-layout.<class>` changes roles for those slides
-only:
+A rule with the selector `.slidev-layout.<class>` changes roles for the slides
+with that class only (the `slidev` skill, "Slide classes and styles"):
 
 ```css
 .slidev-layout.warm {
@@ -226,9 +225,8 @@ files (it skips only `docs/`, `tasks/`, `public/`, the READMEs and the
 dependencies), and it measures each such slide's palette against the gates.
 Drawings inlined in the slide follow the override.
 
-**A layer outside the slide must take the slide's palette itself.** It is not
-inside the slide's `.slidev-layout`, so the rule does not reach it. In
-`watches`, the watch and the diving board are such layers (`global-bottom.vue`,
+**A layer outside the slide must take the slide's palette itself:** the rule
+does not reach a global layer (the `slidev` skill). In `watches`, the watch and the diving board are such layers (`global-bottom.vue`,
 `slide-bottom.vue`). `slidePalette()` in `watches/watch/palette.ts` reads the
 `--palette-*` values from a hidden element with the slide's classes. The layer
 sets them on itself, and gives the WebGL renderer the colours. So any class
@@ -244,8 +242,8 @@ class: palette-campfire # with a layout class: `class: balance-wheel palette-cam
 ```
 
 For a whole talk, change its palette addon ("Palettes"), not the class of
-each slide. Slidev's headmatter `defaults: { class: … }` cannot do it: a
-slide's own `class:` replaces the default, and does not add to it.
+each slide. Slidev's headmatter `defaults: { class: … }` cannot do it (the
+`slidev` skill, "Slide classes and styles").
 
 Every house palette is a class, in every talk, light or dark: the house theme
 loads each palette's rule. On a slide, the class wins over the talk's palette
@@ -438,11 +436,11 @@ every talk: its layouts, its type and fonts, its setup and its Vite config.
 The colours are a palette's. Each palette is an addon,
 `themes/palettes/<name>/`, with three files:
 
-| File           | What it holds                                                                                                                                                          |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `palette.css`  | one rule that sets every role (see "The roles"), for every slide of a talk that loads the addon, and for any slide whose class names the palette                       |
-| `index.html`   | `<html class="palette-<name>">`. Slidev merges each addon's `index.html` into the page, so the talk's palette is on `<html>` in the built page too, with no JavaScript |
-| `package.json` | the package, `slidev-addon-palette-<name>`, which a talk's `addons:` names as `palette-<name>`                                                                         |
+| File           | What it holds                                                                                                                                              |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `palette.css`  | one rule that sets every role (see "The roles"), for every slide of a talk that loads the addon, and for any slide whose class names the palette           |
+| `index.html`   | `<html class="palette-<name>">`, merged into the page (the `slidev` skill), so the talk's palette is on `<html>` in the built page too, with no JavaScript |
+| `package.json` | the package, `slidev-addon-palette-<name>`, which a talk's `addons:` names as `palette-<name>`                                                             |
 
 **To change a talk's palette, change two lines of its headmatter:** the
 palette addon, and `colorSchema`. The `colorSchema` must suit the palette's
@@ -455,8 +453,8 @@ addons:
   - palette-campfire
 ```
 
-An addon cannot set `colorSchema`: Slidev reads that default only from the
-theme and the headmatter. `uv run tools/palette.py --talk <talk>` fails if
+The palette addon cannot set `colorSchema` (the `slidev` skill), so the
+headmatter does. `uv run tools/palette.py --talk <talk>` fails if
 the talk loads no palette or more than one, or if its `colorSchema` does not
 suit the palette's paper. Every slide takes the new palette: the text, the
 cards, the inlined drawings, and the watch (which reads the palette from the

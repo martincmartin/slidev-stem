@@ -1670,8 +1670,8 @@ The swing never damps, on purpose.
 - **The component runs the clock, not the SVG.** A self-playing `<img>` cannot
   start on a click or play backwards on a click back.
 - **Not an oversight: one board in the watch's layer, not one on each slide.**
-  A copy on each slide cannot move between slides: Slidev mounts a slide before
-  it shows it, and each copy starts a change from its own last state. The Balance Wheel slide
+  A copy on each slide cannot move between slides (the `slidev` skill, "Clicks,
+  slides and going back"). The Balance Wheel slide
   had its own copy, and its rest shape showed at once and then faded, going
   back from the Escapement slide
   ([`2026-10-04-backward-navigation`](../tasks/2026-10-04-backward-navigation/PLAN.md)).

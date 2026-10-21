@@ -60,8 +60,8 @@ Five rules for a slide:
 packages in `themes/house/styles/fonts.css`, and `pnpm build` copies the font
 files into `dist/`. The deck makes no outside requests, so it needs no network
 at the venue. `fonts.css` imports only the weights the talks use. **If you use a
-new weight, add its import to the theme in the same change.** If you do not, the
-browser uses the nearest imported weight or fakes a bold, and gives no error.
+new weight, add its import to the theme in the same change:** a missing weight
+gives no error (the `slidev` skill, "Fonts").
 
 ## Section slides
 
@@ -141,16 +141,14 @@ from the array's length. To add a card, add it to the array. Add a `[click]`
 line to the speaker notes too.
 
 **Dimming is CSS in the slide, not a prop.** While a card is being discussed,
-the cards before it dim. When the takeaway appears, they come back. `v-click`
-gives the element of the current click the class `slidev-vclick-current`, and
-gives elements whose click has passed the class `slidev-vclick-prior`. One rule
-in the slide's `<style>` uses them: it dims each `slidev-vclick-prior` card while
+the cards before it dim. When the takeaway appears, they come back. One rule in
+the slide's `<style>` uses `v-click`'s classes (the `slidev` skill, "Clicks,
+slides and going back"): it dims each `slidev-vclick-prior` card while
 `.tk-grid` has a `slidev-vclick-current` card. The takeaway is outside
 `.tk-grid`, so on its click no card in the grid is current and nothing is dimmed.
 
-**Do not bind `:class` on the card's root element.** `v-click` adds its classes
-to that element. When a `:class` binding changes, Vue rewrites the element's
-classes and removes the `v-click` classes, and the dim rule stops working.
+**Do not bind `:class` on the card's root element:** it removes the `v-click`
+classes, and the dim rule stops working (the `slidev` skill).
 
 ## Text fades
 

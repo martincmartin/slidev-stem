@@ -21,18 +21,14 @@ the one part that already followed these rules (the watch's stage).
 
 ## The rules
 
-**Rule 0: the settled screen depends only on the slide and the click.** It does
-not depend on how the viewer got there: forward, back, a jump or a reload. Only
-the phase of a physical process (where the hands and the balance are) may
-differ.
+**Follow the general rules for clicks and slides** in the `slidev` skill,
+"Clicks, slides and going back": the settled screen depends only on the slide
+and the click, a slide names targets and not moves, a visual on more than one
+slide is one element, and a step animates but a jump does not. In the watch
+talk, the phase of a physical process (where the hands and the balance are) is
+the one thing that may differ on a settled screen.
 
-**Rule 1: a slide names a target for each click, never a move.** Put the target
-in the slide's frontmatter or its `v-click`s. The layer that draws it moves from
-what is on the screen now to the new target. So a move back is the move
-forward, reversed, with no code for it. Do not write code that asks which way
-the viewer went (`navDirection`, `clicksDirection`): the layer decides that.
-
-**Rule 2: each kind of animation has a default.**
+**Each kind of animation has a default.**
 
 | Kind                 | What it is for                    | Forward                                      | Back                                                                     |
 | -------------------- | --------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------ |
@@ -55,17 +51,6 @@ pose, and does not play the story backward. A key that unwinds the spring
 runs time backward, which a step back should not do
 ([`watch.md`](../watches/docs/watch.md#the-mainspring-slide)). Text that is part of a story animation runs on
 that animation's clock, not on a `v-click`.
-
-**Rule 3: a visual on more than one slide is one element.** It lives in a layer
-that stays mounted for the whole talk (`global-bottom.vue` or `global-top.vue`)
-and takes its target from each slide. One copy on each slide cannot move
-between slides: each copy starts from its own last state, not from what was on
-the screen.
-
-**Rule 4: a step animates; a jump does not.** A step is one click, or the next
-or the previous slide. Anything else (a reload, a link, the overview, a slide
-that is not a neighbour) is a jump, and shows the target at once. A printed
-page shows its click's target, posed.
 
 ## Validation: fast smoke navigation
 

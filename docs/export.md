@@ -46,9 +46,9 @@ voice that reads the narration. The task's `PLAN.md` has their sizes.
 ## Rules that hold now
 
 - **The narration is a comment before the speaker notes**:
-  `<!-- narration ... -->`, with the notes' `[click]` markers. Slidev takes only
-  a slide's last comment as its note, so the narration shows neither in the
-  presenter view nor on the slide. The notes become cues for the speaker.
+  `<!-- narration ... -->`, with the notes' `[click]` markers. So the narration
+  shows neither in the presenter view nor on the slide (the `slidev` skill,
+  "Speaker notes"). The notes become cues for the speaker.
 - **A given talk can still change.** Its tag keeps the version that you gave;
   the narration and the page can improve after the talk
   ([`../AGENTS.md`](../AGENTS.md), "Given talks, retired talks and versions").
@@ -68,10 +68,9 @@ voice that reads the narration. The task's `PLAN.md` has their sizes.
 - **Keep the hosting open**: relative paths or Slidev's `--base`, no server
   rewrite rules, no outside requests, and a still and alt text for each
   figure.
-- **Use no separate route for a mode of the slides.** Slidev's `go()` always
-  makes a play, presenter or export path, so a page at `/narrated/3` returns
-  to `/4` at the first key press. Use a query flag (`?narration`): `go()` keeps
-  it. A page that is not a slide (the article) can have its own route.
+- **Use no separate route for a mode of the slides.** Use a query flag
+  (`?narration`) instead (the `slidev` skill, "Routes"). A page that is not a
+  slide (the article) can have its own route.
 - **A relative addon path starts at the parent of the talk's directory.**
   `addons: [./addons/narration]` in `watches/slides.md` looks in `stem/`. Use
   `@/addons/narration` or a package name.

@@ -37,9 +37,9 @@ small: reading on a phone is a goal for later, not a constraint now.
 ## Write the narration
 
 The narration is an HTML comment, `<!-- narration ... -->`, **before** the
-slide's speaker notes. Slidev takes only a slide's last comment as its note,
-so the narration shows neither in the presenter view nor on the slide. The
-notes stay as they are: the cues for the speaker. `watch/article.test.ts`
+slide's speaker notes. So the narration shows neither in the presenter view
+nor on the slide (the `slidev` skill, "Speaker notes"). The notes stay as they
+are: the cues for the speaker. `watch/article.test.ts`
 fails if a slide's last comment is its narration.
 
 The narration is Markdown, written for readers: no stage directions ("the
@@ -219,9 +219,8 @@ Slidev's types (`types/`). Move it to the house when a second talk uses it.
 upgrade, open `/article` and look.
 
 **The addon's route is `/article`, a route of the deck.** The slides keep
-their own routes. A page at `/narrated/3` would not work: Slidev's `go()`
-always makes a play, presenter or export path (`docs/export.md`, "Use no
-separate route").
+their own routes. A page at `/narrated/3` would not work (`docs/export.md`,
+"Use no separate route").
 
 ## Build the static page
 

@@ -35,26 +35,14 @@ is _retired_, and you do not change it on `main`. Retiring a talk frees the
 rest of the repo: a breaking change to a house item does not have to keep a
 retired talk working.
 
-- **Tag each talk that you give.** Make an annotated tag,
-  `given/<talk>/<YYYY-MM-DD>`, with the date of the talk. For example,
-  `git tag -a given/watches/2026-10-15`. Put the event and the venue in the tag
-  message. If you give a talk again, make one more tag with the new date. Always
-  include the date: git cannot have a `given/watches` tag and a
-  `given/watches/…` tag at the same time. Before you tag, check that the talk
-  builds from its lockfiles, in the talk's directory:
-  `pnpm install --frozen-lockfile && uv sync --locked && pnpm build`, and run
-  `uv run ../tools/validate.py --print`.
-- **The tag is the version that you gave.** To look at or rebuild it, make a
-  worktree at its tag:
-  `git worktree add ../watches-given given/watches/2026-10-15`. Then, in the
-  worktree's talk directory, run `pnpm install --frozen-lockfile` and
-  `uv sync --locked`.
-- **Retire a talk with a tag.** Make an annotated tag,
-  `retired/<talk>/<YYYY-MM-DD>`, on the last commit that changes the talk,
-  with the date that you retire it. Before you retire it, check that it builds
-  and validates, as before a talk is given. `main` does not have to keep a
-  retired talk working. If a change to shared code breaks a retired talk on
-  `main`, do not fix the retired talk.
+- **Tag each talk that you give** with an annotated tag,
+  `given/<talk>/<YYYY-MM-DD>`, one for each date. **Retire a talk** with an
+  annotated tag, `retired/<talk>/<YYYY-MM-DD>`, on the last commit that changes
+  it. The steps and the checks to run first are in `docs/talks.md`, "Tag,
+  rebuild or retire a talk".
+- **Do not fix a retired talk.** `main` does not have to keep a retired talk
+  working. If a change to shared code breaks a retired talk on `main`, do not
+  fix the retired talk.
 - **No repo-wide command may touch a retired talk.** A command at the repo
   root must not change a retired talk or fail because of one.
 - **Each talk has its own third-party versions.** Each talk has its own
@@ -98,17 +86,18 @@ The workflow and test limits are in [docs/talks.md](docs/talks.md).
 Read the doc before the action, not after. They are the source of truth; code
 comments point to them.
 
-| Before you…                                                                                            | Read                                                         |
-| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
-| choose, compare, measure or add a colour, make a palette, change the house theme, or preview a palette | `docs/theme.md`                                              |
-| draw or change any illustration (SVG), or a callout's leader                                           | `docs/illustrations.md`                                      |
-| change the WebGL renderer, the watch, or its frontmatter                                               | `docs/webgl.md`                                              |
-| add a click, a slide transition, or anything that moves between clicks or slides                       | `docs/navigation.md`                                         |
-| decide if something is big, thick or dark enough                                                       | `docs/legibility.md`                                         |
-| upgrade, validate, tag or build a talk, or change browser support                                      | `docs/talks.md`                                              |
-| export a talk for readers, write its narration, or write speaker notes                                 | `docs/export.md`                                             |
-| design how body text is placed, revealed, moved or styled on slides                                    | `docs/text-display-deep-research-report.md` (background)     |
-| work in a talk (slides, its art, its code)                                                             | `<talk>/AGENTS.md`: the talk's own index into `<talk>/docs/` |
+| Before you…                                                                                              | Read                                                                                                                                              |
+| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| choose, compare, measure or add a colour, make a palette, change the house theme, or preview a palette   | `docs/theme.md`                                                                                                                                   |
+| draw or change any illustration (SVG), or a callout's leader                                             | `docs/illustrations.md`                                                                                                                           |
+| change the WebGL renderer, the watch, or its frontmatter                                                 | `docs/webgl.md`                                                                                                                                   |
+| add a click, a slide transition, or anything that moves between clicks or slides                         | `docs/navigation.md`                                                                                                                              |
+| decide if something is big, thick or dark enough                                                         | `docs/legibility.md`                                                                                                                              |
+| start, upgrade, validate, tag, retire or build a talk, or change browser support                         | `docs/talks.md`                                                                                                                                   |
+| export a talk for readers, write its narration, or write speaker notes                                   | `docs/export.md`                                                                                                                                  |
+| design how body text is placed, revealed, moved or styled on slides                                      | `docs/text-display-deep-research-report.md` (background)                                                                                          |
+| edit a deck file, a layout, a global layer, an addon or the headmatter, or export, print or build a deck | the `slidev` skill: Slidev's own silent traps ([agent-house](https://github.com/martincmartin/agent-house/blob/main/user/skills/slidev/SKILL.md)) |
+| work in a talk (slides, its art, its code)                                                               | `<talk>/AGENTS.md`: the talk's own index into `<talk>/docs/`                                                                                      |
 
 ## Working in this repo
 
@@ -126,20 +115,11 @@ uv add <pkg>          # in a talk's directory; not `pip install`
 uv run <script.py>    # run a script in the venv of the project that holds it
 ```
 
-Each project has its own `pnpm-lock.yaml` and `uv.lock`. It pins its Node and
-pnpm versions (`devEngines` in `package.json`) and its Python version
-(`.python-version`). pnpm downloads the pinned Node for `pnpm dev`,
-`pnpm build` and the other scripts. Never create a `package-lock.json` or a
-`requirements.txt`.
+Never create a `package-lock.json` or a `requirements.txt`.
 
-**A new talk needs its own `pnpm-workspace.yaml`.** Without it, pnpm uses the
-root's workspace, installs nothing for the talk, and reports no error
-(`tools/talkcheck.py`, run by the talk's `validate.py`, fails on it). Copy
-these files from the newest talk: `pnpm-workspace.yaml`, `pyproject.toml`,
-`.python-version`, `.prettierignore`, `tsconfig.json`, `eslint.config.js`, and `package.json` with its `devEngines`
-and its `preinstall` script. Then run `pnpm install` and `uv sync` in the new talk's directory. A talk links
-the theme with `"slidev-theme-house": "link:../themes/house"`, and each palette
-with `"slidev-addon-palette-<name>": "link:../themes/palettes/<name>"`.
+**A new talk needs its own `pnpm-workspace.yaml`,** or pnpm installs nothing
+for it, with no error (the `slidev` skill, "pnpm"). Follow `docs/talks.md`,
+"Start a new talk".
 
 The house style for every talk (palette, illustrations, legibility) is in
 `docs/`, and the checks for it are in `tools/`. Run a check at the root, with
@@ -164,9 +144,7 @@ Relevant changes include shared tools, themes, dependencies, and configuration t
 If all changes since that run are to docs only (`docs/`, `tasks/`, a README or an
 `AGENTS.md`), a successful quick run is enough: only `doccheck` and Prettier read
 them, and quick mode runs both.
-A full run reuses an earlier pass of print and smoke navigation while the built deck
-and its checkers are byte-identical.
-See `docs/talks.md` for the workflow.
+See `docs/talks.md`, "Check your work", for what each run checks and its options.
 
 Run full mode in the project that you changed:
 
@@ -177,42 +155,11 @@ uv run ../tools/validate.py --fix # let ruff and Prettier rewrite first
 ```
 
 Each run checks only its own project, and it takes its scope from the current
-directory.
-
-- **The root run** checks `tools/` with ruff (format and lint), mypy (strict)
-  and pyright. It checks the shared files with Prettier, runs the tests in
-  `tools/` (pytest), checks the docs with `doccheck`, and checks the palette's
-  gates.
-- **A talk's run** checks the talk's Python with the same four tools, in the
-  talk's own venv. It checks the talk with Prettier, its docs with
-  `doccheck`, and every SVG in its
-  `public/` with `artcheck`, `barroom` and `motion`. It checks that the talk
-  sets the palette only for a slide class (in any of its source files), and
-  that each such palette passes the gates. It runs the talk's `art:privacy` startup check, if the talk has one.
-  It runs the print check (`art:print`) only with `--print`, or when the
-  working tree changes one of the talk's print inputs (`print-inputs` in its
-  `pyproject.toml`): run `--print` before an export or a tag. See
-  `docs/talks.md`, "The print check".
-  It checks that files generated by
-  the talk's scripts match what the scripts write (`art:generated`). It checks
-  the two silent traps below (`talkcheck`). It builds the deck, and then walks
-  every slide and click in Chromium, Firefox, and WebKit with `smokecheck.py`, with every outside request blocked.
-  Each walk uses a fresh non-persistent context and blocks 2D canvas pixel reads.
-  The fast smoke check rejects startup errors, page errors, navigation stalls,
-  and walks that stop before the declared final position.
-  Exhaustive navigation (`navcheck.py`) is not part of any validation mode.
-  Run it only when an actual navigation problem is found or suspected.
-  Do not run it routinely, including before commits or after ordinary navigation changes.
-
-Full validation runs every check and exits non-zero if any check fails.
-For routine edits, `--quick` runs source checks, generated-file checks, and a build.
-Quick mode does not satisfy the full-validation requirement before a commit,
-except after changes to docs only (above).
-`--no-reuse` runs print and smoke navigation again, even if they passed with the same deck.
-Independent preparation groups use a bounded worker pool. Smoke navigation runs after preparation. Its three engine walks run together.
-`--jobs 1` selects serial preparation; `--fix` always uses one worker.
-The summary includes timings. `--json` gives machine-readable results.
-See `docs/talks.md` for the current workflow.
+directory. `--quick` runs source checks, generated-file checks, and a build.
+Run `--print` before an export or a tag.
+Exhaustive navigation (`navcheck.py`) is not part of any validation mode.
+Run it only when an actual navigation problem is found or suspected.
+Do not run it routinely, including before commits or after ordinary navigation changes.
 Do not run validation in a retired talk.
 
 The command is `uv run tools/validate.py`, not `uv run validate`. This is not
@@ -225,9 +172,8 @@ every talk. See `tasks/2026-09-28-validate/PLAN.md`.
 
 `.prettierrc` sends Slidev decks to `prettier-plugin-slidev` (the
 `parser: "slidev"` override). All other Markdown goes to Prettier's normal
-Markdown parser. The Markdown parser reads a slide's frontmatter as a thematic
-break and a paragraph. It adds a blank line after the `---` and removes the
-indentation from nested YAML keys, which breaks the slide with no error.
+Markdown parser, which breaks a slide's frontmatter with no error (the `slidev`
+skill, "Prettier").
 
 The override globs are `slides.md`, `slides-*.md` and `**/pages/*.md`, in any
 talk. If a new deck file does not match them, add its name to the `files` array
