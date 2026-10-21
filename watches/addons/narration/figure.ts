@@ -11,7 +11,8 @@
 // other change: at once). Draw nothing while `paused` is true or `near` is
 // false. Set `busyUntil` when a change ends, so that a playing figure waits
 // for it. A layer may add controls (a slider) to `controls`; the article
-// draws them under the figure.
+// draws them under the figure. Set `still` while nothing in the figure moves
+// by itself: the article then shows no pause button.
 //
 // IN A FIGURE OF A PICTURE (the talk's `pictureBox` gives a box), the slide's
 // text is hidden: only elements with the class `in-figure` (a callout's
@@ -53,6 +54,9 @@ export interface FigureContext {
   readonly busyUntil: Ref<number>;
   /** The controls that the talk's layer adds. */
   readonly controls: Ref<readonly FigureControl[]>;
+  /** Whether nothing in the figure moves by itself (false until the talk's
+   *  layer says so). */
+  readonly still: Ref<boolean>;
 }
 
 export const FIGURE: InjectionKey<FigureContext> = Symbol("narration:figure");

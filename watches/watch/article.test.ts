@@ -63,6 +63,17 @@ test("the cover's figure shows the whole watch, which the slide cuts", () => {
   assert.notEqual(pictureKey(cover.frontmatter, 0), pictureKey(talk, 0));
 });
 
+test("where the slide cuts the watch, the crop centres it up and down", async () => {
+  // the strap and the one-step wheel run past the slide's top and bottom;
+  // the case (the view's fit) sits below the title's space
+  const gearTrain = await slideFrontmatter("Gear Train");
+  const box = pictureBox(watch, gearTrain, 1);
+  assert.ok(box);
+  const [, height] = watch.scene.slide;
+  assert.equal(box.bottom, height);
+  assert.ok(box.top > 100, `top ${String(box.top)}`);
+});
+
 test("a figure marks what its run flashed, but not when that is everything", async () => {
   // flashed at click 0, marked at the run's end
   const balance = await slideFrontmatter("Balance Wheel");

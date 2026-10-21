@@ -172,6 +172,23 @@ const timeScale = computed(() =>
     : undefined,
 );
 
+/** Whether nothing moves by itself at the figure's click, so that the
+ *  figure needs no pause button: the balance is at rest, the train neither
+ *  spins nor unwinds, there is no mainspring story, the board does not
+ *  swing, and there is no `twist` slider (a let-go swings for ever). */
+const still = computed(() => {
+  const now = hidden.value ? undefined : state.value;
+  const watchStill =
+    !now ||
+    (now.settled &&
+      now.spin === null &&
+      now.mainspring === null &&
+      !now.unwind);
+  const boardStill =
+    board.value.state?.place !== "swing" || boardScrub.value !== null;
+  return watchStill && boardStill && settings.value.slider !== "twist";
+});
+
 /** The meshes of the pieces named. */
 function meshesOf(names: readonly string[]): Set<Mesh> {
   return new Set(
@@ -254,6 +271,13 @@ onChange(windTime, (time) => {
 onChange(figure.paused, (paused) => {
   if (view) view.paused = paused;
 });
+onChange(
+  still,
+  (now) => {
+    figure.still.value = now;
+  },
+  { immediate: true },
+);
 onChange(palette, (now) => {
   if (view) view.palette = now.palette;
 });

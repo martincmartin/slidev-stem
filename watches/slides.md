@@ -113,7 +113,6 @@ history: "c. 1675"
 
 # Hairspring
 
-
 <!-- narration
 
 Start with the part that keeps time.  In 1675 Christiaan Huygens, a Dutch
@@ -152,7 +151,6 @@ move is the whole idea of the hairspring.
 - Keeps time
 
 - Why swing?
-
 -->
 
 ---

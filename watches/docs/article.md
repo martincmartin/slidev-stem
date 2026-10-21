@@ -25,7 +25,9 @@ build the article.
 - **A figure is the slide itself, live**, at one click: the WebGL watch, the
   diving board, the labels. It runs while it is on or near the screen.
 - Some figures have controls: steps (‹ ›), a slider, or a tour that plays by
-  itself, with captions. Every figure has a pause button.
+  itself, with captions. A figure that moves by itself, or plays, has a
+  pause button; a still one has none (`still` in
+  `addons/narration/figure.ts`).
 
 `pnpm dev` prints the article's URL last, after Slidev's own list and its
 shortcuts (`addons/narration/vite.config.ts`). Slidev has no hook to add a
@@ -120,8 +122,18 @@ cropped to the picture's box (`pictureBox` in `watch/article.ts`: the shown
 pieces' extents as the view shows them, and the diving board where it
 shows), widened to hold its labels. A label is an element with the class
 `in-figure` (`WatchCallout` has it); every other element of the slide is
-hidden. The crop is 1.65 times larger on a phone than the whole slide would
-be.
+hidden. A label is measured by what it draws: a callout's leader is an
+`<svg>` of 1 px at the slide's corner, so the crop measures its shapes, not
+the `<svg>`. The crop is 1.65 times larger on a phone than the whole slide
+would be.
+
+**Where the slide's top or bottom cuts the watch, the crop centres it.** A
+watch that the slide's bottom cuts sits below the title's space, which the
+figure does not show. So the crop cuts its other side too, until the pieces
+that the view fits (`watchView`) are in its middle, but never into those
+pieces. The Gear Train slide's case then shows as much strap above as below.
+Not across: there, what the slide cuts is the case beside the train, and the
+figure keeps it.
 
 A slide with no watch and no board is its own figure: the whole slide, with
 its text, at its last click.
@@ -164,10 +176,10 @@ article:
 | `slider` | `curl`: the diving board's curl, to the hairspring at rest (the Hairspring slide); `twist`: the hairspring's wind from rest, and a swing from there when the reader lets go (the Hairspring slide); `wind`: the Mainspring slide's story, from the bare spring through the key's turns to the release |
 | `view`   | the figure's camera, in place of the slide's, with the values of `watchView`: a named view, or the pieces that a fitted view fits                                                                                                                                                                     |
 
-**Use `view` when the slide cuts the picture.** The crop stops at the
-slide's edge, so a watch that the slide cuts shows cut and off centre in the
-figure. A view that puts the whole picture inside the slide makes the crop centre
-it. The cover's slide puts the watch partly past the right edge, beside the
+**Use `view` when the slide cuts the picture across, or cuts the fitted
+pieces.** The crop stops at the slide's edge, so there the watch shows cut
+and off centre in the figure. A view that puts the whole picture inside the
+slide makes the crop centre it. The cover's slide puts the watch partly past the right edge, beside the
 title. Its figure uses `view: centred cover`: the cover's view, moved so that
 the watch is in the slide's middle, so it shows as much of the strap as the
 talk does.
@@ -206,7 +218,7 @@ again. The flash after each move stays: the reader is watching the figure.
 | Where                                                           | What                                                                                                                                                                           |
 | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `addons/narration/` (a Slidev addon; the headmatter's `addons`) | the narration's parser, the preparser, the page model, the `/article` route and its line in `pnpm dev`, the page and its figures, the prerender. It knows nothing of the watch |
-| `addons/narration/figure.ts`                                    | what the addon and the talk say to each other: `FIGURE` (a figure's click, pause, controls) and `ARTICLE_HOOKS` (the talk's rules)                                             |
+| `addons/narration/figure.ts`                                    | what the addon and the talk say to each other: `FIGURE` (a figure's click, pause, controls, stillness) and `ARTICLE_HOOKS` (the talk's rules)                                  |
 | `setup/main.ts`                                                 | gives the article the talk's rules (`ARTICLE_HOOKS`)                                                                                                                           |
 | `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, marks, the `article` settings                                                                                      |
 | `global-bottom.vue`, `components/FigureLayer.vue`               | in a figure, the layer is the figure's: the watch at the figure's click, the board, "tick" and "tock", the time scale                                                          |

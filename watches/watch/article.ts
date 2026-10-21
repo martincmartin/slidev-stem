@@ -22,6 +22,8 @@ import { onSlide } from "./callouts.ts";
 import type { Watch } from "./generate.ts";
 import { stageState, viewOf, watchState, wrong } from "./state.ts";
 import type { WatchState } from "./state.ts";
+import type { Piece } from "../webgl/scene.ts";
+import type { StageState } from "../webgl/timeline.ts";
 
 /** A box on the slide, in px. */
 export interface SlideBox {
@@ -280,49 +282,108 @@ function union(first: SlideBox | null, second: SlideBox): SlideBox {
   };
 }
 
+/** The box of `pieces` on the slide, in px, as the stage shows them: each
+ *  extent's corners, projected. `null` if none has an extent. */
+function piecesBox(
+  watch: Watch,
+  stage: StageState,
+  pieces: readonly Piece[],
+): SlideBox | null {
+  let box: SlideBox | null = null;
+  for (const piece of pieces) {
+    const extent = watch.extents.get(piece);
+    // a piece that the model draws (the mainspring's rest shape) has no
+    // triangles in the scene, so no finite extent: it lies inside another
+    if (!extent || !Number.isFinite(extent.box.left)) continue;
+    for (const x of [extent.box.left, extent.box.right]) {
+      for (const y of [extent.box.top, extent.box.bottom]) {
+        for (const z of [extent.bottom, extent.top]) {
+          const [left, top] = onSlide(stage.view, stage, watch.scene.slide, [
+            x,
+            y,
+            z,
+          ]);
+          box = union(box, { left, top, right: left, bottom: top });
+        }
+      }
+    }
+  }
+  return box;
+}
+
+/** The crop's top and bottom: `low` to `high`, with BOX_MARGIN, inside the
+ *  slide (0 to `size`). Where the slide cuts the picture on one side, the
+ *  other side is cut too, so that the fitted pieces (`fitLow` to `fitHigh`)
+ *  are in the middle, but the fitted pieces stay whole. */
+function cropTopBottom(
+  low: number,
+  high: number,
+  fitLow: number,
+  fitHigh: number,
+  size: number,
+): [number, number] {
+  const centre = (fitLow + fitHigh) / 2;
+  let from = Math.max(0, low - BOX_MARGIN);
+  let to = Math.min(size, high + BOX_MARGIN);
+  if (high + BOX_MARGIN > size) {
+    from = Math.max(from, Math.min(fitLow - BOX_MARGIN, 2 * centre - to));
+  }
+  if (low - BOX_MARGIN < 0) {
+    to = Math.min(to, Math.max(fitHigh + BOX_MARGIN, 2 * centre - from));
+  }
+  return [from, to];
+}
+
 /** Where the picture at `clicks` is on the slide, in px, with BOX_MARGIN
  *  around it and inside the slide: the shown pieces' extents as the view
- *  shows them, and the diving board where it shows. `null` for a slide with
- *  no watch and no board: its figure is the whole slide. */
+ *  shows them, and the diving board where it shows. Where the slide's top
+ *  or bottom cuts the watch, the crop centres the pieces that the view fits,
+ *  up and down (`cropTopBottom`): the title's space above a watch that the
+ *  slide's bottom cuts is not kept. Not across: there, what the slide cuts
+ *  is the case beside the train, and the figure keeps it. `null` for a slide
+ *  with no watch and no board: its figure is the whole slide. */
 export function pictureBox(
   watch: Watch,
   frontmatter: Record<string, unknown>,
   clicks: number,
 ): SlideBox | null {
   const { watch: state, board } = pictureAt(frontmatter, clicks, true);
-  let box: SlideBox | null = !board?.rest
+  const boardBox = !board?.rest
     ? null
     : board.curling
       ? CURLING_BOARD_BOX
       : BOARD_BOX;
+  let box = boardBox;
+  let fitBox: SlideBox | null = null;
   if (state) {
     const stage = stageState(watch, state);
-    for (const piece of watch.scene.pieces) {
-      if (![...piece.meshes].some((mesh) => stage.shown.has(mesh))) continue;
-      const extent = watch.extents.get(piece);
-      // a piece that the model draws (the mainspring's rest shape) has no
-      // triangles in the scene, so no finite extent: it lies inside another
-      if (!extent || !Number.isFinite(extent.box.left)) continue;
-      for (const x of [extent.box.left, extent.box.right]) {
-        for (const y of [extent.box.top, extent.box.bottom]) {
-          for (const z of [extent.bottom, extent.top]) {
-            const [left, top] = onSlide(stage.view, stage, watch.scene.slide, [
-              x,
-              y,
-              z,
-            ]);
-            box = union(box, { left, top, right: left, bottom: top });
-          }
-        }
-      }
-    }
+    const shown = watch.scene.pieces.filter((piece) =>
+      [...piece.meshes].some((mesh) => stage.shown.has(mesh)),
+    );
+    const shownBox = piecesBox(watch, stage, shown);
+    if (shownBox) box = union(box, shownBox);
+    const fit = state.fit;
+    fitBox =
+      fit === "all" || fit.includes("all")
+        ? shownBox
+        : piecesBox(
+            watch,
+            stage,
+            watch.scene.pieces.filter((piece) => fit.includes(piece.name)),
+          );
   }
   if (!box) return null;
+  // the board is drawn to the slide's edges: centre on it, it is the picture
+  const centred = boardBox ? box : (fitBox ?? box);
   const [width, height] = watch.scene.slide;
-  return {
-    left: Math.max(0, box.left - BOX_MARGIN),
-    top: Math.max(0, box.top - BOX_MARGIN),
-    right: Math.min(width, box.right + BOX_MARGIN),
-    bottom: Math.min(height, box.bottom + BOX_MARGIN),
-  };
+  const [top, bottom] = cropTopBottom(
+    box.top,
+    box.bottom,
+    centred.top,
+    centred.bottom,
+    height,
+  );
+  const left = Math.max(0, box.left - BOX_MARGIN);
+  const right = Math.min(width, box.right + BOX_MARGIN);
+  return { left, top, right, bottom };
 }

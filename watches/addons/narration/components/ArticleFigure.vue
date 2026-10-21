@@ -11,7 +11,8 @@
 // DWELL_MS, and after the last step it starts again. Its caption is the
 // narration of its step.
 //
-// The reader can pause a figure; "pause all" on the page pauses every one.
+// The reader can pause a figure that moves or plays; "pause all" on the
+// page pauses every one. A still figure has no pause button.
 //
 // THE CROP. A figure of a picture is cropped to the picture's box (the
 // talk's), widened to hold its labels: the elements with `in-figure` that
@@ -65,7 +66,9 @@ const pausedByReader = ref(false);
 const paused = computed(() => props.pausedByPage || pausedByReader.value);
 const busyUntil = ref(0);
 const controls = shallowRef<readonly FigureControl[]>([]);
-provide(FIGURE, { clicks, near, paused, busyUntil, controls });
+const still = ref(false);
+provide(FIGURE, { clicks, near, paused, busyUntil, controls, still });
+const pausable = computed(() => props.figure.play || !still.value);
 
 /** The labels' box, in slide px, once measured. */
 const labels = shallowRef<Box | null>(null);
@@ -128,7 +131,8 @@ const LABELS_WAIT_MS = 4000;
 /** Measure the labels that show at the figure's steps (with one step, those
  *  that its click shows), each with all that it draws (a leader too), in
  *  slide px. A label's own element may be a layer as big as the slide (a
- *  callout is): its parts say where it draws. */
+ *  callout is), and an <svg> may draw past its box: their parts say where
+ *  they draw. */
 function measureLabels(): void {
   const slide = frame.value?.querySelector(".print-slide-container");
   if (!props.box || !slide) return;
@@ -142,6 +146,9 @@ function measureLabels(): void {
       continue;
     }
     for (const element of [label, ...label.querySelectorAll("*")]) {
+      // an <svg>'s box is its viewport (a callout's is 1 px at the slide's
+      // corner, with `overflow: visible`): its shapes say where it draws
+      if (element instanceof SVGSVGElement) continue;
       const rect = element.getBoundingClientRect();
       if ((rect.width === 0 && rect.height === 0) || layer(rect)) continue;
       box = union(box, {
@@ -224,7 +231,10 @@ watch([step, near, paused, busyUntil], schedule);
       aria-live="polite"
       v-html="caption"
     />
-    <div class="article-figure-controls">
+    <div
+      v-if="steps.length > 1 || controls.length > 0 || pausable"
+      class="article-figure-controls"
+    >
       <template v-if="steps.length > 1">
         <button
           type="button"
@@ -277,6 +287,7 @@ watch([step, near, paused, busyUntil], schedule);
         </span>
       </label>
       <button
+        v-if="pausable"
         type="button"
         class="article-button article-pause"
         :aria-pressed="paused"
