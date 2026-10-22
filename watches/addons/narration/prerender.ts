@@ -79,10 +79,6 @@ try {
     deviceScaleFactor: STILL_SCALE,
     reducedMotion: "no-preference",
   });
-  // A runner with no GPU draws WebGL in software, and the last figures take
-  // 25 s each here (12 cores), longer on a 4-core runner: more than
-  // Playwright's 30 s default.
-  page.setDefaultTimeout(180_000);
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(`http://127.0.0.1:${String(address.port)}${base}article`);
@@ -90,12 +86,22 @@ try {
   await page.evaluate(() => document.fonts.ready);
   const figures = page.locator("figure.article-figure");
   const count = await figures.count();
+  // The page's "Pause them all": a paused figure is not drawn and keeps its
+  // picture. Without a GPU each frame of a figure takes up to 0.4 s, and a
+  // scroll or a screenshot waits for frames, so both are done paused. Sent
+  // as an event: a click would wait for frames too. See
+  // tasks/2026-10-22-article-prerender-speed/.
+  const pauseAll = page.locator(".article-motion button");
+  const press = () => pauseAll.dispatchEvent("click");
+  await press();
   for (let index = 0; index < count; index++) {
     const figure = figures.nth(index);
     const id = await figure.getAttribute("id");
     if (!id) throw new Error(`figure ${String(index)} has no id`);
     await figure.scrollIntoViewIfNeeded();
+    await press();
     await page.waitForTimeout(SETTLE_MS);
+    await press();
     await figure
       .locator(".article-figure-frame")
       .screenshot({ path: join(out, "figures", `${id}.png`) });

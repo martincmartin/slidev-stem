@@ -12,7 +12,9 @@ slide that has narration, change `addons/narration/`, the figure layer
 build the article.
 **Tasks:**
 [`tasks/2026-10-03-narrated-export/`](../../tasks/2026-10-03-narrated-export/README.md)
-(the forms, the measurements, and the page's design in its `page-design.md`).
+(the forms, the measurements, and the page's design in its `page-design.md`),
+[`tasks/2026-10-22-article-prerender-speed/`](../tasks/2026-10-22-article-prerender-speed/PLAN.md)
+(why the prerender was slow).
 
 ## What a reader gets
 
@@ -260,7 +262,11 @@ pnpm article   # slidev build, then pnpm prerender: node addons/narration/preren
 ```
 
 `prerender.ts` serves the built deck, opens `/article` in Chromium, and takes
-a still of each figure, as it shows when it has settled. It writes
+a still of each figure, as it shows when it has settled. It takes each still,
+and scrolls, with the page paused ("Pause them all"): with no GPU, a frame
+takes up to 0.4 s, and a screenshot or a scroll waits for frames. This made
+it 3.7× faster (64 s here); the settles are most of what is left
+([the task](../tasks/2026-10-22-article-prerender-speed/PLAN.md)). It writes
 `dist/article/index.html`: the deck's `index.html`, with the article's text
 in it as HTML and each figure a still (`dist/article/figures/`, about 6 MB at
 twice the pixel density). So:
