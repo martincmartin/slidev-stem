@@ -548,9 +548,12 @@ counts the twelve hours on the dial, so it turns once in twelve hours: twice
 a day.
 
 > [!aside] Why is this second hand not in the middle?
-> On most watches the second hand is in the middle, with the other two. On
-> this one it has its own arbor, off centre, as on many older watches.
+>
+> On most watches the second hand is in the middle, with the minute and hour
+> hands.  But putting three hands all on the same shaft makes the diagram
+> confusing, and many older watches had their second hand off centre.
 > Watchmakers call it _small seconds_.
+
 -->
 
 <!--
@@ -709,11 +712,11 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
 
 <!-- narration
 
-START HERE.
-
-The escapement lets the escape wheel turn one step at a time. But the second
+The escapement gets the escape wheel turning at a precise rate.  But the second
 hand must turn once a minute, and the escape wheel turns faster than that. To
-slow a turn down, a watch uses gears: a small gear that drives a big one.
+convert a faster rotation into a slower one, a watch uses gears: a small gear
+that drives a big one.
+
 [nofigure]
 
 [click]
