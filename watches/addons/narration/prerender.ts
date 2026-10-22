@@ -79,6 +79,10 @@ try {
     deviceScaleFactor: STILL_SCALE,
     reducedMotion: "no-preference",
   });
+  // A runner with no GPU draws WebGL in software, and the last figures take
+  // 25 s each here (12 cores), longer on a 4-core runner: more than
+  // Playwright's 30 s default.
+  page.setDefaultTimeout(180_000);
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(`http://127.0.0.1:${String(address.port)}${base}article`);
