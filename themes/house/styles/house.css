@@ -78,3 +78,14 @@
   color: var(--palette-muted);
   pointer-events: none;
 }
+
+/* The letterbox around the slide lets a click through to the page under it.
+   Slidev goes back for a click on the letterbox's left half; here a click
+   anywhere goes forward (setup/root.ts, docs/navigation.md, "Mouse clicks").
+   A swipe still starts on the page. */
+#page-root > #slide-container {
+  pointer-events: none;
+}
+#page-root > #slide-container > * {
+  pointer-events: auto;
+}

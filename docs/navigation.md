@@ -2,8 +2,8 @@
 
 **Covers:** how a slide says what it shows, so that going back a click or a
 slide works with no extra code; the default for each kind of animation when
-the viewer goes back; and the check that finds a move that does not follow
-the rules.
+the viewer goes back; what a mouse click does; and the check that finds a move
+that does not follow the rules.
 
 **Tasks:**
 [`full-validation-profile`](../watches/tasks/2026-10-07-full-validation-profile/PLAN.md)
@@ -11,8 +11,8 @@ the rules.
 [`validation-speed`](../tasks/2026-10-06-validation-speed/PLAN.md)
 (the combined navigation and offline walk).
 
-**Read before** you add a click, a slide transition, or anything that moves or
-fades between clicks or slides.
+**Read before** you add a click, a slide transition, anything that moves or
+fades between clicks or slides, or a control on a slide.
 
 Why, and the options that were compared:
 [`watches/tasks/2026-10-04-backward-navigation`](../watches/tasks/2026-10-04-backward-navigation/PLAN.md).
@@ -51,6 +51,22 @@ pose, and does not play the story backward. A key that unwinds the spring
 runs time backward, which a step back should not do
 ([`watch.md`](../watches/docs/watch.md#the-mainspring-slide)). Text that is part of a story animation runs on
 that animation's clock, not on a `v-click`.
+
+## Mouse clicks
+
+A mouse click on the slide goes to the next click or slide, in the slides and
+in the presenter view, as in Keynote and PowerPoint. A click never goes back:
+during a talk, a stray click must not undo a step. To go back, use the arrow
+keys, Slidev's navigation bar or a swipe. A click on the letterbox around the
+slide goes forward too. The house theme does this, in
+`themes/house/setup/root.ts` and `themes/house/styles/house.css`. Slidev alone
+goes forward or back only for a click on the letterbox, by its half: no visitor
+expects the place of a click to choose its direction.
+
+A click does not go forward when it is on a link, a button, a form control or
+a slider, or when it ends a text selection or a drawing. A slide that adds a
+control of its own must use one of these elements or roles, or the click on it
+also goes forward.
 
 ## Validation: fast smoke navigation
 

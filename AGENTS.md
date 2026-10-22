@@ -75,8 +75,8 @@ Before you…
 - draw or change any illustration (SVG), or a callout's leader:
   `docs/illustrations.md`.
 - change the WebGL renderer, the watch, or its frontmatter: `docs/webgl.md`.
-- add a click, a slide transition, or anything that moves between clicks or
-  slides: `docs/navigation.md`.
+- add a click, a slide transition, anything that moves between clicks or
+  slides, or a control on a slide: `docs/navigation.md`.
 - decide if something is big, thick or dark enough: `docs/legibility.md`.
 - start, upgrade, validate, tag, retire, build or publish a talk, add a deck
   file, change a house item, or change browser support: `docs/talks.md`.

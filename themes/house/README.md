@@ -31,12 +31,14 @@ palette: [`docs/theme.md`](../../docs/theme.md), "Palettes".
 - `styles/fonts.css`: the self-hosted font weights, from Fontsource
 - `styles/house.css`: background and ink on every slide, from the palette's
   roles; `h1`; the subtitle (`h1 + p`); cover and section type; their placement
-  (`side-center`, `side-left`); `palette-preview`
+  (`side-center`, `side-left`); `palette-preview`; a click on the letterbox
+  goes to the page under it
 - `styles/index.ts`: Slidev's base layout styles, `fonts.css`, `house.css`, and
   every palette's rule, so that any slide can show any palette
 - `layouts/`: `cover.vue`, `section.vue`
 - `utils/side.ts`: the title layouts' `side`: its values, and the check
-- `setup/root.ts`: the navigation probe that the smoke check reads
+- `setup/root.ts`: the navigation probe that the smoke check reads, and a
+  mouse click on the slide goes forward
   ([`docs/navigation.md`](../../docs/navigation.md))
 - `vite.config.mts`: lets a talk's dev server and `slidev export` serve the
   fonts, which `pnpm install` at the repo root puts outside the talk, and the

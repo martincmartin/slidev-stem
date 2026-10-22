@@ -14,7 +14,8 @@ lists in step. What is true of one talk only is in that talk's `docs/` (for
 - [webgl.md](webgl.md): live 3D art: when to use it, the renderer and its
   contract, the house style in 3D, how slides drive it
 - [navigation.md](navigation.md): a slide names targets, not moves: going back
-  with no extra code, the default for each kind of animation, the check
+  with no extra code, the default for each kind of animation, what a mouse
+  click does, the check
 - [legibility.md](legibility.md): the venue, the resolution and contrast floors,
   room light, how to read the metrics, text sizes
 - [talks.md](talks.md): each talk as its own project: set up a clone, why,
