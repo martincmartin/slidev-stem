@@ -41,7 +41,7 @@ Martin C. Martin
 
 Mechanical watches have kept time for 500 years.  This page explains how a
 modern one works.  I personally think it's fascinating that a purely mechanical
-device can keep time with 99.9% accuracy for $20.  They also changed the world
+device can keep time with 99.99% accuracy for $100.  They also changed the world
 and look good on your wrist.
 
 This presentation was partially inspired by Bartosz Ciechanowski's [Mechanical
@@ -241,53 +241,46 @@ history: "c. 1364"
 <!-- narration
 
 The hairspring is only half of the timekeeper. The other half is the _balance
-wheel_, fixed to the spring's inner end. The spring decides how hard it pushes
-back. The wheel decides how much there is to push.
+wheel_.  While most of its mass is around the outside, it is actually fixed to
+the spring's inner end. The spring provides the _restoring force_. The wheel
+provides the _mass_ and _inertia_.
 
 [figure 3: The balance wheel on the hairspring, swinging. The wheel is
 marked.]
 
-Put a child on the end of a diving board, and it goes boing-boing-boing, fast.
-Put a heavy adult there, and you get one slow, deep bounce. Same board, more
-mass, slower swing. A hairspring alone would flutter far too fast to count.
-The wheel slows it to a pace that the gears can count. (The drawing is slowed
-down again: a real balance wheel swings four times a second.)
+A hairspring alone would oscillate far too fast to count.  The wheel slows it to a
+pace that the gears can count.
 
 > [!aside] Why a wheel, and not a disc?
+>
 > Mass at the rim counts most, like a figure skater who spins slower with her
 > arms out. Old balance wheels had screws round the rim, and watchmakers moved
 > them in or out to make the watch run slower or faster. The swing also takes
-> about the same time whether it is big or small. That comes from the spring
-> and the mass together, and it is why a watch keeps time while its mainspring
-> runs down.
+> about the same time whether it swings through a big angle or small angle
+> (_isochronism_). That comes from the spring and the mass together, and it is
+> why a watch keeps time even while the watch winds down.
 
-[click] Mass also makes the swing steady. Push an empty playground swing, and
-it jerks about. Put a child on it, and your push only tops it up. A heavy
-wheel carries its own momentum, so a knock to your wrist, or the small push
-that the watch gives it at each swing, barely changes its rhythm.
+[click] Mass also makes the swing steady. Push an empty playground swing, and it
+jerks about. Put a child on it and it swings much more gracefully. A heavy wheel
+carries its own momentum, so a knock to your wrist, or turning it upside down,
+barely changes its rhythm.
 
-[click] How good is it? A well-adjusted mechanical watch, even an everyday
-Seiko or Citizen, is about 99.99% accurate. That sounds perfect.
+[click] How good is it? A well-calibrated mechanical watch, even an everyday
+Seiko or Citizen, is about 99.99% accurate.  A day has 86,400 seconds, so a good
+watch gains or loses about nine seconds a day.
 
-[click] But a day has 86,400 seconds, and 0.01% of a day is about nine
-seconds. So a good watch gains or loses about nine seconds a day. That is a
-rate you can expect, not a promise for every watch.
--->
+I'm not particularly handy with mechanical things, if I tried to build a table
+it would wobble because things would be off by a few percent.  So it kind of
+blows my mind that, for $100, I can get a simple, everyday, purely mechanical
+system and tweak it to be 99.99% accurate!
+
+ -->
 
 <!--
-The hairspring is only half of the oscillator. The other half is the balance wheel. The spring decides how hard it pushes back. The wheel decides how much there is to push.
 
-The dashed rest shape fades out as the balance wheel fades in. When it is all in, the balance wheel flashes five times.
 
-Put a child on the end of the diving board: boing-boing-boing, fast. Put a heavy adult there: one slow, deep bounce. Same board, more mass, slower swing. A hairspring alone would flutter far too fast to count. The wheel slows it to a pace the gears can count. On the screen it is slowed down again: a real one swings four times a second.
+[click] - wrist bump or upside down
 
-[click] Mass also makes it steady. Push an empty playground swing and it jerks around. Put a kid on it and your push just tops it up. A heavy wheel carries its own momentum. A bump to your wrist, or the small kick the watch gives it on each swing, barely changes its rhythm.
-
-[click] A well-calibrated mechanical watch, even an everyday Seiko or Citizen, can be about 99.99% accurate. That sounds perfect. (Pause.)
-
-[click] But there are 86,400 seconds in a day, so that is about nine seconds gained or lost each day. This is an achievable rate, not a guarantee for every watch. It is an average over the day.
-
-IF ASKED: Why a wheel and not a disc? Mass at the rim counts most, like a figure skater who spins slower with her arms out. Old balances had screws on the rim. Watchmakers moved them in or out to make the watch run faster or slower. The swing also takes about the same time whether it is big or small. That comes from the spring and the mass together, and it is why a watch keeps time while its mainspring runs down.
 -->
 
 ---
@@ -384,42 +377,35 @@ The wheel's and the pallet's leaders end LEADER_GAP px outside their parts
 }
 </style>
 
-<!--
-"Force (unseen) trying to turn wheel"
-
-"Pallet blocks wheel"
-
-"Jewel strikes pallet"
-
-"Pallet strikes Jewel"
--->
-
-<!--
-The camera zooms out, with only the balance wheel and the hairspring on the screen. Then the roller, its impulse jewel, the pallet fork and the escape wheel fade in.
--->
 
 <!-- narration
-The balance swings back and forth, but the hands must turn one way only. The
-_escapement_ turns the swing into steps. It has three parts: a wheel with
-pointed teeth, a fork that blocks the wheel, and a jewel on the balance that
-works the fork. [nofigure]
+
+A second hand that just moves back and forth isn't very useful, we need it to
+turn one way only.  The _escapement_ turns the swing into steps.
+
+The _escape wheel_ is being turned by a mechanism we'll explain soon, so it's
+hidden on this slide.  Without something to stop it, it would just turn and
+turn.
+
+[nofigure]
 
 [click]
 
 [figure: The escape wheel alone, spinning freely. A curved arrow shows the
 push on it.]
 
-Start with the _escape wheel_. Something that we cannot see yet is always
-pushing it round. Take everything else away, and it spins freely, as fast as
-that push can drive it.
+[click] The _pallet fork_ stops it. 
 
-[click] The _pallet fork_ stops it. Its two stones sit among the wheel's
-teeth: a tooth lands on a stone, and the wheel stops. Each time the fork
-rocks, one stone lets a tooth go, and the other stone catches the next tooth.
-The tooth _escapes_, and that is where the name comes from.
+[figure]
 
-[click] What rocks the fork? The balance does. On its staff is a small
-_impulse jewel_, which sits in the notch at the end of the fork.
+Its two prongs (called _stones_) stick in the wheel's teeth: a tooth lands on a
+stone, and the wheel stops. Each time the fork rocks, one stone lets a tooth go,
+and the other stone catches the next tooth.  The tooth _escapes_, and that is
+where the name comes from.
+
+[click] What rocks the fork? The balance does. On its staff is a small _impulse
+jewel_, which sits in the notch at the end of the fork.  It's actually a
+synthetic ruby or sapphire, so it really is a jewel, a precious stone.
 
 [figure: The escapement at rest, labelled: the escape wheel, the pallet
 fork, and the impulse jewel in the fork's notch.]
@@ -427,26 +413,24 @@ fork, and the impulse jewel in the fork's notch.]
 As the balance swings through the middle, the jewel strikes the fork and
 flips it one way. On the swing back, it flips it the other way.
 
-[click] So, at each swing, the balance lets the wheel take one small step.
-Each step is a strike, and you can hear it: this is the tick and the tock of
-a watch. The push goes both ways, too. At each strike, a little energy flows
+[click] So, at each swing, the balance lets the wheel take one small step.  The
+jewel hits the fork hard enough to make a sound: this is the tick and the tock
+of a watch. The push goes both ways, too. At each strike, a little energy flows
 from the wheel, through the fork, into the balance, and keeps it swinging.
+
 -->
 
 <!--
-The escapement turns back-and-forth motion into rotation in one direction.  (It also gives a "boost" to the hairspring, should I mention that?  Does that explain a significant part of its design?  If I do, I think its a separate section at the end of the slide: first explain how the jewel kicks the fork which lets the escape wheel turn; once that's done, then you can talk about the counter-kick to the hairspring.)
-- Need to say, and somehow indicate visually, that "something" is applyign force (torque) to the escape wheel.
-- The escapment lets the escape wheel advance once each way.
-- This is where the "tick tock" sound comes from!
-- The teeth are trapped by the pallet stones.  The pallet allows the teeth to "escape", hence the name "escapement."
+- second hand: turn one direction
 
-[click] First, the gears are trying to run forward because the mainspring is applying torque. (The wheel's callout and its arrow appear.) The pallet and the balance fade away, and nothing holds the escape wheel back: it spins freely.
+[click]  turning force, explained soon
 
-[click] Second, the escapement normally prevents them from doing so. The pallet stones lock the escape wheel.
+[click]  Stick in teeth.
+- Each rock lets a tooth _escape_.
 
-[click] Third, the jewel. (The balance comes to rest, with the jewel in the fork's notch, under its leader.)
+[click] Synthetic ruby or sapphire.  Really is a jewel!
 
-[click] As the balance swings, it periodically gives permission for one tiny advance. (Each time the jewel strikes the fork, "tick" or "tock" appears beside it and drifts away.) During that event some energy also travels the other way, from the gear train through the escapement into the balance.
+[click] 
 -->
 
 ---
@@ -543,6 +527,7 @@ rule for the other two hands. -->
 </style>
 
 <!-- narration
+
 Before we go on, a quick puzzle that trips people up. How long does the
 second hand take to go once round the dial?
 
@@ -551,8 +536,8 @@ second.]
 
 Each step of the escapement moves the second hand one step: one tick, one
 second. Sixty ticks bring it all the way round, and sixty seconds is a
-minute. So the second hand turns once a minute. A hand is named for what it
-counts, not for how long it takes to go round.
+minute. So the second hand makes a complete circle once a minute. A hand is
+named for what it counts, not for how long it takes make a full 360° turn.
 
 The other hands follow the same rule:
 
@@ -573,15 +558,14 @@ a day.
 -->
 
 <!--
-A quick one, because it trips people up. (Optional: first ask the room how long the second hand takes to go round.) Here is the second hand, alone, pinned on its arbor.
+How long does second hand take to turn all the way aroumnd a full circle?
 
-[click] Each tick of the escapement moves it one step: one tick, one second.
+[click] 
 
-[click] Sixty ticks bring it all the way round. Sixty seconds is a minute, so the second hand turns once a minute. It is named for what it counts, not for how long a turn takes.
+[click] Named for what it counts.
 
-[click] The same goes for the others. The minute hand counts minutes: sixty of them, so it turns once an hour. The hour hand counts hours, and the dial has twelve: once in twelve hours, twice a day.
+[click]
 
-IF ASKED: On most watches the second hand is in the middle, with the other two. On this one it has its own arbor, off centre, as on many older watches: a "small seconds".
 -->
 
 ---
@@ -729,6 +713,9 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
 </style>
 
 <!-- narration
+
+START HERE.
+
 The escapement lets the escape wheel turn one step at a time. But the second
 hand must turn once a minute, and the escape wheel turns faster than that. To
 slow a turn down, a watch uses gears: a small gear that drives a big one.
