@@ -86,7 +86,8 @@ jobs:
           pnpm exec playwright install-deps chromium
 
       # `build` and an optional `prerender` write the site to the talk's
-      # dist/ (docs/talks.md, "Publish a talk").
+      # dist/ (docs/talks.md, "Publish a talk"). tools/pages_preview.py runs
+      # the same commands: change both.
       - name: Build the talk
         working-directory: src
         env:

@@ -178,17 +178,22 @@ article. The site's own pages are in `site/`: the root page `index.html`, and
 
 **Publish the version that you give.** Push its tag:
 
-1. Tag the talk, as in "Tag, rebuild or retire a talk": the checks first, then
+1. Look at the talk as Pages will show it. At the root, run
+   `uv run tools/pages_preview.py <talk>`, and open the URL that it prints. It
+   builds the talk as the workflow does. Click through the slides and open a
+   link to one slide: `slidev dev` can show a slide right that a build shows
+   wrong.
+2. Tag the talk, as in "Tag, rebuild or retire a talk": the checks first, then
    `git tag -a given/<talk>/<YYYY-MM-DD>`.
-2. Push `main`, then the tag: `git push origin main given/<talk>/<YYYY-MM-DD>`.
-3. The workflow `.github/workflows/publish.yml` builds the talk at the tag
+3. Push `main`, then the tag: `git push origin main given/<talk>/<YYYY-MM-DD>`.
+4. The workflow `.github/workflows/publish.yml` builds the talk at the tag
    and publishes it. Look at its run in the repository's Actions tab, then
    open the talk's page.
 
 **Publish between talks.** For example, to publish a fix to the article,
-run the workflow by hand: in the Actions tab, choose "Publish a talk", then
-"Run workflow". Give the talk's directory and a ref (`main`, a tag or a
-commit). With the GitHub CLI:
+look at the preview first (step 1), then run the workflow by hand: in the
+Actions tab, choose "Publish a talk", then "Run workflow". Give the talk's
+directory and a ref (`main`, a tag or a commit). With the GitHub CLI:
 `gh workflow run publish.yml -f talk=<talk> -f ref=main`.
 
 **The first time a talk is published,** add it to `site/index.html` on
