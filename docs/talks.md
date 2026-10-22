@@ -173,7 +173,8 @@ copy, delete it. The tags keep it.
 The talks are on GitHub Pages, at
 `https://martincmartin.github.io/slidev-stem/`. Each talk has its own
 directory there: `<talk>/` for the slides, and `<talk>/article/` if it has an
-article. The root page is `site/index.html`.
+article. The site's own pages are in `site/`: the root page `index.html`, and
+`404.html`.
 
 **Publish the version that you give.** Push its tag:
 
@@ -209,8 +210,11 @@ How a run works, and why:
   version can be built again from its ref.
 - **The speaker notes are published,** in the presenter view of the slides.
   The article is the version for readers.
-- **Links to one slide work.** `slidev build` writes a `404.html` that loads
-  the deck, so GitHub Pages serves the deck for a path that has no file.
+- **Links to one slide work,** for example `<talk>/5`. GitHub Pages serves the
+  site's `404.html` for a path that has no file, and that page loads the
+  talk's `index.html` in its place. GitHub Pages uses only the `404.html` at
+  the site's root, not the one that `slidev build` writes in `dist/`. A run
+  copies `site/404.html` from the default branch, as it does the root page.
 
 The repository's Pages setting is "Deploy from a branch", with the `gh-pages`
 branch and the `/ (root)` folder.
