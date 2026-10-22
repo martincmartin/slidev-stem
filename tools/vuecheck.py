@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Does a Vue component keep the class and v-click that a slide gives it?
+"""Does a Vue component keep the class and v-click that a slide gives it, and
+is each lint disable in its template narrow?
 
     uv run tools/vuecheck.py watches
     uv run tools/vuecheck.py themes path/to/One.vue
 
-A comment beside the one root element of a component's template (before it or
+**The root.** A comment beside the one root element of a component's template (before it or
 after it) makes a second root in a production build. Vue then drops the
 `class`, `v-click` and other attributes that a slide gives the component, with
 no error. `slidev dev` hides this: its Vue treats the comment as no root. So
@@ -15,6 +16,14 @@ element.
 A template with more than one root element is not checked: Vue gives a slide's
 attributes to none of its roots, with or without a comment. A `v-else` or
 `v-else-if` element is the same root as the element before it.
+
+**Lint disables in a template.** ESLint's comment rules read only script
+comments, so this does what they do for the template's `<!-- eslint-... -->`:
+each disable names its rules and gives a reason after `--`, and a block
+disable (`eslint-disable`) has a later `eslint-enable` for each of its rules,
+even at the end of the template. ESLint itself reports a disable that
+suppresses nothing (`vue/comment-directive`). See docs/talks.md, "Check your
+work".
 
 It checks each `.vue` file in the paths, apart from `node_modules/`, `dist/`,
 `tasks/` and hidden directories. It exits non-zero on a failure.
@@ -36,15 +45,22 @@ VOID_ELEMENTS = frozenset(
 # end tag that starts a line. A nested <template> is indented.
 TEMPLATE = re.compile(r"^<template[^>]*>(.*)^</template>", re.MULTILINE | re.DOTALL)
 ELSE_BRANCHES = frozenset({"v-else", "v-else-if"})
+# `eslint-disable`, `eslint-disable-next-line`, `eslint-enable`, ...: the kind,
+# then the rules, then " -- " and the reason.
+DIRECTIVE = re.compile(
+    r"^eslint-(disable|enable)(-next-line|-line)?(?:\s+(.*))?$", re.DOTALL
+)
 
 
 class TopLevel(HTMLParser):
-    """The roots and the comments at the top level of a template."""
+    """The roots and the comments at the top level of a template, and all its
+    comments, in order."""
 
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.roots = 0
         self.comments: list[str] = []
+        self.all_comments: list[str] = []
         self.depth = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -60,6 +76,7 @@ class TopLevel(HTMLParser):
             self.depth -= 1
 
     def handle_comment(self, data: str) -> None:
+        self.all_comments.append(data.strip())
         if self.depth == 0:
             self.comments.append(data.strip())
 
@@ -86,15 +103,8 @@ def vue_files(paths: list[pathlib.Path]) -> list[pathlib.Path]:
     return sorted(found)
 
 
-def problem(file: pathlib.Path, text: str) -> str | None:
-    """What is wrong with the root of the component `file`, whose source is
-    `text`, or None."""
-    template = TEMPLATE.search(text)
-    if template is None:
-        return None
-    top = TopLevel()
-    top.feed(template.group(1))
-    top.close()
+def root_problem(file: pathlib.Path, top: TopLevel) -> str | None:
+    """A comment beside the one root element of the template, or None."""
     if top.roots != 1 or not top.comments:
         return None
     return (
@@ -102,6 +112,47 @@ def problem(file: pathlib.Path, text: str) -> str | None:
         f"({top.comments[0]!r}): a build drops the class and v-click that a "
         "slide gives the component; put the comment inside the root element"
     )
+
+
+def directive_problems(file: pathlib.Path, comments: list[str]) -> list[str]:
+    """What is wrong with the template's lint disables: one each."""
+    found = []
+    open_rules: dict[str, str] = {}  # a block disable's rule: its comment
+    for comment in comments:
+        directive = DIRECTIVE.match(comment)
+        if directive is None:
+            continue
+        kind, scope, rest = directive.groups()
+        names, _, reason = (rest or "").partition("--")
+        rules = [rule.strip() for rule in names.split(",") if rule.strip()]
+        if kind == "enable":
+            for rule in rules or list(open_rules):
+                open_rules.pop(rule, None)
+            continue
+        if not rules:
+            found.append(f"{file}: <!-- {comment} --> names no rule: name each rule")
+        if not reason.strip():
+            found.append(f"{file}: <!-- {comment} --> gives no reason after ' -- '")
+        if scope is None:
+            open_rules.update(dict.fromkeys(rules, comment))
+    found.extend(
+        f"{file}: <!-- {comment} --> has no later eslint-enable for {rule}: "
+        "enable it where the exception ends, even at the end of the template"
+        for rule, comment in open_rules.items()
+    )
+    return found
+
+
+def problems(file: pathlib.Path, text: str) -> list[str]:
+    """What is wrong with the component `file`, whose source is `text`."""
+    template = TEMPLATE.search(text)
+    if template is None:
+        return []
+    top = TopLevel()
+    top.feed(template.group(1))
+    top.close()
+    root = root_problem(file, top)
+    return [*([root] if root else []), *directive_problems(file, top.all_comments)]
 
 
 def main() -> int:
@@ -116,14 +167,17 @@ def main() -> int:
             sys.exit(f"{path} does not exist")
     files = vue_files(paths)
     found = [
-        found
+        message
         for file in files
-        if (found := problem(file, file.read_text(encoding="utf-8"))) is not None
+        for message in problems(file, file.read_text(encoding="utf-8"))
     ]
     for message in found:
         print(f"FAIL  {message}")
     if not found:
-        print(f"ok    {len(files)} component(s): no comment beside a single root")
+        print(
+            f"ok    {len(files)} component(s): no comment beside a single root; "
+            "each lint disable is narrow, named and explained"
+        )
     return 1 if found else 0
 
 

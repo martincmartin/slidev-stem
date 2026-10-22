@@ -293,9 +293,17 @@ Full validation runs every check and exits non-zero if any check fails:
   `tools/` (pytest), checks the docs with `doccheck`, and checks the palette's
   gates. It checks that no Vue component in `themes/` has a comment beside its
   one root element (`vuecheck`): a build then drops the class and `v-click`
-  that a slide gives it, and `slidev dev` does not show this.
+  that a slide gives it, and `slidev dev` does not show this. `vuecheck` also
+  checks each lint disable in a template, as a talk's `lint` does in a
+  script (below).
 - **A talk's run** checks the talk's Python with the same four tools, in the
-  talk's own venv. It checks the talk with Prettier, its docs with `doccheck`,
+  talk's own venv. It runs the talk's `typecheck`, `lint` and `test` scripts,
+  if it has them. Its `lint` fails on a warning, and on a lint disable that is
+  not as narrow as it can be: a block disable with no enable for its rules
+  (even at the end of the file), a disable that names no rule or gives no
+  reason, or one that suppresses nothing (`eslint.config.js`; `vuecheck` for
+  a Vue template's comments; ruff's `PGH` and `RUF100` for Python). It checks
+  the talk with Prettier, its docs with `doccheck`,
   and every SVG in its `public/` with `artcheck`, `barroom` and `motion`. It
   checks that the talk sets the palette only for a slide class (in any of its
   source files), and that each such palette passes the gates. It runs the

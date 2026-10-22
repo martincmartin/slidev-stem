@@ -1,3 +1,4 @@
+import comments from "@eslint-community/eslint-plugin-eslint-comments/configs";
 import eslint from "@eslint/js";
 import prettier from "eslint-config-prettier";
 import vue from "eslint-plugin-vue";
@@ -19,6 +20,26 @@ export default tseslint.config(
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
   vue.configs["flat/recommended"],
+  // A disable is as narrow as it can be: one line, or a block with its
+  // enable, even if the block is the whole file. It names its rules and
+  // gives a reason, and it goes when it suppresses nothing. The plugin reads
+  // script comments; tools/vuecheck.py checks a template's
+  // (../docs/talks.md, "Check your work").
+  comments.recommended,
+  {
+    linterOptions: { reportUnusedDisableDirectives: "error" },
+    rules: {
+      "@eslint-community/eslint-comments/disable-enable-pair": [
+        "error",
+        { allowWholeFile: false },
+      ],
+      "@eslint-community/eslint-comments/require-description": "error",
+      "vue/comment-directive": [
+        "error",
+        { reportUnusedDisableDirectives: true },
+      ],
+    },
+  },
   {
     languageOptions: {
       globals: { ...globals.browser, ...globals.node },

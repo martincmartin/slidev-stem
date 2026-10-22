@@ -44,10 +44,11 @@ include = ["*.py", "*.pyi"]
 
 [tool.ruff.lint]
 # Beyond ruff's defaults: import order, newer syntax, likely bugs, simpler code,
-# comprehensions, pathlib, naming, performance, ruff's own. Not PL (the tools'
-# constants are deliberate), S (the subprocess calls) or D (the house's
-# docstring style). See tasks/2026-09-28-validate/PLAN.md.
-extend-select = ["I", "UP", "B", "SIM", "C4", "PTH", "N", "PERF", "RUF"]
+# comprehensions, pathlib, naming, performance, ruff's own, and a `noqa` or
+# `type: ignore` that names its codes (PGH; RUF100 finds an unused `noqa`).
+# Not PL (the tools' constants are deliberate), S (the subprocess calls) or D
+# (the house's docstring style). See tasks/2026-09-28-validate/PLAN.md.
+extend-select = ["I", "UP", "B", "SIM", "C4", "PTH", "N", "PERF", "PGH", "RUF"]
 
 [tool.mypy]
 python_version = "3.15"

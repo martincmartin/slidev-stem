@@ -52,15 +52,16 @@ Each tool, with what it needs in brackets, and what it answers:
   and does Prettier read each of its deck files with the Slidev parser
 - `vuecheck.py` (stdlib): does each Vue component keep the class and
   `v-click` that a slide gives it in a build: no comment beside its one root
-  element
+  element; is each lint disable in its template narrow (a block disable has
+  its enable), named and explained
 - `check_python.py` (ruff, mypy, pyright): do these Python files pass the
   house's checks (default: every tool here)
 - `doccheck.py` (stdlib): do the docs' links and anchors resolve, does each
   `docs/` match its two indexes, does each named tool exist
-- `validate.py` (all of the above): does this project (stem/ or a talk) pass its
 - `pages_preview.py` (stdlib, pnpm): what does a talk look like on GitHub
   Pages: it builds the talk as the publish workflow does, and serves it as Pages
   does, links to one slide included
+- `validate.py` (all of the above): does this project (stem/ or a talk) pass its
   checks; full or quick mode
 - `flatten_pnpm_list.py` (stdlib): every resolved JS package, one `name@version`
   a line: diff before and after an upgrade
@@ -78,9 +79,9 @@ uv run tools/validate.py --fix                          # ... after ruff formats
 (cd watches && uv run ../tools/validate.py --json)      # results and elapsed times as JSON
 (cd watches && uv run ../tools/validate.py --no-reuse)  # run print and smoke navigation again
 (cd watches && uv run ../tools/validate.py --print)     # run print even if no print input changed
-uv run tools/lib.py                          # the framework, as numbers
 uv run tools/pages_preview.py watches        # the talk, built and served as on GitHub Pages
 uv run tools/pages_preview.py watches --article  # ... with the static article (about a minute more)
+uv run tools/lib.py                          # the framework, as numbers
 uv run tools/palette.py                      # every gate, pass/fail
 uv run tools/palette.py --talk watches       # only: does this talk set it outside a slide class?
 uv run tools/palette.py "#C0451C" accent     # a candidate colour, measured
