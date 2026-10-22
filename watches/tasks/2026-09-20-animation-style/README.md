@@ -1563,3 +1563,5 @@ is missing things this archive talks about:
 - **Sets 4 and 5 keep their no-numerals note** (§8.9) even though neither ships. The
   note is about what the sets are _for_, and it has to outlive the decision that made
   them irrelevant to this talk.
+
+2026-10-22: the sundial time-lapse (`deck/public/timekeepers/sundial-timelapse.mp4` and its poster frame `.jpg`) is deleted from this task before the repo goes public. No talk uses it now, and it was the repo's only borrowed video (CC BY 3.0). In `deck/slides.md`, the Sundial card of the "Before clocks, time was a flow" slide now has no picture. To get the files back: `git show 9a8da8d:watches/tasks/2026-09-20-animation-style/deck/public/timekeepers/sundial-timelapse.mp4 > sundial-timelapse.mp4`, and the same for the `.jpg`.

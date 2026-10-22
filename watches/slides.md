@@ -277,10 +277,7 @@ system and tweak it to be 99.99% accurate!
  -->
 
 <!--
-
-
 [click] - wrist bump or upside down
-
 -->
 
 ---
@@ -377,7 +374,6 @@ The wheel's and the pallet's leaders end LEADER_GAP px outside their parts
 }
 </style>
 
-
 <!-- narration
 
 A second hand that just moves back and forth isn't very useful, we need it to
@@ -394,7 +390,7 @@ turn.
 [figure: The escape wheel alone, spinning freely. A curved arrow shows the
 push on it.]
 
-[click] The _pallet fork_ stops it. 
+[click] The _pallet fork_ stops it.
 
 [figure]
 
@@ -430,7 +426,7 @@ from the wheel, through the fork, into the balance, and keeps it swinging.
 
 [click] Synthetic ruby or sapphire.  Really is a jewel!
 
-[click] 
+[click]
 -->
 
 ---
@@ -565,7 +561,6 @@ How long does second hand take to turn all the way aroumnd a full circle?
 [click] Named for what it counts.
 
 [click]
-
 -->
 
 ---
@@ -1551,7 +1546,9 @@ And the whole watch.
 ---
 layout: full
 class: tk-timekeepers
-# hide: true
+# Hidden: not in the talk. It stays as the example of every slide pattern
+# (docs/slide-patterns.md) and of 2D SVG animation, to compare palettes.
+hide: true
 ---
 
 # Before clocks, time was a flow

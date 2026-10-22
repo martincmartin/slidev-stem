@@ -10,7 +10,9 @@ the diving board, read [watch.md](watch.md) as well.
 the docs live; the click pattern).
 
 `slides.md` is the working example: the "Before clocks" slide uses every
-pattern here.
+pattern here. It is hidden (`hide: true`), because it is not in the talk; it
+stays as this example, as a 2D SVG animation, and to compare palettes. To see
+it, remove `hide` for a moment.
 
 ## The theme and the palette
 

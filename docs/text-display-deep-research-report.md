@@ -17,7 +17,7 @@ conversation JSON that ChatGPT's page loads.
 For a picture of _Disco Elysium_'s dialogue in a tall reading rail on the right
 of the screen, see the screenshots in
 [this LessWrong post](https://www.lesswrong.com/posts/JLMFFA67cGyqwBtFP/evrart-claire-a-case-study-in-anti-epistemology-2).
-The repo holds only images that are generated, public domain or CC-licensed.
+The repo holds only files that anyone may download from it ([README](../README.md#license), "License").
 
 ## Executive synthesis
 

@@ -48,3 +48,18 @@ threshold comes from one question, _can the back row of a bar read this_, and
 How the talks, their versions and their checks work:
 [`docs/talks.md`](docs/talks.md). The rules for working in this repo:
 [`AGENTS.md`](AGENTS.md).
+
+## License
+
+- **Code** is under the [MIT License](LICENSE). Code is each script,
+  component, style sheet and configuration file.
+- **All other files** are under [CC BY 4.0](LICENSE-content): the slides, their
+  narration and notes, the art and the docs. To credit them, write "Martin C.
+  Martin" and link to this repository.
+- **A file that you did not make keeps its own licence.** Add it only if its
+  licence lets anyone download it from a public repository. Write its source and
+  its licence in the README of its directory. A paid stock-photo licence usually
+  does not let you do this.
+- **The built decks in `tasks/`** contain third-party code and fonts under their
+  own licences: for example Vue and Slidev (MIT), and the house fonts Fraunces
+  and IBM Plex (SIL Open Font License).
