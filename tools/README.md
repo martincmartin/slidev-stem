@@ -50,6 +50,9 @@ Each tool, with what it needs in brackets, and what it answers:
   continuity and direct-load equality ([navigation.md](../docs/navigation.md))
 - `talkcheck.py` (stdlib, pnpm): does a talk have its own `pnpm-workspace.yaml`,
   and does Prettier read each of its deck files with the Slidev parser
+- `vuecheck.py` (stdlib): does each Vue component keep the class and
+  `v-click` that a slide gives it in a build: no comment beside its one root
+  element
 - `check_python.py` (ruff, mypy, pyright): do these Python files pass the
   house's checks (default: every tool here)
 - `doccheck.py` (stdlib): do the docs' links and anchors resolve, does each

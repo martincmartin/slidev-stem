@@ -179,8 +179,11 @@ const leader = computed(() => {
 </script>
 
 <template>
-  <!-- in-figure: an article's figure shows it over the picture -->
   <div class="callout in-figure">
+    <!-- in-figure: an article's figure shows it over the picture. This
+    comment is inside the root: before it, the build gives the component two
+    roots, and the slide's class and v-click do not reach it. -->
+
     <svg
       class="callout-art"
       :class="{ 'callout-keyword': keyword }"

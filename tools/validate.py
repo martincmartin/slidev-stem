@@ -111,6 +111,7 @@ def house_checks(fix: bool) -> list[Check]:
         ),
         doccheck(STEM, HOUSE_DOC_PATHS),
         Check("palette", STEM, uv_run("tools/palette.py")),
+        Check("vue roots", STEM, uv_run("tools/vuecheck.py", "themes")),
     ]
 
 
@@ -401,6 +402,7 @@ def talk_groups(
         *generation_checks(directory, work),
         Check("palette", STEM, uv_run("tools/palette.py", "--talk", talk)),
         Check("talk setup", STEM, uv_run("tools/talkcheck.py", talk)),
+        Check("vue roots", STEM, uv_run("tools/vuecheck.py", talk)),
     ]
     build: list[Item] = [
         Check("build", directory, ("pnpm", "build", "--out", str(deck)))

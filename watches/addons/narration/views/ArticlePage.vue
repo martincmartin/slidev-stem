@@ -205,8 +205,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- eslint-disable vue/no-v-html -- the narration, rendered by setup/preparser.ts -->
   <main class="slidev-layout article-page">
+    <!-- eslint-disable vue/no-v-html -- the narration, rendered by setup/preparser.ts -->
     <article class="article-column">
       <template v-for="(block, index) of page" :key="index">
         <nav

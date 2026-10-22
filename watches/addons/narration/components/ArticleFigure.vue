@@ -215,8 +215,8 @@ watch([step, near, paused, busyUntil], schedule);
 </script>
 
 <template>
-  <!-- eslint-disable vue/no-v-html -- the narration, rendered by setup/preparser.ts -->
   <figure :id="figure.id" class="article-figure">
+    <!-- eslint-disable vue/no-v-html -- the narration, rendered by setup/preparser.ts -->
     <div
       ref="frame"
       class="article-figure-frame"
