@@ -216,7 +216,6 @@ watch([step, near, paused, busyUntil], schedule);
 
 <template>
   <figure :id="figure.id" class="article-figure">
-    <!-- eslint-disable vue/no-v-html -- the narration, rendered by setup/preparser.ts -->
     <div
       ref="frame"
       class="article-figure-frame"
@@ -232,12 +231,14 @@ watch([step, near, paused, busyUntil], schedule);
         <PrintSlideClick :nav="nav" />
       </div>
     </div>
+    <!-- eslint-disable vue/no-v-html -- the narration, rendered by setup/preparser.ts -->
     <div
       v-if="caption"
       class="article-figure-caption"
       aria-live="polite"
       v-html="caption"
     />
+    <!-- eslint-enable vue/no-v-html -->
     <div
       v-if="steps.length > 1 || controls.length > 0 || pausable"
       class="article-figure-controls"

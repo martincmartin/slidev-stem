@@ -206,7 +206,6 @@ onBeforeUnmount(() => {
 
 <template>
   <main class="slidev-layout article-page">
-    <!-- eslint-disable vue/no-v-html -- the narration, rendered by setup/preparser.ts -->
     <article class="article-column">
       <template v-for="(block, index) of page" :key="index">
         <nav
@@ -265,6 +264,7 @@ onBeforeUnmount(() => {
         >
           {{ block.history }}
         </p>
+        <!-- eslint-disable vue/no-v-html -- the narration, rendered by setup/preparser.ts -->
         <div
           v-else-if="block.kind === 'prose'"
           class="article-prose"
@@ -274,6 +274,7 @@ onBeforeUnmount(() => {
           <p class="article-aside-title" v-html="block.title" />
           <div v-html="block.html" />
         </aside>
+        <!-- eslint-enable vue/no-v-html -->
         <ArticleFigure
           v-else-if="block.kind === 'figure'"
           :figure="block"
