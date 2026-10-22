@@ -78,8 +78,8 @@ Before you…
 - add a click, a slide transition, or anything that moves between clicks or
   slides: `docs/navigation.md`.
 - decide if something is big, thick or dark enough: `docs/legibility.md`.
-- start, upgrade, validate, tag, retire or build a talk, add a deck file,
-  change a house item, or change browser support: `docs/talks.md`.
+- start, upgrade, validate, tag, retire, build or publish a talk, add a deck
+  file, change a house item, or change browser support: `docs/talks.md`.
 - add a file that you did not make (an image, a video, a font, some code):
   `README.md`, "License".
 - export a talk for readers, write its narration, or write speaker notes:

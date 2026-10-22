@@ -17,7 +17,8 @@
   "scripts": {
     "preinstall": "pnpm --dir .. install --frozen-lockfile",
     "build": "slidev build",
-    "article": "slidev build && node addons/narration/prerender.ts dist",
+    "article": "slidev build && pnpm prerender",
+    "prerender": "node addons/narration/prerender.ts dist",
     "dev": "slidev",
     "export": "slidev export --with-clicks",
     "format": "prettier --write .",

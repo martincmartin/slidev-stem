@@ -2,9 +2,9 @@
 
 **Covers:** each talk as its own project: the layout, setting up a clone, why
 each talk keeps its own versions, how to change a house item, and how to
-upgrade a talk's packages.
-**Read before** you set up a clone, upgrade, validate, tag, retire or build a
-talk, start a new talk, add a deck file, or change a house item.
+upgrade a talk's packages, and how to publish a talk on GitHub Pages.
+**Read before** you set up a clone, upgrade, validate, tag, retire, build or
+publish a talk, start a new talk, add a deck file, or change a house item.
 **Tasks:**
 [`tasks/2026-09-28-per-talk-dependencies/`](../tasks/2026-09-28-per-talk-dependencies/PLAN.md),
 [`tasks/2026-09-28-validate/`](../tasks/2026-09-28-validate/PLAN.md),
@@ -167,6 +167,53 @@ copy, delete it. The tags keep it.
   the last commit that changes the talk, with the date that you retire it.
   Before you retire it, check that it builds and validates, as before a talk is
   given.
+
+## Publish a talk
+
+The talks are on GitHub Pages, at
+`https://martincmartin.github.io/slidev-stem/`. Each talk has its own
+directory there: `<talk>/` for the slides, and `<talk>/article/` if it has an
+article. The root page is `site/index.html`.
+
+**Publish the version that you give.** Push its tag:
+
+1. Tag the talk, as in "Tag, rebuild or retire a talk": the checks first, then
+   `git tag -a given/<talk>/<YYYY-MM-DD>`.
+2. Push `main`, then the tag: `git push origin main given/<talk>/<YYYY-MM-DD>`.
+3. The workflow `.github/workflows/publish.yml` builds the talk at the tag
+   and publishes it. Look at its run in the repository's Actions tab, then
+   open the talk's page.
+
+**Publish between talks.** For example, to publish a fix to the article,
+run the workflow by hand: in the Actions tab, choose "Publish a talk", then
+"Run workflow". Give the talk's directory and a ref (`main`, a tag or a
+commit). With the GitHub CLI:
+`gh workflow run publish.yml -f talk=<talk> -f ref=main`.
+
+**The first time a talk is published,** add it to `site/index.html` on
+`main`. A run copies that page from the default branch, not from the ref that
+it builds.
+
+How a run works, and why:
+
+- **It builds one talk, from the files of its ref.** The house theme, the
+  tools and the lockfiles come from the ref, not from `main`. It runs
+  `pnpm build --base /<repo>/<talk>/`, then the talk's `prerender` script if
+  it has one, and publishes the talk's `dist/`.
+- **It changes only that talk's directory.** The site is the `gh-pages`
+  branch. A retired talk keeps the build that it was last published with, so a
+  change to `main` that breaks the talk does not break its page. A run refuses
+  a retired talk, except from its `retired/` tag.
+- **`gh-pages` holds one commit.** Each run force-pushes the whole site as a
+  new commit, so the branch does not grow with each publish. Each published
+  version can be built again from its ref.
+- **The speaker notes are published,** in the presenter view of the slides.
+  The article is the version for readers.
+- **Links to one slide work.** `slidev build` writes a `404.html` that loads
+  the deck, so GitHub Pages serves the deck for a path that has no file.
+
+The repository's Pages setting is "Deploy from a branch", with the `gh-pages`
+branch and the `/ (root)` folder.
 
 ## Browser support
 

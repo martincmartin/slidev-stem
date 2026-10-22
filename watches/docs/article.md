@@ -256,7 +256,7 @@ their own routes. A page at `/narrated/3` would not work (`docs/export.md`,
 ## Build the static page
 
 ```bash
-pnpm article   # slidev build, then node addons/narration/prerender.ts dist
+pnpm article   # slidev build, then pnpm prerender: node addons/narration/prerender.ts dist
 ```
 
 `prerender.ts` serves the built deck, opens `/article` in Chromium, and takes
@@ -271,7 +271,9 @@ twice the pixel density). So:
 - `dist/` works on any static host, at `/article/`, with no rewrite rules. If
   the deck is not at the host's root, build it with Slidev's `--base`
   (`pnpm exec slidev build --base /talks/watches/`, then the prerender). The
-  prerender reads the base from `index.html`.
+  prerender reads the base from `index.html`. GitHub Pages builds it this
+  way, with `pnpm build --base …` and `pnpm prerender`
+  ([`docs/talks.md`](../../docs/talks.md), "Publish a talk").
 
 A file that the talk's code fetches must be under the base:
 `${import.meta.env.BASE_URL}diving-board.svg`, not `/diving-board.svg`.

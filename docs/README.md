@@ -19,7 +19,7 @@ lists in step. What is true of one talk only is in that talk's `docs/` (for
   room light, how to read the metrics, text sizes
 - [talks.md](talks.md): each talk as its own project: set up a clone, why,
   adding a deck file, changing a house item, validation, upgrading a talk's
-  packages
+  packages, publishing a talk on GitHub Pages
 - [export.md](export.md): the forms of a talk for readers (the article, a
   narrated mode, a PDF): which exist, the rules, the traps
 - [text-display-deep-research-report.md](text-display-deep-research-report.md):

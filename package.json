@@ -15,8 +15,8 @@
     }
   },
   "scripts": {
-    "format": "prettier --write docs themes tools \"*.{md,json,yaml}\"",
-    "format:check": "prettier --check docs themes tools \"*.{md,json,yaml}\""
+    "format": "prettier --write docs themes tools site .github \"*.{md,json,yaml}\"",
+    "format:check": "prettier --check docs themes tools site .github \"*.{md,json,yaml}\""
   },
   "devDependencies": {
     "prettier": "^3.9.10",
