@@ -202,3 +202,7 @@ After integration, full watches validation passed all 22 checks in 80.19 s with 
 The smoke stage took 10.43 s and visited 34 positions; main had removed two trial clicks.
 Firefox also visited all 34 positions and reached `8:5` with zero outside requests.
 Shared full validation passed all eight checks in 8.48 s.
+
+## 2026-10-22: screenshot deleted
+
+The copies of `docs/text-display/disco-elysium.png` (a screenshot of the game _Disco Elysium_) are deleted from this task, because the repo is to be public and holds only images that are generated, public domain or CC-licensed. The report that showed it now links to a screenshot on the web. The task does not need the image: its results do not depend on it. If you really need it, it is in the git history: `git show e5510d0:docs/text-display/disco-elysium.png > disco-elysium.png`.
