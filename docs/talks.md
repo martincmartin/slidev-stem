@@ -169,7 +169,8 @@ copy, delete it. The tags keep it.
   `given/watches/…` tag at the same time. Before you tag, check that the talk
   builds from its lockfiles, in the talk's directory:
   `pnpm install --frozen-lockfile && uv sync --locked && pnpm build`, and run
-  `uv run ../tools/validate.py --print`.
+  `uv run ../tools/validate.py --print`. Before you tag, also do the milestone
+  review of the `learn-from-corrections` skill.
 - **Rebuild the version that you gave.** Make a worktree at its tag:
   `git worktree add ../watches-given given/watches/2026-10-15`. Then, in the
   worktree's talk directory, run `pnpm install --frozen-lockfile` and
