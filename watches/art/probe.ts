@@ -16,11 +16,12 @@ import { build } from "vite";
 import { DESIGN } from "../watch/design.ts";
 import { balanceAngle } from "../watch/model.ts";
 import type { ProbeOptions } from "../webgl/probe/probe.ts";
-import { serveFrom } from "./browser.ts";
+import { ORIGIN, openPage } from "./browser.ts";
 
 const PROBE = fileURLToPath(new URL("../webgl/probe/", import.meta.url));
 /** Device px for each CSS px: tools/barroom.py's. */
 const DEVICE_SCALE = 2;
+/** ms: the longest wait. Each frame is drawn in software. */
 const TIMEOUT_MS = 120_000;
 
 /** A frame of `view`, tilted `tilt` degrees, at mechanism time `time` (s),
@@ -60,31 +61,24 @@ export async function withProbe<T>(
       logLevel: "error",
       build: { outDir: built, emptyOutDir: true },
     });
+    // in software, not withBrowser's GPU: see the top
     const browser = await chromium.launch();
     try {
-      const context = await browser.newContext({
+      const { page, problems } = await openPage(browser, built, {
         deviceScaleFactor: DEVICE_SCALE,
       });
-      context.setDefaultTimeout(TIMEOUT_MS);
-      const { origin, outside } = await serveFrom(context, built);
-      const page = await context.newPage();
-      const errors: string[] = [];
-      page.on("pageerror", (error) => errors.push(error.message));
-      const failures = () => [
-        ...errors,
-        ...outside.map((url) => `outside request: ${url}`),
-      ];
-      await page.goto(`${origin}/index.html`);
+      page.setDefaultTimeout(TIMEOUT_MS);
+      await page.goto(`${ORIGIN}/index.html`);
       // The probe's module runs to its end, or throws, before the load event
       // that goto waits for: so the page can draw now, or it never will.
       if (!(await page.evaluate(() => window.watchProbeReady === true))) {
         throw new Error(
-          `the probe page did not get ready: ${failures().join("; ")}`,
+          `the probe page did not get ready: ${problems().join("; ")}`,
         );
       }
       const result = await use(page);
-      if (failures().length > 0) {
-        throw new Error(`the probe page failed: ${failures().join("; ")}`);
+      if (problems().length > 0) {
+        throw new Error(`the probe page failed: ${problems().join("; ")}`);
       }
       return result;
     } finally {

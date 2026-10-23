@@ -233,7 +233,8 @@ async def main(
             await serve_build(page, pathlib.Path(target), blocked)
         await page.add_init_script(PRESS_JS)
         # Headless browsers cannot acquire a screen wake lock. Supply that
-        # browser service so real page errors remain failures.
+        # browser service so real page errors remain failures
+        # (docs/talks.md, "Browser support").
         await page.add_init_script("""Object.defineProperty(navigator, 'wakeLock', {
             value: {request: async type => {
                 if (type !== 'screen') throw new TypeError('Invalid wake-lock type');

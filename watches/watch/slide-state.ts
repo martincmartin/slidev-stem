@@ -13,6 +13,18 @@ export interface SlideState {
   busy: boolean;
 }
 
+// What the watch's layer (global-bottom.vue) gives the scripts that drive the
+// deck. Here, not in the layer, so that a script's types see them too.
+declare global {
+  interface Window {
+    /** For the measurement scripts. */
+    watchStage?: Stage<WatchModelState>;
+    /** For tools/navcheck.py (../docs/navigation.md, "The check") and
+     *  art/print-check.ts. */
+    slideState?: () => SlideState;
+  }
+}
+
 /** The element's opacity on the screen: its own times its ancestors'. */
 function shownOpacity(element: Element | null): number {
   let opacity = 1;

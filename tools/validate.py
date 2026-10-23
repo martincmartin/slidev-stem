@@ -128,23 +128,30 @@ class Later:
 def deck_key(stem: Path, project: Path, deck: Path) -> str:
     """The key of what a check of the built deck reads: the deck, and the
     files that decide how it is checked. These are every `.py` file in the
-    house's tools/ and the talk's art/, the talk's package.json (its
-    scripts), and each project's uv.lock and .python-version (they pick
-    Playwright, and so the browser engines). More than the checks read, so that a
-    change can cost a run but cannot give a false pass."""
+    house's tools/, every file in the talk's art/ (Python or TypeScript), the
+    talk's package.json (its scripts), and each project's lockfiles and
+    .python-version (they pick Playwright, and so the browser engines: the
+    talk's art checks take theirs from pnpm-lock.yaml). More than the checks
+    read, so that a change can cost a run but cannot give a false pass."""
     if not (deck / "index.html").is_file():
         raise ValueError(f"no built deck in {deck}")
 
     def files(root: Path, pattern: str) -> list[Path]:
-        return sorted(path for path in root.glob(pattern) if path.is_file())
+        # Python writes __pycache__ as it runs: it is no change to a checker
+        return sorted(
+            path
+            for path in root.glob(pattern)
+            if path.is_file() and "__pycache__" not in path.parts
+        )
 
     pins = ("uv.lock", ".python-version")
+    talk_files = ("package.json", "pnpm-lock.yaml", *pins)
     sources: list[tuple[str, Path, Iterable[Path]]] = [
         ("deck", deck, files(deck, "**/*")),
         ("tools", stem / "tools", files(stem / "tools", "*.py")),
         ("stem", stem, [stem / name for name in pins]),
-        ("art", project / "art", files(project / "art", "**/*.py")),
-        ("talk", project, [project / name for name in ("package.json", *pins)]),
+        ("art", project / "art", files(project / "art", "**/*")),
+        ("talk", project, [project / name for name in talk_files]),
     ]
     digest = hashlib.sha256()
     for tag, root, paths in sources:

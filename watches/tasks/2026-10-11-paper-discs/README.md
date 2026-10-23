@@ -18,3 +18,7 @@ changed, are in [review-2026-10-12.md](review-2026-10-12.md),
   collisions"), without its cost to the Mainspring slide: the square
   stays, flat, and the key's pipe stands on the arbor. See
   `docs/watch.md`, "The Hour Hand slide".
+
+- 2026-10-23: `tools/print-compare.py` imports `print_check` from the live
+  `art/`, which is now TypeScript (`art/print-check.ts`). To run the tool,
+  restore the module first: `git show 34ecc92:watches/art/print_check.py`.

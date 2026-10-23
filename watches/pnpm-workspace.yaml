@@ -12,8 +12,12 @@
 shamefullyHoist: true
 
 # `playwright-chromium` is needed for `slidev export` (PDF/PNG/PPTX), the
-# article's prerender and the art scripts (art/), and has a postinstall script
-# that downloads the browser. pnpm errors on unapproved
-# build scripts by default (`strictDepBuilds: true`), so allowlist it up-front.
+# article's prerender and the art scripts (art/). The art checks also run in
+# Firefox and WebKit (`playwright-firefox`, `playwright-webkit`). Each has a
+# postinstall script that downloads its browser. pnpm errors on unapproved
+# build scripts by default (`strictDepBuilds: true`), so allowlist them
+# up-front.
 allowBuilds:
   playwright-chromium: true
+  playwright-firefox: true
+  playwright-webkit: true

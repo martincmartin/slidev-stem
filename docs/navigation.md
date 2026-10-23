@@ -117,6 +117,7 @@ It reads what the deck reports. A talk with layers defines
 
 Without `--offline`, a deck without `slideState` passes with a note.
 With `--offline`, it receives the ordinary offline walk.
-Only headless screen wake-lock acquisition is stubbed; page errors still fail.
+Only headless screen wake-lock acquisition is stubbed
+([talks.md](talks.md#browser-support)); page errors still fail.
 Give each new layer its fields in the talk's `slideState`, in the same change as the layer.
 The watch talk's is `watches/watch/slide-state.ts`.

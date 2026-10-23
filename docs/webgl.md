@@ -44,8 +44,9 @@ until a second talk needs it; then it moves to a house package in `stem/`.
 
 **A new talk with WebGL art** copies `webgl/`, `types/`, `tsconfig.json`,
 `eslint.config.js` and the scripts of `watches/package.json` (`typecheck`,
-`lint`, `test`, `art:scene`, `art:stills`, `art:print`, and `art:generated` if
-the talk writes files with scripts). `validate.py` runs the WebGL checks when it finds
+`lint`, `test`, `art:scene`, `art:stills`, `art:print`, `art:privacy`, and
+`art:generated` if the talk writes files with scripts), with the files in
+`art/` that they run. `validate.py` runs the WebGL checks when it finds
 the scripts. Keep the talk's names out of `webgl/`.
 
 **Geometry is made in TypeScript at load**, not ahead of time in Python. The
@@ -305,22 +306,30 @@ of [talks.md](talks.md):
   the back row sees the art, and sees it move. `art:stills` also runs the
   renderer's browser checks (`webgl/probe/checks.ts`): context loss,
   `dispose`, the fade, a dynamic mesh drawn last, and each input's contract.
-- `art/privacy_check.py` (`pnpm art:privacy DECK`, on the built deck):
+- `art/privacy-check.ts` (`pnpm art:privacy DECK`, on the built deck):
   Chromium, Firefox, and WebKit must start the live watch with canvas pixel
   reads blocked. This catches a palette error that can leave a slide blank.
   The three engines run at once.
-- `art/print_check.py` (`pnpm art:print DECK`, on the built deck): for each
+- `art/print-check.ts` (`pnpm art:print DECK`, on the built deck): for each
   slide and click, the state that the printed page's still shows must equal the
   live slide's. It compares states, not pixels, and it opens a slide in print
   mode, not Slidev's `/print` route (a build has none). It walks the live deck
-  first, and then loads the printed pages in several browsers at once, so
-  the live watch's animation does not compete with those loads. A printed page
+  first, and then loads the printed pages in several browsers at once, which
+  take the next page as each one is free, so the live watch's animation does
+  not compete with those loads. A printed page
   mounts every slide but shows one, and only that one draws its still
   (`slide-bottom.vue`). Full validation runs it only with `--print`, or after a
   change to a print input ([talks.md](talks.md#the-print-check)). `--browser firefox` or
   `webkit` runs it in another engine. Copy it with the
   layers; it reads the `data-watch` attribute that `global-bottom.vue` and
   `slide-bottom.vue` write.
+
+The two deck checks serve the built deck from its files through Playwright
+(`art/browser.ts`), at an https origin, a secure context, as a published deck
+is. Any request to another host fails the check. Each browser of a check has
+a fresh context, with no saved data, as a private window. Each page has a
+stand-in screen wake lock, which a headless browser cannot give
+([talks.md](talks.md#browser-support)).
 
 A change to `webgl/` that must not change the picture: draw frames with
 `node art/pixel-regression.ts OUT_DIR` before and after, and compare them

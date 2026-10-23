@@ -35,7 +35,7 @@
 //
 // Print mode (export) has no live layer: slide-bottom.vue draws a still and a
 // posed board on each page. `data-watch` on the canvas is the state it shows,
-// for art/print_check.py. Print mode comes from the page's nav: each printed
+// for art/print-check.ts. Print mode comes from the page's nav: each printed
 // page gets a fixed nav of its own, which does not know it. The class
 // slidev-layout gives the layer the theme's page colour. The layer is outside
 // the slide, so a slide class that changes the palette (a palette class,
@@ -70,7 +70,6 @@ import { moveOf } from "./watch/navigation.ts";
 import type { Move, Place } from "./watch/navigation.ts";
 import { slidePalette } from "./watch/palette.ts";
 import { slideState } from "./watch/slide-state.ts";
-import type { SlideState } from "./watch/slide-state.ts";
 import {
   modelState,
   MOVE_WITH_COMMON,
@@ -83,15 +82,6 @@ import {
 } from "./watch/state.ts";
 import type { StepMoveWith, WatchState } from "./watch/state.ts";
 import type { CameraMove } from "./webgl/timeline.ts";
-
-declare global {
-  interface Window {
-    /** For the measurement scripts. */
-    watchStage?: Stage<WatchModelState>;
-    /** For tools/navcheck.py: ../docs/navigation.md, "The check". */
-    slideState?: () => SlideState;
-  }
-}
 
 const slidev = inject(injectionSlidevContext);
 if (!slidev) throw new Error("no Slidev context");

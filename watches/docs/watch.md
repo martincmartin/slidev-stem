@@ -55,7 +55,8 @@ ruler that the diving board replaced),
 | `webgl/probe/`                                           | a page with one canvas and `window.watchProbe.render(options)`, for the pixel and fade checks; `checks.ts`: `window.webglChecks()`, the renderer's browser checks                                         |
 | `art/probe.ts`, `watch-stills.ts`                        | build the probe page and draw frames on it in Chromium, as PNGs; the stills for the legibility checks (`pnpm art:stills`)                                                                                 |
 | `art/pixel-regression.ts`                                | the frames to compare before and after a change to `webgl/`, and their comparison                                                                                                                         |
-| `art/browser.ts`                                         | serve a directory to the browsers that the art scripts drive, offline, at a secure origin                                                                                                                 |
+| `art/browser.ts`                                         | the three engines, and a built deck or page served to them offline, at a secure origin, each page in a fresh context                                                                                      |
+| `art/print-check.ts`, `privacy-check.ts`                 | each printed page's watch and board against the live slide's (`pnpm art:print`); the live watch starts with canvas pixel reads blocked (`pnpm art:privacy`)                                               |
 | `watch/design.json`                                      | written by `art/watch_design.py`; never edit by hand. `art/watch_design.py --check` compares what the file means, not its bytes (`pnpm format` rewrites its spacing)                                      |
 | `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts` | read and check the design; outlines; the meshes, heights, pieces and their extents, the named views, `fittedView`                                                                                         |
 | `watch/teeth.ts`, `teeth.test.ts`                        | the teeth: cycloidal wheel teeth and the pinion leaves they mesh with, also a few at a time (a span); tests that each pair meshes without overlap                                                         |
@@ -1721,7 +1722,7 @@ art:generated` runs it with the `--check` of `watch_design.py` and
   own), and the PDF has a page for each click (`pnpm export`).
   `pnpm art:print DECK` compares each page's state with the live slide's. It
   runs in Chromium; `--browser firefox` and `--browser webkit` (Playwright's
-  WebKit, not Safari itself) pass too, as of 2026-10-04.
+  WebKit, not Safari itself) pass too, as of 2026-10-23.
   Why: [`tasks/2026-10-03-narrated-export/`](../../tasks/2026-10-03-narrated-export/PLAN.md),
   "The watches talk: what the still forms need".
 - **A printed page draws one still.** A page of one slide

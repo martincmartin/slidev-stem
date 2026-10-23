@@ -230,6 +230,12 @@ importers:
       playwright-chromium:
         specifier: 1.63.0
         version: 1.63.0
+      playwright-firefox:
+        specifier: 1.63.0
+        version: 1.63.0
+      playwright-webkit:
+        specifier: 1.63.0
+        version: 1.63.0
       prettier:
         specifier: ^3.9.10
         version: 3.9.10
@@ -3038,6 +3044,16 @@ packages:
 
   playwright-core@1.63.0:
     resolution: {integrity: sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright-firefox@1.63.0:
+    resolution: {integrity: sha512-4hq8JuLNxoR2wdzn06CzL+J3Y1Rv2JZJLW3SYNXQEWbacuKi7ovY7WzD/2jgmDM/X2dQamBOzxsa9Z6HaA8EmQ==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright-webkit@1.63.0:
+    resolution: {integrity: sha512-O4Mcw2AyoAYzxGIVmlvwxX33YUF1ClQdOtgNbdjXwVuv4GxqAyl3slCMWmLAck+CSja9T1zKQVwk2urG86d43w==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -6982,6 +6998,14 @@ snapshots:
       playwright-core: 1.63.0
 
   playwright-core@1.63.0: {}
+
+  playwright-firefox@1.63.0:
+    dependencies:
+      playwright-core: 1.63.0
+
+  playwright-webkit@1.63.0:
+    dependencies:
+      playwright-core: 1.63.0
 
   points-on-curve@0.2.0: {}
 

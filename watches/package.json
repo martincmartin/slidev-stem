@@ -25,13 +25,13 @@
     "format:check": "prettier --check .",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint --max-warnings 0 .",
-    "test": "node --test \"webgl/**/*.test.ts\" \"watch/**/*.test.ts\" \"addons/**/*.test.ts\" && uv run art/test_leader_path.py && uv run art/test_favicon.py",
+    "test": "node --test \"webgl/**/*.test.ts\" \"watch/**/*.test.ts\" \"addons/**/*.test.ts\" \"art/**/*.test.ts\" && uv run art/test_leader_path.py && uv run art/test_favicon.py",
     "explore": "vite watch/explorer --open",
     "art:scene": "node watch/dump.ts",
     "art:generated": "uv run art/diving_board.py --check && uv run art/watch_design.py --check && uv run art/favicon.py --check",
     "art:stills": "node art/watch-stills.ts",
-    "art:print": "uv run art/print_check.py",
-    "art:privacy": "uv run art/privacy_check.py"
+    "art:print": "node art/print-check.ts",
+    "art:privacy": "node art/privacy-check.ts"
   },
   "dependencies": {
     "@slidev/cli": "^53.0.0",
@@ -56,6 +56,8 @@
     "eslint-plugin-vue": "^10.11.1",
     "globals": "^17.13.0",
     "playwright-chromium": "1.63.0",
+    "playwright-firefox": "1.63.0",
+    "playwright-webkit": "1.63.0",
     "prettier": "^3.9.10",
     "prettier-plugin-slidev": "^1.0.5",
     "typescript": "^6.0.3",

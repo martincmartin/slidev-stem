@@ -63,7 +63,7 @@ include = ["art"]
 venvPath = "."
 venv = ".venv"
 
-# Full validation runs the print check (art/print_check.py) only when the
+# Full validation runs the print check (art/print-check.ts) only when the
 # working tree changes one of these, or with --print (before an export or a
 # tag). These are the files with code that only printed pages run, the check
 # itself, and Slidev's version (print mode is Slidev's). Code that live and
@@ -78,7 +78,8 @@ print-inputs = [
   "watch/stills.ts",
   "watch/instance.ts",
   "webgl/stills.ts",
-  "art/print_check.py",
+  "art/print-check.ts",
+  "art/browser.ts",
   "package.json",
   "pnpm-lock.yaml",
 ]

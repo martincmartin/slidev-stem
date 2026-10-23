@@ -75,7 +75,9 @@ pnpm dev        # the deck, at http://localhost:3030
 `pnpm install` in a talk runs `pnpm install --frozen-lockfile` at the root
 first (the talk's `preinstall` script). The theme's fonts are the root's
 packages, so a talk does not build without them. It also downloads Chromium for
-`slidev export`, from the talk's `playwright-chromium` package.
+`slidev export`, from the talk's `playwright-chromium` package, and the other
+engines of a talk whose own checks use them (`playwright-firefox`,
+`playwright-webkit`).
 
 The Python needs no setup step. `uv run` makes the project's `.venv` first. The
 tools that render install their required browser engines the first time they run
@@ -239,7 +241,8 @@ windows. They must work offline with default privacy protections enabled.
 Full validation walks the built deck in Playwright Chromium, Firefox, and WebKit.
 The three independent walks run together after other checks finish.
 In these walks and in the print and privacy checks, Chromium draws WebGL on the GPU
-(`CHROMIUM_GPU` in `tools/browsers.py`), as Chrome does in a talk. The checks
+(`CHROMIUM_GPU` in `tools/browsers.py`, and its copy in the watches talk's
+`art/browser.ts`), as Chrome does in a talk. The checks
 compare states and positions, not pixels, so the renderer does not change their
 results. This is not an oversight: headless Chromium otherwise draws WebGL in
 software (SwiftShader), on the CPU, which made the print check about 3 times
@@ -263,6 +266,14 @@ The walk also blocks 2D canvas pixel reads. The watches talk also checks that
 its live watch mounts in each engine under that restriction. A talk must not need those reads to
 resolve theme colours or start its live art.
 
+Headless Chromium and WebKit refuse a screen wake lock. At a secure origin
+(https or localhost), Slidev asks for one as it starts and does not catch a
+refusal, so the page throws. So a check that drives a deck supplies
+a stand-in `navigator.wakeLock` that grants it (`tools/navcheck.py`, and the
+watches talk's `art/browser.ts`). Every other page error still fails the
+check. The stand-in is a standard web API, not a Slidev setting, so it works
+with any Slidev version.
+
 Playwright WebKit is an engine check. It is not the installed Safari browser,
 and its contexts do not reproduce all Safari private-window protections.
 For a Safari-specific failure or a change to privacy-sensitive APIs, also test
@@ -271,7 +282,8 @@ State which tests were run and identify any test that could not be run.
 Do not disable privacy protection to make a test pass.
 
 The renderer and print diagnostics accept `--browser webkit` where documented.
-The supported names are in `tools/browsers.py`; commands are in
+The supported names are in `tools/browsers.py` (for the watches talk's art
+checks, `ENGINES` in `art/browser.ts`); commands are in
 [the tools index](../tools/README.md).
 
 ## Check your work
@@ -390,9 +402,10 @@ Upgrade only a talk in progress. In the talk's directory:
    rm pnpm-lock.yaml && pnpm install   # and every package below them
    ```
 
-   Keep the Python `playwright` and the JS `playwright-chromium` at the same
-   version (`uv.lock` and `package.json`). Then `slidev export` and the tools
-   that render use the same Chromium build, and the cache holds one copy.
+   Keep the Python `playwright` and the JS `playwright-chromium` (and a
+   talk's `playwright-firefox` and `playwright-webkit`) at the same version
+   (`uv.lock` and `package.json`). Then `slidev export` and the tools that
+   render use the same browser builds, and the cache holds one copy.
 
    To move Node or pnpm, change the versions in `devEngines` in
    `package.json`. To move Python, run `uv python pin <version>`. Use stable

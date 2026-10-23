@@ -7,7 +7,7 @@
 // nav is not that click: a printed page gets a fixed nav of its own. `data-waitfor`
 // makes `slidev export` wait until the still is drawn. A printed page's render
 // context is "slide", so print mode comes from the page's nav. `data-watch` is
-// the state that the still shows, for art/print_check.py. The diving board is
+// the state that the still shows, for art/print-check.ts. The diving board is
 // posed the same way, at its pose for this page's click (components/
 // DivingBoard.vue with `live` false); the live board is in global-bottom.vue.
 // While the posed board's picture shows, it covers the still, as the live

@@ -203,7 +203,9 @@ def a_stem_and_a_talk(tmp_path: Path) -> tuple[Path, Path, Path]:
     talk = stem / "talk"
     (talk / "art").mkdir(parents=True)
     (talk / "art" / "print_check.py").write_text("print")
+    (talk / "art" / "print-check.ts").write_text("print")
     (talk / "package.json").write_text("{}")
+    (talk / "pnpm-lock.yaml").write_text("playwright-chromium 1")
     (talk / "docs").mkdir()
     (talk / "docs" / "notes.md").write_text("notes")
     deck = tmp_path / "deck"
@@ -219,13 +221,17 @@ def test_the_deck_key_changes_with_the_deck_and_the_checkers_only(
     stem, talk, deck = a_stem_and_a_talk(tmp_path)
     key = validate.deck_key(stem, talk, deck)
     (talk / "docs" / "notes.md").write_text("other notes")
+    (talk / "art" / "__pycache__").mkdir()
+    (talk / "art" / "__pycache__" / "print_check.cpython-315.pyc").write_text("x")
     assert validate.deck_key(stem, talk, deck) == key
     for changed in (
         deck / "assets" / "index.js",
         stem / "tools" / "navcheck.py",
         stem / "uv.lock",
         talk / "art" / "print_check.py",
+        talk / "art" / "print-check.ts",
         talk / "package.json",
+        talk / "pnpm-lock.yaml",
     ):
         original = changed.read_text()
         changed.write_text(original + " changed")
