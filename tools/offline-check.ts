@@ -100,7 +100,7 @@ const routeOf = (url: string) => {
 
 /** Walk rapidly from where `page` is, print where the walk went, and return
  *  why it failed, as text, or null. */
-export async function reportRapidWalk(page: Page): Promise<string | null> {
+async function reportRapidWalk(page: Page): Promise<string | null> {
   const { urls, failure } = await rapidWalk(page);
   const end = urls.at(-1);
   console.log(

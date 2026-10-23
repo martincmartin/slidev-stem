@@ -218,3 +218,7 @@ same walk, limits and failures. It serves the deck at an https origin, as
 GitHub Pages does, with a stand-in screen wake lock, and prints each engine's
 result in order after all three finish. `tools/offline_check.py` is now
 `tools/offline-check.ts`.
+
+2026-10-23: `navcheck --offline` is gone. It added only the rapid walk, which
+`pnpm offline-check <deck> --walk` runs; navcheck checks continuity and rule 0
+alone.

@@ -104,7 +104,6 @@ pnpm smokecheck <build dir> --browser all --no-canvas-readback  # full validatio
 pnpm smokecheck <build dir> --browser firefox
 pnpm smokecheck <build dir> --browser webkit --no-canvas-readback
 pnpm offline-check <build dir> --browser webkit 1:0
-pnpm navcheck <build dir> --offline      # suspected navigation problems only
 pnpm navcheck <build dir>                # diagnostic; also accepts a dev server URL
 pnpm vuecheck watches                        # the Vue components of a talk
 pnpm vuecheck themes path/to/One.vue         # ... or of these paths

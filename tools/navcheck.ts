@@ -2,16 +2,14 @@
 //
 //     pnpm navcheck /tmp/deck                  # at the root; a build
 //     pnpm navcheck http://localhost:3030      # a running dev server
-//     pnpm navcheck /tmp/deck --offline        # and the rapid offline walk
 //
 // A diagnostic tool: run it when a navigation problem is found or suspected.
 // No validation mode runs it. Do not run it routinely.
 //
 // The rules are in ../docs/navigation.md. The deck must define
 // window.slideState(), which returns {settled, continuous, busy}
-// (../docs/navigation.md, "Diagnostic: exhaustive navigation"). Without
-// --offline, a deck without it passes with a note; with --offline, it gets
-// the rapid walk only.
+// (../docs/navigation.md, "Diagnostic: exhaustive navigation"). A deck
+// without it passes with a note.
 //
 // The walk presses the right arrow from slide 1 to the end of the deck, then
 // the left arrow back to slide 1. After each press it samples slideState()
@@ -31,16 +29,14 @@
 // - a move does not end within MOVE_TIMEOUT_MS, or the page throws an error.
 //
 // A build is served from disk with every outside request aborted
-// (browser.ts). With --offline, a second walk, offline-check.ts's rapid walk,
-// must move and end: its presses come every 500 ms, before an animation ends.
-// The same page runs both walks; page errors and outside requests fail both.
-// It exits 1 on a failure, and 2 on a usage error.
+// (browser.ts); a page error or an outside request fails. For a rapid walk,
+// whose presses do not wait for an animation to end, run offline-check.ts
+// --walk. It exits 1 on a failure, and 2 on a usage error.
 
 import { parseArgs } from "node:util";
 import type { Page } from "playwright-chromium";
 import type { Position } from "../themes/house/navigation.ts";
 import {
-  DECK_VIEWPORT,
   describeProblem,
   FIRST,
   isEngine,
@@ -57,7 +53,6 @@ import {
   showSlide,
   withBrowser,
 } from "./browser.ts";
-import { reportRapidWalk } from "./offline-check.ts";
 
 /** ms: a move has ended when nothing is busy and no number has changed for
  *  this long. */
@@ -174,11 +169,11 @@ function rounded(settled: SlideState["settled"]): SlideState["settled"] {
   );
 }
 
-/** The failures and the notes for one move. */
 /** `move` as text: where it went from and to, and the key. */
 const label = (move: Move) =>
   `${named(move.start)} -> ${named(move.end)} (${move.key})`;
 
+/** The failures and the notes for one move. */
 export function moveProblems(move: Move): {
   problems: string[];
   notes: string[];
@@ -300,11 +295,7 @@ interface Findings {
 }
 
 /** Walk the deck at `base` on `page`, and load each place directly. */
-async function walk(
-  page: Page,
-  base: string,
-  offline: boolean,
-): Promise<Findings> {
+async function walk(page: Page, base: string): Promise<Findings> {
   const moves: Move[] = [];
   const direct: DirectLoad[] = [];
   const problems: string[] = [];
@@ -322,20 +313,12 @@ async function walk(
     await showSlide(page, base, pathOf(place));
     return sample(page, false);
   };
-  const walkRapidly = async () => {
-    await page.setViewportSize(DECK_VIEWPORT);
-    await showSlide(page, base, pathOf(FIRST));
-    const failure = await reportRapidWalk(page);
-    if (failure !== null) problems.push(failure);
-  };
   try {
     const first = await load(FIRST);
     if (first === null) {
-      if (offline) await walkRapidly();
-      else
-        console.log(
-          "navcheck: the deck has no window.slideState(): nothing to check",
-        );
+      console.log(
+        "navcheck: the deck has no window.slideState(): nothing to check",
+      );
       return { moves, direct, problems };
     }
     if (first.timedOut)
@@ -362,9 +345,6 @@ async function walk(
           `${key}: the walk did not end within ${String(MOST_POSITIONS)} steps`,
         );
     }
-    if (offline && !moves.some((move) => move.key === "ArrowRight")) {
-      problems.push("the walk did not move from slide 1");
-    }
     if (moves.length > 0 && !same(placeOf(page.url()), FIRST)) {
       problems.push("the backward walk did not return to slide 1");
     }
@@ -382,7 +362,6 @@ async function walk(
         direct.push({ place, settled: loaded.settled });
       }
     }
-    if (offline) await walkRapidly();
   } catch (error) {
     problems.push(`the walk stopped: ${reasonOf(error)}`);
   }
@@ -391,14 +370,13 @@ async function walk(
 
 if (import.meta.main) {
   const usage =
-    "usage: pnpm navcheck DECK|URL [--offline] [--browser chromium|firefox|webkit]";
+    "usage: pnpm navcheck DECK|URL [--browser chromium|firefox|webkit]";
   let parsed;
   try {
     parsed = parseArgs({
       allowPositionals: true,
       options: {
         browser: { type: "string", default: "chromium" },
-        offline: { type: "boolean", default: false },
       },
     });
   } catch (error) {
@@ -421,7 +399,7 @@ if (import.meta.main) {
       const served = await openDeck(browser, server ? undefined : target, {
         viewport: SLIDE_VIEWPORT,
       });
-      const found = await walk(served.page, base, values.offline);
+      const found = await walk(served.page, base);
       return { findings: found, pageProblems: served.problems() };
     },
   );

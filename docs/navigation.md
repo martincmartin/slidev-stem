@@ -97,8 +97,8 @@ No validation mode runs it. Do not run it routinely, including before commits
 or after ordinary navigation changes.
 
 The diagnostic walks forward and backward, waits for each animation to settle,
-and loads each position directly. With `--offline`, it also runs the original
-rapid offline walk with outside requests blocked.
+and loads each position directly. For a rapid walk, whose presses do not
+wait for an animation to end, run `pnpm offline-check <deck> --walk`.
 It rejects page errors, startup failures, and incomplete walks.
 It also fails if:
 
@@ -117,8 +117,7 @@ It reads what the deck reports. A talk with layers defines
 | `continuous` | numbers that must move without a cut (an opacity, a scale, a tilt). Leave out one that is not on the screen |
 | `busy`       | true while a story animation or a camera move runs, so that the check waits for its end                     |
 
-Without `--offline`, a deck without `slideState` passes with a note.
-With `--offline`, it receives the ordinary offline walk.
+A deck without `slideState` passes with a note.
 Only headless screen wake-lock acquisition is stubbed
 ([talks.md](talks.md#browser-support)); page errors still fail.
 Give each new layer its fields in the talk's `slideState`, in the same change as the layer.
