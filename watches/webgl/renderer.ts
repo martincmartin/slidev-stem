@@ -357,7 +357,7 @@ export interface Camera {
  *  about the pivot. Screen x = x'; screen y = pivot.y + (y' - pivot.y) cos t
  *  - (z - pivot.z) sin t; depth (larger is nearer) = (y' - pivot.y) sin t +
  *  (z - pivot.z) cos t. At turn 0, each number is the one that the tilt
- *  alone gave (art/pixel_regression.py). */
+ *  alone gave (art/pixel-regression.ts). */
 export function viewProjection(
   view: View,
   angles: CameraAngles,

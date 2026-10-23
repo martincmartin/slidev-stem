@@ -35,6 +35,7 @@
     "watch/**/*.ts",
     "addons/**/*.ts",
     "addons/**/*.vue",
+    "art/**/*.ts",
     "setup/*.ts",
     "types/*.d.ts",
     "*.vue",

@@ -103,7 +103,7 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   colours with no new buffers. A flash uses it with `FLASH_INKS`
   ([illustrations.md](illustrations.md), "Flash"). Without a recolour, the
   pixels are the same as when the colours were in the buffers:
-  `watches/art/pixel_regression.py` checks it.
+  `watches/art/pixel-regression.ts` checks it.
 - **The page gives the palette.** The talk reads it from the palette's
   `--palette-*` variables, as the current slide's classes change them (in
   `watches`, `slidePalette()` in `watch/palette.ts`, which says which variable
@@ -323,7 +323,7 @@ of [talks.md](talks.md):
   `slide-bottom.vue` write.
 
 A change to `webgl/` that must not change the picture: draw frames with
-`uv run art/pixel_regression.py OUT_DIR` before and after, and compare them
+`node art/pixel-regression.ts OUT_DIR` before and after, and compare them
 with `--compare BEFORE AFTER`. Two runs of the same code are byte-identical.
 
 ## Mistakes that were made once

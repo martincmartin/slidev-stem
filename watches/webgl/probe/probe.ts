@@ -1,6 +1,6 @@
 // A page with one canvas (980 x 552 CSS px) that draws single frames of the
 // watch, for the checks: tools/reference_stills.py in the WebGL task, and
-// art/watch_stills.py. It sets `window.watchProbeReady` when it can draw, and
+// art/probe.ts. It sets `window.watchProbeReady` when it can draw, and
 // gives `window.watchProbe.render(options)`. It also gives
 // `window.webglChecks()`: the renderer's own checks (checks.ts).
 
@@ -12,7 +12,7 @@ import { FLASH_INKS } from "../scene.ts";
 import type { Mesh, Palette, Scene } from "../scene.ts";
 
 /** What one frame asks for. */
-interface ProbeOptions {
+export interface ProbeOptions {
   /** A view's name. */
   view: string;
   /** Degrees. */

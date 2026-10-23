@@ -1,7 +1,7 @@
 // Checks of the renderer, the stage and the stills that need a browser:
 // context loss, dispose, a dynamic mesh drawn last, the fade, a recolour,
 // a dim, the flash, a holdout, and the contract of each input. They draw small scenes of their own, not the
-// watch. `window.webglChecks()` runs them all; art/watch_stills.py calls it.
+// watch. `window.webglChecks()` runs them all; art/watch-stills.ts calls it.
 
 import { check } from "../checked.ts";
 import { IDENTITY } from "../math.ts";

@@ -29,7 +29,7 @@
     "explore": "vite watch/explorer --open",
     "art:scene": "node watch/dump.ts",
     "art:generated": "uv run art/diving_board.py --check && uv run art/watch_design.py --check && uv run art/favicon.py --check",
-    "art:stills": "uv run art/watch_stills.py",
+    "art:stills": "node art/watch-stills.ts",
     "art:print": "uv run art/print_check.py",
     "art:privacy": "uv run art/privacy_check.py"
   },
