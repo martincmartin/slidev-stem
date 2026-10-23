@@ -78,12 +78,16 @@ jobs:
 
       - name: Install the talk
         working-directory: src
+        env:
+          # The packages' own downloads would fetch every engine that a talk's
+          # checks use; the build and the prerender need only Chromium.
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
         run: |
           set -euo pipefail
           cd "$TALK"
           pnpm install --frozen-lockfile
-          # The system libraries that the prerender's Chromium needs.
-          pnpm exec playwright install-deps chromium
+          # Chromium, and the system libraries that it needs.
+          pnpm exec playwright install --with-deps chromium
 
       # `build` and an optional `prerender` write the site to the talk's
       # dist/ (docs/talks.md, "Publish a talk"). tools/pages_preview.py runs

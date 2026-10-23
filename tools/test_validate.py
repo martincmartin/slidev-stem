@@ -206,7 +206,7 @@ def a_stem_and_a_talk(tmp_path: Path) -> tuple[Path, Path, Path]:
     (stem / "package.json").write_text("{}")
     talk = stem / "talk"
     (talk / "art").mkdir(parents=True)
-    (talk / "art" / "print_check.py").write_text("print")
+    (talk / "art" / "favicon.py").write_text("draw")
     (talk / "art" / "print-check.ts").write_text("print")
     (talk / "package.json").write_text("{}")
     (talk / "pnpm-lock.yaml").write_text("playwright-chromium 1")
@@ -226,7 +226,7 @@ def test_the_deck_key_changes_with_the_deck_and_the_checkers_only(
     key = validate.deck_key(stem, talk, deck)
     (talk / "docs" / "notes.md").write_text("other notes")
     (talk / "art" / "__pycache__").mkdir()
-    (talk / "art" / "__pycache__" / "print_check.cpython-315.pyc").write_text("x")
+    (talk / "art" / "__pycache__" / "favicon.cpython-315.pyc").write_text("x")
     assert validate.deck_key(stem, talk, deck) == key
     for changed in (
         deck / "assets" / "index.js",
@@ -236,7 +236,7 @@ def test_the_deck_key_changes_with_the_deck_and_the_checkers_only(
         stem / "uv.lock",
         stem / "pnpm-lock.yaml",
         stem / "package.json",
-        talk / "art" / "print_check.py",
+        talk / "art" / "favicon.py",
         talk / "art" / "print-check.ts",
         talk / "package.json",
         talk / "pnpm-lock.yaml",
@@ -411,8 +411,8 @@ def a_talk_in_git(tmp_path: Path, inputs: str | None) -> Path:
 def test_print_inputs_change_only_with_a_change_to_a_listed_file(
     tmp_path: Path,
 ) -> None:
-    talk = a_talk_in_git(tmp_path, '["slide-bottom.vue", "art/print_check.py"]')
-    assert validate.print_inputs(talk) == ["slide-bottom.vue", "art/print_check.py"]
+    talk = a_talk_in_git(tmp_path, '["slide-bottom.vue", "art/print-check.ts"]')
+    assert validate.print_inputs(talk) == ["slide-bottom.vue", "art/print-check.ts"]
     assert not validate.print_inputs_changed(talk)
     (talk / "slides.md").write_text("other words")
     assert not validate.print_inputs_changed(talk)
@@ -421,7 +421,7 @@ def test_print_inputs_change_only_with_a_change_to_a_listed_file(
     (talk / "slide-bottom.vue").write_text("still")
     assert not validate.print_inputs_changed(talk)
     (talk / "art").mkdir()
-    (talk / "art" / "print_check.py").write_text("new")  # untracked
+    (talk / "art" / "print-check.ts").write_text("new")  # untracked
     assert validate.print_inputs_changed(talk)
 
 

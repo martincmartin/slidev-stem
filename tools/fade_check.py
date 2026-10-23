@@ -134,12 +134,35 @@ def largest(first: np.ndarray, second: np.ndarray) -> int:
     return int(np.abs(first - second).max())
 
 
+# Record the probe page's first uncaught error, so that the wait for it to be
+# ready can stop at that error: a page that throws while it loads never
+# becomes ready, and the wait would last its whole timeout.
+RECORD_ERRORS_JS = """
+addEventListener("error", (event) => { window.probeError ??= event.message; });
+addEventListener("unhandledrejection", (event) => {
+  window.probeError ??= String(event.reason);
+});
+"""
+
+
+def open_probe(page: Page, url: str) -> None:
+    """Load the probe page at `url` and wait until it is ready. Raise
+    RuntimeError with the page's error if it throws first."""
+    page.add_init_script(RECORD_ERRORS_JS)
+    page.goto(url)
+    page.wait_for_function(
+        "window.watchProbeReady === true || window.probeError !== undefined"
+    )
+    error = page.evaluate("window.probeError ?? null")
+    if error is not None:
+        raise RuntimeError(f"the probe page failed while it loaded: {error}")
+
+
 def check(fade: Fade, browser: Browser, base: str, name: str) -> dict[str, object]:
     page = browser.new_page(device_scale_factor=RATIO)
     errors: list[str] = []
     page.on("pageerror", lambda error: errors.append(str(error)))
-    page.goto(base)
-    page.wait_for_function("window.watchProbeReady === true")
+    open_probe(page, base)
     views = {}
     for view, tilt in fade.views:
         plain = picture(fade, page, view, tilt, None)
