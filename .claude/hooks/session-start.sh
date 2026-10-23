@@ -53,10 +53,3 @@ done
 # install fails if a browser's libraries are missing.
 uv run python -m playwright install-deps webkit
 uv run python -m playwright install chromium firefox webkit
-
-# Headless Firefox has WebGL only with an X display. Without one, on a machine
-# with no GPU, it draws no watch, and the private-browsing check fails.
-if ! pgrep -x Xvfb >/dev/null; then
-  nohup Xvfb :99 -screen 0 1280x1024x24 >/dev/null 2>&1 &
-fi
-echo 'export DISPLAY=:99' >> "$CLAUDE_ENV_FILE"

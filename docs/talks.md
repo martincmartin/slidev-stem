@@ -100,11 +100,17 @@ A Claude Code cloud session runs `.claude/hooks/session-start.sh` when it
 starts. It installs what a laptop already has: pnpm 12 (it reads the lockfiles,
 and then runs each project's pinned pnpm), a uv that knows the pinned Python,
 each project in progress from its lockfiles, the three Playwright engines, and
-the system libraries WebKit needs. It also starts an X server (Xvfb) and sets
-`DISPLAY`. This is not an oversight: on Linux without a GPU, headless Firefox
-has WebGL only with a display (it then draws in software, with Mesa). Without
-one, Firefox draws no watch, and the privacy check fails in Firefox. A laptop
-needs none of this.
+the system libraries WebKit needs. A laptop needs none of this.
+
+On Linux, headless Firefox has WebGL only with an X display: it then draws in
+software, with Mesa. Without one, it draws no watch, and the privacy check
+fails in Firefox. So where there is no display, each check that starts Firefox
+starts an X server (Xvfb, which the hook's `playwright install-deps`
+installs) of its own for it, and stops it with the browser
+(`withBrowser` in `tools/browser.ts`, and in the watches talk's
+`art/browser.ts`). This is not an oversight: a session-start hook that started
+one X server for the session lost it when the container restarted, and its
+`DISPLAY` did not reach the shells after the restart.
 
 The hook updates uv with `uv self update`, or else from PyPI: the image's uv
 may not come from Astral's installer, and the network policy may block

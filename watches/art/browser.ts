@@ -2,9 +2,12 @@
 // from a directory, with no server and no port, and no request to any other
 // host.
 
+import { spawn } from "node:child_process";
+import { once } from "node:events";
 import { existsSync } from "node:fs";
 import { stat } from "node:fs/promises";
 import { join, resolve, sep } from "node:path";
+import { Readable } from "node:stream";
 import { chromium } from "playwright-chromium";
 import type {
   Browser,
@@ -56,20 +59,66 @@ export function requireDeck(deck: string): void {
   }
 }
 
+/** An X server of its own, where there is no display: on Linux without one,
+ *  headless Firefox has no WebGL, and draws no watch; with one, it draws in
+ *  software, with Mesa (../../docs/talks.md, "Cloud sessions"). Null where a display exists,
+ *  where Xvfb is not installed, and off Linux. */
+async function privateDisplay(): Promise<{
+  readonly name: string;
+  readonly stop: () => void;
+} | null> {
+  if (process.platform !== "linux" || process.env["DISPLAY"]) return null;
+  // -displayfd: Xvfb picks a free display and writes its number to fd 3
+  const server = spawn(
+    "Xvfb",
+    ["-displayfd", "3", "-screen", "0", "1280x1024x24", "-nolisten", "tcp"],
+    { stdio: ["ignore", "ignore", "ignore", "pipe"] },
+  );
+  const failed = once(server, "error").then(() => "");
+  const output = server.stdio[3];
+  const number =
+    output instanceof Readable
+      ? (async () => {
+          let text = "";
+          for await (const chunk of output) {
+            text += String(chunk);
+            if (text.includes("\n")) break;
+          }
+          return text.trim();
+        })()
+      : Promise.resolve("");
+  const display = await Promise.race([number, failed]);
+  if (display === "") {
+    server.kill();
+    return null;
+  }
+  return { name: `:${display}`, stop: () => server.kill() };
+}
+
 /** Start `engine`, give `use` the browser, and close it after. Chromium
- *  draws WebGL on the GPU where there is one. */
+ *  draws WebGL on the GPU where there is one; Firefox gets an X server of its
+ *  own where there is no display. */
 export async function withBrowser<T>(
   engine: Engine,
   use: (browser: Browser) => Promise<T>,
 ): Promise<T> {
   const gpu = process.platform === "darwin" || existsSync("/dev/dri");
-  const browser = await ENGINES[engine].launch(
-    engine === "chromium" ? { args: gpu ? CHROMIUM_GPU : CHROMIUM_NO_GPU } : {},
-  );
+  const display = engine === "firefox" ? await privateDisplay() : null;
   try {
-    return await use(browser);
+    const browser = await ENGINES[engine].launch(
+      engine === "chromium"
+        ? { args: gpu ? CHROMIUM_GPU : CHROMIUM_NO_GPU }
+        : display
+          ? { env: { ...process.env, DISPLAY: display.name } }
+          : {},
+    );
+    try {
+      return await use(browser);
+    } finally {
+      await browser.close();
+    }
   } finally {
-    await browser.close();
+    display?.stop();
   }
 }
 

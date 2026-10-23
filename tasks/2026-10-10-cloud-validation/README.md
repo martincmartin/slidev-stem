@@ -107,3 +107,5 @@ and `tools/offline_check.py`, which are now TypeScript
 (`tools/smokecheck.ts`). To run the probe again, run it in a checkout of
 commit `133dd10`, the last with them (`git worktree add ../stem-133dd10
 133dd10`).
+
+2026-10-23: the session-start hook no longer starts Xvfb. After a container restart, its X server was gone and its `DISPLAY` did not reach the shells, so the privacy check failed in Firefox in every later run. Each check that starts Firefox now starts an X server of its own where there is no display, and stops it with the browser (`withBrowser` in `tools/browser.ts` and `watches/art/browser.ts`; `docs/talks.md`, "Cloud sessions").
