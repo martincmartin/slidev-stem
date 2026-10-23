@@ -7,3 +7,8 @@ task's tools import. The talk's last version was playwright 1.63.0; the version
 on the task's date is in that day's `uv.lock`. To run the tools again, add it
 to the talk for that session (`uv add playwright==1.63.0`), and install the
 browsers they use (`uv run python -m playwright install chromium`).
+
+2026-10-23: the house's `tools/offline_check.py`, which this task's scripts
+import, is now TypeScript (`tools/offline-check.ts`). To run them again, put
+the Python file back for that session from commit `133dd10`
+(`git show 133dd10:tools/offline_check.py > tools/offline_check.py`).

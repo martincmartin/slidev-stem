@@ -81,8 +81,9 @@ engines of a talk whose own checks use them (`playwright-firefox`,
 `playwright-webkit`).
 
 The Python needs no setup step. `uv run` makes the project's `.venv` first. The
-tools that render install their required browser engines the first time they run
-(`tools/browsers.py`).
+Python tools that render install their required browser engines the first time
+they run (`tools/browsers.py`). The house's TypeScript deck checks get theirs
+from the root's `pnpm install`, as a talk's art checks do.
 
 Playwright keeps its browsers in one cache for your user
 (`~/Library/Caches/ms-playwright` on macOS). All checkouts and worktrees share
@@ -242,7 +243,8 @@ windows. They must work offline with default privacy protections enabled.
 Full validation walks the built deck in Playwright Chromium, Firefox, and WebKit.
 The three independent walks run together after other checks finish.
 In these walks and in the print and privacy checks, Chromium draws WebGL on the GPU
-(`CHROMIUM_GPU` in `tools/browsers.py`, and its copy in the watches talk's
+(`gpu` in `tools/chromium-args.json`, which `tools/browser.ts` and
+`tools/browsers.py` read, and its copy in the watches talk's
 `art/browser.ts`), as Chrome does in a talk. The checks
 compare states and positions, not pixels, so the renderer does not change their
 results. This is not an oversight: headless Chromium otherwise draws WebGL in
@@ -250,7 +252,7 @@ software (SwiftShader), on the CPU, which made the print check about 3 times
 slower (the dated note in the
 [validation-speed task](../tasks/2026-10-06-validation-speed/README.md)).
 Without a GPU (Linux without `/dev/dri`, such as a cloud container), Chromium
-draws in software either way, and gets `CHROMIUM_NO_GPU`, ANGLE's SwiftShader
+draws in software either way, and gets `noGpu`, ANGLE's SwiftShader
 backend: the checks are the same, but slower. There it drew the watch about
 4.8 times as fast as Chromium's default software path (8.2 against 1.7 frames
 a second), and the print check took 94 s instead of 117 s (median of five runs
@@ -270,8 +272,9 @@ resolve theme colours or start its live art.
 Headless Chromium and WebKit refuse a screen wake lock. At a secure origin
 (https or localhost), Slidev asks for one as it starts and does not catch a
 refusal, so the page throws. So a check that drives a deck supplies
-a stand-in `navigator.wakeLock` that grants it (`tools/navcheck.py`, and the
-watches talk's `art/browser.ts`). Every other page error still fails the
+a stand-in `navigator.wakeLock` that grants it (`tools/browser.ts`, and the
+watches talk's `art/browser.ts`). The house's deck checks serve a built deck at
+an https origin, as GitHub Pages does, so they need it too. Every other page error still fails the
 check. The stand-in is a standard web API, not a Slidev setting, so it works
 with any Slidev version.
 
@@ -283,8 +286,8 @@ State which tests were run and identify any test that could not be run.
 Do not disable privacy protection to make a test pass.
 
 The renderer and print diagnostics accept `--browser webkit` where documented.
-The supported names are in `tools/browsers.py` (for the watches talk's art
-checks, `ENGINES` in `art/browser.ts`); commands are in
+The supported names are `ENGINES` in `tools/browser.ts` (for the watches
+talk's art checks, in `art/browser.ts`); commands are in
 [the tools index](../tools/README.md).
 
 ## Check your work
@@ -335,7 +338,7 @@ Full validation runs every check and exits non-zero if any check fails:
   file that `.prettierrc` misses (`talkcheck`), and the talk's Vue components
   with `vuecheck`, as the root run does. It builds the deck, and then
   walks every slide and click in Chromium, Firefox, and WebKit with
-  `smokecheck.py`, with every outside request blocked.
+  `smokecheck.ts`, with every outside request blocked.
 
 ### The print check
 

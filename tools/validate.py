@@ -20,7 +20,7 @@ through barroom.py. Motion checks retain every sample in their original plans.
 Independent preparation groups use the default worker limit below. Each group keeps
 its dependency order. Smoke navigation runs after preparation. It checks startup, page errors,
 outside requests, and completion. Exhaustive navigation is diagnostic only.
-Neither full nor quick validation runs navcheck.py.
+Neither full nor quick validation runs navcheck.ts.
 
 Full mode runs the print check only with --print, or when the working tree
 changes one of the talk's print inputs ([tool.validate] print-inputs in its
@@ -142,12 +142,13 @@ class Later:
 
 def deck_key(stem: Path, project: Path, deck: Path) -> str:
     """The key of what a check of the built deck reads: the deck, and the
-    files that decide how it is checked. These are every `.py` file in the
-    house's tools/, every file in the talk's art/ (Python or TypeScript), the
-    talk's package.json (its scripts), and each project's lockfiles and
+    files that decide how it is checked. These are every file in the house's
+    tools/ and in the talk's art/ (Python or TypeScript), each project's
+    package.json (its scripts), and each project's lockfiles and
     .python-version (they pick Playwright, and so the browser engines: the
-    talk's art checks take theirs from pnpm-lock.yaml). More than the checks
-    read, so that a change can cost a run but cannot give a false pass."""
+    house's smoke check and the talk's art checks take theirs from
+    pnpm-lock.yaml). More than the checks read, so that a change can cost a
+    run but cannot give a false pass."""
     if not (deck / "index.html").is_file():
         raise ValueError(f"no built deck in {deck}")
 
@@ -159,14 +160,14 @@ def deck_key(stem: Path, project: Path, deck: Path) -> str:
             if path.is_file() and "__pycache__" not in path.parts
         )
 
-    pins = ("uv.lock", ".python-version")
-    talk_files = ("package.json", "pnpm-lock.yaml", *pins)
+    pins = ("package.json", "pnpm-lock.yaml", "uv.lock", ".python-version")
+    tools = stem / "tools"
     sources: list[tuple[str, Path, Iterable[Path]]] = [
         ("deck", deck, files(deck, "**/*")),
-        ("tools", stem / "tools", files(stem / "tools", "*.py")),
+        ("tools", tools, files(tools, "**/*")),
         ("stem", stem, [stem / name for name in pins]),
         ("art", project / "art", files(project / "art", "**/*")),
-        ("talk", project, [project / name for name in talk_files]),
+        ("talk", project, [project / name for name in pins]),
     ]
     digest = hashlib.sha256()
     for tag, root, paths in sources:
@@ -452,8 +453,10 @@ def talk_groups(
             Check(
                 "navigation smoke",
                 STEM,
-                uv_run(
-                    "tools/smokecheck.py",
+                (
+                    "pnpm",
+                    "--silent",
+                    "smokecheck",
                     str(deck),
                     "--browser",
                     "all",

@@ -22,7 +22,7 @@
 // of its click (`boardPoseTime`). `data-waitfor` makes `slidev export` wait
 // until the SVG is in place and posed.
 //
-// `data-phase` and `data-busy` on the host are for tools/navcheck.py
+// `data-phase` and `data-busy` on the host are for tools/navcheck.ts
 // (watch/slide-state.ts).
 //
 // IN THE ARTICLE (components/FigureLayer.vue): `scrub`, from 0 to 1, holds

@@ -12,7 +12,7 @@ These answer "is this good enough?" with arithmetic rather than opinion, for eve
 STEM talk. The thresholds they enforce are the ones in [`../docs/`](../docs/README.md). Run them in
 `stem/`.
 
-**All of them read `lib.py` for constants.** Change a threshold, a stroke weight or
+**All the Python tools read `lib.py` for constants.** Change a threshold, a stroke weight or
 the venue table there and every tool follows. Nothing is repeated between tools,
 so a number cannot drift. The palette values are not in `lib.py`: it reads them
 from each palette (`../themes/palettes/<name>/palette.css`), the one place they are
@@ -23,7 +23,7 @@ Each tool, with what it needs in brackets, and what it answers:
 
 - `lib.py` (stdlib): the constants themselves; run it to print them
 - `browsers.py` (playwright): does this venv's Playwright have its browser; if
-  not, install it (the tools that render call it)
+  not, install it (the Python tools that render call it)
 - `palette.py` (stdlib): does each palette pass its gates; a talk's palette, its
   colorSchema, and does it set roles; can I use this colour
 - `derive_palette.py` (stdlib): a palette's art roles, derived from its text
@@ -42,11 +42,15 @@ Each tool, with what it needs in brackets, and what it answers:
   get (an SVG, or a PNG that something else drew)
 - `motion.py` (playwright + PIL + numpy): can the back row see the thing that
   moves (an SVG's animation, or two PNG frames of one)
-- `offline_check.py` (playwright): does a built deck make any outside request,
+- `chromium-args.json`: Chromium's launch arguments, with a GPU and without;
+  `browsers.py` and `browser.ts` read it
+- `browser.ts` (Playwright): the browsers that the TypeScript deck checks
+  drive, and a built deck served to them from disk, at an https origin
+- `offline-check.ts` (Playwright): does a built deck make any outside request,
   and does it start and show its slides; its fonts and colours per slide
-- `smokecheck.py` (playwright): does the built deck start, navigate through its
-  declared positions, and work offline
-- `navcheck.py` (playwright): diagnostic for suspected navigation problems:
+- `smokecheck.ts` (Playwright): does the built deck start, navigate through
+  its declared positions, and work offline
+- `navcheck.ts` (Playwright): diagnostic for suspected navigation problems:
   continuity and direct-load equality ([navigation.md](../docs/navigation.md))
 - `talkcheck.py` (stdlib, pnpm): does a talk have its own `pnpm-workspace.yaml`,
   and does Prettier read each of its deck files with the Slidev parser
@@ -94,14 +98,14 @@ uv run tools/barroom.py cover.png           # a PNG, at 2 device px a CSS px
 uv run tools/barroom.py watches/public/ --gate-only # only the design-venue failure gate
 uv run tools/motion.py --png-pair a.png b.png   # two frames of one animation
 uv run tools/scenecheck.py scene.json       # from a talk's `pnpm art:scene`
-uv run tools/offline_check.py <build dir> 1:0 2:5   # see its docstring
-uv run tools/offline_check.py <build dir> --walk    # every slide and click
-uv run tools/smokecheck.py <build dir> --browser all --no-canvas-readback  # full validation
-uv run tools/smokecheck.py <build dir> --browser firefox
-uv run tools/smokecheck.py <build dir> --browser webkit --no-canvas-readback
-uv run tools/offline_check.py <build dir> --browser webkit 1:0
-uv run tools/navcheck.py <build dir> --offline      # suspected navigation problems only
-uv run tools/navcheck.py <build dir>                # diagnostic; also accepts a dev server URL
+pnpm offline-check <build dir> 1:0 2:5   # see the comment at its top
+pnpm offline-check <build dir> --walk    # every slide and click
+pnpm smokecheck <build dir> --browser all --no-canvas-readback  # full validation
+pnpm smokecheck <build dir> --browser firefox
+pnpm smokecheck <build dir> --browser webkit --no-canvas-readback
+pnpm offline-check <build dir> --browser webkit 1:0
+pnpm navcheck <build dir> --offline      # suspected navigation problems only
+pnpm navcheck <build dir>                # diagnostic; also accepts a dev server URL
 pnpm vuecheck watches                        # the Vue components of a talk
 pnpm vuecheck themes path/to/One.vue         # ... or of these paths
 uv run tools/check_python.py      # after you change a tool
@@ -151,7 +155,7 @@ The default `barroom.py` report and its JSON output retain all measurements.
 The sampling plans and contrast calculations are unchanged.
 Frame capture waits for fonts and two paint frames instead of a fixed delay.
 
-`smokecheck.py` provides the full validation deck walk in Chromium, Firefox,
+`smokecheck.ts` provides the full validation deck walk in Chromium, Firefox,
 and WebKit. Each uses a fresh non-persistent context, and Chromium draws on the
 GPU ([browser support](../docs/talks.md#browser-support)). Full validation blocks
 2D canvas pixel reads as a privacy regression check.
@@ -162,11 +166,11 @@ startup check with canvas pixel reads blocked.
 The house theme supplies the next and final positions from Slidev navigation.
 Quick validation has no browser walk.
 
-`navcheck.py` is diagnostic only. Run it when a navigation problem is found or suspected.
+`navcheck.ts` is diagnostic only. Run it when a navigation problem is found or suspected.
 No validation mode runs exhaustive navigation. Do not run it routinely,
 including before commits or after ordinary navigation changes.
 The diagnostic retains forward/backward animation sampling and direct-load comparisons.
-`offline_check.py` remains available for screenshots and diagnostic walks.
+`offline-check.ts` remains available for screenshots and diagnostic walks.
 
 ## Which tool is the authority
 
@@ -269,7 +273,9 @@ list above and a line to the relevant file in `../docs/`.
 A house tool in TypeScript is a `<name>.ts` file in `tools/`. Node runs it as
 it is, with no build. The root's `package.json` gives it a script of its name
 (`pnpm vuecheck`), so that it runs on the pinned Node, from the root, with the
-paths to check. Its packages are the root's dev dependencies.
+paths to check. Its packages are the root's dev dependencies. The deck checks
+drive Playwright's packages (`browser.ts`), which download their engines at
+`pnpm install`.
 
 The root run of `validate.py` runs the root's `typecheck` (`tsc`), `lint`
 (ESLint, as strict as a talk's) and `test` (`node --test` on each tool's

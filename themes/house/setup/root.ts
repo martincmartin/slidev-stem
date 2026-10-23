@@ -1,5 +1,6 @@
 import { useDrawings, useNav } from "@slidev/client";
 import { onBeforeUnmount } from "vue";
+import type { SlideNavigation } from "../navigation.ts";
 
 /** What a click must not move past: it works on these itself. */
 const INTERACTIVE =
@@ -11,11 +12,12 @@ export default function setupRoot(): void {
   setupClickToAdvance();
 }
 
-// Fast validation uses Slidev's next target and final position.
-// See docs/navigation.md. Animation state is deliberately excluded.
+// Fast validation uses Slidev's next target and final position
+// (../navigation.ts; docs/navigation.md). Animation state is deliberately
+// excluded.
 function setupNavigationProbe(): void {
   const navigation = useNav();
-  const probe = () => {
+  const probe = (): SlideNavigation => {
     const slide = navigation.currentSlideNo.value;
     const click = navigation.clicks.value;
     const clicksTotal = navigation.clicksTotal.value;
@@ -28,9 +30,9 @@ function setupNavigationProbe(): void {
           : null;
     return { slide, click, clicksTotal, lastSlide, next };
   };
-  Object.assign(window, { slideNavigation: probe });
+  window.slideNavigation = probe;
   onBeforeUnmount(() => {
-    Reflect.deleteProperty(window, "slideNavigation");
+    delete window.slideNavigation;
   });
 }
 

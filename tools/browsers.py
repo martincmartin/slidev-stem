@@ -11,26 +11,26 @@ records this venv's Playwright in the cache. A later `playwright install` from
 another checkout deletes only the browsers that no recorded Playwright needs.
 """
 
+import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Protocol, overload
-
-from playwright.async_api import BrowserType as AsyncBrowserType
-from playwright.async_api import Playwright as AsyncPlaywright
-from playwright.sync_api import BrowserType as SyncBrowserType
-from playwright.sync_api import Playwright as SyncPlaywright
+from typing import Protocol
 
 NAMES = ("chromium", "firefox", "webkit")
 
-# Without these, headless Chromium draws WebGL in software (SwiftShader), on the
-# CPU. With them, it draws on the GPU (Metal on a Mac), as Chrome does in a talk.
-CHROMIUM_GPU = ("--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist")
-# Where there is no GPU (a Linux machine without /dev/dri, such as a cloud
-# container), Chromium draws in software either way. ANGLE's SwiftShader
-# backend drew the watch about 4.8 times as fast as Chromium's default there,
-# and cut the print check from 117 s to 94 s (docs/talks.md, "Browser support").
-CHROMIUM_NO_GPU = ("--use-angle=swiftshader",)
+# Chromium's arguments, in chromium-args.json, which browser.ts reads too (the
+# watches talk's art/browser.ts has its own copy: a talk does not import the
+# house tools). Without "gpu", headless Chromium draws WebGL in software
+# (SwiftShader), on the CPU; with it, on the GPU (Metal on a Mac), as Chrome
+# does in a talk. Where there is no GPU (a Linux machine without /dev/dri, such
+# as a cloud container), Chromium draws in software either way: "noGpu",
+# ANGLE's SwiftShader backend, drew the watch about 4.8 times as fast as
+# Chromium's default there, and cut the print check from 117 s to 94 s
+# (docs/talks.md, "Browser support").
+_ARGS = json.loads((Path(__file__).parent / "chromium-args.json").read_text())
+CHROMIUM_GPU: tuple[str, ...] = tuple(_ARGS["gpu"])
+CHROMIUM_NO_GPU: tuple[str, ...] = tuple(_ARGS["noGpu"])
 
 
 def has_gpu() -> bool:
@@ -46,29 +46,6 @@ def launch_args(name: str) -> list[str]:
     if name != "chromium":
         return []
     return list(CHROMIUM_GPU if has_gpu() else CHROMIUM_NO_GPU)
-
-
-@overload
-def select(playwright: AsyncPlaywright, name: str) -> AsyncBrowserType: ...
-
-
-@overload
-def select(playwright: SyncPlaywright, name: str) -> SyncBrowserType: ...
-
-
-def select(
-    playwright: AsyncPlaywright | SyncPlaywright, name: str
-) -> AsyncBrowserType | SyncBrowserType:
-    """Select an engine at the command-line boundary. Reject unknown names."""
-    match name:
-        case "chromium":
-            return playwright.chromium
-        case "firefox":
-            return playwright.firefox
-        case "webkit":
-            return playwright.webkit
-        case _:
-            raise ValueError(f"Unknown browser engine: {name}")
 
 
 class BrowserType(Protocol):

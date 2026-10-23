@@ -26,7 +26,7 @@ export function isEngine(name: string): name is Engine {
 
 /** Chromium's arguments: WebGL on the GPU, as Chrome draws a talk, or, where
  *  there is none (Linux without /dev/dri), ANGLE's SwiftShader, the faster of
- *  its software renderers. The same as stem/tools/browsers.py's: a talk does
+ *  its software renderers. The same as stem/tools/browser.ts's: a talk does
  *  not import the house tools. */
 const CHROMIUM_GPU = [
   "--use-angle=metal",

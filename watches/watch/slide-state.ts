@@ -1,4 +1,4 @@
-// What the screen shows now, for tools/navcheck.py: the contract is in
+// What the screen shows now, for tools/navcheck.ts: the contract is in
 // ../docs/navigation.md, "Diagnostic: exhaustive navigation". `settled` must be the same however a
 // (slide, click) is reached; each `continuous` number must move without a cut;
 // `busy` is true while a story animation (the board's bend or curl) or a
@@ -19,8 +19,8 @@ declare global {
   interface Window {
     /** For the measurement scripts. */
     watchStage?: Stage<WatchModelState>;
-    /** For tools/navcheck.py (../docs/navigation.md, "The check") and
-     *  art/print-check.ts. */
+    /** For tools/navcheck.ts (../docs/navigation.md, "Diagnostic:
+     *  exhaustive navigation") and art/print-check.ts. */
     slideState?: () => SlideState;
   }
 }

@@ -1,0 +1,4 @@
+{
+  "gpu": ["--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist"],
+  "noGpu": ["--use-angle=swiftshader"]
+}

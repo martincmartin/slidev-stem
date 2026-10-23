@@ -70,7 +70,7 @@ also goes forward.
 
 ## Validation: fast smoke navigation
 
-Full validation runs `tools/smokecheck.py` on the built deck.
+Full validation runs `tools/smokecheck.ts` on the built deck.
 Quick validation has no browser walk.
 The smoke check blocks outside requests and walks forward through each slide and click in all three supported engines.
 It checks startup, page errors, each declared next position, and the declared final position.
@@ -78,10 +78,12 @@ It rejects navigation stalls and walks that exceed their limit.
 It does not wait for animations or compare their settled states.
 
 The house theme supplies `window.slideNavigation()` from
-`themes/house/setup/root.ts`. It returns the current slide and click,
+`themes/house/setup/root.ts`. Its type is in `themes/house/navigation.ts`,
+which the smoke check imports; the smoke check also checks the values as it
+reads them, because nothing type-checks the theme. It returns the current slide and click,
 the current slide's click total, the last slide, and the next position.
 These values come from Slidev navigation. The smoke tool uses them to detect early stops.
-The observation periods and deadlines are in `tools/smokecheck.py`.
+The observation periods and deadlines are in `tools/smokecheck.ts`.
 Use `--browser firefox` or `--browser webkit` to select another engine.
 Full validation runs all three engines in fresh non-persistent contexts.
 It blocks 2D canvas pixel reads to test compatibility with privacy protection.
@@ -90,7 +92,7 @@ See [talks.md](talks.md#browser-support) for the browser requirements.
 
 ## Diagnostic: exhaustive navigation
 
-Run `tools/navcheck.py` only when an actual navigation problem is found or suspected.
+Run `tools/navcheck.ts` (`pnpm navcheck`) only when an actual navigation problem is found or suspected.
 No validation mode runs it. Do not run it routinely, including before commits
 or after ordinary navigation changes.
 

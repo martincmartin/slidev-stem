@@ -20,3 +20,5 @@ The options, the measurements and the decision are in [PLAN.md](PLAN.md).
 2026-10-07: [Smoke navigation](../../watches/tasks/2026-10-07-full-validation-profile/README.md) replaces exhaustive navigation in validation. Reuse now applies to print and smoke navigation. Exhaustive navigation is diagnostic only.
 
 2026-10-23: the print and privacy checks are TypeScript (`watches/art/print-check.ts`, `privacy-check.ts`). The deck key covers every file in a talk's `art/`, except `__pycache__`, and the talk's `pnpm-lock.yaml`, which picks the engines of those checks.
+
+2026-10-23: the smoke check is TypeScript (`tools/smokecheck.ts`). The deck key covers every file in the house's `tools/` (except `__pycache__`, as for `art/`), and the root's `package.json` and `pnpm-lock.yaml`, which pick the engines of the house's TypeScript checks.

@@ -198,8 +198,12 @@ def a_stem_and_a_talk(tmp_path: Path) -> tuple[Path, Path, Path]:
     """A house with a tool, a talk with art and a package.json, and a deck."""
     stem = tmp_path / "stem"
     (stem / "tools").mkdir(parents=True)
-    (stem / "tools" / "navcheck.py").write_text("walk")
+    (stem / "tools" / "lib.py").write_text("venue")
+    (stem / "tools" / "smokecheck.ts").write_text("walk")
+    (stem / "tools" / "chromium-args.json").write_text("{}")
     (stem / "uv.lock").write_text("playwright 1")
+    (stem / "pnpm-lock.yaml").write_text("playwright-chromium 1")
+    (stem / "package.json").write_text("{}")
     talk = stem / "talk"
     (talk / "art").mkdir(parents=True)
     (talk / "art" / "print_check.py").write_text("print")
@@ -226,8 +230,12 @@ def test_the_deck_key_changes_with_the_deck_and_the_checkers_only(
     assert validate.deck_key(stem, talk, deck) == key
     for changed in (
         deck / "assets" / "index.js",
-        stem / "tools" / "navcheck.py",
+        stem / "tools" / "lib.py",
+        stem / "tools" / "smokecheck.ts",
+        stem / "tools" / "chromium-args.json",
         stem / "uv.lock",
+        stem / "pnpm-lock.yaml",
+        stem / "package.json",
         talk / "art" / "print_check.py",
         talk / "art" / "print-check.ts",
         talk / "package.json",
@@ -375,10 +383,8 @@ def test_full_validation_uses_smoke_and_never_exhaustive_navigation(
                 for item in items
                 if isinstance(item, Check | validate.Reusable)
             ]
-            assert not any("tools/navcheck.py" in check.command for check in checks)
-            assert any("tools/smokecheck.py" in check.command for check in checks) is (
-                not quick
-            )
+            assert not any("navcheck" in check.command for check in checks)
+            assert any("smokecheck" in check.command for check in checks) is (not quick)
 
 
 def a_talk_in_git(tmp_path: Path, inputs: str | None) -> Path:

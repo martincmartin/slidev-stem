@@ -43,7 +43,7 @@
 //
 // A page with no still is a page with no watch: its state is "null", the same
 // as the live canvas's on a slide that hides the watch. Every outside request
-// fails the check, as in stem/tools/offline_check.py.
+// fails the check, as in stem/tools/offline-check.ts.
 
 import { parseArgs } from "node:util";
 import type { Browser, Page } from "playwright-chromium";

@@ -145,7 +145,7 @@ export function boardPoseTime(timing: BoardTiming, state: BoardState): number {
     : storyEnd(timing);
 }
 
-/** What the clock is doing, for tools/navcheck.py and the tests. A bend, a
+/** What the clock is doing, for tools/navcheck.ts and the tests. A bend, a
  *  curl (or the wait for it, or the edit after it) and an uncurl are busy:
  *  they end on their own. */
 export type BoardPhase =

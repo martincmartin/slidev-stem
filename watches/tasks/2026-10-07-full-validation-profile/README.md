@@ -212,3 +212,9 @@ task's tools import. The talk's last version was playwright 1.63.0; the version
 on the task's date is in that day's `uv.lock`. To run the tools again, add it
 to the talk for that session (`uv add playwright==1.63.0`), and install the
 browsers they use (`uv run python -m playwright install chromium`).
+
+2026-10-23: the smoke check is now TypeScript, `tools/smokecheck.ts`, with the
+same walk, limits and failures. It serves the deck at an https origin, as
+GitHub Pages does, with a stand-in screen wake lock, and prints each engine's
+result in order after all three finish. `tools/offline_check.py` is now
+`tools/offline-check.ts`.

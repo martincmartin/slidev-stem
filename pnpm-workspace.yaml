@@ -5,3 +5,9 @@
 # See "Given talks, retired talks and versions" in AGENTS.md.
 packages:
   - "themes/*"
+# The house tools' browsers: each package downloads its engine when pnpm
+# installs it.
+allowBuilds:
+  playwright-chromium: true
+  playwright-firefox: true
+  playwright-webkit: true

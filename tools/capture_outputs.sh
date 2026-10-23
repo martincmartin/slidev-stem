@@ -6,8 +6,8 @@
 #
 # TALK_DIR is the talk whose art the tools check (for example, watches). A
 # given talk is not checked again, so a tool never has a default talk. PYTHON
-# runs every tool (default: .venv/bin/python3). DECK_BUILD is a
-# `slidev build --out` directory for offline_check.py; without it, that tool
+# runs every Python tool (default: .venv/bin/python3). DECK_BUILD is a
+# `slidev build --out` directory for offline-check.ts; without it, that tool
 # is skipped. Each command's stdout, stderr and exit code go into one file.
 set -u
 out=$1
@@ -34,8 +34,8 @@ run motion-venue "$python" tools/motion.py "$talk/public" --venue laptop --flare
 run contact "$python" tools/contact.py "$talk/public" --out "$out/contact.png"
 
 if [ -n "$build" ]; then
-    run offline "$python" tools/offline_check.py "$build" 1:0 2:0 2:3
-    run offline-clicks "$python" tools/offline_check.py "$build" --clicks 2 --presses 3 --back
+    run offline pnpm --silent offline-check "$build" 1:0 2:0 2:3
+    run offline-clicks pnpm --silent offline-check "$build" --clicks 2 --presses 3 --back
 fi
 # Replace the directory's name with OUT, as plain text (sed -i differs between
 # GNU and macOS, and would read the path as a pattern).

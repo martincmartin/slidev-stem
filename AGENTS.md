@@ -121,7 +121,8 @@ corrupts its frontmatter with no error. See `docs/talks.md`, "Add a deck file".
 The house style for every talk (palette, illustrations, legibility) is in
 `docs/`, and the checks for it are in `tools/`. Run a check at the root, with
 the paths to check: `uv run tools/artcheck.py watches/public/`. The checks that
-render install their required browser engines the first time they run (`tools/browsers.py`). A talk's
+render in Python install their browser engines the first time they run
+(`tools/browsers.py`); the TypeScript ones get theirs from `pnpm install`. A talk's
 own `docs/` holds what is true of that talk only.
 
 After editing any file, run `pnpm format` in the project that holds it. For a
@@ -154,7 +155,7 @@ uv run ../tools/validate.py --fix # let ruff and Prettier rewrite first
 Each run checks only its own project, and it takes its scope from the current
 directory. `--quick` runs source checks, generated-file checks, and a build.
 Run `--print` before an export or a tag.
-Exhaustive navigation (`navcheck.py`) is not part of any validation mode.
+Exhaustive navigation (`navcheck.ts`) is not part of any validation mode.
 Run it only when an actual navigation problem is found or suspected.
 Do not run it routinely, including before commits or after ordinary navigation changes.
 Do not run validation in a retired talk.

@@ -101,3 +101,9 @@ in 161.6 s: print 116.3 s, smoke 32.7 s.
 These are single-machine measurements with few runs, not timing distributions.
 The probes in [`tools/`](tools/) patch `print_check` and `smokecheck` settings
 at run time and take the built deck as an argument.
+
+2026-10-23: `tools/smokeprobe.py` imports the house's `tools/smokecheck.py`
+and `tools/offline_check.py`, which are now TypeScript
+(`tools/smokecheck.ts`). To run the probe again, run it in a checkout of
+commit `133dd10`, the last with them (`git worktree add ../stem-133dd10
+133dd10`).

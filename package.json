@@ -20,7 +20,10 @@
     "typecheck": "tsc -p tools",
     "lint": "eslint --max-warnings 0 tools",
     "test": "node --test \"tools/*.test.ts\"",
-    "vuecheck": "node tools/vuecheck.ts"
+    "vuecheck": "node tools/vuecheck.ts",
+    "smokecheck": "node tools/smokecheck.ts",
+    "navcheck": "node tools/navcheck.ts",
+    "offline-check": "node tools/offline-check.ts"
   },
   "devDependencies": {
     "@eslint-community/eslint-plugin-eslint-comments": "^4.8.1",
@@ -30,6 +33,9 @@
     "@vue/compiler-sfc": "^3.5.44",
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
+    "playwright-chromium": "1.63.0",
+    "playwright-firefox": "1.63.0",
+    "playwright-webkit": "1.63.0",
     "prettier": "^3.9.10",
     "prettier-plugin-slidev": "^1.0.5",
     "typescript": "^6.0.3",
