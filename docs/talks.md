@@ -319,8 +319,8 @@ runs both.
 Full validation runs every check and exits non-zero if any check fails:
 
 - **The root run** checks `tools/` with ruff (format and lint), mypy (strict)
-  and pyright, and the TypeScript in `tools/` with `tsc`, ESLint and its
-  tests. It checks the shared files with Prettier, runs the tests in
+  and pyright, the TypeScript in `tools/` with `tsc`, ESLint and its tests,
+  and the house theme's TypeScript with `tsc`. It checks the shared files with Prettier, runs the tests in
   `tools/` (pytest), checks the docs with `doccheck`, and checks the palette's
   gates. It checks that no Vue component in `themes/` has a comment beside its
   one root element (`vuecheck`): a build then drops the class and `v-click`

@@ -79,8 +79,9 @@ It does not wait for animations or compare their settled states.
 
 The house theme supplies `window.slideNavigation()` from
 `themes/house/setup/root.ts`. Its type is in `themes/house/navigation.ts`,
-which the smoke check imports; the smoke check also checks the values as it
-reads them, because nothing type-checks the theme. It returns the current slide and click,
+which the root's `typecheck` checks the theme against, and which the smoke
+check imports. The smoke check also checks the values as it reads them: they
+come from a page. It returns the current slide and click,
 the current slide's click total, the last slide, and the next position.
 These values come from Slidev navigation. The smoke tool uses them to detect early stops.
 The observation periods and deadlines are in `tools/smokecheck.ts`.

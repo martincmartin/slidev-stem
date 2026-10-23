@@ -1,0 +1,18 @@
+{
+  // The house theme's .ts files, which a talk's Vite build compiles: so
+  // Vite's module rules (Bundler), not Node's. Only this checks them. Here,
+  // not in themes/: a talk's build would read a tsconfig.json there for the
+  // theme's files (README.md, "TypeScript tools"). The theme sees Slidev and
+  // Vue through its own stand-in types (../themes/house/types/).
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": [],
+    "paths": {
+      "@slidev/client": ["../themes/house/types/slidev-client.d.ts"],
+      "vue": ["../themes/house/types/vue.d.ts"]
+    }
+  },
+  "include": ["../themes/house/**/*.ts"]
+}

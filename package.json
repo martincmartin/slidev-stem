@@ -17,7 +17,7 @@
   "scripts": {
     "format": "prettier --write docs themes tools site .github \"*.{md,json,yaml}\"",
     "format:check": "prettier --check docs themes tools site .github \"*.{md,json,yaml}\"",
-    "typecheck": "tsc -p tools",
+    "typecheck": "tsc -p tools && tsc -p tools/tsconfig.theme.json",
     "lint": "eslint --max-warnings 0 tools",
     "test": "node --test \"tools/*.test.ts\"",
     "vuecheck": "node tools/vuecheck.ts",

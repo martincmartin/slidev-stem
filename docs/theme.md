@@ -438,6 +438,9 @@ rendering error. A dark _slide_ reads as a dark slide.
 
 **The house theme holds no colours.** `themes/house/` is the Slidev theme of
 every talk: its layouts, its type and fonts, its setup and its Vite config.
+The root's `typecheck` checks its `.ts` files against stand-in types for
+Slidev and Vue (`themes/house/types/`): when the theme calls a new part of
+their API, add it there (`../tools/README.md`, "TypeScript tools").
 The colours are a palette's. Each palette is an addon,
 `themes/palettes/<name>/`, with three files:
 

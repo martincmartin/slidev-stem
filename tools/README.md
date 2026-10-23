@@ -276,11 +276,18 @@ paths to check. Its packages are the root's dev dependencies. The deck checks
 drive Playwright's packages (`browser.ts`), which download their engines at
 `pnpm install`.
 
+The root's `typecheck` also checks the house theme's `.ts` files, with
+`tools/tsconfig.theme.json`: Vite's module rules, and stand-in types for
+Slidev and Vue in `themes/house/types/`, as a talk has in its `types/`. Keep a
+stand-in to what the theme calls. The `.vue` layouts are not checked.
+
 The root run of `validate.py` runs the root's `typecheck` (`tsc`), `lint`
 (ESLint, as strict as a talk's) and `test` (`node --test` on each tool's
 `<name>.test.ts`) scripts, on `tools/*.ts` only.
 
-`tools/tsconfig.json` and `tools/eslint.config.js` are in `tools/`, not at the
-root. This is not an oversight: a talk's build reads the nearest
-`tsconfig.json` for each file, so a root one would change how the house
-theme's `.ts` files compile.
+`tools/tsconfig.json`, `tools/tsconfig.theme.json` and `tools/eslint.config.js`
+are in `tools/`, not at the root or in `themes/`. This is not an oversight: a
+talk's build reads the nearest `tsconfig.json` for each file, so one there
+would change how the house theme's `.ts` files compile. The stand-in types are
+not the real `vue` either: a copy of Vue at the root could reach a talk's
+build, which must use the talk's own.
