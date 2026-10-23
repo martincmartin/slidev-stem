@@ -102,6 +102,13 @@ has WebGL only with a display (it then draws in software, with Mesa). Without
 one, Firefox draws no watch, and the privacy check fails in Firefox. A laptop
 needs none of this.
 
+The hook updates uv with `uv self update`, or else from PyPI: the image's uv
+may not come from Astral's installer, and the network policy may block
+`astral.sh`. If a step fails, the hook stops and says so in Claude's context,
+so that Claude tells the user. Claude Code adds a session-start hook's stdout
+to Claude's context only when the hook exits 0, and shows its stderr only to
+the user, as a hook error notice.
+
 The environment's network policy must allow `cdn.playwright.dev` and
 `playwright.download.prss.microsoft.com`, where Playwright downloads its
 browsers.
