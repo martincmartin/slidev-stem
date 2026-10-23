@@ -22,3 +22,9 @@ changed, are in [review-2026-10-12.md](review-2026-10-12.md),
 - 2026-10-23: `tools/print-compare.py` imports `print_check` from the live
   `art/`, which is now TypeScript (`art/print-check.ts`). To run the tool,
   restore the module first: `git show 34ecc92:watches/art/print_check.py`.
+
+2026-10-23: the talk no longer depends on Python's Playwright, which this
+task's tools import. The talk's last version was playwright 1.63.0; the version
+on the task's date is in that day's `uv.lock`. To run the tools again, add it
+to the talk for that session (`uv add playwright==1.63.0`), and install the
+browsers they use (`uv run python -m playwright install chromium`).

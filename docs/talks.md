@@ -402,9 +402,9 @@ Upgrade only a talk in progress. In the talk's directory:
    rm pnpm-lock.yaml && pnpm install   # and every package below them
    ```
 
-   Keep the Python `playwright` and the JS `playwright-chromium` (and a
-   talk's `playwright-firefox` and `playwright-webkit`) at the same version
-   (`uv.lock` and `package.json`). Then `slidev export` and the tools that
+   Keep the house's Python `playwright` (the root's `uv.lock`) and the
+   talk's JS `playwright-chromium` (and its `playwright-firefox` and
+   `playwright-webkit`) at the same version (`package.json`). Then `slidev export` and the tools that
    render use the same browser builds, and the cache holds one copy.
 
    To move Node or pnpm, change the versions in `devEngines` in

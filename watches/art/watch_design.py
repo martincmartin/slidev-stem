@@ -693,9 +693,9 @@ def design_text(layout: Layout = LAYOUT) -> str:
     return json.dumps(design(layout), indent=1) + "\n"
 
 
-# A regenerated number may differ in its last digits between machines (numpy,
-# scipy), and `pnpm format` rewrites the file's whitespace, so --check compares
-# what the JSON means, not its bytes.
+# A regenerated number may differ in its last digits between machines (their
+# floating-point libraries), and `pnpm format` rewrites the file's whitespace,
+# so --check compares what the JSON means, not its bytes.
 CHECK_TOLERANCE = 1e-9
 
 

@@ -61,3 +61,9 @@ uv run tasks/2026-10-03-rest-shape/regenerate.py --out /tmp/rest-shape.svg
 The regeneration command imports the source saved in `result/` and reads the saved theme.
 It checks that its output matches the saved SVG before it writes the requested file.
 The browser probe uses the saved built deck, not the current project code.
+
+2026-10-23: the talk no longer depends on Python's Playwright, which this
+task's tools import. The talk's last version was playwright 1.63.0; the version
+on the task's date is in that day's `uv.lock`. To run the tools again, add it
+to the talk for that session (`uv add playwright==1.63.0`), and install the
+browsers they use (`uv run python -m playwright install chromium`).

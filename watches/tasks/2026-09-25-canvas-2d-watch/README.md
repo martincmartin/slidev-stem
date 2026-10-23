@@ -208,3 +208,9 @@ To stop one: `lsof -ti :8001 | xargs kill` (with its port).
 | `spike/*.py` | the measurements; each file's docstring says how to run it |
 | `evidence/` | the results the documents cite: every JSON result and log, and the images named in `spike/keep_evidence.py`, which copies them; `superseded/` holds replaced runs |
 | `out/` | everything the tools write (about 35 MB, mostly images). Not committed, by the talk's `.gitignore` (`tasks/*/out/`); rerun a tool to get it back |
+
+2026-10-23: the talk no longer depends on Python's Playwright, which this
+task's tools import. The talk's last version was playwright 1.63.0; the version
+on the task's date is in that day's `uv.lock`. To run the tools again, add it
+to the talk for that session (`uv add playwright==1.63.0`), and install the
+browsers they use (`uv run python -m playwright install chromium`).

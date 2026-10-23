@@ -302,3 +302,9 @@ three colours (`#e0b25a` accent, `#6f6a60` structure, `#f0e9dc` ink). `gen2.py`
 regenerates them; do not hand-edit.
 
 2026-10-07: Ledger's second is now `#B5601E`, a burnt orange (it was `#9A6238`, a caramel brown), so that the flash and slide 4's keywords read as orange. It passes every gate, and now also the preferred accent/second lightness gap (1.43×).
+
+2026-10-23: the talk no longer depends on Python's Playwright, which this
+task's tools import. The talk's last version was playwright 1.63.0; the version
+on the task's date is in that day's `uv.lock`. To run the tools again, add it
+to the talk for that session (`uv add playwright==1.63.0`), and install the
+browsers they use (`uv run python -m playwright install chromium`).

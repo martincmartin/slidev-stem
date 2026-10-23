@@ -36,3 +36,9 @@ PLAN.md, section 14, gives the commands that reproduce the evidence.
   kept (section 13, item 3). The look at tilt 20 is the same; at a steeper
   tilt the clip discs slid against the wheel above. See
   [`../2026-10-11-paper-discs/PLAN.md`](../2026-10-11-paper-discs/PLAN.md).
+
+2026-10-23: the talk no longer depends on Python's Playwright, which this
+task's tools import. The talk's last version was playwright 1.63.0; the version
+on the task's date is in that day's `uv.lock`. To run the tools again, add it
+to the talk for that session (`uv add playwright==1.63.0`), and install the
+browsers they use (`uv run python -m playwright install chromium`).

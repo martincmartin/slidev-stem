@@ -206,3 +206,9 @@ Shared full validation passed all eight checks in 8.48 s.
 ## 2026-10-22: screenshot deleted
 
 The copies of `docs/text-display/disco-elysium.png` (a screenshot of the game _Disco Elysium_) are deleted from this task, because the repo is to be public and holds only images that are generated, public domain or CC-licensed. The report that showed it now links to a screenshot on the web. The task does not need the image: its results do not depend on it. If you really need it, it is in the git history: `git show e5510d0:docs/text-display/disco-elysium.png > disco-elysium.png`.
+
+2026-10-23: the talk no longer depends on Python's Playwright, which this
+task's tools import. The talk's last version was playwright 1.63.0; the version
+on the task's date is in that day's `uv.lock`. To run the tools again, add it
+to the talk for that session (`uv add playwright==1.63.0`), and install the
+browsers they use (`uv run python -m playwright install chromium`).

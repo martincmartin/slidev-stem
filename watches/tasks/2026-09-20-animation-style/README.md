@@ -1565,3 +1565,9 @@ is missing things this archive talks about:
   them irrelevant to this talk.
 
 2026-10-22: the sundial time-lapse (`deck/public/timekeepers/sundial-timelapse.mp4` and its poster frame `.jpg`) is deleted from this task before the repo goes public. No talk uses it now, and it was the repo's only borrowed video (CC BY 3.0). In `deck/slides.md`, the Sundial card of the "Before clocks, time was a flow" slide now has no picture. To get the files back: `git show 9a8da8d:watches/tasks/2026-09-20-animation-style/deck/public/timekeepers/sundial-timelapse.mp4 > sundial-timelapse.mp4`, and the same for the `.jpg`.
+
+2026-10-23: the talk no longer depends on Python's Playwright, which this
+task's tools import. The talk's last version was playwright 1.63.0; the version
+on the task's date is in that day's `uv.lock`. To run the tools again, add it
+to the talk for that session (`uv add playwright==1.63.0`), and install the
+browsers they use (`uv run python -m playwright install chromium`).

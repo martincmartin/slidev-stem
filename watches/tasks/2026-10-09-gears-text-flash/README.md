@@ -37,3 +37,9 @@ The deck uses the talk's existing lockfiles and environments.
 The final full talk validation passed all 23 checks in 146.01 s.
 The root's quick validation passed all eight shared-file checks in 21.26 s.
 The focused browser check passed in all three engines with no outside requests.
+
+2026-10-23: the talk no longer depends on Python's Playwright, which this
+task's tools import. The talk's last version was playwright 1.63.0; the version
+on the task's date is in that day's `uv.lock`. To run the tools again, add it
+to the talk for that session (`uv add playwright==1.63.0`), and install the
+browsers they use (`uv run python -m playwright install chromium`).

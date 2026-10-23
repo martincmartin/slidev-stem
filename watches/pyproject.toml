@@ -13,10 +13,6 @@ requires-python = "==3.15.*"
 dependencies = [
   "numpy>=2.5.4",
   "pillow>=12.3.0",
-  # screenshots, in the scripts of tasks/
-  "playwright>=1.63.0",
-  # nearest-point search, for tasks/2026-09-26-zoom-line-contacts/
-  "scipy>=1.18.1",
 ]
 
 [dependency-groups]
@@ -25,7 +21,6 @@ dev = [
   "mypy>=2.4.0",
   "pyright>=1.1.414",
   "ruff>=0.17.0",
-  "scipy-stubs>=1.18.1.1",
 ]
 
 [tool.uv]

@@ -189,3 +189,9 @@ It checks the fade subject, the spring's lowered height, and its target at $(705
 The user approved the implemented model and requested shipment.
 The implementation, documentation, comparison viewer, and validation evidence are complete.
 Generated build directories are ignored. The standalone `viewer.html`, source snapshots, and cited evidence are kept.
+
+2026-10-23: the talk no longer depends on Python's Playwright, which this
+task's tools import. The talk's last version was playwright 1.63.0; the version
+on the task's date is in that day's `uv.lock`. To run the tools again, add it
+to the talk for that session (`uv add playwright==1.63.0`), and install the
+browsers they use (`uv run python -m playwright install chromium`).

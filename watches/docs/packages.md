@@ -10,10 +10,11 @@ The runtime and package pins are in `package.json` and `.python-version`.
 The Python requirements are in `pyproject.toml`.
 
 Keep TypeScript within the range that `typescript-eslint` supports.
-Keep Python Playwright and `playwright-chromium`, `playwright-firefox` and
-`playwright-webkit` at the same release. This lets the checks and exports use
-the same browser builds. The three JS packages must also share one
-`playwright-core`, or the art checks start two copies of Playwright.
+Keep `playwright-chromium`, `playwright-firefox` and `playwright-webkit` at
+the release of the house tools' Python Playwright (`../uv.lock`). Then the art
+checks, the exports and the house tools use the same browser builds. The three
+JS packages must also share one `playwright-core`, or the art checks start two
+copies of Playwright. The talk itself has no Python Playwright.
 
 The resolved UnoCSS directive transformer includes the
 [upstream fix](https://github.com/unocss/unocss/pull/5375) for duplicate CSS.
