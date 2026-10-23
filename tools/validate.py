@@ -10,8 +10,9 @@
     uv run ../tools/validate.py --print      # run print even if no print input changed
 
 The project comes from the nearest pyproject.toml. No run checks other talks.
-The house run checks Python, formatting, tests, documentation, and palette gates.
-A talk run also checks its types, lint, tests, SVGs, generated art, and build.
+The house run checks Python and TypeScript, formatting, tests, documentation,
+Vue components, and palette gates. A talk run also checks its types, lint,
+tests, SVGs, generated art, and build.
 Scripts in package.json select optional scene, stills, and print checks.
 Legibility checks calculate the design-venue gate. Full reports remain available
 through barroom.py. Motion checks retain every sample in their original plans.
@@ -101,17 +102,31 @@ def doccheck(directory: Path, names: Sequence[str]) -> Check:
     )
 
 
-def house_checks(fix: bool) -> list[Check]:
-    """The checks of the shared files in stem/."""
+def vuecheck(path: str) -> Check:
+    """The Vue component check (vuecheck.ts) of the components in `path`."""
+    return Check("vue roots", STEM, ("pnpm", "--silent", "vuecheck", path))
+
+
+def house_groups(fix: bool) -> list[list[Item]]:
+    """The checks of the shared files in stem/, in independent groups. The
+    source group comes first: with --fix, it rewrites files that the others
+    read, and --fix runs the groups one after another."""
     return [
-        *python_checks(STEM, code_paths(STEM), fix),
-        prettier(STEM, fix),
-        Check(
-            "pytest", STEM, uv_run("pytest", "-q", "-p", "no:cacheprovider", "tools")
-        ),
-        doccheck(STEM, HOUSE_DOC_PATHS),
-        Check("palette", STEM, uv_run("tools/palette.py")),
-        Check("vue roots", STEM, uv_run("tools/vuecheck.py", "themes")),
+        [
+            *python_checks(STEM, code_paths(STEM), fix),
+            prettier(STEM, fix),
+            doccheck(STEM, HOUSE_DOC_PATHS),
+            Check("palette", STEM, uv_run("tools/palette.py")),
+            vuecheck("themes"),
+        ],
+        [
+            Check(
+                "pytest",
+                STEM,
+                uv_run("pytest", "-q", "-p", "no:cacheprovider", "tools"),
+            )
+        ],
+        [*typescript_checks(STEM)],
     ]
 
 
@@ -232,7 +247,8 @@ def scripts_of(directory: Path) -> set[str]:
 
 
 def typescript_checks(directory: Path) -> list[Check]:
-    """Types, lint and unit tests, for a talk that has the scripts."""
+    """Types, lint and unit tests of the project's TypeScript: the scripts of
+    these names in its package.json, if it has them."""
     scripts = scripts_of(directory)
     return [
         Check(name, directory, ("pnpm", name))
@@ -409,7 +425,7 @@ def talk_groups(
         *generation_checks(directory, work),
         Check("palette", STEM, uv_run("tools/palette.py", "--talk", talk)),
         Check("talk setup", STEM, uv_run("tools/talkcheck.py", talk)),
-        Check("vue roots", STEM, uv_run("tools/vuecheck.py", talk)),
+        vuecheck(talk),
     ]
     build: list[Item] = [
         Check("build", directory, ("pnpm", "build", "--out", str(deck)))
@@ -633,7 +649,7 @@ def main() -> int:
     ):
         if project == STEM:
             heading = "stem/, the shared files"
-            groups: list[list[Item]] = [list(house_checks(arguments.fix))]
+            groups: list[list[Item]] = house_groups(arguments.fix)
             exclusive: list[Item] = []
         elif (project / "slides.md").is_file():
             heading = f"{lib.display_path(project)}/, a talk"

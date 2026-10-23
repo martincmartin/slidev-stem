@@ -14,7 +14,7 @@ the Node version that each talk pins, and uv downloads the Python version.
 
 ```bash
 cd watches
-pnpm install    # the root's packages (the theme's fonts), then the talk's
+pnpm install    # the root's packages (the theme's fonts, the tools), then the talk's
 pnpm dev        # the deck, at http://localhost:3030
 pnpm export     # a PDF of the deck
 ```

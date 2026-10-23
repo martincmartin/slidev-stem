@@ -68,13 +68,14 @@ the pinned Node, and uv downloads the pinned Python. Then, in a talk's
 directory:
 
 ```bash
-pnpm install    # the root's packages (the theme's fonts), then the talk's
+pnpm install    # the root's packages (the theme's fonts, the tools), then the talk's
 pnpm dev        # the deck, at http://localhost:3030
 ```
 
 `pnpm install` in a talk runs `pnpm install --frozen-lockfile` at the root
 first (the talk's `preinstall` script). The theme's fonts are the root's
-packages, so a talk does not build without them. It also downloads Chromium for
+packages, so a talk does not build without them. So are the packages of the
+house tools in TypeScript (`../tools/README.md`). It also downloads Chromium for
 `slidev export`, from the talk's `playwright-chromium` package, and the other
 engines of a talk whose own checks use them (`playwright-firefox`,
 `playwright-webkit`).
@@ -308,7 +309,8 @@ runs both.
 Full validation runs every check and exits non-zero if any check fails:
 
 - **The root run** checks `tools/` with ruff (format and lint), mypy (strict)
-  and pyright. It checks the shared files with Prettier, runs the tests in
+  and pyright, and the TypeScript in `tools/` with `tsc`, ESLint and its
+  tests. It checks the shared files with Prettier, runs the tests in
   `tools/` (pytest), checks the docs with `doccheck`, and checks the palette's
   gates. It checks that no Vue component in `themes/` has a comment beside its
   one root element (`vuecheck`): a build then drops the class and `v-click`

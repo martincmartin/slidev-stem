@@ -50,7 +50,7 @@ Each tool, with what it needs in brackets, and what it answers:
   continuity and direct-load equality ([navigation.md](../docs/navigation.md))
 - `talkcheck.py` (stdlib, pnpm): does a talk have its own `pnpm-workspace.yaml`,
   and does Prettier read each of its deck files with the Slidev parser
-- `vuecheck.py` (stdlib): does each Vue component keep the class and
+- `vuecheck.ts` (@vue/compiler-sfc): does each Vue component keep the class and
   `v-click` that a slide gives it in a build: no comment beside its one root
   element; is each lint disable in its template narrow (a block disable has
   its enable), named and explained
@@ -102,6 +102,8 @@ uv run tools/smokecheck.py <build dir> --browser webkit --no-canvas-readback
 uv run tools/offline_check.py <build dir> --browser webkit 1:0
 uv run tools/navcheck.py <build dir> --offline      # suspected navigation problems only
 uv run tools/navcheck.py <build dir>                # diagnostic; also accepts a dev server URL
+pnpm vuecheck watches                        # the Vue components of a talk
+pnpm vuecheck themes path/to/One.vue         # ... or of these paths
 uv run tools/check_python.py      # after you change a tool
 tools/capture_outputs.sh /tmp/before watches  # before you change a tool; again after,
 diff -r /tmp/before /tmp/after                # ... then compare: a refactor changes nothing
@@ -111,8 +113,9 @@ Every check exits non-zero on failure, so it works in `validate.py`, a
 pre-commit hook or CI. `barroom.py` fails if a drawing is below the gate, and
 `motion.py` if a drawing moves only in a wash. They also print their scores as
 JSON with `--json`: a program that reads the scores (such as a talk's validator)
-must use that, not their tables. All of them use the Python version pinned in `.python-version`. Run them with `uv run`, which makes
-`stem/.venv` first. The
+must use that, not their tables. The Python tools use the Python version pinned in `.python-version`. Run them with `uv run`, which makes
+`stem/.venv` first. Run a TypeScript tool as
+[TypeScript tools](#typescript-tools) says. The
 "needs" column above lists the packages. The tools that render install their required browser engines
 the first time they run, into Playwright's cache for your user, which every
 checkout shares (`browsers.py`). Each tool that checks art needs the paths
@@ -215,7 +218,7 @@ These look like things to improve. Each was considered and chosen; the options
 and the evidence are in
 [`../tasks/2026-09-25-tools-cleanup/PLAN.md`](../tasks/2026-09-25-tools-cleanup/PLAN.md).
 
-- **Every tool uses the pinned Python, even the three that use no packages.** They used
+- **Every Python tool uses the pinned Python, even the three that use no packages.** They used
   to run on macOS's own Python 3.9, but nothing depended on that, and one version
   lets all the code use the same features and checks.
 - **Palette roles are strings (`"ink"`, `"panel"`), not fields of a class.** They
@@ -246,14 +249,33 @@ It reads Markdown with regular expressions. The cases it must get right (and
 the limits it documents) are tests in `test_doccheck.py`, which the root run of
 `validate.py` runs with pytest. When doccheck reads some Markdown wrongly, add
 a test that fails, then fix the reader. Each tool and `lib.py` has its own
-`test_<name>.py`, run the same way. When a check gives a wrong answer, add a
+`test_<name>.py`, run the same way, and each TypeScript tool its own
+`<name>.test.ts` ([TypeScript tools](#typescript-tools)). When a check gives a wrong answer, add a
 test with the input that fooled it, then fix the check.
 
 ## Adding a tool
 
+Choose its language by the `slidev-practices` skill, "Language for scripts".
 Put the thresholds in `lib.py`, never in the tool. Before you change a tool,
-save its output with `capture_outputs.sh`; after, run `check_python.py` and
+save its output with `capture_outputs.sh`; after, run `check_python.py` (or,
+for a TypeScript tool, its checks in [TypeScript tools](#typescript-tools)) and
 compare. Write the docstring for someone
 who has not read the archives: say what the tool measures, what the number means,
 what it cannot see, and what a bad result should make you do. Then add an item to the
 list above and a line to the relevant file in `../docs/`.
+
+## TypeScript tools
+
+A house tool in TypeScript is a `<name>.ts` file in `tools/`. Node runs it as
+it is, with no build. The root's `package.json` gives it a script of its name
+(`pnpm vuecheck`), so that it runs on the pinned Node, from the root, with the
+paths to check. Its packages are the root's dev dependencies.
+
+The root run of `validate.py` runs the root's `typecheck` (`tsc`), `lint`
+(ESLint, as strict as a talk's) and `test` (`node --test` on each tool's
+`<name>.test.ts`) scripts, on `tools/*.ts` only.
+
+`tools/tsconfig.json` and `tools/eslint.config.js` are in `tools/`, not at the
+root. This is not an oversight: a talk's build reads the nearest
+`tsconfig.json` for each file, so a root one would change how the house
+theme's `.ts` files compile.

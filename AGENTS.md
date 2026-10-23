@@ -97,8 +97,8 @@ Before you…
 
 Each talk is a separate project, for pnpm and for uv. The repo root, `stem/`,
 is one more project: the house theme and its palettes (`themes/`), the house tools
-(`tools/`) and the root's Prettier. Use pnpm for JS, because Slidev's authors
-recommend it, and uv for Python:
+(`tools/`, in Python and TypeScript) and the root's Prettier. Use pnpm for JS,
+because Slidev's authors recommend it, and uv for Python:
 
 ```bash
 pnpm install          # in a talk's directory (it installs the root first); not `npm install`

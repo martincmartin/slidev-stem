@@ -23,7 +23,7 @@ export default tseslint.config(
   // A disable is as narrow as it can be: one line, or a block with its
   // enable, even if the block is the whole file. It names its rules and
   // gives a reason, and it goes when it suppresses nothing. The plugin reads
-  // script comments; tools/vuecheck.py checks a template's
+  // script comments; tools/vuecheck.ts checks a template's
   // (../docs/talks.md, "Check your work").
   comments.recommended,
   {

@@ -1,7 +1,7 @@
-# The house's JS: the root's Prettier and the house theme, themes/ledger. Run
-# `pnpm install` here for them. Each talk is a separate pnpm project, with its
-# own pnpm-workspace.yaml, pnpm-lock.yaml and node_modules: run `pnpm install`
-# in the talk's directory. See "Given talks, retired talks and versions" in
-# AGENTS.md.
+# The house's JS: the root's Prettier, the house theme (themes/house) and the
+# house tools in TypeScript (tools/). Run `pnpm install` here for them. Each
+# talk is a separate pnpm project, with its own pnpm-workspace.yaml,
+# pnpm-lock.yaml and node_modules: run `pnpm install` in the talk's directory.
+# See "Given talks, retired talks and versions" in AGENTS.md.
 packages:
   - "themes/*"
