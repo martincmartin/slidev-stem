@@ -1766,6 +1766,9 @@ for the requirements and test limits.
 `art/favicon.py` owns the icon. Edit its pixel maps and run the script.
 It draws each pixel instead of scaling down the cover.
 Its `--check` fails if the file on disk differs.
-`index.html` links it under the deck's base (`%BASE_URL%favicon.ico`), so it
-loads on GitHub Pages too. The headmatter's `favicon: false` stops Slidev's
-own link: Slidev writes its `favicon` path without the base.
+`index.html` links it as `/favicon.ico`. A build puts the deck's base before
+that path, because the file is in `public/`, so it loads on GitHub Pages too.
+Do not use `%BASE_URL%`: the dev server sends `index.html` without Vite's
+changes, so the browser asks for `/%BASE_URL%favicon.ico`. The headmatter's
+`favicon: false` stops Slidev's own link: Slidev writes its `favicon` path
+without the base.

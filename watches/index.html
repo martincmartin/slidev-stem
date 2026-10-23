@@ -1,7 +1,8 @@
 <!-- The favicon (art/favicon.py writes public/favicon.ico). Here, not in the
      headmatter's `favicon`: Slidev writes that path as it is, so under a
      build's --base (GitHub Pages) the browser asks the host's root for it.
-     Vite puts the base in place of %BASE_URL%. -->
+     A build puts the base before this path, because it is a file in public/.
+     Not %BASE_URL%: the dev server sends this file without Vite's changes. -->
 <head>
-  <link rel="icon" href="%BASE_URL%favicon.ico" />
+  <link rel="icon" href="/favicon.ico" />
 </head>
