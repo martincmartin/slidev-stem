@@ -38,6 +38,15 @@ test("a number that leaves its range is a flash", () => {
   );
 });
 
+test("a number that fades out and leaves ends at its last value", () => {
+  const fadeOut = move([1, 1, 0.8, 0.4, 0]);
+  const gone: Move = {
+    ...fadeOut,
+    samples: [...fadeOut.samples, { time: 200, values: {} }],
+  };
+  assert.deepEqual(moveProblems(gone), { problems: [], notes: [] });
+});
+
 test("most of a change in the first frame is a cut", () => {
   const { problems } = moveProblems(move([0, 0, 0.9, 1, 1]));
   assert.equal(problems.length, 1);

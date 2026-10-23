@@ -18,3 +18,18 @@ port. This task's `tools/navcheck.py` imports the house's
 `tools/offline_check.py`; to run it again, run it in a checkout of commit
 `133dd10`, the last with that file (`git worktree add ../stem-133dd10
 133dd10`).
+
+2026-10-23: navcheck no longer starts a sampler for each press. A recorder,
+installed in each page before the deck's scripts, records `slideState()`
+after each frame's callbacks (a message posted from a frame callback), and
+when each key goes down; the check waits for one frame before each press,
+and for quiet after it. Reading after the frame's callbacks means that an
+animation loop which starts on the key press is seen in its first frame, not
+one frame late, whatever the order in which the loops were registered.
+
+2026-10-23: a `continuous` number that leaves `slideState()` during a move (a
+fade out, then gone) now ends at the last value it had. Before, the check took
+its end to be its start, so a fade from 1 to 0 then gone read as "went to 0 on
+its way from 1 to 1", a flash. The recorder caught such a frame (the time
+scale's opacity) on the Recap slide's step to its last click; the per-press
+sampler had not.

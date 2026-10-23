@@ -111,11 +111,11 @@ It also fails if:
 It reads what the deck reports. A talk with layers defines
 `window.slideState()`, which returns:
 
-| Field        | What it holds                                                                                               |
-| ------------ | ----------------------------------------------------------------------------------------------------------- |
-| `settled`    | names and numbers that must be the same however the place is reached (a view, a phase)                      |
-| `continuous` | numbers that must move without a cut (an opacity, a scale, a tilt). Leave out one that is not on the screen |
-| `busy`       | true while a story animation or a camera move runs, so that the check waits for its end                     |
+| Field        | What it holds                                                                                                                                            |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `settled`    | names and numbers that must be the same however the place is reached (a view, a phase)                                                                   |
+| `continuous` | numbers that must move without a cut (an opacity, a scale, a tilt). Leave out one that is not on the screen: a number that leaves ends at its last value |
+| `busy`       | true while a story animation or a camera move runs, so that the check waits for its end                                                                  |
 
 A deck without `slideState` passes with a note.
 Only headless screen wake-lock acquisition is stubbed

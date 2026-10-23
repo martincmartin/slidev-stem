@@ -11,10 +11,12 @@
 // (../docs/navigation.md, "Diagnostic: exhaustive navigation"). A deck
 // without it passes with a note.
 //
-// The walk presses the right arrow from slide 1 to the end of the deck, then
-// the left arrow back to slide 1. After each press it samples slideState()
-// at each frame until the move ends: nothing is busy, and no number has
-// changed for QUIET_MS. Then it loads each place (slide and click) directly.
+// A recorder in the page records slideState() at each frame, and when each
+// key goes down. The walk presses the right arrow from slide 1 to the end of
+// the deck, then the left arrow back to slide 1. Before each press it waits
+// for one frame; after it, until the move ends: nothing is busy, and no
+// number has changed for QUIET_MS. Then it loads each place (slide and
+// click) directly.
 // It fails if:
 //
 // - a place's `settled` after a move differs from its `settled` after a
@@ -78,13 +80,25 @@ interface SlideState {
   readonly busy: boolean;
 }
 
+/** What the recorder has seen in a page since Node last read it. */
+interface Recorder {
+  frames: Sample[];
+  /** The last frame's settled values. */
+  settled: SlideState["settled"];
+  /** When the last key went down (ms, the page's clock), or -Infinity. */
+  press: number;
+  /** When a number last changed, or the deck was last busy. */
+  since: number;
+  /** The last frame's settled and continuous values, as text. */
+  last: string;
+  /** What slideState() threw, if it did: the recorder stops then. */
+  error: string | null;
+}
+
 declare global {
   interface Window {
     slideState?: () => SlideState;
-    /** When the last key went down (ms, the page's clock). */
-    navPress?: number;
-    /** The sampler that runs now. */
-    navSampler?: number;
+    navRecorder?: Recorder;
   }
 }
 
@@ -93,11 +107,11 @@ interface Sample {
   readonly values: Readonly<Record<string, number>>;
 }
 
-/** What the screen did from one sampler's start until its move ended. */
+/** What the screen did from before one press until its move ended. */
 interface Sampled {
   readonly samples: readonly Sample[];
   readonly settled: SlideState["settled"];
-  /** When the key went down, or -Infinity before any press. */
+  /** When the key went down. */
   readonly press: number;
   readonly timedOut: boolean;
 }
@@ -109,54 +123,104 @@ export interface Move extends Sampled {
   readonly key: string;
 }
 
-/** Sample slideState() at each frame until the move ends; with `pressed`,
- *  only after a press. Null if the deck has no slideState(). It runs in the
- *  page. */
-async function sampleMove({
-  pressed,
-  quiet,
-  timeout,
-  token,
-}: {
-  pressed: boolean;
-  quiet: number;
-  timeout: number;
-  token: number;
-}): Promise<Sampled | null> {
-  const slideState = window.slideState;
-  if (!slideState) return null;
-  const start = performance.now();
-  const samples: Sample[] = [];
-  let last = "";
-  let since = start;
-  for (;;) {
-    await new Promise((resolve) => requestAnimationFrame(resolve));
+/** Record slideState() at each frame, and when each key goes down, from
+ *  before the deck's scripts run (an init script). It runs in the page. */
+function installRecorder(): void {
+  const recorder: Recorder = {
+    frames: [],
+    settled: {},
+    press: -Infinity,
+    since: 0,
+    last: "",
+    error: null,
+  };
+  window.navRecorder = recorder;
+  // before Slidev sees the key
+  window.addEventListener(
+    "keydown",
+    () => {
+      recorder.press = performance.now();
+    },
+    { capture: true },
+  );
+  // Read after each frame's callbacks, the deck's animations among them: a
+  // message posted in a frame callback runs after all of them. A frame
+  // callback of its own would run before a loop that started later, and see
+  // each change one frame late: a cut would look like a fade.
+  const after = new MessageChannel();
+  after.port1.onmessage = () => {
+    let state: SlideState | undefined;
+    try {
+      state = window.slideState?.();
+    } catch (error) {
+      recorder.error = String(error);
+      return;
+    }
+    if (!state) return;
     const now = performance.now();
-    const state = slideState();
-    samples.push({ time: now, values: state.continuous });
-    // started, with a frame from before any press
-    if (samples.length === 1) window.navSampler = token;
+    recorder.frames.push({ time: now, values: state.continuous });
+    recorder.settled = state.settled;
     const key = JSON.stringify([state.settled, state.continuous]);
-    if (key !== last || state.busy) since = now;
-    last = key;
-    const press = window.navPress ?? -Infinity;
-    const after = !pressed || press >= start;
-    if (after && now - since >= quiet) {
-      return { samples, settled: state.settled, press, timedOut: false };
-    }
-    if (now - start >= timeout) {
-      return { samples, settled: state.settled, press, timedOut: true };
-    }
-  }
+    if (key !== recorder.last || state.busy) recorder.since = now;
+    recorder.last = key;
+  };
+  const frame = () => {
+    if (recorder.error !== null) return;
+    after.port2.postMessage(null);
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
 }
 
-const sample = (page: Page, pressed: boolean, token = 0) =>
-  page.evaluate(sampleMove, {
-    pressed,
-    quiet: QUIET_MS,
-    timeout: MOVE_TIMEOUT_MS,
-    token,
+/** Whether the deck has been quiet for `quiet` ms since `from`: nothing busy
+ *  and no number changed, by the recorded frames. Judged at the newest
+ *  recorded frame, not at the clock: without a GPU a frame can take longer
+ *  than `quiet`, and the frame being drawn may still change something. It
+ *  runs in the page. */
+function quietSince({ from, quiet }: { from: number; quiet: number }) {
+  const recorder = window.navRecorder;
+  if (recorder?.error != null) return true; // settle() reports it
+  const newest = recorder?.frames.at(-1)?.time;
+  if (!recorder || newest === undefined) return false;
+  return newest - Math.max(recorder.since, from) >= quiet;
+}
+
+/** Forget the recorded frames, and return the page's clock. It runs in the
+ *  page. */
+function clearFrames(): number {
+  if (window.navRecorder) window.navRecorder.frames = [];
+  return performance.now();
+}
+
+/** Wait until the deck has been quiet since `from` (the page's clock), and
+ *  return what the recorder saw since it was cleared. */
+async function settle(page: Page, from: () => Promise<number>) {
+  let timedOut = false;
+  try {
+    await page.waitForFunction(
+      quietSince,
+      { from: await from(), quiet: QUIET_MS },
+      { timeout: MOVE_TIMEOUT_MS, polling: "raf" },
+    );
+  } catch (error) {
+    // by name: each Playwright package can have its own TimeoutError
+    if (!(error instanceof Error) || error.name !== "TimeoutError") throw error;
+    timedOut = true;
+  }
+  const seen = await page.evaluate(() => {
+    const recorder = window.navRecorder;
+    if (!recorder) throw new Error("navcheck's recorder is not in the page");
+    if (recorder.error !== null) {
+      throw new Error(`slideState() threw: ${recorder.error}`);
+    }
+    return {
+      samples: recorder.frames,
+      settled: recorder.settled,
+      press: recorder.press,
+    };
   });
+  return { ...seen, timedOut };
+}
 
 /** The settled values, with numbers rounded: a direct load and a move may
  *  differ in the last digits. */
@@ -187,14 +251,16 @@ export function moveProblems(move: Move): {
   const before = move.samples.filter((sample) => sample.time < move.press);
   const after = move.samples.filter((sample) => sample.time >= move.press);
   const first = before.at(-1)?.values;
-  const last = after.at(-1)?.values;
   const early = after[0];
-  if (!first || !last || !early) {
+  if (!first || !early) {
     notes.push(`${moved}: no frame before or after the press`);
     return { problems, notes };
   }
   for (const [name, start] of Object.entries(first)) {
-    const end = last[name] ?? start;
+    // A number that leaves the screen leaves slideState() (a fade out, then
+    // gone): it ends at the last value that it had.
+    const end =
+      after.findLast((sample) => name in sample.values)?.values[name] ?? start;
     const tolerance = TOLERANCE * Math.max(1, Math.abs(start), Math.abs(end));
     const low = Math.min(start, end) - tolerance;
     const high = Math.max(start, end) + tolerance;
@@ -251,33 +317,34 @@ export function ruleZeroProblem(
 }
 
 /** Press `key`, and return the move that it made, or null if the URL did not
- *  change (the end of the deck). `token` is new for each press. */
-async function press(
-  page: Page,
-  key: string,
-  token: number,
-): Promise<Move | null> {
+ *  change (the end of the deck). */
+async function press(page: Page, key: string): Promise<Move | null> {
   const start = page.url();
-  const sampling = sample(page, true, token);
-  // awaited below; until then, a rejection must not stop Node
-  sampling.catch(() => undefined);
-  // The sampler must have a frame before the key goes down: Playwright does
-  // not keep the order of an evaluate and a key press, and a page without a
-  // GPU can draw a frame only every few hundred ms.
-  await page.waitForFunction((wanted) => window.navSampler === wanted, token);
-  await page.waitForTimeout(100); // more frames before the press
+  const before = await page.evaluate(clearFrames);
+  // a frame from before the press, to judge the move from
+  await page.waitForFunction(
+    () => {
+      const recorder = window.navRecorder;
+      return recorder?.error != null || (recorder?.frames.length ?? 0) > 0;
+    },
+    undefined,
+    { polling: "raf" },
+  );
   await page.keyboard.press(key);
-  const sampled = await sampling;
-  if (sampled?.timedOut && page.url() === start) {
+  const sampled = await settle(page, () =>
+    page
+      .waitForFunction(
+        (after) => (window.navRecorder?.press ?? -Infinity) >= after,
+        before,
+        { polling: "raf" },
+      )
+      .then(() => page.evaluate(() => window.navRecorder?.press ?? 0)),
+  );
+  if (sampled.timedOut && page.url() === start) {
     throw new Error("a key press did not give a settled page");
   }
-  if (sampled === null || page.url() === start) return null;
-  return {
-    ...sampled,
-    start: placeOf(start),
-    end: placeOf(page.url()),
-    key,
-  };
+  if (page.url() === start) return null;
+  return { ...sampled, start: placeOf(start), end: placeOf(page.url()), key };
 }
 
 /** A place, as a direct load of it settles. */
@@ -299,19 +366,16 @@ async function walk(page: Page, base: string): Promise<Findings> {
   const moves: Move[] = [];
   const direct: DirectLoad[] = [];
   const problems: string[] = [];
-  await page.context().addInitScript(() => {
-    // when each key goes down, before Slidev sees it
-    window.addEventListener(
-      "keydown",
-      () => {
-        window.navPress = performance.now();
-      },
-      { capture: true },
-    );
-  });
+  await page.context().addInitScript(installRecorder);
+  /** Load `place`, and what it settles to; null if the deck has no
+   *  slideState(). */
   const load = async (place: Position) => {
     await showSlide(page, base, pathOf(place));
-    return sample(page, false);
+    const probed = await page.evaluate(
+      () => typeof window.slideState === "function",
+    );
+    if (!probed) return null;
+    return settle(page, () => page.evaluate(clearFrames));
   };
   try {
     const first = await load(FIRST);
@@ -323,11 +387,10 @@ async function walk(page: Page, base: string): Promise<Findings> {
     }
     if (first.timedOut)
       problems.push("slide 1 did not settle within the move timeout");
-    let token = 0;
     for (const key of ["ArrowRight", "ArrowLeft"]) {
       let ended = false;
       for (let step = 1; step < MOST_POSITIONS; step++) {
-        const move = await press(page, key, ++token);
+        const move = await press(page, key);
         if (move === null) {
           ended = true;
           break;
