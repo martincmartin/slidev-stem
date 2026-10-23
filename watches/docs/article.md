@@ -18,7 +18,10 @@ build the article.
 
 ## What a reader gets
 
-- The cover's title, the author, and "pause them all".
+- The cover's title, the author, and "pause them all". Keep this one button
+  even if a figure's own pause goes: WCAG 2.2.2 ("Pause, Stop, Hide") asks
+  for a way to pause motion that starts by itself and lasts more than 5 s,
+  and the prerender pauses the page with it.
 - A table of contents: each part (a section slide) and each slide's title.
 - Under a slide's heading, its history line, if it has one
   ([slide-patterns.md](slide-patterns.md), "The history line").

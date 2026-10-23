@@ -89,19 +89,27 @@ try {
   // The page's "Pause them all": a paused figure is not drawn and keeps its
   // picture. Without a GPU each frame of a figure takes up to 0.4 s, and a
   // scroll or a screenshot waits for frames, so both are done paused. Sent
-  // as an event: a click would wait for frames too. See
-  // tasks/2026-10-22-article-prerender-speed/.
+  // as an event: a click would wait for frames too. It reads the button's
+  // state, so a page that starts paused (a reader who asks for reduced
+  // motion) works too. See tasks/2026-10-22-article-prerender-speed/.
   const pauseAll = page.locator(".article-motion button");
-  const press = () => pauseAll.dispatchEvent("click");
-  await press();
+  const setPaused = async (paused: boolean) => {
+    const pressed = String(paused);
+    if ((await pauseAll.getAttribute("aria-pressed")) === pressed) return;
+    await pauseAll.dispatchEvent("click");
+    await page
+      .locator(`.article-motion button[aria-pressed="${pressed}"]`)
+      .waitFor({ state: "attached" });
+  };
+  await setPaused(true);
   for (let index = 0; index < count; index++) {
     const figure = figures.nth(index);
     const id = await figure.getAttribute("id");
     if (!id) throw new Error(`figure ${String(index)} has no id`);
     await figure.scrollIntoViewIfNeeded();
-    await press();
+    await setPaused(false);
     await page.waitForTimeout(SETTLE_MS);
-    await press();
+    await setPaused(true);
     await figure
       .locator(".article-figure-frame")
       .screenshot({ path: join(out, "figures", `${id}.png`) });
