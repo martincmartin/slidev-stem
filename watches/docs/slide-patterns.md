@@ -198,7 +198,8 @@ It is background, not rules.
 
 **Text that is no longer the focus dims: its colours mix halfway to the
 paper.** The newest text is the one to read. The text before it stays, so
-the audience can look back. The mechanism is in `style.css` ("TEXT DIMS"):
+the audience can look back. When old text stays, and when it goes:
+[`../../AGENTS.md`](../../AGENTS.md), "Writing a talk". The mechanism is in `style.css` ("TEXT DIMS"):
 
 - **Give the element that dims the class `text-dims`.** Its ink is a mix
   with the paper by `--text-dim`, and `--text-dim` fades in `--text-fade`,

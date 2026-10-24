@@ -21,6 +21,11 @@ first; the rest of the evening is social.
   argument for writing.
 - Lead with story. Use data and math only where they carry the point. (This is
   about the talk. When you compare options for the user, still prefer data.)
+- Keep old text on the slide while there is room for it and it still makes
+  sense with what the screen shows. Then a listener who looks away and back
+  in the middle of a slide can catch up. Text that is no longer the focus
+  dims; it does not leave. Remove text when its room is needed, or when it
+  no longer agrees with the picture.
 - Name a slide by its title, not its number, in docs, code and messages: "the
   Escapement slide", not "slide 4". A number changes when a slide is added,
   moved, hidden or previewed. A tool may number the slides of a walk.

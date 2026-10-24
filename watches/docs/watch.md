@@ -686,21 +686,22 @@ leaves: $7.5 \times 8 = 60$.
 - **Click 1's text comes first**: "minute:hour = 60:1", on the right, where
   the Gears slide's text is. It fades in at the click, as the camera starts
   to untilt and zoom out, so the audience knows why the camera moves.
-- **The later texts read each click's picture**, in the same place:
+- **The later texts read each click's picture**, below click 1's text:
   "Two stages:" and "7½:1" at click 2; "× 8:1 = 60:1" after "7½:1", on
   the same line, at click 3. The ratios are those of the wheels that the
   click adds, and "60:1" is click 1's. The space for click 3's text is kept,
-  so "7½:1" does not move. At click 4, "Makes a
-  full turn once an hour. The minute hand!" comes below the stages, as the
+  so "7½:1" does not move. At click 4, "Makes a full turn once an hour. The
+  minute hand!" comes below the stages, as the
   Gears slide says it of the second hand. Each of these texts comes after all
   the motion of its click, flash included (`after-watch`,
   [slide-patterns.md](slide-patterns.md#text-fades)).
-- **At click 4 the stages stay, dimmed**
+- **Old text stays, dimmed**
   ([slide-patterns.md](slide-patterns.md#text-dims)), as the Escapement slide's
-  earlier callouts are: a recap for anyone who missed clicks 2 and 3, while
-  the new text stays the focus. They dim when the new text fades in. The
-  five lines end about 80 px above the picture band's bottom: there is room
-  for one more line. Dimmed halfway to the
+  earlier callouts are: click 1's text from click 2, and the stages at
+  click 4. It is a recap for anyone who looked away, while the new text
+  stays the focus. It dims when the new text fades in. The six lines end
+  just inside the picture band's bottom, so there is no room for another
+  line. Dimmed halfway to the
   paper, the text is about 3:1 against its outline, at the contrast floor
   ([legibility.md](../../docs/legibility.md)).
 - **At click 5 the right-side text fades out.** The rest of the watch dims with `watchDim`. Only the centre wheel, its arbor, pivot and drive arrow stay undimmed.
@@ -957,6 +958,11 @@ The tilt is 20 at every click, so the stack of the motion works shows.
   title and the text there; they have the paper's outline. Clicks 3 to 5
   fit the centre wheel, in the picture band. The text is where the Gear Train slide's is.
   Each text comes after the motion of its click (`after-watch`).
+- **Not an oversight: click 1's and click 2's texts go at click 3**, though
+  old text usually stays ([`../../AGENTS.md`](../../AGENTS.md), "Writing a
+  talk"). "12:1 gear ratio" and "Hour hand off centre!" are about the
+  one-step wheel, which goes at click 3. They do not agree with the two
+  stages.
 
 ## The Recap slide
 

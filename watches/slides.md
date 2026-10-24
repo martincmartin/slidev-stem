@@ -880,18 +880,16 @@ const marks = gearTrainMarks(WATCH, useSlideContext().$frontmatter);
 <!-- Click 1's text fades in at the click, as the camera starts to move: it
 says why the camera untilts and zooms out. Each later text waits for the
 watch's change at its click to end, with its flash (after-watch, style.css):
-it reads what the picture has just shown. -->
+it reads what the picture has just shown.
 
-<div v-click.hide="2" class="gt-sentence">
-  <div v-click="1">minute:hour = 60:1</div>
-</div>
-
-<!-- Click 3 adds its stage after click 2's, on the same line, in the room
-kept for it: "7½:1" does not move. The stages stay at click 4, dimmed, above
-the minute hand's text: a recap for anyone who missed clicks 2 and 3. -->
+Click 1's text stays, dimmed from click 2, above the stages. Click 3 adds its
+stage after click 2's, on the same line, in the room kept for it: "7½:1" does
+not move. The stages stay at click 4, dimmed, above the minute hand's text: a
+recap for anyone who missed clicks 2 and 3. -->
 
 <div v-click.hide="5" class="gt-reading">
-<div class="gt-sentence" :class="{ 'gt-recap': $clicks >= 4 }">
+<div class="gt-sentence" :class="{ 'gt-staged': $clicks >= 2, 'gt-recap': $clicks >= 4 }">
+  <div v-click="1" class="gt-problem text-dims">minute:hour = 60:1</div>
   <div v-click="2" class="after-watch gt-stage text-dims">
     <div>Two stages:</div>
     <div>7½:1<span v-click="3" class="after-watch"> × 8:1 = 60:1</span></div>
@@ -931,7 +929,6 @@ the minute hand's text: a recap for anyone who missed clicks 2 and 3. -->
 .slidev-layout.gear-train .gt-sentence div + div {
   margin-top: 0.7em;
 }
-.slidev-layout.gear-train .gt-sentence.slidev-vclick-target,
 .slidev-layout.gear-train .gt-sentence > .slidev-vclick-target:not(.text-dims),
 .slidev-layout.gear-train .gt-stage .slidev-vclick-target,
 .slidev-layout.gear-train .gt-reading.slidev-vclick-target,
@@ -949,6 +946,11 @@ the minute hand's text: a recap for anyone who missed clicks 2 and 3. -->
    slide's earlier callouts do, when the minute hand's text fades in: after
    the watch's change (after-watch). Their fades come with text-dims. */
 .slidev-layout.gear-train .gt-recap > .gt-stage {
+  --text-dim: var(--text-dimmed);
+  transition-delay: var(--watch-end-delay, 0s);
+}
+/* At click 2 click 1's text dims in the same way, when the stages fade in. */
+.slidev-layout.gear-train .gt-staged > .gt-problem {
   --text-dim: var(--text-dimmed);
   transition-delay: var(--watch-end-delay, 0s);
 }
@@ -1286,7 +1288,9 @@ history: "Hour hand: c. 1350"
 From once an hour to twice a day
 
 <!-- Each text waits for the watch's change at its click to end, with its
-flash (after-watch, style.css), as on the Gear Train slide. -->
+flash (after-watch, style.css), as on the Gear Train slide. Clicks 1 and 2's
+texts are about the one-step wheel, so they go with it at click 3
+(docs/watch.md, "The Hour Hand slide"). -->
 
 <div v-click.hide="3" class="hh-sentence">
   <div v-click="1" class="after-watch">12:1 gear ratio</div>
