@@ -3,8 +3,8 @@
 **Covers:** the article at `/article`: the talk for people who did not see it,
 as one long page of narration with live figures between the paragraphs, in
 the style of Bartosz Ciechanowski's "Mechanical Watch". How to write the
-narration and place the figures; what a figure shows, and why; the sliders
-and the playing figure; how the code is split between the addon and the
+narration and place the figures; what a figure shows, and why; the sliders,
+the button and the playing figure; how the code is split between the addon and the
 talk; how to build the static page, and where it can go.
 **Read before** you write or change a slide's narration, add a click to a
 slide that has narration, change `addons/narration/`, the figure layer
@@ -29,8 +29,8 @@ build the article.
   at least 1,280 px wide, in the text on a narrower one) and its figures.
 - **A figure is the slide itself, live**, at one click: the WebGL watch, the
   diving board, the labels. It runs while it is on or near the screen.
-- Some figures have controls: steps (‹ ›), a slider, or a tour that plays by
-  itself, with captions. A figure that moves by itself, or plays, has a
+- Some figures have controls: steps (‹ ›), a slider, a button, or a tour that
+  plays by itself, with captions. A figure that moves by itself, or plays, has a
   pause button; a still one has none (`still` in
   `addons/narration/figure.ts`).
 
@@ -179,15 +179,18 @@ article:
   3:
     slider: curl # a slider that holds the board at a point of its curl
     mark: [impulse jewel] # the pieces marked, in place of the default
+  4:
+    button: release # a button that plays the step from click 3 to click 4
   5:
     mark: false # no mark
 ```
 
-| Key      | Values                                                                                                                                                                                                                                                                                                |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `mark`   | a list of pieces, or `false`                                                                                                                                                                                                                                                                          |
-| `slider` | `curl`: the diving board's curl, to the hairspring at rest (the Hairspring slide); `twist`: the hairspring's wind from rest, and a swing from there when the reader lets go (the Hairspring slide); `wind`: the Mainspring slide's story, from the bare spring through the key's turns to the release |
-| `view`   | the figure's camera, in place of the slide's, with the values of `watchView`: a named view, or the pieces that a fitted view fits                                                                                                                                                                     |
+| Key      | Values                                                                                                                                                                                                                                                                                 |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mark`   | a list of pieces, or `false`                                                                                                                                                                                                                                                           |
+| `slider` | `curl`: the diving board's curl, to the hairspring at rest (the Hairspring slide); `twist`: the hairspring's wind from rest, and a swing from there when the reader lets go (the Hairspring slide); `wind`: the Mainspring slide's story, from the bare spring through the key's turns |
+| `button` | `release`: the figure shows the click before its own; the button plays the step to its own click (the Mainspring slide's release)                                                                                                                                                      |
+| `view`   | the figure's camera, in place of the slide's, with the values of `watchView`: a named view, or the pieces that a fitted view fits                                                                                                                                                      |
 
 **Use `view` when the slide cuts the picture across, or cuts the fitted
 pieces.** The crop stops at the slide's edge, so there the watch shows cut
@@ -197,7 +200,7 @@ title. Its figure uses `view: centred cover`: the cover's view, moved so that
 the watch is in the slide's middle, so it shows as much of the strap as the
 talk does.
 
-## The sliders and the playing figure
+## The sliders, the button and the playing figure
 
 A story animation that the talk plays at a click is under the reader's
 control in a figure. **A slider scrubs it**, as on Bartosz's pages: the
@@ -219,6 +222,16 @@ a large thumb in the accent, with what it does written above it. Not an
 oversight: a story is not looped, as a GIF would be. A loop pulls the eye
 from the text, as the old `<blink>` did. The narration invites the reader to
 drag the slider instead.
+
+**The release is a button, not a slider.** The Mainspring slide's story has
+two figures: the `wind` slider winds the spring, and the next figure shows it
+wound, with a button. Press it, and the figure steps to its own click, as the
+talk does: the stud flashes and goes, and the spring uncoils. The reader
+watches a thing happen, so it plays at the talk's speed; a slider would let
+the reader drag the uncoil instead of seeing the fling. A second press puts
+the wound spring back at once, as a step back in the talk does. The button
+is a `FigureButton` (`addons/narration/figure.ts`): it says what it does,
+and what a second press does.
 
 **The Recap slide is a playing figure**: a short film, where the animation
 is the point and the words are captions. It steps by itself while it is on

@@ -18,9 +18,13 @@
 // the balance's amplitude, and holds it; when the reader lets go, it swings
 // from there, and the thumb follows it back to rest, in a quarter of the
 // balance's period, ready to catch it again.
-// `wind` holds the Mainspring
-// slide's story at a point from the bare spring, through the key's turns, to
-// the release: the stud shows until the spring is let go.
+// `wind` holds the Mainspring slide's story at a point from the bare spring
+// through the key's turns.
+//
+// THE BUTTON. `release` shows the click before the figure's until the
+// reader presses it; then it plays the step to the figure's click, as the
+// talk does (on the Mainspring slide: the stud flashes and goes, and the
+// spring uncoils). A second press shows the click before again, at once.
 import { injectionSlidevContext } from "@slidev/client/constants.ts";
 import {
   computed,
@@ -48,7 +52,6 @@ import type { BoardTarget } from "../watch/board.ts";
 import { jewelStrikes } from "../watch/callouts.ts";
 import { sharedStage, WATCH } from "../watch/instance.ts";
 import { placeFor } from "../watch/mainspring.ts";
-import type { MainspringStage } from "../watch/mainspring.ts";
 import { twistAngle, WatchModel } from "../watch/model.ts";
 import type { WatchModelState } from "../watch/model.ts";
 import { moveOf } from "../watch/navigation.ts";
@@ -59,7 +62,6 @@ import {
   stepMove,
   tickTockState,
   timeScaleState,
-  watchState,
 } from "../watch/state.ts";
 import type { WatchState } from "../watch/state.ts";
 
@@ -70,7 +72,6 @@ const figure: FigureContext = injected;
 const frontmatter = computed(
   () => slidev.nav.currentSlideRoute.meta.slide?.frontmatter ?? {},
 );
-const total = computed(() => Number(frontmatter.value["clicks"] ?? 0));
 const settings = computed(() =>
   figureSettings(frontmatter.value, figure.clicks.value),
 );
@@ -81,6 +82,8 @@ const palette = computed(() => slidePalette(frontmatter.value["class"]));
 const curl = ref(0);
 const twist = ref(0);
 const wind = ref(0);
+/** Whether the reader has pressed the `release` button. */
+const released = ref(false);
 
 /** Degrees: the balance's angle at the `twist` slider's value. Negative: the
  *  coils draw in (`springPoints`). */
@@ -122,27 +125,16 @@ function letGo(): void {
   follow(start);
 }
 
-/** The first click at which the slide's story is at `stage`. */
-function clickOfStage(stage: MainspringStage): number {
-  for (let clicks = 0; clicks <= total.value; clicks++) {
-    if (watchState(frontmatter.value, clicks)?.mainspring === stage) {
-      return clicks;
-    }
-  }
-  throw new Error(`the slide has no watchMainspring: ${stage}`);
-}
-
 /** Story time (s) on the Mainspring slide's line, for `wind`: from the bare
- *  spring to the end of the release. */
-const windTime = computed(() => wind.value * placeFor("released"));
-/** The click whose state shows: the figure's, or, with the `wind` slider,
- *  the story's stage at the slider's place. */
-const clicks = computed(() => {
-  if (settings.value.slider !== "wind") return figure.clicks.value;
-  return clickOfStage(
-    windTime.value <= placeFor("wound") ? "wound" : "released",
-  );
-});
+ *  spring to the end of the key's turns. */
+const windTime = computed(() => wind.value * placeFor("wound"));
+/** The click whose state shows: the figure's, or, with the `release`
+ *  button, the click before it until the reader presses the button. */
+const clicks = computed(() =>
+  settings.value.button === "release" && !released.value
+    ? figure.clicks.value - 1
+    : figure.clicks.value,
+);
 const state = computed(() => figureState(frontmatter.value, clicks.value));
 
 const covered = ref(false);
@@ -245,12 +237,9 @@ onBeforeUnmount(() => {
   if (view) sharedStage().remove(view);
 });
 
-// a slider's own moves are no steps: the state changes at once
+// the press that undoes `release` is no step: the state changes at once
 onChange(clicks, (to) => {
-  show(to, settings.value.slider === "wind");
-  if (settings.value.slider === "wind") {
-    model.value?.scrub(windTime.value, performance.now());
-  }
+  show(to, settings.value.button === "release" && !released.value);
 });
 // at once, so that the thumb's own way back (`letGo`) is told from the
 // reader's move: the reader's move catches the hairspring and holds it
@@ -282,8 +271,8 @@ onChange(palette, (now) => {
   if (view) view.palette = now.palette;
 });
 onChange(
-  () => settings.value.slider,
-  (slider) => {
+  settings,
+  ({ slider, button }) => {
     const controls: FigureControl[] = [];
     if (slider === "curl") {
       controls.push({
@@ -305,10 +294,18 @@ onChange(
     } else if (slider === "wind") {
       controls.push({
         kind: "slider",
-        label: "Wind the mainspring, then let it go",
+        label: "Wind the mainspring",
         start: "Bare",
-        end: "Let go",
+        end: "Wound",
         value: wind,
+      });
+    }
+    if (button === "release") {
+      controls.push({
+        kind: "button",
+        label: "Let go of the outer end",
+        undo: "Start again",
+        pressed: released,
       });
     }
     figure.controls.value = controls;

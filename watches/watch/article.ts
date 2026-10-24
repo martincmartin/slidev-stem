@@ -1,7 +1,7 @@
 // What the article (addons/narration) needs from the watch talk: which clicks
 // of a slide get a figure by default, a key for each click's picture and
 // camera, where the picture is on the slide (the figure is cropped to it),
-// the pieces that a figure marks, and a figure's slider. docs/article.md has
+// the pieces that a figure marks, and a figure's control. docs/article.md has
 // the rules and the reasons.
 //
 // THE DEFAULT: THE END OF EACH BUILD-UP. A slide's clicks make runs. A run
@@ -34,10 +34,15 @@ export interface SlideBox {
 }
 
 /** What a figure can scrub with a slider: the diving board's curl, the
- *  hairspring's twist (let go, it swings), or the mainspring's winding and
- *  release. */
+ *  hairspring's twist (let go, it swings), or the mainspring's winding. */
 export const SLIDERS = ["curl", "twist", "wind"] as const;
 export type SliderKind = (typeof SLIDERS)[number];
+
+/** What a figure's button does: `release` shows the click before the
+ *  figure's, and plays the step to the figure's click when pressed (the
+ *  mainspring's release). */
+export const BUTTONS = ["release"] as const;
+export type ButtonKind = (typeof BUTTONS)[number];
 
 /** A figure's settings at a click, from the slide's `article` block. */
 export interface FigureSettings {
@@ -45,6 +50,7 @@ export interface FigureSettings {
    *  none. `null`: the default. */
   readonly mark: readonly string[] | null;
   readonly slider: SliderKind | null;
+  readonly button: ButtonKind | null;
   /** The figure's camera, in place of the slide's: a named view, or the
    *  pieces that a fitted view fits (as `watchView`). `null`: the slide's. */
   readonly view: { view: string } | { fit: readonly string[] } | null;
@@ -61,8 +67,13 @@ export const BOX_MARGIN = 16;
 const BOARD_BOX: SlideBox = { left: 0, top: 70, right: 980, bottom: 552 };
 const CURLING_BOARD_BOX: SlideBox = { ...BOARD_BOX, top: 0 };
 
-const NO_SETTINGS: FigureSettings = { mark: null, slider: null, view: null };
-const SETTING_KEYS = ["mark", "slider", "view"];
+const NO_SETTINGS: FigureSettings = {
+  mark: null,
+  slider: null,
+  button: null,
+  view: null,
+};
+const SETTING_KEYS = ["mark", "slider", "button", "view"];
 
 function isMap(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -101,6 +112,7 @@ export function figureSettings(
   }
   const mark = block["mark"];
   const slider = block["slider"];
+  const button = block["button"];
   const view = block["view"];
   if (
     mark !== undefined &&
@@ -120,9 +132,24 @@ export function figureSettings(
       SLIDERS.join(" or "),
     );
   }
+  if (button !== undefined && !BUTTONS.some((kind) => kind === button)) {
+    return wrong(
+      `article.${String(clicks)}.button`,
+      button,
+      BUTTONS.join(" or "),
+    );
+  }
+  if (button !== undefined && clicks === 0) {
+    return wrong(
+      "article.0.button",
+      button,
+      "at a click after 0: it starts from the click before",
+    );
+  }
   return {
     mark: mark === undefined ? null : mark === false ? [] : mark,
     slider: (slider as SliderKind | undefined) ?? null,
+    button: (button as ButtonKind | undefined) ?? null,
     view:
       view === undefined
         ? null

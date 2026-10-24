@@ -111,13 +111,19 @@ test("the article settings are checked", () => {
   assert.deepEqual(figureSettings({}, 0), {
     mark: null,
     slider: null,
+    button: null,
     view: null,
   });
   assert.deepEqual(figureSettings({ article: { 2: { slider: "curl" } } }, 2), {
     mark: null,
     slider: "curl",
+    button: null,
     view: null,
   });
+  assert.equal(
+    figureSettings({ article: { 2: { button: "release" } } }, 2).button,
+    "release",
+  );
   assert.deepEqual(
     figureSettings({ article: { 0: { view: ["case band"] } } }, 0).view,
     { fit: ["case band"] },
@@ -125,7 +131,7 @@ test("the article settings are checked", () => {
   assert.throws(() => figureSettings({ article: { x: {} } }, 0), /article/);
   assert.throws(
     () => figureSettings({ article: { 1: { zoom: 2 } } }, 1),
-    /mark, or slider, or view/,
+    /mark, or slider, or button, or view/,
   );
   assert.throws(
     () => figureSettings({ article: { 1: { view: 3 } } }, 1),
@@ -134,6 +140,14 @@ test("the article settings are checked", () => {
   assert.throws(
     () => figureSettings({ article: { 1: { slider: "spin" } } }, 1),
     /curl or twist or wind/,
+  );
+  assert.throws(
+    () => figureSettings({ article: { 1: { button: "go" } } }, 1),
+    /article\.1\.button/,
+  );
+  assert.throws(
+    () => figureSettings({ article: { 0: { button: "release" } } }, 0),
+    /click after 0/,
   );
 });
 

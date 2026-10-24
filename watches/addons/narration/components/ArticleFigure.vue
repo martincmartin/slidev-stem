@@ -275,25 +275,37 @@ watch([step, near, paused, busyUntil], schedule);
           ›
         </button>
       </template>
-      <label
-        v-for="control of controls"
-        :key="control.label"
-        class="article-slider"
-      >
-        <span class="article-slider-label">{{ control.label }}</span>
-        <span class="article-slider-row">
-          <span class="article-slider-end">{{ control.start }}</span>
-          <input
-            v-model.number="control.value.value"
-            type="range"
-            min="0"
-            max="1"
-            step="0.001"
-            @change="control.release?.()"
-          />
-          <span class="article-slider-end">{{ control.end }}</span>
-        </span>
-      </label>
+      <template v-for="control of controls" :key="control.label">
+        <label v-if="control.kind === 'slider'" class="article-slider">
+          <span class="article-slider-label">{{ control.label }}</span>
+          <span class="article-slider-row">
+            <span class="article-slider-end">{{ control.start }}</span>
+            <input
+              v-model.number="control.value.value"
+              type="range"
+              min="0"
+              max="1"
+              step="0.001"
+              @change="control.release?.()"
+            />
+            <span class="article-slider-end">{{ control.end }}</span>
+          </span>
+        </label>
+        <button
+          v-else
+          type="button"
+          class="article-button article-action"
+          @click="control.pressed.value = !control.pressed.value"
+        >
+          <!-- both labels in one cell, as the pause button's words -->
+          <span :class="{ 'article-word-hidden': control.pressed.value }">{{
+            control.label
+          }}</span>
+          <span :class="{ 'article-word-hidden': !control.pressed.value }">{{
+            control.undo
+          }}</span>
+        </button>
+      </template>
       <button
         v-if="pausable"
         type="button"
@@ -304,8 +316,8 @@ watch([step, near, paused, busyUntil], schedule);
       >
         <!-- both words in one cell: the button is as wide as the wider, so
              nothing beside it moves when it changes -->
-        <span :class="{ 'article-pause-hidden': !paused }">Play</span>
-        <span :class="{ 'article-pause-hidden': paused }">Pause</span>
+        <span :class="{ 'article-word-hidden': !paused }">Play</span>
+        <span :class="{ 'article-word-hidden': paused }">Pause</span>
       </button>
     </div>
   </figure>
@@ -374,13 +386,26 @@ watch([step, near, paused, busyUntil], schedule);
   font: inherit;
   cursor: pointer;
 }
-.article-pause {
+.article-pause,
+.article-action {
   display: inline-grid;
 }
-.article-pause > span {
+.article-pause > span,
+.article-action > span {
   grid-area: 1 / 1;
 }
-.article-pause-hidden {
+/* A button that does the figure's one thing, as a slider does: as large as
+   a slider's label, and marked in the accent, as a slider's thumb is. */
+.article-action {
+  padding: 0.3em 1.1em;
+  border: 2px solid var(--palette-accent);
+  font-size: 1.1em;
+}
+.article-action:focus-visible {
+  outline: 2px solid var(--palette-accent);
+  outline-offset: 2px;
+}
+.article-word-hidden {
   visibility: hidden;
 }
 .article-button:disabled {

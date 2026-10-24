@@ -10,7 +10,7 @@
 // `clicks`, and follow it when it changes (a step: the step's moves; any
 // other change: at once). Draw nothing while `paused` is true or `near` is
 // false. Set `busyUntil` when a change ends, so that a playing figure waits
-// for it. A layer may add controls (a slider) to `controls`; the article
+// for it. A layer may add controls (a slider, a button) to `controls`; the article
 // draws them under the figure. Set `still` while nothing in the figure moves
 // by itself: the article then shows no pause button.
 //
@@ -41,7 +41,18 @@ export interface FigureSlider {
   readonly release?: () => void;
 }
 
-export type FigureControl = FigureSlider;
+/** A button under a figure that the reader presses to make a thing happen,
+ *  and presses again to undo it. `pressed` is false at first; each press
+ *  turns it over. The button says `label` while `pressed` is false, and
+ *  `undo` while it is true. */
+export interface FigureButton {
+  readonly kind: "button";
+  readonly label: string;
+  readonly undo: string;
+  readonly pressed: Ref<boolean>;
+}
+
+export type FigureControl = FigureSlider | FigureButton;
 
 export interface FigureContext {
   /** The click that the figure shows now. */

@@ -11,7 +11,8 @@ the two lists in step.
 - [watch.md](watch.md): the live watch (files, design, rim screws, frontmatter
   keys, the explorer, zoom line widths, budgets) and the diving board
 - [article.md](article.md): the article at `/article`: the narration, its figure
-  markers, what a figure shows, the sliders, the code, the static page
+  markers, what a figure shows, the sliders and the button, the code, the
+  static page
 - [measurements.md](measurements.md): what the timekeepers, the cover watch,
   balance rim motion, and the diving board measure at the back row
 - [rough-slides.md](rough-slides.md): the talk's outline, as working notes.

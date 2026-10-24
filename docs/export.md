@@ -60,8 +60,8 @@ voice that reads the narration. The task's `PLAN.md` has their sizes.
   on a slide; one "look here" colour in the art, [theme.md](theme.md)).
 - **A figure has one fixed camera.** The zooms between slides do not carry to
   a page. A figure with steps moves its camera when the reader steps it.
-- **A story animation is the reader's to play**, with a slider or a step, not a
-  loop: a loop pulls the eye from the text.
+- **A story animation is the reader's to play**, with a slider, a button or a
+  step, not a loop: a loop pulls the eye from the text.
 - **A page with many live figures shares one renderer.** A browser keeps 16
   WebGL contexts for a page (Chrome and Safari; Firefox about 300). The 17th
   makes the oldest one blank. So never give each figure its own context.

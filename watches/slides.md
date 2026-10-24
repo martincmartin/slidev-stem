@@ -1021,11 +1021,13 @@ watch: &spring [mainspring, barrel arbor]
 watchView: *spring
 watchTilt: 20
 watchMainspring: free
-# In the article, the figure at click 2 has a slider that winds the spring
-# and lets it go (docs/article.md)
+# In the article, the figure at click 1 has a slider that winds the spring,
+# and the figure at click 2 a button that lets it go (docs/article.md)
 article:
-  2:
+  1:
     slider: wind
+  2:
+    button: release
 # The centre wheel, arbor, pivot and drive arrow remain for one second.
 # Then the mechanism fades, leaving the arrow alone for one more second.
 # The arrow fades before the camera changes to the spring's view.
@@ -1162,21 +1164,26 @@ forth, it does one slow unwind over a day or two.
 In the illustration below, it's at rest.  Drag the slider to wind it up.
 
 
-[click] [nofigure]
+[click]
 
-[figure 2: The bare mainspring on its arbor. A stud holds its outer end, and
-a key turns the arbor. A slider winds it and then lets it go.]
+[figure: The bare mainspring on its arbor. A stud holds its outer end, and a
+key turns the arbor. A slider winds it.]
 
 Hold the outer end still (the small block is a stud), and turn the arbor with
 a key. The spring keeps its length, so its coils draw in toward the arbor.
 Wind the spring away from its rest shape, the dashed line, and it pushes
 back, as the hairspring does.
 
-Drag the slider slowly to the right: the key winds the spring, three turns.
-Keep going, and the stud lets go. The outer end swings round until the spring
-lies on its rest shape again. That fling is the energy that the key put in.
+[click]
 
-[click:2]
+[figure: The wound mainspring, its outer end held by the stud. A button lets
+go of the outer end.]
+
+Now let go of the outer end: press the button. The stud is gone, and the
+outer end swings round until the spring lies on its rest shape again. That
+fling is the energy that the key put in.
+
+[click]
 
 [figure 3-4: The mainspring in its barrel, driving the whole movement. The
 next step runs six hours in six seconds.]
