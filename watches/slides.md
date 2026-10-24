@@ -552,7 +552,6 @@ counts, not for how long it takes make a full 360° turn.
 -->
 
 <!--
-
 Trips people up until they think it through.  How long for a full circle?
 
 [click] 
@@ -747,14 +746,13 @@ escape wheel. The escapement controls the speed of the whole train of gears.
 The big gear pushing the small gear (pinion) is the force turning the escape
 wheel.  What turns the big wheel?  That's a mechanism we'll explain soon.
 
-[click] In this watch, the big gear turns exactly once a minute: just what the
+In this watch, the big gear turns exactly once a minute: just what the
 second hand needs! So the second hand goes on the big gear's axle. It is the
 first part of the watch that we can read.
 
 -->
 
 <!--
-
 Have wheel turning one way, but too fast.
 
 Teeth must move at same speed because they mesh.
@@ -770,8 +768,6 @@ Teeth must move at same speed because they mesh.
 [click] Attach the small gear to the escape wheel.
 
 [click] IF ASKED: This watch ticks once a second. Most real mechanical watches tick 5 to 8 times a second, so their second hands seem to sweep.
-
-
 -->
 
 ---
@@ -995,7 +991,6 @@ wheel and powers the whole watch. [nofigure]
 -->
 
 <!--
-
 Minute hand turns once an hour.
 
 How much slower than the second hand?
@@ -1015,7 +1010,6 @@ Turns the wrong way, counterclockwise.
 [click]
 
 [click] Next up, the mechanism that drives this wheel.
-
 -->
 
 ---
