@@ -121,7 +121,9 @@ the user, as a hook error notice.
 
 The environment's network policy must allow `cdn.playwright.dev` and
 `playwright.download.prss.microsoft.com`, where Playwright downloads its
-browsers.
+browsers. To lock a new Node version, pnpm also needs
+`unofficial-builds.nodejs.org`, for the checksums of the builds that
+`nodejs.org` does not publish.
 
 The user-level instructions and skills come from the environment's own setup
 script, which installs
