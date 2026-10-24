@@ -525,18 +525,15 @@ rule for the other two hands. -->
 
 <!-- narration
 
-Before we go on, a quick puzzle that trips people up. How long does the
-second hand take to go once round the dial?
+Before we go on, something that trips people up until they think it through. How
+long does the second hand take to go once round the dial?
 
 [figure 3: The second hand alone, pinned on its arbor, ticking once a
 second.]
 
-Each step of the escapement moves the second hand one step: one tick, one
-second. Sixty ticks bring it all the way round, and sixty seconds is a
-minute. So the second hand makes a complete circle once a minute. A hand is
-named for what it counts, not for how long it takes make a full 360° turn.
-
-The other hands follow the same rule:
+Each tick is one second, and sixty ticks brings it all the way around. So the
+second hand makes a complete circle once a minute. A hand is named for what it
+counts, not for how long it takes make a full 360° turn.
 
 | Hand        | A full turn   |
 | ----------- | ------------- |
@@ -544,9 +541,6 @@ The other hands follow the same rule:
 | Minute hand | Once an hour  |
 | Hour hand   | Twice a day   |
 
-The minute hand counts sixty minutes, so it turns once an hour. The hour hand
-counts the twelve hours on the dial, so it turns once in twelve hours: twice
-a day.
 
 > [!aside] Why is this second hand not in the middle?
 >
@@ -558,7 +552,8 @@ a day.
 -->
 
 <!--
-How long does second hand take to turn all the way aroumnd a full circle?
+
+Trips people up until they think it through.  How long for a full circle?
 
 [click] 
 
@@ -725,52 +720,58 @@ that drives a big one.
 [figure 4: Two gears, turning: a small gear with eight teeth drives a big
 gear with sixteen. Four teeth on each gear are coloured.]
 
-Here the small gear (in a watch, it is a _pinion_) has eight teeth, and the
-big one has sixteen. Four teeth on each gear are coloured. Those four teeth
-are half of the small gear, but only a quarter of the big one.
-
-[click:2] The teeth must be the same size, or they would not mesh. Each tooth
-fits in a gap of the other gear, so the teeth go past each other one for one,
-and both rims move at the same speed. So the small gear turns twice for each
-turn of the big one: twice the circumference, half the speed. And exactly so,
-for ever: unlike a belt, teeth cannot slip.
-
 > [!aside] Must the teeth really be the same size?
 > Strictly, the _pitch_ must match: a tooth and its gap on one wheel must be as
 > long as a tooth and its gap on the other. One wheel can have wider teeth
-> and narrower gaps.
+> than the other, as long as it has narrower gaps.
 
-[click:2] Now put the escapement back. The gears do not spin freely any
-more: they move on one tick at a time, with the escape wheel. The escapement
-controls the whole train of gears.
+The teeth on the two gears must be the same size, or they would not mesh. Each
+tooth fits in a gap of the other gear, so the teeth go past each other one for
+one, and both rims move at the same speed.  Four teeth on each gear are
+coloured. Those four teeth are half of the small gear, but only a quarter of the
+big one. So the small gear turns twice for each turn of the big one: twice the
+circumference, half the speed.
 
-[click] In this watch, the big gear turns exactly once a minute: just what
-the second hand needs. So the second hand goes on the big gear's arbor. It is
-the first part of the watch that we can read.
+[click:5]
 
 > [!aside] Why does this second hand jump, when mine sweeps?
-> This watch ticks once a second. Most real mechanical watches tick five to
-> eight times a second, so their second hands seem to sweep.
+>
+> This watch ticks once a second, to make the hairspring slow enough to
+> see. Most real mechanical watches tick five to eight times a second, so their
+> second hands seem to sweep.
+
+Now attach the smaller gear (called a _pinion_) to the escape wheel.
+The gears do not spin freely any more: they move on one tick at a time, with the
+escape wheel. The escapement controls the speed of the whole train of gears.
+
+The big gear pushing the small gear (pinion) is the force turning the escape
+wheel.  What turns the big wheel?  That's a mechanism we'll explain soon.
+
+[click] In this watch, the big gear turns exactly once a minute: just what the
+second hand needs! So the second hand goes on the big gear's axle. It is the
+first part of the watch that we can read.
+
 -->
 
 <!--
-The second hand fades out. The fourth wheel and the escape wheel's pinion fade in, and turn: the pinion twice for each turn of the wheel.
 
-[click] Four teeth on each gear are coloured: the same length of rim. They go through the mesh together, tooth for tooth, once each turn of the wheel. Four teeth are half the pinion, but a quarter of the wheel. Between, the pinion's coloured half comes round again on its own. The four teeth on each gear flash, and stay coloured. (Wait for one pass before the next click.)
+Have wheel turning one way, but too fast.
 
-[click] Half of the small gear: count them, four of its eight teeth. (The callout's leader points at the small gear.)
+Teeth must move at same speed because they mesh.
 
-[click] A quarter of the big gear: the same four teeth, but four of its sixteen. (The leader points at the big gear.) The same length of rim, because the teeth must be the same size, or they do not mesh. Each tooth fits in one gap of the other gear, so the teeth go by one for one: both rims move at the same speed.
+[click] These 4 teeth move at same speed.
 
-[click] Twice the size, half the speed. Exactly: teeth cannot slip, as a belt can. So the big gear turns once for every two turns of the small one, for ever.
+[click] 
 
-[click] The rest of the escapement comes back, and the gears now advance one tick at a time: the escapement controls the whole train. (The text stays. The arrow is on the big gear now: something we can't see yet still pushes it.)
+[click] Same length of rim.
 
-[click] The big gear turns once a minute: just what the second hand needs. So put the hand from two slides back on the gear's arbor: the first part of the watch that we read. (The hand fades in first, then the text, under the rule: "Turns once a minute. The second hand!")
+[click] 
 
-IF ASKED: This watch ticks once a second. Most real mechanical watches tick 5 to 8 times a second, so their second hands seem to sweep.
+[click] Attach the small gear to the escape wheel.
 
-IF ASKED: Strictly, the pitch must match: a tooth plus its gap on one wheel equals a tooth plus its gap on the other. One wheel can have wider teeth and narrower gaps.
+[click] IF ASKED: This watch ticks once a second. Most real mechanical watches tick 5 to 8 times a second, so their second hands seem to sweep.
+
+
 -->
 
 ---
@@ -957,52 +958,64 @@ recap for anyone who missed clicks 2 and 3. -->
 </style>
 
 <!-- narration
-The second hand turns once a minute. The minute hand must turn once an hour:
-sixty times slower. How do you slow a turn down sixty times? [nofigure]
 
-[click] One gear could do it, with sixty times the teeth of the small gear:
-240 teeth. Here it is, with the watch's case for size. It is far bigger than
-the watch.
+The second hand turns once a minute. The minute hand must turn once an hour:
+sixty times slower. So we could try the same trick, and have a gear that's 60
+times bigger than the small gear.
+
+[nofigure]
+
+[click] But there's a limit to how small you can manufacture the small gear, so
+the big gear would be huge.  And it would have a lot of teeth which adds to
+costs.  Plus, it would turn the wrong way, counterclockwise, because every gear
+turns the opposite direction from the one it touches.
 
 [click]
 
 [figure 2-3: Two more pairs of gears, between the second hand's wheel and
 the centre wheel. Step through them.]
 
-So the watch slows the turn in two stages. The _third wheel_ has 30 teeth,
-and it drives a pinion of 4 on the second hand's arbor: seven and a half
-times slower.
+So the watch slows in two stages. The _third wheel_ runs 7½ times slower, and
+the _center wheel_ runs 8 times slower than that.
 
-[click] The _centre wheel_ has 32 teeth, and it drives a pinion of 4 on the
-third wheel's arbor: eight times slower. Seven and a half times eight is
-sixty, so the centre wheel turns once an hour.
+[click] 7½ times 8 is 60, so the centre wheel turns once an hour.
 
 [click]
 
 [figure: The minute hand on the centre wheel's arbor, in the middle of the
 case.]
 
-The minute hand goes on the centre wheel's arbor, in the middle of the dial.
+The minute hand goes on the centre wheel's axle (_arbor_), in the middle of the dial.
 It makes a full turn once an hour.
 
-[click] But what pushes the centre wheel round? The push comes from further
-back: from the part that powers the whole watch. [nofigure]
+[click] The center wheel pushes the third wheel which pushes the fourth wheel
+which pushes the escape wheel.  Next up, the mechanism that pushes the center
+wheel and powers the whole watch. [nofigure]
+
 -->
 
 <!--
-The camera zooms out, to make room for the wheels that drive the fourth wheel. The third wheel and the centre wheel do not show yet.
 
-The second hand turns once a minute. The minute hand must turn once an hour, as the table said: sixty times slower.
+Minute hand turns once an hour.
 
-[click] The text comes first: minute to hour is 60 to 1. One gear could do it: sixty times the teeth of the small gear, 240 teeth. The camera pulls back, and the arrow goes. The gear and the small gear that it drives fade in, then the watch around them, and the two gears flash: the big one is bigger than the watch.
+How much slower than the second hand?
 
-[click] So it takes two more pairs of gears. The third wheel, and the small gear on the fourth wheel that it drives, fade in and flash. The arrow is on the third wheel now: the push comes from further back. 30 teeth drive 4: seven and a half times slower. Then the text: two stages, 7.5 to 1.
+Could use same trick, this time 60:1.
 
-[click] The centre wheel, and the small gear on the third wheel that it drives, fade in and flash, and the arrow moves to it. 32 teeth drive 4: eight times slower: the text adds 8 to 1. Seven and a half times eight is sixty. The centre wheel turns once an hour.
+[click] Limit to how small you make pinion.
 
-[click] Put the minute hand on the centre wheel's arbor. The case and the dial fade in with it: this is the middle of the watch. Then the text: it makes a full turn once an hour. The minute hand!
+That many teeth is expensive.
 
-[click] But what drives this wheel? The text fades out, and the rest of the watch dims. The centre wheel, its arbor, pivot and curved arrow stay bright: wheel driven by hidden mechanism.
+Turns the wrong way, counterclockwise.
+
+[click] 
+
+[click] 7½ × 8 = 60
+
+[click]
+
+[click] Next up, the mechanism that drives this wheel.
+
 -->
 
 ---
@@ -1148,9 +1161,12 @@ One spring to power them all
 </style>
 
 <!-- narration
-The power comes from a spring too: the _mainspring_, a long ribbon of steel
-coiled round an arbor. It is not like the hairspring. It does not swing back
-and forth. It unwinds once, slowly, over a day or two.
+
+This is a spiral spring, like the hairspring.  But instead of swinging back and
+forth, it does one slow unwind over a day or two.
+
+In the illustration below, it's at rest.  Drag the slider to wind it up.
+
 
 [click] [nofigure]
 
