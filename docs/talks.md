@@ -438,7 +438,8 @@ Upgrade only a talk in progress. In the talk's directory:
 
    `compare_dist.py` ignores Vue's scoped-CSS ids and the content hashes in
    file names. Both change when the path of `node_modules` changes, so a build
-   that differs only in them is the same deck.
+   that differs only in them is the same deck. Without the hash, many files
+   have one name (one `md` chunk for each slide): it compares them as a group.
 
 Some advisories from `pnpm audit` cannot be fixed by an upgrade. On 2026-09-28,
 all 8 of them were in packages that Slidev's own dependencies pin or limit:
