@@ -10,7 +10,7 @@
     },
     "packageManager": {
       "name": "pnpm",
-      "version": "12.11.2",
+      "version": "12.15.0",
       "onFail": "download"
     }
   },
@@ -33,9 +33,9 @@
     "@vue/compiler-sfc": "^3.5.44",
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
-    "playwright-chromium": "1.63.0",
-    "playwright-firefox": "1.63.0",
-    "playwright-webkit": "1.63.0",
+    "playwright-chromium": "1.64.1",
+    "playwright-firefox": "1.64.1",
+    "playwright-webkit": "1.64.1",
     "prettier": "^3.9.10",
     "prettier-plugin-slidev": "^1.0.5",
     "typescript": "^6.0.3",
