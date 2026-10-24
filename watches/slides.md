@@ -886,16 +886,16 @@ it reads what the picture has just shown. -->
   <div v-click="1">minute:hour = 60:1</div>
 </div>
 
-<!-- The stages stay at click 4, dimmed, above the minute hand's text: a
-recap for anyone who missed clicks 2 and 3. -->
+<!-- Click 3 adds its stage after click 2's, on the same line, in the room
+kept for it: "7½:1" does not move. The stages stay at click 4, dimmed, above
+the minute hand's text: a recap for anyone who missed clicks 2 and 3. -->
 
 <div v-click.hide="5" class="gt-reading">
 <div class="gt-sentence" :class="{ 'gt-recap': $clicks >= 4 }">
   <div v-click="2" class="after-watch gt-stage text-dims">
     <div>Two stages:</div>
-    <div>7.5:1</div>
+    <div>7½:1<span v-click="3" class="after-watch"> × 8:1 = 60:1</span></div>
   </div>
-  <div v-click="3" class="after-watch gt-stage text-dims">8:1</div>
   <div v-click="4" class="after-watch">
     <div>Makes a full turn<br><span class="turn-time">once an hour</span>.</div>
     <div>The minute hand!</div>
@@ -933,6 +933,7 @@ recap for anyone who missed clicks 2 and 3. -->
 }
 .slidev-layout.gear-train .gt-sentence.slidev-vclick-target,
 .slidev-layout.gear-train .gt-sentence > .slidev-vclick-target:not(.text-dims),
+.slidev-layout.gear-train .gt-stage .slidev-vclick-target,
 .slidev-layout.gear-train .gt-reading.slidev-vclick-target,
 .slidev-layout.gear-train .gt-power.slidev-vclick-target {
   transition-property: opacity;
@@ -1299,7 +1300,7 @@ recap, as on the Gear Train slide. -->
   <div v-click="4" class="after-watch hh-stage text-dims">Out: 3:1</div>
   <div v-click="5" class="after-watch hh-stage text-dims">
     <div>Back: 4:1</div>
-    <div>3 × 4 = 12</div>
+    <div>3:1 × 4:1 = 12:1</div>
   </div>
   <div v-click="6" class="after-watch">
     <div><span class="turn-time">Twice a day</span>,<br>in the middle.</div>

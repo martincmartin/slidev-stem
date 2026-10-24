@@ -687,8 +687,10 @@ leaves: $7.5 \times 8 = 60$.
   the Gears slide's text is. It fades in at the click, as the camera starts
   to untilt and zoom out, so the audience knows why the camera moves.
 - **The later texts read each click's picture**, in the same place:
-  "Two stages:" and "7.5:1" at click 2; "8:1" below them at click 3. The
-  ratios are those of the wheels that the click adds. At click 4, "Makes a
+  "Two stages:" and "7½:1" at click 2; "× 8:1 = 60:1" after "7½:1", on
+  the same line, at click 3. The ratios are those of the wheels that the
+  click adds, and "60:1" is click 1's. The space for click 3's text is kept,
+  so "7½:1" does not move. At click 4, "Makes a
   full turn once an hour. The minute hand!" comes below the stages, as the
   Gears slide says it of the second hand. Each of these texts comes after all
   the motion of its click, flash included (`after-watch`,
@@ -697,8 +699,8 @@ leaves: $7.5 \times 8 = 60$.
   ([slide-patterns.md](slide-patterns.md#text-dims)), as the Escapement slide's
   earlier callouts are: a recap for anyone who missed clicks 2 and 3, while
   the new text stays the focus. They dim when the new text fades in. The
-  five lines fill the right of the slide to just inside the picture band's
-  bottom, so there is no room for another line. Dimmed halfway to the
+  five lines end about 80 px above the picture band's bottom: there is room
+  for one more line. Dimmed halfway to the
   paper, the text is about 3:1 against its outline, at the contrast floor
   ([legibility.md](../../docs/legibility.md)).
 - **At click 5 the right-side text fades out.** The rest of the watch dims with `watchDim`. Only the centre wheel, its arbor, pivot and drive arrow stay undimmed.

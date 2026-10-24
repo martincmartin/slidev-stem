@@ -27,3 +27,7 @@ task's tools import. The talk's last version was playwright 1.63.0; the version
 on the task's date is in that day's `uv.lock`. To run the tools again, add it
 to the talk for that session (`uv add playwright==1.63.0`), and install the
 browsers they use (`uv run python -m playwright install chromium`).
+
+2026-10-24: the Hour Hand slide's "3 × 4 = 12" is now "3:1 × 4:1 = 12:1". It
+repeats click 1's "12:1", as the Gear Train slide's "7½:1 × 8:1 = 60:1" repeats
+its "60:1".
