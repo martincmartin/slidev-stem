@@ -154,7 +154,7 @@ Run full mode in the project that you changed:
 ```bash
 uv run tools/validate.py          # at the root: the shared files only
 uv run ../tools/validate.py       # in a talk's directory: that talk only
-uv run ../tools/validate.py --fix # let ruff and Prettier rewrite first
+uv run ../tools/validate.py --fix # run ruff's fixes and `pnpm format` first
 ```
 
 Each run checks only its own project, and it takes its scope from the current

@@ -393,6 +393,9 @@ or after ordinary navigation changes. See [navigation.md](navigation.md).
 
 Full validation uses bounded parallel preparation. Smoke navigation runs after preparation.
 Use `--jobs 1` for serial preparation. `--fix` always uses one worker.
+`--fix` first runs ruff's fixes and `pnpm format` (in place of
+`pnpm format:check`), then checks the files that they wrote. So before a
+commit, it replaces a separate `pnpm format`.
 Every check prints its elapsed time. `--json` gives machine-readable results.
 Timing measurements and their limits are in the validation-speed task.
 
