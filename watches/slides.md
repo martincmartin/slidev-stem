@@ -1325,7 +1325,7 @@ texts are about the one-step wheel, so they go with it at click 3
 (docs/watch.md, "The Hour Hand slide"). -->
 
 <div v-click.hide="3" class="hh-sentence">
-  <div v-click="1" class="after-watch">12:1 gear ratio</div>
+  <div class="after-watch">12:1 gear ratio</div>
   <div v-click="2" class="after-watch">Hour hand off centre!</div>
 </div>
 
@@ -1383,48 +1383,33 @@ recap, as on the Gear Train slide. -->
 </style>
 
 <!-- narration
-The minute hand turns once an hour. The hour hand must turn twice a day: once
-in twelve hours, twelve times slower. [nofigure]
 
-[click] Twelve to one is not much more than the eight to one of the last
-stage. One pinion on the centre arbor, and a wheel with twelve times its
-teeth, would do it.
+The hour hand must turn twice a day, that's once every twelve hours. Unlike the 60:1, a 12:1 gear is doable.
 
-[click] But put the hour hand on that wheel's arbor, and it is off centre!
-An hour hand must be in the middle, under the minute hand. And it would run
-backward: a gear turns the other way from the gear that drives it.
+[nofigure]
 
-[click] So the watch takes two steps instead, close to the middle of the
-watch.
+[click] But the hour hand on that wheel's axle (_arbor_), and it is off centre!
+And it would run backward (couterclockwise): a pair of meshing gears turn
+opposite directions.
 
-[click] The _cannon pinion_, on the centre arbor, drives the _minute wheel_:
-three to one, out from the centre.
-
-[click] The minute wheel's own pinion drives the _hour wheel_, which turns on
-the centre arbor: four to one, back to the middle. Three times four is
-twelve, and the second step turns the hour wheel the right way round again.
+[click:3] So we use the same two-step trick we used for the minute hand.  This
+time, 3:1 going out and 4:1 coming back.  3:1 × 4:1 = 12:1.
 
 [figure 5: The motion works, close up: the cannon pinion, the minute wheel
 and its pinion, and the hour wheel. The rest of the watch is dimmed.]
 
 [click] The hour hand goes on the hour wheel, in the middle, under the minute
-hand. It turns twice a day.
+hand. It turns clockwise, twice a day.
 -->
 
 <!--
-The minute hand turns once an hour. The hour hand must turn twice a day, as the table said: once in twelve hours, twelve times slower.
 
-[click] Twelve to one is not much more than the eight to one of the last stage. One pinion on the centre arbor, and a wheel with twelve times its teeth: forty-eight. They fade in and flash. Only one and a half times the centre wheel's size.
 
-[click] Put the hour hand on its arbor. It is off centre! Wherever the wheel goes, its arbor is off centre. A seconds hand can live off centre; an hour hand cannot. (And it would run backwards: a gear turns the other way from the gear that drives it.)
+[click] 12:1 doable.
 
-[click] So, two steps. The big wheel and its pinion go, and the camera zooms in on the centre wheel. The rest of the watch dims, the big pinion that the barrel drives too, so that only the centre wheel and the minute hand are in full colour.
+[click] Also runs backwards
 
-[click] The same small pinion comes back, and drives a small wheel, the minute wheel: three to one, out from the centre. They flash.
-
-[click] The minute wheel's own pinion drives the hour wheel, which turns on the centre arbor: four to one, back to the centre. Three times four is twelve. And two steps turn it the right way again.
-
-[click] Zoom back out, and the whole watch is in full colour again. The hour hand goes on the hour wheel. It turns twice a day, in the middle, under the minute hand. The hour hand!
+[click:4] Runs clockwise.
 -->
 
 ---
@@ -1515,9 +1500,12 @@ clicks: 8
 ---
 
 <!-- narration
-Here is the whole train at once, one touch at a time, from the hands back to
-the balance. The tour plays by itself, like a short film. The time scale in
-the corner says how much faster than real time each stop runs.
+
+And that's how a mechanical watch works!
+
+Here's a recap, working backwards from the hour hand to the hairspring. The tour
+plays by itself, like a short film. The time scale in the corner says how much
+faster than real time each segment runs.
 
 [figure 0-8 play: A tour of the watch's train, from the motion works to the
 balance wheel, one touch at a time.]
