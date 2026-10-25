@@ -9,7 +9,9 @@
 // state that they show in a `data-watch` attribute: the live canvas
 // (global-bottom.vue) and the still (slide-bottom.vue). First this steps
 // through the live deck with the right arrow, as the viewer does, and records
-// the state at each slide and click. Then it loads each slide in print mode
+// the state at each slide and click. While the board shows, it waits before a
+// press until the press would be a step (`slideState().busy`): a press during
+// a move jumps, and the curl click's picture is the step's. Then it loads each slide in print mode
 // at each click (`/N?print=clicks&clicks=C`, the address that
 // `slidev export --format png --with-clicks` opens), in PRINTED_BROWSERS
 // browsers at once, and fails if a printed state differs from the live one.
@@ -221,31 +223,32 @@ async function show(
   await paint(page);
 }
 
-/** Wait until the live layers have loaded and settled. With `finishStory`,
- *  also until the board's curl ends; otherwise keep the curl click's
- *  intermediate picture. The paint first lets Slidev apply the step. No
- *  paint after: what is read next is the page's state, not its pixels, and
- *  in software WebGL a paint takes most of a second. */
-async function liveReady(page: Page, finishStory: boolean): Promise<void> {
+/** Wait until the live layers have loaded and settled; a story that runs
+ *  goes on, so the curl click keeps its intermediate picture. The paint
+ *  first lets Slidev apply the step. No paint after: what is read next is
+ *  the page's state, not its pixels, and in software WebGL a paint takes
+ *  most of a second. */
+async function liveReady(page: Page): Promise<void> {
   await paint(page);
-  await page.waitForFunction(
-    ([board, finishStory]) => {
-      const host = document.querySelector<HTMLElement>(board);
-      const canvas = document.querySelector(".watch-canvas");
-      return (
-        window.slideState !== undefined &&
-        canvas !== null &&
-        window.slideState().settled["watch"] ===
-          canvas.getAttribute("data-watch") &&
-        host?.querySelector("svg") != null &&
-        host.dataset["phase"] !== undefined &&
-        (!finishStory ||
-          !host.querySelector("svg.diving-board-curling") ||
-          host.dataset["busy"] !== "true")
-      );
-    },
-    [LIVE_BOARD, finishStory] as const,
-  );
+  await page.waitForFunction((board) => {
+    const host = document.querySelector<HTMLElement>(board);
+    const canvas = document.querySelector(".watch-canvas");
+    return (
+      window.slideState !== undefined &&
+      canvas !== null &&
+      window.slideState().settled["watch"] ===
+        canvas.getAttribute("data-watch") &&
+      host?.querySelector("svg") != null &&
+      host.dataset["phase"] !== undefined
+    );
+  }, LIVE_BOARD);
+}
+
+/** Wait until a press would be a step, not a jump: a press during a move
+ *  jumps (../../docs/navigation.md, "A press during a move"), and the
+ *  board's story plays only on a step. */
+async function stepReady(page: Page): Promise<void> {
+  await page.waitForFunction(() => window.slideState?.().busy === false);
 }
 
 /** The `data-watch` of the first element that `selector` finds, or "null". */
@@ -296,7 +299,7 @@ async function renderer(page: Page): Promise<string> {
 async function walkLive(browser: Browser, deck: string) {
   const live = await openDeck(browser, deck, { viewport: VIEWPORT });
   await show(live, "1", 1);
-  await liveReady(live.page, false);
+  await liveReady(live.page);
   const gl = await renderer(live.page);
   const views: LiveView[] = [];
   for (let url = live.page.url(); views.length < STEP_LIMIT;) {
@@ -310,8 +313,11 @@ async function walkLive(browser: Browser, deck: string) {
       watch: await watchState(live.page, ".watch-canvas"),
       board,
     });
+    // only while the board shows: elsewhere a jump shows the same state
+    // as a step, and the waits would make the walk slow
+    if (board?.picture) await stepReady(live.page);
     await live.page.keyboard.press("ArrowRight");
-    await liveReady(live.page, board?.curling ?? false);
+    await liveReady(live.page);
     if (live.page.url() === url) {
       return { views, gl, problems: live.problems() };
     }

@@ -2,7 +2,9 @@
 // ../docs/navigation.md, "Diagnostic: exhaustive navigation". `settled` must be the same however a
 // (slide, click) is reached; each `continuous` number must move without a cut;
 // `busy` is true while a story animation (the board's bend or curl) or a
-// camera move still runs, so the check waits for it.
+// camera move still runs, so the check waits for it; and while a press would
+// jump (`pressJumps`: ../docs/navigation.md, "A press during a move"), so that
+// a check that waits for it presses a step.
 
 import type { Stage } from "../webgl/stage.ts";
 import type { WatchModelState } from "./model.ts";
@@ -66,6 +68,8 @@ export function slideState(
   stage: Stage<WatchModelState> | undefined,
   canvas: HTMLCanvasElement | null,
   shown: string,
+  /** Whether a press now would be a jump (global-bottom.vue). */
+  pressJumps: boolean,
 ): SlideState {
   const now = performance.now();
   const boards = shownBoards();
@@ -78,7 +82,7 @@ export function slideState(
     "rest shape": seen * layerOpacity(boards, "rest"),
     "rest callout": seen * layerOpacity(boards, "rest-callout"),
   };
-  let busy = false;
+  let busy = pressJumps;
   if (stage?.hasState) {
     const values = stage.valuesAt(now);
     if (shown !== "null") {
@@ -95,7 +99,7 @@ export function slideState(
       continuous["tilt"] = values.tilt;
       continuous["turn"] = values.turn;
     }
-    busy = stage.movingAt(now);
+    if (stage.movingAt(now)) busy = true;
   }
   // whether the words "tick" and "tock" show at the strikes: each word's
   // opacity is the phase of the mechanism, so it is not `continuous`

@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import type { Renderer } from "../webgl/renderer.ts";
-import type { Group } from "../webgl/scene.ts";
+import type { Group, Mesh, MeshGeometry } from "../webgl/scene.ts";
 import { DESIGN } from "./design.ts";
 import { generate } from "./generate.ts";
 import {
@@ -507,4 +507,28 @@ test("a twist holds its angle, and let go swings from it at the balance's period
   assert.ok(Math.abs(twistAngle(letGo, 1500, 2)) < 1e-9);
   assert.ok(Math.abs(twistAngle(letGo, 2000, 2) - 90) < 1e-9);
   assert.ok(Math.abs(twistAngle(letGo, 3000, 2) + 90) < 1e-9);
+});
+
+test("models that share a renderer each draw their own mainspring", () => {
+  // the article's figures share one renderer, so one mesh (webgl/shared.ts)
+  const watch = generate();
+  let drawn: MeshGeometry | undefined;
+  const renderer = {
+    updateMesh: (mesh: Mesh, geometry: MeshGeometry) => {
+      if (mesh === watch.mainspring) drawn = geometry;
+    },
+  } as unknown as Renderer;
+  const atStage = (mainspring: "free" | "wound"): WatchModel => {
+    const model = new WatchModel(watch, 0);
+    model.show({ settled: true, spin: null, mainspring, lapse: 1 }, 0, true);
+    return model;
+  };
+  const free = atStage("free");
+  const wound = atStage("wound");
+  free.frame(0, renderer);
+  const freeGeometry = drawn;
+  wound.frame(0, renderer);
+  assert.notEqual(drawn, freeGeometry);
+  free.frame(16, renderer);
+  assert.equal(drawn, freeGeometry);
 });

@@ -23,7 +23,8 @@
 // until the SVG is in place and posed.
 //
 // `data-phase` and `data-busy` on the host are for tools/navcheck.ts
-// (watch/slide-state.ts).
+// (watch/slide-state.ts). The `busy` event is for the layer: a press while
+// the story runs shows its target at once (global-bottom.vue).
 //
 // IN THE ARTICLE (components/FigureLayer.vue): `scrub`, from 0 to 1, holds
 // the board at that point of the curl, for a reader's slider: the clock does
@@ -72,6 +73,8 @@ const props = withDefaults(
 const emit = defineEmits<{
   /** Whether the board's picture shows, and so covers the watch. */
   cover: [covers: boolean];
+  /** Whether a story animation (a bend, a curl or an uncurl) runs. */
+  busy: [busy: boolean];
 }>();
 
 const CURLING_CLASS = "diving-board-curling";
@@ -83,6 +86,8 @@ const markup = ref("");
 const shown = ref<BoardState | undefined>(undefined);
 /** Whether the picture shows at the clock's time. */
 const picture = ref(false);
+/** Whether the clock is in a story animation. */
+const busy = ref(false);
 const instant = ref(false);
 let clock: BoardClock | null = null;
 let frame = 0;
@@ -143,7 +148,8 @@ function draw(now: number): void {
   drawAt(timingOf(board), time);
   const phase = shown.value ? clock.phase(now) : "off";
   host.value.dataset["phase"] = phase;
-  host.value.dataset["busy"] = String(BUSY_PHASES.has(phase));
+  busy.value = BUSY_PHASES.has(phase);
+  host.value.dataset["busy"] = String(busy.value);
   if (shown.value && clock.moving(now) && !props.paused) {
     frame = requestAnimationFrame(draw);
   }
@@ -237,6 +243,9 @@ watch(
   },
   { immediate: true },
 );
+watch(busy, (now) => {
+  emit("busy", now);
+});
 onBeforeUnmount(() => {
   cancelAnimationFrame(frame);
 });

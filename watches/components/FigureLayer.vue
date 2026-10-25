@@ -51,7 +51,7 @@ import { boardState } from "../watch/board.ts";
 import type { BoardTarget } from "../watch/board.ts";
 import { jewelStrikes } from "../watch/callouts.ts";
 import { sharedStage, WATCH } from "../watch/instance.ts";
-import { placeFor } from "../watch/mainspring.ts";
+import { placeFor, storyRuns } from "../watch/mainspring.ts";
 import { twistAngle, WatchModel } from "../watch/model.ts";
 import type { WatchModelState } from "../watch/model.ts";
 import { moveOf } from "../watch/navigation.ts";
@@ -166,15 +166,16 @@ const timeScale = computed(() =>
 
 /** Whether nothing moves by itself at the figure's click, so that the
  *  figure needs no pause button: the balance is at rest, the train neither
- *  spins nor unwinds, there is no mainspring story, the board does not
- *  swing, and there is no `twist` slider (a let-go swings for ever). */
+ *  spins nor unwinds, the mainspring story is before the watch runs (a
+ *  step's change, such as the release, plays once and ends), the board does
+ *  not swing, and there is no `twist` slider (a let-go swings for ever). */
 const still = computed(() => {
   const now = hidden.value ? undefined : state.value;
   const watchStill =
     !now ||
     (now.settled &&
       now.spin === null &&
-      now.mainspring === null &&
+      (now.mainspring === null || !storyRuns(now.mainspring)) &&
       !now.unwind);
   const boardStill =
     board.value.state?.place !== "swing" || boardScrub.value !== null;

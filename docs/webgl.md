@@ -247,7 +247,8 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   go have faded out and before the others fade in. With nothing on the screen,
   the camera jumps. A key press
   during a change starts from what is on the screen: a fade cut short ends
-  first. The timeline has no DOM and no WebGL, so its tests
+  first. A talk's layer makes a key press during a change a jump
+  ([`navigation.md`](navigation.md), "A press during a move"). The timeline has no DOM and no WebGL, so its tests
   (`timeline.test.ts`) drive it with made-up times. `Stage`
   (`webgl/stage.ts`) holds the renderer, the model and the frame loop. The
   watch talk's slides are the examples

@@ -17,7 +17,10 @@
 // slide or click, this decides the kind of move (watch/navigation.ts): a step
 // animates from what is on the screen, in either direction, and a jump shows
 // the target at once. A flash plays only on the step forward into the slide
-// or the click that names it.
+// or the click that names it. A step during a move (the stage's change, or
+// the board's story, still runs), or soon after a step that was one, is a
+// jump: the screen shows at once the place that a viewer who looks for it
+// has reached (../docs/navigation.md, "A press during a move").
 // On a step between two slides, the later one says what shows while the
 // camera moves (`watchMoveWith`, `watchMoveAlso`), in either direction. On
 // any step, the later click says how the camera moves (`watchMove`,
@@ -83,6 +86,11 @@ import {
 import type { StepMoveWith, WatchState } from "./watch/state.ts";
 import type { CameraMove } from "./webgl/timeline.ts";
 
+/** ms: a step this soon after a press that jumped jumps too. A jump leaves
+ *  nothing that runs, so without this, every other press of a burst would
+ *  animate, and show its place only at the end of its change. */
+const BURST_MS = 1000;
+
 const slidev = inject(injectionSlidevContext);
 if (!slidev) throw new Error("no Slidev context");
 const nav = useNav();
@@ -96,6 +104,8 @@ const state = computed(() => watchState(frontmatter.value, slidev.nav.clicks));
 const palette = computed(() => slidePalette(frontmatter.value["class"]));
 /** The diving board's picture covers the watch. */
 const covered = ref(false);
+/** The diving board's story (a bend, a curl or an uncurl) runs. */
+const boardBusy = ref(false);
 const hidden = computed(() => !state.value || covered.value);
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 const board = shallowRef<BoardTarget>({ state: undefined, atOnce: true });
@@ -125,6 +135,8 @@ let stageTarget: WatchState | undefined;
 let unmounted = false;
 /** The place and the watch state that the layer shows. */
 let place: Place | undefined;
+/** Until when (ms) a step is a press in a burst. */
+let burstUntil = 0;
 let shownWatch = "null";
 /** The same state without its flash: what shows. */
 let shownPicture = "null";
@@ -239,6 +251,12 @@ function goOutOfSight(): void {
   stage?.stop();
 }
 
+/** Whether a step at `at` (ms) is a press during a move, and so a jump: the
+ *  stage's change or the board's story runs, or a burst has not ended. */
+function pressJumps(at: number): boolean {
+  return boardBusy.value || at < burstUntil || (stage?.endAt(at) ?? at) > at;
+}
+
 /** The frontmatter of the slide numbered `slide` (1-based). */
 function frontmatterOf(slide: number): Record<string, unknown> {
   const route = nav.slides.value.find((each) => each.no === slide);
@@ -265,7 +283,8 @@ onMounted(() => {
     model.value,
   );
   window.watchStage = stage;
-  window.slideState = () => slideState(stage, canvas.value, shownWatch);
+  window.slideState = () =>
+    slideState(stage, canvas.value, shownWatch, pressJumps(performance.now()));
   document.documentElement.style.setProperty(
     "--watch-fade",
     `${String(FADE_SECONDS)}s`,
@@ -277,7 +296,10 @@ onMounted(() => {
         slide: slidev.nav.currentSlideNo,
         clicks: slidev.nav.clicks,
       };
-      const move = moveOf(place, to);
+      const at = performance.now();
+      const step = moveOf(place, to);
+      const move = step !== "jump" && pressJumps(at) ? "jump" : step;
+      if (move !== step) burstUntil = at + BURST_MS;
       const intoSlide = place?.slide !== to.slide;
       const moveWith =
         place && intoSlide
@@ -358,6 +380,7 @@ onMounted(() => {
       :target="board"
       :live="true"
       @cover="(covers: boolean) => (covered = covers)"
+      @busy="(busy: boolean) => (boardBusy = busy)"
     />
     <TickTock :model="model" :shown="tickTock" />
     <TimeScale :model="model" :shown="timeScale" />

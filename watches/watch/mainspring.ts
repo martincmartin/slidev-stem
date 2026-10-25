@@ -138,6 +138,13 @@ export function placeFor(stage: MainspringStage): number {
   return place;
 }
 
+/** Whether the watch runs at `stage`'s place on the line, or after it: in
+ *  the barrel, and in the time-lapse. At an earlier stage, nothing moves
+ *  but a step's change. */
+export function storyRuns(stage: MainspringStage): boolean {
+  return RUNS_FROM.some((from) => placeFor(stage) >= from);
+}
+
 function smoothstep(fraction: number): number {
   const clamped = Math.min(Math.max(fraction, 0), 1);
   return clamped * clamped * (3 - 2 * clamped);

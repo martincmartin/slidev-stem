@@ -28,6 +28,19 @@ one slide is one element, and a step animates but a jump does not. In the watch
 talk, the phase of a physical process (where the hands and the balance are) is
 the one thing that may differ on a settled screen.
 
+**A press during a move.** A step that comes while a move runs is a jump: it
+shows its own target at once, in either direction. A move runs until each
+layer's change, flash and story animation has ended. A step soon after a press
+that jumped is a jump too (the talk sets how soon): a jump leaves nothing that
+runs, so without this rule every other press of a burst would animate. So a
+viewer who presses until a view shows stops at the place of that view. A step
+from a screen at rest animates, as before. Not an oversight: when a press
+first ended the running change and then animated its own step, each view
+showed only after the deck had left its place, and a viewer who looked for a
+view went past it. When each press went on from the screen, a burst built
+screens that no place names
+([`watches/tasks/2026-10-24-rapid-navigation`](../watches/tasks/2026-10-24-rapid-navigation/PLAN.md)).
+
 **Each kind of animation has a default.**
 
 | Kind                 | What it is for                    | Forward                                      | Back                                                                     |
@@ -116,7 +129,7 @@ It reads what the deck reports. A talk with layers defines
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `settled`    | names and numbers that must be the same however the place is reached (a view, a phase)                                                                   |
 | `continuous` | numbers that must move without a cut (an opacity, a scale, a tilt). Leave out one that is not on the screen: a number that leaves ends at its last value |
-| `busy`       | true while a story animation or a camera move runs, so that the check waits for its end                                                                  |
+| `busy`       | true while a story animation or a camera move runs, or while a press would jump ("A press during a move"), so that the check waits for its end           |
 
 A deck without `slideState` passes with a note.
 Only headless screen wake-lock acquisition is stubbed

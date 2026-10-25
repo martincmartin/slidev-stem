@@ -1405,7 +1405,11 @@ at load with the key's name.
 - **A step animates, a jump does not** (`watch/navigation.ts`,
   [`navigation.md`](../../docs/navigation.md)). A step is one click, or the
   next or the previous slide. A jump (a reload, a link, the overview) shows
-  the slide's state at once.
+  the slide's state at once. A step during a move is a jump too: while the
+  stage's change (with its flash and the model's story) or the board's story
+  runs, or less than `BURST_MS` after a press that jumped
+  (`global-bottom.vue`, [`navigation.md`](../../docs/navigation.md), "A press
+  during a move").
 - **The flash plays only on the step forward into the slide or the click
   that names it.** It points to where the camera goes, or to what fades in.
   Going back to the cover zooms out with no flash, and so does going back
@@ -1574,7 +1578,8 @@ board, the pool and the stand) shows from the board's click until the board's
 clock passes the end of the curl (`pictureShown` in `watch/board.ts`). The
 board's component emits `cover`, and the layer under it hides the watch:
 `global-bottom.vue` fades the canvas out and stops the stage, and
-`slide-bottom.vue` hides the still.
+`slide-bottom.vue` hides the still. It also emits `busy` while its story (a
+bend, a curl or an uncurl) runs: a press then jumps.
 
 **A hidden watch goes to its target at once.** When the canvas has faded out
 (its 0.3 s fade, with a margin: 400 ms), the stage jumps to the last state that

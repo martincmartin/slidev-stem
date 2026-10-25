@@ -911,9 +911,12 @@ export class WatchModel implements Model<WatchModelState> {
   /** A settle that waits for the time-lapse's hand-over: it was asked for
    *  while the balance resumed with time ahead (`settle`). */
   private settleAfterLapse = false;
-  /** The mainspring's last pose drawn, so that an unchanged one is not
-   *  drawn again. */
-  private drawn: MainspringPose | null = null;
+  /** The mainspring's last pose drawn, and its geometry, so that an
+   *  unchanged pose is not computed again. The geometry is given to the
+   *  renderer at every frame: views that share a renderer share the mesh
+   *  (webgl/shared.ts), and another view's model may have drawn its own
+   *  pose since. */
+  private drawn: { pose: MainspringPose; geometry: MeshGeometry } | null = null;
   /** The article's twist, in place of the balance's clock; `null` off it. */
   private twisted: Twist | null = null;
   /** The barrel's angle when the running spring was wound, or null off
@@ -1056,14 +1059,12 @@ export class WatchModel implements Model<WatchModelState> {
       this.woundAt === null
         ? this.story.pose(now)
         : runningSpringPose(this.woundAt, this.barrelAngle(beats));
-    const drawn = this.drawn;
-    if (drawn?.arbor !== pose.arbor || drawn.wind !== pose.wind) {
-      renderer.updateMesh(
-        this.watch.mainspring,
-        this.motion.mainspringGeometry(pose),
-      );
-      this.drawn = pose;
+    let drawn = this.drawn;
+    if (drawn?.pose.arbor !== pose.arbor || drawn.pose.wind !== pose.wind) {
+      drawn = { pose, geometry: this.motion.mainspringGeometry(pose) };
+      this.drawn = drawn;
     }
+    renderer.updateMesh(this.watch.mainspring, drawn.geometry);
     return this.motion.matrices(time, swing, beats, pose.arbor);
   }
 

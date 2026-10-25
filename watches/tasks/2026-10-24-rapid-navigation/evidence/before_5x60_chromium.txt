@@ -1,0 +1,67 @@
+  1:0 -> 3:3 (ArrowRight)
+  3:3 -> 5:0 (ArrowRight)
+  5:0 -> 6:0 (ArrowRight)
+  6:0 -> 7:1 (ArrowRight)
+  7:1 -> 7:6 (ArrowRight)
+  7:6 -> 8:4 (ArrowRight)
+  8:4 -> 9:3 (ArrowRight)
+  9:3 -> 10:3 (ArrowRight)
+  10:3 -> 11:1 (ArrowRight)
+  11:1 -> 11:6 (ArrowRight)
+  11:6 -> 12:0 (ArrowRight)
+  12:0 -> 11:4 (ArrowLeft)
+  11:4 -> 10:6 (ArrowLeft)
+  10:6 -> 10:1 (ArrowLeft)
+  10:1 -> 9:1 (ArrowLeft)
+  9:1 -> 8:2 (ArrowLeft)
+  8:2 -> 7:4 (ArrowLeft)
+  7:4 -> 6:3 (ArrowLeft)
+  6:3 -> 5:3 (ArrowLeft)
+  5:3 -> 4:2 (ArrowLeft)
+  4:2 -> 3:1 (ArrowLeft)
+  3:1 -> 1:0 (ArrowLeft)
+FAIL 1:0 -> 3:3 (ArrowRight x5): a frame at 3:1 (from 3:0): balance 1, balance screw 1, balance screw 1 slot, balance screw 2, balance screw 2 slot, balance screw 3, balance screw 3 slot, balance screw 4, balance screw 4 slot, barrel 1, barrel 2, barrel 3, barrel arbor square (added), barrel wheel paper disc, case band, centre pivot 1, centre wheel 1, centre wheel 2, centre wheel 3, centre wheel 3 seam (added), centre wheel 4, centre wheel paper disc, chapter ring 1, crown, decal on chapter ring 1, escape wheel 1, escape wheel 2, escape wheel 3, escape wheel 3 seam (added), escape wheel 4, fourth wheel 1, fourth wheel 2, fourth wheel 3, fourth wheel 3 seam (added), fourth wheel 4, fourth wheel paper disc, hairspring 3, hour hand 1, impulse jewel 1, lug 2, lug 3, lug 5, lug 6, minute hand 1, pallet fork 1, pallet fork 2, roller 1, seconds hand 1, seconds hand 2, strap 1, strap 4, third wheel 1, third wheel 2, third wheel 3, third wheel 3 seam (added), third wheel 4, third wheel paper disc
+FAIL 6:0 -> 7:1 (ArrowRight x5): a frame at 7:1 (from 7:0): seconds hand 1, seconds hand 2
+FAIL 7:1 -> 7:6 (ArrowRight x5): a frame at 7:6 (from 7:5): escape pinion span, fourth wheel span
+FAIL 7:6 -> 8:4 (ArrowRight x5): a frame at 8:2 (from 8:1): fourth wheel drive head, fourth wheel drive shaft
+FAIL 7:6 -> 8:4 (ArrowRight x5): a frame at 8:3 (from 8:2): fourth wheel drive head, fourth wheel drive shaft
+FAIL 7:6 -> 8:4 (ArrowRight x5): a frame at 8:4 (from 8:3): fourth wheel drive head, fourth wheel drive shaft
+FAIL 8:4 -> 9:3 (ArrowRight x5): a frame at 9:1 (from 9:0): balance 1, balance screw 1, balance screw 1 slot, balance screw 2, balance screw 2 slot, balance screw 3, balance screw 3 slot, balance screw 4, balance screw 4 slot, case band, centre pivot 1, centre wheel 1, centre wheel 2, centre wheel 4, centre wheel drive head, centre wheel drive shaft, centre wheel paper disc, chapter ring 1, crown, decal on chapter ring 1, escape wheel 1, escape wheel 2, escape wheel 3, escape wheel 3 seam (added), escape wheel 4, fourth wheel 1, fourth wheel 2, fourth wheel 3, fourth wheel 3 seam (added), fourth wheel 4, fourth wheel paper disc, hairspring 1, hairspring 2, hairspring 2 seam (added), hairspring 3, hairspring stud (added), impulse jewel 1, lug 2, lug 3, lug 5, lug 6, minute hand 1, pallet fork 1, pallet fork 2, roller 1, seconds hand 1, seconds hand 2, strap 1, strap 4, third wheel 1, third wheel 2, third wheel 3, third wheel 3 seam (added), third wheel 4, third wheel paper disc
+FAIL 8:4 -> 9:3 (ArrowRight x5): a frame at 9:2 (from 9:1): balance 1, balance screw 1, balance screw 1 slot, balance screw 2, balance screw 2 slot, balance screw 3, balance screw 3 slot, balance screw 4, balance screw 4 slot, case band, centre pivot 1, centre wheel 1, centre wheel 2, centre wheel 4, centre wheel drive head, centre wheel drive shaft, centre wheel paper disc, chapter ring 1, crown, decal on chapter ring 1, escape wheel 1, escape wheel 2, escape wheel 3, escape wheel 3 seam (added), escape wheel 4, fourth wheel 1, fourth wheel 2, fourth wheel 3, fourth wheel 3 seam (added), fourth wheel 4, fourth wheel paper disc, hairspring 1, hairspring 2, hairspring 2 seam (added), hairspring 3, hairspring stud (added), impulse jewel 1, lug 2, lug 3, lug 5, lug 6, minute hand 1, pallet fork 1, pallet fork 2, roller 1, seconds hand 1, seconds hand 2, strap 1, strap 4, third wheel 1, third wheel 2, third wheel 3, third wheel 3 seam (added), third wheel 4, third wheel paper disc
+FAIL 8:4 -> 9:3 (ArrowRight x5): a frame at 9:3 (from 9:2): centre wheel drive head, centre wheel drive shaft
+FAIL 11:1 -> 11:6 (ArrowRight x5): a frame at 11:4 (from 11:3): hour hand 1
+FAIL 11:1 -> 11:6 (ArrowRight x5): a frame at 11:5 (from 11:4): hour hand 1, minute hand 1
+FAIL 11:1 -> 11:6 (ArrowRight x5): a frame at 11:6 (from 11:5): hour hand 1, minute hand 1
+FAIL 11:1 -> 11:6 (ArrowRight x5): a frame at 11:6 (from 11:5): minute hand 1
+FAIL 12:0 -> 11:4 (ArrowLeft x5): a frame at 11:7 (from 11:8): hour hand 1, minute hand 1
+FAIL 12:0 -> 11:4 (ArrowLeft x5): a frame at 11:6 (from 11:7): hour hand 1, minute hand 1
+FAIL 12:0 -> 11:4 (ArrowLeft x5): a frame at 11:5 (from 11:6): hour hand 1, minute hand 1
+FAIL 12:0 -> 11:4 (ArrowLeft x5): a frame at 11:4 (from 11:5): hour hand 1, minute hand 1
+FAIL 10:6 -> 10:1 (ArrowLeft x5): a frame at 10:4 (from 10:5): hour hand 1
+FAIL 10:6 -> 10:1 (ArrowLeft x5): a frame at 10:3 (from 10:4): hour hand 1, hour wheel 1, hour wheel 1 seam (added), hour wheel 2, hour wheel paper disc, minute wheel 3, minute wheel 3 seam (added)
+FAIL 10:6 -> 10:1 (ArrowLeft x5): a frame at 10:2 (from 10:3): hour hand 1, hour wheel 1, hour wheel 1 seam (added), hour wheel 2, hour wheel paper disc, minute wheel 1, minute wheel 2, minute wheel 3, minute wheel 3 seam (added), minute wheel 4, minute wheel paper disc
+FAIL 10:6 -> 10:1 (ArrowLeft x5): a frame at 10:1 (from 10:2): hour hand 1, hour wheel 1, hour wheel 1 seam (added), hour wheel 2, hour wheel paper disc, minute wheel 1, minute wheel 2, minute wheel 3, minute wheel 3 seam (added), minute wheel 4, minute wheel paper disc
+FAIL 10:6 -> 10:1 (ArrowLeft x5): a frame at 10:1 (from 10:2): hour wheel 1, hour wheel 1 seam (added), hour wheel 2, hour wheel paper disc, minute wheel 1, minute wheel 2, minute wheel 3, minute wheel 3 seam (added), minute wheel 4, minute wheel paper disc
+FAIL 10:1 -> 9:1 (ArrowLeft x5): a frame at 9:4 (from 10:0): cannon pinion 1, cannon pinion 1 seam (added), one-step hour arbor, one-step hour body, one-step hour seam (added), one-step hour wheel paper disc
+FAIL 10:1 -> 9:1 (ArrowLeft x5): a frame at 9:3 (from 9:4): cannon pinion 1, cannon pinion 1 seam (added), one-step hour arbor, one-step hour body, one-step hour seam (added), one-step hour wheel paper disc
+FAIL 10:1 -> 9:1 (ArrowLeft x5): a frame at 9:2 (from 9:3): cannon pinion 1, cannon pinion 1 seam (added), one-step hour arbor, one-step hour body, one-step hour seam (added), one-step hour wheel paper disc
+FAIL 10:1 -> 9:1 (ArrowLeft x5): a frame at 9:1 (from 9:2): balance 1, balance screw 1, balance screw 1 slot, balance screw 2, balance screw 2 slot, balance screw 3, balance screw 3 slot, balance screw 4, balance screw 4 slot, barrel 1, barrel wheel paper disc, cannon pinion 1, cannon pinion 1 seam (added), case band, centre pivot 1, centre wheel 1, centre wheel 2, centre wheel 3, centre wheel 3 seam (added), centre wheel 4, centre wheel paper disc, chapter ring 1, crown, decal on chapter ring 1, escape wheel 1, escape wheel 2, escape wheel 3, escape wheel 3 seam (added), escape wheel 4, fourth wheel 1, fourth wheel 2, fourth wheel 3, fourth wheel 3 seam (added), fourth wheel 4, fourth wheel paper disc, hairspring 1, hairspring 2, hairspring 2 seam (added), hairspring 3, hairspring stud (added), impulse jewel 1, lug 2, lug 3, lug 5, lug 6, minute hand 1, one-step hour arbor, one-step hour body, one-step hour seam (added), one-step hour wheel paper disc, pallet fork 1, pallet fork 2, roller 1, seconds hand 1, seconds hand 2, strap 1, strap 4, third wheel 1, third wheel 2, third wheel 3, third wheel 3 seam (added), third wheel 4, third wheel paper disc
+FAIL 10:1 -> 9:1 (ArrowLeft x5): a frame at 9:1 (from 9:2): balance 1, balance screw 1, balance screw 1 slot, balance screw 2, balance screw 2 slot, balance screw 3, balance screw 3 slot, balance screw 4, balance screw 4 slot, barrel 1, barrel wheel paper disc, case band, centre pivot 1, centre wheel 1, centre wheel 2, centre wheel 3, centre wheel 3 seam (added), centre wheel 4, centre wheel paper disc, chapter ring 1, crown, decal on chapter ring 1, escape wheel 1, escape wheel 2, escape wheel 3, escape wheel 3 seam (added), escape wheel 4, fourth wheel 1, fourth wheel 2, fourth wheel 3, fourth wheel 3 seam (added), fourth wheel 4, fourth wheel paper disc, hairspring 1, hairspring 2, hairspring 2 seam (added), hairspring 3, hairspring stud (added), impulse jewel 1, lug 2, lug 3, lug 5, lug 6, minute hand 1, pallet fork 1, pallet fork 2, roller 1, seconds hand 1, seconds hand 2, strap 1, strap 4, third wheel 1, third wheel 2, third wheel 3, third wheel 3 seam (added), third wheel 4, third wheel paper disc
+FAIL 9:1 -> 8:2 (ArrowLeft x5): a frame at 8:5 (from 9:0): mainspring rest (added), mainspring stud (added)
+FAIL 9:1 -> 8:2 (ArrowLeft x5): a frame at 8:4 (from 8:5): barrel 2, barrel 3, barrel arbor square (added), mainspring rest (added), mainspring stud (added)
+FAIL 9:1 -> 8:2 (ArrowLeft x5): a frame at 8:3 (from 8:4): barrel 2, barrel 3, barrel arbor square (added), mainspring rest (added), mainspring stud (added)
+FAIL 9:1 -> 8:2 (ArrowLeft x5): a frame at 8:2 (from 8:3): barrel 2, barrel 3, barrel arbor square (added), mainspring rest (added), mainspring stud (added)
+FAIL 9:1 -> 8:2 (ArrowLeft x5): a frame at 8:2 (from 8:3): barrel 2, barrel 3, barrel arbor square (added)
+FAIL 8:2 -> 7:4 (ArrowLeft x5): a frame at 8:0 (from 8:1): third wheel 1, third wheel 2, third wheel 4, third wheel drive head, third wheel drive shaft, third wheel paper disc
+FAIL 8:2 -> 7:4 (ArrowLeft x5): a frame at 7:6 (from 8:0): fourth wheel 3, fourth wheel 3 seam (added), third wheel 1, third wheel 2, third wheel 4, third wheel drive head, third wheel drive shaft, third wheel paper disc
+FAIL 8:2 -> 7:4 (ArrowLeft x5): a frame at 7:5 (from 7:6): fourth wheel 3, fourth wheel 3 seam (added), third wheel 1, third wheel 2, third wheel 4, third wheel drive head, third wheel drive shaft, third wheel paper disc
+FAIL 8:2 -> 7:4 (ArrowLeft x5): a frame at 7:4 (from 7:5): fourth wheel 3, fourth wheel 3 seam (added), seconds hand 1, seconds hand 2, third wheel 1, third wheel 2, third wheel 4, third wheel drive head, third wheel drive shaft, third wheel paper disc
+FAIL 8:2 -> 7:4 (ArrowLeft x5): a frame at 7:4 (from 7:5): fourth wheel 3, fourth wheel 3 seam (added), seconds hand 1, seconds hand 2
+FAIL 7:4 -> 6:3 (ArrowLeft x5): a frame at 6:3 (from 7:0): escape pinion span, fourth wheel span
+FAIL 6:3 -> 5:3 (ArrowLeft x5): a frame at 5:3 (from 5:4): fourth wheel 4, seconds hand 1, seconds hand 2
+FAIL 5:3 -> 4:2 (ArrowLeft x5): a frame at 4:3 (from 5:0): escape wheel drive head, escape wheel drive shaft
+FAIL 5:3 -> 4:2 (ArrowLeft x5): a frame at 4:2 (from 4:3): escape wheel 1, escape wheel 2, escape wheel 4, escape wheel drive head, escape wheel drive shaft, impulse jewel 1, pallet fork 1, pallet fork 2, roller 1
+FAIL 5:3 -> 4:2 (ArrowLeft x5): a frame at 4:2 (from 4:3): escape wheel 1, escape wheel 2, escape wheel 4, escape wheel drive head, escape wheel drive shaft
+FAIL 4:2 -> 3:1 (ArrowLeft x5): a frame at 3:2 (from 3:3): balance 1, balance screw 1, balance screw 1 slot, balance screw 2, balance screw 2 slot, balance screw 3, balance screw 3 slot, balance screw 4, balance screw 4 slot, hairspring 3
+FAIL 4:2 -> 3:1 (ArrowLeft x5): a frame at 3:1 (from 3:2): balance 1, balance screw 1, balance screw 1 slot, balance screw 2, balance screw 2 slot, balance screw 3, balance screw 3 slot, balance screw 4, balance screw 4 slot, hairspring 3
+44 failures

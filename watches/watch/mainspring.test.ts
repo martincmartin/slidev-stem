@@ -22,6 +22,7 @@ import {
   lapseProgress,
   linePose,
   stagePose,
+  storyRuns,
 } from "./mainspring.ts";
 import { mainspringPoints } from "./model.ts";
 
@@ -187,4 +188,11 @@ test("a jump, or a step from a slide without the story, is at its stage at once"
   clock.show(null, 30, true);
   assert.equal(clock.runs(30), null);
   assert.throws(() => new MainspringClock(21601), /whole number of teeth/);
+});
+
+test("the watch runs from the barrel on, not before", () => {
+  assert.deepEqual(
+    MAINSPRING_STAGES.filter((stage) => storyRuns(stage)),
+    ["barrel", "run down"],
+  );
 });

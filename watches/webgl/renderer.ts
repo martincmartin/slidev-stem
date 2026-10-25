@@ -1026,9 +1026,11 @@ export class Renderer {
 
   /** A dynamic mesh of the scene takes new geometry (the spring at the
    *  balance's angle). The mesh itself does not change: this renderer keeps
-   *  the geometry. */
+   *  the geometry. The geometry that the mesh has already, the same object,
+   *  is not uploaded again. */
   updateMesh(mesh: Mesh, geometry: MeshGeometry): void {
     check(!this.disposed, "the renderer is disposed");
+    if (this.geometry.get(mesh) === geometry) return;
     check(this.geometry.has(mesh), `${mesh.name} is not in the scene`);
     check(mesh.dynamic, `${mesh.name} is not dynamic`);
     checkGeometry(geometry, mesh.name);
