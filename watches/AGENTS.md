@@ -18,3 +18,5 @@ Before you…
 - choose what the next slide says: `docs/rough-slides.md`.
 - update packages or remove a dependency override: `docs/packages.md`, and
   `../docs/talks.md`.
+- sort a correction, or tag the talk: `docs/watchlist.md`, with the
+  `learn-from-corrections` skill.

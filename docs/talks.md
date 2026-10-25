@@ -179,6 +179,10 @@ copy, delete it. The tags keep it.
   `pnpm install --frozen-lockfile && uv sync --locked && pnpm build`, and run
   `uv run ../tools/validate.py --print`. Before you tag, also do the milestone
   review of the `learn-from-corrections` skill.
+- **Tag a milestone.** At the end of a phase of work (for example, a part of
+  the talk is complete), make an annotated tag, `milestone/<talk>/<YYYY-MM-DD>`,
+  with the date. Say what is complete in the tag message. Do the same checks
+  and the same milestone review as before a talk is given.
 - **Rebuild the version that you gave.** Make a worktree at its tag:
   `git worktree add ../watches-given given/watches/2026-10-15`. Then, in the
   worktree's talk directory, run `pnpm install --frozen-lockfile` and

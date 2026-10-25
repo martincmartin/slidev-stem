@@ -19,3 +19,5 @@ the two lists in step.
   Check each claim before it goes on a slide
 - [packages.md](packages.md): dependency constraints and the UnoCSS build
   override
+- [watchlist.md](watchlist.md): the last milestone, and the corrections that
+  may come back but have no lesson yet
