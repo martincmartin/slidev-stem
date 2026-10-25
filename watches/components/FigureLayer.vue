@@ -19,7 +19,8 @@
 // from there, and the thumb follows it back to rest, in a quarter of the
 // balance's period, ready to catch it again.
 // `wind` holds the Mainspring slide's story at a point from the bare spring
-// through the key's turns.
+// through the key's turns; the spring winds at an even rate with the slider,
+// with no rests (`windSliderTime`).
 //
 // THE BUTTON. `release` shows the click before the figure's until the
 // reader presses it; then it plays the step to the figure's click, as the
@@ -51,7 +52,7 @@ import { boardState } from "../watch/board.ts";
 import type { BoardTarget } from "../watch/board.ts";
 import { jewelStrikes } from "../watch/callouts.ts";
 import { sharedStage, WATCH } from "../watch/instance.ts";
-import { placeFor, storyRuns } from "../watch/mainspring.ts";
+import { storyRuns, windSliderTime } from "../watch/mainspring.ts";
 import { twistAngle, WatchModel } from "../watch/model.ts";
 import type { WatchModelState } from "../watch/model.ts";
 import { moveOf } from "../watch/navigation.ts";
@@ -126,8 +127,8 @@ function letGo(): void {
 }
 
 /** Story time (s) on the Mainspring slide's line, for `wind`: from the bare
- *  spring to the end of the key's turns. */
-const windTime = computed(() => wind.value * placeFor("wound"));
+ *  spring to the end of the key's turns, with no rests. */
+const windTime = computed(() => windSliderTime(wind.value));
 /** The click whose state shows: the figure's, or, with the `release`
  *  button, the click before it until the reader presses the button. */
 const clicks = computed(() =>

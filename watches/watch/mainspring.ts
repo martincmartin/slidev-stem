@@ -150,6 +150,12 @@ function smoothstep(fraction: number): number {
   return clamped * clamped * (3 - 2 * clamped);
 }
 
+/** The fraction whose smoothstep is `value`, both 0 to 1. */
+function smoothstepInverse(value: number): number {
+  const clamped = Math.min(Math.max(value, 0), 1);
+  return 0.5 - Math.sin(Math.asin(1 - 2 * clamped) / 3);
+}
+
 /** A critically damped spring's return, from 0 to 1, with no speed at the
  *  start or the end, scaled to reach 1 at `fraction` 1. */
 function uncoiled(fraction: number): number {
@@ -202,6 +208,21 @@ export function linePose(time: number): MainspringPose {
     start += segment.seconds;
   }
   return { arbor, wind, key: 0 };
+}
+
+/** Story time (s) on the line at `fraction` (0 to 1) of the article's `wind`
+ *  slider: the key's turns, from the first to the end of the last. The key
+ *  shows the whole time, with no fade, and the spring winds at an even rate
+ *  with the slider. The talk's rests and each turn's ease show a hand that
+ *  stops turning the key, and on the slider, the reader's hand turns it. */
+export function windSliderTime(fraction: number): number {
+  const turns = KEY_TURNS * Math.min(Math.max(fraction, 0), 1);
+  const done = Math.min(Math.floor(turns), KEY_TURNS - 1);
+  return (
+    FADE_SECONDS +
+    done * (KEY_TURN_SECONDS + KEY_REST_SECONDS) +
+    KEY_TURN_SECONDS * smoothstepInverse(turns - done)
+  );
 }
 
 /** How far through the time-lapse, from 0 to 1, `seconds` after its wait

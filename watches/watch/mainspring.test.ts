@@ -23,6 +23,7 @@ import {
   linePose,
   stagePose,
   storyRuns,
+  windSliderTime,
 } from "./mainspring.ts";
 import { mainspringPoints } from "./model.ts";
 
@@ -68,6 +69,18 @@ test("the key fades in, turns a third of a turn three times with a pause after e
   assert.equal(KEY_SECONDS, 2 * FADE_SECONDS + 3 * cycle);
   // the stud holds the outer end: the spring winds as the arbor turns
   assert.equal(into(KEY_SECONDS).wind, WOUND);
+});
+
+test("the article's wind slider shows the key the whole time, and winds at an even rate, with no rests", () => {
+  const pose = (fraction: number) => linePose(windSliderTime(fraction));
+  for (let step = 0; step <= 60; step++) {
+    const { wind, key } = pose(step / 60);
+    assert.equal(key, 1);
+    assert.ok(
+      Math.abs(wind - (WOUND * step) / 60) < 1e-6,
+      `${String(wind)} at step ${String(step)}`,
+    );
+  }
 });
 
 test("the mainspring keeps its length wound, with its coils drawn in to the arbor", () => {

@@ -208,6 +208,14 @@ board holds the SVG's time that the slider gives (`DivingBoard.vue`'s
 `scrub`), and the mainspring's clock holds a time on its line
 (`MainspringClock.hold`, `WatchModel.scrub`).
 
+**The `wind` slider winds at an even rate.** The key shows the whole time,
+at both ends too, with no fade, and the spring's wind follows the slider,
+with no rests and no ease at each third of a turn (`windSliderTime`). In
+the talk,
+the rests show a hand that stops turning the key. On the slider, the
+reader's hand turns it, and a pause that the reader did not make looks like
+a fault.
+
 **The twist is a slider that the reader lets go.** The Hairspring slide's
 curl and its edit are one click in the talk, but two figures in the
 article: the `curl` slider curls the board into the hairspring at rest, and
