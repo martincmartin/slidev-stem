@@ -1403,8 +1403,6 @@ hand. It turns clockwise, twice a day.
 -->
 
 <!--
-
-
 [click] 12:1 doable.
 
 [click] Also runs backwards
@@ -1510,46 +1508,45 @@ faster than real time each segment runs.
 [figure 0-8 play: A tour of the watch's train, from the motion works to the
 balance wheel, one touch at a time.]
 
-The motion works, a day a minute: the minute pinion drives the hour wheel,
-which turns once in thirty seconds.
+The hour hands are driven by a pair of gears totaling 12:1.
 
-[click] The barrel, with the mainspring inside. It turns once in six hours.
+[click] The wound mainspring drives the barrel
 
-[click] Down low, from the side: the barrel's teeth drive the centre pinion.
+[click] The barrel drives the _center wheel_ holding the minute hand.
 
-[click] The centre wheel drives the third pinion. The next touch is behind
-it.
+[click] The centre wheel drives the _third wheel_.
 
-[click] The third wheel drives the fourth pinion.
+[click] The third wheel drives the _fourth wheel_, which holds the second hand.
 
-[click] The fourth wheel, the second hand's own, drives the escape pinion, at
-twice its speed: once in fifteen seconds.
+[click] The fourth wheel drives the _escape wheel_.
 
-[click] Real time now. The escape wheel's teeth on the pallet's stones.
+[click] The escape wheel wants to turn, but the _pallet_ stops it.  Once a second, a tooth escapes.
 
-[click] The impulse jewel in the fork.
+[click] The pallet moves when the _impulse jewel_ hits it, creating the ticking sound of the watch.
 
-[click] The balance wheel and its hairspring, where we started.
+[click] The balance wheel and the hairspring, swing back and forth, setting the rate of the whole watch.
 -->
 
 <!--
-The whole train, one touch at a time. The motion works, a day a minute: the hour wheel turns once in 30 seconds, on the minute pinion.
+That's how a mechanical watch works!
 
-[click] The barrel, and the spring inside it. Six hours a turn.
+Two gears run the hour hand.
 
-[click] Down low, from the side: the barrel's teeth on the centre pinion.
+[click] Mainspring drives barrel.
 
-[click] Back up: the centre wheel on the third pinion. The next touch is behind it.
+[click] Barrel drives center wheel & minute hand.
 
-[click] The third wheel on the fourth pinion.
+[click] Center wheel drives third wheel.
 
-[click] The fourth wheel, the seconds hand's, on the escape pinion: twice its speed, once in 15 seconds.
+[click] Third wheel drives fourth wheel & second hand.
 
-[click] Real time now. The escape wheel on the pallet's stones.
+[click] Fourth weel drives escape wheel.
 
-[click] The impulse jewel in the fork.
+[click] Escape wheel wants to turn, pallet stops it.  Once/sec, a tooth escapes.
 
-[click] The balance wheel and its hairspring, where we started.
+[click] Impulse jewel hits pallet, ticking.
+
+[click] Set rate
 -->
 
 ---
