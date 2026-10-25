@@ -1118,8 +1118,8 @@ history: "c. 1430"
 One spring to power them all
 
 <div class="ms-sentence">
-  <div class="ms-paragraph text-dims">Not back-and-forth<br>One slow unwind</div>
-  <div v-click="1" class="ms-paragraph text-dims">Winding causes tension</div>
+  <div class="ms-paragraph text-dims">Not back-and-forth,<br>one slow unwind</div>
+  <div v-click="1" class="ms-paragraph text-dims">Winding causes tension,<br>axle only turns one way</div>
   <div v-click="3" class="ms-paragraph text-dims">Unwinding drives barrel</div>
   <div v-click="4" class="ms-paragraph text-dims">6 hours in 6 seconds</div>
 </div>
@@ -1158,59 +1158,72 @@ One spring to power them all
 
 <!-- narration
 
-This is a spiral spring, like the hairspring.  But instead of swinging back and
-forth, it does one slow unwind over a day or two.
-
-In the illustration below, it's at rest.
-
 [figure: The bare mainspring: a long ribbon of steel, coiled round its arbor,
 at rest.]
+
+This is a spiral spring, like the hairspring.  But instead of swinging back and
+forth, it does one slow unwind over a day or two. In the illustration above,
+it's at rest.
+
+Below, the outer end is held in place.  Drag the slider to wind it up.  The
+spring keeps its length, so its coils draw in toward the center.
 
 [click]
 
 [figure: The mainspring on its arbor. A stud holds its outer end, and a
 key turns the arbor. A slider winds it.]
 
-Hold the outer end still (the small block is a stud), and turn the arbor with
-a key. The spring keeps its length, so its coils draw in toward the arbor.
-Wind the spring away from its rest shape, the dashed line, and it pushes
-back, as the hairspring does. Drag the slider to wind it up.
+When wound away from its rest shape, the dashed line, it pushes back, as the
+hairspring does.  The axle (_arbor_) can only turn one way.  To unwid the
+mainspring, let go of the outer end by pressing the button.
 
 [click]
 
 [figure: The wound mainspring, its outer end held by the stud. A button lets
 go of the outer end.]
 
-Now let go of the outer end: press the button. The stud is gone, and the
-outer end swings round until the spring lies on its rest shape again. That
-fling is the energy that the key put in.
+The block is gone, and the outer end swings round until the spring lies on its
+rest shape again. That fling is the energy that the winding put in.
+
+A watch uses that force by attaching the outer end to a wheel, the _barrel_.
 
 [click]
 
 [figure 3-4: The mainspring in its barrel, driving the whole movement. The
 next step runs six hours in six seconds.]
 
-In a watch, the mainspring lives in a drum, the _barrel_. Its outer end hooks
-to the barrel's wall, and its inner end to the arbor. The barrel has teeth,
-and they drive the train that we built. Wind the arbor, and the watch starts:
-the balance and the escapement let the train turn one tick at a time.
+The barrell's teeth drive the gear train that we built.  The wound mainspring,
+pushing the barrel, whose teeth drive the gear train we built, is the "hidden
+mechanism" we mentioned earlier.
 
-[click] Now the arbor is held, so the spring can let down only by turning the
-barrel. Step the figure forward, and six hours pass in six seconds. The
-barrel turns once, the minute hand six times, and the coils move back out to
-the wall. When the spring is let down, the watch stops.
+[click] The arbor can only turn one way, so only winds the spring up.  So the
+spring can unwind only by turning the barrel. Step the figure forward using the
+controls under it, and six hours pass in six seconds. The barrel turns once, the
+minute hand six times, and the coils move back out to the wall. When the spring
+is completely unwound, the watch stops.
+
 -->
 
 <!--
-The power comes from a spring too: the mainspring. A long ribbon of steel, coiled round an arbor. It is not the hairspring: it does not swing back and forth. It unwinds once, slowly, over days.
+- Like the Hairspring
 
-[click] A stud holds the outer end: it fades in and flashes. The dashed line is the spring's rest shape. A key fades in on the arbor, and turns it, a third of a turn at a time, three times. The spring winds up: it keeps its length, so its coils draw in toward the arbor. Winding causes tension: wind it away from rest, and it pushes back, as the hairspring does.
+[click] Hold the outside end.
 
-[click] Let go of the outer end: the stud flashes, and is gone. At once the outer end swings round, while the arbor still holds the inner end, until the spring is back on its rest shape.
+Keeps its length.
 
-[click] Put it in the barrel: the outer end hooks to the barrel's wall. The camera zooms out to the whole movement, as tall as the slide, and the barrel and the rest of the watch fade in. The barrel and the centre pinion flash: the barrel's teeth drive the train that we built. It is still: the spring is let down. The key winds it, and the watch starts as soon as the key starts to turn. The balance and the escapement let the train turn one tick at a time. Unwinding drives the barrel.
+Axle only turns one way.
 
-[click] The arbor is held now, so the spring can only let down by turning the barrel. Six hours in six seconds: the barrel turns once, the minute hand six times, and the coils move back out to the wall. When the spring is let down, the watch stops.
+[click] Only way to unwind: outside end.
+
+[click] Attach to inside of barrel.
+
+Barrel's teeth drive the gear train.
+
+Currently too slow to see
+
+[click] Time lapse.
+
+Barrel turns once, the minute hand six times, and the mainspring moves out to the wall.
 -->
 
 ---
