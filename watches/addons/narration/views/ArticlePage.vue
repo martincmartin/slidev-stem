@@ -285,6 +285,7 @@ onBeforeUnmount(() => {
           :width="figureWidth"
           :height="figureHeight"
           :paused-by-page="pausedAll"
+          :reduced-motion="reducedMotion"
           @labels="(box: Box | null) => setLabels(block, box)"
         />
       </template>

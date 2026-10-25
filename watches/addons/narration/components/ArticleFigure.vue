@@ -12,7 +12,11 @@
 // narration of its step.
 //
 // The reader can pause a figure that moves or plays; "pause all" on the
-// page pauses every one. A still figure has no pause button.
+// page pauses every one. A still figure has no pause button. A paused
+// figure's time stands (`FigureClock`, ../clock.ts). A step in it still
+// moves: the time runs to the end of the step's change (`busyUntil`), and
+// stands there. For a reader who asks for reduced motion, a step in a paused
+// figure is a jump (`jumps`).
 //
 // THE CROP. A figure of a picture is cropped to the picture's box (the
 // talk's), widened to hold the labels: the elements with `in-figure` that
@@ -34,6 +38,7 @@ import {
   useTemplateRef,
   watch,
 } from "vue";
+import { FigureClock } from "../clock.ts";
 import { FIGURE } from "../figure.ts";
 import type { Box, FigureControl } from "../figure.ts";
 import type { FigureBlock } from "../plan.ts";
@@ -52,6 +57,8 @@ const props = defineProps<{
   height: number;
   /** "Pause all". */
   pausedByPage: boolean;
+  /** Whether the reader asks for reduced motion. */
+  reducedMotion: boolean;
   /** The labels' box, in slide px, over the figures that share this one's
    *  crop, or `null`: none measured yet. */
   labels: Box | null;
@@ -76,7 +83,22 @@ const paused = computed(() => props.pausedByPage || pausedByReader.value);
 const busyUntil = ref(0);
 const controls = shallowRef<readonly FigureControl[]>([]);
 const still = ref(false);
-provide(FIGURE, { clicks, near, paused, busyUntil, controls, still });
+const clock = new FigureClock();
+const now = (): number => clock.time(performance.now());
+/** Whether the figure's time runs: while it plays, and in a run to
+ *  `busyUntil`. */
+const moving = ref(true);
+const jumps = computed(() => paused.value && props.reducedMotion);
+provide(FIGURE, {
+  clicks,
+  near,
+  now,
+  moving,
+  jumps,
+  busyUntil,
+  controls,
+  still,
+});
 const pausable = computed(() => props.figure.play || !still.value);
 
 /** px: room around a label. */
@@ -132,6 +154,8 @@ let timer: ReturnType<typeof setTimeout> | undefined;
 /** Watches the slide while it loads, to measure its labels when they come. */
 let mutations: MutationObserver | undefined;
 let measureFrame = 0;
+/** Ends a paused figure's run to `busyUntil`. */
+let runEnd: ReturnType<typeof setTimeout> | undefined;
 /** ms: how long the slide is watched for its labels. */
 const LABELS_WAIT_MS = 4000;
 
@@ -169,11 +193,21 @@ function measureLabels(): void {
   emit("labels", box);
 }
 
+/** Set `moving` from the clock, and again when its run ends. */
+function trackClock(): void {
+  clearTimeout(runEnd);
+  const remaining = clock.remaining(performance.now());
+  moving.value = remaining > 0;
+  if (remaining > 0 && remaining < Number.POSITIVE_INFINITY) {
+    runEnd = setTimeout(trackClock, remaining);
+  }
+}
+
 /** A playing figure's next step: after the change at its click ends. */
 function schedule(): void {
   clearTimeout(timer);
   if (!props.figure.play || !near.value || paused.value) return;
-  const wait = Math.max(0, busyUntil.value - performance.now()) + DWELL_MS;
+  const wait = Math.max(0, busyUntil.value - now()) + DWELL_MS;
   timer = setTimeout(() => {
     step.value = (step.value + 1) % props.steps.length;
   }, wait);
@@ -210,6 +244,21 @@ onBeforeUnmount(() => {
   mutations?.disconnect();
   cancelAnimationFrame(measureFrame);
   clearTimeout(timer);
+  clearTimeout(runEnd);
+});
+// at once, before the slide's layers mount and read the time
+watch(
+  paused,
+  (pause) => {
+    if (pause) clock.pause(performance.now());
+    else clock.play(performance.now());
+    trackClock();
+  },
+  { immediate: true },
+);
+watch(busyUntil, (end) => {
+  clock.runTo(performance.now(), end);
+  trackClock();
 });
 watch([step, near, paused, busyUntil], schedule);
 </script>

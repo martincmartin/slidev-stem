@@ -6,18 +6,26 @@
 // global-bottom.vue draws this in place of the live layer when it finds the
 // figure (`FIGURE`). docs/article.md has the rules and the reasons.
 //
-// A change of the figure's click is a step (one click either way) or a jump,
-// as in the talk (watch/navigation.ts). A step forward flashes, as in the
-// talk: the reader asked for it, and is looking at the figure. At every
-// click, the figure marks the pieces that its run flashed (`figureMarks`,
-// watch/article.ts): a steady flash, for a reader whose eyes are on the
-// words.
+// A change of the figure's click is a step, forward or back by the clicks'
+// order (`moveTo`), with the moves of a step in the talk
+// (watch/navigation.ts), from whatever shows. Not as in the talk, a step
+// past a neighbour moves too: the reader asked for that click. A step
+// forward flashes, as in the talk: the reader is looking at the figure. All
+// of it runs on the figure's time (`figure.now`), which stands while the
+// figure is paused. So a step in a paused figure starts from the picture
+// that shows; the figure's time runs to the end of the step's change
+// (`busyUntil`: the watch's and the board's), and stands again. While
+// `figure.jumps`, a step is a jump. A slider's change is drawn at once. At
+// every click, the figure marks the pieces that its run flashed
+// (`figureMarks`, watch/article.ts): a steady flash, for a reader whose eyes
+// are on the words.
 //
 // THE SLIDERS (a slide's `article` settings). `curl` holds the diving board
 // at a point of its curl. `twist` winds the hairspring from rest, by up to
 // the balance's amplitude, and holds it; when the reader lets go, it swings
 // from there, and the thumb follows it back to rest, in a quarter of the
-// balance's period, ready to catch it again.
+// balance's period, ready to catch it again. In a paused figure, the
+// hairspring goes back to rest, and stands there.
 // `wind` holds the Mainspring slide's story at a point from the bare spring
 // through the key's turns; the spring winds at an even rate with the slider,
 // with no rests (`windSliderTime`).
@@ -55,7 +63,7 @@ import { sharedStage, WATCH } from "../watch/instance.ts";
 import { storyRuns, windSliderTime } from "../watch/mainspring.ts";
 import { twistAngle, WatchModel } from "../watch/model.ts";
 import type { WatchModelState } from "../watch/model.ts";
-import { moveOf } from "../watch/navigation.ts";
+import type { Move } from "../watch/navigation.ts";
 import { slidePalette } from "../watch/palette.ts";
 import {
   modelState,
@@ -107,10 +115,12 @@ function stopThumbReturn(): void {
 function letGo(): void {
   stopThumbReturn();
   const from = twist.value;
-  const start = performance.now();
+  const start = figure.now();
   model.value?.twist(twistDegrees(from), start, true);
   const { period } = WATCH.design.timing;
-  const follow = (now: number): void => {
+  setEnd("watch", start + (period / 4) * 1000);
+  const follow = (): void => {
+    const now = figure.now();
     const seconds = (now - start) / 1000;
     const value =
       seconds < period / 4
@@ -123,7 +133,7 @@ function letGo(): void {
     twist.value = value;
     if (value === 0) thumbReturn = null;
   };
-  follow(start);
+  follow();
 }
 
 /** Story time (s) on the Mainspring slide's line, for `wind`: from the bare
@@ -144,11 +154,20 @@ const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 const model = shallowRef<WatchModel>();
 let view: SharedView<WatchModelState> | undefined;
 let shown: { clicks: number; state: WatchState | undefined } | undefined;
+/** When the watch's change ends, and the board's (ms, the figure's time):
+ *  the figure is busy until both have. */
+const ends = { watch: 0, board: 0 };
 
-const board = computed<BoardTarget>(() => ({
+function setEnd(part: keyof typeof ends, at: number): void {
+  ends[part] = at;
+  figure.busyUntil.value = Math.max(ends.watch, ends.board);
+}
+
+/** Set when the click changes, which says if the board jumps. */
+const board = shallowRef<BoardTarget>({
   state: boardState(frontmatter.value, clicks.value),
   atOnce: false,
-}));
+});
 const boardScrub = computed(() =>
   settings.value.slider === "curl" ? curl.value : null,
 );
@@ -192,19 +211,22 @@ function meshesOf(names: readonly string[]): Set<Mesh> {
   );
 }
 
-/** Show the state at `to` (a click): a step or a jump from what shows. */
+/** The move to `to` from the click that shows: forward or back by the
+ *  clicks' order, past the neighbours too (the reader asked for it); a jump
+ *  at once, or from nothing. */
+function moveTo(to: number, atOnce: boolean): Move {
+  if (atOnce || !shown || to === shown.clicks) return "jump";
+  return to > shown.clicks ? "forward" : "back";
+}
+
+/** Show the state at `to` (a click): a move or a jump from what shows. */
 function show(to: number, atOnce: boolean): void {
   const now = state.value;
   if (!view || !now) {
     shown = { clicks: to, state: now };
     return;
   }
-  const move = atOnce
-    ? "jump"
-    : moveOf(shown && { slide: 0, clicks: shown.clicks }, {
-        slide: 0,
-        clicks: to,
-      });
+  const move = moveTo(to, atOnce);
   const flash = move === "forward" ? now.flash : undefined;
   view.show(
     stageState(WATCH, {
@@ -217,21 +239,26 @@ function show(to: number, atOnce: boolean): void {
   );
   view.marked = meshesOf(figureMarks(WATCH, frontmatter.value, to));
   shown = { clicks: to, state: now };
-  figure.busyUntil.value = view.endAt(performance.now());
+  setEnd("watch", view.endAt());
 }
 
 onMounted(() => {
   if (!canvas.value || !state.value) return;
-  model.value = new WatchModel(WATCH);
-  view = new SharedView(canvas.value, model.value, palette.value.palette);
+  model.value = new WatchModel(WATCH, figure.now());
+  view = new SharedView(
+    canvas.value,
+    model.value,
+    palette.value.palette,
+    figure.now,
+  );
   show(clicks.value, true);
   if (settings.value.slider === "twist") {
-    model.value.twist(twistDegrees(twist.value), performance.now(), false);
+    model.value.twist(twistDegrees(twist.value), figure.now(), false);
   }
   if (settings.value.slider === "wind") {
-    model.value.scrub(windTime.value, performance.now());
+    model.value.scrub(windTime.value, figure.now());
   }
-  view.paused = figure.paused.value;
+  view.paused = !figure.moving.value;
   sharedStage().add(view);
 });
 onBeforeUnmount(() => {
@@ -241,7 +268,11 @@ onBeforeUnmount(() => {
 
 // the press that undoes `release` is no step: the state changes at once
 onChange(clicks, (to) => {
-  show(to, settings.value.button === "release" && !released.value);
+  const atOnce =
+    (settings.value.button === "release" && !released.value) ||
+    figure.jumps.value;
+  board.value = { state: boardState(frontmatter.value, to), atOnce };
+  show(to, atOnce);
 });
 // at once, so that the thumb's own way back (`letGo`) is told from the
 // reader's move: the reader's move catches the hairspring and holds it
@@ -251,16 +282,19 @@ onChange(
     if (settings.value.slider !== "twist" || thumbReturn?.value === value)
       return;
     stopThumbReturn();
-    model.value?.twist(twistDegrees(value), performance.now(), false);
+    model.value?.twist(twistDegrees(value), figure.now(), false);
+    view?.redraw();
   },
   { flush: "sync" },
 );
 onChange(windTime, (time) => {
-  if (settings.value.slider === "wind")
-    model.value?.scrub(time, performance.now());
+  if (settings.value.slider === "wind") {
+    model.value?.scrub(time, figure.now());
+    view?.redraw();
+  }
 });
-onChange(figure.paused, (paused) => {
-  if (view) view.paused = paused;
+onChange(figure.moving, (moving) => {
+  if (view) view.paused = !moving;
 });
 onChange(
   still,
@@ -327,10 +361,12 @@ onChange(
       :target="board"
       :live="true"
       :scrub="boardScrub"
-      :paused="figure.paused.value || !figure.near.value"
+      :paused="!figure.moving.value || !figure.near.value"
+      :now="figure.now"
       @cover="(covers: boolean) => (covered = covers)"
+      @ends="(at: number) => setEnd('board', at)"
     />
-    <TickTock :model="model" :shown="tickTock" />
-    <TimeScale :model="model" :shown="timeScale" />
+    <TickTock :model="model" :shown="tickTock" :now="figure.now" />
+    <TimeScale :model="model" :shown="timeScale" :now="figure.now" />
   </div>
 </template>

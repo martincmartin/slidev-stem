@@ -161,6 +161,23 @@ test("off and back: the pose holds, and the next swing plays from 0", () => {
   assert.equal(clock.time(5500), 0.5);
 });
 
+test("a bend, a curl and an uncurl end when their phase does", () => {
+  const clock = new BoardClock(TIMING);
+  clock.show("swing", 0, false);
+  assert.equal(clock.endAt(1000), 1000 * TIMING.swingStart);
+  assert.equal(clock.endAt(2600), 2600); // a swing does not end
+  // the curl waits for the bottom of the swing, at 3.4 s
+  clock.show("curled", 2600, false);
+  const curled = 3400 + (END - TIMING.curlStart) * 1000;
+  assert.ok(Math.abs(clock.endAt(2600) - curled) < 1e-6);
+  assert.ok(Math.abs(clock.endAt(5000) - curled) < 1e-6);
+  assert.equal(clock.endAt(9000), 9000);
+  clock.show("swing", 9000, false);
+  const uncurled = 9000 + (END - TIMING.curlStart) * 1000;
+  assert.ok(Math.abs(clock.endAt(9500) - uncurled) < 1e-6);
+  assert.equal(clock.phase(uncurled + 1), "swing");
+});
+
 test("a jump shows the target at once", () => {
   const clock = new BoardClock(TIMING);
   clock.show("swing", 0, true);

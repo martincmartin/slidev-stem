@@ -29,8 +29,10 @@
 // IN THE ARTICLE (components/FigureLayer.vue): `scrub`, from 0 to 1, holds
 // the board at that point of the curl, for a reader's slider: the clock does
 // not run. The edit after the curl is not scrubbed: the next figure shows it
-// done. `paused` stops the clock's drawing: the
-// board keeps its pose, and the clock's time goes on.
+// done. `now` gives the figure's time, which stands while the figure is
+// paused; without it (the talk), the clock reads the page's time. `paused`
+// stops the drawing, after one last frame. `ends` says when the change to a
+// target ends, so that a paused figure's time runs to it.
 //
 // THE CALLOUT'S SENTENCE is here, as HTML, not in the SVG: HTML is the simpler
 // tool for text (the browser lays it out, so a strike is its word's width).
@@ -67,14 +69,18 @@ const props = withDefaults(
      *  for the clock. */
     scrub?: number | null;
     paused?: boolean;
+    /** The time (ms) for the clock; the page's without it. */
+    now?: (() => number) | undefined;
   }>(),
-  { scrub: null, paused: false },
+  { scrub: null, paused: false, now: undefined },
 );
 const emit = defineEmits<{
   /** Whether the board's picture shows, and so covers the watch. */
   cover: [covers: boolean];
   /** Whether a story animation (a bend, a curl or an uncurl) runs. */
   busy: [busy: boolean];
+  /** When the change to the target ends (ms, the clock's time). */
+  ends: [at: number];
 }>();
 
 const CURLING_CLASS = "diving-board-curling";
@@ -151,7 +157,9 @@ function draw(now: number): void {
   busy.value = BUSY_PHASES.has(phase);
   host.value.dataset["busy"] = String(busy.value);
   if (shown.value && clock.moving(now) && !props.paused) {
-    frame = requestAnimationFrame(draw);
+    frame = requestAnimationFrame((stamp) => {
+      draw(props.now?.() ?? stamp);
+    });
   }
 }
 
@@ -187,7 +195,7 @@ function apply(target: BoardTarget): void {
   }
   cancelAnimationFrame(frame);
   clock ??= new BoardClock(timingOf(board));
-  const now = performance.now();
+  const now = props.now?.() ?? performance.now();
   // a slide with no board leaves the clock where it is: its rest shape fades
   // out in the pose that it had, and comes back in it
   if (state) clock.show(state.place, now, target.atOnce);
@@ -202,6 +210,7 @@ function apply(target: BoardTarget): void {
   }
   shown.value = state;
   draw(now);
+  emit("ends", clock.endAt(now));
 }
 
 onMounted(async () => {
@@ -231,9 +240,10 @@ watch(
 );
 watch(
   () => props.paused,
-  (paused) => {
-    if (paused) cancelAnimationFrame(frame);
-    else if (props.scrub === null) draw(performance.now());
+  () => {
+    // a last frame on a pause: the time stands where it stopped
+    cancelAnimationFrame(frame);
+    if (props.scrub === null) draw(props.now?.() ?? performance.now());
   },
 );
 watch(

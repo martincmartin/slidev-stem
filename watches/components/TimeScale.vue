@@ -9,6 +9,8 @@
 // model's speed-up at each animation frame, to the nearest whole number: while
 // it eases from one click's to the next, the number goes through the speed-ups
 // between. Without one (a printed page, slide-bottom.vue), it is the click's.
+// In a figure, `now` gives the figure's time, which stands while the figure is
+// paused; without it, the frame's time.
 //
 // Not an oversight: the number changes at once, where all other text fades
 // (docs/slide-patterns.md, "Text fades"). It is a gauge, and the user chose
@@ -22,16 +24,18 @@ import type { WatchModel } from "../watch/model.ts";
 const props = defineProps<{
   model: WatchModel | undefined;
   shown: number | undefined;
+  /** The time (ms); the frame's without it. */
+  now?: (() => number) | undefined;
 }>();
 
 const speedUp = ref(props.shown ?? 1);
 let request: number | undefined;
 
-function frame(now: number): void {
+function frame(stamp: number): void {
   request = undefined;
   const { model, shown } = props;
   if (!model || shown === undefined) return;
-  speedUp.value = Math.round(model.speedUp(now));
+  speedUp.value = Math.round(model.speedUp(props.now?.() ?? stamp));
   request = requestAnimationFrame(frame);
 }
 

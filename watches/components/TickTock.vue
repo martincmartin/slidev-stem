@@ -9,7 +9,8 @@
 // this asks the model for the strikes since the last frame, with the moment of
 // each. A word starts at that moment: CSS fades it and moves it along its
 // strike's `away`, with a negative delay for the part of a frame that has
-// passed. A word that has started ends its fade, in its own style, even if
+// passed. In a figure, `now` gives the figure's time, which stands while the
+// figure is paused; without it, the frame's time. A word that has started ends its fade, in its own style, even if
 // the words stop (a click, another slide): the sound has been made.
 //
 // Not an oversight: a word appears at once, where all other text fades in
@@ -22,6 +23,8 @@ import type { WatchModel } from "../watch/model.ts";
 const props = defineProps<{
   model: WatchModel | undefined;
   shown: { strikes: readonly [Strike, Strike] } | undefined;
+  /** The time (ms); the frame's without it. */
+  now?: (() => number) | undefined;
 }>();
 
 /** s: from a strike until its word is gone. */
@@ -53,9 +56,10 @@ function upperWindow(strikes: readonly [Strike, Strike]): number {
   return strikes[0].at[1] < strikes[1].at[1] ? 0 : 1;
 }
 
-function frame(now: number): void {
+function frame(stamp: number): void {
   request = undefined;
   const { model, shown } = props;
+  const now = props.now?.() ?? stamp;
   if (!model || !shown) {
     last = undefined;
     return;

@@ -14,7 +14,9 @@ build the article.
 [`tasks/2026-10-03-narrated-export/`](../../tasks/2026-10-03-narrated-export/README.md)
 (the forms, the measurements, and the page's design in its `page-design.md`),
 [`tasks/2026-10-22-article-prerender-speed/`](../tasks/2026-10-22-article-prerender-speed/PLAN.md)
-(why the prerender was slow).
+(why the prerender was slow),
+[`tasks/2026-10-25-paused-figure-steps/`](../tasks/2026-10-25-paused-figure-steps/PLAN.md)
+(steps in a paused figure, and the figure's own time).
 
 ## What a reader gets
 
@@ -165,8 +167,25 @@ paragraph beside the figure, not the newest label.
 **A step in a figure moves as the talk does.** A figure with steps, or a
 playing figure, steps forward and back with the talk's moves: the fades, the
 camera, and the flash on a step forward (the reader asked for the step, and
-is looking at the figure). A step to a click that is not a neighbour is a
-jump.
+is looking at the figure). A step starts from whatever shows, also in the
+middle of a move. A step to a click that is not a neighbour moves too,
+forward or back by the clicks' order, with the later click's camera move
+(`moveTo` in `components/FigureLayer.vue`). Not as in the talk, where it is a
+jump: there, a jump goes to another place in the talk, and here the reader
+asks to see that click.
+
+**A paused figure's time stands, but its controls still work.** A figure
+runs on its own time (`addons/narration/clock.ts`), which stands while it is
+paused. A step in a paused figure plays its move from the picture that
+shows, then the figure stands again: its time runs to the end of the step's
+change (`busyUntil`). A slider's change shows at once; a let-go of the
+`twist` slider swings the hairspring back to rest, where it stands. **For a
+reader who asks for reduced motion, a step in a paused figure is a jump**:
+the new click at once, with no move and no flash. That reader starts with
+every figure paused (`ArticlePage.vue`), and WCAG 2.3.3 ("Animation from
+Interactions") asks that a reader can turn off the motion that a control
+starts. The options are in
+[the task](../tasks/2026-10-25-paused-figure-steps/PLAN.md).
 
 ### A slide's `article` settings
 
@@ -252,7 +271,7 @@ again. The flash after each move stays: the reader is watching the figure.
 | Where                                                           | What                                                                                                                                                                           |
 | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `addons/narration/` (a Slidev addon; the headmatter's `addons`) | the narration's parser, the preparser, the page model, the `/article` route and its line in `pnpm dev`, the page and its figures, the prerender. It knows nothing of the watch |
-| `addons/narration/figure.ts`                                    | what the addon and the talk say to each other: `FIGURE` (a figure's click, pause, controls, stillness) and `ARTICLE_HOOKS` (the talk's rules)                                  |
+| `addons/narration/figure.ts`                                    | what the addon and the talk say to each other: `FIGURE` (a figure's click, its time, controls, stillness) and `ARTICLE_HOOKS` (the talk's rules)                               |
 | `setup/main.ts`                                                 | gives the article the talk's rules (`ARTICLE_HOOKS`)                                                                                                                           |
 | `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, the camera's key, marks, the `article` settings                                                                    |
 | `global-bottom.vue`, `components/FigureLayer.vue`               | in a figure, the layer is the figure's: the watch at the figure's click, the board, "tick" and "tock", the time scale                                                          |

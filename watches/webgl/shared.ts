@@ -4,12 +4,14 @@
 // page, so a context for each figure fails past that
 // (../../docs/export.md).
 //
-// Each figure is a view: a 2D canvas, with its own timeline and model, as a
+// Each figure is a view: a 2D canvas, with its own timeline, model and time
+// (`now`: the figure's, which stands while the figure is paused), as a
 // stage has. At each animation frame, the renderer draws each view that is
 // on or near the screen, and not paused, on its own hidden canvas, and the
 // view copies the picture (`drawImage`). Bartosz Ciechanowski's "Mechanical
 // Watch" works this way. A view off the screen is not drawn: its model's
-// time goes on, so it shows the present when it comes back.
+// time goes on, so it shows the present when it comes back. A paused view is
+// drawn once after each change (`redraw`).
 //
 // A view's frame is the stage's (`drawFrame`, stage.ts), so a figure draws
 // what the talk's stage would, with marks: meshes in the flash's colours for
@@ -36,41 +38,65 @@ export class SharedView<ModelState> {
   readonly timeline = new Timeline();
   /** Drawn in the flash's colours while they show. */
   marked: ReadonlySet<Mesh> = new Set();
-  /** A paused view keeps its last picture. */
-  paused = false;
   /** The colours that the view draws in: its slide's palette. */
   palette: Palette;
+  /** The view's time (ms). */
+  readonly now: () => number;
   private readonly context: CanvasRenderingContext2D;
+  /** Whether the view's time stands: it keeps its picture until a change
+   *  (`redraw`). Its last frame may be up to a frame before the time stood:
+   *  it is not drawn again, as a frame can take 0.4 s without a GPU, and
+   *  the prerender pauses all the figures before each still. */
+  paused = false;
+  /** Whether the view must be drawn although its time stands. */
+  private changed = true;
 
   constructor(
     canvas: HTMLCanvasElement,
     model: Model<ModelState>,
     palette: Palette,
+    now: () => number,
   ) {
     const context = canvas.getContext("2d");
     check(context !== null, "the canvas has a context of another kind");
     this.canvas = canvas;
     this.model = model;
     this.palette = palette;
+    this.now = now;
     this.context = context;
   }
 
   /** As `Stage.show`: go to a state, at once or by the timeline's moves. */
   show(state: StageState, modelState: ModelState, instantly = false): void {
-    const now = performance.now();
+    const now = this.now();
     const atOnce = instantly || !this.timeline.hasState;
     this.timeline.show(state, now, atOnce);
     this.model.show(modelState, now, atOnce, this.timeline.endAt(now));
+    this.redraw();
   }
 
-  /** When the change ends (ms), with its flash and the model's story, or
-   *  `now` if it has. */
-  endAt(now: number): number {
+  /** Draw the view at the next frame, even if it is paused: its state or
+   *  its model changed. */
+  redraw(): void {
+    this.changed = true;
+  }
+
+  /** Whether the next frame draws the view, if it is near the screen. */
+  get due(): boolean {
+    return !this.paused || this.changed;
+  }
+
+  /** When the change ends (ms, the view's time), with its flash and the
+   *  model's story, or now if it has. */
+  endAt(): number {
+    const now = this.now();
     return Math.max(this.timeline.endAt(now), this.model.endAt?.(now) ?? now);
   }
 
-  /** Draw with `renderer`, and copy the picture to this view's canvas. */
-  draw(renderer: Renderer, now: number): void {
+  /** Draw with `renderer` at the view's time, and copy the picture to this
+   *  view's canvas. */
+  draw(renderer: Renderer): void {
+    const now = this.now();
     const size = deviceSize(this.canvas);
     drawFrame(renderer, this.timeline, this.model, now, size, this.marked);
     const [width, height] = size;
@@ -80,6 +106,7 @@ export class SharedView<ModelState> {
     }
     this.context.clearRect(0, 0, width, height);
     this.context.drawImage(renderer.canvas, 0, 0);
+    this.changed = false;
   }
 }
 
@@ -145,16 +172,16 @@ export class SharedStage<ModelState> {
     this.renderer.dispose();
   }
 
-  private readonly frame = (now: number): void => {
+  private readonly frame = (): void => {
     this.request = null;
     for (const [view, near] of this.views) {
-      if (!near || view.paused) continue;
+      if (!near || !view.due) continue;
       try {
         if (view.palette !== this.palette) {
           this.renderer.setPalette(view.palette);
           this.palette = view.palette;
         }
-        view.draw(this.renderer, now);
+        view.draw(this.renderer);
       } catch (error) {
         // as a stage does: a view whose frame throws stops; the others go on
         console.error(error);

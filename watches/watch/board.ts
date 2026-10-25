@@ -257,6 +257,25 @@ export class BoardClock {
     return this.current(now).kind !== "hold";
   }
 
+  /** When the busy phase at `now` ends (ms): a bend, a curl (with its wait
+   *  and its edit) or an uncurl; `now` if none runs. */
+  endAt(now: number): number {
+    const segment = this.current(now);
+    const { swingStart, curlStart } = this.timing;
+    switch (segment.kind) {
+      case "hold":
+        return now;
+      case "loop":
+        return segment.curlAt === null
+          ? Math.max(now, segment.startMs + (swingStart - segment.from) * 1000)
+          : segment.curlAt + (this.end - curlStart) * 1000;
+      case "curl": {
+        const ends = segment.rate === 1 ? this.end : curlStart;
+        return segment.startMs + Math.abs(ends - segment.from) * 1000;
+      }
+    }
+  }
+
   /** When the swing is next at its bottom (ms): it starts there, and is there
    *  each period. */
   private nextBottom(segment: Segment & { kind: "loop" }, now: number): number {

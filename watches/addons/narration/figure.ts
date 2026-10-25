@@ -8,10 +8,14 @@
 //
 // CONTRACT for a talk's layer in a figure: draw the slide's state at
 // `clicks`, and follow it when it changes (a step: the step's moves; any
-// other change: at once). Draw nothing while `paused` is true or `near` is
-// false. Set `busyUntil` when a change ends, so that a playing figure waits
-// for it. A layer may add controls (a slider, a button) to `controls`; the article
-// draws them under the figure. Set `still` while nothing in the figure moves
+// other change: at once). Take the time from `now`, never from the page's
+// clock or a frame's time: it stands while the figure is paused. Set
+// `busyUntil` when a change ends: a playing figure waits for it, and a paused
+// figure's time runs to it, so that a step plays and then stands. While
+// `jumps` is true, a step is a jump. Draw only while `moving` is true, and
+// once after any other change (a control's), and nothing while `near` is
+// false. A layer may add controls (a slider, a button) to `controls`; the
+// article draws them under the figure. Set `still` while nothing in the figure moves
 // by itself: the article then shows no pause button.
 //
 // IN A FIGURE OF A PICTURE (the talk's `pictureBox` gives a box), the slide's
@@ -59,9 +63,16 @@ export interface FigureContext {
   readonly clicks: Readonly<Ref<number>>;
   /** Whether the figure is on or near the screen. */
   readonly near: Readonly<Ref<boolean>>;
-  /** Whether the figure is paused: by the reader, or by "pause all". */
-  readonly paused: Readonly<Ref<boolean>>;
-  /** When the change at the current click ends (ms, `performance.now`). */
+  /** The figure's time (ms): the page's clock while the figure plays; it
+   *  stands while the figure is paused, but for a run to `busyUntil`
+   *  (clock.ts). */
+  readonly now: () => number;
+  /** Whether the figure's time runs. */
+  readonly moving: Readonly<Ref<boolean>>;
+  /** Whether a step is a jump: the figure is paused for a reader who asks
+   *  for reduced motion. */
+  readonly jumps: Readonly<Ref<boolean>>;
+  /** When the change at the current click ends (ms, the figure's time). */
   readonly busyUntil: Ref<number>;
   /** The controls that the talk's layer adds. */
   readonly controls: Ref<readonly FigureControl[]>;
