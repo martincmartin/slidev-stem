@@ -1161,18 +1161,20 @@ One spring to power them all
 This is a spiral spring, like the hairspring.  But instead of swinging back and
 forth, it does one slow unwind over a day or two.
 
-In the illustration below, it's at rest.  Drag the slider to wind it up.
+In the illustration below, it's at rest.
 
+[figure: The bare mainspring: a long ribbon of steel, coiled round its arbor,
+at rest.]
 
 [click]
 
-[figure: The bare mainspring on its arbor. A stud holds its outer end, and a
+[figure: The mainspring on its arbor. A stud holds its outer end, and a
 key turns the arbor. A slider winds it.]
 
 Hold the outer end still (the small block is a stud), and turn the arbor with
 a key. The spring keeps its length, so its coils draw in toward the arbor.
 Wind the spring away from its rest shape, the dashed line, and it pushes
-back, as the hairspring does.
+back, as the hairspring does. Drag the slider to wind it up.
 
 [click]
 
