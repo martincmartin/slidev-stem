@@ -449,7 +449,7 @@ clicks: 3
 
 # Ticks and Turns
 
-Named for what they count, not how long they take to turn
+Named for what they count
 
 <!-- Each click adds text, and none leaves. The text before the newest dims
 (style.css, "TEXT DIMS"). The table comes whole at click 3: its first row is
