@@ -41,6 +41,13 @@
 .after-watch.slidev-vclick-target:not(.slidev-vclick-hidden) {
   transition-delay: var(--watch-end-delay, 0s);
 }
+/* The same for a slide's text as the slide comes in: a slide with the class
+   `after-watch` waits for the change and its flash, not only for the camera
+   (`transition: text-fade` above). Its text at click 0 has no v-click to
+   wait with (the Recap slide). */
+.text-fade-enter-active:has(.slidev-layout.after-watch) {
+  transition-delay: max(var(--text-fade), var(--watch-end-delay, 0s));
+}
 
 /* A v-click that waits for the balance to come to rest (`watchSettle` at the
    same click): it fades in only then (--watch-rest-delay, set by

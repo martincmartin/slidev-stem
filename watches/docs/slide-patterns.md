@@ -61,9 +61,9 @@ Five rules for a slide:
 **The fonts are self-hosted.** The theme imports them from the `@fontsource/*`
 packages in `themes/house/styles/fonts.css`, and `pnpm build` copies the font
 files into `dist/`. The deck makes no outside requests, so it needs no network
-at the venue. `fonts.css` imports only the weights the talks use. **If you use a
-new weight, add its import to the theme in the same change:** a missing weight
-gives no error (the `slidev-practices` skill, "Fonts").
+at the venue. `fonts.css` imports only the weights and styles the talks use. **If you use a
+new weight or style, add its import to the theme in the same change:** a
+missing one gives no error (the `slidev-practices` skill, "Fonts").
 
 ## Section slides
 
@@ -173,6 +173,10 @@ reason next to it.
   fades in when the watch's change ends, with its flash
   (`--watch-end-delay`), so the text comes after all the motion on the left
   (the Gear Train slide). Going back, it fades out at once.
+- **A slide's text at click 0 that reads what the watch shows** has no
+  `v-click` to wait with. Give the slide the class `after-watch`: as the
+  slide comes in, its text waits for the change and its flash, not only for
+  the camera (the Recap slide's first caption).
 - **Text that points at the balance at rest, at the click that settles it**,
   waits for the rest: give the `v-click` element the class
   `after-balance-rest` (`style.css`). It fades in when the balance is at rest
@@ -291,7 +295,7 @@ the spring down, and the watch stops. Each click that adds text dims the
 text before it ([Text dims](#text-dims)). Going back cuts to the earlier click's state: no key
 unwinds the spring.
 The Recap slide comes after the Hour Hand slide. Its only text is the time
-scale in the lower right corner, so the watch fills the slide, and the rule that the focus is on the left does not
+scale in the lower right corner and a caption at the bottom, so the watch fills the slide, and the rule that the focus is on the left does not
 apply. Each click moves, zooms, tilts and turns the camera at the same time
 to the next touch of the train, at that touch's time-lapse speed. The next
 slide, the Changed The World section, goes back to the cover's picture.

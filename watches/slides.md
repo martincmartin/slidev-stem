@@ -1319,13 +1319,14 @@ history: "Hour hand: c. 1350"
 
 From once an hour to twice a day
 
-<!-- Each text waits for the watch's change at its click to end, with its
-flash (after-watch, style.css), as on the Gear Train slide. Clicks 1 and 2's
-texts are about the one-step wheel, so they go with it at click 3
-(docs/watch.md, "The Hour Hand slide"). -->
+<!-- Click 0's text states the goal, and comes with the slide: nothing moves
+or flashes at click 0. Each later text waits for the watch's change at its
+click to end, with its flash (after-watch, style.css), as on the Gear Train
+slide. Clicks 0 and 2's texts are about the one-step wheel, so they go with
+it at click 3 (docs/watch.md, "The Hour Hand slide"). -->
 
 <div v-click.hide="3" class="hh-sentence">
-  <div class="after-watch">12:1 gear ratio</div>
+  <div>12:1 gear ratio</div>
   <div v-click="2" class="after-watch">Hour hand off centre!</div>
 </div>
 
@@ -1418,6 +1419,7 @@ hand. It turns clockwise, twice a day.
 # once in 30 s (watchLapse). The views put each touch at the middle of the
 # slide (watch/recap.ts; docs/watch.md, "The Recap slide")
 title: Recap
+class: recap after-watch
 watch:
   [all, cannon pinion, minute wheel, minute pinion, minute arbor, hour wheel]
 watchView: recap motion works
@@ -1496,6 +1498,55 @@ watchClicks:
     watchTimeScale: false
 clicks: 8
 ---
+
+<script setup>
+// One caption per stop, from the speaker notes, for those who read more
+// easily than they listen (docs/watch.md, "The Recap slide"). Each is HTML:
+// a part's name is in italics the first time it is on the screen.
+const captions = [
+  "Two gears run the hour hand.",
+  "The mainspring drives the barrel.",
+  "The barrel drives the <em>center wheel</em> and the minute hand.",
+  "The center wheel drives the <em>third wheel</em>.",
+  "The third wheel drives the <em>fourth wheel</em> and the second hand.",
+  "The fourth wheel drives the <em>escape wheel</em>.",
+  "The pallet stops the escape wheel. A tooth escapes every a second.",
+  "The <em>impulse jewel</em> hits the pallet, and the watch ticks.",
+  "The balance wheel and the hairspring set the rate.",
+];
+</script>
+
+<!-- Each caption shows at its stop only: the next stop's picture no longer
+agrees with it. It waits for the camera and the flash (after-watch; the
+first, at click 0, waits by the slide's class). The first is apart, because
+Slidev reads a range that starts at click 0 as one that starts at click 1. -->
+
+<div v-click.hide="1" class="recap-caption after-watch" v-html="captions[0]" />
+<div
+  v-for="stop in captions.length - 1"
+  :key="stop"
+  v-click="[stop, stop + 1]"
+  class="recap-caption after-watch"
+  v-html="captions[stop]"
+/>
+
+<style>
+/* At the bottom, between the left edge and the time scale in the lower
+   right corner, in ink with the paper's outline, as the time scale. */
+.slidev-layout.recap .recap-caption {
+  position: absolute;
+  left: 150px;
+  right: 150px;
+  bottom: 20px;
+  text-align: center;
+  font-size: 22px;
+  line-height: 1.25;
+  -webkit-text-stroke: 6px var(--palette-background);
+  paint-order: stroke fill;
+  transition-property: opacity;
+  transition-duration: var(--text-fade);
+}
+</style>
 
 <!-- narration
 

@@ -957,8 +957,10 @@ The tilt is 20 at every click, so the stack of the motion works shows.
   the step from it does not move the camera. The movement runs behind the
   title and the text there; they have the paper's outline. Clicks 3 to 5
   fit the centre wheel, in the picture band. The text is where the Gear Train slide's is.
-  Each text comes after the motion of its click (`after-watch`).
-- **Not an oversight: click 1's and click 2's texts go at click 3**, though
+  Click 0's text, "12:1 gear ratio", states the goal: it comes with the
+  slide, because nothing moves or flashes at click 0. Each later text comes
+  after the motion of its click (`after-watch`).
+- **Not an oversight: click 0's and click 2's texts go at click 3**, though
   old text usually stays ([`../../AGENTS.md`](../../AGENTS.md), "Writing a
   talk"). "12:1 gear ratio" and "Hour hand off centre!" are about the
   one-step wheel, which goes at click 3. They do not agree with the two
@@ -966,8 +968,9 @@ The tilt is 20 at every click, so the stack of the motion works shows.
 
 ## The Recap slide
 
-The Recap slide follows the Hour Hand slide. Its only text is the time
-scale: a tour of the train, one touch at a time, from the motion works to the balance.
+The Recap slide follows the Hour Hand slide. It is a tour of the train, one
+touch at a time, from the motion works to the balance. Its only text is the
+time scale and a caption for each stop.
 The next slide, the Changed The World section, goes back to the cover's picture. The watch fills the slide, so the left 60% rule and the
 picture band do not apply. The options and the evidence are in
 [`2026-10-12-victory-lap`](../tasks/2026-10-12-victory-lap/PLAN.md).
@@ -988,6 +991,16 @@ picture band do not apply. The options and the evidence are in
   the fourth wheel on the escape pinion; the escape wheel on the pallet's
   stones; the impulse jewel in the fork; and the balance and its hairspring,
   as the Hairspring slide shows them, on the left.
+- **Each stop has a caption**, for those who read more easily than they
+  listen: one sentence or two, from the speaker notes, at the bottom between
+  the left edge and the time scale. It shows at its stop only, because the
+  next stop's picture no longer agrees with it. It fades in after the camera
+  and the flash (`after-watch`; the slide has the class too, for the first
+  caption). A part's name is in italics the first time
+  that it is on the screen, as the narration's new terms are. The captions
+  are an array of HTML in the slide's `<script setup>`; the slide's `<style>`
+  places them. A figure in the
+  article does not show them: the narration beside it says the same.
 - **Each focus flashes after the camera finishes**, on a forward step only
   (`watchFlashAfterMove: true` in `slides.md`). Each wheel flashes with the pinion it meets.
   The first stop also flashes the minute wheel with its pinion and the hour wheel.

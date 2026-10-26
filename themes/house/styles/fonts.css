@@ -3,15 +3,18 @@
    names the families for Slidev (`slidev.defaults.fonts`, with
    `provider: none` so Slidev asks no web-font service for them).
 
-   Import only the weights the talks use. A weight that is not imported here
-   does not fail: the browser uses the nearest imported weight, or fakes a
-   bold, and that is easy to miss. So add the import when you add the weight. */
+   Import only the weights and styles the talks use. A weight or a style
+   that is not imported here does not fail: the browser uses the nearest
+   imported weight, or fakes a bold or an italic, and that is easy to miss.
+   So add the import when you add the weight or the style. */
 
 /* Titles and card names */
 @import "@fontsource/fraunces/600.css";
 
-/* Body (400), the takeaway line (500), the card problem line (600) */
+/* Body (400), a new term in it (400 italic), the takeaway line (500), the
+   card problem line (600) */
 @import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/400-italic.css";
 @import "@fontsource/ibm-plex-sans/500.css";
 @import "@fontsource/ibm-plex-sans/600.css";
 
