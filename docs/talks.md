@@ -62,32 +62,91 @@ does not get the Slidev parser.
 
 ## Set up a clone
 
-You need [pnpm](https://pnpm.io/installation) and
-[uv](https://docs.astral.sh/uv/getting-started/installation/). pnpm downloads
-the pinned Node, and uv downloads the pinned Python. Then, in a talk's
-directory:
+The steps for a new clone or worktree, on macOS or Linux. Windows is
+untested. A Claude Code cloud session does them with its own hook
+([Cloud sessions](#cloud-sessions)).
+
+### What to install first
+
+- **git.**
+- **pnpm 12 or later.** pnpm then downloads the Node and the pnpm that each
+  project pins (`devEngines` in its `package.json`), so you need no Node of
+  your own. An older pnpm cannot read the lockfiles. pnpm's standalone script
+  needs no Node:
+
+  ```bash
+  curl -fsSL https://get.pnpm.io/install.sh | sh -
+  ```
+
+  With a Node, `npm install --global pnpm@latest` works too. Other ways, such
+  as a package manager, are in [pnpm's guide](https://pnpm.io/installation).
+
+- **uv.** uv downloads the Python that each project pins
+  (`.python-version`). An old uv may not know that version: then run
+  `uv self update`. uv's standalone script:
+
+  ```bash
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```
+
+  `pip install --user uv` and `pipx install uv` work too. Other ways are in
+  [uv's guide](https://docs.astral.sh/uv/getting-started/installation/).
+
+- **On Linux, the browsers' system libraries.** Playwright's browsers (for
+  `slidev export`, and for the checks) need libraries that a Linux system may
+  not have. After the steps below, on Debian or Ubuntu, run this at the
+  root. It uses `sudo` and `apt`:
+
+  ```bash
+  uv run python -m playwright install-deps
+  ```
+
+  It also installs Xvfb, the X server that the checks start for headless
+  Firefox where there is no display ([Cloud sessions](#cloud-sessions)).
+  `install-deps` knows only `apt`. On another distribution, install the
+  libraries that a browser's error message names, and Xvfb, with its own
+  package manager. Playwright supports only some Linux versions
+  ([its system requirements](https://playwright.dev/docs/intro#system-requirements)).
+
+### Install the projects
+
+At the root, and then in each talk that you work on:
 
 ```bash
-pnpm install    # the root's packages (the theme's fonts, the tools), then the talk's
+pnpm install    # at the root: the theme's fonts, the house tools in TypeScript
+cd watches
+pnpm install    # the talk's packages
 pnpm dev        # the deck, at http://localhost:3030
 ```
 
-`pnpm install` in a talk runs `pnpm install --frozen-lockfile` at the root
-first (the talk's `preinstall` script). The theme's fonts are the root's
-packages, so a talk does not build without them. So are the packages of the
-house tools in TypeScript (`../tools/README.md`). It also downloads Chromium for
-`slidev export`, from the talk's `playwright-chromium` package, and the other
-engines of a talk whose own checks use them (`playwright-firefox`,
+Run both installs again after each pull or rebase. A talk's `pnpm install`
+also installs the root first (`pnpm install --frozen-lockfile` at the root,
+the talk's `preinstall` script), but only when the talk's own packages
+change. When the talk is up to date, pnpm runs no script, so a new package
+of the root's is missing. Not an oversight: on 2026-10-27 a worktree that
+installed only in the talk had no `cspell`, and its spelling check could not
+run.
+
+The theme's fonts are the root's packages, so a talk does not build without
+them. So are the packages of the house tools in TypeScript
+(`../tools/README.md`). The installs also download the browser engines: the
+root's three, for the house's deck checks, and Chromium for
+`slidev export`, from the talk's `playwright-chromium` package, with the
+other engines of a talk whose own checks use them (`playwright-firefox`,
 `playwright-webkit`).
 
-The Python needs no setup step. `uv run` makes the project's `.venv` first. The
-Python tools that render install their required browser engines the first time
-they run (`tools/browsers.py`). The house's TypeScript deck checks get theirs
-from the root's `pnpm install`, as a talk's art checks do.
+The Python needs no setup step. `uv run` makes the project's `.venv` first.
+The Python tools that render install their required browser engines the
+first time they run (`tools/browsers.py`).
 
-Playwright keeps its browsers in one cache for your user
-(`~/Library/Caches/ms-playwright` on macOS). All checkouts and worktrees share
-it, so a new one downloads no browser.
+Playwright keeps its browsers in one cache for your user:
+`~/Library/Caches/ms-playwright` on macOS, `~/.cache/ms-playwright` on
+Linux. All checkouts and worktrees share it, so a new one downloads no
+browser.
+
+To check the setup, run quick validation in the talk
+(`uv run ../tools/validate.py --quick`), and then full validation, which also
+starts the browsers ([Check your work](#check-your-work)).
 
 A coding agent also needs the user-level instructions and skills from
 [agent-house](https://github.com/martincmartin/agent-house): run its

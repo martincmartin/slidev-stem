@@ -113,7 +113,7 @@ is one more project: the house theme and its palettes (`themes/`), the house too
 because Slidev's authors recommend it, and uv for Python:
 
 ```bash
-pnpm install          # in a talk's directory (it installs the root first); not `npm install`
+pnpm install          # at the root, then in a talk's directory; not `npm install`
 pnpm add -D <pkg>     # in a talk's directory; not `npm i -D <pkg>`
 pnpm dev              # in a talk's directory; not `npm run dev`
 uv sync               # in a talk's directory, or at the root: make its .venv
@@ -122,6 +122,10 @@ uv run <script.py>    # run a script in the venv of the project that holds it
 ```
 
 Never create a `package-lock.json` or a `requirements.txt`.
+
+Run `pnpm install` at the root too, not only in the talk, after each pull or
+rebase. The talk's install installs the root's packages only when the talk's
+own packages change (`docs/talks.md`, "Install the projects").
 
 **A new talk needs its own `pnpm-workspace.yaml`,** or pnpm installs nothing for
 it, with no error (the `slidev-practices` skill, "pnpm"). Follow

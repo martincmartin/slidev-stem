@@ -6,21 +6,17 @@ deck is a [Slidev](https://sli.dev) project.
 
 - What Every Nerd Should Know About Watches: [`watches/`](watches/)
 
-## Run a talk
+## Set up, and run a talk
 
-You need [pnpm](https://pnpm.io/installation) and
-[uv](https://docs.astral.sh/uv/getting-started/installation/). pnpm downloads
-the Node version that each talk pins, and uv downloads the Python version.
+To set up a clone, on macOS or Linux, follow
+[`docs/talks.md`, "Set up a clone"](docs/talks.md#set-up-a-clone). It says
+what to install first (git, pnpm, uv, and on Linux the browsers' system
+libraries), and how to install the projects. Then, in a talk's directory:
 
 ```bash
-cd watches
-pnpm install    # the root's packages (the theme's fonts, the tools), then the talk's
 pnpm dev        # the deck, at http://localhost:3030
 pnpm export     # a PDF of the deck
 ```
-
-The Python tools need no setup step. `uv run` makes the venv first, and the
-tools that render install their browser the first time they run.
 
 ## The house style
 
