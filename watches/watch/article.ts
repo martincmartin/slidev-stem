@@ -38,11 +38,32 @@ export interface SlideBox {
 export const SLIDERS = ["curl", "twist", "wind"] as const;
 export type SliderKind = (typeof SLIDERS)[number];
 
+/** What a slider says: what it does, above it, and the words at its two
+ *  ends. The figure shows them, and the text export describes it with them. */
+export const SLIDER_WORDS: Readonly<
+  Record<SliderKind, { label: string; start: string; end: string }>
+> = {
+  curl: {
+    label: "Curl the diving board into the hairspring",
+    start: "Board",
+    end: "Hairspring",
+  },
+  twist: { label: "Give it a twist, then let go", start: "Rest", end: "Wound" },
+  wind: { label: "Wind the mainspring", start: "Bare", end: "Wound" },
+};
+
 /** What a figure's button does: `release` shows the click before the
  *  figure's, and plays the step to the figure's click when pressed (the
  *  mainspring's release). */
 export const BUTTONS = ["release"] as const;
 export type ButtonKind = (typeof BUTTONS)[number];
+
+/** What a button says: what a press does, and what a second press does. */
+export const BUTTON_WORDS: Readonly<
+  Record<ButtonKind, { label: string; undo: string }>
+> = {
+  release: { label: "Let go of the outer end", undo: "Start again" },
+};
 
 /** A figure's settings at a click, from the slide's `article` block. */
 export interface FigureSettings {

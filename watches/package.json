@@ -18,6 +18,7 @@
     "preinstall": "pnpm --dir .. install --frozen-lockfile",
     "build": "slidev build",
     "article": "slidev build && pnpm prerender",
+    "article:text": "node watch/article-text.ts",
     "prerender": "node addons/narration/prerender.ts dist",
     "dev": "slidev",
     "export": "slidev export --with-clicks",

@@ -18,8 +18,10 @@ import type { ArticleHooks } from "./figure.ts";
 import { historyOf } from "./history.ts";
 import type { FigureMarker } from "./narration.ts";
 
-/** A part of a slide's narration, rendered: as `NarrationPart`, with HTML
- *  in place of Markdown. */
+/** A part of a slide's narration, rendered for the plan's output: as
+ *  `NarrationPart`, with each block's `text` in the output's format. The plan
+ *  passes the text through: HTML on the page (setup/preparser.ts renders
+ *  it), Markdown in the text export. */
 export interface RenderedPart {
   readonly clicks: number;
   readonly blocks: readonly RenderedBlock[];
@@ -27,8 +29,8 @@ export interface RenderedPart {
 }
 
 export type RenderedBlock =
-  | { readonly kind: "prose"; readonly html: string }
-  | { readonly kind: "aside"; readonly title: string; readonly html: string }
+  | { readonly kind: "prose"; readonly text: string }
+  | { readonly kind: "aside"; readonly title: string; readonly text: string }
   | FigureMarker;
 
 export interface SlideInput {
@@ -91,7 +93,8 @@ export interface FigureBlock {
   readonly steps: readonly number[];
   readonly play: boolean;
   readonly alt: string | null;
-  /** A playing figure's caption at each step (HTML), or `null`. */
+  /** A playing figure's caption at each step (in the output's format), or
+   *  `null`. */
   readonly captions: readonly (string | null)[];
 }
 
@@ -110,8 +113,8 @@ export type PageBlock =
       /** The slide's history line, under the heading. */
       readonly history: string | null;
     }
-  | { readonly kind: "prose"; readonly html: string }
-  | { readonly kind: "aside"; readonly title: string; readonly html: string }
+  | { readonly kind: "prose"; readonly text: string }
+  | { readonly kind: "aside"; readonly title: string; readonly text: string }
   | FigureBlock;
 
 /** A name for a URL's fragment: lower case, words joined by `-`. */
@@ -170,10 +173,12 @@ function slideBlocks(
   // said in its range after the marker's part
   const captionOf = new Map<number, string>();
   const captioned = new Set<RenderedPart>();
+  // a blank line between the blocks: in HTML it shows nothing, and in
+  // Markdown it keeps two paragraphs apart
   const captionText = (blocks: readonly RenderedBlock[]): string =>
     blocks
-      .flatMap((block) => (block.kind === "prose" ? [block.html] : []))
-      .join("");
+      .flatMap((block) => (block.kind === "prose" ? [block.text] : []))
+      .join("\n\n");
   for (const part of parts) {
     const index = part.blocks.findIndex(
       (block) => block.kind === "figure" && block.play,

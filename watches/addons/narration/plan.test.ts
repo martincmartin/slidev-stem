@@ -24,8 +24,8 @@ function slide(overrides: Partial<SlideInput>): SlideInput {
   };
 }
 
-function prose(clicks: number, html: string, noFigure = false): RenderedPart {
-  return { clicks, blocks: [{ kind: "prose", html }], noFigure };
+function prose(clicks: number, text: string, noFigure = false): RenderedPart {
+  return { clicks, blocks: [{ kind: "prose", text }], noFigure };
 }
 
 /** Each block as a short string, to compare the order. */
@@ -35,7 +35,7 @@ function outline(blocks: readonly PageBlock[]): string[] {
       case "figure":
         return `figure ${block.steps.join(",")}`;
       case "prose":
-        return block.html;
+        return block.text;
       case "aside":
         return `aside ${block.title}`;
       default:
@@ -114,7 +114,7 @@ test("[nofigure] drops the default, and [figure] adds one where it stands", () =
         {
           clicks: 1,
           blocks: [
-            { kind: "prose", html: "before" },
+            { kind: "prose", text: "before" },
             {
               kind: "figure",
               from: null,
@@ -122,7 +122,7 @@ test("[nofigure] drops the default, and [figure] adds one where it stands", () =
               play: false,
               alt: "The wheel.",
             },
-            { kind: "prose", html: "after" },
+            { kind: "prose", text: "after" },
           ],
           noFigure: false,
         },
@@ -147,7 +147,7 @@ test("a figure with steps takes the place of the defaults in its range", () => {
           clicks: 2,
           blocks: [
             { kind: "figure", from: 2, to: 3, play: false, alt: null },
-            { kind: "prose", html: "two" },
+            { kind: "prose", text: "two" },
           ],
           noFigure: false,
         },
@@ -173,9 +173,9 @@ test("a playing figure's parts are its captions, not prose", () => {
         {
           clicks: 0,
           blocks: [
-            { kind: "prose", html: "intro" },
+            { kind: "prose", text: "intro" },
             { kind: "figure", from: 0, to: 3, play: true, alt: "The tour." },
-            { kind: "prose", html: "stop 0" },
+            { kind: "prose", text: "stop 0" },
           ],
           noFigure: false,
         },

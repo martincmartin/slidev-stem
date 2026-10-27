@@ -18,12 +18,12 @@ function rendered(part: NarrationPart): RenderedPart {
     blocks: part.blocks.map((block) => {
       switch (block.kind) {
         case "prose":
-          return { kind: "prose", html: markdown.render(block.markdown) };
+          return { kind: "prose", text: markdown.render(block.markdown) };
         case "aside":
           return {
             kind: "aside",
             title: markdown.renderInline(block.title),
-            html: markdown.render(block.markdown),
+            text: markdown.render(block.markdown),
           };
         case "figure":
           return block;

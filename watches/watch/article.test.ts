@@ -10,15 +10,16 @@ import {
   parseNarration,
 } from "../addons/narration/narration.ts";
 import {
+  BUTTON_WORDS,
   defaultFigures,
   figureMarks,
   figureSettings,
   pictureBox,
   pictureKey,
+  SLIDER_WORDS,
 } from "./article.ts";
+import { articleText, markdownPage } from "./article-text.ts";
 import { historyOf } from "../addons/narration/history.ts";
-import { pagePlan, slideInput } from "../addons/narration/plan.ts";
-import type { RenderedBlock } from "../addons/narration/plan.ts";
 import { deckSlides, slideFrontmatter } from "./deck.ts";
 import { generate } from "./generate.ts";
 
@@ -219,44 +220,23 @@ test(`every slide's history line is text, with "c." before each year`, () => {
 });
 
 test("every figure of the article has alt text", () => {
-  // the page's slides: Slidev leaves the hidden ones out of its list. The
-  // Markdown stands for the HTML, which the plan does not read.
-  const page = pagePlan(
-    slides
-      .filter((slide) => slide.frontmatter["hide"] !== true)
-      .map((slide, index) => {
-        const text = narrationText(slide.content);
-        const parts =
-          text === null
-            ? null
-            : parseNarration(text).map((part) => ({
-                ...part,
-                blocks: part.blocks.map((block): RenderedBlock =>
-                  block.kind === "figure"
-                    ? block
-                    : { ...block, html: block.markdown },
-                ),
-              }));
-        return slideInput(
-          {
-            no: index + 1,
-            title: slide.title || null,
-            frontmatter: slide.frontmatter,
-            parts,
-          },
-          {
-            defaultFigures: (frontmatter, total) =>
-              defaultFigures(watch, frontmatter, total),
-            pictureKey,
-          },
-        );
-      }),
+  const figures = markdownPage(slides, watch).filter(
+    (block) => block.kind === "figure",
   );
-  const figures = page.filter((block) => block.kind === "figure");
   assert.ok(figures.length > 0, "the article has no figures");
   assert.deepEqual(
     figures.filter((figure) => !figure.alt).map((figure) => figure.id),
     [],
     "each figure needs alt text: a [figure: …] marker (docs/article.md)",
   );
+});
+
+test("the text export names each figure's controls in their own words", () => {
+  const text = articleText(slides, watch);
+  for (const words of Object.values(SLIDER_WORDS)) {
+    assert.ok(text.includes(`"${words.label}"`), words.label);
+  }
+  for (const words of Object.values(BUTTON_WORDS)) {
+    assert.ok(text.includes(`"${words.label}"`), words.label);
+  }
 });

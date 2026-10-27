@@ -5,11 +5,12 @@ as one long page of narration with live figures between the paragraphs, in
 the style of Bartosz Ciechanowski's "Mechanical Watch". How to write the
 narration and place the figures; what a figure shows, and why; the sliders,
 the button and the playing figure; how the code is split between the addon and the
-talk; how to build the static page, and where it can go.
+talk; how to build the static page, and where it can go; how to export
+its text.
 **Read before** you write or change a slide's narration, add a click to a
 slide that has narration, change `addons/narration/`, the figure layer
 (`components/FigureLayer.vue`, `webgl/shared.ts`, `watch/article.ts`), or
-build the article.
+build the article or export its text.
 **Tasks:**
 [`tasks/2026-10-03-narrated-export/`](../../tasks/2026-10-03-narrated-export/README.md)
 (the forms, the measurements, and the page's design in its `page-design.md`),
@@ -287,7 +288,9 @@ again. The flash after each move stays: the reader is watching the figure.
 | `addons/narration/` (a Slidev addon; the headmatter's `addons`) | the narration's parser, the preparser, the page model, the `/article` route and its line in `pnpm dev`, the page and its figures, the prerender. It knows nothing of the watch |
 | `addons/narration/figure.ts`                                    | what the addon and the talk say to each other: `FIGURE` (a figure's click, its time, controls, stillness) and `ARTICLE_HOOKS` (the talk's rules)                               |
 | `setup/main.ts`                                                 | gives the article the talk's rules (`ARTICLE_HOOKS`)                                                                                                                           |
-| `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, the camera's key, marks, the `article` settings                                                                    |
+| `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, the camera's key, marks, the `article` settings, the controls' words                                               |
+| `addons/narration/text.ts`                                      | the page plan as Markdown, for the text export                                                                                                                                 |
+| `watch/article-text.ts`                                         | the text export (`pnpm article:text`), and the page that the talk's tests check, from `slides.md`                                                                              |
 | `global-bottom.vue`, `components/FigureLayer.vue`               | in a figure, the layer is the figure's: the watch at the figure's click, the board, "tick" and "tock", the time scale                                                          |
 | `webgl/shared.ts`, `watch/instance.ts`                          | one renderer, one WebGL context, for all the figures (`sharedStage`)                                                                                                           |
 
@@ -345,10 +348,33 @@ Tested on 2026-10-13: the static page with and without JavaScript, at the
 root and at `/talks/watches/`, and the live article in Chromium, Firefox and
 WebKit (the task's `experiments/page/`).
 
+## Export the text
+
+```bash
+pnpm article:text > article.md   # the article as Markdown, in under a second
+```
+
+For a reader that takes text, such as a chatbot asked for feedback on the
+wording and the structure. It holds what the page holds, in its order: the
+headings, the history lines, the narration's Markdown as written, each aside
+as a quote, and each figure in its place, as
+`[Figure: <alt text> <its steps>. Controls: <its slider or button>.]`. A
+playing figure's captions follow it. The controls are in the words that the
+figure shows (`SLIDER_WORDS` and `BUTTON_WORDS` in `watch/article.ts`).
+
+It reads `slides.md` as the tests do, with no build and no browser, and
+plans the page with the page's own code (`slideInput` and `pagePlan` in
+`addons/narration/plan.ts`), so it has the page's figures. A copy of the
+page is not the same: it has no figures, because alt text is not copied, and
+it loses the headings' levels, the italics and the asides' marks. A print of
+the live page has blank figures (below).
+
 ## Not done yet
 
 - Math in the narration (KaTeX).
-- A print stylesheet or a PDF of the article.
+- A print stylesheet or a PDF of the article. A print of the live page draws
+  only the figures near the screen; the others are blank, with their labels
+  (Chromium, 2026-10-27).
 - Part 2 is only its heading: its one slide is hidden.
 - A whole-slide figure repeats its slide's title under the page's heading.
 - Labels do not grow on a phone; reading on a phone is a later goal.

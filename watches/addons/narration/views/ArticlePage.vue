@@ -255,11 +255,11 @@ onBeforeUnmount(() => {
         <div
           v-else-if="block.kind === 'prose'"
           class="article-prose"
-          v-html="block.html"
+          v-html="block.text"
         />
         <aside v-else-if="block.kind === 'aside'" class="article-aside">
           <p class="article-aside-title" v-html="block.title" />
-          <div v-html="block.html" />
+          <div v-html="block.text" />
         </aside>
         <!-- eslint-enable vue/no-v-html -->
         <ArticleFigure

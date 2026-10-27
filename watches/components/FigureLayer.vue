@@ -55,7 +55,13 @@ import TickTock from "./TickTock.vue";
 import TimeScale from "./TimeScale.vue";
 import { SharedView } from "../webgl/shared.ts";
 import type { Mesh } from "../webgl/scene.ts";
-import { figureMarks, figureSettings, figureState } from "../watch/article.ts";
+import {
+  BUTTON_WORDS,
+  figureMarks,
+  figureSettings,
+  figureState,
+  SLIDER_WORDS,
+} from "../watch/article.ts";
 import { boardState } from "../watch/board.ts";
 import type { BoardTarget } from "../watch/board.ts";
 import { jewelStrikes } from "../watch/callouts.ts";
@@ -311,36 +317,21 @@ onChange(
   ({ slider, button }) => {
     const controls: FigureControl[] = [];
     if (slider === "curl") {
-      controls.push({
-        kind: "slider",
-        label: "Curl the diving board into the hairspring",
-        start: "Board",
-        end: "Hairspring",
-        value: curl,
-      });
+      controls.push({ kind: "slider", ...SLIDER_WORDS.curl, value: curl });
     } else if (slider === "twist") {
       controls.push({
         kind: "slider",
-        label: "Give it a twist, then let go",
-        start: "Rest",
-        end: "Wound",
+        ...SLIDER_WORDS.twist,
         value: twist,
         release: letGo,
       });
     } else if (slider === "wind") {
-      controls.push({
-        kind: "slider",
-        label: "Wind the mainspring",
-        start: "Bare",
-        end: "Wound",
-        value: wind,
-      });
+      controls.push({ kind: "slider", ...SLIDER_WORDS.wind, value: wind });
     }
     if (button === "release") {
       controls.push({
         kind: "button",
-        label: "Let go of the outer end",
-        undo: "Start again",
+        ...BUTTON_WORDS.release,
         pressed: released,
       });
     }
