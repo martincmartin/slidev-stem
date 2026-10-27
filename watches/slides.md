@@ -729,7 +729,7 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
 The escapement gets the escape wheel turning at a precise rate.  But the second
 hand must turn once a minute, and the escape wheel turns faster than that. To
 convert a faster rotation into a slower one, a watch uses gears: a small gear
-that drives a big one.
+that meshes with a big one.
 
 [nofigure]
 
@@ -1430,7 +1430,8 @@ time, 3:1 going out and 4:1 coming back.  3:1 × 4:1 = 12:1.
 and its pinion, and the hour wheel. The rest of the watch is dimmed.]
 
 [click] The hour hand goes on the hour wheel, in the middle, under the minute
-hand. It turns clockwise, twice a day.
+hand, attached to a hollow tube (pipe) that slips _over_ the minute hand's axle.
+It turns clockwise, twice a day.
 
 [figure 6: The finished movement. The hour hand and the minute hand share the
 center of the dial; the hour hand is the shorter one. The barrel is at the
