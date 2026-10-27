@@ -18,7 +18,9 @@ frontmatter keys and measurements), read
 [`watches/tasks/2026-10-07-watch-primitives/`](../watches/tasks/2026-10-07-watch-primitives/PLAN.md)
 (pieces, fitted views, one rule for every change),
 [`watches/tasks/2026-10-11-paper-discs/`](../watches/tasks/2026-10-11-paper-discs/PLAN.md)
-(holdouts, the exact line test next to them).
+(holdouts, the exact line test next to them),
+[`watches/tasks/2026-10-27-firefox-figure-copies/`](../watches/tasks/2026-10-27-firefox-figure-copies/PLAN.md)
+(a frame's crop, and a place on a shared canvas).
 
 ## When to use it
 
@@ -70,6 +72,12 @@ it assumes, and throws with a message when an assumption is false:
   object URLs). After a context loss, the renderer makes its GL objects again.
 - If a stage's frame throws, the loop stops, and the error goes to the
   console. `start()` runs the loop again.
+- A frame draws the whole slide, or a part of it (`Frame.crop`, slide px),
+  which fills `Frame.size`. `cropCamera` gives the camera for the part.
+- `render(frame, place)` draws on the whole canvas, or at a place on a
+  larger canvas (`Place`) that other frames share, without a change to the
+  rest of it. Several pictures can then be drawn before any is copied
+  (`webgl/shared.ts`, `webgl/atlas.ts`).
 - Each mesh has its own vertex arrays, and a dynamic mesh reuses its buffers.
   This is not an oversight: with the default vertex array, a buffer deleted
   after the last line draw broke every later face draw in Chromium (the

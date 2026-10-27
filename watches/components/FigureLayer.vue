@@ -20,6 +20,10 @@
 // (`figureMarks`, watch/article.ts): a steady flash, for a reader whose eyes
 // are on the words.
 //
+// THE CROP. The canvas covers only the part of the slide that the figure
+// shows (`figure.crop`), and the view draws only that part
+// (webgl/shared.ts, "A VIEW DRAWS ITS CROP").
+//
 // THE SLIDERS (a slide's `article` settings). `curl` holds the diving board
 // at a point of its curl. `twist` winds the hairspring from rest, by up to
 // the balance's amplitude, and holds it; when the reader lets go, it swings
@@ -47,6 +51,7 @@ import {
 } from "vue";
 import { FIGURE } from "../addons/narration/figure.ts";
 import type {
+  Box,
   FigureContext,
   FigureControl,
 } from "../addons/narration/figure.ts";
@@ -54,7 +59,7 @@ import DivingBoard from "./DivingBoard.vue";
 import TickTock from "./TickTock.vue";
 import TimeScale from "./TimeScale.vue";
 import { SharedView } from "../webgl/shared.ts";
-import type { Mesh } from "../webgl/scene.ts";
+import type { Mesh, SlideRect } from "../webgl/scene.ts";
 import {
   BUTTON_WORDS,
   figureMarks,
@@ -153,6 +158,24 @@ const clicks = computed(() =>
     : figure.clicks.value,
 );
 const state = computed(() => figureState(frontmatter.value, clicks.value));
+
+/** The figure's crop as a rectangle (slide px), and the canvas's place. */
+function cropRect(box: Box): SlideRect {
+  return {
+    left: box.left,
+    top: box.top,
+    width: box.right - box.left,
+    height: box.bottom - box.top,
+  };
+}
+const crop = computed(() => cropRect(figure.crop.value));
+const canvasStyle = computed(() => ({
+  inset: "auto",
+  left: `${String(crop.value.left)}px`,
+  top: `${String(crop.value.top)}px`,
+  width: `${String(crop.value.width)}px`,
+  height: `${String(crop.value.height)}px`,
+}));
 
 const covered = ref(false);
 const hidden = computed(() => !state.value || covered.value);
@@ -257,6 +280,7 @@ onMounted(() => {
     palette.value.palette,
     figure.now,
   );
+  view.crop = crop.value;
   show(clicks.value, true);
   if (settings.value.slider === "twist") {
     model.value.twist(twistDegrees(twist.value), figure.now(), false);
@@ -312,6 +336,11 @@ onChange(
 onChange(palette, (now) => {
   if (view) view.palette = now.palette;
 });
+onChange(crop, (now) => {
+  if (!view) return;
+  view.crop = now;
+  view.redraw();
+});
 onChange(
   settings,
   ({ slider, button }) => {
@@ -347,7 +376,7 @@ onChange(
     :class="{ 'watch-off': hidden }"
     :style="palette.variables"
   >
-    <canvas ref="canvas" class="watch-canvas" />
+    <canvas ref="canvas" class="watch-canvas" :style="canvasStyle" />
     <DivingBoard
       :target="board"
       :live="true"

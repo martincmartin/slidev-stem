@@ -22,8 +22,9 @@
 
 import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
+import type { Place } from "./renderer.ts";
 import { FLASH_INKS } from "./scene.ts";
-import type { Group, Mesh, Palette, Scene } from "./scene.ts";
+import type { Group, Mesh, Palette, Scene, SlideRect } from "./scene.ts";
 import { Timeline } from "./timeline.ts";
 import type { StageState, Values } from "./timeline.ts";
 
@@ -94,18 +95,29 @@ function withExtra(
   return { keep: extra.opacity >= 0.5 ? whole : keep, fade, rest };
 }
 
+/** How a view of the article draws, besides a stage's frame (shared.ts). */
+export interface ViewDrawing {
+  /** Meshes drawn in the flash's colours for as long as they show, as a
+   *  steady flash. Default: none. */
+  readonly marked?: ReadonlySet<Mesh>;
+  /** The part of the slide that the view shows (`Frame.crop`). */
+  readonly crop?: SlideRect;
+  /** Where the picture goes on the renderer's canvas (`Renderer.render`). */
+  readonly place?: Place;
+}
+
 /** Draw one frame of a timeline and a model at `now`, `size` device px,
  *  with the renderer: the stage's frame, and each view's on a shared
- *  renderer (shared.ts). `marked`: meshes drawn in the flash's colours for
- *  as long as they show, as a steady flash (the article's figures). */
+ *  renderer (shared.ts), with `drawing`. */
 export function drawFrame<ModelState>(
   renderer: Renderer,
   timeline: Timeline,
   model: Model<ModelState>,
   now: number,
   size: [number, number],
-  marked: ReadonlySet<Mesh> = new Set(),
+  drawing: ViewDrawing = {},
 ): void {
+  const marked = drawing.marked ?? new Set<Mesh>();
   const values = timeline.valuesAt(now);
   const flashing = timeline.flashingAt(now);
   const recoloured =
@@ -114,20 +126,24 @@ export function drawFrame<ModelState>(
       : (flashing ?? (marked.size > 0 ? marked : null));
   const groupMatrices = model.frame(now, renderer);
   const { keep, fade, rest } = withExtra(values, model.extra?.(now));
-  renderer.render({
-    view: values.view,
-    tilt: values.tilt,
-    turn: values.turn,
-    groupMatrices,
-    keep,
-    fade,
-    rest,
-    ...(recoloured
-      ? { recolour: { meshes: recoloured, inks: FLASH_INKS } }
-      : {}),
-    dim: values.dim,
-    size,
-  });
+  renderer.render(
+    {
+      view: values.view,
+      tilt: values.tilt,
+      turn: values.turn,
+      groupMatrices,
+      keep,
+      fade,
+      rest,
+      ...(recoloured
+        ? { recolour: { meshes: recoloured, inks: FLASH_INKS } }
+        : {}),
+      dim: values.dim,
+      size,
+      ...(drawing.crop ? { crop: drawing.crop } : {}),
+    },
+    drawing.place,
+  );
 }
 
 export class Stage<ModelState> {

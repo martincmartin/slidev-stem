@@ -63,6 +63,9 @@ export interface FigureContext {
   readonly clicks: Readonly<Ref<number>>;
   /** Whether the figure is on or near the screen. */
   readonly near: Readonly<Ref<boolean>>;
+  /** The part of the slide that the figure shows, in slide px: a layer
+   *  need draw no more. */
+  readonly crop: Readonly<Ref<Box>>;
   /** The figure's time (ms): the page's clock while the figure plays; it
    *  stands while the figure is paused, but for a run to `busyUntil`
    *  (clock.ts). */

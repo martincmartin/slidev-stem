@@ -1,10 +1,10 @@
 // The camera (`viewProjection`): the turn about the world's z axis, before
-// the tilt.
+// the tilt; and a crop of it (`cropCamera`).
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { transformPoint } from "./math.ts";
-import { viewProjection } from "./renderer.ts";
+import { cropCamera, viewProjection } from "./renderer.ts";
 import type { Vec3, View } from "./scene.ts";
 
 const SLIDE = [980, 552] as const;
@@ -89,5 +89,36 @@ test("toCamera points along the depth: a step along it stays in place on the sli
     const [stepX, stepY, stepDepth] = transformPoint(camera.matrix, step);
     assert.ok(Math.abs(stepX - x) < 1e-6 && Math.abs(stepY - y) < 1e-6);
     assert.ok(stepDepth < depth, "nearer: clip z is smaller");
+  }
+});
+
+test("a crop camera puts the crop's part of the slide on the whole picture", () => {
+  const crop = { left: 210, top: 40, width: 380, height: 214 };
+  for (const angles of [
+    { tilt: 0, turn: 0 },
+    { tilt: 30, turn: 90 },
+  ]) {
+    const camera = viewProjection(VIEW, angles, SLIDE);
+    const cropped = cropCamera(camera, crop, SLIDE);
+    assert.deepEqual(cropped.toCamera, camera.toCamera);
+    for (const point of POINTS) {
+      const [x, y, z] = transformPoint(camera.matrix, point);
+      // slide px, from the top left
+      const slideX = ((x + 1) / 2) * SLIDE[0];
+      const slideY = ((1 - y) / 2) * SLIDE[1];
+      const [croppedX, croppedY, croppedZ] = transformPoint(
+        cropped.matrix,
+        point,
+      );
+      assert.ok(
+        Math.abs(croppedX - (((slideX - crop.left) / crop.width) * 2 - 1)) <
+          1e-4,
+      );
+      assert.ok(
+        Math.abs(croppedY - (1 - ((slideY - crop.top) / crop.height) * 2)) <
+          1e-4,
+      );
+      assert.ok(Math.abs(croppedZ - z) < 1e-6);
+    }
   }
 });

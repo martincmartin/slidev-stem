@@ -24,9 +24,10 @@
 // round caps, so a polyline's joins are round, and analytic antialiasing.
 // Each segment is a capsule of its own, so at a join two caps overlap: a line
 // at opacity 0.5 is 1 - 0.5^2 = 0.75 there. Give a line with joins opacity 1.
-// Line widths are px of the slide (`Frame.size` over `Scene.slide`), at every
-// zoom of the camera. A silhouette edge is drawn only where the surface turns
-// from facing the camera to facing away.
+// Line widths are px of the slide (`Frame.size` over the width of
+// `Frame.crop`, the slide's by default), at every zoom of the camera. A
+// silhouette edge is drawn only where the surface turns from facing the
+// camera to facing away.
 //
 // Hidden lines: the centre-line test. The faces are drawn into a depth
 // texture first. Each fragment of a line takes the point of the line's
@@ -55,6 +56,11 @@
 // rest" has only the meshes in `fade` and `keep`: the meshes that fade in or
 // out, and the meshes outside both stay out.
 //
+// A crop and a place: a frame can draw a part of the slide (`Frame.crop`),
+// and `render` can put its picture at a place on a canvas that other frames
+// share (`Place`). So the article's figures draw only what they show, and
+// copy each picture from one canvas, once all are drawn (shared.ts).
+//
 // Ownership: a renderer is the only user of its canvas's context, until
 // `dispose()`. It sets the GL state that it needs at the start of each frame,
 // binds a vertex array object for each draw, and leaves the default bindings
@@ -72,6 +78,7 @@ import type {
   Palette,
   Recolour,
   Scene,
+  SlideRect,
   View,
   Vec3,
 } from "./scene.ts";
@@ -283,9 +290,10 @@ precision highp float;
 uniform sampler2D withRest;
 uniform sampler2D withoutRest;
 uniform float rest;
+uniform ivec2 corner;  // the picture's bottom left on the canvas, device px
 out vec4 fragColor;
 void main() {
-  ivec2 at = ivec2(gl_FragCoord.xy);
+  ivec2 at = ivec2(gl_FragCoord.xy) - corner;
   fragColor = mix(texelFetch(withoutRest, at, 0), texelFetch(withRest, at, 0), rest);
 }`;
 
@@ -413,7 +421,39 @@ export function viewProjection(
   };
 }
 
+/** The camera that maps `crop`, a part of the slide, onto the whole picture:
+ *  clip x and y scaled and moved, depth as it was. Slide y goes down, clip y
+ *  up. */
+export function cropCamera(
+  camera: Camera,
+  crop: SlideRect,
+  slide: readonly [number, number],
+): Camera {
+  const [width, height] = slide;
+  const scaleX = width / crop.width;
+  const scaleY = height / crop.height;
+  const matrix = new Float32Array(camera.matrix);
+  for (const column of [0, 1, 2, 3]) {
+    matrix[column * 4] = at(camera.matrix, column * 4) * scaleX;
+    matrix[column * 4 + 1] = at(camera.matrix, column * 4 + 1) * scaleY;
+  }
+  // the matrix's last row is (0, 0, 0, 1): the moves are in its last column
+  matrix[12] = at(matrix, 12) + (width - 2 * crop.left) / crop.width - 1;
+  matrix[13] = at(matrix, 13) + 1 - scaleY + (2 * crop.top) / crop.height;
+  return { matrix, toCamera: camera.toCamera };
+}
+
 // ---- the renderer --------------------------------------------------------------------
+/** Where `render` puts its picture: its top left at `at`, in device px from
+ *  the top left of the canvas, which the renderer makes `canvas` device px.
+ *  Frames that share the canvas each take a place of their own on it (the
+ *  article's figures: webgl/shared.ts). Default: the picture fills the
+ *  canvas. */
+export interface Place {
+  readonly canvas: readonly [number, number];
+  readonly at: readonly [number, number];
+}
+
 export interface RendererOptions {
   /** For screenshots and stills. */
   preserveDrawingBuffer?: boolean;
@@ -778,7 +818,7 @@ export class Renderer {
           attributes: LINE_ATTRIBUTES,
         }),
         mix: this.compile(MIX_VS, MIX_FS, {
-          uniforms: ["withRest", "withoutRest", "rest"],
+          uniforms: ["withRest", "withoutRest", "rest", "corner"],
           attributes: [],
         }),
         corners,
@@ -1193,19 +1233,34 @@ export class Renderer {
         `${mesh.name}'s dim ${String(weight)} is outside 0..1`,
       );
     }
+    const { slide } = this.scene;
+    const crop = frame.crop;
+    if (crop) {
+      checkFinite(
+        [crop.left, crop.top, crop.width, crop.height],
+        "the frame's crop",
+      );
+      check(
+        crop.width > 0 && crop.height > 0,
+        `a crop of ${String(crop.width)} x ${String(crop.height)} slide px`,
+      );
+    }
+    const camera = viewProjection(view, frame, slide);
     return {
-      camera: viewProjection(view, frame, this.scene.slide),
+      camera: crop ? cropCamera(camera, crop, slide) : camera,
       models,
       size: [width, height],
-      pixelsPerSlidePx: width / this.scene.slide[0],
+      pixelsPerSlidePx: width / (crop?.width ?? slide[0]),
       recolour,
       dim,
     };
   }
 
-  /** Draw one frame. It sets the canvas's size to `frame.size`: give it the
-   *  slide's aspect ratio, or the picture is stretched. */
-  render(frame: Frame): void {
+  /** Draw one frame at `place` on the canvas, which it gives the place's
+   *  size; by default, the frame fills a canvas of `frame.size`. Give the
+   *  frame the aspect ratio of its crop (the slide's, by default), or the
+   *  picture is stretched. */
+  render(frame: Frame, place?: Place): void {
     check(!this.disposed, "the renderer is disposed");
     const keep = frame.keep ?? new Set<Mesh>();
     for (const mesh of keep) {
@@ -1226,10 +1281,25 @@ export class Renderer {
     const resources = this.resources;
     if (resources === null) return; // lost while it was made
     const [width, height] = picture.size;
-    if (this.canvas.width !== width || this.canvas.height !== height) {
-      this.canvas.width = width;
-      this.canvas.height = height;
+    const [canvasWidth, canvasHeight] = place?.canvas ?? picture.size;
+    const [left, top] = place?.at ?? [0, 0];
+    check(
+      [canvasWidth, canvasHeight, left, top].every(Number.isInteger) &&
+        left >= 0 &&
+        top >= 0 &&
+        left + width <= canvasWidth &&
+        top + height <= canvasHeight,
+      `a picture of ${String(width)} x ${String(height)} at (${String(left)}, ${String(top)}) on a canvas of ${String(canvasWidth)} x ${String(canvasHeight)} device px`,
+    );
+    if (
+      this.canvas.width !== canvasWidth ||
+      this.canvas.height !== canvasHeight
+    ) {
+      this.canvas.width = canvasWidth;
+      this.canvas.height = canvasHeight;
     }
+    // the picture's bottom left on the canvas, as GL counts: from the bottom
+    const bottom = canvasHeight - top - height;
     this.setState();
     try {
       const kept = shown.filter(({ mesh }) => keep.has(mesh));
@@ -1251,10 +1321,10 @@ export class Renderer {
           0,
           width,
           height,
-          0,
-          0,
-          width,
-          height,
+          left,
+          bottom,
+          left + width,
+          bottom + height,
           gl.COLOR_BUFFER_BIT,
           gl.NEAREST,
         );
@@ -1263,7 +1333,7 @@ export class Renderer {
       const withRest = this.draw(resources, 0, faded, picture);
       const withoutRest = this.draw(resources, 1, kept, picture);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-      gl.viewport(0, 0, width, height);
+      gl.viewport(left, bottom, width, height);
       gl.disable(gl.DEPTH_TEST);
       gl.disable(gl.BLEND);
       const program = resources.mix;
@@ -1276,6 +1346,7 @@ export class Renderer {
       gl.uniform1i(uniform(program, "withRest"), 0);
       gl.uniform1i(uniform(program, "withoutRest"), 1);
       gl.uniform1f(uniform(program, "rest"), rest);
+      gl.uniform2i(uniform(program, "corner"), left, bottom);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     } catch (error) {
       if (!(error instanceof ContextLost)) throw error;

@@ -190,6 +190,10 @@ export interface Frame extends CameraAngles {
   readonly fade?: ReadonlySet<Mesh>;
   /** Device px, whole numbers. */
   readonly size: readonly [number, number];
+  /** The part of the slide that the frame draws, in slide px: it fills
+   *  `size` (an article figure draws only its crop). Default: the whole
+   *  slide. */
+  readonly crop?: SlideRect;
   /** Leave out the meshes with `inDrawing` false. */
   readonly drawingOnly?: boolean;
   /** Draw these meshes with other inks: each ink that `inks` has goes to its
@@ -200,6 +204,14 @@ export interface Frame extends CameraAngles {
    *  x paper`, so a dimmed part looks as it would at that opacity over the
    *  paper, but it still hides what is under it. Default: none. */
   readonly dim?: ReadonlyMap<Mesh, number>;
+}
+
+/** A rectangle on the slide, in slide px from its top left. */
+export interface SlideRect {
+  readonly left: number;
+  readonly top: number;
+  readonly width: number;
+  readonly height: number;
 }
 
 export interface Recolour {

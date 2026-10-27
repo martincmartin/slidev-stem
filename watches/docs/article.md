@@ -17,7 +17,10 @@ build the article or export its text.
 [`tasks/2026-10-22-article-prerender-speed/`](../tasks/2026-10-22-article-prerender-speed/PLAN.md)
 (why the prerender was slow),
 [`tasks/2026-10-25-paused-figure-steps/`](../tasks/2026-10-25-paused-figure-steps/PLAN.md)
-(steps in a paused figure, and the figure's own time).
+(steps in a paused figure, and the figure's own time),
+[`tasks/2026-10-27-firefox-figure-copies/`](../tasks/2026-10-27-firefox-figure-copies/PLAN.md)
+(the figures' sheets and crops: a blink and a slow spring in Firefox for
+Android).
 
 ## What a reader gets
 
@@ -31,7 +34,8 @@ build the article or export its text.
 - For each slide, its narration, its asides (in the right margin on a window
   at least 1,280 px wide, in the text on a narrower one) and its figures.
 - **A figure is the slide itself, live**, at one click: the WebGL watch, the
-  diving board, the labels. It runs while it is on or near the screen.
+  diving board, the labels. It runs while it is on the screen. Near the
+  screen, it gets one picture, so that it is not blank when it comes on.
 - Some figures have controls: steps (‹ ›), a slider, a button, or a tour that
   plays by itself, with captions. A figure that moves by itself, or plays, has a
   pause button; a still one has none (`still` in
@@ -298,11 +302,26 @@ again. The flash after each move stays: the reader is watching the figure.
 
 **One renderer for the page.** A browser keeps about 16 WebGL contexts on a
 page. Each figure is a 2D canvas, with its own timeline and model, and the
-one renderer draws each figure that is near the screen and copies the
-picture (`webgl/shared.ts`). A figure draws what the talk's stage would
+one renderer draws the figures on one hidden canvas, and each figure copies
+its picture (`webgl/shared.ts`). A figure draws what the talk's stage would
 draw: both call `drawFrame` (`webgl/stage.ts`). Measured with 24 figures: one
 context and 1.7 MB of GPU buffers, against 24 contexts, 8 of them lost, for
 a context each (the task's `PLAN.md`, "Follow-up (2026-10-04)").
+
+- **Only the figures on the screen** are drawn at each frame. A figure
+  within 200 px of the screen is drawn once when it comes near.
+- **All the pictures of a frame, then all the copies.** Each figure of a
+  frame has its own place on the hidden canvas (a sheet, `webgl/atlas.ts`).
+  Not an oversight: when the figures took turns on one picture, Firefox for
+  Android copied, at times, the figure before, and parts of the Gear Train
+  slide's figure blinked.
+- **A figure draws its crop only** (`Frame.crop`), and its canvas covers just
+  that part of the slide. A canvas over the whole slide was up to 2.8 times
+  as large, and the Mainspring slide's spring ran at 2–3 frames a second in
+  Firefox for Android, which copies each picture through the CPU.
+
+The evidence is in
+[`tasks/2026-10-27-firefox-figure-copies/`](../tasks/2026-10-27-firefox-figure-copies/PLAN.md).
 
 **The addon is in the talk for now.** It lives in `addons/narration/` so that
 the talk's type check, lint and tests cover it, with the talk's stubs of

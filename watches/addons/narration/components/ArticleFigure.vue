@@ -89,16 +89,6 @@ const now = (): number => clock.time(performance.now());
  *  `busyUntil`. */
 const moving = ref(true);
 const jumps = computed(() => paused.value && props.reducedMotion);
-provide(FIGURE, {
-  clicks,
-  near,
-  now,
-  moving,
-  jumps,
-  busyUntil,
-  controls,
-  still,
-});
 const pausable = computed(() => props.figure.play || !still.value);
 
 /** px: room around a label. */
@@ -129,6 +119,17 @@ const crop = computed<Box>(() => {
     right: Math.min(whole.right, box.right),
     bottom: Math.min(whole.bottom, box.bottom),
   };
+});
+provide(FIGURE, {
+  clicks,
+  near,
+  crop,
+  now,
+  moving,
+  jumps,
+  busyUntil,
+  controls,
+  still,
 });
 const cropWidth = computed(() => crop.value.right - crop.value.left);
 const cropHeight = computed(() => crop.value.bottom - crop.value.top);
