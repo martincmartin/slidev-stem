@@ -58,6 +58,10 @@ Each tool, with what it needs in brackets, and what it answers:
   `v-click` that a slide gives it in a build: no comment beside its one root
   element; is each lint disable in its template narrow (a block disable has
   its enable), named and explained
+- `spellcheck.ts` (cspell, codespell, the talk's Slidev parser): is the text
+  that the audience and the readers see (slides, speaker notes, narration)
+  free of unknown words and British spellings; a talk's own words are in its
+  `spelling-words.txt`
 - `check_python.py` (ruff, mypy, pyright): do these Python files pass the
   house's checks (default: every tool here)
 - `doccheck.py` (stdlib): do the docs' links and anchors resolve, does each
@@ -107,6 +111,7 @@ pnpm offline-check <build dir> --browser webkit 1:0
 pnpm navcheck <build dir>                # diagnostic; also accepts a dev server URL
 pnpm vuecheck watches                        # the Vue components of a talk
 pnpm vuecheck themes path/to/One.vue         # ... or of these paths
+pnpm spellcheck watches watches/slides.md    # the shown text of a talk's deck files
 uv run tools/check_python.py      # after you change a tool
 tools/capture_outputs.sh /tmp/before watches  # before you change a tool; again after,
 diff -r /tmp/before /tmp/after                # ... then compare: a refactor changes nothing

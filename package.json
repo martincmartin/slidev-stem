@@ -21,6 +21,7 @@
     "lint": "eslint --max-warnings 0 tools",
     "test": "node --test \"tools/*.test.ts\"",
     "vuecheck": "node tools/vuecheck.ts",
+    "spellcheck": "node tools/spellcheck.ts",
     "smokecheck": "node tools/smokecheck.ts",
     "navcheck": "node tools/navcheck.ts",
     "offline-check": "node tools/offline-check.ts"
@@ -31,6 +32,7 @@
     "@types/node": "^26.6.5",
     "@vue/compiler-core": "^3.5.44",
     "@vue/compiler-sfc": "^3.5.44",
+    "cspell": "^10.4.0",
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "playwright-chromium": "1.64.1",

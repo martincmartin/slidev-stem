@@ -12,7 +12,7 @@
 The project comes from the nearest pyproject.toml. No run checks other talks.
 The house run checks Python and TypeScript, formatting, tests, documentation,
 Vue components, and palette gates. A talk run also checks its types, lint,
-tests, SVGs, generated art, and build.
+tests, SVGs, generated art, spelling, and build.
 Scripts in package.json select optional scene, stills, and print checks.
 Legibility checks calculate the design-venue gate. Full reports remain available
 through barroom.py. Motion checks retain every sample in their original plans.
@@ -71,6 +71,7 @@ from check_python import (
     run,
     uv_run,
 )
+from talkcheck import deck_files
 
 
 def prettier(directory: Path, fix: bool) -> Check:
@@ -105,6 +106,17 @@ def doccheck(directory: Path, names: Sequence[str]) -> Check:
 def vuecheck(path: str) -> Check:
     """The Vue component check (vuecheck.ts) of the components in `path`."""
     return Check("vue roots", STEM, ("pnpm", "--silent", "vuecheck", path))
+
+
+def spellcheck(directory: Path) -> Check:
+    """The spelling check (spellcheck.ts) of the talk's deck files: the text
+    that the audience and the readers see."""
+    files = (str(lib.display_path(file)) for file in deck_files(directory))
+    return Check(
+        "spelling",
+        STEM,
+        ("pnpm", "--silent", "spellcheck", str(lib.display_path(directory)), *files),
+    )
 
 
 def house_groups(fix: bool) -> list[list[Item]]:
@@ -427,6 +439,7 @@ def talk_groups(
         Check("palette", STEM, uv_run("tools/palette.py", "--talk", talk)),
         Check("talk setup", STEM, uv_run("tools/talkcheck.py", talk)),
         vuecheck(talk),
+        spellcheck(directory),
     ]
     build: list[Item] = [
         Check("build", directory, ("pnpm", "build", "--out", str(deck)))

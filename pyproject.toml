@@ -18,8 +18,10 @@ dependencies = [
 ]
 
 [dependency-groups]
-# The style and type checkers that tools/check_python.py runs.
+# The style and type checkers that tools/check_python.py runs, and codespell,
+# which tools/spellcheck.ts runs.
 dev = [
+  "codespell>=2.4.3",
   "mypy>=2.4.0",
   "pyright>=1.1.414",
   "pytest>=9.1.1",

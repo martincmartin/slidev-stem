@@ -349,7 +349,11 @@ Full validation runs every check and exits non-zero if any check fails:
   scripts match what the scripts write (`art:generated`). It checks the two
   silent traps in `../AGENTS.md`, a missing `pnpm-workspace.yaml` and a deck
   file that `.prettierrc` misses (`talkcheck`), and the talk's Vue components
-  with `vuecheck`, as the root run does. It builds the deck, and then
+  with `vuecheck`, as the root run does. It checks the spelling of the text
+  that the audience and the readers see, in each deck file
+  (`spellcheck.ts`): no word that US English does not know, and no British
+  spelling. A word that is right but unknown, such as a name, goes in the
+  talk's `spelling-words.txt`. It builds the deck, and then
   walks every slide and click in Chromium, Firefox, and WebKit with
   `smokecheck.ts`, with every outside request blocked.
 

@@ -178,8 +178,23 @@ def test_quick_mode_keeps_generation_and_build_but_omits_browser_checks(
     )
     labels = [item.label for group in groups for item in group]
     assert "generated" in labels and "build" in labels and "artcheck" in labels
+    assert "spelling" in labels
     assert not {"stills", "print", "motion", "barroom"}.intersection(labels)
     assert not exclusive
+
+
+def test_spelling_checks_the_deck_files_only(tmp_path: Path) -> None:
+    talk = tmp_path / "talk"
+    (talk / "docs").mkdir(parents=True)
+    (talk / "slides.md").write_text("---\ntitle: A\n---\n")
+    (talk / "part.md").write_text("---\nlayout: b\n---\n")
+    (talk / "README.md").write_text("---\nnot: a deck file\n---\n")
+    (talk / "docs" / "notes.md").write_text("---\nnot: a deck file\n---\n")
+    check = validate.spellcheck(talk)
+    talk_path, *files = check.command[3:]
+    assert check.command[:3] == ("pnpm", "--silent", "spellcheck")
+    assert Path(talk_path).resolve() == talk.resolve()
+    assert sorted(Path(file).name for file in files) == ["part.md", "slides.md"]
 
 
 def test_json_report_exposes_timings_and_failures(

@@ -26,6 +26,13 @@ first; the rest of the evening is social.
   in the middle of a slide can catch up. Text that is no longer the focus
   dims; it does not leave. Remove text when its room is needed, or when it
   no longer agrees with the picture.
+- Use American spelling and words in what the audience or a reader sees or
+  hears: the slides, the narration (the article) and the speaker notes. For
+  example, "color", "center", "forever", "counterclockwise" and "around", not
+  "colour", "centre", "for ever", "anticlockwise" and "round". The audience
+  is American. Code, its comments and the frontmatter's names keep their
+  British spelling ("colour", "centre wheel"): only the shown text changes.
+  Validation checks the shown text (`docs/talks.md`, "Check your work").
 - Name a slide by its title, not its number, in docs, code and messages: "the
   Escapement slide", not "slide 4". A number changes when a slide is added,
   moved, hidden or previewed. A tool may number the slides of a walk.
