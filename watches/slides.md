@@ -126,7 +126,7 @@ the rest of the watch follows that beat.
 [click] Why does a spring swing? Think of a diving board. Bend it down, and
 it pushes back: an _elastic restoring force_. Let go, and it does not stop at
 straight. It overshoots, bends the other way, and comes back again: it
-_oscillates_. With no friction, it would oscillate for ever.
+_oscillates_. With no friction, it would oscillate forever.
 
 [click] A hairspring is a diving board rolled up. The board's rest shape is a
 straight line; the hairspring's is a spiral. Take hold of the slider under
@@ -255,7 +255,7 @@ pace that the gears can count.
 > [!aside] Why a wheel, and not a disc?
 >
 > Mass at the rim counts most, like a figure skater who spins slower with her
-> arms out. Old balance wheels had screws round the rim, and watchmakers moved
+> arms out. Old balance wheels had screws around the rim, and watchmakers moved
 > them in or out to make the watch run slower or faster. The swing also takes
 > about the same time whether it swings through a big angle or small angle
 > (_isochronism_). That comes from the spring and the mass together, and it is
@@ -404,7 +404,7 @@ where the name comes from.
 jewel_, which sits in the notch at the end of the fork.  It's actually a
 synthetic ruby or sapphire, so it really is a jewel, a precious stone.
 
-[figure: The escapement at rest, labelled: the escape wheel, the pallet
+[figure: The escapement at rest, labeled: the escape wheel, the pallet
 fork, and the impulse jewel in the fork's notch.]
 
 As the balance swings through the middle, the jewel strikes the fork and
@@ -526,7 +526,7 @@ rule for the other two hands. -->
 <!-- narration
 
 Before we go on, something that trips people up until they think it through. How
-long does the second hand take to go once round the dial?
+long does the second hand take to go once around the dial?
 
 [figure 3: The second hand alone, pinned on its arbor, ticking once a
 second.]
@@ -546,7 +546,7 @@ counts, not for how long it takes to make a full 360° turn.
 >
 > On most watches the second hand is in the middle, with the minute and hour
 > hands.  But putting three hands all on the same shaft makes the diagram
-> confusing, and many older watches had their second hand off centre.
+> confusing, and many older watches had their second hand off center.
 > Watchmakers call it _small seconds_.
 
 -->
@@ -717,7 +717,7 @@ that drives a big one.
 [click]
 
 [figure 4: Two gears, turning: a small gear with eight teeth drives a big
-gear with sixteen. Four teeth on each gear are coloured.]
+gear with sixteen. Four teeth on each gear are colored.]
 
 > [!aside] Must the teeth really be the same size?
 > Strictly, the _pitch_ must match: a tooth and its gap on one wheel must be as
@@ -1158,7 +1158,7 @@ One spring to power them all
 
 <!-- narration
 
-[figure: The bare mainspring: a long ribbon of steel, coiled round its arbor,
+[figure: The bare mainspring: a long ribbon of steel, coiled around its arbor,
 at rest.]
 
 This is a spiral spring, like the hairspring.  But instead of swinging back and
@@ -1182,7 +1182,7 @@ mainspring, let go of the outer end by pressing the button.
 [figure: The wound mainspring, its outer end held by the stud. A button lets
 go of the outer end.]
 
-The block is gone, and the outer end swings round until the spring lies on its
+The block is gone, and the outer end swings around until the spring lies on its
 rest shape again. That fling is the energy that the winding put in.
 
 A watch harnesses that force by attaching the spring's outer end to a toothed drum called the _barrel_.
@@ -1590,7 +1590,7 @@ Two gears run the hour hand.
 
 [click] Third wheel drives fourth wheel & second hand.
 
-[click] Fourth weel drives escape wheel.
+[click] Fourth wheel drives escape wheel.
 
 [click] Escape wheel wants to turn, pallet stops it.  Once/sec, a tooth escapes.
 

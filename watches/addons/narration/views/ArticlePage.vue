@@ -347,6 +347,10 @@ html.article-mode #app {
   color: var(--palette-ink);
   text-decoration: underline;
   cursor: pointer;
+  /* a control, not prose: a copy of the page leaves it out, as it leaves out
+     a figure's words (ArticleFigure.vue) */
+  -webkit-user-select: none;
+  user-select: none;
 }
 .article-contents {
   margin: 2em 0;

@@ -35,6 +35,12 @@ build the article.
   plays by itself, with captions. A figure that moves by itself, or plays, has a
   pause button; a still one has none (`still` in
   `addons/narration/figure.ts`).
+- **A copy of the page is its prose**: the headings, the narration, the
+  asides and the captions. A figure's words (its labels, the diving board's
+  sentence also where it has faded out, its controls) and the "Pause them
+  all" button cannot be selected (`user-select: none` in
+  `ArticleFigure.vue` and `ArticlePage.vue`). So a reader can paste the page
+  into a spell checker, or quote it.
 
 `pnpm dev` prints the article's URL last, after Slidev's own list and its
 shortcuts (`addons/narration/vite.config.ts`). Slidev has no hook to add a

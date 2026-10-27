@@ -379,6 +379,12 @@ watch([step, near, paused, busyUntil], schedule);
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* A copy of the page takes the prose, not the figures' words: a label, the
+     board's sentence (also where it has faded out), a control's words. So a
+     reader can paste the text into a spell checker or quote it. Safari needs
+     the prefix. */
+  -webkit-user-select: none;
+  user-select: none;
 }
 .article-figure-frame {
   position: relative;
@@ -389,6 +395,11 @@ watch([step, near, paused, busyUntil], schedule);
   left: 0;
   top: 0;
   transform-origin: 0 0;
+}
+/* the caption is narration */
+.article-figure-caption {
+  -webkit-user-select: text;
+  user-select: text;
 }
 /* Slidev's print page puts each slide on a page of its own; a figure flows. */
 .article-figure-slide .print-slide-container {
