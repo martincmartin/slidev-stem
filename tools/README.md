@@ -69,6 +69,8 @@ Each tool, with what it needs in brackets, and what it answers:
 - `pages_preview.py` (stdlib, pnpm): what does a talk look like on GitHub
   Pages: it builds the talk as the publish workflow does, and serves it as Pages
   does, links to one slide included
+- `publish_plan.py` (stdlib, Python 3.12): which talks must a push to `main`
+  publish on GitHub Pages; the publish workflow runs it
 - `validate.py` (all of the above): does this project (stem/ or a talk) pass its
   checks; full or quick mode
 - `flatten_pnpm_list.py` (stdlib): every resolved JS package, one `name@version`

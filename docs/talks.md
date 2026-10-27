@@ -10,7 +10,8 @@ publish a talk, start a new talk, add a deck file, or change a house item.
 [`tasks/2026-09-28-validate/`](../tasks/2026-09-28-validate/PLAN.md),
 [`tasks/2026-10-06-validation-speed/`](../tasks/2026-10-06-validation-speed/PLAN.md),
 [`tasks/2026-10-07-validation-reuse/`](../tasks/2026-10-07-validation-reuse/PLAN.md),
-[`tasks/2026-10-10-cloud-validation/`](../tasks/2026-10-10-cloud-validation/README.md).
+[`tasks/2026-10-10-cloud-validation/`](../tasks/2026-10-10-cloud-validation/README.md),
+[`tasks/2026-10-27-publish-on-push/`](../tasks/2026-10-27-publish-on-push/PLAN.md).
 
 Each talk is a separate project, with its own package versions. A talk that you
 gave is tagged, and a talk that you retired is frozen. This page tells you why,
@@ -259,25 +260,42 @@ directory there: `<talk>/` for the slides, and `<talk>/article/` if it has an
 article. The site's own pages are in `site/`: the root page `index.html`, and
 `404.html`.
 
-**Publish the version that you give.** Push its tag:
+**A push to `main` publishes each talk whose pages it can change.**
+`tools/publish_plan.py` chooses the talks; the workflow
+`.github/workflows/publish.yml` builds them from `main` and publishes them.
+Look at its run in the repository's Actions tab. A talk is published when:
 
-1. Look at the talk as Pages will show it. At the root, run
-   `uv run tools/pages_preview.py <talk>`, and open the URL that it prints. It
-   builds the talk as the workflow does. Click through the slides and open a
-   link to one slide: `slidev dev` can show a slide right that a build shows
-   wrong.
-2. Tag the talk, as in "Tag, rebuild or retire a talk": the checks first, then
-   `git tag -a given/<talk>/<YYYY-MM-DD>`.
-3. Push `main`, then the tag: `git push origin main given/<talk>/<YYYY-MM-DD>`.
-4. The workflow `.github/workflows/publish.yml` builds the talk at the tag
-   and publishes it. Look at its run in the repository's Actions tab, then
-   open the talk's page.
+- **The talk is in progress, and a file that its pages read changed since its
+  last build.** That is a file of the talk, or a house file outside the talks,
+  such as `themes/` or `site/`. Docs, tasks, tests, Python, a talk's `art/`
+  and Markdown other than the deck files do not count. The lists are
+  `TALK_UNREAD` and `HOUSE_UNREAD` in the script: anything that they do not
+  name counts, so a new kind of file publishes until it is listed.
+- **The talk is retired, and the push changes a file of the talk that its
+  pages read.** A house change does not publish a retired talk: `main` need
+  not build it, so its page keeps its last build and can go stale. A change
+  to the talk itself means that someone changed a frozen talk, so the run
+  tries a build. If the build fails, the page keeps its last build, and the
+  next push does not try again unless it changes the talk too.
 
-**Publish between talks.** For example, to publish a fix to the article,
-look at the preview first (step 1), then run the workflow by hand: in the
-Actions tab, choose "Publish a talk", then "Run workflow". Give the talk's
-directory and a ref (`main`, a tag or a commit). With the GitHub CLI:
-`gh workflow run publish.yml -f talk=<talk> -f ref=main`.
+**Look before you push.** At the root, run
+`uv run tools/pages_preview.py <talk> --article`, and open the URL that it
+prints. It builds the talk as the workflow does. Click through the slides,
+open a link to one slide, and read the article: `slidev dev` can show a page
+right that a build shows wrong.
+
+**Publish the version that you give.** Tag the talk, as in "Tag, rebuild or
+retire a talk": the checks first, then `git tag -a given/<talk>/<YYYY-MM-DD>`.
+Push `main`, then the tag: `git push origin main given/<talk>/<YYYY-MM-DD>`.
+The workflow builds the talk at the tag and publishes it. The next push to
+`main` that changes the talk's pages replaces it: the tag still rebuilds the
+version that you gave.
+
+**Publish by hand.** In the Actions tab, choose "Publish talks", then "Run
+workflow". Give the talk's directory and a ref (`main`, a tag or a commit).
+With the GitHub CLI: `gh workflow run publish.yml -f talk=<talk> -f ref=main`.
+A run by hand, or by tag, refuses a retired talk, except from its `retired/`
+tag.
 
 **The first time a talk is published,** add it to `site/index.html` on
 `main`. A run copies that page from the default branch, not from the ref that
@@ -285,14 +303,23 @@ it builds.
 
 How a run works, and why:
 
-- **It builds one talk, from the files of its ref.** The house theme, the
-  tools and the lockfiles come from the ref, not from `main`. It runs
+- **It builds each talk from the files of its ref.** The house theme, the
+  tools and the lockfiles come from the ref. For each talk it runs
   `pnpm build --base /<repo>/<talk>/`, then the talk's `prerender` script if
-  it has one, and publishes the talk's `dist/`.
-- **It changes only that talk's directory.** The site is the `gh-pages`
-  branch. A retired talk keeps the build that it was last published with, so a
-  change to `main` that breaks the talk does not break its page. A run refuses
-  a retired talk, except from its `retired/` tag.
+  it has one, and publishes the talk's `dist/`. Each talk builds in a shell of
+  its own: a talk that fails does not stop the others, and the run fails after
+  it publishes the rest.
+- **It changes only the directories of the talks that it builds.** The site
+  is the `gh-pages` branch. A talk that a run does not build keeps the build
+  that it was last published with.
+- **Each talk's directory records its build,** in `<talk>/build.json`: the ref
+  and the commit. A push compares a talk in progress with that commit, not
+  with the commit before the push. So when GitHub cancels a pending run,
+  because a newer push replaces it, the newer run still sees its changes. A
+  talk with no `build.json` is published.
+- **The plan runs with the runner's `python3`,** not with uv: the script uses
+  only the standard library, and Ruff checks it as Python 3.12
+  (`per-file-target-version` in `pyproject.toml`).
 - **`gh-pages` holds one commit.** Each run force-pushes the whole site as a
   new commit, so the branch does not grow with each publish. Each published
   version can be built again from its ref.

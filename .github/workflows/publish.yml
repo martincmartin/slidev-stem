@@ -1,12 +1,18 @@
-# Publish one talk to GitHub Pages, at /<repo>/<talk>/. Each talk has its own
-# directory on the gh-pages branch, and a run replaces only that directory, so
-# a retired talk keeps the build that it was last published with. The build
-# uses the files of the tag or ref, not of main. See docs/talks.md, "Publish a
-# talk".
-name: Publish a talk
+# Publish talks to GitHub Pages, each at /<repo>/<talk>/. Each talk has its
+# own directory on the gh-pages branch, and a run replaces only the directories
+# of the talks that it builds: a talk that it does not build keeps the build
+# that it was last published with. See docs/talks.md, "Publish a talk".
+#
+# - A push to main publishes each talk whose pages it can change, as
+#   tools/publish_plan.py chooses: a talk in progress for a change to it or to
+#   the house since its last build; a retired talk only for a change to it.
+# - A push of a given/<talk>/<date> tag publishes that talk, at the tag.
+# - A run by hand publishes one talk, at a ref.
+name: Publish talks
 
 on:
   push:
+    branches: [main]
     tags: ["given/*/*"]
   workflow_dispatch:
     inputs:
@@ -21,7 +27,9 @@ on:
 permissions:
   contents: write
 
-# Two runs at once would each push a gh-pages without the other's talk.
+# Two runs at once would each push a gh-pages without the other's talks. A
+# newer run replaces a pending one; publish_plan.py compares each talk with
+# its last build, not with the push, so the newer run publishes its changes.
 concurrency:
   group: gh-pages
   cancel-in-progress: false
@@ -32,103 +40,146 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: ${{ inputs.ref || github.ref }}
+          ref: ${{ inputs.ref || github.sha }}
           path: src
           fetch-depth: 0
 
-      - name: Find the talk
+      - name: Check out the site
         working-directory: src
-        env:
-          INPUT_TALK: ${{ inputs.talk }}
-          INPUT_REF: ${{ inputs.ref }}
-        run: |
-          set -euo pipefail
-          if [ -n "$INPUT_TALK" ]; then
-            talk="$INPUT_TALK" ref="$INPUT_REF"
-          else
-            talk="$(echo "$GITHUB_REF_NAME" | cut -d/ -f2)" ref="$GITHUB_REF_NAME"
-          fi
-          case "$talk" in
-            "" | *[!a-z0-9-]*) echo "not a talk name: '$talk'" >&2; exit 1 ;;
-          esac
-          if [ ! -f "$talk/package.json" ]; then
-            echo "no talk '$talk' at $ref" >&2; exit 1
-          fi
-          # A retired talk is built only from its retired tag: main may no
-          # longer build it (AGENTS.md, "Given talks, retired talks and
-          # versions").
-          retired="$(git tag -l "retired/$talk/*")"
-          if [ -n "$retired" ] && ! echo "$retired" | grep -qxF "$ref"; then
-            echo "$talk is retired: publish it from its tag ($retired)" >&2
-            exit 1
-          fi
-          {
-            echo "TALK=$talk"
-            echo "REF=$ref"
-            echo "PNPM_VERSION=$(jq -r .devEngines.packageManager.version "$talk/package.json")"
-          } >> "$GITHUB_ENV"
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version: lts/*
-
-      # pnpm then downloads the Node version that the talk pins (devEngines).
-      - name: Install pnpm
-        run: npm install --global "pnpm@$PNPM_VERSION"
-
-      - name: Install the talk
-        working-directory: src
-        env:
-          # The packages' own downloads would fetch every engine that a talk's
-          # checks use; the build and the prerender need only Chromium.
-          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
-        run: |
-          set -euo pipefail
-          cd "$TALK"
-          pnpm install --frozen-lockfile
-          # Chromium, and the system libraries that it needs.
-          pnpm exec playwright install --with-deps chromium
-
-      # `build` and an optional `prerender` write the site to the talk's
-      # dist/ (docs/talks.md, "Publish a talk"). tools/pages_preview.py runs
-      # the same commands: change both.
-      - name: Build the talk
-        working-directory: src
-        env:
-          REPO: ${{ github.event.repository.name }}
-        run: |
-          set -euo pipefail
-          cd "$TALK"
-          pnpm build --base "/$REPO/$TALK/"
-          pnpm run --if-present prerender
-
-      - name: Push the site to gh-pages
-        working-directory: src
-        env:
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
           site="$RUNNER_TEMP/site"
-          built="$(git rev-parse HEAD)"
           if git fetch origin gh-pages:gh-pages; then
             git worktree add "$site" gh-pages
           else
             git worktree add --orphan -b gh-pages "$site"
           fi
-          rm -rf "${site:?}/$TALK"
-          cp -R "$TALK/dist" "$site/$TALK"
+          echo "SITE=$site" >> "$GITHUB_ENV"
+
+      - name: Choose the talks
+        id: choose
+        working-directory: src
+        env:
+          INPUT_TALK: ${{ inputs.talk }}
+          INPUT_REF: ${{ inputs.ref }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = push ] && [ "$GITHUB_REF_TYPE" = branch ]; then
+            # the runner's python3: the script needs only the standard library
+            talks="$(python3 tools/publish_plan.py "$SITE" --before "$BEFORE" | jq -r 'join(" ")')"
+            ref="$GITHUB_REF_NAME"
+          else
+            if [ -n "$INPUT_TALK" ]; then
+              talks="$INPUT_TALK" ref="$INPUT_REF"
+            else
+              talks="$(echo "$GITHUB_REF_NAME" | cut -d/ -f2)" ref="$GITHUB_REF_NAME"
+            fi
+            case "$talks" in
+              "" | *[!a-z0-9-]*) echo "not a talk name: '$talks'" >&2; exit 1 ;;
+            esac
+            if [ ! -f "$talks/package.json" ]; then
+              echo "no talk '$talks' at $ref" >&2; exit 1
+            fi
+            # A retired talk is built by hand or by tag only from its retired
+            # tag: main may no longer build it (AGENTS.md, "Given talks,
+            # retired talks and versions").
+            retired="$(git tag -l "retired/$talks/*")"
+            if [ -n "$retired" ] && ! echo "$retired" | grep -qxF "$ref"; then
+              echo "$talks is retired: publish it from its tag ($retired)" >&2
+              exit 1
+            fi
+          fi
+          {
+            echo "talks=$talks"
+            echo "ref=$ref"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v5
+        if: steps.choose.outputs.talks != ''
+        with:
+          node-version: lts/*
+
+      # Each talk in a shell of its own: `set -e` holds there, and a talk that
+      # fails does not stop the others. pnpm downloads the Node version that
+      # the talk pins (devEngines). `build` and an optional `prerender` write
+      # the site to the talk's dist/ (docs/talks.md, "Publish a talk").
+      # tools/pages_preview.py runs the same commands: change both.
+      - name: Build the talks
+        id: build
+        if: steps.choose.outputs.talks != ''
+        working-directory: src
+        env:
+          TALKS: ${{ steps.choose.outputs.talks }}
+          REPO: ${{ github.event.repository.name }}
+          # The packages' own downloads would fetch every engine that a talk's
+          # checks use; the build and the prerender need only Chromium.
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+        run: |
+          set -uo pipefail
+          built=() failed=()
+          for talk in $TALKS; do
+            echo "::group::$talk"
+            if TALK="$talk" bash -euo pipefail -c '
+                cd "$TALK"
+                npm install --global "pnpm@$(jq -r .devEngines.packageManager.version package.json)"
+                pnpm install --frozen-lockfile
+                # Chromium, and the system libraries that it needs.
+                pnpm exec playwright install --with-deps chromium
+                pnpm build --base "/$REPO/$TALK/"
+                pnpm run --if-present prerender
+              '; then
+              built+=("$talk")
+            else
+              failed+=("$talk")
+            fi
+            echo "::endgroup::"
+          done
+          for talk in "${failed[@]}"; do
+            echo "::error::$talk did not build: its pages keep their last build"
+          done
+          {
+            echo "built=${built[*]}"
+            echo "failed=${failed[*]}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Push the site to gh-pages
+        if: steps.build.outputs.built != ''
+        working-directory: src
+        env:
+          BUILT: ${{ steps.build.outputs.built }}
+          REF: ${{ steps.choose.outputs.ref }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          built="$(git rev-parse HEAD)"
+          for talk in $BUILT; do
+            rm -rf "${SITE:?}/$talk"
+            cp -R "$talk/dist" "$SITE/$talk"
+            # What tools/publish_plan.py compares the next push with.
+            jq -n --arg ref "$REF" --arg commit "$built" \
+              '{ref: $ref, commit: $commit}' > "$SITE/$talk/build.json"
+          done
           # The root pages come from the default branch, so that publishing
           # an old tag does not bring back an old list of talks.
-          git show "origin/$DEFAULT_BRANCH:site/index.html" > "$site/index.html"
-          git show "origin/$DEFAULT_BRANCH:site/404.html" > "$site/404.html"
-          touch "$site/.nojekyll"
-          cd "$site"
+          git show "origin/$DEFAULT_BRANCH:site/index.html" > "$SITE/index.html"
+          git show "origin/$DEFAULT_BRANCH:site/404.html" > "$SITE/404.html"
+          touch "$SITE/.nojekyll"
+          cd "$SITE"
           git add -A
           # One commit with the whole site: the branch does not grow with
-          # each publish. Every published version can be rebuilt from its tag.
+          # each publish. Every published version can be rebuilt from its ref.
           export GIT_AUTHOR_NAME="github-actions[bot]"
           export GIT_AUTHOR_EMAIL="41898282+github-actions[bot]@users.noreply.github.com"
           export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME"
           export GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
-          commit="$(git commit-tree "$(git write-tree)" -m "Publish $TALK from $REF ($built)")"
+          commit="$(git commit-tree "$(git write-tree)" -m "Publish $BUILT from $REF ($built)")"
           git push --force origin "$commit:refs/heads/gh-pages"
+
+      - name: Fail if a talk did not build
+        if: steps.build.outputs.failed != ''
+        env:
+          FAILED: ${{ steps.build.outputs.failed }}
+        run: |
+          echo "did not build: $FAILED" >&2
+          exit 1

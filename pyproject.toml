@@ -43,6 +43,8 @@ target-version = "py315"
 extend-exclude = ["tasks"]
 # Python only. Markdown is Prettier's (ruff would format its Python blocks).
 include = ["*.py", "*.pyi"]
+# The publish workflow runs this with the GitHub runner's python3, not uv's.
+per-file-target-version = { "tools/publish_plan.py" = "py312" }
 
 [tool.ruff.lint]
 # Beyond ruff's defaults: import order, newer syntax, likely bugs, simpler code,
