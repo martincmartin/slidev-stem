@@ -738,7 +738,7 @@ that meshes with a big one.
 [figure 4: Two gears, turning: a small gear with eight teeth drives a big
 gear with sixteen. Four teeth on each gear are colored.]
 
-> [!aside] Must the teeth really be the same size?
+> [!aside] Must the teeth be the same size?
 > Strictly, the _pitch_ must match: a tooth and its gap on one wheel must be as
 > long as a tooth and its gap on the other. One wheel can have wider teeth
 > than the other, as long as it has narrower gaps.
@@ -992,8 +992,8 @@ out of the case.]
 
 But there's a limit to how small you can manufacture the small gear, so
 the big gear would be huge.  And it would have a lot of teeth which adds to
-costs.  Plus, it would turn the wrong way, counterclockwise, because every gear
-turns the opposite direction from the one it touches.
+the cost.  Plus, it would turn the wrong way, counterclockwise, because every gear
+turns the opposite direction from the one it meshes with.
 
 [click]
 
