@@ -24,8 +24,7 @@ import {
 import ArticleFigure from "../components/ArticleFigure.vue";
 import { ARTICLE_HOOKS, DEFAULT_HOOKS } from "../figure.ts";
 import type { Box } from "../figure.ts";
-import { historyOf } from "../history.ts";
-import { cropGroups, pagePlan } from "../plan.ts";
+import { cropGroups, pagePlan, slideInput } from "../plan.ts";
 import type {
   FigureBlock,
   PageBlock,
@@ -46,30 +45,18 @@ function frontmatterOf(route: SlideRoute): Record<string, unknown> {
   return route.meta.slide?.frontmatter ?? {};
 }
 
-/** The slide's clicks, as its frontmatter says; 0 if it does not. */
-function totalOf(route: SlideRoute): number {
-  return Number(frontmatterOf(route)["clicks"] ?? 0);
-}
-
 function inputOf(route: SlideRoute): SlideInput {
   const frontmatter = frontmatterOf(route);
-  const text = (key: string): string | null => {
-    const value = frontmatter[key];
-    return typeof value === "string" ? value : null;
-  };
   const narration = frontmatter["narration"];
-  return {
-    no: route.no,
-    title: route.meta.slide?.title ?? null,
-    layout: text("layout"),
-    eyebrow: text("eyebrow"),
-    history: historyOf(frontmatter),
-    parts: Array.isArray(narration) ? (narration as RenderedPart[]) : null,
-    defaults: hooks.defaultFigures(frontmatter, totalOf(route)),
-    keyOf: (clicks) =>
-      hooks.pictureKey(frontmatter, clicks) ??
-      `slide ${String(route.no)} @${String(clicks)}`,
-  };
+  return slideInput(
+    {
+      no: route.no,
+      title: route.meta.slide?.title ?? null,
+      frontmatter,
+      parts: Array.isArray(narration) ? (narration as RenderedPart[]) : null,
+    },
+    hooks,
+  );
 }
 
 const routeOf = computed(

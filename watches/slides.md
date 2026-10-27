@@ -116,6 +116,10 @@ history: "c. 1675"
 
 <!-- narration
 
+[figure: A hairspring, seen at an angle: a flat spiral of steel ribbon. Its
+outer end is held in a small block, and its inner end is on a hub at the
+center. The spiral winds and unwinds.]
+
 Start with the part that keeps time.  In 1675 Christiaan Huygens, a Dutch
 scientist, invented the _hairspring_. It is a flat spiral of steel ribbon, finer
 than a hair. Its outer end is held still, and its inner end is free to
@@ -123,7 +127,13 @@ turn. Twist the inner end and let go, and the spiral winds and unwinds, back and
 forth, at a steady rate. In this drawing it swings once every two seconds, and
 the rest of the watch follows that beat.
 
-[click] Why does a spring swing? Think of a diving board. Bend it down, and
+[click]
+
+[figure: A diving board over a pool. It bends, is let go, and swings up and
+down past its straight shape, which a dashed line shows. The label reads:
+"Bend it away from straight, it pushes back".]
+
+Why does a spring swing? Think of a diving board. Bend it down, and
 it pushes back: an _elastic restoring force_. Let go, and it does not stop at
 straight. It overshoots, bends the other way, and comes back again: it
 _oscillates_. With no friction, it would oscillate forever.
@@ -393,7 +403,10 @@ push on it.]
 
 [click] The _pallet fork_ stops it.
 
-[figure]
+[figure: The balance wheel on the left, the pallet fork in the middle, and
+the escape wheel on the right. A stone at the end of the fork holds a tooth
+of the wheel. Labels: "Wheel driven by hidden mechanism" and "Pallet blocks
+wheel".]
 
 Its two prongs (called _stones_) stick in the wheel's teeth: a tooth lands on a
 stone, and the wheel stops. Each time the fork rocks, one stone lets a tooth go,
@@ -410,7 +423,14 @@ fork, and the impulse jewel in the fork's notch.]
 As the balance swings through the middle, the jewel strikes the fork and
 flips it one way. On the swing back, it flips it the other way.
 
-[click] So, at each swing, the balance lets the wheel take one small step.  The
+[click]
+
+[figure: The escapement at work. The balance swings, its jewel strikes the
+fork, the fork rocks, and the escape wheel moves on one tooth. "Tick" and
+"tock" show at the strikes. Labels: "Jewel strikes pallet", "Wheel driven by
+hidden mechanism" and "Pallet blocks wheel".]
+
+So, at each swing, the balance lets the wheel take one small step.  The
 jewel hits the fork hard enough to make a sound: this is the tick and the tock
 of a watch. The push goes both ways, too. At each strike, a little energy flows
 from the wheel, through the fork, into the balance, and keeps it swinging.
@@ -733,6 +753,10 @@ circumference, half the speed.
 
 [click:5]
 
+[figure: The pinion, now under the escape wheel, meshes with the big gear,
+and the pallet fork is beside the escape wheel. The second hand is on the big
+gear's axle, and steps around clockwise, once a minute.]
+
 > [!aside] Why does this second hand jump, when mine sweeps?
 >
 > This watch ticks once a second, to make the hairspring slow enough to
@@ -961,7 +985,13 @@ times bigger than the small gear.
 
 [nofigure]
 
-[click] But there's a limit to how small you can manufacture the small gear, so
+[click]
+
+[figure: The watch, with a gear sixty times the size of the second hand's
+pinion drawn in place. The gear is far larger than the whole watch, and sticks
+out of the case.]
+
+But there's a limit to how small you can manufacture the small gear, so
 the big gear would be huge.  And it would have a lot of teeth which adds to
 costs.  Plus, it would turn the wrong way, counterclockwise, because every gear
 turns the opposite direction from the one it touches.
@@ -1392,6 +1422,9 @@ The hour hand must turn twice a day, that's once every twelve hours. Unlike the 
 would run backward (counterclockwise): a pair of meshing gears turn opposite
 directions.
 
+[figure 2: The movement, with a 12:1 gear beside the center wheel. The hour
+hand is on that gear's axle, far from the center of the dial.]
+
 [click:3] So we use the same two-step trick we used for the minute hand.  This
 time, 3:1 going out and 4:1 coming back.  3:1 × 4:1 = 12:1.
 
@@ -1400,6 +1433,10 @@ and its pinion, and the hour wheel. The rest of the watch is dimmed.]
 
 [click] The hour hand goes on the hour wheel, in the middle, under the minute
 hand. It turns clockwise, twice a day.
+
+[figure 6: The finished movement. The hour hand and the minute hand share the
+center of the dial; the hour hand is the shorter one. The barrel is at the
+bottom.]
 -->
 
 <!--

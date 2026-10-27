@@ -87,12 +87,20 @@ The speaker's cues, as before.
 | -------------------- | -------------------------------------------------------------------------------------------------------------- |
 | `[click]`            | the next click; `[click:2]` two clicks                                                                         |
 | `[figure]`           | a figure of the part's click goes here; it replaces the part's default figure, or adds one                     |
-| `[figure: alt text]` | the same, with alt text for the figure. Give every figure alt text: it is all a screen reader gets             |
+| `[figure: alt text]` | the same, with alt text for the figure                                                                         |
 | `[figure 3]`         | a figure of click 3, here; it replaces the default figure of click 3                                           |
 | `[figure 2-3]`       | one figure with steps, from click 2 to click 3; it replaces the defaults in its range                          |
 | `[figure 0-8 play]`  | a figure that plays its steps by itself; the text after it, and the parts said at its clicks, are its captions |
 | `[nofigure]`         | no figure for the part's click, even by default                                                                |
 | `> [!aside] Title`   | a quote block that starts so is an aside; put the `IF ASKED` material here                                     |
+
+**Every figure has alt text.** A screen reader gets only that, and so does
+a chatbot that reads the article as text. It says what the picture shows
+that the prose beside it does not: the most important thing that a reader
+sees in it. A default figure has no marker, so give it one where it shows:
+`[figure: …]` at the start of its click's part, or `[figure 6: …]`, with its
+click, for a click that has no part of its own. `watch/article.test.ts`
+fails on a figure with no alt text.
 
 **Name a new term in italics where it first comes** (`_impulse jewel_`), as a
 textbook does. The figure beside it marks the part (below). Not an
@@ -341,7 +349,6 @@ WebKit (the task's `experiments/page/`).
 
 - Math in the narration (KaTeX).
 - A print stylesheet or a PDF of the article.
-- Part 2 has no narration: its slides show as figures with no text.
+- Part 2 is only its heading: its one slide is hidden.
 - A whole-slide figure repeats its slide's title under the page's heading.
 - Labels do not grow on a phone; reading on a phone is a later goal.
-- Seven default figures of Part 1 have no marker, so no alt text.

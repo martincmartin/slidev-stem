@@ -14,6 +14,8 @@
 // dropped if it would show the same picture as the page's figure before it,
 // on the slide before (`SlideInput.keyOf`).
 
+import type { ArticleHooks } from "./figure.ts";
+import { historyOf } from "./history.ts";
 import type { FigureMarker } from "./narration.ts";
 
 /** A part of a slide's narration, rendered: as `NarrationPart`, with HTML
@@ -44,6 +46,40 @@ export interface SlideInput {
   readonly defaults: readonly number[];
   /** A key for the picture at a click: two equal keys draw the same picture. */
   readonly keyOf: (clicks: number) => string;
+}
+
+/** A slide as the page reads it, from its number, its title, its
+ *  frontmatter, and its narration, rendered (`null`: none). The talk's
+ *  `hooks` give its default figures and its pictures' keys. The page and the
+ *  talk's tests both call this, so both see the same figures. */
+export function slideInput(
+  slide: {
+    readonly no: number;
+    readonly title: string | null;
+    readonly frontmatter: Record<string, unknown>;
+    readonly parts: readonly RenderedPart[] | null;
+  },
+  hooks: Pick<ArticleHooks, "defaultFigures" | "pictureKey">,
+): SlideInput {
+  const { no, frontmatter } = slide;
+  const text = (key: string): string | null => {
+    const value = frontmatter[key];
+    return typeof value === "string" ? value : null;
+  };
+  // the slide's clicks, as its frontmatter says; 0 if it does not
+  const total = Number(frontmatter["clicks"] ?? 0);
+  return {
+    no,
+    title: slide.title,
+    layout: text("layout"),
+    eyebrow: text("eyebrow"),
+    history: historyOf(frontmatter),
+    parts: slide.parts,
+    defaults: hooks.defaultFigures(frontmatter, total),
+    keyOf: (clicks) =>
+      hooks.pictureKey(frontmatter, clicks) ??
+      `slide ${String(no)} @${String(clicks)}`,
+  };
 }
 
 export interface FigureBlock {

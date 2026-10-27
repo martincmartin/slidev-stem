@@ -17,6 +17,8 @@ import {
   pictureKey,
 } from "./article.ts";
 import { historyOf } from "../addons/narration/history.ts";
+import { pagePlan, slideInput } from "../addons/narration/plan.ts";
+import type { RenderedBlock } from "../addons/narration/plan.ts";
 import { deckSlides, slideFrontmatter } from "./deck.ts";
 import { generate } from "./generate.ts";
 
@@ -214,4 +216,47 @@ test(`every slide's history line is text, with "c." before each year`, () => {
       );
     }
   }
+});
+
+test("every figure of the article has alt text", () => {
+  // the page's slides: Slidev leaves the hidden ones out of its list. The
+  // Markdown stands for the HTML, which the plan does not read.
+  const page = pagePlan(
+    slides
+      .filter((slide) => slide.frontmatter["hide"] !== true)
+      .map((slide, index) => {
+        const text = narrationText(slide.content);
+        const parts =
+          text === null
+            ? null
+            : parseNarration(text).map((part) => ({
+                ...part,
+                blocks: part.blocks.map((block): RenderedBlock =>
+                  block.kind === "figure"
+                    ? block
+                    : { ...block, html: block.markdown },
+                ),
+              }));
+        return slideInput(
+          {
+            no: index + 1,
+            title: slide.title || null,
+            frontmatter: slide.frontmatter,
+            parts,
+          },
+          {
+            defaultFigures: (frontmatter, total) =>
+              defaultFigures(watch, frontmatter, total),
+            pictureKey,
+          },
+        );
+      }),
+  );
+  const figures = page.filter((block) => block.kind === "figure");
+  assert.ok(figures.length > 0, "the article has no figures");
+  assert.deepEqual(
+    figures.filter((figure) => !figure.alt).map((figure) => figure.id),
+    [],
+    "each figure needs alt text: a [figure: …] marker (docs/article.md)",
+  );
 });
