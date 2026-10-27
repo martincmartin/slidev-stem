@@ -98,7 +98,9 @@ The speaker's cues, as before.
 **Every figure has alt text.** A screen reader gets only that, and so does
 a chatbot that reads the article as text. It says what the picture shows
 that the prose beside it does not: the most important thing that a reader
-sees in it. A default figure has no marker, so give it one where it shows:
+sees in it. It describes only the picture, not its controls: the page
+shows them, a screen reader names them, and the text export lists them. A
+default figure has no marker, so give it one where it shows:
 `[figure: …]` at the start of its click's part, or `[figure 6: …]`, with its
 click, for a click that has no part of its own. `watch/article.test.ts`
 fails on a figure with no alt text.

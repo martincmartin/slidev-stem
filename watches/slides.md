@@ -142,14 +142,13 @@ _oscillates_. With no friction, it would oscillate forever.
 straight line; the hairspring's is a spiral. Take hold of the slider under
 the next picture, and drag it to the right.
 
-[figure 2: The diving board curls up into the hairspring, at rest. A slider
-curls it.]
+[figure 2: The diving board curls up into the hairspring, at rest.]
 
 [click] "Bend" becomes "wind", and "straight" becomes "rest". Now give the
 hairspring a twist: drag the slider to wind the spiral away from its rest
 shape, and let go.
 
-[figure 3: The hairspring at rest. A slider winds it; let go, and it swings
+[figure 3: The hairspring at rest. Wound away from rest and let go, it swings
 back and forth.]
 
 It pushes back. It overshoots and swings, just as the board did. This one
@@ -998,8 +997,8 @@ turns the opposite direction from the one it touches.
 
 [click]
 
-[figure 2-3: Two more pairs of gears, between the second hand's wheel and
-the center wheel. Step through them.]
+[figure 2-3: Two more pairs of gears, between the second hand's wheel and the
+center wheel.]
 
 So the watch slows in two stages. The _third wheel_ runs 7½ times slower, and
 the _center wheel_ runs 8 times slower than that.
@@ -1200,8 +1199,8 @@ spring keeps its length, so its coils draw in toward the center.
 
 [click]
 
-[figure: The mainspring on its arbor. A stud holds its outer end, and a
-key turns the arbor. A slider winds it.]
+[figure: The mainspring on its arbor. A stud holds its outer end, and a key
+turns the arbor.]
 
 When wound away from its rest shape, the dashed line, it pushes back, as the
 hairspring does.  The axle (_arbor_) can only turn one way.  To unwind the
@@ -1209,8 +1208,7 @@ mainspring, let go of the outer end by pressing the button.
 
 [click]
 
-[figure: The wound mainspring, its outer end held by the stud. A button lets
-go of the outer end.]
+[figure: The wound mainspring, its outer end held by the stud.]
 
 The block is gone, and the outer end swings around until the spring lies on its
 rest shape again. That fling is the energy that the winding put in.
@@ -1219,8 +1217,8 @@ A watch harnesses that force by attaching the spring's outer end to a toothed dr
 
 [click]
 
-[figure 3-4: The mainspring in its barrel, driving the whole movement. The
-next step runs six hours in six seconds.]
+[figure 3-4: The mainspring in its barrel, driving the whole movement. Then six
+hours pass in six seconds.]
 
 As the mainspring pushes the barrel, the barrel's teeth drive the gear train we
 just built.  This is the "hidden mechanism" we mentioned earlier.
