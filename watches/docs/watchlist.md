@@ -17,3 +17,14 @@ when to read and change this list.
   play): 5f728d4 (a reload), ae4f60f (an entry after a click), cedea24 (a
   page that starts paused). Commit be03b01,
   [task](../tasks/2026-10-25-paused-figure-steps/PLAN.md).
+- **2026-10-27: the static article's figures were blank on GitHub Pages,
+  from 2026-10-14 to 2026-10-27.** The prerender added a second `class` to
+  `<html>`, so the page lost the palette's class, and each figure's watch
+  threw. Why it was done that way: the prerender was written on 2026-10-13,
+  when `<html>` had no class; the palette addon added one on 2026-10-14. Why
+  it was not caught sooner: no check opens the static page after the
+  prerender, and validation does not run the prerender; `pnpm dev` has no
+  static page; the figures' errors are console errors, not page errors, so
+  nothing failed. Now `static-page.test.ts` covers this case. If the static
+  page breaks again, make the prerender open the page that it wrote, and
+  fail if a figure does not draw.

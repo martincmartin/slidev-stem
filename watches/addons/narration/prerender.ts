@@ -19,6 +19,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, join, resolve, sep } from "node:path";
 import { chromium } from "playwright-chromium";
+import { staticPage } from "./static-page.ts";
 
 const dist = resolve(process.argv[2] ?? "dist");
 const out = join(dist, "article");
@@ -151,15 +152,10 @@ try {
     .filter((path) => !index.includes(`href="${path}"`))
     .map((path) => `<link rel="stylesheet" href="${path}">`)
     .join("\n");
-  const html = index
-    .replace("<html", '<html class="article-mode"')
-    .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
-    .replace("</head>", `${head}\n</head>`)
-    .replace('<div id="app"></div>', `<div id="app">${article}</div>`);
-  if (!html.includes(article)) {
-    throw new Error('the deck\'s index.html has no <div id="app"></div>');
-  }
-  await writeFile(join(out, "index.html"), html);
+  await writeFile(
+    join(out, "index.html"),
+    staticPage(index, { article, head, title }),
+  );
   console.log(`${String(count)} figures; ${join(out, "index.html")}`);
 } finally {
   await browser.close();

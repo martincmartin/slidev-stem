@@ -346,9 +346,20 @@ twice the pixel density). So:
 A file that the talk's code fetches must be under the base:
 `${import.meta.env.BASE_URL}diving-board.svg`, not `/diving-board.svg`.
 
+**The static page keeps the palette's class on `<html>`.** The palette addon
+puts its class there ([`themes/palettes/README.md`](../../themes/palettes/README.md)),
+and the page adds `article-mode` to it (`staticPage` in
+`addons/narration/static-page.ts`). A second `class` attribute would be lost:
+the live article that takes the static one's place would then have no palette,
+and every figure would be blank. The live article in `pnpm dev` has no
+static page, so it does not show this: look at
+`uv run tools/pages_preview.py watches --article` at the root.
+
 Tested on 2026-10-13: the static page with and without JavaScript, at the
 root and at `/talks/watches/`, and the live article in Chromium, Firefox and
-WebKit (the task's `experiments/page/`).
+WebKit (the task's `experiments/page/`). Tested on 2026-10-27: the live
+article that starts from the static page, at `/slidev-stem/watches/article/`,
+in Playwright Chromium, Firefox, Firefox with private browsing, and WebKit.
 
 ## Export the text
 
