@@ -2,7 +2,7 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { staticPage } from "./static-page.ts";
+import { parseErrors, staticPage } from "./static-page.ts";
 
 const PARTS = {
   article: "<main>The article</main>",
@@ -13,6 +13,25 @@ const PARTS = {
 function index(htmlTag: string): string {
   return `<!DOCTYPE html>\n${htmlTag}<head><title>Slidev</title></head><body><div id="app"></div></body></html>`;
 }
+
+test("the pages of these tests are valid HTML", () => {
+  assert.deepEqual(parseErrors(index('<html lang="en">')), []);
+});
+
+test("a page that is not valid HTML is an error", () => {
+  assert.throws(
+    () => staticPage(index('<html lang="en" lang="fr">'), PARTS),
+    /not valid HTML: duplicate-attribute at line 2/,
+  );
+  assert.throws(
+    () =>
+      staticPage(index("<html>"), {
+        ...PARTS,
+        article: '<main class="a"id="b">The article</main>',
+      }),
+    /not valid HTML: missing-whitespace-between-attributes/,
+  );
+});
 
 test("the article's class joins the palette's on <html>", () => {
   const page = staticPage(

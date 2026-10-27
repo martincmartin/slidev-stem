@@ -2,6 +2,9 @@
 // in it. prerender.ts makes the article and its stills; this puts them in
 // the page.
 
+import { parse } from "parse5";
+import type { ParserError } from "parse5";
+
 /** The class that ArticlePage.vue puts on <html>, here before any code runs. */
 const ARTICLE_CLASS = "article-mode";
 
@@ -44,5 +47,27 @@ export function staticPage(index: string, parts: ArticleParts): string {
   if (!html.includes(parts.article)) {
     throw new Error('the deck\'s index.html has no <div id="app"></div>');
   }
+  const errors = parseErrors(html);
+  if (errors.length > 0) {
+    const where = errors.map(
+      (error) =>
+        `${error.code} at line ${String(error.startLine)}, column ${String(error.startCol)}`,
+    );
+    throw new Error(`the static page is not valid HTML: ${where.join("; ")}`);
+  }
   return html;
+}
+
+/** The errors that the HTML standard's tokenizer finds in `html` (parse5
+ *  does not report the tree builder's, such as a misnested tag). A browser
+ *  reads such a page with no error, but in its own way: of two `class`
+ *  attributes, it keeps the first. */
+export function parseErrors(html: string): ParserError[] {
+  const errors: ParserError[] = [];
+  parse(html, {
+    onParseError: (error) => {
+      errors.push(error);
+    },
+  });
+  return errors;
 }

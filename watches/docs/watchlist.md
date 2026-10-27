@@ -25,6 +25,7 @@ when to read and change this list.
   it was not caught sooner: no check opens the static page after the
   prerender, and validation does not run the prerender; `pnpm dev` has no
   static page; the figures' errors are console errors, not page errors, so
-  nothing failed. Now `static-page.test.ts` covers this case. If the static
+  nothing failed. Now `static-page.test.ts` covers this case, and
+  `staticPage` fails on an HTML parse error (parse5). If the static
   page breaks again, make the prerender open the page that it wrote, and
   fail if a figure does not draw.

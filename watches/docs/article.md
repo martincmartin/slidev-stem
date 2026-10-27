@@ -354,6 +354,9 @@ the live article that takes the static one's place would then have no palette,
 and every figure would be blank. The live article in `pnpm dev` has no
 static page, so it does not show this: look at
 `uv run tools/pages_preview.py watches --article` at the root.
+`staticPage` fails if the page has an HTML parse error, as parse5 reports
+it: the tokenizer's errors, such as a duplicate attribute, but not a
+misnested tag.
 
 Tested on 2026-10-13: the static page with and without JavaScript, at the
 root and at `/talks/watches/`, and the live article in Chromium, Firefox and
