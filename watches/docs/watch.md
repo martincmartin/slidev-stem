@@ -74,7 +74,7 @@ ruler that the diving board replaced),
 | `watch/board.ts`, `components/DivingBoard.vue`           | the board's frontmatter to its target, and its clock (`BoardClock`); the component that inlines the SVG and sets its time                                                                                 |
 | `watch/navigation.ts`, `slide-state.ts`                  | a step forward, a step back or a jump; `window.slideState()` for `tools/navcheck.ts` ([`navigation.md`](../../docs/navigation.md))                                                                        |
 | `watch/callouts.ts`, `components/WatchCallout.vue`       | where the slides' leaders end, on the slide (`escapementMarks`, `gearsMarks`, `gearTrainMarks`); a callout: a label, and a leader from one of its words                                                   |
-| `components/TickTock.vue`                                | the words "tick" and "tock" at each strike of the jewel, in the watch's layer; where they start (`jewelStrikes` in `watch/callouts.ts`)                                                                   |
+| `components/TickTock.vue`                                | the words "tick" and "tock" each time a tooth lands on a pallet stone, in the watch's layer; where they start (`stoneStrikes` in `watch/callouts.ts`)                                                     |
 | `components/TimeScale.vue`                               | the time scale: the time-lapse's speed-up, live, in the watch's layer, as "1440×" (`watchTimeScale`; [The Recap slide](#the-recap-slide))                                                                 |
 | `types/`                                                 | small `.d.ts` files, mapped by `tsconfig.json` `paths` to `@slidev/client` and the internals that the article uses. `vue-tsc` would otherwise check Slidev's own source, which fails our strict settings. |
 
@@ -380,27 +380,31 @@ watch's drawing ([The drive arrow](#the-drive-arrow)).
 
 ### Tick and tock
 
-From click 4 (`watchTickTock: true`), each time the jewel strikes the fork, a
-word appears beside the horn that it strikes: "tick" at the upper horn,
-"tock" at the lower one. The jewel enters the notch past one horn and
-strikes the other, ahead of it (`jewelStrikes` in `watch/callouts.ts`). It appears at once, and fades out in 0.8 s as it drifts 40 px
-away: the sound goes out from the strike. `components/TickTock.vue` holds
-the type, the times and the distances.
+From click 4 (`watchTickTock: true`), each time a tooth of the escape wheel
+lands on a pallet stone, a word appears beside the stone: "tick" at the upper
+stone, "tock" at the lower one. This drop makes the sound of a real watch, not
+the jewel's strike on the fork. It appears at once, and fades out as it
+drifts away from the escape wheel: the sound goes out from the tooth.
+`components/TickTock.vue` holds the type, the times and the distances.
 
 - **Not an oversight: the words cut in.** All other text fades in
   ([slide-patterns.md](slide-patterns.md#text-fades)). These are a sound.
-- **A strike is the start of a tick window**, when the jewel reaches the
-  fork (`strikesBetween` in `watch/model.ts`). There is one a second, so
-  each word is gone before the next appears.
+- **A strike is the end of a tick window**, when the escape wheel stops
+  (`strikesBetween` in `watch/model.ts`). There is one a second, so each word
+  is gone before the next appears.
+- **A strike is where the tooth tip touches the stone** that the window swung
+  in (`toothDrops` in `watch/callouts.ts`), on the wheel's top
+  (`stoneStrikes`). If the design or the view changes, the strikes follow.
+  `watch/callouts.test.ts` checks that the tooth touches the stone.
 - **The words follow the model's clock, not a timer.** At each animation
   frame, the component asks the model for the strikes since the last frame
   (`WatchModel.strikes`), with the moment of each. A timer would drift
-  from the jewel.
-- **They drift as mirror images**: away from the fork's axis, leaning
-  22.5° away from the fork (`STRIKE_LEAN` in `watch/callouts.ts`), so NNW
-  and SSW on the Escapement slide. The two strikes are mirror images about the axis,
-  so the two words read as one sound from the notch. If the design or the
-  view changes, the strikes and the ways follow.
+  from the wheel.
+- **They drift straight out from the escape wheel's arbor**, through the
+  strike: NW and SW on the Escapement slide. So the lower word moves away from
+  the pallet's leader, which ends just right of where it appears. Each word
+  starts far enough from its strike to clear that leader, and ends below the
+  jewel's label. Check both if the view, the labels or the distances change.
 - **They live in the watch's layer**, because they need the model's clock.
   A word that has started ends its fade after a click back or a change of
   slide: the sound has been made. No new word starts then.
@@ -1400,7 +1404,7 @@ which dims halfway (`--text-dimmed`;
 | `watchLapse: 1440`                                          | the time-lapse's speed-up, 1 (default) or more; a change eases while the camera moves ([The Recap slide](#the-recap-slide)). Not with `watchSpin`, `watchMainspring` or `watchAtRest: true`                                                                                  |
 | `watchDim: [barrel]`                                        | the pieces drawn dimmed, as at opacity 0.35 over the paper (`WATCH_DIM`), from that click on; `false` (default): none ([Dimmed pieces](#dimmed-pieces))                                                                                                                      |
 | `watchHide: [hour hand]`                                    | pieces that `watch` holds but that do not show, nor count in a fitted view, from that click on; `false` (default): none. Each must be in `watch` ([The Recap slide](#the-recap-slide))                                                                                       |
-| `watchTickTock: true`                                       | the words "tick" and "tock" show at each strike of the jewel ([Tick and tock](#tick-and-tock)); `false` (default): they do not                                                                                                                                               |
+| `watchTickTock: true`                                       | the words "tick" and "tock" show each time a tooth lands on a pallet stone ([Tick and tock](#tick-and-tock)); `false` (default): they do not                                                                                                                                 |
 | `watchTimeScale: true`                                      | the time scale shows the speed-up, live, in the lower right corner ([The Recap slide](#the-recap-slide)); `false` (default): it does not                                                                                                                                     |
 | `watchFlash: [balance wheel]`                               | pieces that flash, on the step forward into the slide (on the slide) or into the block's click (in `watchClicks`) only; it does not carry on to later clicks ([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash")                                          |
 | `watchFlashAfterMove: true`                                 | flash after the camera and fades finish; false (default): use the ordinary flash order. This setting carries to later clicks. The Recap slide uses it.                                                                                                                       |

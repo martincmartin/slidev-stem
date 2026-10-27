@@ -140,7 +140,8 @@ export function tickWindows(
   ];
 }
 
-/** A strike of the impulse jewel on the fork: the start of a tick window. */
+/** A strike of a tooth of the escape wheel on a pallet stone: the end of a
+ *  tick window, when the wheel stops. This drop makes the tick and the tock. */
 export interface StrikeTime {
   /** Mechanism time, s. */
   time: number;
@@ -155,15 +156,15 @@ export function strikesBetween(
   from: number,
   to: number,
 ): StrikeTime[] {
-  const starts = tickWindows(timing).map(([start]) => start * timing.period);
+  const ends = tickWindows(timing).map(([, end]) => end * timing.period);
   const found: StrikeTime[] = [];
   for (
     let period = Math.floor(from / timing.period);
     period * timing.period <= to;
     period++
   ) {
-    starts.forEach((start, window) => {
-      const time = period * timing.period + start;
+    ends.forEach((end, window) => {
+      const time = period * timing.period + end;
       if (time > from && time <= to) found.push({ time, window });
     });
   }
@@ -1120,7 +1121,7 @@ export class WatchModel implements Model<WatchModelState> {
     );
   }
 
-  /** The jewel's strikes on the fork from `from` to `now` (ms), and the
+  /** The teeth's strikes on the pallet stones from `from` to `now` (ms), and the
    *  mechanism's time at `now`, to pass as `from` next time. The strikes are
    *  in order, each with the moment it happened (ms), found from the
    *  mechanism's time at `from` and at `now`. None if `from` is `undefined`,

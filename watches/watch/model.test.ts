@@ -239,21 +239,21 @@ test("untilRest is when a settle reaches rest, and null for a free swing", () =>
   assert.equal(clock.untilRest(300), null);
 });
 
-test("a strike is the start of each tick window, after `from` and up to `to`", () => {
-  const [[first], [second]] = tickWindows(TIMING);
-  const starts = [first * TIMING.period, second * TIMING.period];
+test("a strike is the end of each tick window, after `from` and up to `to`", () => {
+  const [[, first], [, second]] = tickWindows(TIMING);
+  const ends = [first * TIMING.period, second * TIMING.period];
   const period = TIMING.period;
   assert.deepEqual(strikesBetween(TIMING, 0, period), [
-    { time: at(starts, 0), window: 0 },
-    { time: at(starts, 1), window: 1 },
+    { time: at(ends, 0), window: 0 },
+    { time: at(ends, 1), window: 1 },
   ]);
   // `from` is left out, `to` is in: a strike on a frame's edge counts once
-  assert.deepEqual(strikesBetween(TIMING, at(starts, 0), at(starts, 1)), [
-    { time: at(starts, 1), window: 1 },
+  assert.deepEqual(strikesBetween(TIMING, at(ends, 0), at(ends, 1)), [
+    { time: at(ends, 1), window: 1 },
   ]);
   assert.deepEqual(strikesBetween(TIMING, 3 * period, 3 * period + 0.4), []);
   assert.deepEqual(
-    strikesBetween(TIMING, 5 * period + 1, 6 * period + 0.5).map(
+    strikesBetween(TIMING, 5 * period + 1, 6 * period + 0.6).map(
       (strike) => strike.window,
     ),
     [1, 0],
@@ -263,7 +263,7 @@ test("a strike is the start of each tick window, after `from` and up to `to`", (
 
 test("the model gives each strike the moment it happened, between two frames", () => {
   const model = new WatchModel(generate(), 0);
-  const [[first]] = tickWindows(TIMING);
+  const [[, first]] = tickWindows(TIMING);
   const strikeMs = first * TIMING.period * 1000;
   const start = model.strikes(undefined, 0);
   assert.deepEqual(start.strikes, []);

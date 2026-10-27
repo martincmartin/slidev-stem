@@ -40,10 +40,11 @@ Martin C. Martin
 
 <!-- narration
 
-Mechanical watches have kept time for 500 years.  This page explains how a
-modern one works.  I personally think it's fascinating that a purely mechanical
-device can keep time with 99.99% accuracy for $100.  They also changed the world
-and look good on your wrist.
+Mechanical watches have kept time for 500 years.  Many of their core parts were
+invented even earlier for giant cathedral tower clocks before being shrunk into
+portable timepieces.  This page explains how a modern one works.  I personally
+think it's fascinating that a purely mechanical device can keep time with 99.99%
+accuracy for $100.  They also changed the world and look good on your wrist.
 
 This presentation was partially inspired by Bartosz Ciechanowski's [Mechanical
 Watch](https://ciechanow.ski/mechanical-watch/) page.  You can think of this
@@ -319,8 +320,8 @@ watchClicks:
   # the balance comes to rest, with the jewel under its leader
   3:
     watchAtRest: true
-  # it swings again, and the leader fades out; "tick" and "tock" show at
-  # each strike of the jewel (docs/watch.md)
+  # it swings again, and the leader fades out; "tick" and "tock" show each
+  # time a tooth lands on a pallet stone (docs/watch.md)
   4:
     watchAtRest: false
     watchTickTock: true
@@ -426,13 +427,14 @@ flips it one way. On the swing back, it flips it the other way.
 
 [figure: The escapement at work. The balance swings, its jewel strikes the
 fork, the fork rocks, and the escape wheel moves on one tooth. "Tick" and
-"tock" show at the strikes. Labels: "Jewel strikes pallet", "Wheel driven by
-hidden mechanism" and "Pallet blocks wheel".]
+"tock" show each time a tooth lands on a stone. Labels: "Jewel strikes
+pallet", "Wheel driven by hidden mechanism" and "Pallet blocks wheel".]
 
-So, at each swing, the balance lets the wheel take one small step.  The
-jewel hits the fork hard enough to make a sound: this is the tick and the tock
-of a watch. The push goes both ways, too. At each strike, a little energy flows
-from the wheel, through the fork, into the balance, and keeps it swinging.
+So, at each swing, the balance lets the wheel take one small step.  The step
+ends when the next tooth lands on a stone, hard enough to make a sound: this is
+the tick and the tock of a watch. The push goes both ways, too. Each time the
+jewel strikes the fork, a little energy flows from the wheel, through the fork,
+into the balance, and keeps it swinging.
 
 -->
 
@@ -446,7 +448,7 @@ from the wheel, through the fork, into the balance, and keeps it swinging.
 
 [click] Synthetic ruby or sapphire.  Really is a jewel!
 
-[click]
+[click] Tooth lands on stone: tick, tock.
 -->
 
 ---
@@ -1545,8 +1547,8 @@ const captions = [
   "The center wheel drives the <em>third wheel</em>.",
   "The third wheel drives the <em>fourth wheel</em> and the second hand.",
   "The fourth wheel drives the <em>escape wheel</em>.",
-  "The pallet stops the escape wheel. A tooth escapes every a second.",
-  "The <em>impulse jewel</em> hits the pallet, and the watch ticks.",
+  "The pallet stops the escape wheel, and each tooth lands with a tick.",
+  "The <em>impulse jewel</em> hits the pallet and rocks it.",
   "The balance wheel and the hairspring set the rate.",
 ];
 </script>
@@ -1594,9 +1596,9 @@ faster than real time each segment runs.
 [figure 0-8 play: A tour of the watch's train, from the motion works to the
 balance wheel, one touch at a time.]
 
-The hour hands are driven by a pair of gears totaling 12:1.
+The hour hand is driven by a pair of gears totaling 12:1.
 
-[click] The wound mainspring drives the barrel
+[click] The wound mainspring drives the barrel.
 
 [click] The barrel drives the _center wheel_ holding the minute hand.
 
@@ -1606,9 +1608,9 @@ The hour hands are driven by a pair of gears totaling 12:1.
 
 [click] The fourth wheel drives the _escape wheel_.
 
-[click] The escape wheel wants to turn, but the _pallet_ stops it.  Once a second, a tooth escapes.
+[click] The escape wheel wants to turn, but the _pallet_ stops it.  Once a second, a tooth escapes, and the next one lands on the pallet: that's the tick.
 
-[click] The pallet moves when the _impulse jewel_ hits it, creating the ticking sound of the watch.
+[click] The pallet moves when the _impulse jewel_ hits it.
 
 [click] The balance wheel and the hairspring, swing back and forth, setting the rate of the whole watch.
 -->
@@ -1628,9 +1630,9 @@ Two gears run the hour hand.
 
 [click] Fourth wheel drives escape wheel.
 
-[click] Escape wheel wants to turn, pallet stops it.  Once/sec, a tooth escapes.
+[click] Escape wheel wants to turn, pallet stops it.  Once/sec, a tooth escapes, next lands: tick.
 
-[click] Impulse jewel hits pallet, ticking.
+[click] Impulse jewel hits pallet, rocks it.
 
 [click] Set rate
 -->

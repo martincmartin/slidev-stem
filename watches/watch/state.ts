@@ -27,7 +27,7 @@
 //   watchSpin: degrees a second of the escape wheel: the train spins freely
 //     (`TrainClock`); false (default): it follows the mechanism
 //   watchTickTock: true: the words "tick" and "tock" show at each strike of
-//     the jewel on the fork; false (default): they do not (`tickTockState`)
+//     a tooth on a pallet stone; false (default): they do not (`tickTockState`)
 //   watchTimeScale: true: the time scale shows the speed-up, live, in the
 //     lower right corner; false (default): it does not (`timeScaleState`)
 //   watchMainspring: a stage of the Mainspring slide's story (free, wound,

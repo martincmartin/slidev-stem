@@ -8,8 +8,8 @@
 // the board's picture shows, it covers the watch: the canvas fades out, and the
 // stage stops. The board's clock decides when (its `cover` event), so the
 // hairspring takes the board's place when the curl ends, with no click.
-// Above both, the words "tick" and "tock" at each strike of the jewel
-// (components/TickTock.vue), where a slide's `watchTickTock` shows them: they follow
+// Above both, the words "tick" and "tock" at each strike of a tooth on a pallet
+// stone (components/TickTock.vue), where a slide's `watchTickTock` shows them: they follow
 // the model's clock. And the time scale (components/TimeScale.vue), where a
 // slide's `watchTimeScale` shows it: it reads the model's speed-up.
 //
@@ -64,7 +64,7 @@ import TimeScale from "./components/TimeScale.vue";
 import { Stage } from "./webgl/stage.ts";
 import { FADE_SECONDS } from "./webgl/timeline.ts";
 import { boardState } from "./watch/board.ts";
-import { jewelStrikes } from "./watch/callouts.ts";
+import { stoneStrikes } from "./watch/callouts.ts";
 import type { BoardTarget } from "./watch/board.ts";
 import { WatchModel } from "./watch/model.ts";
 import type { WatchModelState } from "./watch/model.ts";
@@ -110,13 +110,14 @@ const hidden = computed(() => !state.value || covered.value);
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 const board = shallowRef<BoardTarget>({ state: undefined, atOnce: true });
 let stage: Stage<WatchModelState> | undefined;
-/** The stage's model: it says when the balance comes to rest, and when the
- *  jewel strikes. */
+/** The stage's model: it says when the balance comes to rest, and when a
+ *  tooth strikes a pallet stone. */
 const model = shallowRef<WatchModel>();
-/** Where the jewel strikes, while the slide shows the words at its strikes. */
+/** Where the teeth strike the pallet stones, while the slide shows the words
+ *  at the strikes. */
 const tickTock = computed(() =>
   tickTockState(frontmatter.value, slidev.nav.clicks) && !hidden.value
-    ? { strikes: jewelStrikes(WATCH, frontmatter.value) }
+    ? { strikes: stoneStrikes(WATCH, frontmatter.value) }
     : undefined,
 );
 /** The time-lapse's speed-up at the click, while the slide shows the time

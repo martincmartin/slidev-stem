@@ -209,58 +209,87 @@ function jewelPoint(design: Design, swing: number): Point2 {
   );
 }
 
-/** Degrees: how far the way a sound goes out from a strike leans away from
- *  the fork, from straight out from the fork's axis. On the Escapement slide it makes the
- *  upper word drift NNW and the lower one SSW. */
-const STRIKE_LEAN = 22.5;
-
-/** In slide px: where the impulse jewel strikes the fork, and the way a
- *  sound goes out from there (a unit vector). */
+/** In slide px: where a tooth of the escape wheel strikes a pallet stone,
+ *  and the way a sound goes out from there (a unit vector). */
 export interface Strike {
   readonly at: Point2;
   readonly away: Point2;
 }
 
-/** The jewel's strikes on the slide whose frontmatter is `frontmatter`, one
- *  for each tick window (`StrikeTime.window` in model.ts), at the horn of
- *  the fork that the jewel strikes. In window 0 the balance swings from
- *  +pinArc to -pinArc: the jewel enters the notch past one horn and strikes
- *  the other, ahead of it. So the strike is marked by the jewel's deepest
- *  point at the window's end, -pinArc (and +pinArc in window 1). The
- *  strikes are on the two sides of the fork's axis (the line from the
- *  fork's pivot through the middle of the two). Each sound goes away from
- *  that axis, leaning STRIKE_LEAN degrees away from the fork: the two ways
- *  are mirror images, so the two words read as one sound from the fork's
- *  notch. */
-export function jewelStrikes(
+/** The distance from `point` to the nearest edge of a closed polygon. */
+export function distanceToOutline(
+  point: Point2,
+  outline: readonly Point2[],
+): number {
+  return Math.min(
+    ...edgesOf(outline).map(([start, end]) => {
+      const [dx, dy] = [end[0] - start[0], end[1] - start[1]];
+      const along = Math.max(
+        0,
+        Math.min(
+          1,
+          ((point[0] - start[0]) * dx + (point[1] - start[1]) * dy) /
+            (dx * dx + dy * dy),
+        ),
+      );
+      return Math.hypot(
+        point[0] - (start[0] + along * dx),
+        point[1] - (start[1] + along * dy),
+      );
+    }),
+  );
+}
+
+/** In the world's plan: where a tooth of the escape wheel lands on a pallet
+ *  stone at the end of each tick window (`tickWindows` in model.ts), one for
+ *  each window. Then the fork is at the bank that the window turned it to
+ *  (`forkAtBanks`), and the train has stepped one beat in each window: the
+ *  tooth tip on the fork's outline is the one that has landed. */
+export function toothDrops(design: Design): [Point2, Point2] {
+  const [, , , , escape] = design.wheels as [Wheel, Wheel, Wheel, Wheel, Wheel];
+  const arbor = worldOf(design, escape.arbor);
+  const banks = forkAtBanks(design);
+  const drop = (window: number): Point2 => {
+    // as escapeOutline places the tips, turned as the model turns the wheel
+    const tips = Array.from({ length: escape.teeth }, (_, index) =>
+      polar(
+        escape.outer,
+        design.escapePhase -
+          (index * 360) / escape.teeth +
+          escape.step * (window + 1),
+        arbor,
+      ),
+    );
+    const outline = at(banks, window);
+    return tips.reduce((best, tip) =>
+      distanceToOutline(tip, outline) < distanceToOutline(best, outline)
+        ? tip
+        : best,
+    );
+  };
+  return [drop(0), drop(1)];
+}
+
+/** The strikes on the slide whose frontmatter is `frontmatter`, one for each
+ *  tick window (`StrikeTime.window` in model.ts): where a tooth of the
+ *  escape wheel lands on a pallet stone (`toothDrops`), on the wheel's top.
+ *  Each sound goes straight out from the wheel's arbor, through its strike:
+ *  the tooth makes it. */
+export function stoneStrikes(
   watch: Watch,
   frontmatter: Record<string, unknown>,
 ): [Strike, Strike] {
   const shown = slideProjection(watch, frontmatter);
   const { design, escapementTops: tops } = watch;
-  const { pinArc } = design.timing;
-  const points = [-pinArc, pinArc].map((swing) =>
-    shown(jewelPoint(design, swing), tops.jewel),
-  );
-  const [first, second] = points as [Point2, Point2];
-  const middle: Point2 = [
-    (first[0] + second[0]) / 2,
-    (first[1] + second[1]) / 2,
-  ];
-  const pivot = shown(worldOf(design, design.fork.pivot), tops.fork);
-  const unit = ([x, y]: Point2): Point2 => {
+  const [, , , , escape] = design.wheels as [Wheel, Wheel, Wheel, Wheel, Wheel];
+  const arbor = shown(worldOf(design, escape.arbor), tops.escape);
+  const strike = (drop: Point2): Strike => {
+    const at = shown(drop, tops.escape);
+    const [x, y] = [at[0] - arbor[0], at[1] - arbor[1]];
     const length = Math.hypot(x, y);
-    return [x / length, y / length];
+    return { at, away: [x / length, y / length] };
   };
-  const fromFork = unit([middle[0] - pivot[0], middle[1] - pivot[1]]);
-  const lean = Math.tan(radians(STRIKE_LEAN));
-  const strike = (at: Point2): Strike => {
-    const out = unit([at[0] - middle[0], at[1] - middle[1]]);
-    return {
-      at,
-      away: unit([out[0] + lean * fromFork[0], out[1] + lean * fromFork[1]]),
-    };
-  };
+  const [first, second] = toothDrops(design);
   return [strike(first), strike(second)];
 }
 

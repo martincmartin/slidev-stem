@@ -1,9 +1,10 @@
 <script setup lang="ts">
-// The words "tick" and "tock", one at each strike of the impulse jewel on the
-// fork, in the watch's layer (global-bottom.vue): docs/watch.md, "Tick and
-// tock". The slide says whether they show, at each click (`watchTickTock`);
-// `shown` is then where the jewel strikes, one for each tick window
-// (`jewelStrikes` in watch/callouts.ts), or `undefined` if they do not.
+// The words "tick" and "tock", one at each strike of a tooth of the escape
+// wheel on a pallet stone, in the watch's layer (global-bottom.vue):
+// docs/watch.md, "Tick and tock". The slide says whether they show, at each
+// click (`watchTickTock`); `shown` is then where the teeth strike, one for
+// each tick window (`stoneStrikes` in watch/callouts.ts), or `undefined` if
+// they do not.
 //
 // The words follow the model's clock, not a timer: at each animation frame
 // this asks the model for the strikes since the last frame, with the moment of
@@ -29,11 +30,12 @@ const props = defineProps<{
 
 /** s: from a strike until its word is gone. */
 const WORD_SECONDS = 0.8;
-/** px: from the strike to the word's centre, when the word appears: the word
- *  is clear of the fork's horn. */
-const WORD_START = 40;
+/** px: from the strike to the word's centre, when the word appears. On the
+ *  Escapement slide, "tock" then clears the end of the pallet's leader
+ *  (docs/watch.md, "Tick and tock"). */
+const WORD_START = 68;
 /** px: how far the word moves while it fades. */
-const WORD_DRIFT = 40;
+const WORD_DRIFT = 22;
 
 interface Word {
   key: number;

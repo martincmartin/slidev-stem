@@ -3,16 +3,18 @@ import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import {
+  distanceToOutline,
   escapementMarks,
   firstCrossing,
   gearsMarks,
-  jewelStrikes,
+  forkAtBanks,
   onSlide,
+  stoneStrikes,
+  toothDrops,
 } from "./callouts.ts";
 import { slideFrontmatter } from "./deck.ts";
-import { generate, JEWEL_FLAT_OFFSET, JEWEL_RADIUS } from "./generate.ts";
-import { tickWindows } from "./model.ts";
-import { polar } from "./shapes.ts";
+import { generate } from "./generate.ts";
+import { Motion, tickWindows } from "./model.ts";
 import { stageState, watchState } from "./state.ts";
 
 const watch = generate();
@@ -104,54 +106,43 @@ test("a fitted view tilts about its pieces' middle: the middle stays where it is
   }
 });
 
-test("the two strikes are on either side of the fork's axis, and their words go out as mirror images", () => {
-  const strikes = jewelStrikes(watch, ESCAPEMENT_SLIDE);
+test("the two strikes are on either side of the escape wheel's arbor, and their words go straight out from it", () => {
+  const strikes = stoneStrikes(watch, ESCAPEMENT_SLIDE);
   const [upper, lower] = [...strikes].sort(
     (first, second) => first.at[1] - second.at[1],
   );
   assert.ok(upper && lower);
-  // the fork's notch is right of the balance: the words lean left, away
-  // from the fork; the upper one goes up (NNW), the lower one down (SSW)
+  // the pallet is left of the escape wheel: the upper word goes up and
+  // left (NW), the lower one down and left (SW)
   assert.ok(upper.away[0] < 0 && upper.away[1] < 0);
   assert.ok(lower.away[0] < 0 && lower.away[1] > 0);
   for (const strike of strikes) {
     assert.ok(Math.abs(Math.hypot(...strike.away) - 1) < 1e-9);
-    // 22.5 degrees from straight up or down, give or take the view's tilt
-    const lean =
-      (Math.atan2(Math.abs(strike.away[0]), Math.abs(strike.away[1])) * 180) /
-      Math.PI;
-    assert.ok(Math.abs(lean - 22.5) < 3, String(lean));
+    // along the line from the wheel's arbor through the strike
+    const out: Point2 = [
+      strike.at[0] - marks.escape[0],
+      strike.at[1] - marks.escape[1],
+    ];
+    const across = out[0] * strike.away[1] - out[1] * strike.away[0];
+    assert.ok(Math.abs(across) < 1e-6 * Math.hypot(...out), String(across));
+    assert.ok(out[0] * strike.away[0] + out[1] * strike.away[1] > 0);
   }
-  // the jewel at rest is between the two strikes
-  assert.ok(upper.at[1] < marks.jewel[1] && marks.jewel[1] < lower.at[1]);
+  assert.ok(upper.at[1] < marks.escape[1] && marks.escape[1] < lower.at[1]);
 });
 
-test("each window's strike is at the horn ahead of the jewel, not where it enters", () => {
+test("each window's strike is where a tooth lands on the stone that the window swung in", () => {
   const { timing } = design;
-  const radius =
-    design.balance.impulsePinRadius + (JEWEL_FLAT_OFFSET - JEWEL_RADIUS) / 2;
-  const arbor: Point2 = [
-    design.watchCentre[0] + design.balance.arbor[0],
-    design.watchCentre[1] + design.balance.arbor[1],
-  ];
-  // the jewel on the slide at mechanism time `time`, as the model swings it
-  const jewelAt = (time: number): Point2 => {
-    const swing =
-      timing.amplitude * Math.cos((2 * Math.PI * time) / timing.period);
-    const [x, y] = polar(radius, design.balance.pinDirection + swing, arbor);
-    return onSlide(view, { tilt: 20, turn: 0 }, scene.slide, [
-      x,
-      y,
-      watch.escapementTops.jewel,
-    ]);
-  };
-  const strikes = jewelStrikes(watch, ESCAPEMENT_SLIDE);
-  tickWindows(timing).forEach(([start], window) => {
-    const time = start * timing.period;
-    const [from, to] = [jewelAt(time), jewelAt(time + 0.01)];
-    const ahead = at(strikes, window).at;
-    const behind = at(strikes, 1 - window).at;
-    const moving = (to[1] - from[1]) * (ahead[1] - behind[1]);
-    assert.ok(moving > 0, `window ${String(window)}`);
+  const motion = new Motion(watch);
+  const banks = forkAtBanks(design);
+  const drops = toothDrops(design);
+  tickWindows(timing).forEach(([, end], window) => {
+    const name = `window ${String(window)}`;
+    // the train has stepped one beat at the window's end
+    assert.equal(motion.beats(end * timing.period), window + 1, name);
+    const drop = at(drops, window);
+    // the tooth touches the stone that the window swung in, and was clear
+    // of it before the swing
+    assert.ok(distanceToOutline(drop, at(banks, window)) < 0.01, name);
+    assert.ok(distanceToOutline(drop, at(banks, 1 - window)) > 0.5, name);
   });
 });

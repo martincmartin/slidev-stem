@@ -64,7 +64,7 @@ import {
 } from "../watch/article.ts";
 import { boardState } from "../watch/board.ts";
 import type { BoardTarget } from "../watch/board.ts";
-import { jewelStrikes } from "../watch/callouts.ts";
+import { stoneStrikes } from "../watch/callouts.ts";
 import { sharedStage, WATCH } from "../watch/instance.ts";
 import { storyRuns, windSliderTime } from "../watch/mainspring.ts";
 import { twistAngle, WatchModel } from "../watch/model.ts";
@@ -179,7 +179,7 @@ const boardScrub = computed(() =>
 );
 const tickTock = computed(() =>
   tickTockState(frontmatter.value, clicks.value) && !hidden.value
-    ? { strikes: jewelStrikes(WATCH, frontmatter.value) }
+    ? { strikes: stoneStrikes(WATCH, frontmatter.value) }
     : undefined,
 );
 const timeScale = computed(() =>
