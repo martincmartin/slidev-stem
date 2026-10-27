@@ -270,7 +270,7 @@ barely changes its rhythm.
 Seiko or Citizen, is about 99.99% accurate.  A day has 86,400 seconds, so a good
 watch gains or loses about nine seconds a day.
 
-I'm not particularly handy with mechanical things, if I tried to build a table
+I'm not particularly handy with mechanical things. If I tried to build a table
 it would wobble because things would be off by a few percent.  So it kind of
 blows my mind that, for $100, I can get a simple, everyday, purely mechanical
 system and tweak it to be 99.99% accurate!
@@ -377,7 +377,7 @@ The wheel's and the pallet's leaders end LEADER_GAP px outside their parts
 
 <!-- narration
 
-A second hand that just moves back and forth isn't very useful, we need it to
+A second hand that just moves back and forth isn't very useful.  We need it to
 turn one way only.  The _escapement_ turns the swing into steps.
 
 The _escape wheel_ is being turned by a mechanism we'll explain soon, so it's
@@ -533,7 +533,7 @@ second.]
 
 Each tick is one second, and sixty ticks brings it all the way around. So the
 second hand makes a complete circle once a minute. A hand is named for what it
-counts, not for how long it takes make a full 360° turn.
+counts, not for how long it takes to make a full 360° turn.
 
 | Hand        | A full turn   |
 | ----------- | ------------- |
@@ -727,7 +727,7 @@ gear with sixteen. Four teeth on each gear are coloured.]
 The teeth on the two gears must be the same size, or they would not mesh. Each
 tooth fits in a gap of the other gear, so the teeth go past each other one for
 one, and both rims move at the same speed.  Four teeth on each gear are
-coloured. Those four teeth are half of the small gear, but only a quarter of the
+colored. Those four teeth are half of the small gear, but only a quarter of the
 big one. So the small gear turns twice for each turn of the big one: twice the
 circumference, half the speed.
 
@@ -969,19 +969,19 @@ turns the opposite direction from the one it touches.
 [click]
 
 [figure 2-3: Two more pairs of gears, between the second hand's wheel and
-the centre wheel. Step through them.]
+the center wheel. Step through them.]
 
 So the watch slows in two stages. The _third wheel_ runs 7½ times slower, and
 the _center wheel_ runs 8 times slower than that.
 
-[click] 7½ times 8 is 60, so the centre wheel turns once an hour.
+[click] 7½ times 8 is 60, so the center wheel turns once an hour.
 
 [click]
 
-[figure: The minute hand on the centre wheel's arbor, in the middle of the
+[figure: The minute hand on the center wheel's arbor, in the middle of the
 case.]
 
-The minute hand goes on the centre wheel's axle (_arbor_), in the middle of the dial.
+The minute hand goes on the center wheel's axle (_arbor_), in the middle of the dial.
 It makes a full turn once an hour.
 
 [click] The center wheel pushes the third wheel which pushes the fourth wheel
@@ -1174,7 +1174,7 @@ spring keeps its length, so its coils draw in toward the center.
 key turns the arbor. A slider winds it.]
 
 When wound away from its rest shape, the dashed line, it pushes back, as the
-hairspring does.  The axle (_arbor_) can only turn one way.  To unwid the
+hairspring does.  The axle (_arbor_) can only turn one way.  To unwind the
 mainspring, let go of the outer end by pressing the button.
 
 [click]
@@ -1185,16 +1185,15 @@ go of the outer end.]
 The block is gone, and the outer end swings round until the spring lies on its
 rest shape again. That fling is the energy that the winding put in.
 
-A watch uses that force by attaching the outer end to a wheel, the _barrel_.
+A watch harnesses that force by attaching the spring's outer end to a toothed drum called the _barrel_.
 
 [click]
 
 [figure 3-4: The mainspring in its barrel, driving the whole movement. The
 next step runs six hours in six seconds.]
 
-The barrell's teeth drive the gear train that we built.  The wound mainspring,
-pushing the barrel, whose teeth drive the gear train we built, is the "hidden
-mechanism" we mentioned earlier.
+As the mainspring pushes the barrel, the barrel's teeth drive the gear train we
+just built.  This is the "hidden mechanism" we mentioned earlier.
 
 [click] The arbor can only turn one way, so only winds the spring up.  So the
 spring can unwind only by turning the barrel. Step the figure forward using the
@@ -1327,7 +1326,7 @@ it at click 3 (docs/watch.md, "The Hour Hand slide"). -->
 
 <div v-click.hide="3" class="hh-sentence">
   <div>12:1 gear ratio</div>
-  <div v-click="2" class="after-watch">Hour hand off centre!</div>
+  <div v-click="2" class="after-watch">Hour hand off center!</div>
 </div>
 
 <!-- The stages stay at click 6, dimmed, above the hour hand's text: a
@@ -1389,9 +1388,9 @@ The hour hand must turn twice a day, that's once every twelve hours. Unlike the 
 
 [nofigure]
 
-[click] But the hour hand on that wheel's axle (_arbor_), and it is off centre!
-And it would run backward (couterclockwise): a pair of meshing gears turn
-opposite directions.
+[click] But the hour hand on that wheel's axle (_arbor_) is off center!  And it
+would run backward (counterclockwise): a pair of meshing gears turn opposite
+directions.
 
 [click:3] So we use the same two-step trick we used for the minute hand.  This
 time, 3:1 going out and 4:1 coming back.  3:1 × 4:1 = 12:1.
@@ -1565,7 +1564,7 @@ The hour hands are driven by a pair of gears totaling 12:1.
 
 [click] The barrel drives the _center wheel_ holding the minute hand.
 
-[click] The centre wheel drives the _third wheel_.
+[click] The center wheel drives the _third wheel_.
 
 [click] The third wheel drives the _fourth wheel_, which holds the second hand.
 
