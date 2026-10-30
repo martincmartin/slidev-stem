@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Globe spike</title>
+    <link rel="stylesheet" href="./palettes/ledger.css" />
+    <link rel="stylesheet" href="./palettes/after-hours.css" />
+    <style>
+      body {
+        margin: 0;
+        font: 14px/1.4 system-ui, sans-serif;
+        background: #888;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+      }
+      #controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 12px;
+        padding: 6px 8px;
+      }
+      #report {
+        margin: 0;
+        padding: 0 8px 8px;
+        white-space: pre-wrap;
+        font: 12px/1.4 ui-monospace, monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas></canvas>
+    <div id="controls"></div>
+    <pre id="report">loading…</pre>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

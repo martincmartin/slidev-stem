@@ -1,0 +1,605 @@
+{
+  "radius": 500,
+  "tolerance": 0.25,
+  "steinerStep": 2,
+  "step": 1,
+  "results": [
+    {
+      "scale": "110m",
+      "coastline": {
+        "lines": 134,
+        "vertices": 5128,
+        "segments": 4994,
+        "segmentDegrees": {
+          "median": 0.5677043776810122,
+          "p99": 1.7165043418760841,
+          "max": 3.189085323828619
+        },
+        "longestLineDegrees": 3.6238542761478176,
+        "segmentsOverLongest": 0,
+        "worstLineSag": 0.19361499965642182,
+        "float32": 41024,
+        "float32Gzip": 36799
+      },
+      "land": {
+        "polygons": 127,
+        "rings": 128,
+        "vertices": 5143,
+        "steiner": {
+          "triangles": 10244,
+          "milliseconds": 80.507834,
+          "worstSag": 110.66842727797524,
+          "overTolerance": 4450,
+          "worstDeviation": 0.010288710579144178
+        },
+        "steinerRefined": {
+          "triangles": 10244,
+          "milliseconds": 76.706875,
+          "worstSag": 93.96843458288515,
+          "overTolerance": 1697,
+          "worstDeviation": 0.01028871057914402
+        },
+        "grid": {
+          "triangles": 131574,
+          "milliseconds": 126.263958,
+          "worstSag": 0.03384537760246076,
+          "overTolerance": 0,
+          "worstDeviation": 3.761626902540536e-14
+        },
+        "gridRefined": {
+          "triangles": 102352,
+          "milliseconds": 49.312792,
+          "worstSag": 0.03384537760246076,
+          "overTolerance": 0,
+          "worstDeviation": 3.758588946595767e-14
+        }
+      },
+      "regions": [
+        {
+          "name": "Isles of Scilly",
+          "lines": 0,
+          "vertices": 0
+        },
+        {
+          "name": "Land's End to the Lizard",
+          "lines": 1,
+          "vertices": 2
+        },
+        {
+          "name": "Robinson Crusoe Island",
+          "lines": 0,
+          "vertices": 0
+        },
+        {
+          "name": "Alejandro Selkirk Island",
+          "lines": 0,
+          "vertices": 0
+        }
+      ],
+      "meridians": {
+        "count": 24,
+        "stretches": 128,
+        "each": [
+          {
+            "lon": -180,
+            "stretches": 4,
+            "waterDegrees": 169.55785400134238
+          },
+          {
+            "lon": -165,
+            "stretches": 4,
+            "waterDegrees": 169.51611716982302
+          },
+          {
+            "lon": -150,
+            "stretches": 4,
+            "waterDegrees": 159.28457523568608
+          },
+          {
+            "lon": -135,
+            "stretches": 2,
+            "waterDegrees": 153.02739794927214
+          },
+          {
+            "lon": -120,
+            "stretches": 5,
+            "waterDegrees": 125.77864007862323
+          },
+          {
+            "lon": -105,
+            "stretches": 6,
+            "waterDegrees": 111.88870144255924
+          },
+          {
+            "lon": -90,
+            "stretches": 8,
+            "waterDegrees": 117.61929605763595
+          },
+          {
+            "lon": -75,
+            "stretches": 13,
+            "waterDegrees": 102.95197243168775
+          },
+          {
+            "lon": -60,
+            "stretches": 8,
+            "waterDegrees": 111.52952228096648
+          },
+          {
+            "lon": -45,
+            "stretches": 5,
+            "waterDegrees": 124.76839159009849
+          },
+          {
+            "lon": -30,
+            "stretches": 4,
+            "waterDegrees": 153.23681090088496
+          },
+          {
+            "lon": -15,
+            "stretches": 4,
+            "waterDegrees": 146.1195534065797
+          },
+          {
+            "lon": 0,
+            "stretches": 5,
+            "waterDegrees": 118.2023556836993
+          },
+          {
+            "lon": 15,
+            "stretches": 7,
+            "waterDegrees": 74.55297977979049
+          },
+          {
+            "lon": 30,
+            "stretches": 4,
+            "waterDegrees": 67.2884820239375
+          },
+          {
+            "lon": 45,
+            "stretches": 5,
+            "waterDegrees": 84.19301112595869
+          },
+          {
+            "lon": 60,
+            "stretches": 3,
+            "waterDegrees": 113.18771339587752
+          },
+          {
+            "lon": 75,
+            "stretches": 3,
+            "waterDegrees": 99.48796003007803
+          },
+          {
+            "lon": 90,
+            "stretches": 2,
+            "waterDegrees": 103.57013546871227
+          },
+          {
+            "lon": 105,
+            "stretches": 6,
+            "waterDegrees": 83.981914617446
+          },
+          {
+            "lon": 120,
+            "stretches": 9,
+            "waterDegrees": 92.32360079471866
+          },
+          {
+            "lon": 135,
+            "stretches": 5,
+            "waterDegrees": 103.82858987822313
+          },
+          {
+            "lon": 150,
+            "stretches": 7,
+            "waterDegrees": 129.37287608260272
+          },
+          {
+            "lon": 165,
+            "stretches": 5,
+            "waterDegrees": 156.9799213003555
+          }
+        ]
+      }
+    },
+    {
+      "scale": "50m",
+      "coastline": {
+        "lines": 1429,
+        "vertices": 60416,
+        "segments": 58987,
+        "segmentDegrees": {
+          "median": 0.06879814409119193,
+          "p99": 0.38690409084067506,
+          "max": 1.2313537871238276
+        },
+        "longestLineDegrees": 3.6238542761478176,
+        "segmentsOverLongest": 0,
+        "worstLineSag": 0.028866642550029464,
+        "float32": 483328,
+        "float32Gzip": 386151
+      },
+      "land": {
+        "polygons": 1421,
+        "rings": 1422,
+        "vertices": 60669,
+        "steiner": {
+          "triangles": 61338,
+          "milliseconds": 115.16737499999999,
+          "worstSag": 108.65323423104513,
+          "overTolerance": 5404,
+          "worstDeviation": 0.01786467566049786
+        },
+        "steinerRefined": {
+          "triangles": 61338,
+          "milliseconds": 124.85750000000007,
+          "worstSag": 93.96843458288515,
+          "overTolerance": 1976,
+          "worstDeviation": 0.01786467566049802
+        },
+        "grid": {
+          "triangles": 365203,
+          "milliseconds": 379.11295800000005,
+          "worstSag": 0.03384537760246076,
+          "overTolerance": 0,
+          "worstDeviation": 1.2551112032152328e-11
+        },
+        "gridRefined": {
+          "triangles": 233857,
+          "milliseconds": 95.019,
+          "worstSag": 0.03384537760246076,
+          "overTolerance": 0,
+          "worstDeviation": 1.2551112032152328e-11
+        }
+      },
+      "regions": [
+        {
+          "name": "Isles of Scilly",
+          "lines": 0,
+          "vertices": 0
+        },
+        {
+          "name": "Land's End to the Lizard",
+          "lines": 1,
+          "vertices": 11
+        },
+        {
+          "name": "Robinson Crusoe Island",
+          "lines": 1,
+          "vertices": 13
+        },
+        {
+          "name": "Alejandro Selkirk Island",
+          "lines": 0,
+          "vertices": 0
+        }
+      ],
+      "meridians": {
+        "count": 24,
+        "stretches": 236,
+        "each": [
+          {
+            "lon": -180,
+            "stretches": 8,
+            "waterDegrees": 170.40912135587843
+          },
+          {
+            "lon": -165,
+            "stretches": 9,
+            "waterDegrees": 169.3932845344641
+          },
+          {
+            "lon": -150,
+            "stretches": 9,
+            "waterDegrees": 158.0530021056225
+          },
+          {
+            "lon": -135,
+            "stretches": 6,
+            "waterDegrees": 152.80924220342428
+          },
+          {
+            "lon": -120,
+            "stretches": 6,
+            "waterDegrees": 126.55314519354154
+          },
+          {
+            "lon": -105,
+            "stretches": 9,
+            "waterDegrees": 111.48815728796855
+          },
+          {
+            "lon": -90,
+            "stretches": 17,
+            "waterDegrees": 118.93515351606827
+          },
+          {
+            "lon": -75,
+            "stretches": 30,
+            "waterDegrees": 103.65482699338952
+          },
+          {
+            "lon": -60,
+            "stretches": 13,
+            "waterDegrees": 112.74040971010635
+          },
+          {
+            "lon": -45,
+            "stretches": 11,
+            "waterDegrees": 125.93432986978978
+          },
+          {
+            "lon": -30,
+            "stretches": 6,
+            "waterDegrees": 151.9131197946004
+          },
+          {
+            "lon": -15,
+            "stretches": 7,
+            "waterDegrees": 146.521095558401
+          },
+          {
+            "lon": 0,
+            "stretches": 7,
+            "waterDegrees": 118.7382171965113
+          },
+          {
+            "lon": 15,
+            "stretches": 17,
+            "waterDegrees": 74.41713570723796
+          },
+          {
+            "lon": 30,
+            "stretches": 8,
+            "waterDegrees": 68.36373025212002
+          },
+          {
+            "lon": 45,
+            "stretches": 7,
+            "waterDegrees": 84.20176483027804
+          },
+          {
+            "lon": 60,
+            "stretches": 6,
+            "waterDegrees": 112.07922306372707
+          },
+          {
+            "lon": 75,
+            "stretches": 5,
+            "waterDegrees": 100.21202818962979
+          },
+          {
+            "lon": 90,
+            "stretches": 4,
+            "waterDegrees": 103.21691649332321
+          },
+          {
+            "lon": 105,
+            "stretches": 8,
+            "waterDegrees": 83.68573625855187
+          },
+          {
+            "lon": 120,
+            "stretches": 16,
+            "waterDegrees": 91.92125771605184
+          },
+          {
+            "lon": 135,
+            "stretches": 7,
+            "waterDegrees": 104.62208308464189
+          },
+          {
+            "lon": 150,
+            "stretches": 12,
+            "waterDegrees": 129.78781226267114
+          },
+          {
+            "lon": 165,
+            "stretches": 8,
+            "waterDegrees": 158.6198922078085
+          }
+        ]
+      }
+    },
+    {
+      "scale": "10m",
+      "coastline": {
+        "lines": 4133,
+        "vertices": 410957,
+        "segments": 406824,
+        "segmentDegrees": {
+          "median": 0.014158735894540662,
+          "p99": 0.11225575473883173,
+          "max": 0.4952935929906888
+        },
+        "longestLineDegrees": 3.6238542761478176,
+        "segmentsOverLongest": 0,
+        "worstLineSag": 0.004670458275457534,
+        "float32": 3287656,
+        "float32Gzip": 2329081
+      },
+      "land": {
+        "polygons": 6837,
+        "rings": 6838,
+        "vertices": 446175,
+        "steiner": {
+          "triangles": 429971,
+          "milliseconds": 508.731084,
+          "worstSag": 96.56728777746929,
+          "overTolerance": 8471,
+          "worstDeviation": 0.015089385992138955
+        },
+        "steinerRefined": {
+          "triangles": 429971,
+          "milliseconds": 520.4262079999999,
+          "worstSag": 93.96843458288515,
+          "overTolerance": 1900,
+          "worstDeviation": 0.015089385992138155
+        },
+        "grid": {
+          "triangles": 1036279,
+          "milliseconds": 1043.0724169999999,
+          "worstSag": 0.03384537760246076,
+          "overTolerance": 0,
+          "worstDeviation": 3.706439052156588e-11
+        },
+        "gridRefined": {
+          "triangles": 728475,
+          "milliseconds": 350.00091699999984,
+          "worstSag": 0.03384537760246076,
+          "overTolerance": 0,
+          "worstDeviation": 3.706439052156588e-11
+        }
+      },
+      "regions": [
+        {
+          "name": "Isles of Scilly",
+          "lines": 2,
+          "vertices": 18
+        },
+        {
+          "name": "Land's End to the Lizard",
+          "lines": 1,
+          "vertices": 83
+        },
+        {
+          "name": "Robinson Crusoe Island",
+          "lines": 1,
+          "vertices": 34
+        },
+        {
+          "name": "Alejandro Selkirk Island",
+          "lines": 1,
+          "vertices": 12
+        }
+      ],
+      "meridians": {
+        "count": 24,
+        "stretches": 338,
+        "each": [
+          {
+            "lon": -180,
+            "stretches": 6,
+            "waterDegrees": 169.64288699882917
+          },
+          {
+            "lon": -165,
+            "stretches": 14,
+            "waterDegrees": 169.26830395687446
+          },
+          {
+            "lon": -150,
+            "stretches": 9,
+            "waterDegrees": 157.99958288498857
+          },
+          {
+            "lon": -135,
+            "stretches": 9,
+            "waterDegrees": 152.593309935229
+          },
+          {
+            "lon": -120,
+            "stretches": 5,
+            "waterDegrees": 126.53077124201931
+          },
+          {
+            "lon": -105,
+            "stretches": 14,
+            "waterDegrees": 111.28906402957954
+          },
+          {
+            "lon": -90,
+            "stretches": 30,
+            "waterDegrees": 118.67088420920342
+          },
+          {
+            "lon": -75,
+            "stretches": 55,
+            "waterDegrees": 103.18439795230132
+          },
+          {
+            "lon": -60,
+            "stretches": 17,
+            "waterDegrees": 112.67137841028648
+          },
+          {
+            "lon": -45,
+            "stretches": 17,
+            "waterDegrees": 126.03543454413322
+          },
+          {
+            "lon": -30,
+            "stretches": 12,
+            "waterDegrees": 152.36862776976244
+          },
+          {
+            "lon": -15,
+            "stretches": 10,
+            "waterDegrees": 146.52110933289342
+          },
+          {
+            "lon": 0,
+            "stretches": 7,
+            "waterDegrees": 118.76317934445481
+          },
+          {
+            "lon": 15,
+            "stretches": 34,
+            "waterDegrees": 74.78754854869766
+          },
+          {
+            "lon": 30,
+            "stretches": 9,
+            "waterDegrees": 68.27966271566179
+          },
+          {
+            "lon": 45,
+            "stretches": 7,
+            "waterDegrees": 84.22057950947465
+          },
+          {
+            "lon": 60,
+            "stretches": 9,
+            "waterDegrees": 111.9726046468892
+          },
+          {
+            "lon": 75,
+            "stretches": 4,
+            "waterDegrees": 100.2676567353927
+          },
+          {
+            "lon": 90,
+            "stretches": 6,
+            "waterDegrees": 103.19519569558406
+          },
+          {
+            "lon": 105,
+            "stretches": 7,
+            "waterDegrees": 83.63821536845825
+          },
+          {
+            "lon": 120,
+            "stretches": 24,
+            "waterDegrees": 92.0488200618716
+          },
+          {
+            "lon": 135,
+            "stretches": 6,
+            "waterDegrees": 104.63883993852338
+          },
+          {
+            "lon": 150,
+            "stretches": 18,
+            "waterDegrees": 129.67681102872166
+          },
+          {
+            "lon": 165,
+            "stretches": 9,
+            "waterDegrees": 158.642072481201
+          }
+        ]
+      }
+    }
+  ]
+}

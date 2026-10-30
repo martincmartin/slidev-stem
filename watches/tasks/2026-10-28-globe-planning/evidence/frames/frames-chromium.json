@@ -1,0 +1,1105 @@
+[
+  {
+    "name": "chromium-laptop-110m-none",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "110m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 6080,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 128,
+      "times": {
+        "sphere": 8.699999928474426,
+        "coast": 1.600000023841858,
+        "meridians": 4.600000023841858
+      }
+    },
+    "loadMs": 6,
+    "buildMs": 15.299999952316284,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.20000004768371582,
+        "p95": 0.3999999761581421,
+        "max": 4.700000047683716
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.799999999999727,
+        "max": 33.400000000000006
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-50m-none",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 9,
+        "coast": 8.299999952316284,
+        "meridians": 18.100000023841858
+      }
+    },
+    "loadMs": 20.5,
+    "buildMs": 36.40000009536743,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.20000004768371582,
+        "p95": 0.5,
+        "max": 3.8000000715255737
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000273,
+        "max": 66.53599999999999
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-50m-wash",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 120163,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 9,
+        "coast": 7.799999952316284,
+        "meridians": 21.600000023841858,
+        "land": 70
+      }
+    },
+    "loadMs": 21.199999928474426,
+    "buildMs": 109.39999997615814,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.20000004768371582,
+        "p95": 0.5,
+        "max": 3.4000000953674316
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 83.37199999999999
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-10m-none",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 7.800000071525574,
+        "coast": 35.09999990463257,
+        "meridians": 84.10000002384186
+      }
+    },
+    "loadMs": 75,
+    "buildMs": 127.69999992847443,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.20000004768371582,
+        "p95": 0.5,
+        "max": 3.1999999284744263
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 249.974
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-50m-none-atlantic",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "atlantic",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 8.100000023841858,
+        "coast": 7.199999928474426,
+        "meridians": 18.100000023841858
+      }
+    },
+    "loadMs": 18.600000023841858,
+    "buildMs": 33.699999928474426,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.30000007152557373,
+        "p95": 0.5,
+        "max": 3.399999976158142
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000273,
+        "max": 50.001999999999995
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-50m-wash-atlantic-after-hours",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "atlantic",
+      "spin": "1",
+      "step": "3",
+      "palette": "after-hours",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 120163,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 9,
+        "coast": 8.300000071525574,
+        "meridians": 24.09999990463257,
+        "land": 71.60000002384186
+      }
+    },
+    "loadMs": 18.799999952316284,
+    "buildMs": 113.80000007152557,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.20000004768371582,
+        "p95": 0.5,
+        "max": 4.399999976158142
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.799999999999955,
+        "max": 99.93799999999999
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-10m-none-scilly-0",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "scilly",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 7.899999976158142,
+        "coast": 36,
+        "meridians": 83.5
+      }
+    },
+    "loadMs": 72.5,
+    "buildMs": 127.89999997615814,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.20000004768371582,
+        "p95": 0.3999999761581421,
+        "max": 3.100000023841858
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.799999999999727,
+        "max": 266.574
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-10m-wash-scilly-0",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "wash",
+      "view": "scilly",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 530619,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 8,
+        "coast": 36.5,
+        "meridians": 85.60000002384186,
+        "land": 361
+      }
+    },
+    "loadMs": 77.10000002384186,
+    "buildMs": 494.5,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.20000004768371582,
+        "p95": 0.5,
+        "max": 3.100000023841858
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 400.02199999999993
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-10m-none-anson-0",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "anson",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 7.600000023841858,
+        "coast": 35.700000047683716,
+        "meridians": 91.10000002384186
+      }
+    },
+    "loadMs": 74.5,
+    "buildMs": 135.19999992847443,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.20000004768371582,
+        "p95": 0.3999999761581421,
+        "max": 3.399999976158142
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 266.6
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-10m-wash-anson-0",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "wash",
+      "view": "anson",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 530619,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 7.900000095367432,
+        "coast": 36,
+        "meridians": 86.30000007152557,
+        "land": 364.59999990463257
+      }
+    },
+    "loadMs": 75.30000007152557,
+    "buildMs": 497.89999997615814,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 332,
+      "draw": {
+        "median": 0.20000004768371582,
+        "p95": 0.5,
+        "max": 3.600000023841858
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 399.922
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-110m-none-disc",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "110m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 6440,
+      "silhouetteEdges": 0,
+      "meridianStretches": 128,
+      "times": {
+        "coast": 1.399999976158142,
+        "meridians": 4.200000047683716
+      }
+    },
+    "loadMs": 6.399999976158142,
+    "buildMs": 6.600000023841858,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.30000007152557373,
+        "p95": 0.6000000238418579,
+        "max": 3.799999952316284
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.799999999999727,
+        "max": 16.800000000000182
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-50m-none-disc",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 9.899999976158142,
+        "meridians": 25.699999928474426
+      }
+    },
+    "loadMs": 20.5,
+    "buildMs": 36.199999928474426,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.20000004768371582,
+        "p95": 0.5,
+        "max": 5.200000047683716
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.799999999999955,
+        "max": 50.001999999999995
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-50m-wash-disc",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 106363,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 9.399999976158142,
+        "meridians": 15.5,
+        "land": 74.19999992847443
+      }
+    },
+    "loadMs": 20.5,
+    "buildMs": 100.80000007152557,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.30000007152557373,
+        "p95": 0.5,
+        "max": 3.600000023841858
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 83.238
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-10m-none-disc",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 440207,
+      "silhouetteEdges": 0,
+      "meridianStretches": 338,
+      "times": {
+        "coast": 37,
+        "meridians": 80.40000009536743
+      }
+    },
+    "loadMs": 75.40000009536743,
+    "buildMs": 118.29999995231628,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 332,
+      "draw": {
+        "median": 0.20000004768371582,
+        "p95": 0.5,
+        "max": 3
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.799999999999272,
+        "max": 383.3
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-50m-wash-atlantic-after-hours-disc",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "atlantic",
+      "spin": "1",
+      "step": "3",
+      "palette": "after-hours",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 106363,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 9,
+        "meridians": 29.600000023841858,
+        "land": 72.89999997615814
+      }
+    },
+    "loadMs": 18.899999976158142,
+    "buildMs": 112.79999995231628,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.2999999523162842,
+        "p95": 0.5,
+        "max": 3
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 83.27199999999999
+      }
+    }
+  },
+  {
+    "name": "chromium-laptop-10m-wash-anson-0-disc",
+    "engine": "chromium",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "wash",
+      "view": "anson",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 516819,
+      "lineSegments": 440207,
+      "silhouetteEdges": 0,
+      "meridianStretches": 338,
+      "times": {
+        "coast": 37.89999997615814,
+        "meridians": 80.5,
+        "land": 370.09999990463257
+      }
+    },
+    "loadMs": 78.20000004768372,
+    "buildMs": 491.7999999523163,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.30000007152557373,
+        "p95": 0.5,
+        "max": 3.100000023841858
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 383.222
+      }
+    }
+  },
+  {
+    "name": "chromium-phone-size-110m-none",
+    "engine": "chromium",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "110m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 6080,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 128,
+      "times": {
+        "sphere": 9.600000023841858,
+        "coast": 2.100000023841858,
+        "meridians": 5.299999952316284
+      }
+    },
+    "loadMs": 9.199999928474426,
+    "buildMs": 17.700000047683716,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.2999999523162842,
+        "p95": 0.5,
+        "max": 2.799999952316284
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.799999999999727,
+        "max": 49.867999999999995
+      }
+    }
+  },
+  {
+    "name": "chromium-phone-size-50m-none",
+    "engine": "chromium",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 8.899999976158142,
+        "coast": 8.5,
+        "meridians": 16.300000071525574
+      }
+    },
+    "loadMs": 20.90000009536743,
+    "buildMs": 34.39999997615814,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.30000007152557373,
+        "p95": 0.5,
+        "max": 2.5
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 66.536
+      }
+    }
+  },
+  {
+    "name": "chromium-phone-size-50m-wash",
+    "engine": "chromium",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 120163,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 8.900000095367432,
+        "coast": 8.199999928474426,
+        "meridians": 22.600000023841858,
+        "land": 72.10000002384186
+      }
+    },
+    "loadMs": 20,
+    "buildMs": 113,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.2999999523162842,
+        "p95": 0.5,
+        "max": 2.299999952316284
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 99.93800000000002
+      }
+    }
+  },
+  {
+    "name": "chromium-phone-size-10m-none",
+    "engine": "chromium",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 7.700000047683716,
+        "coast": 35,
+        "meridians": 84.10000002384186
+      }
+    },
+    "loadMs": 76.20000004768372,
+    "buildMs": 127.5,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 332,
+      "draw": {
+        "median": 0.20000004768371582,
+        "p95": 0.3999999761581421,
+        "max": 2.0999999046325684
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 266.674
+      }
+    }
+  },
+  {
+    "name": "chromium-phone-size-110m-none-disc",
+    "engine": "chromium",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "110m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 6440,
+      "silhouetteEdges": 0,
+      "meridianStretches": 128,
+      "times": {
+        "coast": 1.399999976158142,
+        "meridians": 4.300000071525574
+      }
+    },
+    "loadMs": 6.700000047683716,
+    "buildMs": 6.600000023841858,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.3999999761581421,
+        "p95": 0.6000000238418579,
+        "max": 2.600000023841858
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.799999999999272,
+        "max": 16.800000000000182
+      }
+    }
+  },
+  {
+    "name": "chromium-phone-size-50m-none-disc",
+    "engine": "chromium",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 7.700000047683716,
+        "meridians": 12.399999976158142
+      }
+    },
+    "loadMs": 16.200000047683716,
+    "buildMs": 20.600000023841858,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.2999999523162842,
+        "p95": 0.40000009536743164,
+        "max": 2.100000023841858
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.700000000000728,
+        "max": 33.268
+      }
+    }
+  },
+  {
+    "name": "chromium-phone-size-50m-wash-disc",
+    "engine": "chromium",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 106363,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 7.900000095367432,
+        "meridians": 14.599999904632568,
+        "land": 67
+      }
+    },
+    "loadMs": 15.799999952316284,
+    "buildMs": 90.60000002384186,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.2999999523162842,
+        "p95": 0.5,
+        "max": 2
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.799999999999955,
+        "max": 66.704
+      }
+    }
+  },
+  {
+    "name": "chromium-phone-size-10m-none-disc",
+    "engine": "chromium",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 440207,
+      "silhouetteEdges": 0,
+      "meridianStretches": 338,
+      "times": {
+        "coast": 33.700000047683716,
+        "meridians": 72.89999997615814
+      }
+    },
+    "loadMs": 62.89999997615814,
+    "buildMs": 107.40000009536743,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0.2999999523162842,
+        "p95": 0.5,
+        "max": 2.100000023841858
+      },
+      "interval": {
+        "median": 16.699999999999818,
+        "p95": 16.799999999999727,
+        "max": 216.7
+      }
+    }
+  }
+]

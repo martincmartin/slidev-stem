@@ -1,0 +1,1105 @@
+[
+  {
+    "name": "firefox-laptop-110m-none",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "110m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 6080,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 128,
+      "times": {
+        "sphere": 7,
+        "coast": 1,
+        "meridians": 1
+      }
+    },
+    "loadMs": 37,
+    "buildMs": 10,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 3,
+        "p95": 5,
+        "max": 9
+      },
+      "interval": {
+        "median": 8.339999999999918,
+        "p95": 8.779999999999745,
+        "max": 9.340000000000146
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-50m-none",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 7,
+        "coast": 7,
+        "meridians": 9
+      }
+    },
+    "loadMs": 27,
+    "buildMs": 23,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 6,
+        "max": 9
+      },
+      "interval": {
+        "median": 8.320000000000164,
+        "p95": 8.800000000000182,
+        "max": 9.299999999999955
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-50m-wash",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 120163,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 8,
+        "coast": 6,
+        "meridians": 9,
+        "land": 72
+      }
+    },
+    "loadMs": 18,
+    "buildMs": 96,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 6,
+        "max": 10
+      },
+      "interval": {
+        "median": 8.33999999999969,
+        "p95": 8.680000000000291,
+        "max": 9.319999999999709
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-10m-none",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 7,
+        "coast": 38,
+        "meridians": 63
+      }
+    },
+    "loadMs": 95,
+    "buildMs": 108,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 6,
+        "p95": 8,
+        "max": 15
+      },
+      "interval": {
+        "median": 8.33999999999969,
+        "p95": 8.680000000000064,
+        "max": 16.66000000000031
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-50m-none-atlantic",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "atlantic",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 7,
+        "coast": 7,
+        "meridians": 10
+      }
+    },
+    "loadMs": 24,
+    "buildMs": 25,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 5,
+        "max": 8
+      },
+      "interval": {
+        "median": 8.33999999999969,
+        "p95": 8.940000000000055,
+        "max": 9.320000000000164
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-50m-wash-atlantic-after-hours",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "atlantic",
+      "spin": "1",
+      "step": "3",
+      "palette": "after-hours",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 120163,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 7,
+        "coast": 7,
+        "meridians": 9,
+        "land": 71
+      }
+    },
+    "loadMs": 27,
+    "buildMs": 96,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 5,
+        "max": 8
+      },
+      "interval": {
+        "median": 8.339999999999918,
+        "p95": 8.679999999999836,
+        "max": 9.260000000000218
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-10m-none-scilly-0",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "scilly",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 7,
+        "coast": 38,
+        "meridians": 62
+      }
+    },
+    "loadMs": 83,
+    "buildMs": 108,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 6,
+        "max": 9
+      },
+      "interval": {
+        "median": 8.300000000000182,
+        "p95": 8.980000000000018,
+        "max": 9.44000000000051
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-10m-wash-scilly-0",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "wash",
+      "view": "scilly",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 530619,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 7,
+        "coast": 38,
+        "meridians": 60,
+        "land": 430
+      }
+    },
+    "loadMs": 89,
+    "buildMs": 542,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 7,
+        "max": 11
+      },
+      "interval": {
+        "median": 8.33999999999969,
+        "p95": 8.600000000000364,
+        "max": 9.319999999999709
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-10m-none-anson-0",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "anson",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 7,
+        "coast": 38,
+        "meridians": 61
+      }
+    },
+    "loadMs": 91,
+    "buildMs": 107,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 6,
+        "max": 10
+      },
+      "interval": {
+        "median": 8.33999999999969,
+        "p95": 8.960000000000036,
+        "max": 9.33999999999969
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-10m-wash-anson-0",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "wash",
+      "view": "anson",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 530619,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 6,
+        "coast": 41,
+        "meridians": 59,
+        "land": 438
+      }
+    },
+    "loadMs": 105,
+    "buildMs": 552,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 7,
+        "max": 10
+      },
+      "interval": {
+        "median": 8.33999999999969,
+        "p95": 8.599999999999454,
+        "max": 9.299999999999727
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-110m-none-disc",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "110m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 6440,
+      "silhouetteEdges": 0,
+      "meridianStretches": 128,
+      "times": {
+        "coast": 1,
+        "meridians": 1
+      }
+    },
+    "loadMs": 8,
+    "buildMs": 3,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 3,
+        "p95": 5,
+        "max": 9
+      },
+      "interval": {
+        "median": 8.33999999999969,
+        "p95": 8.599999999999909,
+        "max": 10.560000000000173
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-50m-none-disc",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 7,
+        "meridians": 10
+      }
+    },
+    "loadMs": 32,
+    "buildMs": 17,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 6,
+        "max": 10
+      },
+      "interval": {
+        "median": 8.339999999999918,
+        "p95": 9.2199999999998,
+        "max": 9.640000000000327
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-50m-wash-disc",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 106363,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 8,
+        "meridians": 9,
+        "land": 75
+      }
+    },
+    "loadMs": 28,
+    "buildMs": 94,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 5,
+        "p95": 7,
+        "max": 9
+      },
+      "interval": {
+        "median": 8.33999999999969,
+        "p95": 8.5,
+        "max": 9.360000000000582
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-10m-none-disc",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 440207,
+      "silhouetteEdges": 0,
+      "meridianStretches": 338,
+      "times": {
+        "coast": 35,
+        "meridians": 66
+      }
+    },
+    "loadMs": 100,
+    "buildMs": 101,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 593,
+      "draw": {
+        "median": 8,
+        "p95": 11,
+        "max": 27
+      },
+      "interval": {
+        "median": 8.339999999999918,
+        "p95": 16.559999999999945,
+        "max": 25
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-50m-wash-atlantic-after-hours-disc",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "atlantic",
+      "spin": "1",
+      "step": "3",
+      "palette": "after-hours",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 106363,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 7,
+        "meridians": 9,
+        "land": 79
+      }
+    },
+    "loadMs": 28,
+    "buildMs": 99,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 5,
+        "max": 16
+      },
+      "interval": {
+        "median": 8.320000000000164,
+        "p95": 9.100000000000364,
+        "max": 16.659999999999968
+      }
+    }
+  },
+  {
+    "name": "firefox-laptop-10m-wash-anson-0-disc",
+    "engine": "firefox",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "wash",
+      "view": "anson",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 516819,
+      "lineSegments": 440207,
+      "silhouetteEdges": 0,
+      "meridianStretches": 338,
+      "times": {
+        "coast": 31,
+        "meridians": 60,
+        "land": 450
+      }
+    },
+    "loadMs": 90,
+    "buildMs": 548,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 7,
+        "max": 10
+      },
+      "interval": {
+        "median": 8.33999999999969,
+        "p95": 8.839999999999236,
+        "max": 9.319999999999709
+      }
+    }
+  },
+  {
+    "name": "firefox-phone-size-110m-none",
+    "engine": "firefox",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "110m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 6080,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 128,
+      "times": {
+        "sphere": 8,
+        "coast": 0,
+        "meridians": 2
+      }
+    },
+    "loadMs": 7,
+    "buildMs": 10,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 2,
+        "p95": 4,
+        "max": 7
+      },
+      "interval": {
+        "median": 8.319999999999709,
+        "p95": 9.099999999999909,
+        "max": 31.519999999999982
+      }
+    }
+  },
+  {
+    "name": "firefox-phone-size-50m-none",
+    "engine": "firefox",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 9,
+        "coast": 9,
+        "meridians": 12
+      }
+    },
+    "loadMs": 28,
+    "buildMs": 30,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 6,
+        "max": 12
+      },
+      "interval": {
+        "median": 8.319999999999936,
+        "p95": 9.059999999999945,
+        "max": 16.659999999999854
+      }
+    }
+  },
+  {
+    "name": "firefox-phone-size-50m-wash",
+    "engine": "firefox",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 120163,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 8,
+        "coast": 7,
+        "meridians": 9,
+        "land": 74
+      }
+    },
+    "loadMs": 26,
+    "buildMs": 100,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 6,
+        "max": 11
+      },
+      "interval": {
+        "median": 8.339999999999236,
+        "p95": 9.159999999999968,
+        "max": 9.340000000000146
+      }
+    }
+  },
+  {
+    "name": "firefox-phone-size-10m-none",
+    "engine": "firefox",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 7,
+        "coast": 37,
+        "meridians": 62
+      }
+    },
+    "loadMs": 85,
+    "buildMs": 107,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 6,
+        "p95": 8,
+        "max": 10
+      },
+      "interval": {
+        "median": 8.33999999999969,
+        "p95": 8.979999999999563,
+        "max": 25.039999999999964
+      }
+    }
+  },
+  {
+    "name": "firefox-phone-size-110m-none-disc",
+    "engine": "firefox",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "110m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 6440,
+      "silhouetteEdges": 0,
+      "meridianStretches": 128,
+      "times": {
+        "coast": 2,
+        "meridians": 2
+      }
+    },
+    "loadMs": 9,
+    "buildMs": 5,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 2,
+        "p95": 7,
+        "max": 13
+      },
+      "interval": {
+        "median": 8.32000000000005,
+        "p95": 9.0600000000004,
+        "max": 9.339999999999236
+      }
+    }
+  },
+  {
+    "name": "firefox-phone-size-50m-none-disc",
+    "engine": "firefox",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 8,
+        "meridians": 11
+      }
+    },
+    "loadMs": 32,
+    "buildMs": 19,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 3,
+        "p95": 6,
+        "max": 14
+      },
+      "interval": {
+        "median": 8.320000000000164,
+        "p95": 9.239999999999782,
+        "max": 9.38000000000011
+      }
+    }
+  },
+  {
+    "name": "firefox-phone-size-50m-wash-disc",
+    "engine": "firefox",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 106363,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 8,
+        "meridians": 10,
+        "land": 79
+      }
+    },
+    "loadMs": 19,
+    "buildMs": 99,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 4,
+        "p95": 6,
+        "max": 15
+      },
+      "interval": {
+        "median": 8.320000000000164,
+        "p95": 9.080000000000041,
+        "max": 9.319999999999936
+      }
+    }
+  },
+  {
+    "name": "firefox-phone-size-10m-none-disc",
+    "engine": "firefox",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 440207,
+      "silhouetteEdges": 0,
+      "meridianStretches": 338,
+      "times": {
+        "coast": 31,
+        "meridians": 60
+      }
+    },
+    "loadMs": 92,
+    "buildMs": 92,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple M1, or similar",
+    "stats": {
+      "frames": 600,
+      "draw": {
+        "median": 6,
+        "p95": 8,
+        "max": 11
+      },
+      "interval": {
+        "median": 8.33999999999969,
+        "p95": 9.2199999999998,
+        "max": 16.68000000000029
+      }
+    }
+  }
+]

@@ -1,0 +1,1105 @@
+[
+  {
+    "name": "webkit-laptop-110m-none",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "110m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 6080,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 128,
+      "times": {
+        "sphere": 7,
+        "coast": 2,
+        "meridians": 3
+      }
+    },
+    "loadMs": 6,
+    "buildMs": 12,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 2
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 25
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-50m-none",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 7,
+        "coast": 6,
+        "meridians": 20
+      }
+    },
+    "loadMs": 10,
+    "buildMs": 33,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 2
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 19
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-50m-wash",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 120163,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 6,
+        "coast": 6,
+        "meridians": 22,
+        "land": 61
+      }
+    },
+    "loadMs": 16,
+    "buildMs": 95,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 1
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 19
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-10m-none",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 6,
+        "coast": 28,
+        "meridians": 56
+      }
+    },
+    "loadMs": 53,
+    "buildMs": 91,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 5
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 30
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-50m-none-atlantic",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "atlantic",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 7,
+        "coast": 6,
+        "meridians": 24
+      }
+    },
+    "loadMs": 16,
+    "buildMs": 38,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 334,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 2
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 21
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-50m-wash-atlantic-after-hours",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "atlantic",
+      "spin": "1",
+      "step": "3",
+      "palette": "after-hours",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 120163,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 6,
+        "coast": 6,
+        "meridians": 21,
+        "land": 63
+      }
+    },
+    "loadMs": 10,
+    "buildMs": 97,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 332,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 2
+      },
+      "interval": {
+        "median": 17,
+        "p95": 18,
+        "max": 19
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-10m-none-scilly-0",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "scilly",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 6,
+        "coast": 27,
+        "meridians": 54
+      }
+    },
+    "loadMs": 52,
+    "buildMs": 89,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 5
+      },
+      "interval": {
+        "median": 17,
+        "p95": 18,
+        "max": 31
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-10m-wash-scilly-0",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "wash",
+      "view": "scilly",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 530619,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 6,
+        "coast": 28,
+        "meridians": 56,
+        "land": 314
+      }
+    },
+    "loadMs": 50,
+    "buildMs": 406,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 4
+      },
+      "interval": {
+        "median": 17,
+        "p95": 18,
+        "max": 19
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-10m-none-anson-0",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "anson",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 6,
+        "coast": 29,
+        "meridians": 55
+      }
+    },
+    "loadMs": 52,
+    "buildMs": 90,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 5
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 19
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-10m-wash-anson-0",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "wash",
+      "view": "anson",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 530619,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 6,
+        "coast": 28,
+        "meridians": 54,
+        "land": 314
+      }
+    },
+    "loadMs": 52,
+    "buildMs": 404,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 5
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 21
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-110m-none-disc",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "110m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 6440,
+      "silhouetteEdges": 0,
+      "meridianStretches": 128,
+      "times": {
+        "coast": 1,
+        "meridians": 3
+      }
+    },
+    "loadMs": 5,
+    "buildMs": 4,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 2
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 18
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-50m-none-disc",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 6,
+        "meridians": 21
+      }
+    },
+    "loadMs": 11,
+    "buildMs": 29,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 3
+      },
+      "interval": {
+        "median": 17,
+        "p95": 18,
+        "max": 18
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-50m-wash-disc",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 106363,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 6,
+        "meridians": 21,
+        "land": 61
+      }
+    },
+    "loadMs": 14,
+    "buildMs": 89,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 2
+      },
+      "interval": {
+        "median": 17,
+        "p95": 18,
+        "max": 18
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-10m-none-disc",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 440207,
+      "silhouetteEdges": 0,
+      "meridianStretches": 338,
+      "times": {
+        "coast": 26,
+        "meridians": 55
+      }
+    },
+    "loadMs": 52,
+    "buildMs": 82,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 332,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 4
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 25
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-50m-wash-atlantic-after-hours-disc",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "atlantic",
+      "spin": "1",
+      "step": "3",
+      "palette": "after-hours",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 106363,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 6,
+        "meridians": 20,
+        "land": 62
+      }
+    },
+    "loadMs": 10,
+    "buildMs": 89,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 2
+      },
+      "interval": {
+        "median": 17,
+        "p95": 18,
+        "max": 21
+      }
+    }
+  },
+  {
+    "name": "webkit-laptop-10m-wash-anson-0-disc",
+    "engine": "webkit",
+    "screen": "laptop",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "wash",
+      "view": "anson",
+      "spin": "0",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 516819,
+      "lineSegments": 440207,
+      "silhouetteEdges": 0,
+      "meridianStretches": 338,
+      "times": {
+        "coast": 27,
+        "meridians": 57,
+        "land": 305
+      }
+    },
+    "loadMs": 52,
+    "buildMs": 391,
+    "device": "3024 x 1701 device px, ratio 2",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 332,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 5
+      },
+      "interval": {
+        "median": 17,
+        "p95": 18,
+        "max": 24
+      }
+    }
+  },
+  {
+    "name": "webkit-phone-size-110m-none",
+    "engine": "webkit",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "110m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 6080,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 128,
+      "times": {
+        "sphere": 6,
+        "coast": 1,
+        "meridians": 3
+      }
+    },
+    "loadMs": 5,
+    "buildMs": 10,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 2
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 18
+      }
+    }
+  },
+  {
+    "name": "webkit-phone-size-50m-none",
+    "engine": "webkit",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 6,
+        "coast": 6,
+        "meridians": 20
+      }
+    },
+    "loadMs": 10,
+    "buildMs": 33,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 1
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 18
+      }
+    }
+  },
+  {
+    "name": "webkit-phone-size-50m-wash",
+    "engine": "webkit",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 120163,
+      "lineSegments": 60140,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 236,
+      "times": {
+        "sphere": 6,
+        "coast": 6,
+        "meridians": 23,
+        "land": 62
+      }
+    },
+    "loadMs": 15,
+    "buildMs": 97,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 2
+      },
+      "interval": {
+        "median": 17,
+        "p95": 18,
+        "max": 18
+      }
+    }
+  },
+  {
+    "name": "webkit-phone-size-10m-none",
+    "engine": "webkit",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "sphere"
+    },
+    "counts": {
+      "triangles": 14160,
+      "lineSegments": 439847,
+      "silhouetteEdges": 14280,
+      "meridianStretches": 338,
+      "times": {
+        "sphere": 6,
+        "coast": 27,
+        "meridians": 55
+      }
+    },
+    "loadMs": 51,
+    "buildMs": 88,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 4
+      },
+      "interval": {
+        "median": 17,
+        "p95": 18,
+        "max": 19
+      }
+    }
+  },
+  {
+    "name": "webkit-phone-size-110m-none-disc",
+    "engine": "webkit",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "110m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 6440,
+      "silhouetteEdges": 0,
+      "meridianStretches": 128,
+      "times": {
+        "coast": 2,
+        "meridians": 2
+      }
+    },
+    "loadMs": 5,
+    "buildMs": 5,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 1
+      },
+      "interval": {
+        "median": 17,
+        "p95": 18,
+        "max": 18
+      }
+    }
+  },
+  {
+    "name": "webkit-phone-size-50m-none-disc",
+    "engine": "webkit",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 6,
+        "meridians": 20
+      }
+    },
+    "loadMs": 9,
+    "buildMs": 27,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 1
+      },
+      "interval": {
+        "median": 17,
+        "p95": 18,
+        "max": 18
+      }
+    }
+  },
+  {
+    "name": "webkit-phone-size-50m-wash-disc",
+    "engine": "webkit",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "50m",
+      "water": "wash",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 106363,
+      "lineSegments": 60500,
+      "silhouetteEdges": 0,
+      "meridianStretches": 236,
+      "times": {
+        "coast": 6,
+        "meridians": 21,
+        "land": 62
+      }
+    },
+    "loadMs": 10,
+    "buildMs": 89,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 1
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 18
+      }
+    }
+  },
+  {
+    "name": "webkit-phone-size-10m-none-disc",
+    "engine": "webkit",
+    "screen": "phone-size",
+    "ready": true,
+    "error": null,
+    "settings": {
+      "scale": "10m",
+      "water": "none",
+      "view": "whole",
+      "spin": "1",
+      "step": "3",
+      "palette": "ledger",
+      "width": "",
+      "finish": "1",
+      "occluder": "disc"
+    },
+    "counts": {
+      "triangles": 360,
+      "lineSegments": 440207,
+      "silhouetteEdges": 0,
+      "meridianStretches": 338,
+      "times": {
+        "coast": 26,
+        "meridians": 54
+      }
+    },
+    "loadMs": 48,
+    "buildMs": 81,
+    "device": "1170 x 658 device px, ratio 3",
+    "gpu": "Apple GPU",
+    "stats": {
+      "frames": 331,
+      "draw": {
+        "median": 0,
+        "p95": 1,
+        "max": 4
+      },
+      "interval": {
+        "median": 17,
+        "p95": 17,
+        "max": 19
+      }
+    }
+  }
+]
