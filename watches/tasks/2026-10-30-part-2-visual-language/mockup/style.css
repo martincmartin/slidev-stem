@@ -1,15 +1,10 @@
 /* The mockup's slide, in the house's type and text rules (stem/AGENTS.md,
-   "Writing a talk"; watches/docs/slide-patterns.md, "Text fades" and "Text
-   dims"; stem/docs/legibility.md, "Text sizes"). The colours are Ledger's
+   "Writing a talk"; watches/docs/slide-patterns.md, "Text fades";
+   stem/docs/legibility.md, "Text sizes"). Text does not dim: a step's text
+   leaves at the next step (PLAN.md, section 13). The colours are Ledger's
    roles (ledger.css, a copy of the house palette). */
 :root {
   --text-fade: 0.4s;
-  --text-dimmed: 50%;
-}
-@property --text-dim {
-  syntax: "<percentage>";
-  inherits: true;
-  initial-value: 0%;
 }
 body {
   margin: 0;
@@ -64,6 +59,24 @@ body {
   stroke: var(--palette-subject);
   stroke-width: 3;
   stroke-linejoin: round;
+}
+
+/* The globe's canvas, the slide's size whatever its px; and its colors,
+   which globe.ts reads. */
+.globe {
+  width: 100%;
+  height: 100%;
+  --globe-sea: var(--palette-water-wash);
+  --globe-land: var(--palette-background);
+  --globe-coast: var(--palette-subject);
+}
+.sea-paper .globe {
+  --globe-sea: var(--palette-background);
+}
+/* A story map on the globe is scaled as the camera zooms: main.ts sets
+   --line so that its coast stays 3 slide px wide. */
+.region .land {
+  stroke-width: var(--line);
 }
 
 /* The story's marks. Their colours are the mockup's guesses: a new mark gets
@@ -126,6 +139,28 @@ body {
 .ship-flag {
   fill: var(--palette-second);
 }
+/* Where the squadron thought it was: the ship's outline in the paper,
+   dashed, with no fill. */
+.ghost .ship-hull,
+.ghost .ship-sail,
+.ghost .ship-flag {
+  fill: none;
+  stroke: var(--palette-background);
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+}
+.ghost .ship-line,
+.ghost .ship-wale {
+  stroke: var(--palette-background);
+  stroke-dasharray: 4 3;
+}
+/* The gap between where the squadron was and where it thought it was. */
+.gap {
+  fill: none;
+  stroke: var(--palette-ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
 
 /* The wind: each gust draws itself from west to east, curls, and fades. */
 .gust {
@@ -182,6 +217,7 @@ body {
   paint-order: stroke fill;
 }
 h1 {
+  transition: opacity var(--text-fade);
   position: absolute;
   top: 18px;
   right: 0;
@@ -206,28 +242,21 @@ h1 {
 }
 .text {
   position: absolute;
-  color: color-mix(
-    in srgb,
-    var(--palette-ink),
-    var(--palette-background) var(--text-dim)
-  );
-  transition-property: opacity, --text-dim;
-  transition-duration: var(--text-fade);
+  color: var(--palette-ink);
+  transition: opacity var(--text-fade);
 }
-.text.hidden {
+.text.hidden,
+h1.hidden {
   opacity: 0;
 }
-.text.dimmed {
-  --text-dim: var(--text-dimmed);
+/* a label at a place on the globe, centred on it */
+.text.centred {
+  transform: translate(-50%, -50%);
 }
 .text em {
   font-style: normal;
   font-weight: 600;
-  color: color-mix(
-    in srgb,
-    var(--palette-accent),
-    var(--palette-background) var(--text-dim)
-  );
+  color: var(--palette-accent);
 }
 .no-text .text,
 .no-text h1,
@@ -275,24 +304,20 @@ h1 {
   margin: -6px 0 0 -10px;
   padding: 4px 8px;
   background: var(--palette-panel);
-  border: 2px solid
-    color-mix(
-      in srgb,
-      var(--palette-border),
-      var(--palette-background) var(--text-dim)
-    );
+  border: 2px solid var(--palette-border);
   border-radius: 6px;
   -webkit-text-stroke: 0;
 }
-/* The paper on the sea: dimmed, it moves toward the sea, as ink dims toward
-   the paper. */
+/* The paper on the sea. */
 .labels-paper .text.label.on-sea {
-  color: color-mix(
-    in srgb,
-    var(--palette-background),
-    var(--palette-water-wash) var(--text-dim)
-  );
+  color: var(--palette-background);
   -webkit-text-stroke: 0;
+}
+/* Its emphasis is in the paper too, and keeps its face and size: the
+   accent is 1.74:1 on the water's wash, under the 3:1 floor for large
+   text (tools/lib.py, `contrast`). */
+.labels-paper .text.label.on-sea em {
+  color: var(--palette-background);
 }
 /* a name, smaller than a sentence: in a label of its own (prize.ts), or
    the first lines of a label */

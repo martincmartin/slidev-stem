@@ -21,11 +21,17 @@ first; the rest of the evening is social.
   argument for writing.
 - Lead with story. Use data and math only where they carry the point. (This is
   about the talk. When you compare options for the user, still prefer data.)
-- Keep old text on the slide while there is room for it and it still makes
-  sense with what the screen shows. Then a listener who looks away and back
-  in the middle of a slide can catch up. Text that is no longer the focus
-  dims; it does not leave. Remove text when its room is needed, or when it
-  no longer agrees with the picture.
+- When a click brings new words, the words of the click before leave. The
+  picture keeps what the story needs: a track, a dot, a mark that stays.
+  Then a listener who looks away and back can catch up from the picture.
+  Not an oversight: old words that stay, even dimmed, made a word-heavy
+  slide too busy by its last click
+  (`watches/tasks/2026-10-30-part-2-visual-language/`, section 13).
+- The exception: a slide told mostly by its picture, with a few words at
+  each click, can keep its old words while there is room for them and they
+  still agree with the picture. Words that are no longer the focus dim. The
+  watch talk's Part 1 does this (`watches/docs/slide-patterns.md`, "Text
+  dims").
 - Use American spelling and words in what the audience or a reader sees or
   hears: the slides, the narration (the article) and the speaker notes. For
   example, "color", "center", "forever", "counterclockwise" and "around", not

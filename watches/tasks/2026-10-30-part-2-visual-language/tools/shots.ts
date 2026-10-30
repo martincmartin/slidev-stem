@@ -2,14 +2,15 @@
 // in Chromium. In watches/, with the mockup's server running
 // (mockup/vite.config.ts):
 //   node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ OUT_DIR \
-//     [--sea wash|paper] [--wind NAME] [--label NAME] [--old NAME] [--style NAME]...
-// With --sea paper, the sea is not filled; --wind, --label and --old are the
-// mockup's choices (mockup/choices.ts); each --style shoots one style
-// (default: all). It writes
-// OUT_DIR/frames/<style>-<step>.png, three frames of the labels in motion
-// (frames/labels-motion-<n>.png), OUT_DIR/measurements.json, and two sheets:
-// every step of every style, with the motion (sheet.png), and each style's
-// last step (last-steps.png).
+//     [--sea wash|paper] [--wind NAME] [--label NAME] [--start NAME] [--style NAME]...
+// With --sea paper, the sea is not filled; --wind, --label and --start are
+// the mockup's choices (mockup/choices.ts); each --style shoots one style
+// (default: all). It writes OUT_DIR/frames/<style>-<step>.png, frames of the
+// labels in motion (frames/labels-motion-<n>.png: MOTION),
+// OUT_DIR/measurements.json, the times between the frames of each of the
+// labels' camera flights (OUT_DIR/flights.json), and two sheets: every step
+// of every style, with the motion (sheet.png), and each style's last step
+// (last-steps.png).
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { parseArgs } from "node:util";
@@ -26,12 +27,22 @@ const SCALE = 1;
  *  text shows is covered by the text. */
 const COVERED = 24;
 
-/** The labels in motion: a step, and ms after it starts, from the step
- *  before it, settled: the ship sails north, east, and west. */
-const MOTION: readonly (readonly [number, number])[] = [
-  [1, 1000],
-  [2, 700],
-  [3, 3200],
+/** The labels in motion, from the step before, settled: a step, and when
+ *  after it starts: ms, or a share of its camera's flight. The camera flies
+ *  to Cape Noir, and the story map comes in; the ship sails into sight of
+ *  the land; the camera flies to Juan Fernández; the ship sails north,
+ *  east, and west. */
+type Moment = number | { readonly flight: number };
+const MOTION: readonly (readonly [number, Moment])[] = [
+  [1, { flight: 0.5 }],
+  [1, { flight: 0.9 }],
+  [2, 900],
+  [4, { flight: 0.15 }],
+  [4, { flight: 0.5 }],
+  [4, { flight: 0.9 }],
+  [5, 1000],
+  [6, 700],
+  [7, 3200],
 ];
 
 const wait = (ms: number) => new Promise((done) => setTimeout(done, ms));
@@ -45,14 +56,17 @@ interface Coverage {
 }
 
 /** Compares two pictures of the slide, with and without its text, inside
- *  the page: the sea is where the map's land path is not. */
+ *  the page: the sea is where the story map's land path is not. Null on the
+ *  globe, with no story map. */
 async function coverage(
   page: Page,
   withText: Buffer,
   withoutText: Buffer,
-): Promise<Coverage> {
+): Promise<Coverage | null> {
+  const land = await page.evaluate(() => window.mock.land());
+  if (land === null) return null;
   return page.evaluate(
-    async ({ one, other, scale, threshold }) => {
+    async ({ one, other, scale, threshold, land }) => {
       const load = async (base64: string) => {
         const image = new Image();
         image.src = `data:image/png;base64,${base64}`;
@@ -72,7 +86,6 @@ async function coverage(
       };
       const a = pixels((context) => context.drawImage(first, 0, 0));
       const b = pixels((context) => context.drawImage(second, 0, 0));
-      const land = document.querySelector(".land")?.getAttribute("d") ?? "";
       const mask = pixels((context) => {
         context.fillStyle = "white";
         context.fillRect(0, 0, width, height);
@@ -101,6 +114,7 @@ async function coverage(
       other: withoutText.toString("base64"),
       scale: SCALE,
       threshold: COVERED,
+      land,
     },
   );
 }
@@ -112,7 +126,7 @@ async function main(): Promise<void> {
       sea: { type: "string", default: "wash" },
       wind: { type: "string", default: CHOICES.wind[0] },
       label: { type: "string", default: CHOICES.label[0] },
-      old: { type: "string", default: CHOICES.old[0] },
+      start: { type: "string", default: CHOICES.start[0] },
       style: { type: "string", multiple: true },
     },
   });
@@ -129,12 +143,12 @@ async function main(): Promise<void> {
     !["wash", "paper"].includes(values.sea) ||
     !among(CHOICES.wind, values.wind) ||
     !among(CHOICES.label, values.label) ||
-    !among(CHOICES.old, values.old) ||
+    !among(CHOICES.start, values.start) ||
     styles.length !== (values.style?.length ?? STYLES.length)
   ) {
     const names = (choice: readonly string[]) => choice.join("|");
     console.error(
-      `usage: node tools/shots.ts URL OUT_DIR [--sea wash|paper] [--wind ${names(CHOICES.wind)}] [--label ${names(CHOICES.label)}] [--old ${names(CHOICES.old)}] [--style ${names(STYLES)}]...`,
+      `usage: node tools/shots.ts URL OUT_DIR [--sea wash|paper] [--wind ${names(CHOICES.wind)}] [--label ${names(CHOICES.label)}] [--start ${names(CHOICES.start)}] [--style ${names(STYLES)}]...`,
     );
     process.exitCode = 2;
     return;
@@ -143,7 +157,7 @@ async function main(): Promise<void> {
     sea: values.sea,
     wind: values.wind,
     label: values.label,
-    old: values.old,
+    start: values.start,
   }).toString();
   await mkdir(join(out, "frames"), { recursive: true });
   const browser = await chromium.launch();
@@ -162,7 +176,8 @@ async function main(): Promise<void> {
     const open = async (address: string) => {
       await page.goto(address);
       await Promise.race([
-        page.waitForFunction(() => window.mock.ready),
+        // The page sets window.mock only after it has read its maps.
+        page.waitForFunction(() => "mock" in window && window.mock.ready),
         page.waitForEvent("pageerror").then((error) => {
           throw new Error(`the mockup failed: ${address}`, { cause: error });
         }),
@@ -209,20 +224,60 @@ async function main(): Promise<void> {
     const motion: string[] = [];
     if (styles.includes("labels")) {
       await open(`${url}?style=labels&step=0&${query}`);
-      for (const [index, [step, after]] of MOTION.entries()) {
+      for (const [index, [step, when]] of MOTION.entries()) {
         await page.evaluate((target) => {
           window.mock.go(target - 1);
         }, step);
         await wait(150);
-        await page.evaluate((target) => {
-          window.mock.go(target, true);
-        }, step);
-        await wait(after);
+        const timing = await page.evaluate(
+          (target) => window.mock.go(target, true),
+          step,
+        );
+        const flight = timing.flightEnd - timing.flightStart;
+        await wait(
+          typeof when === "number"
+            ? when
+            : (timing.flightStart + when.flight * flight) * 1000,
+        );
         const file = join(out, "frames", `labels-motion-${String(index)}.png`);
         await page.locator("#slide").screenshot({ path: file });
         check();
         motion.push(file);
       }
+    }
+
+    // The camera's flights, with no pictures taken while they fly.
+    if (styles.includes("labels")) {
+      const flights: unknown[] = [];
+      for (const step of new Set(
+        MOTION.flatMap(([at, when]) => (typeof when === "number" ? [] : [at])),
+      )) {
+        await page.evaluate((target) => {
+          window.mock.go(target - 1);
+        }, step);
+        await wait(300);
+        const timing = await page.evaluate(
+          (target) => window.mock.go(target, true),
+          step,
+        );
+        await wait(timing.flightEnd * 1000 + 300);
+        const gaps = (await page.evaluate(() => window.mock.frames())).sort(
+          (a, b) => a - b,
+        );
+        const at = (share: number) =>
+          gaps[Math.min(gaps.length - 1, Math.floor(share * gaps.length))] ?? 0;
+        flights.push({
+          step,
+          seconds: timing.flightEnd - timing.flightStart,
+          frames: gaps.length,
+          msBetweenFrames: { median: at(0.5), p95: at(0.95), most: at(1) },
+        });
+        check();
+      }
+      await writeFile(
+        join(out, "flights.json"),
+        `${JSON.stringify(flights, null, 1)}\n`,
+      );
     }
 
     // The still frames: the language's other kinds of slide, one each.

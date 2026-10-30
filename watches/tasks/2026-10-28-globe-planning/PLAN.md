@@ -247,6 +247,7 @@ The sag matters in two places:
   The jump is about $R\pi^2/2N^2$ for $N$ facets around. At 3°, the gap at
   the outline is 0.34 px at the whole-globe zoom, and 1 px at 3 times that
   zoom. Use 1.5° if the Atlantic view shows the limb at more than 3 times.
+
 - **The coast lines and the meridians** are lines on the true sphere, at
   radius $R$. The facets are inside the sphere, so a line on the near side is
   always in front of them. A line on the far side is hidden. Near the limb, a
@@ -306,10 +307,10 @@ The grid's step (earcut, `refine`, then the cut; the files
 
 | Step | 1:110m triangles, time | 1:50m triangles, time | Worst sag |
 | ---: | ---------------------: | --------------------: | --------: |
-|   1° |         102,352, 49 ms |         233,857, 95 ms |     0.034 |
-| 1.5° |          60,281, 26 ms |         165,060, 66 ms |     0.076 |
-|   3° |          27,812, 11 ms |         106,003, 44 ms |     0.305 |
-|   5° |           17,455, 7 ms |          84,882, 39 ms |     0.846 |
+|   1° |         102,352, 49 ms |        233,857, 95 ms |     0.034 |
+| 1.5° |          60,281, 26 ms |        165,060, 66 ms |     0.076 |
+|   3° |          27,812, 11 ms |        106,003, 44 ms |     0.305 |
+|   5° |           17,455, 7 ms |         84,882, 39 ms |     0.846 |
 
 With no lift, the sag is not a limit for B: any grid step keeps the land in
 front of the water. The step only sets how close the limb is to a circle
@@ -360,8 +361,7 @@ All parts are plain `Mesh`es. None needs a change to `webgl/`.
   The house check `tools/scenecheck.py` refuses it ("a face is solid"): add a
   rule there for a paper face, and say in
   [`docs/webgl.md`](../../../docs/webgl.md) what it is for. A holdout
-  (`Mesh.holdout`) is not the tool: it must be flat, and a scene has at most
-  32.
+  (`Mesh.holdout`) is not the tool: it must be flat, and a scene has at most 32.
 - **The limb:** the paper sphere's edges as `SilhouetteEdge`s. The renderer
   draws them only where the view turns the surface, as for a cylinder's
   walls. Use only the edges between meridians and parallels: a diagonal is
@@ -384,7 +384,7 @@ All parts are plain `Mesh`es. None needs a change to `webgl/`.
   ("water is drawn as a substance"), and says to add a wash when a drawing
   first needs a face for that line color. The ocean is that face. The spike
   makes it as the ground's wash is made: `color-mix(in srgb, water 18%,
-  paper)`. Adding `--palette-water-wash` to every palette is a change to a
+paper)`. Adding `--palette-water-wash` to every palette is a change to a
   house item (`docs/talks.md`, "Change a house item"), with the palette
   gates of `theme.md`.
 - **A line below opacity 1 shows a dot at each joint.** The renderer draws
@@ -422,7 +422,7 @@ than $\tau$, and no facet on the near side hides it.
 
 Per frame, against the watch:
 
-| What                                | Watch  | A, 1:50m, 3° | A, 1:110m, 3° | B, 1:50m, 3° |
+| What                                |  Watch | A, 1:50m, 3° | A, 1:110m, 3° | B, 1:50m, 3° |
 | ----------------------------------- | -----: | -----------: | ------------: | -----------: |
 | Line segments (coast and meridians) | 15,467 |      ~62,000 |        ~8,000 |      ~62,000 |
 | Silhouette edges (the limb)         |      — |       14,280 |        14,280 |       14,280 |
@@ -747,14 +747,14 @@ percentile after the slash (`evidence/frames/frames-*.json`):
 
 | Setting (laptop size)        | Triangles | Segments | Chromium draw | Firefox draw | Build, Chromium |
 | ---------------------------- | --------: | -------: | ------------: | -----------: | --------------: |
-| 1:110m, line drawing, sphere |    14,160 |    6,080 |    0.2/0.4 ms |      3/5 ms  |           15 ms |
-| 1:50m, line drawing, sphere  |    14,160 |   60,140 |    0.2/0.5 ms |      4/6 ms  |           36 ms |
-| 1:50m, water, sphere         |   120,163 |   60,140 |    0.2/0.5 ms |      4/6 ms  |          109 ms |
-| 1:10m, line drawing, sphere  |    14,160 |  439,847 |    0.2/0.5 ms |      6/8 ms  |          128 ms |
-| 1:10m, water, Scilly view    |   530,619 |  439,847 |    0.2/0.5 ms |      4/7 ms  |          494 ms |
-| 1:50m, line drawing, disc    |       360 |   60,500 |    0.2/0.5 ms |      4/6 ms  |           36 ms |
-| 1:50m, water, disc           |   106,363 |   60,500 |    0.3/0.5 ms |      5/7 ms  |          101 ms |
-| 1:10m, line drawing, disc    |       360 |  440,207 |    0.2/0.5 ms |     8/11 ms  |          118 ms |
+| 1:110m, line drawing, sphere |    14,160 |    6,080 |    0.2/0.4 ms |       3/5 ms |           15 ms |
+| 1:50m, line drawing, sphere  |    14,160 |   60,140 |    0.2/0.5 ms |       4/6 ms |           36 ms |
+| 1:50m, water, sphere         |   120,163 |   60,140 |    0.2/0.5 ms |       4/6 ms |          109 ms |
+| 1:10m, line drawing, sphere  |    14,160 |  439,847 |    0.2/0.5 ms |       6/8 ms |          128 ms |
+| 1:10m, water, Scilly view    |   530,619 |  439,847 |    0.2/0.5 ms |       4/7 ms |          494 ms |
+| 1:50m, line drawing, disc    |       360 |   60,500 |    0.2/0.5 ms |       4/6 ms |           36 ms |
+| 1:50m, water, disc           |   106,363 |   60,500 |    0.3/0.5 ms |       5/7 ms |          101 ms |
+| 1:10m, line drawing, disc    |       360 |  440,207 |    0.2/0.5 ms |      8/11 ms |          118 ms |
 
 - **No engine dropped a frame at 1:50m.** Chromium drew at 60 Hz (95th
   percentile between frames: 16.7–16.8 ms), Firefox at 120 Hz (8.5–9.2 ms),
@@ -843,6 +843,34 @@ What it needs:
 The frame times are in `evidence/frames/` (the settings that end in `disc`),
 and the pictures show the same globe as the sphere's.
 
+The question (2026-10-30): a triangle has a front and a back, and WebGL need
+not draw the back. Does that hide the far side's lines, so that no occluder
+is needed?
+
+**No. Culling removes only triangles, and it cannot remove a line.**
+
+- WebGL culls by a triangle's winding on the screen (its corners clockwise
+  or counterclockwise), not by a normal. A normal is only an input for
+  shading. Culling is off until a program turns it on. The renderer turns it
+  off at each frame (`setState` in `webgl/renderer.ts`), because it draws
+  faces from both sides (`webgl/mesh.ts`).
+- The renderer draws each segment of a line as a quad that the vertex shader
+  makes on the screen, facing the camera. So the quad is never a back face.
+  WebGL's own `LINES` are never culled.
+- So only the depth test hides a far line, behind a face. The disc is that
+  face.
+- The one way without a face: in the line shader, drop each point whose
+  normal (on a sphere, the point minus the center) points away from the
+  camera. That is exact on the sphere, but it is a new kind of line in the
+  renderer, for one model. The disc needs no new shader, and it carries the
+  sea's color (design B) too.
+- Without a face, the lines can be cut at the limb on the CPU, at each frame
+  as the globe turns. The Part 2 task's mockup does this on a 2D canvas
+  (`../2026-10-30-part-2-visual-language/mockup/globe.ts`). In WebGL, that
+  is CPU work at each frame that the disc's depth test does on the GPU.
+
+So the disc stays.
+
 ## 14. The sea's color in each palette
 
 The question (2026-10-28): could the sea be the pool's water color (the
@@ -860,13 +888,13 @@ the 3:1 floor of `docs/legibility.md`:
 
 | Palette             | Sea at 0.6: sea vs. land | Coast (water) vs. that sea | Sea at 18%: sea vs. land | Coast vs. that sea | Strongest sea that keeps the coast at 3:1 |
 | ------------------- | -----------------------: | -------------------------: | -----------------------: | -----------------: | ----------------------------------------: |
-| Ledger              |                     3.47 |                       3.00 |                     1.38 |               7.53 |                      0.59 (sea 3.38:1)    |
-| After-Hours         |                     3.57 |                       2.09 |                     1.42 |               5.26 |                      0.42 (sea 2.44:1)    |
-| Beacon              |                     3.97 |                       2.19 |                     1.45 |               5.97 |                      0.45 (sea 2.82:1)    |
-| Campfire            |                     3.55 |                       2.11 |                     1.40 |               5.35 |                      0.43 (sea 2.46:1)    |
-| Electric Terracotta |                     2.54 |                       2.20 |                     1.29 |               4.35 |                      0.41 (sea 1.84:1)    |
-| Field Notes         |                     2.19 |                       1.85 |                     1.24 |               3.28 |                      0.25 (sea 1.35:1)    |
-| Kraft Ink           |                     2.23 |                       1.83 |                     1.25 |               3.27 |                      0.24 (sea 1.35:1)    |
+| Ledger              |                     3.47 |                       3.00 |                     1.38 |               7.53 |                         0.59 (sea 3.38:1) |
+| After-Hours         |                     3.57 |                       2.09 |                     1.42 |               5.26 |                         0.42 (sea 2.44:1) |
+| Beacon              |                     3.97 |                       2.19 |                     1.45 |               5.97 |                         0.45 (sea 2.82:1) |
+| Campfire            |                     3.55 |                       2.11 |                     1.40 |               5.35 |                         0.43 (sea 2.46:1) |
+| Electric Terracotta |                     2.54 |                       2.20 |                     1.29 |               4.35 |                         0.41 (sea 1.84:1) |
+| Field Notes         |                     2.19 |                       1.85 |                     1.24 |               3.28 |                         0.25 (sea 1.35:1) |
+| Kraft Ink           |                     2.23 |                       1.83 |                     1.25 |               3.27 |                         0.24 (sea 1.35:1) |
 
 - **The pool's 0.6 works in Ledger only.** There, the sea stands out from the
   land (3.47:1) and the coast still holds 3:1 on the sea. In the other six,
@@ -916,13 +944,13 @@ on the 0.6 sea in each palette (WCAG contrast; the floor is 3:1):
 
 | Palette             | Board outline (`subject`) on the sea | on the paper | Water's edge (`water` at 0.7) on the sea | `ink` on the sea |
 | ------------------- | -----------------------------------: | -----------: | ---------------------------------------: | ---------------: |
-| Ledger              |                                 3.00 |        10.39 |                                     2.16 |             4.1  |
-| After-Hours         |                                 3.13 |        11.18 |                                     1.70 |             4.1  |
-| Beacon              |                                 2.93 |        11.65 |                                     1.76 |             4.3  |
-| Campfire            |                                 3.15 |        11.20 |                                     1.71 |             4.0  |
-| Electric Terracotta |                                 4.18 |        10.63 |                                     1.72 |             5.3  |
-| Field Notes         |                                 4.24 |         9.29 |                                     1.53 |             6.1  |
-| Kraft Ink           |                                 3.82 |         8.53 |                                     1.53 |             6.2  |
+| Ledger              |                                 3.00 |        10.39 |                                     2.16 |              4.1 |
+| After-Hours         |                                 3.13 |        11.18 |                                     1.70 |              4.1 |
+| Beacon              |                                 2.93 |        11.65 |                                     1.76 |              4.3 |
+| Campfire            |                                 3.15 |        11.20 |                                     1.71 |              4.0 |
+| Electric Terracotta |                                 4.18 |        10.63 |                                     1.72 |              5.3 |
+| Field Notes         |                                 4.24 |         9.29 |                                     1.53 |              6.1 |
+| Kraft Ink           |                                 3.82 |         8.53 |                                     1.53 |              6.2 |
 
 - **The coast as the board's outline (`subject`, 3 px)** holds 3:1 in six
   palettes, at the floor in Ledger (3.00), and 0.07 under it in Beacon

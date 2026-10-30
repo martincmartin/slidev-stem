@@ -1,7 +1,9 @@
 # Part 2's visual language: more words, still pictures
 
-**Status: planning, 2026-10-30.** Nothing outside this directory changed. The
-request is in [instructions.md](instructions.md). A mockup draws one story,
+**Status: planning, 2026-10-30.** Outside this directory, the house rule on
+a click's old words changed (round 3: `stem/AGENTS.md`, "Writing a talk", and
+`watches/docs/slide-patterns.md`, "Text dims"), and the globe task got an
+answer (round 4). The request is in [instructions.md](instructions.md). A mockup draws one story,
 Anson's search for Juan Fernández, in four styles, with the same map and the
 same facts ([mockup/](mockup/)). Round 1 compared the styles; its pictures
 and measurements are in [evidence/round-1/](evidence/round-1/). Round 2
@@ -9,7 +11,10 @@ works on the labels, from your feedback (section 12); its pictures are in
 [evidence/round-2/](evidence/round-2/). Round 3 retired the rail and the
 cards, and compares three ways for a label to stand out and two for old
 labels (section 13); its pictures are in [evidence/round-3/](evidence/round-3/).
-Section 11 gives the commands.
+Round 4 adds the Cape Noir slide before the Anson slide, and a globe that
+the camera zooms and turns, on a canvas (section 14); its pictures and
+speeds are in [evidence/round-4/](evidence/round-4/). Section 11 gives the
+commands.
 
 **The question.** Part 2 has more text than Part 1. Which visual language
 carries it: a reading rail on the right (A), cards over the animation after
@@ -61,6 +66,14 @@ and the Anson slide must show why the westerlies made the trip back slow.
   dead. The outline's "disasters like this" fed the push for the Act; it
   does not say that this wreck did, which is the claim that the museum
   finds "no hard evidence" for.
+- **Round 4: Cape Noir, from the globe** (section 14). A slide before the
+  Anson slide shows that longitude was a guess: on April 14, 1741, the
+  squadron met land 400 miles east of where it thought it was, on the same
+  latitude. The story opens on the whole globe, and the camera zooms to Cape
+  Noir and then flies to Juan Fernández, as the globe turns under it. The
+  globe draws on a canvas at Natural Earth's scale for each zoom: 120 frames
+  a second in Firefox and Chromium windows, where an SVG globe took 42 ms a
+  frame in Firefox.
 - **Decisions for you** are in section 10: the wind's placement, and the
   colors of the new marks. You chose a filled sea, and the islands revealed
   when Anson finds them.
@@ -346,8 +359,11 @@ A draft for `docs/slide-patterns.md`, when you agree:
 2. **A label** has 8 words or fewer. An event's label starts with its date
    ("May 30: Chile, an enemy coast"). 24 px semibold ink; over a filled
    picture, with the paper's outline; a name at 20 px.
-3. **Labels stay, and dim** when the next click adds one. Remove a label when
-   its room is needed, or when the picture no longer agrees with it.
+3. **A click's labels leave at the next click**; the picture's marks (the
+   track, the day dots) stay and carry the story. Kept and dimmed, the
+   labels were too busy by the last click (section 13). This is now the
+   house rule (`stem/AGENTS.md`, "Writing a talk"); Part 1 of the watch
+   talk, told by the watch with few words, is the exception that dims.
 4. **The title names the story.** A subtitle, if any, sums up what the
    slide is about. The stakes are not a summary: they are the first label
    (round 3).
@@ -377,14 +393,13 @@ The two still frames (mockup/prize.html, mockup/newton.html):
 One slide for each beat of the outline, with what the picture does and what
 the labels say. Each is a proposal, to sketch before it is built.
 
-1. **The Longitude Problem.** The globe (the globe task's model), over the
-   Atlantic. Click 1: the parallels, and the label "Latitude: the Sun's
-   height at noon". Click 2: the meridians, and "Longitude: no star tells
-   it". Click 3: a ship from England sails south to the latitude of
-   Barbados, then turns west along it; the shorter direct route is dashed.
-   Labels: "Sail to the latitude, then turn" and "Extra days at sea: storms,
-   scurvy". The section's point, "longitude is hard to measure", is the
-   title, so the Anson slide need not say it.
+1. **Commodore Anson Rounds Cape Horn, 1741** (decided in round 4, section
+   14, in place of a general slide about latitude and longitude). The whole
+   globe, and the camera zooms to Cape Noir. Click: the dashed ship, "where
+   they think they are". Click: the ship sails north, "2 a.m.: land, 2 miles
+   ahead!". Click: the parallel through both ships and the gap, "Same
+   latitude: from the Sun at noon" and "Longitude: 400 miles off". Then the
+   camera flies to Juan Fernández for the next slide.
 2. **Commodore Anson Hunts for an Island, 1741.** As mocked in round 2 (section 12): the ship
    sails in from the south, and the islands show only when Anson finds them.
    A detail for the speaker, from Walter: on the morning of May
@@ -499,7 +514,10 @@ read summaries of the three studies, not their full text.
 - **Units**: statute miles throughout, as the mockup does.
 - **How a label stands out** (section 13): the paper's outline, a card, or
   paper-colored words on the sea.
-- **Old labels**: dim, or remove.
+- **The first view** (section 14): the whole globe (`start=globe`), or
+  South America (`start=america`).
+- **"2 a.m."** on Cape Noir's label: Walter says "between one and two"
+  (section 14, "The facts of Cape Noir").
 
 Decided: the sea is filled (round 1's unfilled sea made the land and the sea
 hard to tell apart), and the islands show only when Anson finds them.
@@ -510,7 +528,7 @@ In `watches/`. The map needs the Natural Earth files of the globe task
 (its `tools/fetch.sh`).
 
 ```bash
-# the maps, from Natural Earth 1:10m
+# the maps and the globe's data, from Natural Earth 1:110m, 1:50m and 1:10m
 node tasks/2026-10-30-part-2-visual-language/tools/maps.ts NE_DIR
 # the mockup, at http://localhost:5200/ (prize.html and newton.html beside it)
 pnpm exec vite --config tasks/2026-10-30-part-2-visual-language/mockup/vite.config.ts --host
@@ -519,28 +537,40 @@ for wind in bands near all; do
   node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
     tasks/2026-10-30-part-2-visual-language/evidence/round-2/wind-$wind --wind $wind --style labels
 done
-```
-
-# round 3's pictures: the labels, each backing and each way with old labels
-
-for label in outline card paper; do for old in dim remove; do
+# the labels in each backing (round 3 also had --old dim|remove; the
+# mockup now always removes, and its pictures match round 3's *-remove)
+for label in outline card paper; do
+  node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
+    OUT_DIR/$label --wind near --label $label --style labels
+done
+# round 4's pictures: both styles from the globe, the labels from South
+# America, and the labels in paper words
+E=tasks/2026-10-30-part-2-visual-language/evidence/round-4
 node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
-tasks/2026-10-30-part-2-visual-language/evidence/round-3/$label-$old \
---wind near --label $label --old $old --style labels
-done; done
-
+  $E/globe --wind near --style labels --style lessig
+node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
+  $E/america --wind near --style labels --start america
+node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
+  $E/paper --wind near --style labels --label paper
+# round 4's speeds: each flight in each engine, in windows (on the screen)
+node tasks/2026-10-30-part-2-visual-language/tools/speed.ts http://localhost:5200/ \
+  $E/speed-globe.json --headed
+node tasks/2026-10-30-part-2-visual-language/tools/speed.ts http://localhost:5200/ \
+  $E/speed-america.json --headed --start america
 ```
 
 Round 1's pictures came from the same commands before round 2 changed the
 mockup: `shots.ts URL evidence/round-1/sea-wash` and `--sea paper`, every
 style. Round 2's came before round 3 changed it. Round 3 removed the rail and
-the cards; the mockup at commit 8703a9a still draws them.
+the cards; the mockup at commit 8703a9a still draws them. Round 4 put the
+Cape Noir steps and the globe before the Anson steps; the mockup at commit
+07bda45 draws round 3's story.
 
 In the mockup: `?style=lessig|labels`, and the choices of
 [mockup/choices.ts](mockup/choices.ts): `&wind=bands|near|all`,
-`&label=outline|card|paper`, `&old=dim|remove`; also `&sea=paper`. The bar
+`&label=outline|card|paper`, `&start=globe|america`; also `&sea=paper`. The bar
 under the slide has a dropdown for the style and for each choice. → or space steps forward with the motion, ← steps back at
-once. Step 0 plays the ship's approach as the page loads.
+once. Step 0 plays its motion, if it has any, as the page loads.
 
 ## 12. Round 2: the labels, from your feedback
 
@@ -692,13 +722,13 @@ times its contrast with the ink is the ink's on the paper:
 $3.47 \times 4.09 = 14.18$. Measured with `tools/lib.py` (`contrast`,
 `max_flare`):
 
-| Words on                         | Contrast | Fmax  |
-| -------------------------------- | -------: | ----: |
-| ink on the paper (the outline)   |  14.18:1 | 0.300 |
-| ink on the water, no outline     |   4.09:1 | 0.038 |
-| paper on the water               |   3.47:1 | 0.066 |
-| dimmed ink on the paper          |   3.04:1 | 0.007 |
-| dimmed paper on the water        |   1.99:1 | 0.000 |
+| Words on                       | Contrast |  Fmax |
+| ------------------------------ | -------: | ----: |
+| ink on the paper (the outline) |  14.18:1 | 0.300 |
+| ink on the water, no outline   |   4.09:1 | 0.038 |
+| paper on the water             |   3.47:1 | 0.066 |
+| dimmed ink on the paper        |   3.04:1 | 0.007 |
+| dimmed paper on the water      |   1.99:1 | 0.000 |
 
 - Paper words at 24 px semibold are large text, whose floor is 3:1, so they
   pass with 0.47 to spare; `second`'s gate keeps 3.5:1 for large text.
@@ -712,7 +742,265 @@ $3.47 \times 4.09 = 14.18$. Measured with `tools/lib.py` (`contrast`,
   are under 3:1. Every palette must pass every gate, so paper words on the
   water would need a new gate, which those three fail.
 
+**Decided, 2026-10-30: remove.** With every label kept, dimmed, the screen
+was too busy by the last click. The mockup no longer has the `old` choice
+or any dimming; its frames are byte for byte those of round 3's `*-remove`
+runs.
+
 **Limits.** Chromium only. The new styles are checked in settled frames and
 three frames in motion.
 
-```
+## 14. Round 4: Cape Noir, and a zoom from the globe
+
+Your messages are in [instructions.md](instructions.md), "Round 4". The
+pictures are in [evidence/round-4/](evidence/round-4/).
+
+### Where to show that longitude was a guess
+
+Ships could measure latitude (the Sun's height at noon), but not longitude.
+So they sailed to the right latitude, then turned along it. The options, with
+my estimates of stage time:
+
+| Option                                                    | Slides added   | Time    | New drawing                         |
+| --------------------------------------------------------- | -------------- | ------- | ----------------------------------- |
+| A. A Cape Noir slide, before the Anson slide              | 1 (2–3 clicks) | 30–45 s | a map of Tierra del Fuego           |
+| B. A general slide (section 8, the old item 1)            | 1 (3 clicks)   | 45 s    | the globe, or a map of the Atlantic |
+| C. A band, "somewhere along here", on the Anson slide     | 0              | 10–15 s | a band along the parallel           |
+| D. Two more labels on the Anson slide                     | 0              | 10 s    | none                                |
+| E. A Lessig screen: "Latitude: easy. Longitude: a guess." | 1              | 10 s    | none                                |
+
+Ranking: A, B, C, D, E.
+
+1. **A** is a near-wreck from the primary source, on the same voyage. It
+   shows the error and does not state it. The audience meets Anson and his
+   sick crew here, so the Anson slide carries less.
+2. **B** states the rule best, but it has no story, and it shows the
+   strategy twice.
+3. **C** shows, with no new slide. But Walter gives no error for May 28, so
+   the band's width would be invented, on the busiest slide.
+4. **D** tells, on a slide that is already full.
+5. **E** tells, and it uses the part's one full-screen phrase (section 7,
+   rule 8) before any picture has shown the idea.
+
+**Decided, 2026-10-30: A.** The Anson slide shows the strategy: the ship
+sails north to the parallel, then turns.
+
+### The facts of Cape Noir
+
+From Walter, Book I, chapter VIII (checked against the text):
+
+- On April 14, 1741, "between one and two" in the morning, "as we were
+  standing to the northward", the moon came out and showed land "right
+  ahead", "but two miles distant".
+- "By the latitude of this land", they knew it as Cape Noir, on Tierra del
+  Fuego.
+- "the whole squadron esteemed themselves upwards of ten degrees more
+  westerly than this land, so that in running down, by our account, about
+  nineteen degrees of longitude, we had not really advanced half that
+  distance." Currents had carried them east.
+- 10° of longitude at 54.5° S is 646 km, or 401 miles: the label's "400
+  miles".
+- The label says "2 a.m."; Walter says between one and two. "1–2 a.m." is
+  exact (section 10).
+- For the narration: "nineteen degrees by our account, and not half that".
+
+### Where in the world: options for the zoom
+
+The Anson map showed a jagged coast with no clue where on Earth it is. A
+zoom from a view that the audience knows gives that clue. The numbers:
+
+- The whole globe fits the slide at 27.6 km a px, South America at 15.4 km a
+  px, and the story maps at 1.48–1.51 km a px. So the zoom to Cape Noir is
+  18.3 times from the globe, and 10.2 times from South America.
+- Cape Noir to Juan Fernández is about 2,360 km (1,470 miles), almost due
+  north: about 1,600 px at the story maps' scale. A pan at that scale shows
+  only sea, so the camera zooms out, pans and zooms in.
+
+The options:
+
+1. **Names only:** "Chile" on the land, "Pacific Ocean" on the sea. Almost
+   free, but it does not place the land on the Earth, or join the two
+   places.
+2. **A locator map** in a corner, with a box around the view. Cheap and
+   still, but small (about 150 px), and it does not show the trip north.
+3. **An SVG zoom on a globe that does not turn.** No WebGL work; the ship,
+   the tracks and the labels are SVG already. It is the picture that a WebGL
+   globe would show, so its look and timing carry over. Cons: the globe
+   cannot turn, and SVG's speed was not measured (it is now, and it is too
+   slow in Firefox: below).
+4. **The WebGL globe zooms, then the SVG story map takes over.** A real
+   globe, the same one as on a "time is longitude" slide. Cons: the globe
+   must be built first (the globe task, section 9), and two renderers must
+   agree at the hand-over.
+5. **Everything in WebGL.** The most consistent with the talk's one canvas,
+   and the most work. No planned slide needs the story on a turning globe.
+
+The start: (i) the whole globe, centered on South America; (ii) the
+Atlantic, with Anson's route from England, which adds a click or two of
+story; (iii) South America alone.
+
+Ranking: 3 now, with names; 4 for the talk if the globe is built for other
+slides (else 3 can go in the talk as it is); 2 if the zooms cost too much
+stage time; 5; 1 alone.
+
+**Decided, 2026-10-30: 3,** with a choice of the start: (i) `globe` or
+(iii) `america`. Built first in SVG, and then on a canvas, so that Firefox
+keeps up and the globe can turn (below).
+
+### What the mockup does now
+
+- **The labels.** Four steps come before the Anson slide's, under the title
+  "Commodore Anson Rounds Cape Horn, 1741":
+
+  | Step    | The picture                                        | The labels                                                        | Words | Sea under text |
+  | ------- | -------------------------------------------------- | ----------------------------------------------------------------- | ----: | -------------: |
+  | globe   | the globe (or South America)                       | "South America"                                                   |     2 |              – |
+  | thought | the camera flies to Cape Noir; a dashed ghost ship | "April 14, 1741: where they think they are"                       |     8 |          4.7 % |
+  | real    | the ship sails north, into sight of the land       | "2 a.m.: land, 2 miles ahead!"                                    |     6 |          4.0 % |
+  | gap     | the parallel through both ships, and a bracket     | "Same latitude: from the Sun at noon", "Longitude: 400 miles off" |    11 |          6.1 % |
+
+  Then the camera flies to Juan Fernández, and the Anson slide's steps
+  follow under its own title.
+
+- **Lessig.** The same pictures, with four screens: "April 1741: around
+  Cape Horn" before the globe, and after each picture, as in its Anson steps:
+  "Where they thought they were", "2 a.m.: land, 2 miles ahead" and "400
+  miles off".
+- **`start`**: `globe` or `america`, a dropdown and `&start=` in the address.
+
+### How the globe is drawn
+
+- **On a canvas, again at each frame** (`mockup/globe.ts`). The camera looks
+  straight down at a place, and the globe turns under it as the camera
+  flies. The first view looks at the middle of South America (58° W, 22° S),
+  and the flight to Cape Noir turns the globe 36° as it zooms in.
+- **The detail goes with the zoom** (`LEVELS` in `globe.ts`): Natural Earth
+  at 1:110m, 1:50m or 1:10m, whichever is made for the camera's km to a px
+  (29, 13 and 2.6 km to a px of 0.26 mm). The whole globe (27.6 km a px)
+  draws 1:110m, South America (15.4) 1:50m, and the views near the story
+  (1.5) and the flight between them (at most 2.8) 1:10m. 1:10m has data only
+  near the story, in a box from 100° W to 50° W and 62° S to 12° S; outside
+  the box, 1:50m draws.
+- **Only what shows is drawn.** A shape on the far side or off the slide is
+  skipped, by a test of the cap that holds it. A point within 0.5 px of the
+  last one drawn is skipped.
+- **The far side.** Each shape is cut at the limb at each frame, and the
+  limb closes the land. The coast comes from the coastline files, so the
+  data's cuts, at 180° and at the pole, draw no line.
+- **The flight.** van Wijk and Nuij (2003): out as far as the pan needs,
+  across, and in, with $\rho = \sqrt{2}$, along the great circle between
+  the two centers. A unit of the flight's length takes 1 s, within 1–3.5 s.
+- **The data** (`maps/globe.json`, 2.3 MB, from `tools/maps.ts`): 5,129 land
+  points at 1:110m, 60,633 at 1:50m, and 21,204 at 1:10m in the box; the
+  coast has about as many.
+
+### Why a canvas, and not SVG or WebGL
+
+The first version of this round drew the globe as one SVG, 968 KB of paths
+about a fixed center, that the camera moved and scaled. In a private Firefox
+window, you saw under 1 frame a second. The times between frames, in ms
+(median / 95th percentile), in windows of Playwright's engines at a device
+scale of 2 (`tools/speed.ts`; the SVG's from the same kind of run):
+
+| Flight                     | SVG, Firefox | Canvas, Firefox | Canvas, Chromium | Canvas, WebKit |
+| -------------------------- | ------------ | --------------- | ---------------- | -------------- |
+| globe → Cape Noir          | 42 / 133     | 8.3 / 16.7      | 8.3 / 9.1        | 17.0 / 18.0    |
+| South America → Cape Noir  | –            | 8.3 / 16.7      | 8.3 / 9.1        | 17.0 / 17.0    |
+| Cape Noir → Juan Fernández | 42 / 117     | 8.3 / 16.7      | 8.3 / 9.1        | 17.0 / 18.0    |
+
+The windows run at 120 Hz (8.3 ms a frame), but WebKit's runs at 60 Hz. The
+speaker's laptop is 120 Hz.
+
+- **SVG is slow in Firefox:** Firefox draws SVG on the CPU, and at each zoom
+  it draws every path again. The mockup also changed the coast's stroke
+  width at each frame, to keep it 3 px wide. With the width fixed, the median
+  fell from 42 ms to 8 ms; a non-scaling stroke cost as much as the change.
+  An SVG globe also cannot turn, without new paths at each frame.
+- **WebGL is for the talk.** It is the fastest (the globe task's spike keeps
+  120 Hz in Firefox at 1:50m), and the talk's renderer is WebGL, so the
+  talk's globe should be built there (the globe task, section 9). The canvas
+  answers the mockup's questions (the first view, the levels, the turn) with
+  less work. Its levels, camera and flight carry over.
+- The SVG version was never committed; its numbers are here only.
+
+### The first view
+
+A globe that does not turn must have its center near the story, so that the
+story maps fit it. Centered on the middle of South America, it does not. The
+best fit's gaps, in px (median / 95th percentile / most):
+
+| The globe's fixed center         | Cape Noir         | Anson             |
+| -------------------------------- | ----------------- | ----------------- |
+| 76° W, 44° S (the first version) | 2.6 / 7.5 / 16.1  | 3.7 / 7.7 / 15.3  |
+| 65° W, 28° S                     | 4.6 / 11.4 / 29.2 | 1.8 / 4.4 / 9.2   |
+| 60° W, 15° S                     | 8.4 / 21.2 / 52.8 | 3.6 / 11.2 / 11.5 |
+
+So the globe turns, and each view has its own center. The whole globe looks
+at the middle of South America's extent, and a little of Antarctica shows
+at the bottom.
+
+### The story maps keep straight parallels
+
+On the globe, a parallel bows 23 px across the Anson map and 34 px across
+Cape Noir's. The west leg runs due west, along a parallel, and you asked for
+it level (round 2). So each story map keeps its own projection, with
+straight parallels, and takes over from the globe near its own view.
+
+- **The fit.** Each story map rides the camera. Its scale, turn and place on
+  a globe centered on its own view come from a least-squares fit of its
+  coast to the globe's (Procrustes), written in its `data-camera`. The gaps
+  between the two coasts, in px of the slide (median / 95th percentile /
+  most):
+
+  | Map       | Matched at the center | Best fit         |
+  | --------- | --------------------- | ---------------- |
+  | Anson     | 16.5 / 25.1 / 26.3    | 3.0 / 5.9 / 12.7 |
+  | Cape Noir | 8.1 / 24.4 / 39.8     | 2.8 / 7.5 / 15.0 |
+
+- **The hand-over.** A story map fades out over the first 10% of a flight
+  and in over the last 10% (`HANDOVER` in `main.ts`), and it is clipped to
+  its slide. Not an oversight: the fit holds only near the map's own view.
+  With 40%, the first version, the leaving map was still at 30% when the
+  camera had zoomed out 1.5 times, and off its slide its coast stood about
+  15 px from the globe's: the coast showed twice. The map's land is also cut
+  20 px outside its slide, and the cut is stroked like a coast, so without
+  the clip it drew a straight line across the land.
+
+### Different detail in different places: the standard ways
+
+You asked how computer graphics varies detail. The usual ways:
+
+- **A level of detail for each zoom.** Games, terrain and web maps keep the
+  same shapes at several resolutions, and draw the one whose error is under
+  about half a px at the current zoom. Natural Earth's three scales are made
+  for this. The mockup does this (above).
+- **Tiles and culling.** Web maps cut each level into tiles, and draw only
+  the tiles on the slide, so the finest level costs only what shows. The
+  mockup skips each shape that does not show; its shapes are its tiles.
+- **Continuous simplification.** One detailed dataset, with a weight for
+  each point (Visvalingam–Whyatt), and each frame keeps the points above a
+  threshold for the zoom (D3 and TopoJSON globes). It has no pop, but every
+  small island stays as a dot: it simplifies, but it does not generalize,
+  so it does not give 1:110m's clean look.
+- **Different scales in different places at one zoom** is the unusual case,
+  because of the seams where they meet. With a level for each zoom, it is
+  needed only where the finest data stops: the mockup's 1:10m box.
+
+### Limits
+
+- The pictures are from Chromium only; the speeds are from Playwright's
+  engines, not from a release Firefox or Safari. Check the flights in your
+  Firefox again.
+- At the 1:10m zooms, the box's edges can show, where 1:50m meets 1:10m. At
+  those zooms their coasts differ by about a px.
+- A change of level pops, mid-flight; there is no crossfade.
+- In the last 10% of a flight, the edge of the coming story map's clip is
+  one row of px, 6% darker than the paper, until the camera stops.
+- On the Cape Noir slide, the title is over the land; its outline keeps it
+  legible. With `start=america`, the title is over Central America.
+- With `label=paper`, an emphasis on the sea (Cape Noir's "400 miles") is in
+  the paper too: the accent is 1.74:1 on the water's wash, under the 3:1
+  floor for large text.
+- During this round, a question came about the WebGL globe: can culling hide
+  the far side without an occluder? No: the answer is in the globe task
+  (`../2026-10-28-globe-planning/PLAN.md`, section 13).

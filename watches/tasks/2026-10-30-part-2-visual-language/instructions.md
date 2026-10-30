@@ -110,3 +110,67 @@ Your messages, verbatim, in order:
 
 > "Scurvy kills 4-6" should not be a subhead, because it's not summarizing
 > what the slide is about. Instead, it should be the first label.
+
+> Please commit. Then get rid of the "dim" option, because all that text is
+> too busy by the end of the slide. Still undecided about lessig vs labels.
+
+## Round 4, 2026-10-30
+
+Your messages, verbatim, in order. The first came before round 3's first
+message, and started the Cape Noir slide.
+
+> Before the current content of the Anson slide, we need to communicate that
+> ships at sea had larger errors in their latitude measurements, so they'd
+> often sail North-South to the right latitude, then turn and sail east-west.
+> Is worth a separate slide, even a quick one? The Anson slide seems like a
+> natural place to describe the latter.
+
+> For the "errors in longitude" and "sail north-south, then turn", let's do
+> A, Cape Noir. We also need some visual context, in the current slide, we
+> have a jagged vertical line, it's not clear whether the thing on the right
+> is Chile or the island or what. We might have the same problem with Cape
+> Noir. I think this is where the globe could come in, we could start "zoomed
+> out" (could be the whole world, could be something recognizable like the
+> Atlantic), zoom in to Cape Noir, tell our story, then zoom out-pan-zoom in
+> to Juan. Please propose some options.
+
+> "Conflict with the house rules: this breaks the house rule that old text
+> dims and stays (stem/AGENTS.md, "Writing a talk"). " Part 1 is probably the
+> exception, since it's told very visually, mostly using the model with very
+> little text. The rest of the talk, and other talks, will probably be more
+> word-heavy, so would become cluttered with lots of words on there at the
+> same time.
+
+> Ok let's do Option 3, with a drop down for starting at the whole globe
+> centered on S. America (i), vs just S. America (iii)
+
+> Going from step 1 to step 2, the zoom in, less than one frame per second
+> on Firefox private browsing.
+
+> The step 1 view is centered on the bottom most part of S. America. That
+> means it has all of antarctica on it, it looks unnatural as an establishing
+> shot. Perhaps the middle of S. America should be in the middle, so you
+> still see a bit of antarctica.
+
+> Let's step back here. Is WebGL or SVG the best technology for this? Also,
+> we can do the rest of the world in 1:110m, it looks better 'cleaned up'
+> that way. How hard is it to use different scales for different parts of
+> the map? This seems like a problem that computer graphics has encountered
+> before, and must have some standard solutions.
+
+> The transition from Cape Noir to Juan (clicks 4 to 5) should probably use
+> the most detailed, and is also hella slow.
+
+> Ok sounds good, please continute
+
+(The answer to "Shall I build the canvas globe in the mockup now, or go
+straight to WebGL?".)
+
+> So are you saying that we should ignore slowness during this spike,
+> because it's using 2D Canvas and the "production" version will use WebGL?
+
+> The label "South America" is in paper, over the paper colored land, so you
+> can't see it.
+
+A question about the WebGL globe came during this round. It and its answer
+are in the globe task (`../2026-10-28-globe-planning/`, section 13).

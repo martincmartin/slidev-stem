@@ -1,0 +1,74 @@
+{
+ "headed": true,
+ "scale": 2,
+ "start": "america",
+ "style": "labels",
+ "timed": [
+  {
+   "engine": "chromium",
+   "step": 1,
+   "seconds": 1.8189082934116199,
+   "frames": 218,
+   "msBetweenFrames": {
+    "median": 8.300000000000182,
+    "p95": 9.100000000000136,
+    "most": 9.400000000000091
+   }
+  },
+  {
+   "engine": "chromium",
+   "step": 4,
+   "seconds": 1.7880830715225717,
+   "frames": 215,
+   "msBetweenFrames": {
+    "median": 8.300000000000182,
+    "p95": 9.099999999999909,
+    "most": 9.299999999999955
+   }
+  },
+  {
+   "engine": "firefox",
+   "step": 1,
+   "seconds": 1.8189082934116203,
+   "frames": 161,
+   "msBetweenFrames": {
+    "median": 8.340000000000146,
+    "p95": 16.679999999999836,
+    "most": 25
+   }
+  },
+  {
+   "engine": "firefox",
+   "step": 4,
+   "seconds": 1.7880830715225744,
+   "frames": 164,
+   "msBetweenFrames": {
+    "median": 8.340000000000146,
+    "p95": 16.680000000000064,
+    "most": 17.38000000000011
+   }
+  },
+  {
+   "engine": "webkit",
+   "step": 1,
+   "seconds": 1.8189082934116203,
+   "frames": 110,
+   "msBetweenFrames": {
+    "median": 17,
+    "p95": 17,
+    "most": 18
+   }
+  },
+  {
+   "engine": "webkit",
+   "step": 4,
+   "seconds": 1.788083071522574,
+   "frames": 108,
+   "msBetweenFrames": {
+    "median": 17,
+    "p95": 18,
+    "most": 18
+   }
+  }
+ ]
+}

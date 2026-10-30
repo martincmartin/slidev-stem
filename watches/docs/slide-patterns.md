@@ -200,10 +200,12 @@ It is background, not rules.
 
 ## Text dims
 
-**Text that is no longer the focus dims: its colours mix halfway to the
-paper.** The newest text is the one to read. The text before it stays, so
-the audience can look back. When old text stays, and when it goes:
-[`../../AGENTS.md`](../../AGENTS.md), "Writing a talk". The mechanism is in `style.css` ("TEXT DIMS"):
+**In Part 1, text that is no longer the focus dims: its colours mix halfway
+to the paper.** The newest text is the one to read. The text before it
+stays, so the audience can look back. Part 1 is told by the watch, with a
+few words at each click, so it is the house's exception: elsewhere, a
+click's words leave at the next click ([`../../AGENTS.md`](../../AGENTS.md),
+"Writing a talk"). The mechanism is in `style.css` ("TEXT DIMS"):
 
 - **Give the element that dims the class `text-dims`.** Its ink is a mix
   with the paper by `--text-dim`, and `--text-dim` fades in `--text-fade`,

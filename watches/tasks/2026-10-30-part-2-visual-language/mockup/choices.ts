@@ -7,8 +7,8 @@ export const CHOICES = {
   /** how a label stands out from the picture under it: the paper's outline,
    *  a card, or words in the paper where the sea is under them */
   label: ["outline", "card", "paper"],
-  /** what a step's labels do at the next step: dim, or leave */
-  old: ["dim", "remove"],
+  /** the first view: the whole globe, or South America (geo.ts) */
+  start: ["globe", "america"],
 } as const;
 
 export type Choice = keyof typeof CHOICES;

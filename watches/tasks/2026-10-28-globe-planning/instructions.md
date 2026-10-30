@@ -66,7 +66,7 @@ During the spike:
 > to the viewing direction?
 
 > I agree with K1, you can choose the prefix name. I feel like the water color
-> *is* the wash color, and the line color that's used where the pool water
+> _is_ the wash color, and the line color that's used where the pool water
 > touches the pool walls, and also the outline of the diving board, could be
 > used as a border color. How well would that work in our other color
 > palettes?
@@ -126,3 +126,11 @@ the pool's edge becomes a color of its own (`water`), at full strength.
 (The answer to "Should I switch the meridians to full `ink`?".)
 
 > Let's commit on a branch, I'm not sure where this experiment is going.
+
+2026-10-30, asked during the Part 2 task's globe mockup
+(`../2026-10-30-part-2-visual-language/`):
+
+> A thought about the sphere vs disc for occluding the back half of the WebGL
+> globe: I don't know much about WebGL, but don't surfaces have a normal, and
+> by default, the "back" of a triangle isn't drawn? Does that also apply to
+> lines? In other words, do we even need an occluder?
