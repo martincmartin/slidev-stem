@@ -20,7 +20,8 @@
   --palette-subject: #ffcc8c; /* a pale amber */
   --palette-subject-wash: #3d3730; /* a dark warm grey */
   --palette-second-wash: #29394b; /* a dark slate blue */
-  --palette-water: var(--palette-second);
+  --palette-water: #72a1d1; /* a soft sky blue: the water's edge */
+  --palette-water-wash: #55789c; /* a dusky mid blue: the water itself */
   /* muted at 18% over the paper */
   --palette-muted-wash: color-mix(
     in srgb,

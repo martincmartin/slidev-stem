@@ -52,10 +52,9 @@ function hex(cssColour: string): string {
 }
 
 /** The palette's roles on the renderer's inks, for the spike only: the
- *  coast is the ground (`muted`), the water's wash is `mutedWash` (a recipe
- *  like the ground's wash), the limb is the subject, the meridians are ink,
- *  made half as dark as a colour (the look of ink at 0.5, with no dots where
- *  segments overlap). */
+ *  sea is the water's wash (`mutedWash`: the pool's water), the coast and
+ *  the limb are the subject, the meridians are ink at full strength: they
+ *  lie on the sea, where ink at 0.5 is under 3:1 (PLAN.md, section 15). */
 function globePalette(name: string): Palette {
   const probe = document.createElement("div");
   probe.className = `slidev-layout palette-${name}`;
@@ -71,8 +70,8 @@ function globePalette(name: string): Palette {
     subject: hex(role("subject")),
     subjectWash: hex(role("subject-wash")),
     muted: hex(role("ground")),
-    mutedWash: hex(`color-mix(in srgb, ${role("water")} 18%, ${role("background")})`),
-    ink: hex(`color-mix(in srgb, ${role("ink")} 50%, ${role("background")})`),
+    mutedWash: hex(role("water-wash")),
+    ink: hex(role("ink")),
     second: hex(role("second")),
     secondWash: hex(role("second-wash")),
   };

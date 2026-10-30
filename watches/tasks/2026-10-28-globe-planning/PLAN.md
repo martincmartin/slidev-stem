@@ -953,3 +953,16 @@ now have two roles, each a value in each palette: `water` (the edge, where
 water meets another material) and `water-wash` (the water itself). The
 problem, the options, the choice and the measurements are in the house task
 `tasks/2026-10-28-water-colours/` (at the root of `stem/`).
+
+**The spike, made to match the pool (2026-10-29).** The spike's copies of
+Ledger and After-Hours are now the house palettes as of this change. On the
+sea, the spike draws:
+
+- the sea in `water-wash`, at full strength: the pool's water;
+- the coast in `subject`, 3 px: the diving board's outline;
+- the meridians in `ink`, 2 px. Before, they were `ink` at 0.5 over the
+  paper, which is 1.14–1.43:1 on the water's wash. Full `ink` is
+  4.03–6.20:1 in the seven palettes.
+
+In Ledger, in headless Chromium, the sea is `#7087A0`, the coast `#143C6B`
+and the meridians `#2A2520`.

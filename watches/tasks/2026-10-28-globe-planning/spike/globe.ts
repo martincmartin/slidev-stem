@@ -53,12 +53,13 @@ export const DISC_GROUP: Group = { name: "disc", parent: null };
 const DISC_SIDES = 360;
 
 /** The lines' styles. The spike maps the globe's roles onto the renderer's
- *  inks (main.ts): `muted` is the ground (the coast), `mutedWash` the water's
- *  wash, `subject` the limb, `ink` the meridians. */
-const COAST: LineStyle = { ink: INKS.muted, opacity: 1, width: 2 };
+ *  inks (main.ts): `mutedWash` is the water's wash, `subject` the limb and
+ *  the coast, `ink` the meridians. The coast is the diving board's outline
+ *  over the pool: `subject` at 3 px (PLAN.md, section 14). */
+const COAST: LineStyle = { ink: INKS.subject, opacity: 1, width: 3 };
 const LIMB: LineStyle = { ink: INKS.subject, opacity: 1, width: 2.5 };
 /** Opaque: a line below 1 darkens where its segments' round ends overlap,
- *  a dot at each joint. The palette makes `ink` lighter instead (main.ts). */
+ *  a dot at each joint. */
 const MERIDIAN: LineStyle = { ink: INKS.ink, opacity: 1, width: 2 };
 /** The paper: a fill at opacity 0 is mixed all the way to the paper. */
 const PAPER: Colour = { ink: INKS.mutedWash, opacity: 0 };

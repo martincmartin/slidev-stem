@@ -113,3 +113,16 @@ During the spike:
 
 The answers to two questions, the same day: the fill's name is `water-wash`;
 the pool's edge becomes a color of its own (`water`), at full strength.
+
+> The water in the globe is still a different color than the water in the
+> pool.
+
+> Please switch the coast color.
+
+> Why are the meridians mixed half with the paper?
+
+> yes
+
+(The answer to "Should I switch the meridians to full `ink`?".)
+
+> Let's commit on a branch, I'm not sure where this experiment is going.
