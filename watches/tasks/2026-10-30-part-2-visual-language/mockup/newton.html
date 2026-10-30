@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Newton mockup</title>
+    <link rel="stylesheet" href="./ledger.css" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body class="still">
+    <!-- A quote has no place on a map: the words are the picture, and each
+         of Newton's reasons gets a drawing. The drawings are the mockup's
+         sketches. The text follows the committee's report of 11 June 1714,
+         as Dava Sobel's "Longitude" quotes it (PLAN.md, "The facts"). -->
+    <div id="stage">
+      <div id="slide" class="slidev-layout palette-ledger">
+        <h1>Isaac Newton, 1714</h1>
+        <p class="subtitle">to Parliament's committee on longitude</p>
+        <p class="quote lead">
+          “One is by a Watch to keep time exactly. But, by reason of
+        </p>
+        <div class="reasons">
+          <div>
+            <svg width="140" height="110" viewBox="-70 -60 140 110">
+              <path
+                class="icon-water"
+                d="M-68,30 q17,-10 34,0 t34,0 t34,0 t34,0 V50 H-68 Z"
+              />
+              <g transform="rotate(-14)">
+                <path class="icon icon-face" d="M-44,8 H44 L32,30 H-32 Z" />
+                <path class="icon" d="M0,8 V-42" />
+                <path class="icon icon-face" d="M3,-38 L28,-6 H3 Z" />
+              </g>
+              <path
+                class="icon-arrow"
+                d="M-42,-44 A52,52 0 0 1 42,-44 M42,-44 l-2,-11 M42,-44 l-11,1 M-42,-44 l2,-11 M-42,-44 l11,1"
+              />
+            </svg>
+            <p>the motion of a Ship</p>
+          </div>
+          <div>
+            <svg width="140" height="110" viewBox="-70 -60 140 110">
+              <path
+                class="icon icon-face"
+                d="M-8,20 V-42 a8,8 0 0 1 16,0 V20"
+              />
+              <circle class="icon icon-face" cx="0" cy="30" r="14" />
+              <path class="icon" d="M10,-28 h7 M10,-14 h7 M10,0 h7" />
+              <circle class="icon" cx="-44" cy="-22" r="9" />
+              <path
+                class="icon"
+                d="M-44,-38 v-6 M-44,-6 v6 M-60,-22 h-6 M-28,-22 h6"
+              />
+              <path
+                class="icon"
+                d="M46,-36 v28 M34,-29 l24,14 M34,-15 l24,-14"
+              />
+            </svg>
+            <p>the variation of Heat and Cold</p>
+          </div>
+          <div>
+            <svg width="140" height="110" viewBox="-70 -60 140 110">
+              <path
+                class="icon-water"
+                d="M-26,-40 C-30,-28 -46,-10 -46,6 a20,20 0 0 0 40,0 C-6,-10 -22,-28 -26,-40 Z"
+              />
+              <circle class="icon icon-face" cx="30" cy="2" r="15" />
+              <path
+                class="icon"
+                d="M30,-22 v-8 M30,26 v8 M6,2 h-8 M54,2 h8 M13,-15 l-6,-6 M47,19 l6,6 M47,-15 l6,-6 M13,19 l-6,6"
+              />
+            </svg>
+            <p>Wet and Dry</p>
+          </div>
+          <div>
+            <svg width="140" height="110" viewBox="-70 -60 140 110">
+              <circle class="icon icon-face" cx="0" cy="0" r="34" />
+              <path class="icon" d="M-34,0 H34 M0,-34 V34" />
+              <path
+                class="icon-arrow"
+                d="M0,-60 V-40 M-6,-47 L0,-40 L6,-47 M60,0 H46 M53,-6 L46,0 L53,6"
+              />
+            </svg>
+            <p>the difference of Gravity in different Latitudes</p>
+          </div>
+        </div>
+        <p class="quote end">such a Watch hath <em>not yet</em> been made.”</p>
+      </div>
+    </div>
+    <script type="module">
+      import "../../../../themes/house/styles/fonts.css";
+      await document.fonts.ready;
+      document.body.dataset.ready = "1";
+    </script>
+  </body>
+</html>

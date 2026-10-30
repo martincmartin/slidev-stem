@@ -1,0 +1,295 @@
+[
+ {
+  "style": "labels",
+  "step": 0,
+  "picture": "south",
+  "texts": [],
+  "coverage": {
+   "sea": 363735,
+   "seaCovered": 14593,
+   "covered": 14593
+  }
+ },
+ {
+  "style": "labels",
+  "step": 1,
+  "picture": "start",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 10,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     16,
+     152,
+     315.515625,
+     90
+    ],
+    "travel": 58
+   }
+  ],
+  "coverage": {
+   "sea": 363735,
+   "seaCovered": 28739,
+   "covered": 28739
+  }
+ },
+ {
+  "style": "labels",
+  "step": 2,
+  "picture": "east",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 10,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     16,
+     152,
+     315.515625,
+     90
+    ],
+    "travel": 58
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     16,
+     112,
+     217.5,
+     30
+    ],
+    "travel": 26.5
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     420,
+     228,
+     137.453125,
+     60
+    ],
+    "travel": 12
+   },
+   {
+    "kind": "label",
+    "words": 5,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     696,
+     262,
+     173.328125,
+     60
+    ],
+    "travel": 64.51014209197069
+   }
+  ],
+  "coverage": {
+   "sea": 363735,
+   "seaCovered": 38251,
+   "covered": 41021
+  }
+ },
+ {
+  "style": "labels",
+  "step": 3,
+  "picture": "west",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 10,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     16,
+     152,
+     315.515625,
+     90
+    ],
+    "travel": 58
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     16,
+     112,
+     217.5,
+     30
+    ],
+    "travel": 26.5
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     420,
+     228,
+     137.453125,
+     60
+    ],
+    "travel": 12
+   },
+   {
+    "kind": "label",
+    "words": 5,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     696,
+     262,
+     173.328125,
+     60
+    ],
+    "travel": 64.51014209197069
+   },
+   {
+    "kind": "label",
+    "words": 5,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     340,
+     360,
+     241.40625,
+     60
+    ],
+    "travel": 18.73194802154842
+   }
+  ],
+  "coverage": {
+   "sea": 363735,
+   "seaCovered": 45735,
+   "covered": 48430
+  }
+ },
+ {
+  "style": "labels",
+  "step": 4,
+  "picture": "found",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 10,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     16,
+     152,
+     315.515625,
+     90
+    ],
+    "travel": 58
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     16,
+     112,
+     217.5,
+     30
+    ],
+    "travel": 26.5
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     420,
+     228,
+     137.453125,
+     60
+    ],
+    "travel": 12
+   },
+   {
+    "kind": "label",
+    "words": 5,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     696,
+     262,
+     173.328125,
+     60
+    ],
+    "travel": 64.51014209197069
+   },
+   {
+    "kind": "label",
+    "words": 5,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     340,
+     360,
+     241.40625,
+     60
+    ],
+    "travel": 18.73194802154842
+   },
+   {
+    "kind": "label",
+    "words": 2,
+    "fontSize": 20,
+    "dimmed": false,
+    "box": [
+     16,
+     314,
+     148.09375,
+     50
+    ],
+    "travel": 67.37680453288431
+   },
+   {
+    "kind": "label",
+    "words": 3,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     16,
+     368,
+     152.53125,
+     30
+    ],
+    "travel": 55.702682367153415
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     712,
+     400,
+     199.8125,
+     76.25
+    ],
+    "travel": null
+   }
+  ],
+  "coverage": {
+   "sea": 363735,
+   "seaCovered": 52650,
+   "covered": 59094
+  }
+ }
+]

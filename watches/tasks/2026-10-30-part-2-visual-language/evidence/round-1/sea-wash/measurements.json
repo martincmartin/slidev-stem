@@ -1,0 +1,873 @@
+[
+ {
+  "style": "rail",
+  "step": 0,
+  "picture": "start",
+  "texts": [
+   {
+    "kind": "rail",
+    "words": 23,
+    "fontSize": 22,
+    "dimmed": false,
+    "box": [
+     630,
+     90,
+     332,
+     114.375
+    ],
+    "travel": 460.07609941184324
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 7089,
+   "covered": 15919
+  }
+ },
+ {
+  "style": "rail",
+  "step": 1,
+  "picture": "east",
+  "texts": [
+   {
+    "kind": "rail",
+    "words": 23,
+    "fontSize": 22,
+    "dimmed": true,
+    "box": [
+     630,
+     90,
+     332,
+     114.375
+    ],
+    "travel": 460.07609941184324
+   },
+   {
+    "kind": "rail",
+    "words": 19,
+    "fontSize": 22,
+    "dimmed": false,
+    "box": [
+     630,
+     218.375,
+     332,
+     85.78125
+    ],
+    "travel": 78.51014209197069
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 7089,
+   "covered": 21450
+  }
+ },
+ {
+  "style": "rail",
+  "step": 2,
+  "picture": "west",
+  "texts": [
+   {
+    "kind": "rail",
+    "words": 23,
+    "fontSize": 22,
+    "dimmed": true,
+    "box": [
+     630,
+     90,
+     332,
+     114.375
+    ],
+    "travel": 460.07609941184324
+   },
+   {
+    "kind": "rail",
+    "words": 19,
+    "fontSize": 22,
+    "dimmed": true,
+    "box": [
+     630,
+     218.375,
+     332,
+     85.78125
+    ],
+    "travel": 78.51014209197069
+   },
+   {
+    "kind": "rail",
+    "words": 13,
+    "fontSize": 22,
+    "dimmed": false,
+    "box": [
+     630,
+     318.15625,
+     332,
+     57.1875
+    ],
+    "travel": 264.4280190561349
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 7089,
+   "covered": 25209
+  }
+ },
+ {
+  "style": "rail",
+  "step": 3,
+  "picture": "found",
+  "texts": [
+   {
+    "kind": "rail",
+    "words": 23,
+    "fontSize": 22,
+    "dimmed": true,
+    "box": [
+     630,
+     90,
+     332,
+     114.375
+    ],
+    "travel": 460.07609941184324
+   },
+   {
+    "kind": "rail",
+    "words": 19,
+    "fontSize": 22,
+    "dimmed": true,
+    "box": [
+     630,
+     218.375,
+     332,
+     85.78125
+    ],
+    "travel": 78.51014209197069
+   },
+   {
+    "kind": "rail",
+    "words": 13,
+    "fontSize": 22,
+    "dimmed": true,
+    "box": [
+     630,
+     318.15625,
+     332,
+     57.1875
+    ],
+    "travel": 264.4280190561349
+   },
+   {
+    "kind": "rail",
+    "words": 15,
+    "fontSize": 22,
+    "dimmed": false,
+    "box": [
+     630,
+     389.34375,
+     332,
+     85.78125
+    ],
+    "travel": 488.24410458710355
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 7089,
+   "covered": 30049
+  }
+ },
+ {
+  "style": "cards",
+  "step": 0,
+  "picture": "start",
+  "texts": [
+   {
+    "kind": "card",
+    "words": 17,
+    "fontSize": 22,
+    "dimmed": false,
+    "box": [
+     36,
+     92,
+     362,
+     109.78125
+    ],
+    "travel": 98.21875
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 46863,
+   "covered": 47716
+  }
+ },
+ {
+  "style": "cards",
+  "step": 1,
+  "picture": "east",
+  "texts": [
+   {
+    "kind": "card",
+    "words": 17,
+    "fontSize": 22,
+    "dimmed": true,
+    "box": [
+     36,
+     92,
+     362,
+     109.78125
+    ],
+    "travel": 98.21875
+   },
+   {
+    "kind": "card",
+    "words": 15,
+    "fontSize": 22,
+    "dimmed": false,
+    "box": [
+     626,
+     196,
+     352,
+     109.78125
+    ],
+    "travel": 74.51014209197069
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 46049,
+   "covered": 53765
+  }
+ },
+ {
+  "style": "cards",
+  "step": 2,
+  "picture": "west",
+  "texts": [
+   {
+    "kind": "card",
+    "words": 17,
+    "fontSize": 22,
+    "dimmed": true,
+    "box": [
+     36,
+     92,
+     362,
+     109.78125
+    ],
+    "travel": 98.21875
+   },
+   {
+    "kind": "card",
+    "words": 15,
+    "fontSize": 22,
+    "dimmed": true,
+    "box": [
+     626,
+     196,
+     352,
+     109.78125
+    ],
+    "travel": 74.51014209197069
+   },
+   {
+    "kind": "card",
+    "words": 13,
+    "fontSize": 22,
+    "dimmed": false,
+    "box": [
+     150,
+     350,
+     392,
+     81.1875
+    ],
+    "travel": 41
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 77632,
+   "covered": 83421
+  }
+ },
+ {
+  "style": "cards",
+  "step": 3,
+  "picture": "found",
+  "texts": [
+   {
+    "kind": "card",
+    "words": 17,
+    "fontSize": 22,
+    "dimmed": true,
+    "box": [
+     36,
+     92,
+     362,
+     109.78125
+    ],
+    "travel": 98.21875
+   },
+   {
+    "kind": "card",
+    "words": 15,
+    "fontSize": 22,
+    "dimmed": true,
+    "box": [
+     626,
+     196,
+     352,
+     109.78125
+    ],
+    "travel": 74.51014209197069
+   },
+   {
+    "kind": "card",
+    "words": 13,
+    "fontSize": 22,
+    "dimmed": true,
+    "box": [
+     150,
+     350,
+     392,
+     81.1875
+    ],
+    "travel": 41
+   },
+   {
+    "kind": "card",
+    "words": 15,
+    "fontSize": 22,
+    "dimmed": false,
+    "box": [
+     626,
+     352,
+     352,
+     109.78125
+    ],
+    "travel": 478.8319120526534
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 77331,
+   "covered": 90018
+  }
+ },
+ {
+  "style": "lessig",
+  "step": 0,
+  "picture": "start",
+  "texts": [
+   {
+    "kind": "screen",
+    "words": 3,
+    "fontSize": 76,
+    "dimmed": false,
+    "box": [
+     0,
+     0,
+     980,
+     552
+    ],
+    "travel": null
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 318649,
+   "covered": 322750
+  }
+ },
+ {
+  "style": "lessig",
+  "step": 1,
+  "picture": "start",
+  "texts": [
+   {
+    "kind": "screen",
+    "words": 4,
+    "fontSize": 76,
+    "dimmed": false,
+    "box": [
+     0,
+     0,
+     980,
+     552
+    ],
+    "travel": null
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 318771,
+   "covered": 324231
+  }
+ },
+ {
+  "style": "lessig",
+  "step": 2,
+  "picture": "start",
+  "texts": [],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 0,
+   "covered": 0
+  }
+ },
+ {
+  "style": "lessig",
+  "step": 3,
+  "picture": "start",
+  "texts": [
+   {
+    "kind": "screen",
+    "words": 3,
+    "fontSize": 76,
+    "dimmed": false,
+    "box": [
+     0,
+     0,
+     980,
+     552
+    ],
+    "travel": null
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 318631,
+   "covered": 322753
+  }
+ },
+ {
+  "style": "lessig",
+  "step": 4,
+  "picture": "east",
+  "texts": [],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 0,
+   "covered": 0
+  }
+ },
+ {
+  "style": "lessig",
+  "step": 5,
+  "picture": "east",
+  "texts": [
+   {
+    "kind": "screen",
+    "words": 5,
+    "fontSize": 76,
+    "dimmed": false,
+    "box": [
+     0,
+     0,
+     980,
+     552
+    ],
+    "travel": null
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 314885,
+   "covered": 322523
+  }
+ },
+ {
+  "style": "lessig",
+  "step": 6,
+  "picture": "west",
+  "texts": [],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 0,
+   "covered": 0
+  }
+ },
+ {
+  "style": "lessig",
+  "step": 7,
+  "picture": "west",
+  "texts": [
+   {
+    "kind": "screen",
+    "words": 3,
+    "fontSize": 76,
+    "dimmed": false,
+    "box": [
+     0,
+     0,
+     980,
+     552
+    ],
+    "travel": null
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 314160,
+   "covered": 317908
+  }
+ },
+ {
+  "style": "lessig",
+  "step": 8,
+  "picture": "found",
+  "texts": [],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 0,
+   "covered": 0
+  }
+ },
+ {
+  "style": "lessig",
+  "step": 9,
+  "picture": "found",
+  "texts": [
+   {
+    "kind": "screen",
+    "words": 2,
+    "fontSize": 76,
+    "dimmed": false,
+    "box": [
+     0,
+     0,
+     980,
+     552
+    ],
+    "travel": null
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 314571,
+   "covered": 317803
+  }
+ },
+ {
+  "style": "labels",
+  "step": 0,
+  "picture": "start",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 2,
+    "fontSize": 20,
+    "dimmed": false,
+    "box": [
+     36,
+     318,
+     148.09375,
+     25
+    ],
+    "travel": 18
+   },
+   {
+    "kind": "label",
+    "words": 7,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     40,
+     198,
+     320.40625,
+     60
+    ],
+    "travel": 42
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 23863,
+   "covered": 25052
+  }
+ },
+ {
+  "style": "labels",
+  "step": 1,
+  "picture": "east",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 2,
+    "fontSize": 20,
+    "dimmed": true,
+    "box": [
+     36,
+     318,
+     148.09375,
+     25
+    ],
+    "travel": 18
+   },
+   {
+    "kind": "label",
+    "words": 7,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     40,
+     198,
+     320.40625,
+     60
+    ],
+    "travel": 42
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     36,
+     98,
+     217.5,
+     30
+    ],
+    "travel": 12
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     452,
+     222,
+     137.453125,
+     60
+    ],
+    "travel": 86.737635416306
+   },
+   {
+    "kind": "label",
+    "words": 5,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     612,
+     262,
+     173.328125,
+     60
+    ],
+    "travel": 60.51014209197069
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 33652,
+   "covered": 37611
+  }
+ },
+ {
+  "style": "labels",
+  "step": 2,
+  "picture": "west",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 2,
+    "fontSize": 20,
+    "dimmed": true,
+    "box": [
+     36,
+     318,
+     148.09375,
+     25
+    ],
+    "travel": 18
+   },
+   {
+    "kind": "label",
+    "words": 7,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     40,
+     198,
+     320.40625,
+     60
+    ],
+    "travel": 42
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     36,
+     98,
+     217.5,
+     30
+    ],
+    "travel": 12
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     452,
+     222,
+     137.453125,
+     60
+    ],
+    "travel": 86.737635416306
+   },
+   {
+    "kind": "label",
+    "words": 5,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     612,
+     262,
+     173.328125,
+     60
+    ],
+    "travel": 60.51014209197069
+   },
+   {
+    "kind": "label",
+    "words": 5,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     262,
+     330,
+     241.40625,
+     60
+    ],
+    "travel": 21
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 41192,
+   "covered": 45076
+  }
+ },
+ {
+  "style": "labels",
+  "step": 3,
+  "picture": "found",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 2,
+    "fontSize": 20,
+    "dimmed": true,
+    "box": [
+     36,
+     318,
+     148.09375,
+     25
+    ],
+    "travel": 18
+   },
+   {
+    "kind": "label",
+    "words": 7,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     40,
+     198,
+     320.40625,
+     60
+    ],
+    "travel": 42
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     36,
+     98,
+     217.5,
+     30
+    ],
+    "travel": 12
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     452,
+     222,
+     137.453125,
+     60
+    ],
+    "travel": 86.737635416306
+   },
+   {
+    "kind": "label",
+    "words": 5,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     612,
+     262,
+     173.328125,
+     60
+    ],
+    "travel": 60.51014209197069
+   },
+   {
+    "kind": "label",
+    "words": 5,
+    "fontSize": 24,
+    "dimmed": true,
+    "box": [
+     262,
+     330,
+     241.40625,
+     60
+    ],
+    "travel": 21
+   },
+   {
+    "kind": "label",
+    "words": 3,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     36,
+     352,
+     152.53125,
+     30
+    ],
+    "travel": 52
+   },
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": false,
+    "box": [
+     640,
+     396,
+     199.8125,
+     76.25
+    ],
+    "travel": null
+   }
+  ],
+  "coverage": {
+   "sea": 319512,
+   "seaCovered": 44195,
+   "covered": 51828
+  }
+ }
+]
