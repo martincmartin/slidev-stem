@@ -380,7 +380,7 @@ the labels say. Each is a proposal, to sketch before it is built.
    Labels: "Sail to the latitude, then turn" and "Extra days at sea: storms,
    scurvy". The section's point, "longitude is hard to measure", is the
    title, so the Anson slide need not say it.
-2. **Anson's Search, 1741.** As mocked in round 2 (section 12): the ship
+2. **Commodore Anson Hunts for an Island, 1741.** As mocked in round 2 (section 12): the ship
    sails in from the south, and the islands show only when Anson finds them.
    A detail for the speaker, from Walter: on the morning of May
    28, Anson thought that he saw the island, and his officers said that it
@@ -592,6 +592,24 @@ click the ship sails on past the island's west end, and is drawn north-west
 of it, with sea between. It anchored on the island's north side; a ship drawn
 there would hide the island. This is a drawing choice, and the track is
 approximate.
+
+**The title** says who searches, and for what: "Anson's Search, 1741" left
+both open. The candidates, ranked, with their widths at 37 px on the
+980 px slide:
+
+1. "Commodore Anson Hunts for an Island, 1741" (794 px, chosen). "Commodore"
+   says that he commands navy ships, and "an island" what he looks for. It
+   keeps the name that the speaker says, so the subtitle's "his men" are
+   Anson's.
+2. "Commodore Anson's Search for an Island, 1741" (831 px): the same
+   answers, longer and flatter.
+3. "A Dying Crew Hunts for an Island, 1741" (693 px): the most vivid and
+   the shortest, but it drops the name, and the subtitle's "his" then refers
+   to no one.
+4. "Anson's Search for Juan Fernández, 1741" (718 px): still no "who", and
+   the audience does not know the islands' name; the first label gives it.
+5. "Where Is the Island? Commodore Anson, 1741" (815 px): a question, but
+   the first label asks "East or west?", and two questions compete.
 
 **Labels moved**: "Wind from the west" beside the top gust; "9 days back:
 headwinds and calms" below the west leg, off its dots; "Juan Fernández

@@ -99,7 +99,8 @@ export interface Style {
   readonly steps: readonly Step[];
 }
 
-const TITLE = "Anson's Search, 1741";
+/** Who searches, and for what: "Anson's Search" alone left both open. */
+const TITLE = "Commodore Anson Hunts for an Island, 1741";
 
 /** The middle of the west leg, which runs due west to the sighting. */
 const westMiddle = ({ turn, found }: Places): Point => [

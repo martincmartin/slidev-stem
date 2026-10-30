@@ -69,3 +69,24 @@ The user's feedback on round 1's labels mockup, verbatim:
 > carefully says "Disasters like this", so doesn't claim that the wreck led
 > to the Longitude Act. With unfilled sea, it's hard to tell what's land and
 > what's ocean, so stick with filled.
+
+Later requests in round 2, verbatim, in order:
+
+> Please add a dropdown at the bottom of the page for wind placement.
+
+> The westward travel is not straight west, it should be. I get that it
+> can't be at the same vertical position or it would draw over the eastern
+> travel. But it should still be horizontal.
+
+> Also, please insert a click after trhe slide is initially drawn with the
+> ship at the bottom, before it starts heading north.
+
+> Turn the drop down south into a teleport, without a line left behind.
+> Here it looks like they're intentionally travelling south, rather than it
+> being an artifact of visibility.
+
+> In lesseg, after "Scurvy: 4-6 dead a day", the ship should start at the
+> bottom and move up after the fade in.
+
+> The title of the slide needs something more. "Anson's search, 1741" begs
+> the question "who or what is Anson, what are they searching for?"

@@ -6,8 +6,8 @@
   "texts": [],
   "coverage": {
    "sea": 363735,
-   "seaCovered": 14593,
-   "covered": 14593
+   "seaCovered": 19410,
+   "covered": 21829
   }
  },
  {
@@ -31,8 +31,8 @@
   ],
   "coverage": {
    "sea": 363735,
-   "seaCovered": 28739,
-   "covered": 28739
+   "seaCovered": 33556,
+   "covered": 35975
   }
  },
  {
@@ -95,8 +95,8 @@
   ],
   "coverage": {
    "sea": 363735,
-   "seaCovered": 38528,
-   "covered": 41298
+   "seaCovered": 43345,
+   "covered": 48534
   }
  },
  {
@@ -172,8 +172,8 @@
   ],
   "coverage": {
    "sea": 363735,
-   "seaCovered": 46068,
-   "covered": 48763
+   "seaCovered": 50885,
+   "covered": 55999
   }
  },
  {
@@ -288,8 +288,8 @@
   ],
   "coverage": {
    "sea": 363735,
-   "seaCovered": 53133,
-   "covered": 59577
+   "seaCovered": 57950,
+   "covered": 66813
   }
  }
 ]
