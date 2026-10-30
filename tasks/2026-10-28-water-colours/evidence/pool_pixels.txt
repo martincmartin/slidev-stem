@@ -1,0 +1,6 @@
+t=0.0: 1932 px differ, 1719 by more than 2 levels, max 20
+   where: x 18-587, y 252-451
+t=2.0: 1677 px differ, 1458 by more than 2 levels, max 20
+   where: x 18-587, y 252-451
+t=5.3: 1809 px differ, 1607 by more than 2 levels, max 20
+   where: x 18-587, y 252-451

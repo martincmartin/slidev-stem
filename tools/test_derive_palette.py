@@ -41,9 +41,10 @@ def test_a_green_second_gives_water_a_blue_of_its_own() -> None:
     rule = derive_palette.derive(
         "mint", "Mint", text_roles(CAMPFIRE | {"second": "#93D096"})
     )
-    water = next(gate for gate in lib.HUE_GATES if gate.role == "water")
-    assert rule.recipes["water"].startswith("#")
-    assert water.passes({"water": Colour.from_hex(rule.recipes["water"])})
+    palette = lib.resolve(rule.recipes)
+    for gate in lib.HUE_GATES:
+        if gate.role in ("water", "water-wash"):
+            assert gate.passes(palette), gate.role
 
 
 def test_the_rule_names_its_class_and_its_title() -> None:

@@ -143,6 +143,7 @@ ROLES = (
     "muted-wash",
     "second-wash",
     "water",
+    "water-wash",
     "ground",
     "ground-wash",
 )
@@ -344,7 +345,8 @@ def paper_schema(palette: Palette) -> str:
 
 # Each wash and the line colour that it is the face for (docs/theme.md, "The
 # pairs"). A drawing's variation of a face is its wash mixed toward its line or
-# toward the paper.
+# toward the paper. The water's wash is not a pair, on purpose: it is the water
+# itself, stronger than a face, and its own gates are below.
 WASH_PAIRS = {
     "subject-wash": "subject",
     "muted-wash": "muted",
@@ -521,9 +523,20 @@ GATES = [
             ),
         )
     ),
+    # The water's wash is the water itself (docs/theme.md, "The pairs"). A face's
+    # wash, at most 1.5:1, read as no water at all (a sea at 18%, in
+    # tasks/2026-10-28-water-colours).
+    Gate(
+        "water-wash",
+        "panel",
+        Measure.CONTRAST,
+        "the water reads as water: stronger than any face",
+        1.5,
+    ),
 ]
 HUE_GATES = [
-    HueGate("water", 190, 300, 15, "water reads as water: cyan to blue-violet"),
+    HueGate("water", 190, 300, 15, "water's edge reads as water: cyan to blue-violet"),
+    HueGate("water-wash", 190, 300, 15, "water reads as water: cyan to blue-violet"),
     HueGate("ground", 20, 110, 0, "ground reads as earth, or as stone", grey_below=10),
 ]
 _unknown_roles = (
@@ -595,7 +608,8 @@ ART_ROLES = {
     "muted": "context: what holds or acts on the subject (the stand, the case)",
     "muted-wash": "the context's faces",
     "ink": "detail: tick marks, smoke. Usually at 0.5 stroke-opacity.",
-    "water": "water, where it meets another material (the pool)",
+    "water": "the line where water meets another material (the pool's edge)",
+    "water-wash": "the water itself (the pool's water): stronger than a face",
     "ground": "ground and stone, where they meet another material",
     "ground-wash": "the ground's faces",
 }

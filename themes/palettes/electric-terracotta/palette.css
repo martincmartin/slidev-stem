@@ -24,7 +24,8 @@
   --palette-subject: #631400; /* a dark oxblood */
   --palette-subject-wash: #d6c9c5; /* a pale rose-grey */
   --palette-second-wash: #d4c9cd; /* a pale mauve-grey */
-  --palette-water: var(--palette-second);
+  --palette-water: #6664a9; /* a soft indigo: the water's edge */
+  --palette-water-wash: #948eb8; /* a soft lavender: the water itself */
   /* muted at 18% over the paper */
   --palette-muted-wash: color-mix(
     in srgb,

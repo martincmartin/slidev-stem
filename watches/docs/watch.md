@@ -1552,8 +1552,9 @@ swings, and the spiral would distract. Ground on the left, pool on the right.
 The board is over the pool for two thirds of its length.
 The ground, the stand and the pool's walls are faces in the ground's wash
 (warm): lit faces are the wash moved toward the paper, and shaded ones (the
-walls, the stand's side) toward the ground's line. The water is a substance:
-the water colour (blue) at 0.6, with light ripples. Water and ground are
+walls, the stand's side) toward the ground's line. The water is the water's
+wash (blue), solid, with light ripples, and its edge on the walls is the
+water colour. Water and ground are
 material roles of the theme, so a theme cannot swap their colours by
 accident ([theme.md](../../docs/theme.md), "The pairs"). The pool has no near wall, and the ground has no front: both go on in
 front, as if they ran far past the bottom of the slide, and the drawing is

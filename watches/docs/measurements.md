@@ -117,10 +117,11 @@ drawing          ink%    hold    p90    Fmax     dPeak   px2 >=3:1
 diving-board     21.6    3.37    3.37   0.050      8.96        3216
 ```
 
-It clears the gate. The hold is the water against the paper: the water is a
-substance, the water colour at 0.6, the bottom of the water window in
-[`illustrations.md`](../../docs/illustrations.md). At 0.5 the hold was 2.65, and at
-0.3 it was 1.73: below the gate.
+It clears the gate. The hold is the water against the paper. The water was
+then the water colour at 0.6, the bottom of the water window in
+[`illustrations.md`](../../docs/illustrations.md). Since 2026-10-28 it is the
+water's wash, which Ledger sets to the colour that 0.6 gave, so the pixels are
+the same. At 0.5 the hold was 2.65, and at 0.3 it was 1.73: below the gate.
 
 ## Rest outlines and callout
 

@@ -30,7 +30,8 @@
     var(--palette-muted) 22%,
     var(--palette-background)
   );
-  --palette-water: var(--palette-second);
+  --palette-water: #80aad4; /* a soft sky blue: the water's edge */
+  --palette-water-wash: #5c7da1; /* a dusky mid blue: the water itself */
   /* a dark blue-grey, as the muted wash */
   --palette-ground-wash: color-mix(
     in srgb,

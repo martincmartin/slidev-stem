@@ -24,7 +24,8 @@
   --palette-subject: #014667; /* a dark ink blue */
   --palette-subject-wash: #d1d8e1; /* a very pale blue-grey */
   --palette-second-wash: #d8d9c4; /* a pale sage */
-  --palette-water: #337fa8; /* a mid blue */
+  --palette-water: #4b8db0; /* a mid blue: the water's edge */
+  --palette-water-wash: #82aec3; /* a soft grey-blue: the water itself */
   /* muted at 18% over the paper */
   --palette-muted-wash: color-mix(
     in srgb,

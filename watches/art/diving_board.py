@@ -150,7 +150,8 @@ class Inks:
     subject: Ink  # the board's lines
     subject_wash: Ink  # the board's faces; the ripples on the water
     muted: Ink  # the rest shape and its leader: a reference mark
-    water: Ink  # the pool's water: a substance, at WATER_OPACITY
+    water: Ink  # the line where the water meets the walls
+    water_wash: Ink  # the water itself
     ground: Ink  # the lines of the ground, the stand and the pool's walls
     ground_wash: Ink  # their faces
     paper: Ink  # what a lit face moves toward
@@ -163,6 +164,7 @@ class Inks:
             "subject-wash",
             "muted",
             "water",
+            "water-wash",
             "ground",
             "ground-wash",
             "background",
@@ -194,8 +196,8 @@ class Inks:
             self.subject_wash.rule("stroke"),
             self.subject.rule("stroke"),
             self.muted.rule("stroke"),
-            self.water.rule("fill"),
             self.water.rule("stroke"),
+            self.water_wash.rule("fill"),
             self.ground.rule("stroke"),
             self.ground_wash.rule("fill"),
             self.wall.rule("fill"),
@@ -215,7 +217,6 @@ SEGMENTS = 24  # the board's centre line is this many straight segments
 CURL_POINTS = (
     40  # a smooth curve through this many points: within 0.06 px of the spring
 )
-WATER_OPACITY = 0.6  # the water is a substance: its colour, see-through
 WAVES = (  # x, z of a ripple
     (330, 140),
     (430, 185),
@@ -740,15 +741,15 @@ def set_markup(
         f'<g id="{id_prefix}set" data-layer="set" class="{CLASS_PREFIX}set">',
         # the pool, the ground and the stand, cut at the right
         f'<g clip-path="url(#{pool_clip_id})">',
-        # the pool: the water is a substance, the walls are shaded
-        f'<path d="{path_data(surface)}" {paint(fill=inks.water)} fill-opacity="{WATER_OPACITY}"/>',
+        # the pool: the water in its wash, the walls shaded
+        f'<path d="{path_data(surface)}" {paint(fill=inks.water_wash)}/>',
         f'<path d="{path_data(left_wall)}" {paint(fill=inks.wall)}/>',
         f'<path d="{path_data(far_wall)}" {paint(fill=inks.wall)}/>',
         f'<g fill="none" {paint(stroke=inks.ground)} stroke-width="2" stroke-linejoin="round">',
         f'<path d="{path_data(left_wall)}"/>',
         f'<path d="{path_data(far_wall)}"/>',
         "</g>",
-        f'<path d="{polyline_data(surface_edge)}" fill="none" {paint(stroke=inks.water)} stroke-width="2" stroke-opacity="0.7" stroke-linejoin="round"/>',
+        f'<path d="{polyline_data(surface_edge)}" fill="none" {paint(stroke=inks.water)} stroke-width="2" stroke-linejoin="round"/>',
         f'<g fill="none" {paint(stroke=inks.subject_wash)} stroke-width="2" stroke-linecap="round" stroke-linejoin="round">',
         *(f'<path d="{ripple}"/>' for ripple in ripples),
         "</g>",

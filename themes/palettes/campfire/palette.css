@@ -20,7 +20,8 @@
   --palette-subject: #ffcc8f; /* a pale amber */
   --palette-subject-wash: #3d3731; /* a dark warm grey */
   --palette-second-wash: #2d3a3c; /* a dark slate teal */
-  --palette-water: var(--palette-second);
+  --palette-water: #4ea9c0; /* a muted sky cyan: the water's edge */
+  --palette-water-wash: #417d8b; /* a deep teal: the water itself */
   /* muted at 18% over the paper */
   --palette-muted-wash: color-mix(
     in srgb,

@@ -1,0 +1,7 @@
+ledger               old #143C6B wash #7087A0 (L 55.4 C 16.1 h 262.3) edge #30527B (L 34.2 C 27.0 h 272.4) | wash/panel 3.20 wash/paper 3.47 edge/wash 2.16 18%/panel 1.27 subject/wash 3.00
+after-hours          old #7FB3E8 wash #55789C (L 49.2 C 23.4 h 264.2) edge #72A1D1 (L 64.7 C 29.6 h 264.3) | wash/panel 3.06 wash/paper 3.57 edge/wash 1.70 18%/panel 1.22 subject/wash 3.13
+beacon               old #8FBEEA wash #5C7DA1 (L 51.3 C 23.0 h 265.2) edge #80AAD4 (L 68.1 C 26.0 h 262.2) | wash/panel 3.27 wash/paper 3.97 edge/wash 1.76 18%/panel 1.20 subject/wash 2.93
+campfire             old #54BCD6 wash #417D8B (L 49.1 C 20.5 h 221.5) edge #4EA9C0 (L 64.8 C 28.4 h 224.6) | wash/panel 3.03 wash/paper 3.55 edge/wash 1.71 18%/panel 1.19 subject/wash 3.15
+electric-terracotta  old #5252A3 wash #948EB8 (L 60.9 C 23.8 h 297.8) edge #6664A9 (L 45.4 C 41.1 h 296.4) | wash/panel 2.29 wash/paper 2.54 edge/wash 1.72 18%/panel 1.16 subject/wash 4.18
+field-notes          old #337FA8 wash #82AEC3 (L 68.7 C 18.2 h 238.2) edge #4B8DB0 (L 55.8 C 27.0 h 246.7) | wash/panel 2.01 wash/paper 2.19 edge/wash 1.53 18%/panel 1.13 subject/wash 4.24
+kraft-ink            old #20739B wash #739FAE (L 62.9 C 16.7 h 228.6) edge #3980A1 (L 50.5 C 26.9 h 244.2) | wash/panel 1.96 wash/paper 2.23 edge/wash 1.53 18%/panel 1.10 subject/wash 3.82

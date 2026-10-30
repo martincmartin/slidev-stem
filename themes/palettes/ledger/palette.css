@@ -43,8 +43,11 @@
   );
 
   /* Materials whose colours tell them apart where they meet (the pool on
-     the Hairspring slide of watches). In Ledger they are other roles. */
-  --palette-water: var(--palette-subject);
+     the Hairspring slide of watches). The water's wash is the water itself,
+     stronger than a face (stem/docs/theme.md, "The pairs"). The ground is
+     the muted. */
+  --palette-water: #30527b; /* a dark slate blue: the water's edge */
+  --palette-water-wash: #7087a0; /* a dusty mid blue: the water itself */
   --palette-ground: var(--palette-muted);
   --palette-ground-wash: color-mix(
     in srgb,

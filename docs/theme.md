@@ -28,7 +28,9 @@ value in Markdown, make a new palette, change the house theme
 [`tasks/2026-10-07-palette-preview/`](../tasks/2026-10-07-palette-preview/PLAN.md)
 (palette classes; the watch takes the slide's palette),
 [`tasks/2026-10-14-palette-addons/`](../tasks/2026-10-14-palette-addons/PLAN.md)
-(the house theme holds no colours; each palette is an addon).
+(the house theme holds no colours; each palette is an addon),
+[`tasks/2026-10-28-water-colours/`](../tasks/2026-10-28-water-colours/PLAN.md)
+(the water's two colours: its edge, and the water itself).
 
 The palette is not final. It will be chosen again when a deck is more
 complete, and a dark palette may be tried. So the method, the roles and the
@@ -133,9 +135,11 @@ and the subject share it), and the second.
     panel; then tune it.
 
 11. **The material colours** follow (`--palette-water`, `--palette-ground`, and
-    their washes). Each is `var()` of a role whose hue suits the material, or a
-    value of its own. Check that each material's hue is in its range: water a
-    blue, ground an earth colour or a grey.
+    their washes). The ground is `var()` of a role whose hue suits it, or a
+    value of its own, and its wash is the usual recipe. The water and its
+    wash are two values of their own, not a recipe of one from the other
+    (see "The pairs"). Check that each material's hue is in its range: water
+    a blue, ground an earth colour or a grey.
 12. **Check the drawings.** In each talk, the full validation runs `artcheck`,
     `barroom` and `motion` on the art with the new colours.
 
@@ -161,7 +165,8 @@ roles, so a slide class that changes a role also changes what is made from it.
 | `--palette-subject-wash` | not used                               | the subject's faces (WebGL ink `subjectWash`)                                                                                                               |
 | `--palette-muted-wash`   | not used                               | the faces of the context (WebGL ink `mutedWash`)                                                                                                            |
 | `--palette-second-wash`  | not used                               | a flash's faces, and a mark's faces (WebGL ink `secondWash`)                                                                                                |
-| `--palette-water`        | not used                               | water, where it meets another material                                                                                                                      |
+| `--palette-water`        | not used                               | the line where water meets another material: the pool's edge                                                                                                |
+| `--palette-water-wash`   | not used                               | the water itself: the pool's water, stronger than a face (see "The pairs")                                                                                  |
 | `--palette-ground`       | not used                               | ground and stone, where they meet another material                                                                                                          |
 | `--palette-ground-wash`  | not used                               | the faces of ground and stone                                                                                                                               |
 
@@ -189,7 +194,7 @@ at the same time: a flashed part or a mark would merge with a leader.
 Each line colour that has faces has a **wash**: a solid colour near the paper,
 for those faces. A face is drawn in its wash, or in a variation of it, never in
 its line colour at a low opacity. The line colour itself, at 0.6 or more, is
-for a substance (water, sand) or a small dark part
+for a substance (sand, the water clock's water) or a small dark part
 ([illustrations.md](illustrations.md), "Washes").
 
 | Line colour | Its wash     | Faces in it                         |
@@ -198,11 +203,28 @@ for a substance (water, sand) or a small dark part
 | muted       | muted-wash   | what holds the subject: a case      |
 | second      | second-wash  | a flashed part                      |
 | ground      | ground-wash  | the ground, a stand, a pool's walls |
-| water       | (none yet)   | water is drawn as a substance       |
+| water       | water-wash   | the water itself (see below)        |
 
 Ink and the accent have no wash: ink draws lines and small solids only, and
 the accent is not in the art. Add a wash when a drawing first needs a face for
-that line colour. `WASH_PAIRS` in `tools/lib.py` lists the pairs.
+that line colour. `WASH_PAIRS` in `tools/lib.py` lists the pairs that the wash
+gates check.
+
+**The water's wash is the water itself, not a face near the paper.** At a
+face's strength the water does not read as water: a sea at 18% over the paper
+was too pale. So the water's wash must be stronger than any face (its gate is
+at least 1.5:1 on the panel), and it is not in `WASH_PAIRS`. Each palette sets
+the water and its wash as two values, not one as a recipe of the other, so
+that it can tune each. The water's line marks only where the water meets
+another material, beside its wash. It does not hold 3:1 on the wash, and does
+not need to. **A line that must read on the water** (an outline over it, a
+coast) is the subject or ink, at full strength, at 3:1 on the water's wash.
+Do not mix it toward the paper: ink at 0.5 over the paper is 1.1–1.4:1 on the
+water's wash. No gate checks this yet, so measure it in each palette: Beacon's
+subject is under 3:1 on its water's wash, and a gate waits for a decision to
+tune Beacon (the
+[water's colours task](../tasks/2026-10-28-water-colours/PLAN.md), "A line on
+the water").
 
 **A material colour** (water, ground) is a role only where two materials sit
 side by side and their colours tell them apart: the pool on the Hairspring slide of
@@ -305,7 +327,8 @@ against each one, and shows how much room light each pair survives.
 | each line on its wash          | ≥ 3:1                                         | a drawn mark's floor: the face must not hide its outline                  |
 | each wash on panel             | ≥ 1.12:1                                      | a face, not bare paper: the faintest face that the art used and that read |
 | each wash on background        | ≤ 1.5:1                                       | a face stays near the paper, so it does not compete with the lines        |
-| water's hue                    | h 190–300, C\* ≥ 15                           | water reads as water: cyan to blue-violet                                 |
+| water's wash on panel          | ≥ 1.5:1                                       | the water reads as water: stronger than any face                          |
+| water's and its wash's hue     | h 190–300, C\* ≥ 15                           | water reads as water: cyan to blue-violet                                 |
 | ground's hue                   | h 20–110, or C\* < 10                         | ground reads as earth, or as stone                                        |
 
 Of the 23 candidate palettes, 5 pass every gate and 10 pass the gates for
@@ -382,7 +405,8 @@ palette (see "Palettes"). As examples, its values on 2026-10-07:
 | muted-wash   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#E2DED6;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#E2DED6` | a pale warm grey      |
 | second-wash  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#ECD8C4;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#ECD8C4` | a pale apricot        |
 
-Water is the subject colour, ground is muted, and the ground's wash is muted's.
+Ground is muted, and the ground's wash is muted's. The water and its wash are
+values of their own (see "Top picks").
 
 **How Ledger made its art colours.** The subject is the accent moved away from
 the paper (darker) along its hue: 5.56:1 on the panel to 9.60:1. Do not "fix"
@@ -513,8 +537,8 @@ derives the art roles by the same steps and prints the rule, with its
 copy `index.html` and `package.json` from another palette, with the name
 changed. Run `uv run tools/palette.py` for its gates, and link it in each
 talk's `package.json`. On dark paper the subject is a pale version of the
-accent, which is seldom a water colour, so the tool gives water the second or
-a blue of its own.
+accent, which is seldom a water colour, so the tool makes the water and its
+wash from the second or from a blue of its own.
 
 ### The reference palette
 
@@ -546,12 +570,12 @@ any slide can show it, and each passes every gate. `uv run tools/palette.py`
 measures each one.
 
 The values are in each palette's `themes/palettes/<name>/palette.css`; as
-examples, their values on 2026-10-10.
+examples, their values on 2026-10-10 (the water and its wash: 2026-10-28).
 A role that is a recipe is shown as the colour that it gives, and the
 brackets say where it comes from. Water and ground are the pool on the Hairspring slide of
 `watches`. On dark paper the subject is a pale accent, which is not a water
-colour, so water is the second where the second is a blue, and a blue of its
-own where it is not (`tools/derive_palette.py`).
+colour, so the water and its wash come from the second where the second is a
+blue, and from a blue of its own where it is not (`tools/derive_palette.py`).
 
 | Role         | Ledger                                                                                                                                                                                | Campfire                                                                                                                                                                               | After-Hours Observatory                                                                                                                                                               | Beacon                                                                                                                                                                                | Kraft & Ink                                                                                                                                                                       |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -566,7 +590,8 @@ own where it is not (`tools/derive_palette.py`).
 | subject-wash | <span style="display:inline-block;width:1.5em;height:1.5em;background:#D3DCE3;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#D3DCE3`, a very pale blue-grey             | <span style="display:inline-block;width:1.5em;height:1.5em;background:#3D3731;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#3D3731`, a dark warm grey                   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#3D3730;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#3D3730`, a dark warm grey                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#3D3731;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#3D3731`, a dark warm grey                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#BAC5CB;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#BAC5CB`, a pale blue-grey              |
 | muted-wash   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#E2DED6;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#E2DED6`, a pale warm grey (muted at 18%)   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#3E3630;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#3E3630`, a dark brown-grey (muted at 18%)   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#2E353C;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#2E353C`, a dark blue-grey (muted at 18%)   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#2C374B;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#2C374B`, a dark blue-grey (muted at 22%)   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#D4C6AF;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#D4C6AF`, a pale kraft (muted at 20%)   |
 | second-wash  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#ECD8C4;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#ECD8C4`, a pale apricot (second at 20.8%)  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#2D3A3C;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#2D3A3C`, a dark slate teal                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#29394B;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#29394B`, a dark slate blue                 | <span style="display:inline-block;width:1.5em;height:1.5em;background:#263853;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#263853`, a dark slate blue                 | <span style="display:inline-block;width:1.5em;height:1.5em;background:#E3BCA0;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#E3BCA0`, a pale terracotta             |
-| water        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#143C6B;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#143C6B`, a dark navy blue (the subject)    | <span style="display:inline-block;width:1.5em;height:1.5em;background:#54BCD6;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#54BCD6`, a sky cyan (the second)            | <span style="display:inline-block;width:1.5em;height:1.5em;background:#7FB3E8;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#7FB3E8`, a sky blue (the second)           | <span style="display:inline-block;width:1.5em;height:1.5em;background:#8FBEEA;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#8FBEEA`, a sky blue (the second)           | <span style="display:inline-block;width:1.5em;height:1.5em;background:#20739B;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#20739B`, a mid blue                    |
+| water        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#30527B;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#30527B`, a dark slate blue                 | <span style="display:inline-block;width:1.5em;height:1.5em;background:#4EA9C0;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#4EA9C0`, a muted sky cyan                   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#72A1D1;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#72A1D1`, a soft sky blue                   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#80AAD4;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#80AAD4`, a soft sky blue                   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#3980A1;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#3980A1`, a mid blue                    |
+| water-wash   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#7087A0;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#7087A0`, a dusty mid blue                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#417D8B;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#417D8B`, a deep teal                        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#55789C;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#55789C`, a dusky mid blue                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#5C7DA1;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#5C7DA1`, a dusky mid blue                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#739FAE;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#739FAE`, a dusty teal-blue             |
 | ground       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#736A60;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#736A60`, a warm grey-brown (muted)         | <span style="display:inline-block;width:1.5em;height:1.5em;background:#B5A594;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#B5A594`, a warm grey-beige (muted)          | <span style="display:inline-block;width:1.5em;height:1.5em;background:#94948F;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#94948F`, a neutral grey (muted)            | <span style="display:inline-block;width:1.5em;height:1.5em;background:#9197A1;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#9197A1`, a cool grey (muted)               | <span style="display:inline-block;width:1.5em;height:1.5em;background:#695944;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#695944`, a dark brown-grey (muted)     |
 | ground-wash  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#E2DED6;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#E2DED6`, a pale warm grey (the muted wash) | <span style="display:inline-block;width:1.5em;height:1.5em;background:#3E3630;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#3E3630`, a dark brown-grey (the muted wash) | <span style="display:inline-block;width:1.5em;height:1.5em;background:#2E353C;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#2E353C`, a dark blue-grey (the muted wash) | <span style="display:inline-block;width:1.5em;height:1.5em;background:#2C374B;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#2C374B`, a dark blue-grey (the muted wash) | <span style="display:inline-block;width:1.5em;height:1.5em;background:#D4C6AF;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#D4C6AF`, a pale kraft (the muted wash) |
 
@@ -583,6 +608,7 @@ own where it is not (`tools/derive_palette.py`).
 | subject-wash | <span style="display:inline-block;width:1.5em;height:1.5em;background:#D1D8E1;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#D1D8E1`, a very pale blue-grey             | <span style="display:inline-block;width:1.5em;height:1.5em;background:#D6C9C5;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#D6C9C5`, a pale rose-grey                   |
 | muted-wash   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#E0DBCF;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#E0DBCF`, a pale warm grey (muted at 18%)   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#DCCFC3;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#DCCFC3`, a pale warm beige (muted at 18%)   |
 | second-wash  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#D8D9C4;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#D8D9C4`, a pale sage                       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#D4C9CD;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#D4C9CD`, a pale mauve-grey                  |
-| water        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#337FA8;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#337FA8`, a mid blue                        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#5252A3;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#5252A3`, an indigo (the second)             |
+| water        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#4B8DB0;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#4B8DB0`, a mid blue                        | <span style="display:inline-block;width:1.5em;height:1.5em;background:#6664A9;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#6664A9`, a soft indigo                      |
+| water-wash   | <span style="display:inline-block;width:1.5em;height:1.5em;background:#82AEC3;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#82AEC3`, a soft grey-blue                  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#948EB8;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#948EB8`, a soft lavender                    |
 | ground       | <span style="display:inline-block;width:1.5em;height:1.5em;background:#74644C;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#74644C`, a warm brown-grey (muted)         | <span style="display:inline-block;width:1.5em;height:1.5em;background:#655F62;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#655F62`, a warm grey (muted)                |
 | ground-wash  | <span style="display:inline-block;width:1.5em;height:1.5em;background:#E0DBCF;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#E0DBCF`, a pale warm grey (the muted wash) | <span style="display:inline-block;width:1.5em;height:1.5em;background:#DCCFC3;border:1px solid #888;vertical-align:middle">&nbsp;</span> `#DCCFC3`, a pale warm beige (the muted wash) |

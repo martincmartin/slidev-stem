@@ -4,8 +4,8 @@
 .diving-board-stroke-subject-wash { stroke: var(--palette-subject-wash, #D3DCE3); }
 .diving-board-stroke-subject { stroke: var(--palette-subject, #143C6B); }
 .diving-board-stroke-muted { stroke: var(--palette-muted, #736A60); }
-.diving-board-fill-water { fill: var(--palette-water, #143C6B); }
-.diving-board-stroke-water { stroke: var(--palette-water, #143C6B); }
+.diving-board-stroke-water { stroke: var(--palette-water, #30527B); }
+.diving-board-fill-water-wash { fill: var(--palette-water-wash, #7087A0); }
 .diving-board-stroke-ground { stroke: var(--palette-ground, #736A60); }
 .diving-board-fill-ground-wash { fill: var(--palette-ground-wash, #E2DED6); }
 .diving-board-fill-ground-wash-ground-15 { fill: color-mix(in srgb, var(--palette-ground, #736A60) 15%, var(--palette-ground-wash, #E2DED6)); }
@@ -22,14 +22,14 @@
 </defs>
 <g id="diving-board-set" data-layer="set" class="diving-board-set">
 <g clip-path="url(#diving-board-pool-clip)">
-<path d="M-105 574 L1100 574 L1558 253.4 L353 253.4 Z" class="diving-board-fill-water" fill="#143C6B" fill-opacity="0.6"/>
+<path d="M-105 574 L1100 574 L1558 253.4 L353 253.4 Z" class="diving-board-fill-water-wash" fill="#7087A0"/>
 <path d="M-105 540 L353 219.4 L353 253.4 L-105 574 Z" class="diving-board-fill-ground-wash-ground-15" fill="#D1CDC4"/>
 <path d="M353 219.4 L1558 219.4 L1558 253.4 L353 253.4 Z" class="diving-board-fill-ground-wash-ground-15" fill="#D1CDC4"/>
 <g fill="none" class="diving-board-stroke-ground" stroke="#736A60" stroke-width="2" stroke-linejoin="round">
 <path d="M-105 540 L353 219.4 L353 253.4 L-105 574 Z"/>
 <path d="M353 219.4 L1558 219.4 L1558 253.4 L353 253.4 Z"/>
 </g>
-<path d="M-105 574 L353 253.4 L1558 253.4" fill="none" class="diving-board-stroke-water" stroke="#143C6B" stroke-width="2" stroke-opacity="0.7" stroke-linejoin="round"/>
+<path d="M-105 574 L353 253.4 L1558 253.4" fill="none" class="diving-board-stroke-water" stroke="#30527B" stroke-width="2" stroke-linejoin="round"/>
 <g fill="none" class="diving-board-stroke-subject-wash" stroke="#D3DCE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 <path d="M400 315 C400.9 316.5 402.6 317.5 404.3 317.5 C406 317.5 407.2 315.8 408.7 315 C410.1 314.2 411.3 312.5 413 312.5 C414.7 312.5 415.9 314.2 417.3 315 C418.8 315.8 420 317.5 421.7 317.5 C423.4 317.5 425.1 316.5 426 315"/>
 <path d="M522.5 299.2 C523.4 300.8 525.1 301.8 526.8 301.8 C528.5 301.8 529.7 300.1 531.2 299.2 C532.6 298.4 533.8 296.8 535.5 296.8 C537.2 296.8 538.4 298.4 539.8 299.2 C541.3 300.1 542.5 301.8 544.2 301.8 C545.9 301.8 547.6 300.8 548.5 299.2"/>

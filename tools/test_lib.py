@@ -235,7 +235,6 @@ def test_ledger_washes_are_their_recipes() -> None:
     muted, paper = ledger["muted"], ledger["background"]
     assert ledger["muted-wash"] == muted.blend(paper, 0.18)
     assert ledger["ground-wash"] == ledger["muted-wash"]
-    assert ledger["water"] == ledger["subject"]
 
 
 @pytest.mark.parametrize(
@@ -265,6 +264,14 @@ def test_the_hue_gates_tell_water_from_mud() -> None:
     water = next(gate for gate in lib.HUE_GATES if gate.role == "water")
     assert water.passes(lib.REFERENCE)
     assert not water.passes(lib.REFERENCE | {"water": lib.REFERENCE["second"]})
+
+
+def test_the_water_wash_must_be_stronger_than_a_face() -> None:
+    gate = next(gate for gate in lib.GATES if gate.role == "water-wash")
+    assert gate.passes(lib.REFERENCE)
+    paper = lib.REFERENCE["background"]
+    face = lib.REFERENCE["water-wash"].blend(paper, 0.18)  # a face's wash
+    assert not gate.passes(lib.REFERENCE | {"water-wash": face})
 
 
 # ---- sizes -------------------------------------------------------------------------

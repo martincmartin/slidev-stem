@@ -53,7 +53,8 @@ CSS px as shown.
 **Colour.** The art's colours, each with a job, and nothing else: the subject
 (its lines) and the subject wash (its faces); muted (context: what holds or
 acts on it) and the muted wash (the context's faces); ink (scales and fine
-detail); and, where two materials meet, water, ground and the ground wash.
+detail); and, where two materials meet, water (the edge) and the water wash
+(the water itself), ground and the ground wash.
 The jobs and the variables are in [theme.md](theme.md), "The roles" and "The
 pairs". The values below are Ledger's, as examples. The second and its wash
 say "look here": a flash, a keyword callout ("Flash" and "Leaders",
@@ -281,9 +282,11 @@ drawings read as volumes rather than wireframes.
   no face in the art overlapped another mark, so a solid face draws the same
   pixels, and a named wash can be gated and flashed like any colour (the
   [task](../tasks/2026-10-07-theme-colour-system/PLAN.md), §3.7).
-- **A substance is its line colour at 0.60–1.0, see-through:** water, sand,
-  the candle's drips. A substance may lie over another on purpose, as the water
-  clock's surface lies over its body.
+- **A substance is its line colour at 0.60–1.0, see-through:** the water
+  clock's water, sand, the candle's drips. A substance may lie over another on
+  purpose, as the water clock's surface lies over its body. Water beside
+  another material (a pool, a sea) is not a substance: it is the water wash,
+  solid ([theme.md](theme.md), "The pairs").
 
 A wash, and anything as faint, is invisible at the back row, whatever its width
 or colour:

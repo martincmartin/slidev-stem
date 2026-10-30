@@ -1,0 +1,7 @@
+ledger               water on paper 10.39  body on paper 3.47  body on panel 3.20  water line on body 3.00  subject on body 3.00  ink on body 4.09  ink at 0.5 on body 1.14  water==subject True
+after-hours          water on paper  7.45  body on paper 3.57  body on panel 3.06  water line on body 2.09  subject on body 3.13  ink on body 4.05  ink at 0.5 on body 1.29  water==subject False
+beacon               water on paper  8.69  body on paper 3.97  body on panel 3.27  water line on body 2.19  subject on body 2.93  ink on body 4.28  ink at 0.5 on body 1.30  water==subject False
+campfire             water on paper  7.48  body on paper 3.55  body on panel 3.03  water line on body 2.11  subject on body 3.15  ink on body 4.03  ink at 0.5 on body 1.29  water==subject False
+electric-terracotta  water on paper  5.60  body on paper 2.54  body on panel 2.29  water line on body 2.20  subject on body 4.18  ink on body 5.33  ink at 0.5 on body 1.21  water==subject False
+field-notes          water on paper  4.06  body on paper 2.19  body on panel 2.01  water line on body 1.85  subject on body 4.24  ink on body 6.05  ink at 0.5 on body 1.34  water==subject False
+kraft-ink            water on paper  4.09  body on paper 2.23  body on panel 1.96  water line on body 1.83  subject on body 3.82  ink on body 6.20  ink at 0.5 on body 1.43  water==subject False

@@ -17,9 +17,13 @@ The steps are those of docs/theme.md, "Making a palette":
   WASH_CHROMA, at WASH_CONTRAST on the panel.
 - second-wash: the second over the background, at the blend that gives the
   subject wash's contrast on the panel.
-- water: the second, if its hue reads as water (lib.HUE_GATES); otherwise a
-  blue (WATER_HUE, WATER_CHROMA) at the second's contrast on the panel. On
-  dark paper the subject is a pale accent, which is seldom a water colour.
+- water-wash and water start from a blue: the second, if its hue reads as
+  water (lib.HUE_GATES); otherwise a blue (WATER_HUE, WATER_CHROMA) at the
+  second's contrast on the panel. On dark paper the subject is a pale accent,
+  which is seldom a water colour. water-wash (the water itself) is the blue
+  over the background at WATER_WASH_SHARE, and water (its edge) is the blue
+  over the water wash at WATER_LINE_SHARE. The palette keeps each as a value
+  of its own, so that it can tune one without the other.
 - muted-wash, ground and ground-wash are the usual recipes (RECIPES).
 """
 
@@ -36,6 +40,10 @@ WASH_CONTRAST = 1.2
 WASH_CHROMA = 5.0
 WATER_HUE = 250.0
 WATER_CHROMA = 30.0
+# The pool on the Hairspring slide of watches, as it was first drawn: its water
+# was the blue at 0.6 over the paper, and its edge the blue at 0.7 over that.
+WATER_WASH_SHARE = 0.6
+WATER_LINE_SHARE = 0.7
 BISECTION_STEPS = 40
 TEXT_ROLES = ("background", "panel", "border", "ink", "muted", "accent", "second")
 # The roles that follow others by the usual recipe (docs/theme.md, "Making a
@@ -150,20 +158,23 @@ def derive(name: str, display_name: str, text: dict[str, Colour]) -> PaletteRule
         text["second"], text["background"], panel, lib.contrast(subject_wash, panel)
     )
     water_gate = next(gate for gate in lib.HUE_GATES if gate.role == "water")
-    water = (
-        f"var({lib.PALETTE_PREFIX}second)"
+    blue = (
+        text["second"]
         if water_gate.passes({"water": text["second"]})
         else at_contrast(
             panel, WATER_CHROMA, WATER_HUE, lib.contrast(text["second"], panel)
-        ).hex
+        )
     )
+    water_wash = blue.blend(text["background"], WATER_WASH_SHARE)
+    water = blue.blend(water_wash, WATER_LINE_SHARE)
     recipes = (
         {role: text[role].hex for role in TEXT_ROLES}
         | {
             "subject": subject.hex,
             "subject-wash": subject_wash.hex,
             "second-wash": second_wash.hex,
-            "water": water,
+            "water": water.hex,
+            "water-wash": water_wash.hex,
         }
         | RECIPES
     )
