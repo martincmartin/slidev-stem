@@ -30,6 +30,8 @@ const CHANGE: Readonly<Record<Picture, number>> = {
 };
 /** Seconds that text waits after the picture's change, as `after-watch`. */
 const AFTER = 0.15;
+/** Seconds that text takes to fade: style.css, `--text-fade`. */
+const TEXT_FADE = 0.4;
 const RAIL = { left: 630, top: 90, width: 332 } as const;
 
 /** The wind: lines that end in a curl, drawn from west to east, over and
@@ -382,6 +384,11 @@ function show(target: number, animate: boolean): void {
   const before =
     previousStep === undefined ? -1 : PICTURES.indexOf(previousStep.picture);
   const change = animate && now > before ? CHANGE[step.picture] : 0;
+  const hadScreen =
+    previousStep?.texts.some((text) => text.kind === "screen") === true;
+  const screenShows = step.texts.some((text) => text.kind === "screen");
+  // When a screen fades out, the picture waits for it before it changes.
+  const lead = change > 0 && hadScreen && !screenShows ? TEXT_FADE : 0;
   slide.classList.toggle("jump", !animate);
 
   for (const mark of marks) {
@@ -392,14 +399,14 @@ function show(target: number, animate: boolean): void {
     const entering = animate && visible && from === now && before < from;
     mark.element.classList.toggle("hidden", !visible);
     mark.element.style.transitionDelay = entering
-      ? `${String(mark.delay)}s`
+      ? `${String(lead + mark.delay)}s`
       : "0s";
     if (mark.draws) {
       if (entering) {
         mark.element.style.transition = "none";
         mark.element.style.strokeDashoffset = "1";
         mark.element.getBoundingClientRect();
-        mark.element.style.transition = `stroke-dashoffset ${String(CHANGE[mark.from])}s linear`;
+        mark.element.style.transition = `stroke-dashoffset ${String(CHANGE[mark.from])}s linear ${String(lead)}s`;
       }
       mark.element.style.strokeDashoffset = visible ? "0" : "1";
     }
@@ -421,11 +428,15 @@ function show(target: number, animate: boolean): void {
         offset: total === 0 ? index / (route.length - 1) : travelled / total,
       };
     });
-    ship.animate(frames, { duration: change * 1000, easing: "linear" });
+    ship.animate(frames, {
+      duration: change * 1000,
+      delay: lead * 1000,
+      easing: "linear",
+      fill: "backwards",
+    });
   }
   ship.classList.toggle("west", HEADING[step.picture] < 0);
 
-  const screenShows = step.texts.some((text) => text.kind === "screen");
   const screen =
     slide.querySelector<HTMLElement>(".screen-panel") ?? fail("no screen");
   screen.classList.toggle("hidden", !screenShows);
@@ -438,11 +449,11 @@ function show(target: number, animate: boolean): void {
     // text waits for the picture's change.
     const wait =
       text.kind === "screen"
-        ? previousStep?.texts.some((other) => other.kind === "screen") === true
-          ? 0.4
+        ? hadScreen
+          ? TEXT_FADE
           : 0
         : change > 0
-          ? change + AFTER
+          ? lead + change + AFTER
           : 0;
     made.style.transitionDelay =
       arriving && visible ? `${String(wait)}s` : "0s";

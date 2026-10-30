@@ -225,9 +225,11 @@ const lessig: Style = {
   subtitle: null,
   keeps: false,
   steps: [
-    { picture: "start", texts: [{ kind: "screen", html: "May 28, 1741" }] },
+    // Under the first screens, the ship waits at the bottom of the map; it
+    // sails north once the screens have faded out.
+    { picture: "south", texts: [{ kind: "screen", html: "May 28, 1741" }] },
     {
-      picture: "start",
+      picture: "south",
       texts: [{ kind: "screen", html: "Scurvy:<br>4–6 dead a day" }],
     },
     { picture: "start", texts: [] },

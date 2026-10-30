@@ -572,7 +572,9 @@ stays when the ship moves on.
 **The approach.** The slide opens with the ship at the bottom of the map
 ([click 1](evidence/round-2/wind-near/frames/labels-0.png)). At the next
 click it sails north to the islands' latitude, in 2 s, with its track behind
-it, and the first label waits until it arrives.
+it, and the first label waits until it arrives. In Lessig's style the ship waits at
+the bottom under the first two screens, and sails north when the second
+screen has faded out (`?style=lessig`).
 
 **The islands** show only at the last click, when Anson finds them. Their
 name is "Juan Fernández Islands" in both labels. At this scale Robinson
