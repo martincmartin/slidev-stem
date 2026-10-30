@@ -1,14 +1,17 @@
 // The mockup's page: one slide at Slidev's size, in one of the styles of
 // story.ts, a step at a time. In the address:
-//   ?style=rail|cards|lessig|labels&step=0&wind=bands|near|all&sea=paper&settle=1&notext=1
+//   ?style=lessig|labels&step=0&wind=bands|near|all&label=outline|card|paper
+//    &old=dim|remove&sea=paper&settle=1&notext=1
 // → or space steps forward, with the picture's motion; ← steps back at once.
 // The labels open with the ship at the bottom of the map; at the next step
 // it sails north to the islands' latitude. `wind=near` adds a gust by the
 // voyage, where no label is; `wind=all` draws the wind in the voyage's band
-// too, under the labels. `settle` shows each step at once,
-// with no motion, and `notext` hides the words: tools/shots.ts uses both.
-// `window.mock` gives it the measurements.
+// too, under the labels. `label` and `old` are in choices.ts. `settle` shows
+// each step at once, with no motion, and `notext` hides the words:
+// tools/shots.ts uses both. `window.mock` gives it the measurements.
 import "../../../../themes/house/styles/fonts.css";
+import { CHOICES } from "./choices.ts";
+import type { Choice, Chosen } from "./choices.ts";
 import { SLIDE } from "./geo.ts";
 import type { Point } from "./geo.ts";
 import { DAY, PICTURES, placesOn, STYLES } from "./story.ts";
@@ -32,7 +35,8 @@ const CHANGE: Readonly<Record<Picture, number>> = {
 const AFTER = 0.15;
 /** Seconds that text takes to fade: style.css, `--text-fade`. */
 const TEXT_FADE = 0.4;
-const RAIL = { left: 630, top: 90, width: 332 } as const;
+/** Slide px between the points where a label's box is tested for land. */
+const LAND_TEST = 4;
 
 /** The wind: lines that end in a curl, drawn from west to east, over and
  *  over. Each is [x, y, curls up]. "bands" keeps the voyage's band clear;
@@ -47,7 +51,7 @@ const BANDS: readonly Gust[] = [
   [200, 512, false],
   [470, 512, false],
 ];
-const WIND: Readonly<Record<string, readonly Gust[]>> = {
+const WIND: Readonly<Record<Chosen<"wind">, readonly Gust[]>> = {
   bands: BANDS,
   near: [...BANDS, [250, 268, true]],
   all: [
@@ -67,12 +71,24 @@ const style: Style =
   fail("no styles");
 const places = placesOn(style.view);
 const settle = params.get("settle") === "1";
-const windName = params.get("wind") ?? "bands";
-const gusts = WIND[windName] ?? BANDS;
 
 function fail(message: string): never {
   throw new Error(message);
 }
+
+/** The name that the address gives for a choice, or its default. */
+function chosen<C extends Choice>(choice: C): Chosen<C> {
+  const names: readonly Chosen<C>[] = CHOICES[choice];
+  return (
+    names.find((name) => name === params.get(choice)) ??
+    names[0] ??
+    fail(`no ${choice}`)
+  );
+}
+
+const gusts = WIND[chosen("wind")];
+/** A step's labels stay at the next step, dimmed, unless `old=remove`. */
+const keeps = style.keeps && chosen("old") === "dim";
 
 function element<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -112,6 +128,8 @@ const slide =
   document.querySelector<HTMLElement>("#slide") ?? fail("no #slide");
 slide.classList.toggle("sea-paper", params.get("sea") === "paper");
 slide.classList.toggle("no-text", params.get("notext") === "1");
+// how the labels stand out: style.css, "D: a label"
+slide.classList.add(`labels-${chosen("label")}`);
 // settled: the wind stands, so that two pictures of a step differ only in the text
 slide.classList.toggle("settle", settle);
 
@@ -339,27 +357,13 @@ interface Shown {
 const shown: Shown[] = [];
 
 function drawText(): void {
-  if (style.title !== null) {
+  if (style.title !== null)
     element("h1", "outlined", slide).textContent = style.title;
-    if (style.subtitle !== null)
-      element("p", "subtitle outlined", slide).textContent = style.subtitle;
-  }
-  const rail = element("div", "rail-column", slide);
-  Object.assign(rail.style, {
-    left: `${String(RAIL.left)}px`,
-    top: `${String(RAIL.top)}px`,
-    width: `${String(RAIL.width)}px`,
-  });
   const screen = element("div", "screen-panel", slide);
   style.steps.forEach((step, index) => {
     for (const text of step.texts) {
-      const parent =
-        text.kind === "rail" ? rail : text.kind === "screen" ? screen : slide;
-      const made = element(
-        "div",
-        `text ${text.kind}${text.small === true ? " small" : ""} hidden`,
-        parent,
-      );
+      const parent = text.kind === "screen" ? screen : slide;
+      const made = element("div", `text ${text.kind} hidden`, parent);
       // A screen's words are one block, centred on the slide.
       made.innerHTML =
         text.kind === "screen" ? `<div>${text.html}</div>` : text.html;
@@ -368,11 +372,24 @@ function drawText(): void {
           left: `${String(text.at[0])}px`,
           top: `${String(text.at[1])}px`,
         });
-      if (text.width !== undefined)
-        made.style.width = `${String(text.width)}px`;
       shown.push({ text, step: index, element: made });
     }
   });
+}
+
+/** Whether no land is under a label's box. With `label=paper`, the words of
+ *  such a label are in the paper, with no outline; a label over the land,
+ *  or partly over it, keeps the ink and the outline. Call it once the fonts
+ *  have loaded, so that the box has its size. */
+function overSea(made: HTMLElement, land: readonly SVGGeometryElement[]) {
+  const { offsetLeft: left, offsetTop: top } = made;
+  const right = left + made.offsetWidth;
+  const bottom = top + made.offsetHeight;
+  for (let x = left; x <= right; x += LAND_TEST)
+    for (let y = top; y <= bottom; y += LAND_TEST)
+      if (land.some((path) => path.isPointInFill(new DOMPoint(x, y))))
+        return false;
+  return true;
 }
 
 let current: number | null = null;
@@ -441,9 +458,9 @@ function show(target: number, animate: boolean): void {
     slide.querySelector<HTMLElement>(".screen-panel") ?? fail("no screen");
   screen.classList.toggle("hidden", !screenShows);
   for (const { text, step: index, element: made } of shown) {
-    const visible = style.keeps ? index <= target : index === target;
+    const visible = keeps ? index <= target : index === target;
     made.classList.toggle("hidden", !visible);
-    made.classList.toggle("dimmed", style.keeps && index < target);
+    made.classList.toggle("dimmed", keeps && index < target);
     const arriving = animate && index === target;
     // A screen's words wait for the last screen's words to fade out; other
     // text waits for the picture's change.
@@ -487,6 +504,8 @@ interface TextMeasure {
   readonly words: number;
   readonly fontSize: number;
   readonly dimmed: boolean;
+  /** a label with no land under it (overSea) */
+  readonly onSea: boolean;
   /** slide px: left, top, width, height */
   readonly box: readonly [number, number, number, number];
   /** slide px from the place that the text is about to its box; null: none */
@@ -528,10 +547,10 @@ function measure(): {
           );
     texts.push({
       kind: text.kind,
-      words: (made.textContent ?? "").split(/\s+/).filter((word) => word !== "")
-        .length,
+      words: made.innerText.split(/\s+/).filter((word) => word !== "").length,
       fontSize: Number.parseFloat(getComputedStyle(made).fontSize),
       dimmed: made.classList.contains("dimmed"),
+      onSea: made.classList.contains("on-sea"),
       box,
       travel,
     });
@@ -577,16 +596,26 @@ async function start(): Promise<void> {
       location.search = params.toString();
     });
   }
-  // The wind's placement: the same step, with the other wind.
-  const chooseWind = document.querySelector<HTMLSelectElement>("#wind");
-  if (chooseWind !== null) {
-    for (const name of Object.keys(WIND))
-      chooseWind.add(new Option(name, name, false, name === windName));
-    chooseWind.addEventListener("change", () => {
-      params.set("wind", chooseWind.value);
+  // Each choice's dropdown: the same step, with the other name. The labels'
+  // choices do nothing in a style with no labels.
+  const offer = <C extends Choice>(choice: C, applies: boolean): void => {
+    const select = document.querySelector<HTMLSelectElement>(`#${choice}`);
+    if (select === null) return;
+    const current = chosen(choice);
+    for (const name of CHOICES[choice])
+      select.add(new Option(name, name, false, name === current));
+    select.disabled = !applies;
+    select.addEventListener("change", () => {
+      params.set(choice, select.value);
       location.search = params.toString();
     });
-  }
+  };
+  const hasLabels = style.steps.some((each) =>
+    each.texts.some((text) => text.kind === "label"),
+  );
+  offer("wind", true);
+  offer("label", hasLabels);
+  offer("old", hasLabels);
   const step = (by: number): void => {
     const target = Math.min(
       style.steps.length - 1,
@@ -604,6 +633,10 @@ async function start(): Promise<void> {
   window.addEventListener("resize", fit);
   fit();
   await document.fonts.ready;
+  const land = [...mapLayer.querySelectorAll<SVGGeometryElement>(".land")];
+  for (const { text, element: made } of shown)
+    if (text.kind === "label")
+      made.classList.toggle("on-sea", overSea(made, land));
   // the hidden marks and text get their style before the first step shows them
   slide.getBoundingClientRect();
   // At the first step, the ship sails in, as it would when the slide comes in.

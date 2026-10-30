@@ -1,10 +1,10 @@
-// Anson's search for Juan Fernández, May–June 1741, told four ways: the
-// same picture and the same facts, with the words in a reading rail, in
-// cards, on Lessig-style screens, or as labels on the map. Each style is data
-// here; main.ts draws any of them. The facts are from Richard Walter's
-// account (PLAN.md, "The facts"). Round 1 compared the four styles; round 2
-// works on the labels (PLAN.md, section 12).
-import { ANSON, ANSON_RAIL, project, SLIDE } from "./geo.ts";
+// Anson's search for Juan Fernández, May–June 1741, told two ways: the same
+// picture and the same facts, with the words on Lessig-style screens, or as
+// labels on the map. Each style is data here; main.ts draws either. The facts
+// are from Richard Walter's account (PLAN.md, "The facts"). Round 1 compared
+// four styles; round 2 works on the labels (PLAN.md, section 12); round 3
+// retired the reading rail and the cards (section 13).
+import { ANSON, project, SLIDE } from "./geo.ts";
 import type { LonLat, MapView, Point } from "./geo.ts";
 
 /** What the picture shows. Each state adds to the one before it. */
@@ -67,21 +67,17 @@ export function placesOn(view: MapView): Places {
   };
 }
 
-/** The kinds of text. A rail paragraph follows the one before it; the others
- *  are placed. A screen fills the slide (Lessig). */
-export type Kind = "rail" | "card" | "label" | "screen";
+/** The kinds of text. A label is placed; a screen fills the slide (Lessig). */
+export type Kind = "label" | "screen";
 
 export interface Text {
   readonly kind: Kind;
-  /** HTML: <b> leads, <em> is the slide's one accent. */
+  /** HTML: <em> is the slide's one accent. */
   readonly html: string;
-  /** the top left corner, in slide px; not for a rail paragraph or a screen */
+  /** the top left corner of a label's words, in slide px */
   readonly at?: Point;
-  readonly width?: number;
   /** the place that the text is about: how far the eye travels to it */
   readonly about?: Point;
-  /** a smaller label: a name, not a sentence */
-  readonly small?: boolean;
 }
 
 export interface Step {
@@ -93,8 +89,8 @@ export interface Style {
   readonly name: string;
   readonly view: MapView;
   readonly title: string | null;
-  readonly subtitle: string | null;
-  /** Text stays, dimmed, at later steps. Lessig's screens replace it. */
+  /** Text can stay at later steps: the `old` choice (choices.ts) says
+   *  whether it does, dimmed. Lessig's screens always replace it. */
   readonly keeps: boolean;
   readonly steps: readonly Step[];
 }
@@ -108,122 +104,10 @@ const westMiddle = ({ turn, found }: Places): Point => [
   found[1],
 ];
 
-// Round 1's three styles, on round 1's view (geo.ts, ANSON_RAIL).
-const railPlaces = placesOn(ANSON_RAIL);
-
-const rail: Style = {
-  name: "rail",
-  view: ANSON_RAIL,
-  title: TITLE,
-  subtitle: null,
-  keeps: true,
-  steps: [
-    {
-      picture: "start",
-      texts: [
-        {
-          kind: "rail",
-          html: "<b>May 28, 1741.</b> Scurvy kills 4–6 of Anson's men a day. He reaches the island's latitude, but can't measure longitude. East or west?",
-          about: railPlaces.start,
-        },
-      ],
-    },
-    {
-      picture: "east",
-      texts: [
-        {
-          kind: "rail",
-          html: "<b>East,</b> with the wind behind him: 340 miles in 2 days. <b>May 30:</b> Chile, an enemy coast. Turn back.",
-          about: railPlaces.turn,
-        },
-      ],
-    },
-    {
-      picture: "west",
-      texts: [
-        {
-          kind: "rail",
-          html: "<b>West,</b> into the wind and calms: the same 340 miles take 9 days.",
-          about: westMiddle(railPlaces),
-        },
-      ],
-    },
-    {
-      picture: "found",
-      texts: [
-        {
-          kind: "rail",
-          html: "<b>June 9:</b> the island, hours west of where he turned. The detour cost <em>70–80 men</em>.",
-          about: railPlaces.island,
-        },
-      ],
-    },
-  ],
-};
-
-const cards: Style = {
-  name: "cards",
-  view: ANSON_RAIL,
-  title: TITLE,
-  subtitle: null,
-  keeps: true,
-  steps: [
-    {
-      picture: "start",
-      texts: [
-        {
-          kind: "card",
-          html: "<b>May 28, 1741.</b> Scurvy kills 4–6 men a day. Anson reaches the island's latitude. East or west?",
-          at: [36, 92],
-          width: 330,
-          about: railPlaces.start,
-        },
-      ],
-    },
-    {
-      picture: "east",
-      texts: [
-        {
-          kind: "card",
-          html: "<b>East,</b> with the wind behind: 2 days. <b>May 30:</b> Chile, an enemy coast. Turn back.",
-          at: [626, 196],
-          width: 320,
-          about: railPlaces.turn,
-        },
-      ],
-    },
-    {
-      picture: "west",
-      texts: [
-        {
-          kind: "card",
-          html: "<b>West,</b> into the wind and calms: the same 340 miles take 9 days.",
-          at: [150, 350],
-          width: 360,
-          about: westMiddle(railPlaces),
-        },
-      ],
-    },
-    {
-      picture: "found",
-      texts: [
-        {
-          kind: "card",
-          html: "<b>June 9:</b> the island, hours west of where he turned. The detour cost <em>70–80 men</em>.",
-          at: [626, 352],
-          width: 320,
-          about: railPlaces.island,
-        },
-      ],
-    },
-  ],
-};
-
 const lessig: Style = {
   name: "lessig",
-  view: ANSON_RAIL,
+  view: ANSON,
   title: null,
-  subtitle: null,
   keeps: false,
   steps: [
     // Under the first screens, the ship waits at the bottom of the map; it
@@ -250,19 +134,29 @@ const lessig: Style = {
   ],
 };
 
-// The labels, on their own view (geo.ts, ANSON): the islands show only when
-// Anson finds them, so the first label names them.
+// The islands show only when Anson finds them, so the first label names them.
 const labelPlaces = placesOn(ANSON);
 
 const labels: Style = {
   name: "labels",
   view: ANSON,
   title: TITLE,
-  subtitle: "Scurvy kills 4–6 of his men a day",
   keeps: true,
   steps: [
-    // the slide opens with the ship at the bottom, before it sails north
-    { picture: "south", texts: [] },
+    // The slide opens with the ship at the bottom, before it sails north,
+    // and the stakes. They are about the whole crew, not one place, so they
+    // are on the land, above the takeaway: the slide opens with what scurvy
+    // costs a day, and ends with what the detour cost.
+    {
+      picture: "south",
+      texts: [
+        {
+          kind: "label",
+          html: "Scurvy kills 4–6<br>of his men a day",
+          at: [712, 120],
+        },
+      ],
+    },
     {
       picture: "start",
       texts: [
@@ -280,7 +174,8 @@ const labels: Style = {
         {
           kind: "label",
           html: "Wind from the west",
-          at: [16, 112],
+          // 18 px above the next label: room for two cards (`label=card`)
+          at: [16, 104],
           about: [260, 128],
         },
         {
@@ -314,18 +209,14 @@ const labels: Style = {
     {
       picture: "found",
       texts: [
+        // one label, so one card (`label=card`): the islands' name, smaller,
+        // and the day that Anson found them
         {
           kind: "label",
-          html: "Juan Fernández<br>Islands",
-          at: [16, 314],
+          html: '<div class="name">Juan Fernández<br>Islands</div>June 9: found',
+          // a card's top clears Alejandro Selkirk Island, which ends at y 315
+          at: [16, 324],
           about: labelPlaces.island,
-          small: true,
-        },
-        {
-          kind: "label",
-          html: "June 9: found",
-          at: [16, 368],
-          about: labelPlaces.found,
         },
         // the takeaway: about the whole story, not one place
         {
@@ -338,4 +229,4 @@ const labels: Style = {
   ],
 };
 
-export const STYLES: readonly Style[] = [rail, cards, lessig, labels];
+export const STYLES: readonly Style[] = [lessig, labels];

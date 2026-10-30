@@ -7,13 +7,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import {
-  ANSON,
-  ANSON_RAIL,
-  NEW_ENGLAND,
-  project,
-  SLIDE,
-} from "../mockup/geo.ts";
+import { ANSON, NEW_ENGLAND, project, SLIDE } from "../mockup/geo.ts";
 import type { Box, LonLat, MapView, Point } from "../mockup/geo.ts";
 
 /** Slide px outside the slide where the land is cut: the cut's edges do not
@@ -167,7 +161,7 @@ async function main(): Promise<void> {
   const land = rings(
     JSON.parse(await readFile(`${directory}/ne_10m_land.geojson`, "utf8")),
   );
-  for (const view of [ANSON, ANSON_RAIL, NEW_ENGLAND]) {
+  for (const view of [ANSON, NEW_ENGLAND]) {
     const { islands: shown } = view;
     const islands =
       shown === undefined ? [] : land.filter((ring) => inside(ring, shown.box));

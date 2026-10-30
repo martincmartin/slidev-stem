@@ -1,0 +1,174 @@
+[
+ {
+  "style": "labels",
+  "step": 0,
+  "picture": "south",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 8,
+    "fontSize": 24,
+    "dimmed": false,
+    "onSea": false,
+    "box": [
+     712,
+     120,
+     179.546875,
+     60
+    ],
+    "travel": null
+   }
+  ],
+  "coverage": {
+   "sea": 363735,
+   "seaCovered": 13657,
+   "covered": 18943
+  }
+ },
+ {
+  "style": "labels",
+  "step": 1,
+  "picture": "start",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 12,
+    "fontSize": 24,
+    "dimmed": false,
+    "onSea": true,
+    "box": [
+     16,
+     152,
+     315.515625,
+     90
+    ],
+    "travel": 58
+   }
+  ],
+  "coverage": {
+   "sea": 363735,
+   "seaCovered": 27803,
+   "covered": 30222
+  }
+ },
+ {
+  "style": "labels",
+  "step": 2,
+  "picture": "east",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 4,
+    "fontSize": 24,
+    "dimmed": false,
+    "onSea": true,
+    "box": [
+     16,
+     104,
+     217.5,
+     30
+    ],
+    "travel": 26.5
+   },
+   {
+    "kind": "label",
+    "words": 5,
+    "fontSize": 24,
+    "dimmed": false,
+    "onSea": true,
+    "box": [
+     420,
+     228,
+     137.453125,
+     60
+    ],
+    "travel": 12
+   },
+   {
+    "kind": "label",
+    "words": 6,
+    "fontSize": 24,
+    "dimmed": false,
+    "onSea": false,
+    "box": [
+     696,
+     262,
+     173.328125,
+     60
+    ],
+    "travel": 64.51014209197069
+   }
+  ],
+  "coverage": {
+   "sea": 363735,
+   "seaCovered": 23446,
+   "covered": 28635
+  }
+ },
+ {
+  "style": "labels",
+  "step": 3,
+  "picture": "west",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 6,
+    "fontSize": 24,
+    "dimmed": false,
+    "onSea": true,
+    "box": [
+     340,
+     360,
+     241.40625,
+     60
+    ],
+    "travel": 18.73194802154842
+   }
+  ],
+  "coverage": {
+   "sea": 363735,
+   "seaCovered": 21197,
+   "covered": 23616
+  }
+ },
+ {
+  "style": "labels",
+  "step": 4,
+  "picture": "found",
+  "texts": [
+   {
+    "kind": "label",
+    "words": 6,
+    "fontSize": 24,
+    "dimmed": false,
+    "onSea": true,
+    "box": [
+     16,
+     324,
+     152.53125,
+     84
+    ],
+    "travel": 65.98793243133551
+   },
+   {
+    "kind": "label",
+    "words": 5,
+    "fontSize": 24,
+    "dimmed": false,
+    "onSea": false,
+    "box": [
+     712,
+     400,
+     199.8125,
+     76.25
+    ],
+    "travel": null
+   }
+  ],
+  "coverage": {
+   "sea": 363735,
+   "seaCovered": 20721,
+   "covered": 26889
+  }
+ }
+]

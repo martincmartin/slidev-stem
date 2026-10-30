@@ -60,14 +60,6 @@ export const ANSON: MapView = {
   islands: { box: JUAN_FERNANDEZ, enlarge: 2 },
 };
 
-/** Round 1's view, for the rail, the cards and Lessig: the island at x = 150
- *  and the coast at x ≈ 600, so that the land holds a 332 px rail. */
-export const ANSON_RAIL: MapView = {
-  ...ANSON,
-  name: "anson-rail",
-  at: [150, 300],
-};
-
 /** New England, with Somerville (the venue) at the slide's centre: one
  *  degree of latitude, 60 nautical miles, is 300 px. */
 export const NEW_ENGLAND: MapView = {

@@ -90,3 +90,23 @@ Later requests in round 2, verbatim, in order:
 
 > The title of the slide needs something more. "Anson's search, 1741" begs
 > the question "who or what is Anson, what are they searching for?"
+
+## Round 3, 2026-10-30
+
+Your messages, verbatim, in order:
+
+> Before adding that, let's retire the right rail and cards options. We might
+> want to turn the labels into cards, but with the same text as current
+> labels, not the expanded text of the cards. So please make outline vs card
+> a dropdown. By the end onf the Anson slide, there's too much text on the
+> screen, even though much of it is dimmed. So let's have another drop down
+> for dim vs remove.
+>
+> Another way around the outlines is to draw text in a color that actually
+> contrasts again the water. Can we have paper color text? Is that the
+> lightest color in our palette?
+
+> You can make June 9: found and Juan Islands one card.
+
+> "Scurvy kills 4-6" should not be a subhead, because it's not summarizing
+> what the slide is about. Instead, it should be the first label.

@@ -6,7 +6,10 @@ Anson's search for Juan Fernández, in four styles, with the same map and the
 same facts ([mockup/](mockup/)). Round 1 compared the styles; its pictures
 and measurements are in [evidence/round-1/](evidence/round-1/). Round 2
 works on the labels, from your feedback (section 12); its pictures are in
-[evidence/round-2/](evidence/round-2/). Section 11 gives the commands.
+[evidence/round-2/](evidence/round-2/). Round 3 retired the rail and the
+cards, and compares three ways for a label to stand out and two for old
+labels (section 13); its pictures are in [evidence/round-3/](evidence/round-3/).
+Section 11 gives the commands.
 
 **The question.** Part 2 has more text than Part 1. Which visual language
 carries it: a reading rail on the right (A), cards over the animation after
@@ -345,7 +348,9 @@ A draft for `docs/slide-patterns.md`, when you agree:
    picture, with the paper's outline; a name at 20 px.
 3. **Labels stay, and dim** when the next click adds one. Remove a label when
    its room is needed, or when the picture no longer agrees with it.
-4. **The title names the story; the subtitle gives the stakes**, in one line.
+4. **The title names the story.** A subtitle, if any, sums up what the
+   slide is about. The stakes are not a summary: they are the first label
+   (round 3).
 5. **The takeaway** is one line on the paper beside the picture (blank land,
    or a margin), with its number in the accent.
 6. **A fact with no place becomes a picture.** A number becomes a reach or a
@@ -492,6 +497,9 @@ read summaries of the three studies, not their full text.
   pennant in the second) and the prize's reaches. Each needs a role by
   [`docs/theme.md`](../../../docs/theme.md) before it goes in the talk.
 - **Units**: statute miles throughout, as the mockup does.
+- **How a label stands out** (section 13): the paper's outline, a card, or
+  paper-colored words on the sea.
+- **Old labels**: dim, or remove.
 
 Decided: the sea is filled (round 1's unfilled sea made the land and the sea
 hard to tell apart), and the islands show only when Anson finds them.
@@ -513,13 +521,25 @@ for wind in bands near all; do
 done
 ```
 
+# round 3's pictures: the labels, each backing and each way with old labels
+
+for label in outline card paper; do for old in dim remove; do
+node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
+tasks/2026-10-30-part-2-visual-language/evidence/round-3/$label-$old \
+--wind near --label $label --old $old --style labels
+done; done
+
+```
+
 Round 1's pictures came from the same commands before round 2 changed the
 mockup: `shots.ts URL evidence/round-1/sea-wash` and `--sea paper`, every
-style. The mockup now draws round 2's picture for every style.
+style. Round 2's came before round 3 changed it. Round 3 removed the rail and
+the cards; the mockup at commit 8703a9a still draws them.
 
-In the mockup: `?style=rail|cards|lessig|labels`, `&wind=bands|near|all`,
-`&sea=paper`; the bar under the slide has a dropdown for the style and one
-for the wind. → or space steps forward with the motion, ← steps back at
+In the mockup: `?style=lessig|labels`, and the choices of
+[mockup/choices.ts](mockup/choices.ts): `&wind=bands|near|all`,
+`&label=outline|card|paper`, `&old=dim|remove`; also `&sea=paper`. The bar
+under the slide has a dropdown for the style and for each choice. → or space steps forward with the motion, ← steps back at
 once. Step 0 plays the ship's approach as the page loads.
 
 ## 12. Round 2: the labels, from your feedback
@@ -599,12 +619,12 @@ both open. The candidates, ranked, with their widths at 37 px on the
 
 1. "Commodore Anson Hunts for an Island, 1741" (794 px, chosen). "Commodore"
    says that he commands navy ships, and "an island" what he looks for. It
-   keeps the name that the speaker says, so the subtitle's "his men" are
-   Anson's.
+   keeps the name that the speaker says, so the first label's "his men"
+   are Anson's.
 2. "Commodore Anson's Search for an Island, 1741" (831 px): the same
    answers, longer and flatter.
 3. "A Dying Crew Hunts for an Island, 1741" (693 px): the most vivid and
-   the shortest, but it drops the name, and the subtitle's "his" then refers
+   the shortest, but it drops the name, and the first label's "his" then refers
    to no one.
 4. "Anson's Search for Juan Fernández, 1741" (718 px): still no "who", and
    the audience does not know the islands' name; the first label gives it.
@@ -619,3 +639,80 @@ Islands" and "June 9: found" west of the islands.
 mockup to see it play. The ship and the gusts are not yet checked against
 [`docs/legibility.md`](../../../docs/legibility.md). The marks' colors are
 still the mockup's guesses (section 10).
+
+## 13. Round 3: how labels stand out, and what old labels do
+
+Your messages are in [instructions.md](instructions.md), "Round 3". The rail
+(A) and the cards (B) are retired: the style dropdown has Lessig and the
+labels. Lessig moved to the labels' map; round 1's map was shifted west only
+to leave room for the rail. Two new dropdowns change the labels:
+
+- **labels**: `outline` (the paper's outline, as before), `card` (each label
+  on a card in the panel and the border, with the same words), or `paper`
+  (words in the paper, with no outline, where only the sea is under a label;
+  a label over the land keeps the ink and the outline). The mockup tests each
+  label's box against the land's path, so the data says nothing about it.
+- **old labels**: `dim` (as before) or `remove`: a click's labels leave as
+  the ship sets off on the next one.
+
+**Changes to the labels.** "Scurvy kills 4–6 of his men a day" is no longer
+the subtitle: it does not sum up the slide. It is the first click's label,
+on the land at the right, above the takeaway: the slide opens with what
+scurvy costs a day, and ends with what the detour cost. "Juan Fernández
+Islands" and "June 9: found" are one label, so one card. "Wind from the
+west" moved up 8 px and the islands' label down 10 px, so that cards clear
+the next label and Alejandro Selkirk Island.
+
+**The last click, measured** (each `evidence/round-3/*/measurements.json`;
+words now count across a line break, which round 2's count joined):
+
+| Labels  | Old    | Labels | Dimmed | Words | Sea under text |
+| ------- | ------ | -----: | -----: | ----: | -------------: |
+| outline | dim    |      8 |      6 |    52 |           14 % |
+| outline | remove |      2 |      0 |    11 |            6 % |
+| card    | dim    |      8 |      6 |    52 |           29 % |
+| card    | remove |      2 |      0 |    11 |            8 % |
+| paper   | dim    |      8 |      6 |    52 |            8 % |
+| paper   | remove |      2 |      0 |    11 |            5 % |
+
+- **Remove** leaves 11 words at the last click, against 52. The dots still
+  tell the story: 2 long steps east, 9 short ones back. A viewer who looks
+  away loses the words of the earlier clicks.
+- **Cards** cover twice the sea of outlines. A dimmed card keeps its pale
+  fill, so dimming hardly clears the screen.
+- **Paper** covers the least, and looks the least like stickers.
+
+**Paper on the water.** The paper is the lightest color in Ledger
+(<span style="display:inline-block;width:1.5em;height:1.5em;background:#FAF7F0;border:1px solid #888;vertical-align:middle">&nbsp;</span>
+#FAF7F0, a warm off-white). But the water's wash
+(<span style="display:inline-block;width:1.5em;height:1.5em;background:#7087A0;border:1px solid #888;vertical-align:middle">&nbsp;</span>
+#7087A0, a dusty mid blue) is a mid-tone, so no text color contrasts
+strongly with it. For any color between them, its contrast with the paper
+times its contrast with the ink is the ink's on the paper:
+$3.47 \times 4.09 = 14.18$. Measured with `tools/lib.py` (`contrast`,
+`max_flare`):
+
+| Words on                         | Contrast | Fmax  |
+| -------------------------------- | -------: | ----: |
+| ink on the paper (the outline)   |  14.18:1 | 0.300 |
+| ink on the water, no outline     |   4.09:1 | 0.038 |
+| paper on the water               |   3.47:1 | 0.066 |
+| dimmed ink on the paper          |   3.04:1 | 0.007 |
+| dimmed paper on the water        |   1.99:1 | 0.000 |
+
+- Paper words at 24 px semibold are large text, whose floor is 3:1, so they
+  pass with 0.47 to spare; `second`'s gate keeps 3.5:1 for large text.
+  Dimmed paper words are under the floor even with no room light.
+- The water cannot get darker for the paper's sake: the coast (the subject)
+  is 3.0:1 on it, at the floor that
+  [`docs/theme.md`](../../../docs/theme.md), "The pairs", sets for a line on
+  the water. At most, paper on the water is 3.47:1 while the coast holds.
+- In the other house palettes, paper on the water's wash is 2.19:1 to
+  3.97:1. Three light palettes (Electric Terracotta, Field Notes, Kraft Ink)
+  are under 3:1. Every palette must pass every gate, so paper words on the
+  water would need a new gate, which those three fail.
+
+**Limits.** Chromium only. The new styles are checked in settled frames and
+three frames in motion.
+
+```

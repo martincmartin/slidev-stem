@@ -2,9 +2,10 @@
 // in Chromium. In watches/, with the mockup's server running
 // (mockup/vite.config.ts):
 //   node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ OUT_DIR \
-//     [--sea wash|paper] [--wind bands|near|all] [--style NAME]...
-// With --sea paper, the sea is not filled; --wind is the mockup's `wind`;
-// each --style shoots one style (default: all). It writes
+//     [--sea wash|paper] [--wind NAME] [--label NAME] [--old NAME] [--style NAME]...
+// With --sea paper, the sea is not filled; --wind, --label and --old are the
+// mockup's choices (mockup/choices.ts); each --style shoots one style
+// (default: all). It writes
 // OUT_DIR/frames/<style>-<step>.png, three frames of the labels in motion
 // (frames/labels-motion-<n>.png), OUT_DIR/measurements.json, and two sheets:
 // every step of every style, with the motion (sheet.png), and each style's
@@ -14,8 +15,10 @@ import { join } from "node:path";
 import { parseArgs } from "node:util";
 import { chromium } from "playwright-chromium";
 import type { Page } from "playwright-chromium";
+import { CHOICES } from "../mockup/choices.ts";
+import { STYLES as STORY_STYLES } from "../mockup/story.ts";
 
-const STYLES = ["rail", "cards", "lessig", "labels"] as const;
+const STYLES = STORY_STYLES.map((style) => style.name);
 /** CSS px: the slide, and the mockup's bar under it. */
 const VIEWPORT = { width: 980, height: 552 + 36 };
 const SCALE = 1;
@@ -107,11 +110,15 @@ async function main(): Promise<void> {
     allowPositionals: true,
     options: {
       sea: { type: "string", default: "wash" },
-      wind: { type: "string", default: "bands" },
+      wind: { type: "string", default: CHOICES.wind[0] },
+      label: { type: "string", default: CHOICES.label[0] },
+      old: { type: "string", default: CHOICES.old[0] },
       style: { type: "string", multiple: true },
     },
   });
   const [url, out] = positionals;
+  const among = (names: readonly string[], name: string) =>
+    names.includes(name);
   const styles = STYLES.filter(
     (style) => values.style === undefined || values.style.includes(style),
   );
@@ -120,16 +127,24 @@ async function main(): Promise<void> {
     url === undefined ||
     out === undefined ||
     !["wash", "paper"].includes(values.sea) ||
-    !["bands", "near", "all"].includes(values.wind) ||
+    !among(CHOICES.wind, values.wind) ||
+    !among(CHOICES.label, values.label) ||
+    !among(CHOICES.old, values.old) ||
     styles.length !== (values.style?.length ?? STYLES.length)
   ) {
+    const names = (choice: readonly string[]) => choice.join("|");
     console.error(
-      "usage: node tools/shots.ts URL OUT_DIR [--sea wash|paper] [--wind bands|near|all] [--style rail|cards|lessig|labels]...",
+      `usage: node tools/shots.ts URL OUT_DIR [--sea wash|paper] [--wind ${names(CHOICES.wind)}] [--label ${names(CHOICES.label)}] [--old ${names(CHOICES.old)}] [--style ${names(STYLES)}]...`,
     );
     process.exitCode = 2;
     return;
   }
-  const query = `sea=${values.sea}&wind=${values.wind}`;
+  const query = new URLSearchParams({
+    sea: values.sea,
+    wind: values.wind,
+    label: values.label,
+    old: values.old,
+  }).toString();
   await mkdir(join(out, "frames"), { recursive: true });
   const browser = await chromium.launch();
   try {
