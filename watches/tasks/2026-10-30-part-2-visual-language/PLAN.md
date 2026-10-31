@@ -15,7 +15,10 @@ Round 4 adds the Cape Noir slide before the Anson slide, and a globe that
 the camera zooms and turns, on a canvas (section 14); its pictures and
 speeds are in [evidence/round-4/](evidence/round-4/). Round 5 adds the
 Scilly slide after the Anson slide (section 15); its pictures and speeds are
-in [evidence/round-5/](evidence/round-5/). Section 11 gives the commands.
+in [evidence/round-5/](evidence/round-5/). Round 6 cuts words, keeps some
+labels, dimmed, to the end of their slide, and gives each slide a punchline
+in big type (section 16); its pictures are in [evidence/round-6/](evidence/round-6/). Section 11 gives
+the commands.
 
 **The question.** Part 2 has more text than Part 1. Which visual language
 carries it: a reading rail on the right (A), cards over the animation after
@@ -44,9 +47,10 @@ and the Anson slide must show why the westerlies made the trip back slow.
 - **The westerlies, shown** (the mockup's pictures): gusts, lines that end
   in a curl, draw themselves from west to east over the sea, and a dot marks
   each day at sea. Going east, the 2 days are 2 long steps. Coming back, the
-  9 days are 9 short steps, and the animation takes 4.5 times as long. Labels
-  name the cause: "2 days east, wind behind" and "9 days back: headwinds and
-  calms". Round 1 drew arrows; round 2 changed them (section 12).
+  9 days are 9 short steps, and the animation takes 4.5 times as long. The
+  gusts show the cause, so the labels give the intervals: "2 days east" and
+  "9 days back" (section 16). Round 1 drew arrows; round
+  2 changed them (section 12).
 - **What is new against the background report**
   ([`docs/text-display-deep-research-report.md`](../../../docs/text-display-deep-research-report.md)).
   The report ranks the reading rail first for text in general, and
@@ -366,19 +370,25 @@ A draft for `docs/slide-patterns.md`, when you agree:
 
 1. **The picture tells the story.** For each fact, find its place first. A
    fact with a place is a label at that place.
-2. **A label** has 8 words or fewer. An event's label starts with its date
-   ("May 30: Chile, an enemy coast"). 24 px semibold ink; over a filled
-   picture, with the paper's outline; a name at 20 px.
+2. **A label** has 8 words or fewer. It gives a time only where the time
+   carries the story: an interval where the story is how long ("2 days
+   east"), a time of day where it is when ("2 a.m.: land, 2 miles
+   ahead!"), not a date for its own sake (section 16). It says nothing that
+   the picture shows: no wind in words beside the gusts, and no "found"
+   where the islands appear. 24 px semibold ink;
+   over a filled picture, with the paper's outline; a name at 20 px.
 3. **A click's labels leave at the next click**; the picture's marks (the
    track, the day dots) stay and carry the story. Kept and dimmed, the
    labels were too busy by the last click (section 13). This is now the
    house rule (`stem/AGENTS.md`, "Writing a talk"); Part 1 of the watch
    talk, told by the watch with few words, is the exception that dims.
+   Round 6 tries that exception on the Anson slide (section 16).
 4. **The title names the story.** A subtitle, if any, sums up what the
    slide is about. The stakes are not a summary: they are the first label
    (round 3).
-5. **The takeaway** is one line on the paper beside the picture (blank land,
-   or a margin), with its number in the accent.
+5. **The punchline** is the slide's last click, in a screen's big type,
+   with its number in the accent. What it is on is to be decided (section
+   16). Round 5's takeaway was one line on the paper beside the picture.
 6. **A fact with no place becomes a picture.** A number becomes a reach or a
    row of days. A quote becomes a document: the words are the picture, and
    each part of it gets a drawing.
@@ -405,13 +415,21 @@ the labels say. Each is a proposal, to sketch before it is built.
 
 1. **Commodore Anson Rounds Cape Horn, 1741** (decided in round 4, section
    14, in place of a general slide about latitude and longitude). The whole
-   globe, and the camera zooms to Cape Noir. Click: the dashed ship, "where
-   they think they are". Click: the ship sails north, "2 a.m.: land, 2 miles
-   ahead!". Click: the parallel through both ships and the gap, "Same
-   latitude: from the Sun at noon" and "Longitude: 400 miles off". Then the
-   camera flies to Juan Fernández for the next slide.
-2. **Commodore Anson Hunts for an Island, 1741.** As mocked in round 2 (section 12): the ship
+   globe, and the camera zooms to Cape Noir. Click: the dashed ship, "Where
+   they thought they were", which stays, dimmed, for one more click.
+   Click: the ship shows 2 miles off the land, on the ghost's parallel,
+   "Cliffs!", large, and "2 a.m., 2 miles ahead". Click: the parallel across the slide,
+   through both ships, and "Latitude: correct". Click: the gap between
+   the ships, with no words. Click: the punchline, "Longitude: 400
+   miles off" (section 16). Then the camera flies to Juan Fernández for
+   the next slide.
+2. **Hunt for Juan Fernández Island, 1741** (retitled in round 6, section
+   16). As mocked in round 2 (section 12): the ship
    sails in from the south, and the islands show only when Anson finds them.
+   Round 6 cut its labels to the intervals, with no dates and no wind in
+   words, and keeps them, dimmed, to the last click. Its last click is the
+   punchline, "The detour cost 70–80 men". From the start of the 2 days
+   east, a count of the scurvy deaths ticks at each day's dot (section 16).
    A detail for the speaker, from Walter: on the morning of May
    28, Anson thought that he saw the island, and his officers said that it
    was a cloud. And a number for the bar: 340 miles in 9 days is about 1.6
@@ -419,12 +437,12 @@ the labels say. Each is a proposal, to sketch before it is built.
 3. **Admiral Shovell Sails Home, 1707** (built in round 5, section 15). The
    camera flies from Juan Fernández to the English Channel: "English
    Channel", "England", "France", and a callout to the Isles of Scilly.
-   Click: the camera zooms in to the islands; a dashed ship, "October 22,
-   1707: where they think they are", and "21 ships" above it. Click:
-   the ship sails onto the rocks, "8 p.m.: the
-   rocks of Scilly!". Click: a bracket between the two ships, "Longitude:
-   unsure how far east they had come", and the takeaway "4 warships lost,
-   over 1,300 men". The gap is mostly east (section 15). The
+   Click: the camera zooms in to the islands; a dashed ship, "Where they
+   thought they were", which stays, dimmed, and "21 ships" above it.
+   Click: the ship sails onto the rocks, "8 p.m.: the rocks of Scilly!".
+   Click: a bracket between the two ships, "Longitude: unsure how far east
+   they had come". Click: the punchline, "4 warships lost, over 1,300 men"
+   (section 16). The gap is mostly east (section 15). The
    outline's link to the Act is general ("disasters like this"), so the
    narration may keep it, but must not say that this wreck caused the Act.
 4. **The Longitude Act, 1714.** As the still frame: the reaches of ½° and 1°
@@ -470,7 +488,8 @@ back. Check the times before you use it.
     course for a few hours longer, we could not have failed to have done."
   - **Corrections to the outline:** 70–80 men, not "hundreds". Walter gives
     the wind as "calms and contrary winds", so "winds from the west" is half
-    the cause; the labels say "headwinds and calms". Walter gives no
+    the cause; the gusts show the headwinds, and the calms are for the
+    narration (section 16). Walter gives no
     distance. The outline's 300 nautical miles (6°) fits the map: from a few
     hours east of the island to 38 nautical miles off the coast is 5.95° of
     longitude, $5.95 \times 60 \cos 33.6° \approx 297$ nautical miles. The
@@ -536,6 +555,10 @@ read summaries of the three studies, not their full text.
   (section 14, "The facts of Cape Noir").
 - **Scilly's coast**: Natural Earth 1:10m, as now, or finer data that
   draws the Western Rocks (OpenStreetMap, or GSHHG), with its license.
+- **Labels that stay** (section 16): dimmed to the end of the slide
+  (`old=dim`), or removed (`old=remove`).
+- **What a punchline is on** (section 16): a veil (recommended), a screen,
+  or a card.
 
 Decided: the sea is filled (round 1's unfilled sea made the land and the sea
 hard to tell apart), and the islands show only when Anson finds them.
@@ -555,8 +578,8 @@ for wind in bands near all; do
   node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
     tasks/2026-10-30-part-2-visual-language/evidence/round-2/wind-$wind --wind $wind --style labels
 done
-# the labels in each backing (round 3 also had --old dim|remove; the
-# mockup now always removes, and its pictures match round 3's *-remove)
+# the labels in each backing (round 3 also had --old dim|remove, for every
+# slide; round 6's --old is for the Anson slide alone)
 for label in outline card paper; do
   node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
     OUT_DIR/$label --wind near --label $label --style labels
@@ -581,6 +604,17 @@ node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:520
   $E/globe --wind near --style labels --style lessig
 node tasks/2026-10-30-part-2-visual-language/tools/speed.ts http://localhost:5200/ \
   $E/speed-globe.json --headed
+# round 6's pictures: the labels with each punchline backing, and with the
+# labels that stay removed
+E=tasks/2026-10-30-part-2-visual-language/evidence/round-6
+for punch in card veil screen; do
+  node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
+    $E/punch-$punch --wind near --style labels --punch $punch
+done
+node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
+  $E/remove --wind near --style labels --old remove
+node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
+  $E/lessig --wind near --style lessig
 ```
 
 Round 1's pictures came from the same commands before round 2 changed the
@@ -770,7 +804,8 @@ $3.47 \times 4.09 = 14.18$. Measured with `tools/lib.py` (`contrast`,
 **Decided, 2026-10-30: remove.** With every label kept, dimmed, the screen
 was too busy by the last click. The mockup no longer has the `old` choice
 or any dimming; its frames are byte for byte those of round 3's `*-remove`
-runs.
+runs. (Round 6 brings dimming back, for the Anson slide alone, with fewer
+words: section 16.)
 
 **Limits.** Chromium only. The new styles are checked in settled frames and
 three frames in motion.
@@ -1218,3 +1253,216 @@ England", _Philosophical Transactions_ 22 (1700), 725–726,
 CISMAS, [The Final Voyage](https://vdt.cismas.org.uk/trails/association/the-final-voyage);
 Royal Museums Greenwich,
 [object 140657](https://www.rmg.co.uk/collections/objects/rmgc-object-140657).
+
+## 16. Round 6: fewer words, labels that stay, and punchlines
+
+Your messages are in [instructions.md](instructions.md), "Round 6". The
+aim: few enough words that some labels can stay to the end of their slide,
+dimmed, and the slide does not look busy; and each slide's punchline in a
+screen's big type.
+
+**The labels, before and after:**
+
+| Slide     | Click | Round 5                                                             | Round 6                                                  |
+| --------- | ----- | ------------------------------------------------------------------- | -------------------------------------------------------- |
+| Cape Noir | 1     | "April 14, 1741: where they think they are"                         | "Estimated position", stays to click 2                   |
+| Cape Noir | 2     | "2 a.m.: land, 2 miles ahead!"                                      | "Cliffs!" (large), "2 a.m., 2 miles ahead"               |
+| Cape Noir | 3     | "Same latitude: from the Sun at noon"                               | "Latitude: correct"                                      |
+| Cape Noir | 3     | "Longitude: 400 miles off"                                          | the punchline, a click of its own                        |
+| Anson     | 1     | "Scurvy kills 4–6 of his men a day"                                 | "Scurvy kills 4–6 men a day", by the ship, clicks 1–2    |
+| Anson     | 2     | "May 28: the latitude of the Juan Fernández Islands. East or west?" | "Sail to latitude. Then east or west?", to "2 days east" |
+| Anson     | 3     | (none)                                                              | "Scurvy deaths:" and a count, to the end                 |
+| Anson     | 3     | "Wind from the west"                                                | (gone: the gusts show it)                                |
+| Anson     | 3     | "2 days east, wind behind"                                          | "2 days east", stays                                     |
+| Anson     | 3     | "May 30: Chile, an enemy coast"                                     | "Chile: an enemy coast", stays                           |
+| Anson     | 4     | "9 days back: headwinds and calms"                                  | "9 days back", stays                                     |
+| Anson     | 5     | "Juan Fernández Islands", "June 9: found"                           | (gone: the islands show, and the track ends there)       |
+| Anson     | 5     | "The detour cost 70–80 men"                                         | the punchline, a click of its own                        |
+| Scilly    | 2     | "October 22, 1707: where they think they are"                       | "Estimated position", stays                              |
+| Scilly    | 4     | "4 warships lost, over 1,300 men"                                   | the punchline, a click of its own                        |
+
+On the Cape Noir slide, the dashed parallel now crosses the whole slide,
+land and all, as a parallel does on a map.
+
+- **"Latitude: correct",** not "Same latitude: from the Sun at noon": just
+  after "2 a.m.", the noon Sun confused. The label now mirrors the
+  punchline, "Longitude: 400 miles off". How they knew their latitude, from
+  the Sun at noon the day before, is for the narration.
+- **The real ship shows on the ghost's parallel,** 2 miles off the
+  cliffs, and does not sail in. It sailed north into sight of the land,
+  from 60 px south; so it showed off the ghost's latitude first, and
+  joined it only at the end. Moving the ghost and the parallel to where it
+  showed would not do: the ship would then sail north off the parallel.
+  Walter's "standing to the northward" is for the narration.
+- **"Cliffs!" is a yell:** on its own line, at the title's size (37 px),
+  with an exclamation mark, above "2 a.m., 2 miles ahead". Not in
+  capitals, which read slower than a word's shape, and not in the accent,
+  which is the punchline's number, the slide's one accent.
+- **The gap has a click of its own,** after "Latitude: correct": the gap
+  is longitude, and the parallel's click is about latitude. The pictures
+  are `parallel` (the line and its label), then `gap` (the bracket).
+- **"Latitude: correct" is lower,** now that it is one line, as "2 days
+  east" is on the Anson slide. The first try on the Anson slide
+  kept "The latitude of the Juan Fernández Islands", "9 days back: headwinds
+  and calms" and the islands' label with "Found" (40 words at its last
+  click). You cut those three too.
+
+- **Numbers kept from the facts, not from the message.** You wrote "over
+  1,400 men"; the slide keeps "over 1,300", which the museum gives (section
+  15). You wrote "70–80 men died"; the punchline keeps "The detour cost
+  70–80 men", which says what killed them.
+- **The title** is now "Hunt for Juan Fernández Island, 1741", in place of
+  "Commodore Anson Hunts for an Island, 1741". With the island's name in
+  the title, the latitude label needs no name: "Juan Fernández's latitude"
+  sounded like a person's. Round 2 ranked a title with no "who" lower
+  (section 12), because the first label then gave the name and "his men"
+  had no one to refer to. Neither holds now: the title gives the name, the
+  Cape Noir slide before it names Anson, and the scurvy label says "men".
+- **"2 days east" is lower,** now that it is one line: its letters are
+  23 px above its leg, as far as "9 days back" is below its own (measured
+  in the frames).
+- **The latitude label stays where it was,** 90 px above the latitude
+  line. Lower, it would touch the ship at the last click, when the ship is
+  west of the start.
+
+### Labels that stay
+
+A label with `stays: true` (`story.ts`) stays, dimmed, to the end of its
+slide, when the next text shows; other labels leave at the next click, as
+before. Two kinds of label stay:
+
+- **One that the next clicks refer to**: "Estimated position" (first
+  "Where they thought they were", 5 words; "estimated" also says that it
+  was not measured, which the punchline pays off),
+  at the dashed ship, on the Cape Noir and Scilly slides. The next clicks
+  measure from it. A label can leave before the end of its slide, at a
+  picture (`until`, as a mark's): on the Cape Noir slide, it leaves when
+  "Latitude: correct" shows, at your request.
+- **Every label of a slide told by its picture**, with a few words at each
+  click: the Anson slide. This is the exception in
+  [`stem/AGENTS.md`](../../../AGENTS.md), "Writing a talk".
+
+**A label can leave with the answer.** "Sail to latitude. Then east or
+west?" dims at the next click, as before; at the east leg, it stays, dimmed,
+until "2 days east" shows at the end of the leg, and leaves with it. With
+`lingers` (`story.ts`), a label leaves at its `until` with that click's new
+labels, after the picture's change, and not as the click starts. A jump or
+a step back removes it at once.
+
+### The scurvy count
+
+On the Anson slide, "Scurvy kills 4–6 men a day" is by the ship as the
+slide opens, where the eyes are, and dims at the next click. When the ship
+sets off east, it leaves, and a count takes its place on the land at the
+right: "Scurvy deaths:" over a number at the title's size. The number ticks
+at each day's dot: 6 a day, Walter's "four, five, and six in a day" at its
+top. It ends at 72 when the ship reaches the anchorage, and stays there
+for the punchline, "The detour cost 70–80 men". You kept that punchline:
+the eyes are on the ship, so few will read the count.
+
+- **Why 6 a day, and 12 days.** The track shows 2 days east and 9 back,
+  and the anchorage is a day after the sighting: from daybreak on June 9,
+  "all that day, and the next night" (section 9). The count's last day has
+  a dot too, under the ship at the anchorage. At 4–6 a day, the 11 days of
+  dots make only 44–66; at 6 a day, 12 days make 72, within Walter's 70–80.
+- **The numbers in between are not Walter's.** He gives a rate and a
+  total, not a count for each day. The narration must not claim exact
+  daily deaths.
+- **How.** A text of the kind `count` (`story.ts`) is a label with a
+  number. It shows from its own click to the end of its slide, never
+  dimmed; its `perDay` times the days at sea since its picture (`DAYS`,
+  `main.ts`) is its number at each picture. In motion, the number starts
+  from the picture before and ticks as each dot shows; a jump or a step
+  back shows the last number at once.
+
+The dropdown **old labels** (`old`) gives `dim` (the default) or `remove`,
+for the labels that stay. A dimmed label's colors mix halfway to the paper,
+as Part 1's do (`watches/docs/slide-patterns.md`, "Text dims"); its outline
+stays solid. The old labels dim at once when the click starts; the new one
+comes after the motion, as before.
+
+**Measured on the Anson slide** (`evidence/round-6/punch-veil/` and
+`remove/`, `measurements.json`, labels in outline; the words of the labels
+and the count, not of the punchline):
+
+| Click | Old    | Texts | Dimmed | Words | Sea under text |
+| ----- | ------ | ----: | -----: | ----: | -------------: |
+| 1     | either |     1 |      0 |     6 |          5.0 % |
+| 2     | dim    |     2 |      1 |    13 |          7.1 % |
+| 2     | remove |     1 |      0 |     7 |          5.5 % |
+| 3     | either |     3 |      0 |    10 |          4.2 % |
+| 4     | dim    |     4 |      2 |    13 |          4.9 % |
+| 4     | remove |     2 |      0 |     6 |          4.2 % |
+| 5     | dim    |     4 |      3 |    13 |          4.9 % |
+| 5     | remove |     1 |      0 |     3 |          3.5 % |
+
+At its last click before the punchline, round 3's kept labels were 8
+labels and 52 words, over 14 % of the sea (section 13). Round 6 shows the
+count and 3 dimmed labels, 13 words, over 4.9 %: 75 % fewer words, and a
+third of the sea.
+
+- **What dims.** Dimmed ink on its paper outline is 3.04:1 (section 13),
+  as on Part 1's slides. Dimmed paper words on the water are 1.99:1, under
+  the 3:1 floor, so `old=dim` goes with the outline, not with
+  `label=paper`.
+- **Words that the picture already says** (section 7, rule 2). The gusts
+  show the wind and the headwinds, so no label names them. The dots count
+  the days, so the labels give the intervals, not the dates. The islands
+  show when Anson finds them, so no label says so. The calms are not in
+  the picture: they are for the narration.
+
+### The punchline: on what?
+
+Each slide ends on a click of its own: the punchline, in a Lessig screen's
+type (Fraunces 600, 76 px, centered), with its number in the accent. The
+dropdown **punchline** (`punch`) gives three backings
+(`evidence/round-6/punch-*/frames/labels-4.png`, `-10.png`, `-15.png`):
+
+- `card`: a card in the ink at 70 %, with rounded corners, behind the
+  words, which are in the paper.
+- `veil`: the paper at 75 % over the whole slide, the picture faint under
+  it.
+- `screen`: the paper over the whole slide, as Lessig.
+
+**Contrast** (WCAG, from Ledger's colors; the floor for large text is
+3:1):
+
+| Backing             |   Words | Accent |
+| ------------------- | ------: | -----: |
+| card, over the sea  |  9.39:1 | 1.56:1 |
+| card, over the land |  5.48:1 |      – |
+| veil, over the sea  | 10.89:1 | 4.62:1 |
+| screen              | 14.18:1 | 6.02:1 |
+
+Under the veil, the picture's marks are 1.27:1: there to see, not to read.
+
+**Pros and cons:**
+
+- **Veil.** The picture stays in place under the words: the gap, the
+  wreck, the track. The punchline reads as said about that picture. The
+  accent passes (4.62:1), so the number stands out as it does elsewhere.
+  Con: the title and the labels fade with the picture, and the veil is a
+  new use of the paper, which needs a role (`docs/theme.md`) before it goes
+  in a talk.
+- **Screen.** The strongest contrast, and the cleanest words. Con: the
+  picture is gone at the moment that the words are about it, and a
+  labelled slide changes mode at its last click.
+- **Card.** The picture around the card stays at full strength. Cons: the
+  centered card hides the marks that the punchline is about (the ship and
+  the gap at Cape Noir, the track at Juan Fernández, the islands and the
+  wreck at Scilly). At 70 %, the labels under it show through and compete
+  with the words (the Anson frame). The accent fails (1.56:1), so the
+  number is in the paper, with no emphasis. The words' contrast changes
+  with what is under the card (9.39:1 on the sea, 5.48:1 on the land). A
+  dark card is foreign to the light palette.
+
+**Ranking:** 1. the veil, which keeps the picture and the accent; 2. the
+screen, the clearest words but no picture; 3. the card, which hides the
+picture's point and loses the accent. A card placed off the marks, and
+more opaque, would fix its first two cons, not the accent.
+
+### Limits
+
+Chromium only, and the labels in outline only. The dimmed labels and the
+punchlines are checked in settled frames, and the Cape Noir punchline in
+one frame as it fades in.

@@ -17,6 +17,7 @@ export const PICTURES = [
   "globe",
   "thought",
   "real",
+  "parallel",
   "gap",
   "south",
   "start",
@@ -36,6 +37,7 @@ export const REGION: Readonly<Record<Picture, MapView | null>> = {
   globe: null,
   thought: NOIR,
   real: NOIR,
+  parallel: NOIR,
   gap: NOIR,
   south: ANSON,
   start: ANSON,
@@ -69,8 +71,6 @@ export const DAY = 0.7;
 
 /** The places of the search for Juan Fernández, in slide px. */
 export interface Places {
-  /** Robinson Crusoe Island, which Anson's men called Juan Fernández */
-  readonly island: Point;
   /** May 28: in the islands' latitude, a few hours east of them */
   readonly start: Point;
   /** May 30: Chile in sight, 12 or 13 leagues (about 38 nautical miles) off */
@@ -113,7 +113,6 @@ export function placesOn(view: MapView): Places {
   const island = project(view, ISLAND);
   const start = project(view, [-78.35, ISLAND[1]]);
   return {
-    island,
     start,
     turn: project(view, [-72.4, ISLAND[1]]),
     coast: project(view, [-71.62, ISLAND[1]]),
@@ -132,8 +131,6 @@ export interface NoirPlaces {
    *  miles distant", as the squadron stood north. The ship is drawn south
    *  of the island, with sea between. */
   readonly ship: Point;
-  /** where the ship comes from, as it sails north */
-  readonly approach: Point;
   /** where they thought they were: "upwards of ten degrees more westerly
    *  than this land", on the same parallel */
   readonly thought: Point;
@@ -154,7 +151,6 @@ export function noirPlacesOn(view: MapView): NoirPlaces {
   return {
     cape,
     ship,
-    approach: [ship[0], ship[1] + 60],
     thought: [ship[0] - RECKONED_WEST * scale, ship[1]],
     bracket: ship[1] + 90,
   };
@@ -230,8 +226,11 @@ export function scillyPlacesOn(view: MapView): ScillyPlaces {
   };
 }
 
-/** The kinds of text. A label is placed; a screen fills the slide (Lessig). */
-export type Kind = "label" | "screen";
+/** The kinds of text. A label is placed; a screen fills the slide (Lessig);
+ *  a punchline is a slide's last words, in a screen's type, on the backing
+ *  that the `punch` choice gives (choices.ts); a count is a label with a
+ *  number that counts up with the days at sea, to the end of its slide. */
+export type Kind = "label" | "screen" | "punch" | "count";
 
 export interface Text {
   readonly kind: Kind;
@@ -246,6 +245,20 @@ export interface Text {
   readonly about?: Point;
   /** a callout's leader, to `about`: slide px short of it where it ends */
   readonly leader?: number;
+  /** a label that stays, dimmed, to the end of its slide, when the next
+   *  text shows: one that the rest of the slide refers to, or all of a
+   *  slide told by its picture, with a few words at each step (PLAN.md,
+   *  section 16). Else a label leaves at the next step. */
+  readonly stays?: true;
+  /** the picture at which a label that stays leaves, as a mark's `until`
+   *  (main.ts), if before the end of its slide */
+  readonly until?: Picture;
+  /** a label that, at its `until`, leaves with that click's new labels,
+   *  after the picture's change, and not as the click starts */
+  readonly lingers?: true;
+  /** a count's number for each day at sea, from its own picture on: it
+   *  ticks at each day's dot (main.ts, DAYS) */
+  readonly perDay?: number;
 }
 
 export interface Step {
@@ -262,8 +275,9 @@ export interface Style {
 
 /** Who, and where: the labels then tell what went wrong. */
 const NOIR_TITLE = "Commodore Anson Rounds Cape Horn, 1741";
-/** Who searches, and for what: "Anson's Search" alone left both open. */
-const TITLE = "Commodore Anson Hunts for an Island, 1741";
+/** What is searched for, by name: the Cape Noir slide has named Anson, and
+ *  the labels then say "the island" (PLAN.md, section 16). */
+const TITLE = "Hunt for Juan Fernández Island, 1741";
 /** Who, and where to: the labels then tell how the voyage ended. */
 const SCILLY_TITLE = "Admiral Shovell Sails Home, 1707";
 
@@ -289,7 +303,7 @@ const lessig: Style = {
     { picture: "real", texts: [] },
     {
       picture: "real",
-      texts: [{ kind: "screen", html: "2 a.m.: land,<br>2 miles ahead" }],
+      texts: [{ kind: "screen", html: "2 a.m.: cliffs,<br>2 miles ahead" }],
     },
     { picture: "gap", texts: [] },
     {
@@ -371,8 +385,13 @@ const labels: Style = {
       texts: [
         {
           kind: "label",
-          html: "April 14, 1741:<br>where they think they are",
-          at: [40, 168],
+          html: "Estimated position",
+          // the dashed ship that the next click measures from; it leaves
+          // when "Latitude: correct" shows (PLAN.md, section 16)
+          stays: true,
+          until: "parallel",
+          // above the dashed ship, as "21 ships" is at Scilly
+          at: [noir.thought[0] - 105, noir.thought[1] - 76],
           about: noir.thought,
         },
       ],
@@ -383,42 +402,55 @@ const labels: Style = {
       texts: [
         {
           kind: "label",
-          html: "2 a.m.: land,<br>2 miles ahead!",
-          at: [noir.ship[0] - 210, noir.ship[1] - 70],
+          // a yell: the word large, on its own line (PLAN.md, section 16)
+          html: '<div class="shout">Cliffs!</div>2 a.m., 2 miles ahead',
+          at: [noir.ship[0] - 270, noir.ship[1] - 104],
           about: noir.ship,
         },
       ],
     },
     {
       title: NOIR_TITLE,
-      picture: "gap",
+      picture: "parallel",
       texts: [
         {
           kind: "label",
-          html: "Same latitude:<br>from the Sun at noon",
-          at: [noir.thought[0] + 60, noir.ship[1] - 74],
+          // as the punchline's "Longitude: 400 miles off"; how they knew
+          // it, from the Sun, is for the narration (PLAN.md, section 16)
+          html: "Latitude: correct",
+          // one line, so near its parallel, as "2 days east" is to its leg
+          at: [noir.thought[0] + 60, noir.ship[1] - 50],
           about: [(noir.thought[0] + noir.ship[0]) / 2, noir.ship[1]],
-        },
-        {
-          kind: "label",
-          html: "Longitude: <em>400 miles</em> off",
-          at: [noir.thought[0] + 40, noir.bracket + 18],
-          about: [(noir.thought[0] + noir.ship[0]) / 2, noir.bracket],
         },
       ],
     },
+    // The gap in longitude, a click of its own: the parallel's click is
+    // about latitude.
+    { title: NOIR_TITLE, picture: "gap", texts: [] },
+    // Each slide ends on its punchline, a click of its own.
+    {
+      title: NOIR_TITLE,
+      picture: "gap",
+      texts: [{ kind: "punch", html: "Longitude:<br><em>400 miles</em> off" }],
+    },
     // The slide opens with the ship at the bottom, before it sails north,
     // and the stakes. They are about the whole crew, not one place, so they
-    // are on the land, above the takeaway: the slide opens with what scurvy
-    // costs a day, and ends with what the detour cost.
+    // are on the land: the slide opens with what scurvy costs a day, and
+    // ends with what the detour cost, its punchline. The slide is told by
+    // its map, with a few words at each step, so its labels stay, dimmed
+    // (`stays`), to the last step.
     {
       title: TITLE,
       picture: "south",
       texts: [
+        // by the ship, where the eyes are; it gives way to the count
         {
           kind: "label",
-          html: "Scurvy kills 4–6<br>of his men a day",
-          at: [712, 120],
+          html: "Scurvy kills<br>4–6 men a day",
+          stays: true,
+          until: "east",
+          at: [labelPlaces.south[0] + 44, labelPlaces.south[1] - 74],
+          about: labelPlaces.south,
         },
       ],
     },
@@ -428,7 +460,12 @@ const labels: Style = {
       texts: [
         {
           kind: "label",
-          html: "May 28: the latitude of<br>the Juan Fernández Islands.<br>East or west?",
+          html: "Sail to latitude.<br>Then east or west?",
+          // it asks the question that the east leg answers, and leaves
+          // with the answer, "2 days east"
+          stays: true,
+          until: "east",
+          lingers: true,
           at: [16, 152],
           about: labelPlaces.start,
         },
@@ -438,17 +475,22 @@ const labels: Style = {
       title: TITLE,
       picture: "east",
       texts: [
+        // The deaths, from the start of the detour: at Walter's "six in a
+        // day", 12 days to the anchorage make 72, within his 70–80
+        // (PLAN.md, section 16).
         {
-          kind: "label",
-          html: "Wind from the west",
-          // 18 px above the next label: room for two cards (`label=card`)
-          at: [16, 104],
-          about: [260, 128],
+          kind: "count",
+          html: "Scurvy deaths:",
+          perDay: 6,
+          at: [712, 120],
         },
+        // The gusts show the wind, so no label names it.
         {
           kind: "label",
-          html: "2 days east,<br>wind behind",
-          at: [420, 228],
+          html: "2 days east",
+          stays: true,
+          // as far above its leg as "9 days back" is below its own: 23 px
+          at: [420, 251],
           about: [
             (labelPlaces.start[0] + labelPlaces.turn[0]) / 2,
             labelPlaces.start[1],
@@ -456,7 +498,8 @@ const labels: Style = {
         },
         {
           kind: "label",
-          html: "May 30: Chile,<br>an enemy coast",
+          html: "Chile:<br>an enemy coast",
+          stays: true,
           at: [696, 262],
           about: labelPlaces.turn,
         },
@@ -468,7 +511,8 @@ const labels: Style = {
       texts: [
         {
           kind: "label",
-          html: "9 days back:<br>headwinds and calms",
+          html: "9 days back",
+          stays: true,
           at: [340, 360],
           about: westMiddle(labelPlaces),
         },
@@ -477,23 +521,13 @@ const labels: Style = {
     {
       title: TITLE,
       picture: "found",
-      texts: [
-        // one label, so one card (`label=card`): the islands' name, smaller,
-        // and the day that Anson found them
-        {
-          kind: "label",
-          html: '<div class="name">Juan Fernández<br>Islands</div>June 9: found',
-          // a card's top clears Alejandro Selkirk Island, which ends at y 315
-          at: [16, 324],
-          about: labelPlaces.island,
-        },
-        // the takeaway: about the whole story, not one place
-        {
-          kind: "label",
-          html: "The detour cost<br><em>70–80 men</em>",
-          at: [712, 400],
-        },
-      ],
+      // The islands show: that they are found needs no words.
+      texts: [],
+    },
+    {
+      title: TITLE,
+      picture: "found",
+      texts: [{ kind: "punch", html: "The detour cost<br><em>70–80 men</em>" }],
     },
     // Where in the world: both coasts of the Channel, and the islands that
     // the camera zooms in to next.
@@ -531,8 +565,10 @@ const labels: Style = {
         },
         {
           kind: "label",
-          html: "October 22, 1707:<br>where they think they are",
-          at: [scilly.thought[0] - 150, scilly.thought[1] + 34],
+          html: "Estimated position",
+          stays: true,
+          // below the dashed ship, and below the bracket's end
+          at: [scilly.thought[0] - 150, scilly.thought[1] + 52],
           about: scilly.thought,
         },
       ],
@@ -562,11 +598,13 @@ const labels: Style = {
           at: [gapMiddle[0] - 10, gapMiddle[1] + 36],
           about: gapMiddle,
         },
-        {
-          kind: "label",
-          html: "4 warships lost,<br>over <em>1,300 men</em>",
-          at: [700, 400],
-        },
+      ],
+    },
+    {
+      title: SCILLY_TITLE,
+      picture: "toll",
+      texts: [
+        { kind: "punch", html: "4 warships lost,<br>over <em>1,300 men</em>" },
       ],
     },
   ],

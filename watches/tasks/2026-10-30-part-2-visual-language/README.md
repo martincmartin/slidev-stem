@@ -11,7 +11,9 @@ Noir slide before the Anson slide, and a globe on a canvas that the camera
 zooms and turns, from the whole globe to Cape Noir and on to Juan Fernández.
 Round 5 adds the Scilly slide after the Anson slide: a flight across the
 Atlantic to the English Channel, and a zoom in to the Isles of Scilly. It
-also checks the cause of the wreck of 1707.
+also checks the cause of the wreck of 1707. Round 6 cuts words, keeps some labels,
+dimmed, to the end of their slide, and compares three backings for each
+slide's punchline in big type.
 
 - `instructions.md`: the request.
 - `PLAN.md`: the criteria, the options, the measurements, the ranking, the
@@ -50,5 +52,9 @@ also checks the cause of the wreck of 1707.
 - `evidence/round-5/`: round 5's output of `shots.ts`, `globe/` (both
   styles, from the whole globe, with Scilly), and of `speed.ts`, in windows:
   `speed-globe.json`.
+- `evidence/round-6/punch-card/`, `punch-veil/` and `punch-screen/`: round
+  6's output of `shots.ts`, the labels with each backing for the
+  punchlines; `remove/`, with the labels that stay removed; `lessig/`,
+  the Lessig style.
 
 Run each tool from the talk's directory (`PLAN.md`, section 11).

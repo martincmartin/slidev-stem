@@ -7,6 +7,12 @@ export const CHOICES = {
   /** how a label stands out from the picture under it: the paper's outline,
    *  a card, or words in the paper where the sea is under them */
   label: ["outline", "card", "paper"],
+  /** a label that stays to the end of its slide (story.ts, `stays`):
+   *  dimmed, or it leaves as the others do */
+  old: ["dim", "remove"],
+  /** what a punchline is on: a dark card over the picture, the picture
+   *  under a veil of paper, or a screen of paper (Lessig) */
+  punch: ["card", "veil", "screen"],
   /** the first view: the whole globe, or South America (geo.ts) */
   start: ["globe", "america"],
 } as const;

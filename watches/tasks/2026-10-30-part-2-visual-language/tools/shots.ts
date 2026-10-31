@@ -2,8 +2,8 @@
 // in Chromium. In watches/, with the mockup's server running
 // (mockup/vite.config.ts):
 //   node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ OUT_DIR \
-//     [--sea wash|paper] [--wind NAME] [--label NAME] [--start NAME] [--style NAME]...
-// With --sea paper, the sea is not filled; --wind, --label and --start are
+//     [--sea wash|paper] [--wind NAME] [--label NAME] [--old NAME] [--punch NAME] [--start NAME] [--style NAME]...
+// With --sea paper, the sea is not filled; --wind, --label, --old, --punch and --start are
 // the mockup's choices (mockup/choices.ts); each --style shoots one style
 // (default: all). It writes OUT_DIR/frames/<style>-<step>.png, frames of the
 // labels in motion (frames/labels-motion-<n>.png: MOTION),
@@ -29,27 +29,29 @@ const COVERED = 24;
 
 /** The labels in motion, from the step before, settled: a step, and when
  *  after it starts: ms, or a share of its camera's flight. The camera flies
- *  to Cape Noir, and the story map comes in; the ship sails into sight of
- *  the land; the camera flies to Juan Fernández; the ship sails north,
+ *  to Cape Noir, and the story map comes in; the ship shows off the land;
+ *  the punchline comes; the camera flies to Juan Fernández; the ship sails north,
  *  east, and west; the camera flies to the English Channel, and zooms in to
  *  the Isles of Scilly; the ship sails onto the rocks. */
 type Moment = number | { readonly flight: number };
 const MOTION: readonly (readonly [number, Moment])[] = [
   [1, { flight: 0.5 }],
   [1, { flight: 0.9 }],
-  [2, 900],
-  [4, { flight: 0.15 }],
-  [4, { flight: 0.5 }],
-  [4, { flight: 0.9 }],
-  [5, 1000],
-  [6, 700],
-  [7, 3200],
-  [9, { flight: 0.15 }],
-  [9, { flight: 0.5 }],
-  [9, { flight: 0.9 }],
-  [10, { flight: 0.5 }],
-  [10, { flight: 0.9 }],
-  [11, 700],
+  [2, 200],
+  [5, 200],
+  [6, { flight: 0.15 }],
+  [6, { flight: 0.5 }],
+  [6, { flight: 0.9 }],
+  [7, 1000],
+  [8, 700],
+  [8, 2200],
+  [9, 3200],
+  [12, { flight: 0.15 }],
+  [12, { flight: 0.5 }],
+  [12, { flight: 0.9 }],
+  [13, { flight: 0.5 }],
+  [13, { flight: 0.9 }],
+  [14, 700],
 ];
 
 const wait = (ms: number) => new Promise((done) => setTimeout(done, ms));
@@ -133,6 +135,8 @@ async function main(): Promise<void> {
       sea: { type: "string", default: "wash" },
       wind: { type: "string", default: CHOICES.wind[0] },
       label: { type: "string", default: CHOICES.label[0] },
+      old: { type: "string", default: CHOICES.old[0] },
+      punch: { type: "string", default: CHOICES.punch[0] },
       start: { type: "string", default: CHOICES.start[0] },
       style: { type: "string", multiple: true },
     },
@@ -150,12 +154,14 @@ async function main(): Promise<void> {
     !["wash", "paper"].includes(values.sea) ||
     !among(CHOICES.wind, values.wind) ||
     !among(CHOICES.label, values.label) ||
+    !among(CHOICES.old, values.old) ||
+    !among(CHOICES.punch, values.punch) ||
     !among(CHOICES.start, values.start) ||
     styles.length !== (values.style?.length ?? STYLES.length)
   ) {
     const names = (choice: readonly string[]) => choice.join("|");
     console.error(
-      `usage: node tools/shots.ts URL OUT_DIR [--sea wash|paper] [--wind ${names(CHOICES.wind)}] [--label ${names(CHOICES.label)}] [--start ${names(CHOICES.start)}] [--style ${names(STYLES)}]...`,
+      `usage: node tools/shots.ts URL OUT_DIR [--sea wash|paper] [--wind ${names(CHOICES.wind)}] [--label ${names(CHOICES.label)}] [--old ${names(CHOICES.old)}] [--punch ${names(CHOICES.punch)}] [--start ${names(CHOICES.start)}] [--style ${names(STYLES)}]...`,
     );
     process.exitCode = 2;
     return;
@@ -164,6 +170,8 @@ async function main(): Promise<void> {
     sea: values.sea,
     wind: values.wind,
     label: values.label,
+    old: values.old,
+    punch: values.punch,
     start: values.start,
   }).toString();
   await mkdir(join(out, "frames"), { recursive: true });

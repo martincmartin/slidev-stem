@@ -208,3 +208,82 @@ comes between them.
 
 > Why is the label "21 ships" in the upper right, while the actual ships are
 > in the lower left?
+
+## Round 6, 2026-10-31
+
+Your message, verbatim:
+
+> Let's try to simplify the Juan Fernandez labels, so may we can use dimming
+> and having them all on the screen at once, without it lookin busy. First,
+> we can get rid of the dates (May 28, June 9) but keep the intervals (2
+> days, 9 days). Second, get rid of "Wind from west", the wind arrows already
+> communicate that. In "2 days east, wind behind", we don't need "wind
+> behind," the wind arros communicate that too.
+
+Later messages in round 6, verbatim, in order:
+
+> Let's get rid of the last click's "Juan fernandez islands" and "found",
+> the islands appearing are enough to communicate that. And your suggestions
+> 1, 2.
+
+> "Juan Fernandez's latitude" sounds like the latitude of a person, not an
+> island. Maybe the slide's title should be "Hunt for Juan Fernandez Island,
+> 1741". Then "Scurvy kill 4-6 men a day"
+
+> The current "latitude. East or west" could be "Sail to latitude. Then
+> east or west?"
+
+> Now that "2 days east" doesn't have a second line of text under it, it can
+> go lower, so the gap between that and its line is about the same as "9
+> days west" and its line.
+
+> Let's tweak some text. get rid of April 14, 1741:, the date isn't
+> relevant. "2 a.m.", change land to Cliffs. "Same latitude:", have the
+> dashed latitude line go all the way across the imge, like a latitude line
+> on a map.
+>
+> In the labels, I want the "punchline" for each slide to be a Lessig style
+> big text. That's "Longitude: 400 miles off" , 7-80 men died, and 4
+> warships lost, over 1,400 men. Should those be interstitials, like true
+> Lessig; large text over a dimmed map; or large text in a card, where the
+> card dims the screen behind it (e.g. the card is a black rectangle 70%
+> opaque with rounded corners)?
+
+> And lets keep "Where they thought they were", dimmed when next text shows
+> up, until the end of the slide.
+
+> "Where they think they are" -> "Where they thought they were." Remove
+> "October 22, 1707" from step 12.
+
+> In the cape horn slide, "Where they thought they were" can be removed when
+> "Same latitude" shows up.
+
+> "From the sun at noon" is a little confusing, because you just said it was
+> 2 a.m. Also, when the real ship appears, it's at a different latitude than
+> the ghost ship, and only then moves to the same latitude. Should we move
+> the ghost ship & latitude line to where the real ship appears?
+
+> Should we make "cliffs" bigger, all caps, with an exclamation point, or
+> otherwise stand to be like a yell "DANGER!"
+
+> "Where they thought they were" is pretty wordy. Should it be "estimated
+> position" or "best estimate of location" or "measured location"?
+> Location, position or does it matter?
+
+> Yes change both slides.
+
+> In the first slide, the longitude bar shows at the same time as "Latitidue:
+> correct" but has nothing to do with the latitude. Create an extra click for
+> it.
+
+> On slide 2, should we keep a counter of people dying to scurvy during the
+> detour?
+
+> Should "Scurvy kills 4-6 men a day" go close to the ship, dim on next
+> click, and then removed when the counter appears at the start of the 2
+> days eastward? Let's go with that. Not sure who will be looking at the
+> counter as their eyes will mostly be on the ship, so I think the current
+> punchline is fine.
+
+> "Sail to latitude. Then east or west?" should dim when it does now, then
+> remove when "2 days east" shows up at the end of the eastward travel.

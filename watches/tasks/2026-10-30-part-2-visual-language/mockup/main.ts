@@ -1,7 +1,8 @@
 // The mockup's page: one slide at Slidev's size, in one of the styles of
 // story.ts, a step at a time. In the address:
 //   ?style=lessig|labels&step=0&wind=bands|near|all&label=outline|card|paper
-//    &start=globe|america&sea=paper&settle=1&notext=1
+//    &old=dim|remove&punch=card|veil|screen&start=globe|america&sea=paper
+//    &settle=1&notext=1
 // → or space steps forward, with the picture's motion; ← steps back at once.
 // The story opens on the whole globe, or South America (`start`), and the
 // camera flies to Cape Noir, then to Juan Fernández, then across the
@@ -13,8 +14,10 @@
 // the bottom of the map; at the next step it sails north to the islands'
 // latitude. `wind=near` adds a gust by the voyage, where no label is;
 // `wind=all` draws the wind in the voyage's band too, under the labels.
-// `label` and `start` are in choices.ts. A step's text leaves at the next
-// step: kept and dimmed, it was too busy by the last (PLAN.md, section 13).
+// `label`, `old`, `punch` and `start` are in choices.ts. A step's text leaves at the
+// next step: kept and dimmed, it was too busy by the last (PLAN.md, section
+// 13). The exception is a label that stays, dimmed, to the end of its slide
+// (story.ts, `stays`; PLAN.md, section 16).
 // `settle` shows each step at once, with no motion, and `notext` hides the
 // words: tools/shots.ts uses both. `window.mock` gives it the measurements.
 import "../../../../themes/house/styles/fonts.css";
@@ -50,8 +53,8 @@ import type { Picture, Style, Text } from "./story.ts";
 const SVG = "http://www.w3.org/2000/svg";
 const STATUTE_MILES_PER_NAUTICAL = 1.15078;
 
-/** Seconds that each picture's change takes. At Cape Noir the ship sails
- *  north into sight of the land, and the gap between the ships shows. On
+/** Seconds that each picture's change takes. At Cape Noir the ship shows
+ *  off the land, and then the parallel, and the gap between the ships. On
  *  the search the ship is at the bottom of the map as the slide opens, and
  *  then sails north to the latitude; each day at sea takes DAY seconds; the
  *  last hours, to the islands, take less than one. At Scilly the ship sails
@@ -59,7 +62,8 @@ const STATUTE_MILES_PER_NAUTICAL = 1.15078;
 const CHANGE: Readonly<Record<Picture, number>> = {
   globe: 0,
   thought: 0,
-  real: 1,
+  real: 0,
+  parallel: 0,
   gap: 0,
   south: 0,
   start: 2,
@@ -150,6 +154,86 @@ function chosen<C extends Choice>(choice: C): Chosen<C> {
 }
 
 const gusts = WIND[chosen("wind")];
+const dims = chosen("old") === "dim";
+
+/** Whether step `target` is on the slide of step `index`, at or after it. */
+function onSlide(index: number, target: number): boolean {
+  const title = style.steps[index]?.title;
+  return (
+    index <= target &&
+    style.steps
+      .slice(index + 1, target + 1)
+      .every((step) => step.title === title)
+  );
+}
+
+/** Whether a text of step `index` stays, dimmed, at step `target`: it
+ *  stays (story.ts, `stays`), and the target is later on its slide, before
+ *  the text's `until`. */
+function kept(text: Text, index: number, target: number): boolean {
+  const shows = style.steps[target]?.picture;
+  return (
+    dims &&
+    text.stays === true &&
+    index < target &&
+    onSlide(index, target) &&
+    (text.until === undefined ||
+      shows === undefined ||
+      PICTURES.indexOf(shows) < PICTURES.indexOf(text.until))
+  );
+}
+
+/** A count's number after `days` more days at sea than at the end of the
+ *  picture before `shows`: its number a day, times the days at sea from
+ *  the count's own picture on. */
+function counted(
+  text: Text,
+  index: number,
+  shows: Picture,
+  days: number,
+): number {
+  const from = style.steps[index]?.picture ?? fail("no step");
+  const before = PICTURES.slice(
+    PICTURES.indexOf(from),
+    PICTURES.indexOf(shows),
+  ).reduce((sum, each) => sum + (DAYS[each] ?? 0), 0);
+  const perDay = text.perDay ?? fail(`a count with no perDay: ${text.html}`);
+  return perDay * (before + days);
+}
+/** The timers that tick the counts at the current step's dots. */
+let ticks: number[] = [];
+
+/** Show a count's number at the end of the picture `shows`. In motion, it
+ *  starts from its number at the picture before, and ticks at each day's
+ *  dot: `lead` seconds on, a day each `change / days` (track). */
+function count(
+  text: Text,
+  index: number,
+  made: HTMLElement,
+  shows: Picture,
+  motion: { readonly lead: number; readonly change: number } | null,
+): void {
+  const number =
+    made.querySelector<HTMLElement>(".number") ?? fail("a count's number");
+  const days = DAYS[shows] ?? 0;
+  const write = (day: number) => {
+    number.textContent = String(counted(text, index, shows, day));
+  };
+  if (motion === null || days === 0) {
+    write(days);
+    return;
+  }
+  write(0);
+  for (let day = 1; day <= days; day += 1)
+    ticks.push(
+      window.setTimeout(
+        () => {
+          write(day);
+        },
+        (motion.lead + (day / days) * motion.change) * 1000,
+      ),
+    );
+}
 const startCamera = START[chosen("start")];
 
 function element<K extends keyof HTMLElementTagNameMap>(
@@ -194,6 +278,13 @@ slide.classList.toggle("no-text", params.get("notext") === "1");
 slide.classList.toggle("settle", settle);
 // how the labels stand out: style.css, "D: a label"
 slide.classList.add(`labels-${chosen("label")}`);
+slide.classList.add(`punch-${chosen("punch")}`);
+
+/** Whether a text shows the paper panel under it: a screen does, and a
+ *  punchline does unless it is on a card. */
+const panelled = (text: Text) =>
+  text.kind === "screen" ||
+  (text.kind === "punch" && chosen("punch") !== "card");
 
 const viewBox = `0 0 ${String(SLIDE.width)} ${String(SLIDE.height)}`;
 const canvas = element("canvas", "layer globe", slide);
@@ -337,7 +428,9 @@ function drawShip(group: SVGElement): void {
 
 /** The ship's route at each picture, or null where it does not show; the
  *  ship starts at the route's first point and ends at its last. At Cape
- *  Noir it sails north into sight of the land. On the search, the west leg
+ *  Noir it shows 2 miles off the land, on the parallel of where they
+ *  thought they were: it does not sail in, which would show it off that
+ *  parallel first. On the search, the west leg
  *  runs due west, on the parallel of the sighting: south of the east leg,
  *  so that both show. The ship jumps there from the turn, with no track:
  *  the drop is the drawing's, not a course sailed. It sights the islands at
@@ -346,7 +439,8 @@ function drawShip(group: SVGElement): void {
 const ROUTES: Readonly<Record<Picture, readonly Point[] | null>> = {
   globe: null,
   thought: null,
-  real: [noir.approach, noir.ship],
+  real: [noir.ship],
+  parallel: [noir.ship],
   gap: [noir.ship],
   south: [anson.entry, anson.south],
   start: [anson.south, anson.start],
@@ -358,14 +452,22 @@ const ROUTES: Readonly<Record<Picture, readonly Point[] | null>> = {
   wreck: [scilly.sailed, scilly.wreck],
   toll: [scilly.wreck],
 };
-/** The legs that take days, with a dot at the end of each day. */
-const DAYS: Partial<Readonly<Record<Picture, number>>> = { east: 2, west: 9 };
+/** The legs that take days, with a dot at the end of each day; a count
+ *  ticks at each. Found: from the sighting at daybreak on June 9, "all that
+ *  day, and the next night" to the anchorage (PLAN.md, section 9); its dot
+ *  is under the ship. */
+const DAYS: Partial<Readonly<Record<Picture, number>>> = {
+  east: 2,
+  west: 9,
+  found: 1,
+};
 /** Which way the ship faces: 1 east, -1 west. A side view cannot face
  *  north, so it faces east as it sails north. */
 const HEADING: Readonly<Record<Picture, number>> = {
   globe: 1,
   thought: 1,
   real: 1,
+  parallel: 1,
   gap: 1,
   south: 1,
   start: 1,
@@ -459,9 +561,10 @@ function drawPicture(ansonLand: string, islands: SVGElement | null): void {
   );
 
   // Cape Noir: where the squadron thought it was, and then the parallel
-  // that both places share, and the gap between them.
+  // that both places share, across the slide as on a map, and then the
+  // gap between them.
   drawGhost(noir.thought, "thought");
-  drawParallel(noir.ship[1], noir.ship[0] - 30, "gap");
+  drawParallel(noir.ship[1], SLIDE.width, "parallel");
   drawBracket(
     [
       [noir.thought[0], noir.bracket],
@@ -718,10 +821,20 @@ function drawText(): void {
   style.steps.forEach((step, index) => {
     for (const text of step.texts) {
       const parent = text.kind === "screen" ? screen : slide;
-      const made = element("div", `text ${text.kind} hidden`, parent);
-      // A screen's words are one block, centred on the slide.
+      // A count is a label with a number.
+      const made = element(
+        "div",
+        `text ${text.kind === "count" ? "label count" : text.kind} hidden`,
+        parent,
+      );
+      // A screen's or a punchline's words are one block, centred on the
+      // slide.
       made.innerHTML =
-        text.kind === "screen" ? `<div>${text.html}</div>` : text.html;
+        text.kind === "label"
+          ? text.html
+          : text.kind === "count"
+            ? `${text.html}<div class="number"></div>`
+            : `<div>${text.html}</div>`;
       // A label on the globe is at its place there, through its picture's
       // camera.
       const [x, y] =
@@ -838,9 +951,8 @@ function show(target: number, animate: boolean): Timing {
   const goal = cameraAt(step.picture);
   const flies = animate && move === null && !sameCamera(shownCamera, goal);
   const change = animate && now > before ? CHANGE[step.picture] : 0;
-  const hadScreen =
-    previousStep?.texts.some((text) => text.kind === "screen") === true;
-  const screenShows = step.texts.some((text) => text.kind === "screen");
+  const hadScreen = previousStep?.texts.some(panelled) === true;
+  const screenShows = step.texts.some(panelled);
   // Before the camera flies, what leaves fades out: marks, labels, a
   // screen. When a screen fades out, the picture waits for it.
   const route = flies ? flight(shownCamera, goal) : null;
@@ -909,20 +1021,48 @@ function show(target: number, animate: boolean): Timing {
   const screen =
     slide.querySelector<HTMLElement>(".screen-panel") ?? fail("no screen");
   screen.classList.toggle("hidden", !screenShows);
+  for (const tick of ticks) clearTimeout(tick);
+  ticks = [];
   for (const { text, step: index, element: made } of shown) {
-    const visible = index === target;
+    const dimmed = kept(text, index, target);
+    const counts = text.kind === "count" && onSlide(index, target);
+    const visible = index === target || dimmed || counts;
+    // A label that lingers leaves with the new labels, still dimmed.
+    const lingering =
+      animate &&
+      !visible &&
+      text.lingers === true &&
+      text.until === step.picture &&
+      !made.classList.contains("hidden");
     made.classList.toggle("hidden", !visible);
-    // A screen's words wait for the last screen's words to fade out; other
-    // text waits for the picture's change.
+    made.classList.toggle("dimmed", dimmed || lingering);
+    if (counts)
+      count(
+        text,
+        index,
+        made,
+        step.picture,
+        animate && now > before ? { lead, change } : null,
+      );
+    // A screen's words wait for the last screen's words to fade out; a
+    // count comes as the ship sets off; other text waits for the picture's
+    // change.
+    const labelWait = lead + change > 0 ? lead + change + AFTER : 0;
     const wait =
       text.kind === "screen"
         ? hadScreen
           ? TEXT_FADE
           : 0
-        : lead + change > 0
-          ? lead + change + AFTER
-          : 0;
-    made.style.transitionDelay = animate && visible ? `${String(wait)}s` : "0s";
+        : text.kind === "count"
+          ? lead
+          : labelWait;
+    // A lingering label dims at once and fades out later: the delays are
+    // for opacity and --text-dim, in style.css's order.
+    made.style.transitionDelay = lingering
+      ? `${String(labelWait)}s, 0s`
+      : animate && index === target
+        ? `${String(wait)}s`
+        : "0s";
   }
   // A new slide's title waits for the camera, as other text does.
   for (const title of titles) {
@@ -1048,6 +1188,8 @@ interface TextMeasure {
   readonly kind: string;
   readonly words: number;
   readonly fontSize: number;
+  /** a label of an earlier step, kept (story.ts, `stays`) */
+  readonly dimmed: boolean;
   /** a label with no land under it (overSea) */
   readonly onSea: boolean;
   /** slide px: left, top, width, height */
@@ -1085,6 +1227,7 @@ function measure(): {
       kind: text.kind,
       words: made.innerText.split(/\s+/).filter((word) => word !== "").length,
       fontSize: Number.parseFloat(getComputedStyle(made).fontSize),
+      dimmed: made.classList.contains("dimmed"),
       onSea: made.classList.contains("on-sea"),
       box,
       travel,
@@ -1215,7 +1358,7 @@ async function start(): Promise<void> {
   await document.fonts.ready;
   for (const { text, step: index, element: made } of shown) {
     const shows = style.steps[index]?.picture;
-    if (text.kind === "label" && shows !== undefined)
+    if ((text.kind === "label" || text.kind === "count") && shows !== undefined)
       made.classList.toggle("on-sea", overSea(made, landTest(shows)));
     if (text.leader !== undefined)
       drawLeader(

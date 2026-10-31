@@ -1,10 +1,18 @@
 /* The mockup's slide, in the house's type and text rules (stem/AGENTS.md,
-   "Writing a talk"; watches/docs/slide-patterns.md, "Text fades";
-   stem/docs/legibility.md, "Text sizes"). Text does not dim: a step's text
-   leaves at the next step (PLAN.md, section 13). The colours are Ledger's
-   roles (ledger.css, a copy of the house palette). */
+   "Writing a talk"; watches/docs/slide-patterns.md, "Text fades" and "Text
+   dims"; stem/docs/legibility.md, "Text sizes"). A step's text leaves at
+   the next step (PLAN.md, section 13), except a label that stays to the
+   end of its slide: it dims (story.ts, `stays`). The colours are
+   Ledger's roles (ledger.css, a copy of the house palette). */
 :root {
   --text-fade: 0.4s;
+  --text-dimmed: 50%;
+}
+/* registered, so that it can fade */
+@property --text-dim {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
 }
 body {
   margin: 0;
@@ -240,10 +248,20 @@ h1 {
   text-align: center;
   color: var(--palette-muted);
 }
+/* A dimmed text's colors mix toward the paper: not an opacity, which would
+   fade its outline too (watches/docs/slide-patterns.md, "Text dims"). */
 .text {
   position: absolute;
-  color: var(--palette-ink);
-  transition: opacity var(--text-fade);
+  color: color-mix(
+    in srgb,
+    var(--palette-ink),
+    var(--palette-background) var(--text-dim)
+  );
+  transition-property: opacity, --text-dim;
+  transition-duration: var(--text-fade);
+}
+.text.dimmed {
+  --text-dim: var(--text-dimmed);
 }
 .text.hidden,
 h1.hidden {
@@ -256,7 +274,11 @@ h1.hidden {
 .text em {
   font-style: normal;
   font-weight: 600;
-  color: var(--palette-accent);
+  color: color-mix(
+    in srgb,
+    var(--palette-accent),
+    var(--palette-background) var(--text-dim)
+  );
 }
 .no-text .text,
 .no-text h1,
@@ -275,7 +297,34 @@ h1.hidden {
 .screen-panel.hidden {
   opacity: 0;
 }
-.text.screen {
+
+/* A punchline: a screen's words, over the labels, on one of three backings
+   (the `punch` choice, choices.ts). The paper panel is under it as a
+   screen, or as a veil that the picture shows through; or the words are
+   on a dark card. The veil and the card are the mockup's guesses: a
+   backing gets its role by stem/docs/theme.md before it goes in a talk. */
+.screen-panel {
+  z-index: 1;
+}
+.text.screen,
+.text.punch {
+  z-index: 2;
+}
+.punch-veil .screen-panel:not(.hidden) {
+  opacity: 0.75;
+}
+.punch-card .text.punch > div {
+  padding: 20px 44px;
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--palette-ink) 70%, transparent);
+  color: var(--palette-background);
+}
+/* The accent is too dark on the card: the number is in the paper. */
+.punch-card .text.punch em {
+  color: inherit;
+}
+.text.screen,
+.text.punch {
   inset: 0;
   display: grid;
   place-items: center;
@@ -304,20 +353,30 @@ h1.hidden {
   margin: -6px 0 0 -10px;
   padding: 4px 8px;
   background: var(--palette-panel);
-  border: 2px solid var(--palette-border);
+  border: 2px solid
+    color-mix(
+      in srgb,
+      var(--palette-border),
+      var(--palette-background) var(--text-dim)
+    );
   border-radius: 6px;
   -webkit-text-stroke: 0;
 }
-/* The paper on the sea. */
+/* The paper on the sea: dimmed, it moves toward the sea, as ink dims toward
+   the paper. */
 .labels-paper .text.label.on-sea {
-  color: var(--palette-background);
+  color: color-mix(
+    in srgb,
+    var(--palette-background),
+    var(--palette-water-wash) var(--text-dim)
+  );
   -webkit-text-stroke: 0;
 }
 /* Its emphasis is in the paper too, and keeps its face and size: the
    accent is 1.74:1 on the water's wash, under the 3:1 floor for large
    text (tools/lib.py, `contrast`). */
 .labels-paper .text.label.on-sea em {
-  color: var(--palette-background);
+  color: inherit;
 }
 /* A callout's leader (main.ts, drawLeader), inside its label: 4 px, in the
    label's color, as WatchCallout.vue draws one (stem/docs/illustrations.md,
@@ -344,6 +403,19 @@ h1.hidden {
 }
 .text.label .name {
   margin-bottom: 4px;
+}
+/* a count's number, at the title's size, its digits of one width so that
+   it does not jiggle as it ticks */
+.text.label.count .number {
+  font-size: 37px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+/* a yell: the first line of a label, at the title's size, in the label's
+   ink; not the accent, which is the slide's number */
+.text.label .shout {
+  font-size: 37px;
+  line-height: 1.1;
 }
 .text.label em {
   font-family: "IBM Plex Mono", monospace;
