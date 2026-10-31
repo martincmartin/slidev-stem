@@ -413,7 +413,8 @@ The two still frames (mockup/prize.html, mockup/newton.html):
 One slide for each beat of the outline, with what the picture does and what
 the labels say. Each is a proposal, to sketch before it is built.
 
-1. **Commodore Anson Rounds Cape Horn, 1741** (decided in round 4, section
+1. **At Sea, Longitude Was a Guess** (retitled in round 6,
+   section 16; the slide was decided in round 4, section
    14, in place of a general slide about latitude and longitude). The whole
    globe, and the camera zooms to Cape Noir. Click: the dashed ship, "Where
    they thought they were", which stays, dimmed, for one more click.
@@ -607,7 +608,7 @@ node tasks/2026-10-30-part-2-visual-language/tools/speed.ts http://localhost:520
 # round 6's pictures: the labels with each punchline backing, and with the
 # labels that stay removed
 E=tasks/2026-10-30-part-2-visual-language/evidence/round-6
-for punch in card veil screen; do
+for punch in card veil screen card-paper; do
   node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
     $E/punch-$punch --wind near --style labels --punch $punch
 done
@@ -1294,6 +1295,14 @@ land and all, as a parallel does on a map.
   joined it only at the end. Moving the ghost and the parallel to where it
   showed would not do: the ship would then sail north off the parallel.
   Walter's "standing to the northward" is for the narration.
+- **The title makes the point, for every ship:** "At Sea, Longitude Was a
+  Guess", not "Commodore Anson Rounds Cape Horn, 1741", which said only who
+  and where. Anson in 1741 is the example, not the point, so the title has
+  no name and no year. It does not give the punchline's number: the clicks
+  show how far off the guess was. 543 px wide at 37 px, of the slide's 980
+  (measured in the page). "Ships Knew Latitude, but Guessed Longitude"
+  (799 px) says more, but gives away the "Latitude: correct" click. With no
+  name here, no slide names Anson: the speaker does.
 - **"Cliffs!" is a yell:** on its own line, at the title's size (37 px),
   with an exclamation mark, above "2 a.m., 2 miles ahead". Not in
   capitals, which read slower than a word's shape, and not in the accent,
@@ -1316,8 +1325,8 @@ land and all, as a parallel does on a map.
   the title, the latitude label needs no name: "Juan Fernández's latitude"
   sounded like a person's. Round 2 ranked a title with no "who" lower
   (section 12), because the first label then gave the name and "his men"
-  had no one to refer to. Neither holds now: the title gives the name, the
-  Cape Noir slide before it names Anson, and the scurvy label says "men".
+  had no one to refer to. Neither holds now: the title gives the name, and
+  the scurvy label says "men". Who searches is the speaker's to say.
 - **"2 days east" is lower,** now that it is one line: its letters are
   23 px above its leg, as far as "9 days back" is below its own (measured
   in the frames).
@@ -1415,14 +1424,24 @@ third of the sea.
 
 Each slide ends on a click of its own: the punchline, in a Lessig screen's
 type (Fraunces 600, 76 px, centered), with its number in the accent. The
-dropdown **punchline** (`punch`) gives three backings
-(`evidence/round-6/punch-*/frames/labels-4.png`, `-10.png`, `-15.png`):
+dropdown **punchline** (`punch`) gives four backings
+(`evidence/round-6/punch-*/frames/labels-5.png`, `-11.png`, `-16.png`):
 
 - `card`: a card in the ink at 70 %, with rounded corners, behind the
   words, which are in the paper.
 - `veil`: the paper at 75 % over the whole slide, the picture faint under
   it.
 - `screen`: the paper over the whole slide, as Lessig.
+- `card-paper`: an opaque card in the paper, with no outline; its words as
+  on the veil, ink with the number in the accent. Over the paper land it has
+  no edge, and on the Anson slide it cuts the count's number and "Chile: an
+  enemy coast".
+
+**The veil says which slide the punchline is about** (your point): the
+picture stays under it, so the punchline reads as the end of the slide
+just seen. A paper screen does not: the Lessig style uses the same screen
+to open the next slide ("October 1707: a fleet sails home") and to end one
+("Over 1,300 men died").
 
 **Contrast** (WCAG, from Ledger's colors; the floor for large text is
 3:1):
@@ -1440,10 +1459,13 @@ Under the veil, the picture's marks are 1.27:1: there to see, not to read.
 
 - **Veil.** The picture stays in place under the words: the gap, the
   wreck, the track. The punchline reads as said about that picture. The
-  accent passes (4.62:1), so the number stands out as it does elsewhere.
-  Con: the title and the labels fade with the picture, and the veil is a
-  new use of the paper, which needs a role (`docs/theme.md`) before it goes
-  in a talk.
+  accent is 4.62:1 over the veiled sea, but 3.63:1 where a veiled line (the
+  parallel, the bracket, a coast) crosses the number: under the house's
+  4.5:1 for the big number. Con: the title and the labels fade with the
+  picture. The veil is the paper, the background role, at an opacity: no
+  new role. But its words sit on a mix of the paper and the picture, which
+  no gate measures, so it is measured, as `docs/theme.md` does for a line
+  on the water.
 - **Screen.** The strongest contrast, and the cleanest words. Con: the
   picture is gone at the moment that the words are about it, and a
   labelled slide changes mode at its last click.

@@ -273,9 +273,11 @@ export interface Style {
   readonly steps: readonly Step[];
 }
 
-/** Who, and where: the labels then tell what went wrong. */
-const NOIR_TITLE = "Commodore Anson Rounds Cape Horn, 1741";
-/** What is searched for, by name: the Cape Noir slide has named Anson, and
+/** The point, for every ship of the time, not for Anson alone: the slide
+ *  is its example. The clicks show how far off; the title does not give
+ *  the number (PLAN.md, section 16). */
+const NOIR_TITLE = "At Sea, Longitude Was a Guess";
+/** What is searched for, by name; who searches is the speaker's to say, and
  *  the labels then say "the island" (PLAN.md, section 16). */
 const TITLE = "Hunt for Juan Fernández Island, 1741";
 /** Who, and where to: the labels then tell how the voyage ended. */

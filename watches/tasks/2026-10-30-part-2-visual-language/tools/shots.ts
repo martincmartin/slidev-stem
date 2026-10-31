@@ -2,9 +2,9 @@
 // in Chromium. In watches/, with the mockup's server running
 // (mockup/vite.config.ts):
 //   node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ OUT_DIR \
-//     [--sea wash|paper] [--wind NAME] [--label NAME] [--old NAME] [--punch NAME] [--start NAME] [--style NAME]...
-// With --sea paper, the sea is not filled; --wind, --label, --old, --punch and --start are
-// the mockup's choices (mockup/choices.ts); each --style shoots one style
+//     [--sea wash|paper] [--CHOICE NAME]... [--style NAME]...
+// With --sea paper, the sea is not filled; each of the mockup's choices
+// (mockup/choices.ts: wind, label, ...) is an option; each --style shoots one style
 // (default: all). It writes OUT_DIR/frames/<style>-<step>.png, frames of the
 // labels in motion (frames/labels-motion-<n>.png: MOTION),
 // OUT_DIR/measurements.json, the times between the frames of each of the
@@ -16,7 +16,7 @@ import { join } from "node:path";
 import { parseArgs } from "node:util";
 import { chromium } from "playwright-chromium";
 import type { Page } from "playwright-chromium";
-import { CHOICES } from "../mockup/choices.ts";
+import { CHOICE_LIST, CHOICES } from "../mockup/choices.ts";
 import { STYLES as STORY_STYLES } from "../mockup/story.ts";
 
 const STYLES = STORY_STYLES.map((style) => style.name);
@@ -133,17 +133,22 @@ async function main(): Promise<void> {
     allowPositionals: true,
     options: {
       sea: { type: "string", default: "wash" },
-      wind: { type: "string", default: CHOICES.wind[0] },
-      label: { type: "string", default: CHOICES.label[0] },
-      old: { type: "string", default: CHOICES.old[0] },
-      punch: { type: "string", default: CHOICES.punch[0] },
-      start: { type: "string", default: CHOICES.start[0] },
       style: { type: "string", multiple: true },
+      ...Object.fromEntries(
+        CHOICE_LIST.map(
+          (choice) =>
+            [choice, { type: "string", default: CHOICES[choice][0] }] as const,
+        ),
+      ),
     },
   });
   const [url, out] = positionals;
-  const among = (names: readonly string[], name: string) =>
-    names.includes(name);
+  const among = (names: readonly string[], name: unknown) =>
+    typeof name === "string" && names.includes(name);
+  // The choices' options come from CHOICE_LIST, so their values are
+  // checked here, not typed by parseArgs.
+  const flags: Readonly<Record<string, unknown>> = values;
+  const chosen = CHOICE_LIST.map((choice) => [choice, flags[choice]] as const);
   const styles = STYLES.filter(
     (style) => values.style === undefined || values.style.includes(style),
   );
@@ -151,29 +156,21 @@ async function main(): Promise<void> {
     positionals.length !== 2 ||
     url === undefined ||
     out === undefined ||
-    !["wash", "paper"].includes(values.sea) ||
-    !among(CHOICES.wind, values.wind) ||
-    !among(CHOICES.label, values.label) ||
-    !among(CHOICES.old, values.old) ||
-    !among(CHOICES.punch, values.punch) ||
-    !among(CHOICES.start, values.start) ||
+    !among(["wash", "paper"], values.sea) ||
+    !chosen.every(([choice, name]) => among(CHOICES[choice], name)) ||
     styles.length !== (values.style?.length ?? STYLES.length)
   ) {
     const names = (choice: readonly string[]) => choice.join("|");
     console.error(
-      `usage: node tools/shots.ts URL OUT_DIR [--sea wash|paper] [--wind ${names(CHOICES.wind)}] [--label ${names(CHOICES.label)}] [--old ${names(CHOICES.old)}] [--punch ${names(CHOICES.punch)}] [--start ${names(CHOICES.start)}] [--style ${names(STYLES)}]...`,
+      `usage: node tools/shots.ts URL OUT_DIR [--sea wash|paper] ${CHOICE_LIST.map((choice) => `[--${choice} ${names(CHOICES[choice])}]`).join(" ")} [--style ${names(STYLES)}]...`,
     );
     process.exitCode = 2;
     return;
   }
-  const query = new URLSearchParams({
-    sea: values.sea,
-    wind: values.wind,
-    label: values.label,
-    old: values.old,
-    punch: values.punch,
-    start: values.start,
-  }).toString();
+  const query = new URLSearchParams([
+    ["sea", String(values.sea)],
+    ...chosen.map(([choice, name]) => [choice, String(name)]),
+  ]).toString();
   await mkdir(join(out, "frames"), { recursive: true });
   const browser = await chromium.launch();
   try {

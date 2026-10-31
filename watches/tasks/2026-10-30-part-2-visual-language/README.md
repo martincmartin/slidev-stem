@@ -52,9 +52,9 @@ slide's punchline in big type.
 - `evidence/round-5/`: round 5's output of `shots.ts`, `globe/` (both
   styles, from the whole globe, with Scilly), and of `speed.ts`, in windows:
   `speed-globe.json`.
-- `evidence/round-6/punch-card/`, `punch-veil/` and `punch-screen/`: round
-  6's output of `shots.ts`, the labels with each backing for the
-  punchlines; `remove/`, with the labels that stay removed; `lessig/`,
+- `evidence/round-6/punch-card/`, `punch-veil/`, `punch-screen/` and
+  `punch-card-paper/`: round 6's output of `shots.ts`, the labels with each
+  backing for the punchlines; `remove/`, with the labels that stay removed; `lessig/`,
   the Lessig style.
 
 Run each tool from the talk's directory (`PLAN.md`, section 11).

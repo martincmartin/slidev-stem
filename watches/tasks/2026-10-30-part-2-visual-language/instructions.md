@@ -287,3 +287,25 @@ Later messages in round 6, verbatim, in order:
 
 > "Sail to latitude. Then east or west?" should dim when it does now, then
 > remove when "2 days east" shows up at the end of the eastward travel.
+
+> PLAN.md talks about a "puchline dropdown", but I don't see it at
+> http://localhost:5200
+
+> I don't think we need a new role for veil or card, e.g. the point of
+> "paper" is to be the background, so making a card or veil that color isn't
+> a new role, its the existing "background" role.
+
+> I want to see the card with paper background (and text same color as
+> veil), please create a fourth option "card - paper". No need for an
+> outline yet.
+
+> Don't add that to AGENTS.md. I'm still undecided between veil and screen
+> for for punchline (but leave all 4 options for now since leaving them
+> doesn't really cost anything).
+>
+> - Change the first title ("Rounds cape horn"), it should explain the point
+>   we're making. Something about longitude esitmates having high error.
+
+> We need something more general, the point wasn't just a failing of
+> Commodore Anson, but that in general Longitude estimates were poor. 1741
+> was just an example.

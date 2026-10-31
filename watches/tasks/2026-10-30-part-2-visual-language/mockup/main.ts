@@ -21,7 +21,7 @@
 // `settle` shows each step at once, with no motion, and `notext` hides the
 // words: tools/shots.ts uses both. `window.mock` gives it the measurements.
 import "../../../../themes/house/styles/fonts.css";
-import { CHOICES } from "./choices.ts";
+import { CHOICE_LIST, CHOICE_NAMES, CHOICES } from "./choices.ts";
 import type { Choice, Chosen } from "./choices.ts";
 import {
   ANSON,
@@ -281,10 +281,11 @@ slide.classList.add(`labels-${chosen("label")}`);
 slide.classList.add(`punch-${chosen("punch")}`);
 
 /** Whether a text shows the paper panel under it: a screen does, and a
- *  punchline does unless it is on a card. */
+ *  punchline does on a veil or a screen, not on a card. */
 const panelled = (text: Text) =>
   text.kind === "screen" ||
-  (text.kind === "punch" && chosen("punch") !== "card");
+  (text.kind === "punch" &&
+    (chosen("punch") === "veil" || chosen("punch") === "screen"));
 
 const viewBox = `0 0 ${String(SLIDE.width)} ${String(SLIDE.height)}`;
 const canvas = element("canvas", "layer globe", slide);
@@ -1075,9 +1076,8 @@ function show(target: number, animate: boolean): Timing {
   current = target;
   params.set("step", String(target));
   history.replaceState(null, "", `?${params.toString()}`);
-  const counter = document.querySelector("#counter");
-  if (counter !== null)
-    counter.textContent = `${style.name}: step ${String(target + 1)} of ${String(style.steps.length)}`;
+  const counter = document.querySelector("#counter") ?? fail("no #counter");
+  counter.textContent = `${style.name}: step ${String(target + 1)} of ${String(style.steps.length)}`;
   if (!animate) {
     slide.getBoundingClientRect();
     requestAnimationFrame(() => {
@@ -1307,38 +1307,46 @@ async function start(): Promise<void> {
   );
   drawText();
 
-  const choose = document.querySelector<HTMLSelectElement>("#style");
-  if (choose !== null) {
-    for (const candidate of STYLES)
-      choose.add(
-        new Option(candidate.name, candidate.name, false, candidate === style),
-      );
-    choose.addEventListener("change", () => {
-      params.set("style", choose.value);
-      params.set("step", "0");
-      location.search = params.toString();
-    });
-  }
-  // Each choice's dropdown: the same step, with the other name. The labels'
-  // choice does nothing in a style with no labels.
-  const offer = <C extends Choice>(choice: C, applies: boolean): void => {
-    const select = document.querySelector<HTMLSelectElement>(`#${choice}`);
-    if (select === null) return;
+  const choose =
+    document.querySelector<HTMLSelectElement>("#style") ?? fail("no #style");
+  for (const candidate of STYLES)
+    choose.add(
+      new Option(candidate.name, candidate.name, false, candidate === style),
+    );
+  choose.addEventListener("change", () => {
+    params.set("style", choose.value);
+    params.set("step", "0");
+    location.search = params.toString();
+  });
+  // A dropdown for each choice (choices.ts), before the counter: the same
+  // step, with the other name. A choice that the style does not use is
+  // shown, disabled.
+  const uses = (test: (text: Text) => boolean) =>
+    style.steps.some((each) => each.texts.some(test));
+  const applies: Readonly<Record<Choice, boolean>> = {
+    wind: true,
+    label: uses((text) => text.kind === "label"),
+    old: uses((text) => text.stays === true),
+    punch: uses((text) => text.kind === "punch"),
+    start: true,
+  };
+  const counter = document.querySelector("#counter") ?? fail("no #counter");
+  const offer = <C extends Choice>(choice: C): void => {
+    const select = document.createElement("select");
+    select.id = choice;
+    const label = document.createElement("label");
+    label.append(`${CHOICE_NAMES[choice]} `, select);
+    counter.before(label);
     const now = chosen(choice);
     for (const name of CHOICES[choice])
       select.add(new Option(name, name, false, name === now));
-    select.disabled = !applies;
+    select.disabled = !applies[choice];
     select.addEventListener("change", () => {
       params.set(choice, select.value);
       location.search = params.toString();
     });
   };
-  const hasLabels = style.steps.some((each) =>
-    each.texts.some((text) => text.kind === "label"),
-  );
-  offer("wind", true);
-  offer("label", hasLabels);
-  offer("start", true);
+  for (const choice of CHOICE_LIST) offer(choice);
   const step = (by: number): void => {
     const target = Math.min(
       style.steps.length - 1,

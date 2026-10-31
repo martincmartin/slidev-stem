@@ -38,12 +38,17 @@ body {
 #slide.jump {
   transition: none !important;
 }
+/* One line: a name stays beside its dropdown, and a window too narrow for
+   the bar cuts off its end. Not a scroll container: in tools/shots.ts's
+   window, as wide as the slide, one changed the slide's anti-aliasing. */
 #bar {
   display: flex;
   gap: 16px;
   align-items: center;
   height: 36px;
   padding: 0 12px;
+  overflow-x: clip;
+  white-space: nowrap;
   font:
     14px system-ui,
     sans-serif;
@@ -298,11 +303,13 @@ h1.hidden {
   opacity: 0;
 }
 
-/* A punchline: a screen's words, over the labels, on one of three backings
+/* A punchline: a screen's words, over the labels, on one of four backings
    (the `punch` choice, choices.ts). The paper panel is under it as a
    screen, or as a veil that the picture shows through; or the words are
-   on a dark card. The veil and the card are the mockup's guesses: a
-   backing gets its role by stem/docs/theme.md before it goes in a talk. */
+   on a card, dark or paper. Each backing is a role: the paper (background)
+   for the screen, the veil and the paper card, the ink for the dark card.
+   Through the veil and the dark card, the words sit on a mix of that role
+   and the picture, which no gate measures (PLAN.md, section 16). */
 .screen-panel {
   z-index: 1;
 }
@@ -313,11 +320,18 @@ h1.hidden {
 .punch-veil .screen-panel:not(.hidden) {
   opacity: 0.75;
 }
-.punch-card .text.punch > div {
+.punch-card .text.punch > div,
+.punch-card-paper .text.punch > div {
   padding: 20px 44px;
   border-radius: 20px;
+}
+.punch-card .text.punch > div {
   background: color-mix(in srgb, var(--palette-ink) 70%, transparent);
   color: var(--palette-background);
+}
+/* the paper card: opaque, its words as on the veil, with no outline */
+.punch-card-paper .text.punch > div {
+  background: var(--palette-background);
 }
 /* The accent is too dark on the card: the number is in the paper. */
 .punch-card .text.punch em {
