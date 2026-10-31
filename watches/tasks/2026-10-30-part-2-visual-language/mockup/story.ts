@@ -1,14 +1,16 @@
-// Two slides of Anson's voyage, told two ways: the same pictures and facts,
-// with the words on Lessig-style screens, or as labels on the map. First the
-// globe, and Cape Noir in April 1741, where the squadron was 400 miles east of
-// where it thought; then the search for Juan Fernández, May–June 1741. Each
-// style is data here; main.ts draws either. The facts are from Richard
-// Walter's account (PLAN.md, "The facts"). Round 1 compared four styles;
-// round 2 works on the labels (PLAN.md, section 12); round 3 retired the
-// reading rail and the cards (section 13); round 4 adds the globe and Cape
-// Noir (section 14).
-import { ANSON, NOIR, project, SLIDE } from "./geo.ts";
-import type { LonLat, MapView, Point } from "./geo.ts";
+// Three slides of the longitude problem, told two ways: the same pictures
+// and facts, with the words on Lessig-style screens, or as labels on the
+// map. First the globe, and Cape Noir in April 1741, where Anson's squadron
+// was 400 miles east of where it thought; then the search for Juan
+// Fernández, May–June 1741; then the Isles of Scilly in October 1707, where
+// a fleet that had not seen the Sun since the noon before ran onto the
+// rocks. Each style is data here; main.ts draws either. The facts are from
+// Richard Walter's account and the sources of PLAN.md, "The facts". Round 1
+// compared four styles; round 2 works on the labels (PLAN.md, section 12);
+// round 3 retired the reading rail and the cards (section 13); round 4 adds
+// the globe and Cape Noir (section 14); round 5 adds Scilly (section 15).
+import { ANSON, CHANNEL, NOIR, project, SCILLY, seen, SLIDE } from "./geo.ts";
+import type { Camera, LonLat, MapView, Point } from "./geo.ts";
 
 /** What the picture shows. Each state adds to the one before it. */
 export const PICTURES = [
@@ -21,11 +23,15 @@ export const PICTURES = [
   "east",
   "west",
   "found",
+  "channel",
+  "reckoned",
+  "wreck",
+  "toll",
 ] as const;
 export type Picture = (typeof PICTURES)[number];
 
 /** The story's map that each picture shows over the globe, or null: the
- *  globe alone, at the start view (the `start` choice). */
+ *  globe alone (GLOBE_VIEW). */
 export const REGION: Readonly<Record<Picture, MapView | null>> = {
   globe: null,
   thought: NOIR,
@@ -36,7 +42,27 @@ export const REGION: Readonly<Record<Picture, MapView | null>> = {
   east: ANSON,
   west: ANSON,
   found: ANSON,
+  channel: null,
+  reckoned: SCILLY,
+  wreck: SCILLY,
+  toll: SCILLY,
 };
+
+/** The camera of a picture with no story map: its own here, or else the
+ *  start view (the `start` choice). */
+export const GLOBE_VIEW: Partial<Readonly<Record<Picture, Camera>>> = {
+  channel: CHANNEL,
+};
+
+/** The middle of the Isles of Scilly. In the view of the Channel they are a
+ *  few px across, so a callout points them out. */
+const ISLES: LonLat = [-6.32, 49.93];
+/** Slide px from the islands' middle to the outside of their coast, in the
+ *  view of the Channel: they are about 8 by 11 px. */
+const ISLES_RADIUS = 7;
+/** Slide px outside a part's outline where a leader ends
+ *  (stem/docs/illustrations.md, "Leaders"). */
+const LEADER_GAP = 10;
 
 /** Seconds of animation for each day at sea. */
 export const DAY = 0.7;
@@ -71,13 +97,17 @@ const ISLAND: LonLat = [-78.83, -33.64];
  *  is 16.875° east of north. */
 const SIGHTING = { leagues: 11.5, bearing: 16.875 } as const;
 
-function sighting(): LonLat {
-  const miles = SIGHTING.leagues * 3;
-  const bearing = (SIGHTING.bearing * Math.PI) / 180;
-  const lat = ISLAND[1] - (miles * Math.cos(bearing)) / 60;
-  const shorten = Math.cos((lat * Math.PI) / 180);
-  return [ISLAND[0] - (miles * Math.sin(bearing)) / 60 / shorten, lat];
+/** The place a run of nautical miles from a place, on a bearing in degrees
+ *  east of north, on a flat chart: near enough over a few dozen miles. */
+function sail([lon, lat]: LonLat, bearing: number, miles: number): LonLat {
+  const radians = (bearing * Math.PI) / 180;
+  const to = lat + (miles * Math.cos(radians)) / 60;
+  const shorten = Math.cos((to * Math.PI) / 180);
+  return [lon + (miles * Math.sin(radians)) / 60 / shorten, to];
 }
+
+const sighting = (): LonLat =>
+  sail(ISLAND, SIGHTING.bearing + 180, SIGHTING.leagues * 3);
 
 export function placesOn(view: MapView): Places {
   const island = project(view, ISLAND);
@@ -130,6 +160,76 @@ export function noirPlacesOn(view: MapView): NoirPlaces {
   };
 }
 
+/** The places of the wreck on the Isles of Scilly, in slide px. */
+export interface ScillyPlaces {
+  /** October 22, 1707, about 8 p.m.: the Outer Gilstone, where the
+   *  Association struck */
+  readonly rock: Point;
+  /** the ship on the rocks, with its bow at the rock */
+  readonly wreck: Point;
+  /** about 6 p.m.: where the fleet sailed on from, LAST_RUN before */
+  readonly sailed: Point;
+  /** where they thought they were at 8 p.m.: Orford's reckoning, LAST_RUN
+   *  on */
+  readonly thought: Point;
+  /** the bracket that measures the gap between the ships: parallel to it,
+   *  on its south side, clear of the track */
+  readonly bracket: readonly [Point, Point];
+}
+
+/** Where the Association struck: the Outer Gilstone, among the Western
+ *  Rocks (Wikipedia's place of the wreck). */
+const GILSTONE: LonLat = [-6.3972, 49.8656];
+/** HMS Orford's reckoning when the fleet hove to at 4 p.m. on October 22,
+ *  from Lieutenant Lochard's log, as a map of W. E. May's data shows it:
+ *  about 49°40' N, 7°20' W (PLAN.md, section 15). The fleet thought that
+ *  the Channel was open: it was "much to ye Northward of what was expected,
+ *  and likewise more to the Eastward", the captain of the Torbay wrote. */
+const ORFORD_RECKONED: LonLat = [-7.33, 49.67];
+/** At about 6 p.m. the fleet sailed on east by north, and struck at about
+ *  8 p.m.: two hours, at an assumed 6 knots. The ship and the reckoning
+ *  run the same course and distance, so the gap between them stays the
+ *  same. */
+const LAST_RUN = { bearing: 78.75, miles: 12 } as const;
+/** Slide px from the ship's middle to its bow (main.ts, SHIP_PARTS). */
+const BOW = 21;
+/** Slide px between the gap and its bracket. */
+const BRACKET_OFFSET = 40;
+
+export function scillyPlacesOn(view: MapView): ScillyPlaces {
+  const rock = project(view, GILSTONE);
+  const from = project(
+    view,
+    sail(GILSTONE, LAST_RUN.bearing + 180, LAST_RUN.miles),
+  );
+  const run: Point = [rock[0] - from[0], rock[1] - from[1]];
+  const length = Math.hypot(...run);
+  const wreck: Point = [
+    rock[0] - (BOW * run[0]) / length,
+    rock[1] - (BOW * run[1]) / length,
+  ];
+  const thought = project(
+    view,
+    sail(ORFORD_RECKONED, LAST_RUN.bearing, LAST_RUN.miles),
+  );
+  // the gap's direction, turned a right angle clockwise: its south side
+  const gap = Math.hypot(wreck[0] - thought[0], wreck[1] - thought[1]);
+  const [x, y] = [
+    (-(wreck[1] - thought[1]) / gap) * BRACKET_OFFSET,
+    ((wreck[0] - thought[0]) / gap) * BRACKET_OFFSET,
+  ];
+  return {
+    rock,
+    wreck,
+    sailed: [wreck[0] - run[0], wreck[1] - run[1]],
+    thought,
+    bracket: [
+      [thought[0] + x, thought[1] + y],
+      [wreck[0] + x, wreck[1] + y],
+    ],
+  };
+}
+
 /** The kinds of text. A label is placed; a screen fills the slide (Lessig). */
 export type Kind = "label" | "screen";
 
@@ -139,11 +239,13 @@ export interface Text {
   readonly html: string;
   /** the top left corner of a label's words, in slide px */
   readonly at?: Point;
-  /** or the place on the globe that a label is centred on, at the start
-   *  view */
+  /** or the place on the globe that a label is centred on, through its
+   *  picture's camera */
   readonly on?: LonLat;
   /** the place that the text is about: how far the eye travels to it */
   readonly about?: Point;
+  /** a callout's leader, to `about`: slide px short of it where it ends */
+  readonly leader?: number;
 }
 
 export interface Step {
@@ -162,6 +264,8 @@ export interface Style {
 const NOIR_TITLE = "Commodore Anson Rounds Cape Horn, 1741";
 /** Who searches, and for what: "Anson's Search" alone left both open. */
 const TITLE = "Commodore Anson Hunts for an Island, 1741";
+/** Who, and where to: the labels then tell how the voyage ended. */
+const SCILLY_TITLE = "Admiral Shovell Sails Home, 1707";
 
 /** The middle of the west leg, which runs due west to the sighting. */
 const westMiddle = ({ turn, found }: Places): Point => [
@@ -215,12 +319,42 @@ const lessig: Style = {
       picture: "found",
       texts: [{ kind: "screen", html: "<em>70–80 men</em><br>died" }],
     },
+    // The camera flies to the English Channel, and then zooms in to the
+    // Isles of Scilly, with no screen over it.
+    {
+      picture: "found",
+      texts: [{ kind: "screen", html: "October 1707:<br>a fleet sails home" }],
+    },
+    { picture: "channel", texts: [] },
+    { picture: "reckoned", texts: [] },
+    {
+      picture: "reckoned",
+      texts: [{ kind: "screen", html: "Where they<br>thought they were" }],
+    },
+    { picture: "wreck", texts: [] },
+    {
+      picture: "wreck",
+      texts: [{ kind: "screen", html: "8 p.m.: the rocks<br>of Scilly" }],
+    },
+    { picture: "toll", texts: [] },
+    {
+      picture: "toll",
+      texts: [{ kind: "screen", html: "<em>Over 1,300</em><br>men died" }],
+    },
   ],
 };
 
 // The islands show only when Anson finds them, so the first label names them.
 const labelPlaces = placesOn(ANSON);
 const noir = noirPlacesOn(NOIR);
+const scilly = scillyPlacesOn(SCILLY);
+/** The Isles of Scilly in the view of the Channel. */
+const isles: Point = [seen(CHANNEL, ISLES)[0], seen(CHANNEL, ISLES)[1]];
+/** The middle of the gap at Scilly, on its bracket. */
+const gapMiddle: Point = [
+  (scilly.bracket[0][0] + scilly.bracket[1][0]) / 2,
+  (scilly.bracket[0][1] + scilly.bracket[1][1]) / 2,
+];
 
 const labels: Style = {
   name: "labels",
@@ -358,6 +492,80 @@ const labels: Style = {
           kind: "label",
           html: "The detour cost<br><em>70–80 men</em>",
           at: [712, 400],
+        },
+      ],
+    },
+    // Where in the world: both coasts of the Channel, and the islands that
+    // the camera zooms in to next.
+    {
+      title: SCILLY_TITLE,
+      picture: "channel",
+      texts: [
+        // west of the Channel Islands, which it would hide
+        { kind: "label", html: "English Channel", on: [-4, 49.55] },
+        { kind: "label", html: "England", on: [-1.6, 51.2] },
+        { kind: "label", html: "France", on: [0.4, 48.7] },
+        // a callout from the open sea south-west of the islands
+        {
+          kind: "label",
+          html: "Isles of Scilly",
+          at: [24, isles[1] + 80],
+          about: isles,
+          leader: ISLES_RADIUS + LEADER_GAP,
+        },
+      ],
+    },
+    // The fleet, and where it thought it was. The stakes have a place here,
+    // unlike the Anson slide's: the dashed ship stands for the fleet, so they
+    // are above it.
+    {
+      title: SCILLY_TITLE,
+      picture: "reckoned",
+      texts: [
+        // "Ships", as the source counts them: 15 ships of the line, and
+        // others.
+        {
+          kind: "label",
+          html: "21 ships",
+          at: [scilly.thought[0] - 48, scilly.thought[1] - 76],
+        },
+        {
+          kind: "label",
+          html: "October 22, 1707:<br>where they think they are",
+          at: [scilly.thought[0] - 150, scilly.thought[1] + 34],
+          about: scilly.thought,
+        },
+      ],
+    },
+    {
+      title: SCILLY_TITLE,
+      picture: "wreck",
+      texts: [
+        {
+          kind: "label",
+          html: "8 p.m.: the rocks<br>of Scilly!",
+          at: [scilly.rock[0] + 60, scilly.rock[1] + 10],
+          about: scilly.rock,
+        },
+      ],
+    },
+    // The gap is mostly east: by Orford's reckoning, 24 nautical miles east
+    // and 9 north. So the label says what the outline says, in the form of
+    // Cape Noir's "Longitude: 400 miles off" (PLAN.md, section 15).
+    {
+      title: SCILLY_TITLE,
+      picture: "toll",
+      texts: [
+        {
+          kind: "label",
+          html: "Longitude: unsure how<br>far east they had come",
+          at: [gapMiddle[0] - 10, gapMiddle[1] + 36],
+          about: gapMiddle,
+        },
+        {
+          kind: "label",
+          html: "4 warships lost,<br>over <em>1,300 men</em>",
+          at: [700, 400],
         },
       ],
     },

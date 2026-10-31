@@ -3,7 +3,7 @@
 // the picture shows later (MapView.islands), from 1:10m land. The globe's
 // data (globe.json) has the land and the coast at each level of
 // mockup/globe.ts (LEVELS): 1:110m and 1:50m for the whole Earth, and 1:10m
-// near the story (FINE). In watches/:
+// near the stories (FINE). In watches/:
 //   node tasks/2026-10-30-part-2-visual-language/tools/maps.ts NE_DIR
 // NE_DIR holds ne_{110m,50m,10m}_{land,coastline}.geojson (the globe task's
 // tools/fetch.sh). The results go to mockup/maps/. Each story map carries the
@@ -20,6 +20,7 @@ import {
   NOIR,
   onGlobe,
   project,
+  SCILLY,
   seen,
   SLIDE,
 } from "../mockup/geo.ts";
@@ -35,14 +36,20 @@ const MIN_STEP = 0.4;
 
 type Ring = readonly LonLat[];
 
-/** Where the 10m level has data: near the story, so that globe.json stays
- *  small. At 10m's zooms the 50m level draws outside it (mockup/globe.ts).
- *  The data is cut at FINE's margin, outside the box. */
-const FINE: Box = { west: -100, east: -50, south: -62, north: -12 };
+/** Where the 10m level has data: near each story, so that globe.json stays
+ *  small. At 10m's zooms the 50m level draws outside them
+ *  (mockup/globe.ts). The data is cut at FINE_MARGIN, outside each box. */
+const FINE: readonly Box[] = [
+  // Cape Noir and Juan Fernández
+  { west: -100, east: -50, south: -62, north: -12 },
+  // the English Channel, with the Isles of Scilly: all of the view CHANNEL
+  // (mockup/geo.ts)
+  { west: -13, east: 5, south: 46, north: 54 },
+];
 const FINE_MARGIN = 2;
 
 /** How each level is written: decimals of a degree (0.01° is 1.1 km), km
- *  between kept points (0: every point), and the box of its data (null:
+ *  between kept points (0: every point), and the boxes of its data (none:
  *  the whole Earth). */
 const WRITE: Readonly<
   Record<
@@ -50,13 +57,13 @@ const WRITE: Readonly<
     {
       readonly decimals: number;
       readonly step: number;
-      readonly box: Box | null;
+      readonly boxes: readonly Box[];
     }
   >
 > = {
-  "110m": { decimals: 2, step: 0, box: null },
-  "50m": { decimals: 2, step: 0, box: null },
-  "10m": { decimals: 3, step: 0.5, box: FINE },
+  "110m": { decimals: 2, step: 0, boxes: [] },
+  "50m": { decimals: 2, step: 0, boxes: [] },
+  "10m": { decimals: 3, step: 0.5, boxes: FINE },
 };
 
 /** The features' geometries of a GeoJSON FeatureCollection. */
@@ -287,21 +294,27 @@ async function globeData(
 ): Promise<GlobeData> {
   const levels: GlobeData["levels"][number][] = [];
   for (const { scale } of LEVELS) {
-    const { decimals, step, box } = WRITE[scale];
+    const { decimals, step, boxes } = WRITE[scale];
     const shown = (shape: Ring) => !inside(shape, hidden);
     const land = rings(await read(`ne_${scale}_land`))
       .filter(shown)
-      .map((ring) => (box === null ? ring : ringInBox(ring, box, FINE_MARGIN)))
+      .flatMap((ring) =>
+        boxes.length === 0
+          ? [ring]
+          : boxes.map((box) => ringInBox(ring, box, FINE_MARGIN)),
+      )
       .map((ring) => flatten(ring, decimals, step))
       .filter((flat) => flat.length >= 6);
     const coast = lines(await read(`ne_${scale}_coastline`))
       .filter(shown)
       .flatMap((line) =>
-        box === null ? [line] : linesInBox(line, box, FINE_MARGIN),
+        boxes.length === 0
+          ? [line]
+          : boxes.flatMap((box) => linesInBox(line, box, FINE_MARGIN)),
       )
       .map((line) => flatten(line, decimals, step))
       .filter((flat) => flat.length >= 4);
-    levels.push({ scale, box, land, coast });
+    levels.push({ scale, boxes, land, coast });
   }
   return { levels };
 }
@@ -402,7 +415,7 @@ async function main(): Promise<void> {
   console.log(`${globeOut}: ${String(globe.length)} bytes`);
   // Each story map's camera on the globe: the one that fits its coast best.
   const cameras = new Map<MapView, Camera>();
-  for (const view of [ANSON, NOIR]) {
+  for (const view of [ANSON, NOIR, SCILLY]) {
     const pairs = coastPairs(view, land);
     const best = bestCamera(view, pairs);
     cameras.set(view, best);
@@ -410,7 +423,7 @@ async function main(): Promise<void> {
       `${view.name}, ${String(pairs.length)} points of the coast, the globe's gap (median / 95th percentile / most): at the view's centre ${gaps(cameraFor(view), pairs)}; best fit ${gaps(best, pairs)}`,
     );
   }
-  for (const view of [ANSON, NOIR, NEW_ENGLAND]) {
+  for (const view of [ANSON, NOIR, SCILLY, NEW_ENGLAND]) {
     const camera = cameras.get(view);
     const { islands: shown } = view;
     const islands =

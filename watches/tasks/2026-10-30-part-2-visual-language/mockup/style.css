@@ -319,6 +319,23 @@ h1.hidden {
 .labels-paper .text.label.on-sea em {
   color: var(--palette-background);
 }
+/* A callout's leader (main.ts, drawLeader), inside its label: 4 px, in the
+   label's color, as WatchCallout.vue draws one (stem/docs/illustrations.md,
+   "Leaders"). */
+.text .leader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+}
+.text .leader path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
 /* a name, smaller than a sentence: in a label of its own (prize.ts), or
    the first lines of a label */
 .text.label.small,

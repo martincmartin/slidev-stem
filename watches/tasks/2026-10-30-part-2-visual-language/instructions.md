@@ -174,3 +174,37 @@ straight to WebGL?".)
 
 A question about the WebGL globe came during this round. It and its answer
 are in the globe task (`../2026-10-28-globe-planning/`, section 13).
+
+## Round 5, 2026-10-30
+
+Your message, verbatim:
+
+> Ok now we need Scilly, after Anson of course. Please create that.
+
+Later messages in round 5, verbatim, in order. Steps 9 and 10 were the last
+step of the Anson slide and the first step of the Scilly slide; the new step
+comes between them.
+
+> Step 10 is great! However, you can't tell it's the english channel.
+> Mabye, in between 9 and 10, a view zoomed out a little more where you can
+> see the south of England and north of france,i.e. both sides of the channel
+
+> Cool. Isles of Scilly needs a callout
+
+> The 3D flight is great! But 3.5 sec is too short. Plz make it take twice
+> as long
+
+> This is a talk called "what every nerd should know about mechanical
+> watches." Part 2 is "changed the world." This initial sequence of part 2
+> is to motivate the Longitude Act. Earlier, you and I had a back and forth
+> about "Disasters like this". In step 12, the delta between "where they
+> think they are" and where they really are is more horizontal than
+> vertical. So in step 12, please get with the program "unsure how far east
+> it had come, and ran onto the Isles of Scilly." which you earlier agreed
+> was a defensible statement.
+
+> If they had thought their longitude was anywhere near Scilly, they would
+> have been more careful in darkness at 8pm.
+
+> Why is the label "21 ships" in the upper right, while the actual ships are
+> in the lower left?

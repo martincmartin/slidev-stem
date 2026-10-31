@@ -1,0 +1,140 @@
+{
+ "headed": true,
+ "scale": 2,
+ "start": "globe",
+ "style": "labels",
+ "timed": [
+  {
+   "engine": "chromium",
+   "step": 1,
+   "seconds": 2.1151048855491323,
+   "frames": 254,
+   "msBetweenFrames": {
+    "median": 8.300000000000182,
+    "p95": 9,
+    "most": 9.400000000000091
+   }
+  },
+  {
+   "engine": "chromium",
+   "step": 4,
+   "seconds": 1.7880830715225717,
+   "frames": 214,
+   "msBetweenFrames": {
+    "median": 8.300000000000182,
+    "p95": 8.899999999999977,
+    "most": 9.300000000000182
+   }
+  },
+  {
+   "engine": "chromium",
+   "step": 9,
+   "seconds": 7,
+   "frames": 840,
+   "msBetweenFrames": {
+    "median": 8.300000000000182,
+    "p95": 8.899999999999636,
+    "most": 9.399999999999636
+   }
+  },
+  {
+   "engine": "chromium",
+   "step": 10,
+   "seconds": 1.3560308506141596,
+   "frames": 163,
+   "msBetweenFrames": {
+    "median": 8.300000000000182,
+    "p95": 9.200000000000045,
+    "most": 9.399999999999864
+   }
+  },
+  {
+   "engine": "firefox",
+   "step": 1,
+   "seconds": 2.1151048855491332,
+   "frames": 193,
+   "msBetweenFrames": {
+    "median": 8.340000000000146,
+    "p95": 16.679999999999836,
+    "most": 25.11999999999989
+   }
+  },
+  {
+   "engine": "firefox",
+   "step": 4,
+   "seconds": 1.7880830715225744,
+   "frames": 162,
+   "msBetweenFrames": {
+    "median": 8.340000000000146,
+    "p95": 16.680000000000064,
+    "most": 25.019999999999982
+   }
+  },
+  {
+   "engine": "firefox",
+   "step": 9,
+   "seconds": 7,
+   "frames": 645,
+   "msBetweenFrames": {
+    "median": 8.340000000000146,
+    "p95": 16.68000000000029,
+    "most": 33.340000000000146
+   }
+  },
+  {
+   "engine": "firefox",
+   "step": 10,
+   "seconds": 1.3560308506141596,
+   "frames": 162,
+   "msBetweenFrames": {
+    "median": 8.339999999999918,
+    "p95": 8.559999999999945,
+    "most": 9.240000000000009
+   }
+  },
+  {
+   "engine": "webkit",
+   "step": 1,
+   "seconds": 2.1151048855491332,
+   "frames": 127,
+   "msBetweenFrames": {
+    "median": 17,
+    "p95": 18,
+    "most": 18
+   }
+  },
+  {
+   "engine": "webkit",
+   "step": 4,
+   "seconds": 1.788083071522574,
+   "frames": 107,
+   "msBetweenFrames": {
+    "median": 17,
+    "p95": 18,
+    "most": 18
+   }
+  },
+  {
+   "engine": "webkit",
+   "step": 9,
+   "seconds": 7,
+   "frames": 420,
+   "msBetweenFrames": {
+    "median": 17,
+    "p95": 18,
+    "most": 18
+   }
+  },
+  {
+   "engine": "webkit",
+   "step": 10,
+   "seconds": 1.3560308506141832,
+   "frames": 82,
+   "msBetweenFrames": {
+    "median": 17,
+    "p95": 18,
+    "most": 18
+   }
+  }
+ ]
+}

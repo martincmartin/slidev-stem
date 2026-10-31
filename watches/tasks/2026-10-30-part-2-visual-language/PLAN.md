@@ -13,8 +13,9 @@ cards, and compares three ways for a label to stand out and two for old
 labels (section 13); its pictures are in [evidence/round-3/](evidence/round-3/).
 Round 4 adds the Cape Noir slide before the Anson slide, and a globe that
 the camera zooms and turns, on a canvas (section 14); its pictures and
-speeds are in [evidence/round-4/](evidence/round-4/). Section 11 gives the
-commands.
+speeds are in [evidence/round-4/](evidence/round-4/). Round 5 adds the
+Scilly slide after the Anson slide (section 15); its pictures and speeds are
+in [evidence/round-5/](evidence/round-5/). Section 11 gives the commands.
 
 **The question.** Part 2 has more text than Part 1. Which visual language
 carries it: a reading rail on the right (A), cards over the animation after
@@ -74,6 +75,15 @@ and the Anson slide must show why the westerlies made the trip back slow.
   globe draws on a canvas at Natural Earth's scale for each zoom: 120 frames
   a second in Firefox and Chromium windows, where an SVG globe took 42 ms a
   frame in Firefox.
+- **Round 5: Scilly, 1707** (section 15). After the Anson slide, the camera
+  flies 11,900 km across the Atlantic in 7 s, to the English Channel with
+  both of its coasts, and then zooms in to the Isles of Scilly. A dashed
+  ship shows where the fleet thought it was; the real ship sails
+  its last two hours onto the rocks. The gap between them is mostly east,
+  so the label says, as the outline does, that they were unsure how far
+  east they had come. The fleet was also a little further north, and
+  W. E. May, who studied the surviving logbooks, puts the error down to
+  latitude and the charts: a detail for the narration, if at all.
 - **Decisions for you** are in section 10: the wind's placement, and the
   colors of the new marks. You chose a filled sea, and the islands revealed
   when Anson finds them.
@@ -406,13 +416,17 @@ the labels say. Each is a proposal, to sketch before it is built.
    28, Anson thought that he saw the island, and his officers said that it
    was a cloud. And a number for the bar: 340 miles in 9 days is about 1.6
    miles an hour, half a walking pace.
-3. **Scilly, 1707.** A map of the approach to the Channel. The fleet sails
-   north from Gibraltar; at night, a dashed "where they thought they were"
-   and a solid "where they were", on the rocks of Scilly. The takeaway on the
-   land: "4 warships, over 1,300 men". Check the cause first (section 9):
-   the error was not longitude alone. The outline's link to the Act is
-   general ("disasters like this"), so the slide may keep it, but must not
-   say that this wreck caused the Act.
+3. **Admiral Shovell Sails Home, 1707** (built in round 5, section 15). The
+   camera flies from Juan Fernández to the English Channel: "English
+   Channel", "England", "France", and a callout to the Isles of Scilly.
+   Click: the camera zooms in to the islands; a dashed ship, "October 22,
+   1707: where they think they are", and "21 ships" above it. Click:
+   the ship sails onto the rocks, "8 p.m.: the
+   rocks of Scilly!". Click: a bracket between the two ships, "Longitude:
+   unsure how far east they had come", and the takeaway "4 warships lost,
+   over 1,300 men". The gap is mostly east (section 15). The
+   outline's link to the Act is general ("disasters like this"), so the
+   narration may keep it, but must not say that this wreck caused the Act.
 4. **The Longitude Act, 1714.** As the still frame: the reaches of ½° and 1°
    from the venue, with the prizes.
 5. **Time is longitude.** The globe turns: 15° of longitude is one hour, the
@@ -481,15 +495,17 @@ back. Check the times before you use it.
   _Romney_; "over 1,300 men died"; "the exact cause remains debated". The
   wreck "is often said to have encouraged the passing in 1714 of the first
   Longitude Act", but "there is no hard evidence for this assertion". Popular
-  accounts give up to 2,000 dead. A summary of W. E. May's study (Journal of
-  Navigation, 1960, from 44 surviving logbooks) says that he found errors of
-  latitude and of the charts, not of longitude alone. I did not read May's
-  paper. **So check before the slide says why the fleet was lost**:
-  "unsure how far east it had come" is at most part of the cause. The
-  outline's "disasters like this fed the push that led to the Longitude Act"
-  is a claim about such disasters in general, not about this wreck, so it is
-  not the claim that the museum calls unproven. The slide must keep it
-  general: not "this wreck led to the Act".
+  accounts give up to 2,000 dead. The outline's "disasters like this fed the
+  push that led to the Longitude Act" is a claim about such disasters in
+  general, not about this wreck, so it is not the claim that the museum
+  calls unproven. The slide must keep it general: not "this wreck led to
+  the Act". **The cause, checked in round 5** (section 15, "The facts of
+  Scilly"): the fleet was further north as well as further east than it
+  thought, mostly east in miles, and W. E. May puts the error down to
+  latitude, more from the charts than from the ships. The slide keeps the
+  outline's "unsure how far east it had come", which the gap shows.
+  **Correction to the outline:** "up to 2,000 souls" is the top of the
+  range, and the museum says over 1,300.
 
 Sources: Walter, [Project Gutenberg #47130](https://www.gutenberg.org/ebooks/47130);
 Newton's opinion,
@@ -518,6 +534,8 @@ read summaries of the three studies, not their full text.
   South America (`start=america`).
 - **"2 a.m."** on Cape Noir's label: Walter says "between one and two"
   (section 14, "The facts of Cape Noir").
+- **Scilly's coast**: Natural Earth 1:10m, as now, or finer data that
+  draws the Western Rocks (OpenStreetMap, or GSHHG), with its license.
 
 Decided: the sea is filled (round 1's unfilled sea made the land and the sea
 hard to tell apart), and the islands show only when Anson finds them.
@@ -557,6 +575,12 @@ node tasks/2026-10-30-part-2-visual-language/tools/speed.ts http://localhost:520
   $E/speed-globe.json --headed
 node tasks/2026-10-30-part-2-visual-language/tools/speed.ts http://localhost:5200/ \
   $E/speed-america.json --headed --start america
+# round 5's pictures (both styles, from the globe) and speeds
+E=tasks/2026-10-30-part-2-visual-language/evidence/round-5
+node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
+  $E/globe --wind near --style labels --style lessig
+node tasks/2026-10-30-part-2-visual-language/tools/speed.ts http://localhost:5200/ \
+  $E/speed-globe.json --headed
 ```
 
 Round 1's pictures came from the same commands before round 2 changed the
@@ -564,7 +588,8 @@ mockup: `shots.ts URL evidence/round-1/sea-wash` and `--sea paper`, every
 style. Round 2's came before round 3 changed it. Round 3 removed the rail and
 the cards; the mockup at commit 8703a9a still draws them. Round 4 put the
 Cape Noir steps and the globe before the Anson steps; the mockup at commit
-07bda45 draws round 3's story.
+07bda45 draws round 3's story. Round 5 put the Scilly steps after the Anson
+steps; the mockup at commit 4005b5f draws round 4's story.
 
 In the mockup: `?style=lessig|labels`, and the choices of
 [mockup/choices.ts](mockup/choices.ts): `&wind=bands|near|all`,
@@ -1004,3 +1029,192 @@ You asked how computer graphics varies detail. The usual ways:
 - During this round, a question came about the WebGL globe: can culling hide
   the far side without an occluder? No: the answer is in the globe task
   (`../2026-10-28-globe-planning/PLAN.md`, section 13).
+
+## 15. Round 5: Scilly
+
+Your message is in [instructions.md](instructions.md), "Round 5". The
+pictures and the speeds are in [evidence/round-5/](evidence/round-5/).
+
+### The facts of Scilly
+
+Section 9 said to check the cause before the slide gives one. I did not read
+W. E. May's papers: they are behind a paywall. The facts come from the
+sources at the end of this section, in their words where the words matter.
+
+- **The last two days** (Wikipedia, from May, 1960, and others). The fleet
+  of 21 ships left Gibraltar on September 29. At noon on October 21 the
+  weather cleared, and the latitude was measured at 48°50′–57′ N, with
+  soundings of 93–130 fathoms: about 200 miles west-southwest of Scilly.
+  "This was the last observation of latitude, and the rest of the voyage
+  relied on dead reckoning." At 4 p.m. on October 22 the fleet hove to and
+  took soundings. At about 6 p.m. it sailed on, east by north, and at about
+  8 p.m. the flagship and others were among the rocks.
+- **The wrecks.** _Association_ struck the Outer Gilstone and sank with all
+  hands. _Eagle_ was lost on Tearing Ledge, and _Romney_ on Bishop Rock, with
+  one survivor. _Firebrand_ struck the Outer Gilstone and sank in Smith
+  Sound. The dead: "over 1,300" (the museum); "Statements vary from 1,400 to
+  over 2,000" (Wikipedia).
+- **Where they thought they were.** The captain of the _Torbay_ wrote: "We
+  were much to ye Northward of what was expected, and likewise more to the
+  Eastward." HMS _Orford_'s reckoning when the fleet hove to, from
+  Lieutenant Lochard's log in May (1960), is on a map on Wikimedia Commons
+  (Kognos, 2020, CC BY-SA 4.0). Read from the map, it is about 49°40′ N,
+  7°20′ W: 12 nautical miles south and 36 west of the Outer Gilstone.
+- **Why.** May (1973), as Wikipedia gives it, "considers the error to have
+  been one of latitude, but due more to the inaccuracy of the charts than
+  to the ships' observations". A notice of 1700 in the _Philosophical
+  Transactions_, which library catalogs attribute to Edmond Halley, warned
+  that most charts put the Lizard and Scilly "nearly 5 leagues" (15
+  nautical miles) too far north. It gave the south of Scilly as near 49°50′,
+  and told masters to come in on a parallel no further north than 49°40′.
+  The other causes named: the compass's variation, about 7½° west; a
+  current that sets north (Rennell's Current, up to 15 miles a day); and the
+  compasses themselves, of which a survey after the wreck found 4 of 112
+  serviceable. Wikipedia: Dava Sobel's claim that the wreck was mainly an
+  error of longitude "cannot be sustained". One source disagrees: the
+  CISMAS dive trail for the _Association_ says that the fatal error "was in
+  calculation of their longitude".
+- **Whether, and when.** By Orford's reckoning, at 8 p.m. the fleet was
+  about 24 nautical miles west and 9 south of where it was. In miles, the
+  error was mostly of longitude. But the fleet sailed east by north, and on
+  a course east, the latitude decides whether a ship meets the islands; the
+  longitude decides only when. With the charts' Scilly 15 miles north of
+  the real one, the reckoned course passed well south of the islands. This
+  is a good story for the narration. It may also be why May calls the error
+  one of latitude; the summaries do not give his reason.
+- **Decided, 2026-10-30: the label says longitude.** The gap that the
+  slide shows is mostly east, so the label says what the outline says:
+  "Longitude: unsure how far east they had come", in the form of Cape
+  Noir's "Longitude: 400 miles off". The part sets up the Longitude Act, and
+  this is the error that the picture shows. It is defensible: the fleet
+  was further east than it thought, as the _Torbay_'s captain wrote. And
+  "when" is not a small matter: if the fleet had known that it was near
+  Scilly in longitude, it would have sailed with more care in the dark at
+  8 p.m. (the user, 2026-10-30). The
+  latitude and the charts are for the narration, if at all. (Round 5's
+  first label was "Latitude last measured: noon the day before".)
+- **Corrections to the outline:** "up to 2,000 souls" is the top of the
+  range (section 9).
+
+### What the slide shows
+
+Under the title "Admiral Shovell Sails Home, 1707":
+
+| Step     | The picture                                      | The labels                                                                        | Words | Sea under text |
+| -------- | ------------------------------------------------ | --------------------------------------------------------------------------------- | ----: | -------------: |
+| channel  | the flight across the Atlantic, then the Channel | "English Channel", "England", "France", and a callout, "Isles of Scilly"          |     7 |              – |
+| reckoned | the zoom to Scilly, then a dashed ship           | "21 ships", "October 22, 1707: where they think they are"                         |    10 |          5.2 % |
+| wreck    | the ship sails its last two hours onto a rock    | "8 p.m.: the rocks of Scilly!"                                                    |     6 |          4.0 % |
+| toll     | a bracket between the two ships                  | "Longitude: unsure how far east they had come", "4 warships lost, over 1,300 men" |    14 |          6.6 % |
+
+- **The Channel first**, at your request: zoomed straight in to Scilly, you
+  could not tell that the sea was the English Channel. The view of the
+  Channel names both of its coasts, and the islands that the camera zooms
+  in to next. Its "sea under text" has no number: the measure needs a
+  story map's land, and this view is the globe alone.
+- **The title** names who, and where to, as "Commodore Anson Rounds Cape
+  Horn, 1741" does. The labels then tell how the voyage ended.
+- **"21 ships"** is the stakes, above the dashed ship, which stands for
+  the fleet. On the Anson slide the stakes are about the whole crew and
+  have no place, so they are on the land; here they have one. (Round 5's
+  first try put them on Cornwall, where they read as ships at Cornwall.)
+  "Ships", not "warships": the source counts 21 ships and names 15 ships
+  of the line.
+- **Lessig**: the same pictures, with no labels, and four screens.
+  "October 1707: a fleet sails home" before the flight, and after each
+  picture from the zoom on: "Where they thought they were", "8 p.m.: the
+  rocks of Scilly" and "Over 1,300 men died".
+
+### The map and the places
+
+- **Scale: 600 px a degree of latitude, 8 times the other story maps'**
+  (`SCILLY` in `mockup/geo.ts`). The gap is 26 nautical miles. At the other
+  maps' scale it is 33 px, less than a ship's length, and the islands are a
+  dot. At 400 px a degree, tried first, the real ship's track started a
+  ship's length from the dashed ship, so the dashed ship seemed to sail onto
+  the rocks. At 600, the islands are about 40 by 50 px, and the scale bar is
+  10 miles.
+- **The coast is Natural Earth 1:10m.** Scilly is its five largest islands,
+  with 8–13 points each, and no Western Rocks. Cornwall's coast has
+  segments of 1.4 km at the median, 7 px at this scale, so its shape is a
+  little angular. Finer data is a decision for you (section 10).
+- **The places** (`scillyPlacesOn` in `mockup/story.ts`). The ship strikes
+  at the Outer Gilstone, 49°51.9′ N, 6°23.8′ W (Wikipedia's place of the
+  wreck), and is drawn with its bow there. It sails the last two hours east
+  by north: 12 nautical miles, at an assumed 6 knots. The dashed ship is
+  Orford's reckoning at 4 p.m., moved on by the same 12 miles: the fleet
+  lay hove to from 4 to 6 p.m. So the gap is the same at 6 and at 8 p.m.:
+  26 nautical miles (30 statute miles), 24 east and 9 north. These places
+  are approximate: the reckoning is read from a map, the speed is assumed,
+  and one ship's reckoning stands for the fleet's. The slide gives no
+  number for the gap.
+- **The view of the Channel** (`CHANNEL` in `mockup/geo.ts`) is the globe
+  alone, through a camera of its own: from west of Scilly to the Strait of
+  Dover, and from Brittany to the Bristol Channel, at 0.91 km a px. The
+  names are placed on the globe through that camera. "English Channel" is
+  west of the Channel Islands: at first it hid Guernsey.
+- **The callout to the Isles of Scilly.** In the view of the Channel the
+  islands are about 8 by 11 px. So the label stands on the open sea to the
+  south-west, with a leader as stem/docs/illustrations.md draws one: 4 px,
+  in the label's color, from the side of the label that faces the islands,
+  4 px out from its box, to 10 px outside the islands (`drawLeader` in
+  `mockup/main.ts`, after `WatchCallout.vue`). The leader is drawn inside
+  its label, so it fades with it. A ring round the islands, tried first,
+  is not a mark of the house.
+- **The globe** has 1:10m data in a second box, from 13° W to 5° E and from
+  46° N to 54° N, which holds all of the view of the Channel (`FINE` in
+  `tools/maps.ts`). `mockup/globe.ts` now takes a list of boxes for a level.
+  `globe.json` grew from 2.35 MB to 2.54 MB. The Scilly map fits the globe
+  with gaps of 0.3 / 0.8 / 1.0 px (median / 95th percentile / most).
+- **The flight** from Juan Fernández to the Channel crosses 107° of the
+  globe, 11,900 km. It zooms out until the Atlantic fills the slide
+  ([motion, halfway](evidence/round-5/globe/frames/labels-motion-10.png)).
+  By `FLIGHT` in `mockup/main.ts` it would take its length, 4.3 s, cut to
+  the cap of 3.5 s; you asked for twice that, so it takes 7 s
+  (`FLIGHT_TIME`). The other flights keep their times: 2.1 s to Cape Noir,
+  1.8 s to Juan Fernández, and 1.4 s for the zoom from the Channel to
+  Scilly.
+- **A fix to the land test** for paper words: it read a centred label's box
+  where its CSS had not yet moved it, half a label to the right. It now
+  reads the box where it shows (`slideBox` in `mockup/main.ts`). Before
+  this round, the one centred label, "South America", was on the land at
+  both places.
+
+### Speed
+
+The times between frames, in ms (median / 95th percentile), in windows of
+Playwright's engines at a device scale of 2
+([speed-globe.json](evidence/round-5/speed-globe.json)):
+
+| Flight                            | Firefox    | Chromium  | WebKit  |
+| --------------------------------- | ---------- | --------- | ------- |
+| globe → Cape Noir, 2.1 s          | 8.3 / 16.7 | 8.3 / 9.0 | 17 / 18 |
+| Cape Noir → Juan Fernández, 1.8 s | 8.3 / 16.7 | 8.3 / 8.9 | 17 / 18 |
+| Juan Fernández → Channel, 7 s     | 8.3 / 16.7 | 8.3 / 8.9 | 17 / 18 |
+| Channel → Scilly, 1.4 s           | 8.3 / 8.6  | 8.3 / 9.2 | 17 / 18 |
+
+The new flights keep the display's rate, as the others do: 120 Hz in
+Firefox and Chromium, and 60 Hz in WebKit's window. Firefox's slowest frame
+in the flight across the Atlantic took 33 ms; the run does not count how
+many frames were that slow.
+
+### Limits
+
+- The places of the two ships are approximate (above).
+- One ship stands for the fleet of 21.
+- The Western Rocks are not drawn. The ship strikes at the rock's place,
+  2 km west-southwest of St Agnes, the nearest island drawn.
+- The pictures are from Chromium only. The speeds are from Playwright's
+  engines, not from a release Firefox or Safari.
+- The facts about May's papers come from summaries of them.
+
+Sources: Wikipedia,
+["Scilly naval disaster of 1707"](https://en.wikipedia.org/wiki/Scilly_naval_disaster_of_1707);
+Kognos,
+[Scilly naval disaster 1707 Track.jpg](https://commons.wikimedia.org/wiki/File:Scilly_naval_disaster_1707_Track.jpg);
+"An Advertisement Necessary for All Navigators Bound up the Channel of
+England", _Philosophical Transactions_ 22 (1700), 725–726,
+[JSTOR 102790](https://www.jstor.org/stable/102790);
+CISMAS, [The Final Voyage](https://vdt.cismas.org.uk/trails/association/the-final-voyage);
+Royal Museums Greenwich,
+[object 140657](https://www.rmg.co.uk/collections/objects/rmgc-object-140657).

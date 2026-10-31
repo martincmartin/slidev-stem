@@ -20,11 +20,12 @@ export type Scale = (typeof LEVELS)[number]["scale"];
 
 /** maps/globe.json: for each level of LEVELS, in order, its land's rings
  *  and its coast's lines, each a flat list of longitudes and latitudes. A
- *  level with a box has data only in it; the coarser level draws outside. */
+ *  level with boxes has data only in them, one box near each story; the
+ *  coarser level draws outside them. No boxes: the whole Earth. */
 export interface GlobeData {
   readonly levels: readonly {
     readonly scale: Scale;
-    readonly box: Box | null;
+    readonly boxes: readonly Box[];
     readonly land: readonly (readonly number[])[];
     readonly coast: readonly (readonly number[])[];
   }[];
@@ -36,9 +37,9 @@ export const COAST = 3;
 const MIN_GAP = 0.5;
 /** Degrees between the points of the limb's arc. */
 const ARC_STEP = 2;
-/** Degrees: a level's land fills this far past its box, under the coarser
+/** Degrees: a level's land fills this far past its boxes, under the coarser
  *  land's edge, so the two fills overlap and no seam of sea shows between
- *  them. The coasts meet at the box. */
+ *  them. The coasts meet at the boxes. */
 const OVERLAP = 0.5;
 /** Degrees between the points of a box's outline. */
 const BOX_STEP = 1;
@@ -66,8 +67,8 @@ interface Level {
   readonly kmPerPx: number;
   readonly land: readonly Shape[];
   readonly coast: readonly Shape[];
-  /** where it has data, and that box grown by OVERLAP */
-  readonly box: { readonly edge: Shape; readonly grown: Shape } | null;
+  /** where it has data, and each box grown by OVERLAP; none: everywhere */
+  readonly boxes: readonly { readonly edge: Shape; readonly grown: Shape }[];
 }
 
 /** Checks globe.json. */
@@ -86,10 +87,10 @@ export function globeData(json: unknown): GlobeData {
             : fail(`${name}: not a list of longitudes and latitudes`),
         )
       : fail(`${name}: not a list`);
-  const box = (value: unknown): Box | null => {
-    if (value === null) return null;
+  const box = (value: unknown): Box => {
     if (
       typeof value === "object" &&
+      value !== null &&
       "west" in value &&
       "east" in value &&
       "south" in value &&
@@ -123,14 +124,15 @@ export function globeData(json: unknown): GlobeData {
         level === null ||
         !("scale" in level) ||
         level.scale !== scale ||
-        !("box" in level) ||
+        !("boxes" in level) ||
+        !Array.isArray(level.boxes) ||
         !("land" in level) ||
         !("coast" in level)
       )
         return fail(`level ${String(index)} is not ${scale}`);
       return {
         scale,
-        box: box(level.box),
+        boxes: (level.boxes as unknown[]).map(box),
         land: lists(level.land, `${scale} land`),
         coast: lists(level.coast, `${scale} coast`),
       };
@@ -427,34 +429,34 @@ export class Globe {
 
   constructor(data: GlobeData) {
     this.levels = data.levels.map((level, index) => {
-      const { box } = level;
-      if (box !== null && data.levels[index - 1]?.box !== null)
+      const coarser = data.levels[index - 1];
+      if (
+        level.boxes.length > 0 &&
+        (coarser === undefined || coarser.boxes.length > 0)
+      )
         throw new Error(
-          `the ${level.scale} level has a box, and no coarser level for outside it`,
+          `the ${level.scale} level has boxes, and no coarser level for outside them`,
         );
       return {
         kmPerPx: LEVELS[index]?.kmPerPx ?? 0,
         land: level.land.map(shape),
         coast: level.coast.map(shape),
-        box:
-          box === null
-            ? null
-            : {
-                edge: shape(outline(box)),
-                grown: shape(
-                  outline({
-                    west: box.west - OVERLAP,
-                    east: box.east + OVERLAP,
-                    south: box.south - OVERLAP,
-                    north: box.north + OVERLAP,
-                  }),
-                ),
-              },
+        boxes: level.boxes.map((box) => ({
+          edge: shape(outline(box)),
+          grown: shape(
+            outline({
+              west: box.west - OVERLAP,
+              east: box.east + OVERLAP,
+              south: box.south - OVERLAP,
+              north: box.north + OVERLAP,
+            }),
+          ),
+        })),
       };
     });
   }
 
-  /** The level that a camera draws, and the level outside its box. */
+  /** The level that a camera draws, and the level outside its boxes. */
   private levelsFor(camera: Camera): {
     level: Level;
     coarser: Level | undefined;
@@ -468,13 +470,13 @@ export class Globe {
   }
 
   /** The land that a camera shows, as a path in slide px: to test a point
-   *  with `isPointInPath`. A level with a box adds the coarser level's land,
-   *  so that the test is right outside the box, and near enough inside it. */
+   *  with `isPointInPath`. A level with boxes adds the coarser level's land,
+   *  so that the test is right outside the boxes, and near enough inside. */
   land(camera: Camera): Path2D {
     const axes = axesOf(camera);
     const { level, coarser } = this.levelsFor(camera);
     const path = new Path2D();
-    for (const from of level.box === null || coarser === undefined
+    for (const from of level.boxes.length === 0 || coarser === undefined
       ? [level]
       : [coarser, level])
       for (const ring of from.land) trace(path, axes, ring, true);
@@ -509,7 +511,9 @@ export class Globe {
       for (const line of from.coast) trace(context, axes, line, false);
       context.stroke();
     };
-    const clip = (to: Shape, outside: boolean) => {
+    // The boxes do not overlap, so with the even-odd rule a point is inside
+    // the clip when it is in one box, or outside them all.
+    const clip = (to: readonly Shape[], outside: boolean) => {
       context.beginPath();
       if (outside)
         context.rect(
@@ -518,24 +522,29 @@ export class Globe {
           SLIDE.width + 2 * COAST,
           SLIDE.height + 2 * COAST,
         );
-      trace(context, axes, to, true);
+      for (const box of to) trace(context, axes, box, true);
       context.clip("evenodd");
     };
-    if (level.box === null || coarser === undefined) {
+    const { boxes } = level;
+    if (boxes.length === 0 || coarser === undefined) {
       fill(level);
       stroke(level);
     } else {
+      const edges = boxes.map(({ edge }) => edge);
       context.save();
-      clip(level.box.edge, true);
+      clip(edges, true);
       fill(coarser);
       stroke(coarser);
       context.restore();
       context.save();
-      clip(level.box.grown, false);
+      clip(
+        boxes.map(({ grown }) => grown),
+        false,
+      );
       fill(level);
       context.restore();
       context.save();
-      clip(level.box.edge, false);
+      clip(edges, false);
       stroke(level);
       context.restore();
     }

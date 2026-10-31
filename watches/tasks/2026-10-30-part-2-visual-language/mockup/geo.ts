@@ -70,6 +70,18 @@ export const NOIR: MapView = {
   scale: 75,
 };
 
+/** The mouth of the English Channel, at eight times ANSON's scale: the
+ *  Isles of Scilly near the middle, about 40 px across, Cornwall at the top
+ *  right, and room on the west for where the fleet thought it was, about
+ *  25 nautical miles from where it was. At ANSON's scale the islands would
+ *  be a dot, and the two places one ship's length apart. */
+export const SCILLY: MapView = {
+  name: "scilly",
+  centre: [-6.25, 49.8],
+  at: [490, 300],
+  scale: 600,
+};
+
 /** New England, with Somerville (the venue) at the slide's centre: one
  *  degree of latitude, 60 nautical miles, is 300 px. */
 export const NEW_ENGLAND: MapView = {
@@ -243,3 +255,14 @@ export const WHOLE_GLOBE: Camera = {
   kmPerPx: (2 * EARTH_RADIUS) / (UNDER_TITLE.bottom - UNDER_TITLE.top),
   angle: 0,
 };
+
+/** The English Channel and both of its coasts: from west of the Isles of
+ *  Scilly to the Strait of Dover, and from Brittany to the Bristol Channel.
+ *  The Scilly slide opens here, so that the audience knows where the
+ *  islands are before the camera zooms in to them. */
+export const CHANNEL: Camera = fitting([
+  [-7.5, 49.9],
+  [2.5, 51],
+  [-3, 47.8],
+  [-3, 51.6],
+]);

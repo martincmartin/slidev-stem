@@ -9,6 +9,9 @@ rail and the cards, and compares outlines, cards and paper-colored words for
 the labels, and dimming against removing old labels. Round 4 adds the Cape
 Noir slide before the Anson slide, and a globe on a canvas that the camera
 zooms and turns, from the whole globe to Cape Noir and on to Juan Fernández.
+Round 5 adds the Scilly slide after the Anson slide: a flight across the
+Atlantic to the English Channel, and a zoom in to the Isles of Scilly. It
+also checks the cause of the wreck of 1707.
 
 - `instructions.md`: the request.
 - `PLAN.md`: the criteria, the options, the measurements, the ranking, the
@@ -44,5 +47,8 @@ zooms and turns, from the whole globe to Cape Noir and on to Juan Fernández.
   styles, from the whole globe), `america/` (the labels, from South America)
   and `paper/` (the labels in paper words); and of `speed.ts`, in windows:
   `speed-globe.json` and `speed-america.json`.
+- `evidence/round-5/`: round 5's output of `shots.ts`, `globe/` (both
+  styles, from the whole globe, with Scilly), and of `speed.ts`, in windows:
+  `speed-globe.json`.
 
 Run each tool from the talk's directory (`PLAN.md`, section 11).

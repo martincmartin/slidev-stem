@@ -31,7 +31,8 @@ const COVERED = 24;
  *  after it starts: ms, or a share of its camera's flight. The camera flies
  *  to Cape Noir, and the story map comes in; the ship sails into sight of
  *  the land; the camera flies to Juan Fernández; the ship sails north,
- *  east, and west. */
+ *  east, and west; the camera flies to the English Channel, and zooms in to
+ *  the Isles of Scilly; the ship sails onto the rocks. */
 type Moment = number | { readonly flight: number };
 const MOTION: readonly (readonly [number, Moment])[] = [
   [1, { flight: 0.5 }],
@@ -43,6 +44,12 @@ const MOTION: readonly (readonly [number, Moment])[] = [
   [5, 1000],
   [6, 700],
   [7, 3200],
+  [9, { flight: 0.15 }],
+  [9, { flight: 0.5 }],
+  [9, { flight: 0.9 }],
+  [10, { flight: 0.5 }],
+  [10, { flight: 0.9 }],
+  [11, 700],
 ];
 
 const wait = (ms: number) => new Promise((done) => setTimeout(done, ms));

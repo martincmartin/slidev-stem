@@ -4,8 +4,10 @@
 //    &start=globe|america&sea=paper&settle=1&notext=1
 // → or space steps forward, with the picture's motion; ← steps back at once.
 // The story opens on the whole globe, or South America (`start`), and the
-// camera flies to Cape Noir, and then to Juan Fernández; the globe turns
-// under it (globe.ts). Each story map rides the camera, placed by the camera
+// camera flies to Cape Noir, then to Juan Fernández, then across the
+// Atlantic to the English Channel, and in to the Isles of Scilly; the globe
+// turns under it (globe.ts).
+// Each story map rides the camera, placed by the camera
 // that fits it best (tools/maps.ts), and fades in as the camera comes near
 // it: its parallels are straight, and the globe's are not. The search opens with the ship at
 // the bottom of the map; at the next step it sails north to the islands'
@@ -23,6 +25,7 @@ import {
   EARTH_RADIUS,
   NOIR,
   place,
+  SCILLY,
   seen,
   SLIDE,
   SOUTH_AMERICA,
@@ -34,10 +37,12 @@ import { COAST, Globe, globeData } from "./globe.ts";
 import type { Colours } from "./globe.ts";
 import {
   DAY,
+  GLOBE_VIEW,
   noirPlacesOn,
   PICTURES,
   placesOn,
   REGION,
+  scillyPlacesOn,
   STYLES,
 } from "./story.ts";
 import type { Picture, Style, Text } from "./story.ts";
@@ -49,7 +54,8 @@ const STATUTE_MILES_PER_NAUTICAL = 1.15078;
  *  north into sight of the land, and the gap between the ships shows. On
  *  the search the ship is at the bottom of the map as the slide opens, and
  *  then sails north to the latitude; each day at sea takes DAY seconds; the
- *  last hours, to the islands, take less than one. */
+ *  last hours, to the islands, take less than one. At Scilly the ship sails
+ *  its last two hours onto the rocks. */
 const CHANGE: Readonly<Record<Picture, number>> = {
   globe: 0,
   thought: 0,
@@ -60,6 +66,10 @@ const CHANGE: Readonly<Record<Picture, number>> = {
   east: 2 * DAY,
   west: 9 * DAY,
   found: 0.8,
+  channel: 0,
+  reckoned: 0,
+  wreck: 1.2,
+  toll: 0,
 };
 /** Seconds that text waits after the picture's change, as `after-watch`. */
 const AFTER = 0.15;
@@ -72,6 +82,13 @@ const LAND_TEST = 4;
  *  needs, pans, and zooms in. `rho` trades zoom for pan (their √2); a unit
  *  of the flight's length takes `seconds`, within `least` and `most`. */
 const FLIGHT = { rho: Math.SQRT2, seconds: 1, least: 1, most: 3.5 } as const;
+/** Seconds that the flight to a picture takes, where FLIGHT does not set
+ *  it: the flight across the Atlantic, from Juan Fernández to the Channel,
+ *  is long enough for the audience to follow the globe as it turns. By
+ *  FLIGHT it would take its cap, 3.5 s; you asked for twice that. */
+const FLIGHT_TIME: Partial<Readonly<Record<Picture, number>>> = {
+  channel: 7,
+};
 /** A story map fades in as the camera's scale comes within this factor of
  *  the map's own, and out as the camera leaves. It is gone by `out` of the
  *  flight, and comes in after `in`, even when the flight hardly zooms: it
@@ -116,6 +133,7 @@ const style: Style =
 const settle = params.get("settle") === "1";
 const anson = placesOn(ANSON);
 const noir = noirPlacesOn(NOIR);
+const scilly = scillyPlacesOn(SCILLY);
 
 function fail(message: string): never {
   throw new Error(message);
@@ -323,7 +341,8 @@ function drawShip(group: SVGElement): void {
  *  runs due west, on the parallel of the sighting: south of the east leg,
  *  so that both show. The ship jumps there from the turn, with no track:
  *  the drop is the drawing's, not a course sailed. It sights the islands at
- *  the end of the west leg, and then sails to its anchorage. */
+ *  the end of the west leg, and then sails to its anchorage. At Scilly it
+ *  sails its last two hours onto the rocks. */
 const ROUTES: Readonly<Record<Picture, readonly Point[] | null>> = {
   globe: null,
   thought: null,
@@ -334,6 +353,10 @@ const ROUTES: Readonly<Record<Picture, readonly Point[] | null>> = {
   east: [anson.start, anson.turn],
   west: [[anson.turn[0], anson.found[1]], anson.found],
   found: [anson.found, anson.anchorage],
+  channel: null,
+  reckoned: null,
+  wreck: [scilly.sailed, scilly.wreck],
+  toll: [scilly.wreck],
 };
 /** The legs that take days, with a dot at the end of each day. */
 const DAYS: Partial<Readonly<Record<Picture, number>>> = { east: 2, west: 9 };
@@ -349,18 +372,61 @@ const HEADING: Readonly<Record<Picture, number>> = {
   east: 1,
   west: -1,
   found: -1,
+  channel: 1,
+  reckoned: 1,
+  wreck: 1,
+  toll: 1,
 };
 
-/** A scale of 100 statute miles, at the bottom left of a story map. A
- *  nautical mile is a minute of latitude, and a story map's scale is the
- *  same in every direction at its centre. */
-function drawScale(view: MapView, from: Picture): void {
+/** A scale of statute miles, at the bottom left of a story map. A nautical
+ *  mile is a minute of latitude, and a story map's scale is the same in
+ *  every direction at its centre. Each map's scale is about 110 px long. */
+function drawScale(view: MapView, miles: number, from: Picture): void {
   const scale = svgElement("g", { class: "scale" }, picture);
-  const length = (100 / STATUTE_MILES_PER_NAUTICAL / 60) * view.scale;
+  const length = (miles / STATUTE_MILES_PER_NAUTICAL / 60) * view.scale;
   svgElement("path", { d: `M36,512v8h${length.toFixed(1)}v-8` }, scale);
   const label = svgElement("text", { x: 36, y: 504 }, scale);
-  label.textContent = "100 miles";
+  label.textContent = `${String(miles)} miles`;
   addMark({ element: scale, from });
+}
+
+/** A ship where they thought they were: dashed, with no fill. */
+function drawGhost([x, y]: Point, from: Picture): void {
+  const ghost = svgElement(
+    "g",
+    {
+      class: "ship ghost",
+      transform: `translate(${String(x)},${String(y)})`,
+    },
+    picture,
+  );
+  drawShip(ghost);
+  addMark({ element: ghost, from });
+}
+
+/** A bracket that measures a gap: a line, with a tick across each end. */
+function drawBracket(
+  [from, to]: readonly [Point, Point],
+  shows: Picture,
+): void {
+  const length = Math.hypot(to[0] - from[0], to[1] - from[1]);
+  const [x, y] = [
+    (-(to[1] - from[1]) / length) * 8,
+    ((to[0] - from[0]) / length) * 8,
+  ];
+  const tick = ([px, py]: Point) =>
+    `M${String(px - x)},${String(py - y)}L${String(px + x)},${String(py + y)}`;
+  addMark({
+    element: svgElement(
+      "path",
+      {
+        class: "gap",
+        d: `${tick(from)}M${String(from[0])},${String(from[1])}L${String(to[0])},${String(to[1])}${tick(to)}`,
+      },
+      picture,
+    ),
+    from: shows,
+  });
 }
 
 /** A dashed parallel, from the slide's left edge. */
@@ -394,30 +460,22 @@ function drawPicture(ansonLand: string, islands: SVGElement | null): void {
 
   // Cape Noir: where the squadron thought it was, and then the parallel
   // that both places share, and the gap between them.
-  const ghost = svgElement(
-    "g",
-    {
-      class: "ship ghost",
-      transform: `translate(${String(noir.thought[0])},${String(noir.thought[1])})`,
-    },
-    picture,
-  );
-  drawShip(ghost);
-  addMark({ element: ghost, from: "thought" });
+  drawGhost(noir.thought, "thought");
   drawParallel(noir.ship[1], noir.ship[0] - 30, "gap");
-  const below = noir.bracket;
-  addMark({
-    element: svgElement(
-      "path",
-      {
-        class: "gap",
-        d: `M${String(noir.thought[0])},${String(below - 8)}v16M${String(noir.thought[0])},${String(below)}H${String(noir.ship[0])}M${String(noir.ship[0])},${String(below - 8)}v16`,
-      },
-      picture,
-    ),
-    from: "gap",
-  });
-  drawScale(NOIR, "thought");
+  drawBracket(
+    [
+      [noir.thought[0], noir.bracket],
+      [noir.ship[0], noir.bracket],
+    ],
+    "gap",
+  );
+  drawScale(NOIR, 100, "thought");
+
+  // Scilly: where the fleet thought it was, and then the gap between that
+  // and the rocks.
+  drawGhost(scilly.thought, "reckoned");
+  drawBracket(scilly.bracket, "toll");
+  drawScale(SCILLY, 10, "reckoned");
 
   // The search: the wind, over the sea, from the first leg on.
   const wind = svgElement(
@@ -435,7 +493,7 @@ function drawPicture(ansonLand: string, islands: SVGElement | null): void {
   });
   addMark({ element: wind, from: "east" });
   drawParallel(anson.start[1], anson.coast[0] - 4, "start");
-  drawScale(ANSON, "south");
+  drawScale(ANSON, 100, "south");
 
   // The voyage. When the ship moves on, a dot stays where it was.
   for (const shows of PICTURES) track(shows);
@@ -527,11 +585,12 @@ const smooth = (share: number) => {
   return clamped * clamped * (3 - 2 * clamped);
 };
 
-/** The camera that each picture shows: its story map's, or the start. */
+/** The camera that each picture shows: its story map's, or the globe's
+ *  (GLOBE_VIEW, or the start). */
 function cameraAt(shows: Picture): Camera {
   const region = REGION[shows];
   return region === null
-    ? startCamera
+    ? (GLOBE_VIEW[shows] ?? startCamera)
     : (regionMaps.get(region)?.camera ?? fail(`no map ${region.name}`));
 }
 
@@ -637,9 +696,9 @@ const shown: Shown[] = [];
 const titles: { readonly element: HTMLElement; readonly steps: number[] }[] =
   [];
 
-/** Where a place on the globe shows at the start view. */
-function globePoint(where: LonLat): Point {
-  const [x, y] = seen(startCamera, where);
+/** Where a place on the globe shows through a picture's camera. */
+function globePoint(where: LonLat, shows: Picture): Point {
+  const [x, y] = seen(cameraAt(shows), where);
   return [x, y];
 }
 
@@ -663,9 +722,12 @@ function drawText(): void {
       // A screen's words are one block, centred on the slide.
       made.innerHTML =
         text.kind === "screen" ? `<div>${text.html}</div>` : text.html;
-      // A label on the globe is at its place there, at the start view.
+      // A label on the globe is at its place there, through its picture's
+      // camera.
       const [x, y] =
-        text.on === undefined ? (text.at ?? [0, 0]) : globePoint(text.on);
+        text.on === undefined
+          ? (text.at ?? [0, 0])
+          : globePoint(text.on, step.picture);
       if (text.at !== undefined || text.on !== undefined)
         Object.assign(made.style, {
           left: `${String(x)}px`,
@@ -677,14 +739,59 @@ function drawText(): void {
   });
 }
 
+/** Slide px between a callout's label and its leader, as WatchCallout.vue
+ *  draws one (stem/docs/illustrations.md, "Leaders"). */
+const LEADER_START_GAP = 4;
+
+/** An element's box as it shows on the slide, in slide px: left, top,
+ *  width and height. */
+function slideBox(made: Element): readonly [number, number, number, number] {
+  const frame = slide.getBoundingClientRect();
+  const scale = frame.width / SLIDE.width;
+  const rect = made.getBoundingClientRect();
+  return [
+    (rect.left - frame.left) / scale,
+    (rect.top - frame.top) / scale,
+    rect.width / scale,
+    rect.height / scale,
+  ];
+}
+
+/** A callout's leader, inside its label so that it fades with the label:
+ *  straight, from the side of the label's box (grown by LEADER_START_GAP)
+ *  that faces the place, to `stop` px short of the place. Its width and
+ *  color are style.css's (`.leader`). Call it once the fonts have loaded,
+ *  so that the box has its size. */
+function drawLeader(made: HTMLElement, to: Point, stop: number): void {
+  const [left, top, width, height] = slideBox(made);
+  const centre: Point = [left + width / 2, top + height / 2];
+  const [dx, dy] = [to[0] - centre[0], to[1] - centre[1]];
+  const reach = Math.min(
+    dx === 0 ? Infinity : (width / 2 + LEADER_START_GAP) / Math.abs(dx),
+    dy === 0 ? Infinity : (height / 2 + LEADER_START_GAP) / Math.abs(dy),
+  );
+  const start: Point = [centre[0] + dx * reach, centre[1] + dy * reach];
+  const length = Math.hypot(to[0] - start[0], to[1] - start[1]);
+  const end: Point = [
+    start[0] + ((to[0] - start[0]) * (length - stop)) / length,
+    start[1] + ((to[1] - start[1]) * (length - stop)) / length,
+  ];
+  // in the label's own px, from inside its border (a card has one)
+  const local = ([x, y]: Point) =>
+    `${String(x - left - made.clientLeft)},${String(y - top - made.clientTop)}`;
+  const leader = svgElement("svg", { class: "leader" }, made);
+  svgElement("path", { d: `M${local(start)}L${local(end)}` }, leader);
+}
+
 /** Whether no land is under a label's box. With `label=paper`, the words of
  *  such a label are in the paper, with no outline; a label over the land,
  *  or partly over it, keeps the ink and the outline. Call it once the fonts
  *  have loaded, so that the box has its size. */
 function overSea(made: HTMLElement, onLand: (x: number, y: number) => boolean) {
-  const { offsetLeft: left, offsetTop: top } = made;
-  const right = left + made.offsetWidth;
-  const bottom = top + made.offsetHeight;
+  // as it shows: a centred label is moved by its CSS
+  const [left, top, width, height] = slideBox(made);
+  const right = left + width;
+  const bottom = top + height;
   for (let x = left; x <= right; x += LAND_TEST)
     for (let y = top; y <= bottom; y += LAND_TEST)
       if (onLand(x, y)) return false;
@@ -740,10 +847,11 @@ function show(target: number, animate: boolean): Timing {
   const seconds =
     route === null
       ? 0
-      : Math.min(
+      : (FLIGHT_TIME[step.picture] ??
+        Math.min(
           Math.max(route.length * FLIGHT.seconds, FLIGHT.least),
           FLIGHT.most,
-        );
+        ));
   const flightStart = flies ? TEXT_FADE : 0;
   const lead = flies
     ? flightStart + seconds
@@ -954,18 +1062,10 @@ function measure(): {
   picture: Picture;
   texts: TextMeasure[];
 } {
-  const frame = slide.getBoundingClientRect();
-  const scale = frame.width / SLIDE.width;
   const texts: TextMeasure[] = [];
   for (const { text, element: made } of shown) {
     if (made.classList.contains("hidden")) continue;
-    const rect = made.getBoundingClientRect();
-    const box: [number, number, number, number] = [
-      (rect.left - frame.left) / scale,
-      (rect.top - frame.top) / scale,
-      rect.width / scale,
-      rect.height / scale,
-    ];
+    const box = slideBox(made);
     const travel =
       text.about === undefined
         ? null
@@ -1047,7 +1147,7 @@ async function start(): Promise<void> {
     coast: computed.getPropertyValue("--globe-coast"),
   };
   // Each story map, placed at each frame (draw).
-  for (const view of [NOIR, ANSON]) {
+  for (const view of [NOIR, ANSON, SCILLY]) {
     const map = (await parse(view.name)).documentElement;
     const camera = cameraData(map.getAttribute("data-camera"));
     const group = svgElement("g", { class: "region" }, regionLayer);
@@ -1117,6 +1217,12 @@ async function start(): Promise<void> {
     const shows = style.steps[index]?.picture;
     if (text.kind === "label" && shows !== undefined)
       made.classList.toggle("on-sea", overSea(made, landTest(shows)));
+    if (text.leader !== undefined)
+      drawLeader(
+        made,
+        text.about ?? fail(`a leader with no place: ${text.html}`),
+        text.leader,
+      );
   }
   // the hidden marks and text get their style before the first step shows them
   slide.getBoundingClientRect();
