@@ -25,7 +25,7 @@ import { globeView, globeViews } from "./views.ts";
 
 const SLIDE: readonly [number, number] = [980, 552];
 const EARTH = parseEarth(earthFile);
-const GLOBE = makeGlobe(SLIDE[0]);
+const GLOBE = makeGlobe(SLIDE);
 
 const near = (actual: number, wanted: number, tolerance: number): boolean =>
   Math.abs(actual - wanted) <= tolerance;
@@ -69,8 +69,8 @@ test("a view puts its place at its slide point, with east right and north up", (
   }
 });
 
-test("the views fit the slide, and each takes its own place's angles", () => {
-  const views = globeViews(SLIDE[0]);
+test("each view has the globe under the slide's middle, and its own angles", () => {
+  const views = globeViews(SLIDE, EARTH.levels[2]?.polygons.flat() ?? []);
   assert.deepEqual(
     views.map((view) => view.name),
     ["south america", "cape noir", "juan fernandez", "channel", "scilly"],
@@ -79,8 +79,11 @@ test("the views fit the slide, and each takes its own place's angles", () => {
     assert.equal(view.ball, RADIUS);
     assert.deepEqual(view.pivot, CENTRE);
     const angles = view.angles ?? assert.fail();
+    // the globe is under the slide's middle: a view's camera looks down at
+    // a place, which can be off the slide
     const [x, y] = slidePoint({ view, ...angles }, SLIDE, CENTRE);
-    assert.ok(x > 0 && x < SLIDE[0] && y > 0 && y < SLIDE[1], view.name);
+    const reach = Math.hypot(SLIDE[0] / 2 - x, SLIDE[1] / 2 - y);
+    assert.ok(reach < RADIUS * view.scale, view.name);
   }
 });
 

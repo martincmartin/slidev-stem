@@ -404,3 +404,15 @@ All made, 2026-10-31.
   smoothstep; a level change pops, with no cross-fade; the globe costs
   130–220 ms at load in Node (162,000 triangles), not yet measured in the
   browsers.
+- **2026-10-31, phase 5, the story maps' data:** `globe/maps.ts` makes
+  each story map's land at load, as an SVG path in its own projection, and
+  fits its globe view. The plan's fit (section 4: least squares, as the
+  mockup's tool did) turns the camera in the slide's plane, and the house
+  camera has no such turn. A fit with no turn, but with the place that the
+  camera looks down at free, is as good (median / 95th percentile / most,
+  slide px): Juan Fernández 2.7 / 6.8 / 12.8 against the mockup's
+  3.0 / 5.9 / 12.7, Scilly 0.4 / 0.8 / 0.9 against 0.3 / 0.8 / 1.0, Cape
+  Noir 2.6 / 7.3 / 14.0. The fit runs at load, not in a tool: on a sample of
+  500 coast points it takes about 50 ms in Node. The earth tool's clip is
+  now `globe/clip.ts`, which the maps share; `earth.json` is byte-identical
+  (`--check`).

@@ -28,5 +28,5 @@ export function withGlobe(watch: Watch, globe: Globe): Watch {
 /** The art of the talk. */
 export function makeArt(): Watch {
   const watch = generate();
-  return withGlobe(watch, makeGlobe(watch.scene.slide[0]));
+  return withGlobe(watch, makeGlobe(watch.scene.slide));
 }

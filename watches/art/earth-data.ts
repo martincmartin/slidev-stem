@@ -13,6 +13,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
+import { clipToRect } from "../globe/clip.ts";
 import { SCALES } from "../globe/earth.ts";
 import type { Box, LonLat, Scale } from "../globe/earth.ts";
 
@@ -101,45 +102,13 @@ function polygonsOf(json: unknown): Point[][][] {
   return found;
 }
 
-/** Sutherland–Hodgman: the part of a closed ring inside one half-plane. */
-function clipEdge(
-  points: readonly Point[],
-  inside: (point: Point) => boolean,
-  cross: (from: Point, to: Point) => Point,
-): Point[] {
-  const kept: Point[] = [];
-  points.forEach((current, index) => {
-    const previous = points.at(index - 1) ?? current;
-    if (inside(current)) {
-      if (!inside(previous)) kept.push(cross(previous, current));
-      kept.push(current);
-    } else if (inside(previous)) {
-      kept.push(cross(previous, current));
-    }
-  });
-  return kept;
-}
-
 /** A ring cut to a box grown by `margin` degrees. */
 function ringInBox(ring: readonly Point[], box: Box, margin: number): Point[] {
-  const atLon =
-    (lon: number) =>
-    (from: Point, to: Point): Point => [
-      lon,
-      from[1] + ((to[1] - from[1]) * (lon - from[0])) / (to[0] - from[0]),
-    ];
-  const atLat =
-    (lat: number) =>
-    (from: Point, to: Point): Point => [
-      from[0] + ((to[0] - from[0]) * (lat - from[1])) / (to[1] - from[1]),
-      lat,
-    ];
-  const [west, east] = [box.west - margin, box.east + margin];
-  const [south, north] = [box.south - margin, box.north + margin];
-  let kept = clipEdge(ring, ([lon]) => lon >= west, atLon(west));
-  kept = clipEdge(kept, ([lon]) => lon <= east, atLon(east));
-  kept = clipEdge(kept, ([, lat]) => lat >= south, atLat(south));
-  return clipEdge(kept, ([, lat]) => lat <= north, atLat(north));
+  return clipToRect(
+    ring,
+    [box.west - margin, box.south - margin],
+    [box.east + margin, box.north + margin],
+  );
 }
 
 /** A ring rounded to `decimals`, without a point that is the last kept one

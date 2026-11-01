@@ -7,8 +7,16 @@ import type { CameraAngles, Group, Mesh, Piece, View } from "../webgl/scene.ts";
 import type { Matrix4 } from "../webgl/math.ts";
 import earthFile from "./earth.json" with { type: "json" };
 import { parseEarth } from "./earth.ts";
+import type { Polygon } from "./earth.ts";
 import { DISC_GROUP, discMatrix, globeMeshes } from "./globe.ts";
+import { STORY_MAPS, mapLand } from "./maps.ts";
+import type { MapLand, StoryMap } from "./maps.ts";
 import { globeViews } from "./views.ts";
+
+const EARTH = parseEarth(earthFile);
+/** The finest level's land: the story maps' land, and the coast that
+ *  their views fit. */
+const FINEST: readonly Polygon[] = EARTH.levels.at(-1)?.polygons ?? [];
 
 /** The globe's part of a scene. */
 export interface Globe {
@@ -18,10 +26,22 @@ export interface Globe {
   readonly piece: Piece;
 }
 
-/** The globe, for a slide `width` px wide. */
-export function makeGlobe(width: number): Globe {
-  const { meshes, piece } = globeMeshes(parseEarth(earthFile));
-  return { meshes, groups: [DISC_GROUP], views: globeViews(width), piece };
+/** The globe, for a slide of `slide` px. */
+export function makeGlobe(slide: readonly [number, number]): Globe {
+  const { meshes, piece } = globeMeshes(EARTH);
+  return {
+    meshes,
+    groups: [DISC_GROUP],
+    views: globeViews(slide, FINEST.flat()),
+    piece,
+  };
+}
+
+/** Each story map's land, for a slide of `slide` px. */
+export function storyLand(
+  slide: readonly [number, number],
+): ReadonlyMap<StoryMap, MapLand> {
+  return new Map(STORY_MAPS.map((map) => [map, mapLand(map, FINEST, slide)]));
 }
 
 /** The matrix of each of the globe's groups, for a frame whose camera is at

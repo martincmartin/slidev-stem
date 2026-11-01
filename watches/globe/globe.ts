@@ -72,6 +72,32 @@ export function toSphere([lon, lat]: LonLat): Vec3 {
   ];
 }
 
+/** A camera over the globe: it looks straight down at `centre`, which
+ *  shows at the slide point `at`, with `kmPerPx` km to a slide px. */
+export interface GlobeCamera {
+  readonly name: string;
+  readonly centre: LonLat;
+  readonly at: readonly [number, number];
+  readonly kmPerPx: number;
+}
+
+/** Where a place is on the globe seen from straight above `centre`, north
+ *  up: km east, and km south (down the slide). */
+export function onGlobe(
+  [lon, lat]: LonLat,
+  [centreLon, centreLat]: LonLat,
+): [number, number] {
+  const radians = Math.PI / 180;
+  const across = (lon - centreLon) * radians;
+  const [phi, phiCentre] = [lat * radians, centreLat * radians];
+  return [
+    EARTH_RADIUS * Math.cos(phi) * Math.sin(across),
+    -EARTH_RADIUS *
+      (Math.cos(phiCentre) * Math.sin(phi) -
+        Math.sin(phiCentre) * Math.cos(phi) * Math.cos(across)),
+  ];
+}
+
 /** The camera's angles that put a place nearest the viewer, at the globe's
  *  middle on the slide, with north up. */
 export function facing([lon, lat]: LonLat): CameraAngles {

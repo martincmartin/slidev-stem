@@ -90,9 +90,38 @@ that neither is in the other's views. Its radius is 500 world units.
 Each looks straight down at a place, north up. Its pivot is the globe's
 center, and it has the angles that face the place (`View.angles`): a slide
 that names the view and sets no `artTilt` or `artTurn` gets them. A story
-map's view (Cape Noir, Juan Fernández, Scilly) has the map's place, slide
-point and scale, so the map fits the globe there. South America and the
-Channel fit a list of places into the band under the title.
+map's view (Cape Noir, Juan Fernández, Scilly) is the camera that fits the
+map best ("The story maps"). South America and the Channel fit a list of
+places into the band under the title.
+
+## The story maps
+
+`globe/maps.ts` holds Part 2's story maps: a flat map of each story's
+place, drawn over the globe at rest. A map's parallels are straight, and
+the globe's are not: on the globe, a parallel bows 23 px across the Juan
+Fernández map, so a leg due west would curve. Each map has its own
+projection: plate carrée, with longitude shortened by the cosine of its
+centre's latitude, so that shapes near its centre are true. A map is
+`StoryMap` data: its centre, the slide point where the centre shows, and
+its px for a degree of latitude.
+
+- **Its land** (`mapLand`) is made at load from the 1:10m level, as an SVG
+  path in slide px, cut 20 px outside the slide so that the cut's edges do
+  not show. A map can draw small islands apart, larger about their own
+  centre, so that they show (`StoryMap.islands`: the Juan Fernández
+  Islands, twice their size); a picture can show them later than the rest.
+- **Its globe view** is the camera, north up, whose globe brings the coast
+  nearest to the map's (`fitCamera`): by least squares over the place that
+  the camera looks down at, where it shows, and the scale, on an even
+  sample of at most 500 of the coast's points on the slide. The best place
+  is not the map's centre: it is where the globe's bow is least over the
+  coast that shows. Not an oversight: a camera that turns in the slide's
+  plane, as the mockup's fit had, fits no better, and the house camera has
+  no such turn. The gaps (median / 95th percentile / most, slide px): Juan
+  Fernández 2.7 / 6.8 / 12.8, Cape Noir 2.6 / 7.3 / 14.0, Scilly
+  0.4 / 0.8 / 0.9 (`globe/maps.test.ts` holds limits).
+
+The fits take about 50 ms at load in Node, and the maps' land 10 ms.
 
 ## The flight
 
