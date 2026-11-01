@@ -210,7 +210,7 @@ export class Stage<ModelState> {
   ) {
     this.canvas = canvas;
     this.model = model;
-    this.timeline = new Timeline(scene.slide[0]);
+    this.timeline = new Timeline(scene.slide);
     this.renderer = new Renderer(canvas, scene, palette);
   }
 

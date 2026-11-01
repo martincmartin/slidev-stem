@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { slidePoint } from "../webgl/renderer.ts";
+import { planeOnSlide, slidePoint, towardCamera } from "../webgl/renderer.ts";
+import type { CameraPose, Vec3 } from "../webgl/scene.ts";
 import earthFile from "./earth.json" with { type: "json" };
 import { parseEarth } from "./earth.ts";
-import { toSphere } from "./globe.ts";
+import { CENTRE, RADIUS, toSphere } from "./globe.ts";
 import {
   CAPE_NOIR,
   JUAN_FERNANDEZ,
@@ -123,7 +124,7 @@ test("a map rides the camera, and is gone a tenth of a flight from its view", ()
     ["juan fernandez", "channel"],
     ["channel", "scilly"],
   ] as const) {
-    const path = flight(poseOf(from), poseOf(to), SLIDE[0]) ?? assert.fail();
+    const path = flight(poseOf(from), poseOf(to), SLIDE) ?? assert.fail();
     for (const [name, share] of [
       [from, 0.12],
       [to, 0.88],
@@ -158,5 +159,87 @@ test("a map rides the camera, and is gone a tenth of a flight from its view", ()
   // on the globe's first view, no map shows
   for (const placed of GLOBE.maps) {
     assert.equal(mapOnSlide(placed, poseOf("south america"), SLIDE).opacity, 0);
+  }
+});
+
+/** The place that shows at the slide point `at` through `pose`, or null
+ *  off the globe: the point of the globe's near side that the orthographic
+ *  camera puts there. */
+function placeOnSlide(
+  pose: CameraPose,
+  at: readonly [number, number],
+): readonly [number, number] | null {
+  const toward = towardCamera(pose);
+  // two unit vectors across the camera's direction
+  const helper: Vec3 = Math.abs(toward[2]) < 0.9 ? [0, 0, 1] : [1, 0, 0];
+  const cross = (a: Vec3, b: Vec3): Vec3 => [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0],
+  ];
+  const unit = (v: Vec3): Vec3 => {
+    const length = Math.hypot(...v);
+    return [v[0] / length, v[1] / length, v[2] / length];
+  };
+  const u = unit(cross(toward, helper));
+  const v = cross(toward, u);
+  const [a, b, c, d, e, f] = planeOnSlide(pose, SLIDE, {
+    origin: CENTRE,
+    u,
+    v,
+  });
+  const [x, y] = [at[0] - e, at[1] - f];
+  const determinant = a * d - b * c;
+  const [along, across] = [
+    (d * x - c * y) / determinant,
+    (a * y - b * x) / determinant,
+  ];
+  const flat = Math.hypot(along, across);
+  if (flat > RADIUS) return null;
+  const up = Math.sqrt(RADIUS * RADIUS - flat * flat);
+  const world = [0, 1, 2].map(
+    (axis) =>
+      (u[axis] ?? 0) * along +
+      (v[axis] ?? 0) * across +
+      (toward[axis] ?? 0) * up,
+  );
+  const [wx, wy, wz] = [world[0] ?? 0, world[1] ?? 0, world[2] ?? 0];
+  return [
+    (Math.atan2(-wy, wx) * 180) / Math.PI,
+    (Math.asin(wz / RADIUS) * 180) / Math.PI,
+  ];
+}
+
+test("a flight shows the places between its views, not beyond them", () => {
+  const poseOf = (name: string) => {
+    const view =
+      GLOBE.views.find((each) => each.name === name) ?? assert.fail(name);
+    return { view, ...(view.angles ?? assert.fail()) };
+  };
+  const middle = [SLIDE[0] / 2, SLIDE[1] / 2] as const;
+  for (const [from, to] of [
+    ["south america", "cape noir"],
+    ["cape noir", "juan fernandez"],
+    ["juan fernandez", "channel"],
+    ["channel", "scilly"],
+  ] as const) {
+    const path = flight(poseOf(from), poseOf(to), SLIDE) ?? assert.fail();
+    const [start, end] = [path.at(0), path.at(1)].map(
+      (pose) => placeOnSlide(pose, middle) ?? assert.fail(),
+    );
+    const [low, high] = [
+      Math.min(start?.[1] ?? 0, end?.[1] ?? 0),
+      Math.max(start?.[1] ?? 0, end?.[1] ?? 0),
+    ];
+    // the place at the slide's middle stays within the latitudes of the
+    // ends, and a little more: a great circle bows toward the pole
+    for (let step = 0; step <= 20; step++) {
+      const place = placeOnSlide(path.at(step / 20), middle);
+      assert.ok(place, `${from} to ${to} at ${String(step / 20)}`);
+      assert.ok(
+        place[1] > low - 2 && place[1] < high + 12,
+        `${from} to ${to} at ${String(step / 20)}: ${place.join(", ")}`,
+      );
+    }
   }
 });

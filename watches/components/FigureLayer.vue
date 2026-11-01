@@ -299,7 +299,7 @@ onMounted(() => {
     artModel(model.value),
     palette.value.palette,
     figure.now,
-    ART.scene.slide[0],
+    ART.scene.slide,
   );
   view.crop = crop.value;
   const made = view;

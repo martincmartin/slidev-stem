@@ -186,7 +186,7 @@ function cameraPhases(
   move: Move,
   moveWith: StepMoveWith,
 ): { channel: string; milliseconds: number }[] {
-  const timeline = new Timeline(watch.scene.slide[0]);
+  const timeline = new Timeline(watch.scene.slide);
   timeline.show(stageState(watch, from, moveWith), 0, true);
   timeline.show(
     stageState(watch, { ...to, ...stepMove(from, to, move) }, moveWith),
@@ -272,7 +272,7 @@ function aroundMove(
   end: ReadonlySet<Mesh>;
   after: ReadonlySet<Mesh>;
 } {
-  const timeline = new Timeline(watch.scene.slide[0]);
+  const timeline = new Timeline(watch.scene.slide);
   timeline.show(stageState(watch, from, moveWith), 0, true);
   timeline.show(
     stageState(watch, { ...to, ...stepMove(from, to, move) }, moveWith),

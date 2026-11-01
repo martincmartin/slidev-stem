@@ -6,7 +6,7 @@ import type { CameraPose, Mesh, Vec3, View } from "./scene.ts";
 import { TOGETHER_SECONDS, Timeline } from "./timeline.ts";
 import type { StageState } from "./timeline.ts";
 
-const WIDTH = 980;
+const SLIDE: readonly [number, number] = [980, 552];
 const PIVOT: Vec3 = [800, 5000, 0];
 const RADIUS = 500;
 
@@ -49,7 +49,7 @@ test("a flight starts and ends at its poses", () => {
     [ANSON, CHANNEL],
     [AMERICA, NOIR],
   ] as const) {
-    const path = flight(from, to, WIDTH) ?? assert.fail();
+    const path = flight(from, to, SLIDE) ?? assert.fail();
     for (const [share, end] of [
       [0, from],
       [1, to],
@@ -69,7 +69,7 @@ test("a flight starts and ends at its poses", () => {
 });
 
 test("a flight pans along the great circle, and zooms out as far as the pan needs", () => {
-  const path = flight(ANSON, CHANNEL, WIDTH) ?? assert.fail();
+  const path = flight(ANSON, CHANNEL, SLIDE) ?? assert.fail();
   const [a, b] = [towardCamera(ANSON), towardCamera(CHANNEL)];
   const normal: Vec3 = [
     a[1] * b[2] - a[2] * b[1],
@@ -96,14 +96,14 @@ test("a flight pans along the great circle, and zooms out as far as the pan need
 });
 
 test("a flight's time is its length, within its bounds", () => {
-  const short = flight(NOIR, pose(-76, -55, 9), WIDTH) ?? assert.fail();
+  const short = flight(NOIR, pose(-76, -55, 9), SLIDE) ?? assert.fail();
   assert.equal(short.seconds, FLIGHT.least);
-  const zoom = flight(AMERICA, NOIR, WIDTH) ?? assert.fail();
+  const zoom = flight(AMERICA, NOIR, SLIDE) ?? assert.fail();
   assert.ok(zoom.seconds > FLIGHT.least && zoom.seconds <= FLIGHT.most);
 });
 
 test("a zoom with no pan keeps the camera's direction", () => {
-  const path = flight(NOIR, pose(-76, -55, 1), WIDTH) ?? assert.fail();
+  const path = flight(NOIR, pose(-76, -55, 1), SLIDE) ?? assert.fail();
   for (const share of [0.25, 0.5, 0.75]) {
     const camera = path.at(share);
     assert.ok(near(camera.tilt, NOIR.tilt, 1e-9));
@@ -114,16 +114,16 @@ test("a zoom with no pan keeps the camera's direction", () => {
 
 test("a flight needs two views of one ball", () => {
   const noBall = pose(-78.83, -33.64, 8.6, [230, 300], null);
-  assert.equal(flight(NOIR, noBall, WIDTH), null);
+  assert.equal(flight(NOIR, noBall, SLIDE), null);
   assert.equal(
-    flight(NOIR, pose(-78.83, -33.64, 8.6, [230, 300], 400), WIDTH),
+    flight(NOIR, pose(-78.83, -33.64, 8.6, [230, 300], 400), SLIDE),
     null,
   );
   const moved = {
     ...ANSON,
     view: { ...ANSON.view, pivot: [0, 0, 0] as const },
   };
-  assert.equal(flight(NOIR, moved, WIDTH), null);
+  assert.equal(flight(NOIR, moved, SLIDE), null);
 });
 
 // ---- the timeline ----------------------------------------------------------
@@ -151,8 +151,8 @@ function state(
 }
 
 test("with move: fly, the camera flies in the flight's time, or in moveSeconds", () => {
-  const seconds = (flight(ANSON, CHANNEL, WIDTH) ?? assert.fail()).seconds;
-  const timeline = new Timeline(WIDTH);
+  const seconds = (flight(ANSON, CHANNEL, SLIDE) ?? assert.fail()).seconds;
+  const timeline = new Timeline(SLIDE);
   timeline.show(state(ANSON), 0, true);
   timeline.show(state(CHANNEL, { move: "fly" }), 0);
   assert.equal(timeline.phaseAt(0), "flight");
@@ -166,7 +166,7 @@ test("with move: fly, the camera flies in the flight's time, or in moveSeconds",
 });
 
 test("with move: fly between views that are not of one ball, the camera moves together", () => {
-  const timeline = new Timeline(WIDTH);
+  const timeline = new Timeline(SLIDE);
   const off = pose(-78.83, -33.64, 8.6, [230, 300], null);
   timeline.show(state(NOIR), 0, true);
   timeline.show(state(off, { move: "fly" }), 0);

@@ -31,13 +31,14 @@ function near(degrees: number, about: number): number {
   return about + ((((degrees - about + 180) % 360) + 360) % 360) - 180;
 }
 
-/** The flight from one pose to another, for a slide `width` px wide; `null`
+/** The flight from one pose to another, for a slide of `slide` px; `null`
  *  unless both views look at the same ball about the same pivot. */
 export function flight(
   from: CameraPose,
   to: CameraPose,
-  width: number,
+  slide: readonly [number, number],
 ): Flight | null {
+  const [width] = slide;
   const radius = from.view.ball;
   if (
     radius === undefined ||
@@ -53,7 +54,16 @@ export function flight(
   const distance = radius * turn;
   // world units across the slide
   const [w0, w1] = [width / from.view.scale, width / to.view.scale];
-  const [start, end] = [pivotOnSlide(from.view), pivotOnSlide(to.view)];
+  // where the pivot shows, from the slide's middle, in world units: so the
+  // place at the middle moves from one view's to the other's as the camera
+  // zooms. A view can show its pivot far off the slide (a story map's
+  // camera), and a pivot kept at its slide point would swing the globe
+  // away from both views as the camera zooms out
+  const middle = [slide[0] / 2, slide[1] / 2] as const;
+  const [start, end] = [from.view, to.view].map((view) => {
+    const [x, y] = pivotOnSlide(view);
+    return [(x - middle[0]) / view.scale, (y - middle[1]) / view.scale];
+  });
   const { pivot } = from.view;
   /** The camera `u` world units along the pan, with `across` world units
    *  across the slide. */
@@ -76,8 +86,8 @@ export function flight(
     const linear = mix(from.turn, to.turn, along);
     const scale = width / across;
     const [slideX, slideY] = [
-      mix(start[0], end[0], along),
-      mix(start[1], end[1], along),
+      middle[0] + scale * mix(start?.[0] ?? 0, end?.[0] ?? 0, along),
+      middle[1] + scale * mix(start?.[1] ?? 0, end?.[1] ?? 0, along),
     ];
     return {
       view: {

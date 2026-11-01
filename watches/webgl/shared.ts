@@ -83,13 +83,13 @@ export class SharedView<ModelState> {
     model: Model<ModelState>,
     palette: Palette,
     now: () => number,
-    width: number,
+    slide: readonly [number, number],
   ) {
     const context = canvas.getContext("2d");
     check(context !== null, "the canvas has a context of another kind");
     this.canvas = canvas;
     this.model = model;
-    this.timeline = new Timeline(width);
+    this.timeline = new Timeline(slide);
     this.palette = palette;
     this.now = now;
     this.context = context;

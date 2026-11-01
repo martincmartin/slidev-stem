@@ -138,7 +138,7 @@ test("on the Escapement slide, the pallet and the balance fade out in FADE_SECON
   const going = [...still].filter((mesh) => !spinning.has(mesh));
   const coming = new Set([...spinning].filter((mesh) => !still.has(mesh)));
   assert.ok(going.length > 0 && coming.size > 0);
-  const timeline = new Timeline(watch.scene.slide[0]);
+  const timeline = new Timeline(watch.scene.slide);
   timeline.show(escapementAt(spinAt - 1), 0, true);
   timeline.show(escapementAt(spinAt), 1000, false);
   assert.equal(timeline.phaseAt(1000), "fade");
@@ -253,7 +253,7 @@ test("on the Gears slide, the gears spin from the start, and start to fade in as
     watchState(GEARS_SLIDE, 0)?.show,
     (GEARS_SLIDE["art"] as unknown[]).flat(),
   );
-  const timeline = new Timeline(watch.scene.slide[0]);
+  const timeline = new Timeline(watch.scene.slide);
   timeline.show(
     stageAt(TICKS_AND_TURNS_SLIDE, Number(TICKS_AND_TURNS_SLIDE["clicks"])),
     0,

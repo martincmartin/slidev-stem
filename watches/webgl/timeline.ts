@@ -335,7 +335,7 @@ function applyPhase(values: Values, phase: Phase, now: number): void {
 
 export class Timeline {
   /** Slide px: a flight's zoom is in widths of the slide. */
-  private readonly width: number;
+  private readonly slide: readonly [number, number];
   /** Where each channel is, when no phase runs. */
   private values: Values | null = null;
   /** One after another. */
@@ -343,10 +343,10 @@ export class Timeline {
   /** The flash and when it starts (ms). */
   private flash: { meshes: ReadonlySet<Mesh>; start: number } | null = null;
 
-  /** For a slide `width` px wide. */
-  constructor(width: number) {
-    check(width > 0, `a slide ${String(width)} px wide`);
-    this.width = width;
+  /** For a slide of `slide` px. */
+  constructor(slide: readonly [number, number]) {
+    check(slide[0] > 0 && slide[1] > 0, `a slide of ${slide.join(" by ")} px`);
+    this.slide = slide;
   }
 
   /** Whether a state has been shown yet. Until then, there is nothing to
@@ -516,7 +516,7 @@ export class Timeline {
         turn: current.turn,
       };
       const to = { view: state.view, tilt: state.tilt, turn: state.turn };
-      const path = state.move === "fly" ? flight(from, to, this.width) : null;
+      const path = state.move === "fly" ? flight(from, to, this.slide) : null;
       if (path) {
         add({
           channel: "flight",

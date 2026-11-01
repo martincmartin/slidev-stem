@@ -259,7 +259,12 @@ Renderer(canvas, scene, palette)` takes a `Palette` (one `#rrggbb` for
   $\rho = \sqrt{2}$, it zooms out as far as the pan needs, pans along the
   great circle between the two views' directions, and zooms in, in 1 s for
   each unit of the flight's length, within 1–3.5 s. Its zoom is in widths
-  of the slide, so a `Timeline` takes the slide's width. Between other views,
+  of the slide, so a `Timeline` takes the slide's size. The pivot's offset
+  from the slide's middle mixes in world units, not in slide px, so the
+  place at the slide's middle moves from one view's to the other's. Not an
+  oversight: a view can show its pivot far off the slide (a story map's
+  camera), and a pivot kept at a slide point swung the globe beyond both
+  views as the camera zoomed out (`globe/maps.test.ts`). Between other views,
   `fly` moves `together`. `StageState.moveSeconds` sets the time of a move
   `together` or `fly`. A named view can carry the angles that it is made for
   (`View.angles`): a talk's slide that names it and sets no angles gets
