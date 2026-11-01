@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // One live watch under every slide, for the whole talk, drawn with WebGL by the
 // stage of webgl/stage.ts. Each slide names the pieces that it shows in its
-// frontmatter (`watch: [hairspring, collet, stud]`, `watchTilt: 20`, and see
-// watch/state.ts); a slide without `watch` hides the layer. A click can change the state (`watchClicks`).
+// frontmatter (`art: [hairspring, collet, stud]`, `artTilt: 20`, and see
+// watch/state.ts); a slide without `art` hides the layer. A click can change the state (`artClicks`).
 // Above the watch, the one live diving board (components/DivingBoard.vue),
 // which the Hairspring slide's frontmatter shows (`board`, and see watch/board.ts). While
 // the board's picture shows, it covers the watch: the canvas fades out, and the
@@ -22,8 +22,8 @@
 // jump: the screen shows at once the place that a viewer who looks for it
 // has reached (../docs/navigation.md, "A press during a move").
 // On a step between two slides, the later one says what shows while the
-// camera moves (`watchMoveWith`, `watchMoveAlso`), in either direction. On
-// any step, the later click says how the camera moves (`watchMove`,
+// camera moves (`artMoveWith`, `artMoveAlso`), in either direction. On
+// any step, the later click says how the camera moves (`artMove`,
 // `stepMove`).
 // The new slide's text waits for the camera, in either direction
 // (`--watch-text-delay`, from the stage). A click's text can wait for the
@@ -396,7 +396,7 @@ onMounted(() => {
   transition: opacity 0.3s;
 }
 /* Only the canvas fades. The layer keeps painting the paper: a slide with a
-   `watch:` is see-through (see .watch-marker below), and when the diving board
+   `art:` is see-through (see .watch-marker below), and when the diving board
    covers the watch the slide is still that slide, so the layer is its
    background. */
 .watch-canvas {

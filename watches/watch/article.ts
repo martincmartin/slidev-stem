@@ -73,7 +73,7 @@ export interface FigureSettings {
   readonly slider: SliderKind | null;
   readonly button: ButtonKind | null;
   /** The figure's camera, in place of the slide's: a named view, or the
-   *  pieces that a fitted view fits (as `watchView`). `null`: the slide's. */
+   *  pieces that a fitted view fits (as `artView`). `null`: the slide's. */
   readonly view: { view: string } | { fit: readonly string[] } | null;
 }
 

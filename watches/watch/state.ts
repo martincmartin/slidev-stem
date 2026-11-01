@@ -2,26 +2,26 @@
 // stage. The frontmatter names things; `stageState` turns the names into the
 // scene's objects, once, at this boundary (docs/watch.md, "The keys").
 // A slide sets the state at click 0; a click changes it from that click on,
-// with the same keys, in a block under `watchClicks` (CLICK_KEYS):
-//   watch: the pieces shown ([hairspring, collet, stud]), or `all`; no key
+// with the same keys, in a block under `artClicks` (CLICK_KEYS):
+//   art: the pieces shown ([hairspring, collet, stud]), or `all`; no key
 //     on the slide hides the watch. A list of pieces may hold lists (YAML
 //     aliases: [*gears, pallet fork]); they are flattened. It may hold
 //     `all`: every piece that `all` shows ([all, hour wheel])
-//   watchView: what the camera frames: a named view (`views()` in
+//   artView: what the camera frames: a named view (`views()` in
 //     generate.ts: cover, hairspring, crown), or a list of pieces, which the
 //     view fits (`fittedView`); none: the view fits the pieces shown
-//   watchRight: slide px: where a fitted view puts its pieces' right edge;
+//   artRight: slide px: where a fitted view puts its pieces' right edge;
 //     none: they are centred in the slide's left 60% (`fittedView`)
-//   watchBand: picture (default) or slide: the band whose height a fitted
+//   artBand: picture (default) or slide: the band whose height a fitted
 //     view fills (`fittedView`)
-//   watchTilt: degrees (default 0)
-//   watchTurn: degrees, clockwise on the slide, before the tilt (default 0;
+//   artTilt: degrees (default 0)
+//   artTurn: degrees, clockwise on the slide, before the tilt (default 0;
 //     `CameraAngles`); only with a named view
-//   watchMove: ordered (default): the camera moves, then tilts and turns,
+//   artMove: ordered (default): the camera moves, then tilts and turns,
 //     or the reverse; together: all at the same time (`CameraMove`). It is
 //     the move of the step between this click and the one before, in either
 //     direction (`stepMove`)
-//   watchFlashAfterMove: true: flash after the camera and fades finish;
+//   artFlashAfterMove: true: flash after the camera and fades finish;
 //     false (default): use the ordinary flash order
 //   watchAtRest: true: the balance is at rest; false (default): it swings
 //   watchSpin: degrees a second of the escape wheel: the train spins freely
@@ -37,33 +37,33 @@
 //     not with watchSpin, watchMainspring or watchAtRest: true
 //   watchUnwind: true: the spring unwinds with the barrel; at rest, the
 //     mechanism keeps moving. Entering this state or jumping winds it
-//   watchDim: pieces drawn dimmed (WATCH_DIM), to keep the eye on the
+//   artDim: pieces drawn dimmed (WATCH_DIM), to keep the eye on the
 //     others; false (default): none
-//   watchHide: pieces that `watch` shows but that do not show here, nor
-//     count in a fitted view (the Recap slide's hands: `watch: [all, ...]`
+//   artHide: pieces that `art` shows but that do not show here, nor
+//     count in a fitted view (the Recap slide's hands: `art: [all, ...]`
 //     with no other way to leave a piece out); false (default): none
 // On the slide or in a block, about the step into that click, so they do
 // not carry on to later clicks (STEP_KEYS):
-//   watchFlash: pieces that flash, on the step forward into the slide (on
+//   artFlash: pieces that flash, on the step forward into the slide (on
 //     the slide) or into the block's click
-//   watchLater: of the pieces that fade in on a step into that click, those
+//   artLater: of the pieces that fade in on a step into that click, those
 //     that fade in after the others
-//   watchCut: of the pieces that go or come on a step into that click,
+//   artCut: of the pieces that go or come on a step into that click,
 //     those that do so at once, with no fade
-//   watchGoLater: of the pieces that go on a step into that click, those
+//   artGoLater: of the pieces that go on a step into that click, those
 //     that stay on the screen while the camera moves, and go after it
-//   watchLinger: ordered outgoing groups; each pauses, then fades out,
+//   artLinger: ordered outgoing groups; each pauses, then fades out,
 //     before the camera moves
 //   watchWind: true: wind the running spring at once at this click, before
 //     the camera moves; only with watchUnwind
 // On the slide only, about the step into it:
-//   watchMoveWith: what shows while the camera moves, on the step between
+//   artMoveWith: what shows while the camera moves, on the step between
 //     this slide and the previous one, in either direction (`moveWithBefore`)
-//   watchMoveAlso: pieces of either slide that also show while the camera
+//   artMoveAlso: pieces of either slide that also show while the camera
 //     moves on that step: they come before the camera moves into this
 //     slide, and go after it moves back
-//   watchClicks: for a click, the keys that change from that click on
-//     ({1: {watch: [*gears, pallet fork], watchSpin: false}})
+//   artClicks: for a click, the keys that change from that click on
+//     ({1: {art: [*gears, pallet fork], watchSpin: false}})
 
 import type { Mesh, Piece, View } from "../webgl/scene.ts";
 import { CAMERA_MOVES } from "../webgl/timeline.ts";
@@ -77,8 +77,8 @@ import type { WatchModelState } from "./model.ts";
 
 const MOVES_WITH: readonly MoveWith[] = ["common", "all", "none"];
 
-/** What shows while the camera moves on a step (`watchMoveWith`), and the
- *  pieces that show then too (`watchMoveAlso`). */
+/** What shows while the camera moves on a step (`artMoveWith`), and the
+ *  pieces that show then too (`artMoveAlso`). */
 export interface StepMoveWith {
   readonly rule: MoveWith;
   readonly also: readonly string[];
@@ -88,7 +88,7 @@ export interface StepMoveWith {
 export const MOVE_WITH_COMMON: StepMoveWith = { rule: "common", also: [] };
 
 /** The weight of a dimmed piece's own colours against the paper
- *  (`watchDim`): it looks as it would at this opacity. The "Before clocks"
+ *  (`artDim`): it looks as it would at this opacity. The "Before clocks"
  *  slide dims its cards to the same (slides.md): a part of the picture is
  *  more like a card than a line of text, which dims to 0.5. */
 export const WATCH_DIM = 0.35;
@@ -103,7 +103,7 @@ export interface WatchState {
    *  hold "all": every piece that "all" shows. */
   show: readonly string[] | "all";
   /** The names of the pieces that the fitted view fits, or "all": the
-   *  `watchView` list, or else the pieces shown. */
+   *  `artView` list, or else the pieces shown. */
   fit: readonly string[] | "all";
   /** Where the fitted view puts the right edge of `fit`, in slide px, or
    *  `null`: where the rule puts it (`fittedView`). */
@@ -304,17 +304,17 @@ function mainspringOf(name: string, value: unknown): MainspringStage {
   return found;
 }
 
-/** The keys that a slide sets for click 0 and a `watchClicks` block changes,
+/** The keys that a slide sets for click 0 and a `artClicks` block changes,
  *  each with how to read its value. */
 const CLICK_KEYS = {
-  watch: shownOf,
-  watchView: viewOf,
-  watchRight: rightOf,
-  watchBand: bandOf,
-  watchTilt: degreesOf,
-  watchTurn: degreesOf,
-  watchMove: moveOf,
-  watchFlashAfterMove: booleanOf,
+  art: shownOf,
+  artView: viewOf,
+  artRight: rightOf,
+  artBand: bandOf,
+  artTilt: degreesOf,
+  artTurn: degreesOf,
+  artMove: moveOf,
+  artFlashAfterMove: booleanOf,
   watchAtRest: booleanOf,
   watchSpin: spinOf,
   watchTickTock: booleanOf,
@@ -322,19 +322,19 @@ const CLICK_KEYS = {
   watchMainspring: mainspringOf,
   watchLapse: lapseOf,
   watchUnwind: booleanOf,
-  watchDim: piecesOrNoneOf,
-  watchHide: piecesOrNoneOf,
+  artDim: piecesOrNoneOf,
+  artHide: piecesOrNoneOf,
 } as const;
 type ClickKey = keyof typeof CLICK_KEYS;
 type ClickValues = { [Key in ClickKey]?: ReturnType<(typeof CLICK_KEYS)[Key]> };
 /** The keys that the slide and a block can hold about the step into their
  *  click: they do not carry on to later clicks. */
 const STEP_KEYS = {
-  watchFlash: namesOf,
-  watchLater: namesOf,
-  watchCut: namesOf,
-  watchGoLater: namesOf,
-  watchLinger: lingerGroupsOf,
+  artFlash: namesOf,
+  artLater: namesOf,
+  artCut: namesOf,
+  artGoLater: namesOf,
+  artLinger: lingerGroupsOf,
   watchWind: booleanOf,
 } as const;
 type StepKey = keyof typeof STEP_KEYS;
@@ -389,46 +389,65 @@ function readClickKeys(
   return read;
 }
 
+/** The keys that only the slide holds, which `atClick` does not read. */
+const SLIDE_KEYS = ["artClicks", "artMoveWith", "artMoveAlso"];
+
+/** Throws if the slide holds a key that starts with `art` or `watch` and is
+ *  not one of the keys above: a misspelt key would otherwise do nothing. */
+function checkNames(frontmatter: Record<string, unknown>): void {
+  const known = [
+    ...Object.keys(CLICK_KEYS),
+    ...Object.keys(STEP_KEYS),
+    ...SLIDE_KEYS,
+  ];
+  for (const key of Object.keys(frontmatter)) {
+    if (/^(art|watch)([A-Z]|$)/.test(key) && !known.includes(key)) {
+      throw new Error(`${key}: no such key; the keys: ${known.join(", ")}`);
+    }
+  }
+}
+
 /** The slide's click keys at `clicks`: the slide's own, changed by each
- *  `watchClicks` block whose click has come, in click order. Each block is
+ *  `artClicks` block whose click has come, in click order. Each block is
  *  read, also before its click. The step keys are those of `clicks` alone:
  *  the slide's at click 0, or the block's at its click. Throws if a key of
  *  the map is not a click number, a block holds a key that a click cannot
  *  change or a value of the wrong kind, or the slide sets a click key or a
- *  step key without `watch`. */
+ *  step key without `art`. */
 function atClick(
   frontmatter: Record<string, unknown>,
   clicks: number,
 ): PlaceValues {
+  checkNames(frontmatter);
   const { step: slideStep, rest: state } = splitStep(
     readClickKeys("", frontmatter, true),
   );
-  const blocks = frontmatter["watchClicks"];
-  if (state.watch === undefined) {
+  const blocks = frontmatter["artClicks"];
+  if (state.art === undefined) {
     const stray = Object.keys(frontmatter).find(
-      (key) => isClickKey(key) || isStepKey(key) || key === "watchClicks",
+      (key) => isClickKey(key) || isStepKey(key) || key === "artClicks",
     );
     if (stray !== undefined) {
-      return wrong(stray, frontmatter[stray], "set only with watch");
+      return wrong(stray, frontmatter[stray], "set only with art");
     }
   }
   if (blocks === undefined) {
     return clicks === 0 ? { ...state, ...slideStep } : state;
   }
   if (!isMap(blocks)) {
-    return wrong("watchClicks", blocks, "a map from a click to keys");
+    return wrong("artClicks", blocks, "a map from a click to keys");
   }
   const changes = Object.entries(blocks).map(([key, block]) => {
     const click = Number(key);
     if (!Number.isInteger(click) || click < 0 || String(click) !== key) {
-      return wrong("watchClicks", key, "a click number");
+      return wrong("artClicks", key, "a click number");
     }
     if (!isMap(block) || Object.keys(block).length === 0) {
-      return wrong(`watchClicks.${key}`, block, "a map of keys");
+      return wrong(`artClicks.${key}`, block, "a map of keys");
     }
     return {
       click,
-      values: readClickKeys(`watchClicks.${key}.`, block, false),
+      values: readClickKeys(`artClicks.${key}.`, block, false),
     };
   });
   changes.sort((first, second) => first.click - second.click);
@@ -446,57 +465,52 @@ function atClick(
  *  previous one, in either direction: the pieces that both show (`common`,
  *  the default), all the pieces of either (`all`), or none (`none`: the
  *  camera jumps); and the pieces of either that show then too
- *  (`watchMoveAlso`). Throws if `watchMoveWith` is not one of these, if
- *  `watchMoveAlso` is not a list of pieces or is set with `all`, or if the
- *  slide has no `watch`. */
+ *  (`artMoveAlso`). Throws if `artMoveWith` is not one of these, if
+ *  `artMoveAlso` is not a list of pieces or is set with `all`, or if the
+ *  slide has no `art`. */
 export function moveWithBefore(
   frontmatter: Record<string, unknown>,
 ): StepMoveWith {
-  const value = frontmatter["watchMoveWith"] ?? "common";
+  const value = frontmatter["artMoveWith"] ?? "common";
   const rule = MOVES_WITH.find((each) => each === value);
   if (rule === undefined) {
-    return wrong("watchMoveWith", value, MOVES_WITH.join(", or "));
+    return wrong("artMoveWith", value, MOVES_WITH.join(", or "));
   }
-  const alsoValue = frontmatter["watchMoveAlso"];
-  const also =
-    alsoValue === undefined ? [] : namesOf("watchMoveAlso", alsoValue);
+  const alsoValue = frontmatter["artMoveAlso"];
+  const also = alsoValue === undefined ? [] : namesOf("artMoveAlso", alsoValue);
   if (also.length > 0 && rule === "all") {
-    return wrong(
-      "watchMoveAlso",
-      alsoValue,
-      "left out with watchMoveWith: all",
-    );
+    return wrong("artMoveAlso", alsoValue, "left out with artMoveWith: all");
   }
-  for (const key of ["watchMoveWith", "watchMoveAlso"]) {
-    if (frontmatter[key] !== undefined && frontmatter["watch"] === undefined) {
-      return wrong(key, frontmatter[key], "set only with watch");
+  for (const key of ["artMoveWith", "artMoveAlso"]) {
+    if (frontmatter[key] !== undefined && frontmatter["art"] === undefined) {
+      return wrong(key, frontmatter[key], "set only with art");
     }
   }
   return { rule, also };
 }
 
 /** The slide's watch state at `clicks`, or `undefined` if the slide has
- *  no `watch`. Throws if a field is there but is not what the list above
+ *  no `art`. Throws if a field is there but is not what the list above
  *  says. */
 export function watchState(
   frontmatter: Record<string, unknown>,
   clicks: number,
 ): WatchState | undefined {
-  moveWithBefore(frontmatter); // it throws on a wrong `watchMoveWith`
+  moveWithBefore(frontmatter); // it throws on a wrong `artMoveWith`
   const now = atClick(frontmatter, clicks);
-  if (now.watch === undefined) return undefined;
-  const show = now.watch;
-  const framed = now.watchView ?? { fit: show };
-  if (now.watchRight !== undefined && "view" in framed) {
-    return wrong("watchRight", now.watchRight, "set only with a fitted view");
+  if (now.art === undefined) return undefined;
+  const show = now.art;
+  const framed = now.artView ?? { fit: show };
+  if (now.artRight !== undefined && "view" in framed) {
+    return wrong("artRight", now.artRight, "set only with a fitted view");
   }
-  if (now.watchBand !== undefined && "view" in framed) {
-    return wrong("watchBand", now.watchBand, "set only with a fitted view");
+  if (now.artBand !== undefined && "view" in framed) {
+    return wrong("artBand", now.artBand, "set only with a fitted view");
   }
   // a fitted view fits the pieces' boxes in the plan, as the camera shows
   // them at turn 0 (`fittedView`)
-  if ((now.watchTurn ?? 0) !== 0 && !("view" in framed)) {
-    return wrong("watchTurn", now.watchTurn, "set only with a named view");
+  if ((now.artTurn ?? 0) !== 0 && !("view" in framed)) {
+    return wrong("artTurn", now.artTurn, "set only with a named view");
   }
   const mainspring = now.watchMainspring ?? null;
   if (mainspring !== null && now.watchAtRest !== undefined) {
@@ -539,18 +553,18 @@ export function watchState(
   }
   return {
     view: "view" in framed ? framed.view : null,
-    tilt: now.watchTilt ?? 0,
-    turn: now.watchTurn ?? 0,
+    tilt: now.artTilt ?? 0,
+    turn: now.artTurn ?? 0,
     show,
     fit: "fit" in framed ? framed.fit : show,
-    right: now.watchRight ?? null,
-    band: now.watchBand ?? "picture",
-    flash: now.watchFlash,
-    flashAfterMove: now.watchFlashAfterMove ?? false,
-    later: now.watchLater,
-    cut: now.watchCut,
-    goLater: now.watchGoLater,
-    ...(now.watchLinger ? { linger: now.watchLinger } : {}),
+    right: now.artRight ?? null,
+    band: now.artBand ?? "picture",
+    flash: now.artFlash,
+    flashAfterMove: now.artFlashAfterMove ?? false,
+    later: now.artLater,
+    cut: now.artCut,
+    goLater: now.artGoLater,
+    ...(now.artLinger ? { linger: now.artLinger } : {}),
     // on the Mainspring slide, the watch runs only while the barrel's spring
     // is wound
     settled:
@@ -559,16 +573,16 @@ export function watchState(
         : mainspring !== "barrel",
     spin: now.watchSpin ?? null,
     mainspring,
-    dim: now.watchDim ?? null,
-    hide: now.watchHide ?? null,
+    dim: now.artDim ?? null,
+    hide: now.artHide ?? null,
     lapse,
     unwind,
     wind: now.watchWind ?? false,
-    move: now.watchMove ?? "ordered",
+    move: now.artMove ?? "ordered",
   };
 }
 
-/** The camera's move (`watchMove`) on a step from `from` to `to`: the later
+/** The camera's move (`artMove`) on a step from `from` to `to`: the later
  *  one's, so that a step back is the step forward, reversed
  *  (../docs/navigation.md). `move` is the step's (`moveOf`); `from` is
  *  `undefined` if it shows no watch. */
@@ -620,20 +634,20 @@ export function stageState(
     names === "all"
       ? all
       : names.flatMap((name) =>
-          name === "all" ? all : piecesNamed("watch", [name]),
+          name === "all" ? all : piecesNamed("art", [name]),
         );
-  const hidden = new Set(piecesNamed("watchHide", state.hide ?? []));
+  const hidden = new Set(piecesNamed("artHide", state.hide ?? []));
   const shown = listed(state.show);
   for (const piece of hidden) {
     if (!shown.includes(piece)) {
-      throw new Error(`watchHide: "${piece.name}" is not in watch`);
+      throw new Error(`artHide: "${piece.name}" is not in art`);
     }
   }
   const piecesOf = (names: readonly string[] | "all"): readonly Piece[] =>
     listed(names).filter((piece) => !hidden.has(piece));
   const namedView = (name: string): View => {
     const found = scene.views.find((candidate) => candidate.name === name);
-    if (!found) throw new Error(`watchView: no watch view "${name}"`);
+    if (!found) throw new Error(`artView: no watch view "${name}"`);
     return found;
   };
   const view =
@@ -652,23 +666,21 @@ export function stageState(
     turn: state.turn,
     move: state.move,
     shown: meshesOf(piecesOf(state.show)),
-    flash: state.flash
-      ? meshesOf(piecesNamed("watchFlash", state.flash))
-      : null,
+    flash: state.flash ? meshesOf(piecesNamed("artFlash", state.flash)) : null,
     flashAfterMove: state.flashAfterMove,
     later: state.later
-      ? meshesOf(piecesNamed("watchLater", state.later))
+      ? meshesOf(piecesNamed("artLater", state.later))
       : new Set(),
-    cut: state.cut ? meshesOf(piecesNamed("watchCut", state.cut)) : new Set(),
+    cut: state.cut ? meshesOf(piecesNamed("artCut", state.cut)) : new Set(),
     goLater: state.goLater
-      ? meshesOf(piecesNamed("watchGoLater", state.goLater))
+      ? meshesOf(piecesNamed("artGoLater", state.goLater))
       : new Set(),
     moveWith: moveWith.rule,
-    moveAlso: meshesOf(piecesNamed("watchMoveAlso", moveWith.also)),
+    moveAlso: meshesOf(piecesNamed("artMoveAlso", moveWith.also)),
     ...(state.linger
       ? {
           linger: state.linger.map((group) => ({
-            meshes: meshesOf(piecesNamed("watchLinger", group.pieces)),
+            meshes: meshesOf(piecesNamed("artLinger", group.pieces)),
             seconds: group.seconds,
           })),
         }
@@ -676,7 +688,7 @@ export function stageState(
     ...(state.dim
       ? {
           dim: new Map(
-            [...meshesOf(piecesNamed("watchDim", state.dim))].map(
+            [...meshesOf(piecesNamed("artDim", state.dim))].map(
               (mesh): [Mesh, number] => [mesh, WATCH_DIM],
             ),
           ),

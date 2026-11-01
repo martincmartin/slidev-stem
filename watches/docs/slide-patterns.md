@@ -35,7 +35,7 @@ Five rules for a slide:
   Use exhaustive navigation only to investigate an actual or suspected problem.
 - **Every slide's title and subtitle are centred**, by `style.css` (a Slidev
   project file). The cover and section titles sit left of the
-  watch: their slides set `side: left`, which the house theme's `cover` and
+  art: their slides set `side: left`, which the house theme's `cover` and
   `section` layouts read for their alignment and width.
 - **Use a markdown `#` heading for the title.** The theme styles `h1` as the
   slide title. Inside a flex layout, set `margin: 0` on it. A paragraph right
@@ -69,7 +69,7 @@ missing one gives no error (the `slidev-practices` skill, "Fonts").
 
 Use `layout: section`, an `eyebrow` frontmatter label, and a Markdown title.
 The theme sets the type and placement in `themes/house/styles/house.css` at the repo root.
-For a section with the cover's picture, use `watch: all` and `watchView: cover`.
+For a section with the cover's picture, use `art: all` and `artView: cover`.
 Mechanical Marvels uses this state, so the watch stays in place when the cover text changes.
 Changed The World uses it too: the Recap slide's tour ends there.
 
@@ -258,13 +258,13 @@ and then a table states how often each hand turns
 ([watch.md](watch.md#the-ticks-and-turns-slide)).
 The Gears slide follows it: the hand fades out, the
 camera jumps, and the fourth wheel and the escape wheel's pinion fade in
-(`watchMoveWith: none`), turning freely (`watchSpin`). At click 1,
+(`artMoveWith: none`), turning freely (`watchSpin`). At click 1,
 four teeth on each gear flash, and then stay in the flash's colours (the
 span). Clicks 2 to 4 add the text one line at a
 time: a callout to the small gear, a callout to the big gear, and the rule
 ([watch.md](watch.md#the-gears-slide)). At click 5,
 the rest of the Escapement slide's mechanism fades in around them, the span
-and the callouts go, the rule stays, and the gears tick with it (`watchClicks`). The drive arrow
+and the callouts go, the rule stays, and the gears tick with it (`artClicks`). The drive arrow
 moves from the escape wheel to the fourth wheel: the push still comes from
 something the audience cannot see. At click 6, the
 seconds hand fades in, and then its text, under the rule. Each click
@@ -272,7 +272,7 @@ that adds text dims the text before it ([Text dims](#text-dims)).
 The Gear Train slide follows it: the camera zooms out from the same picture,
 to frame the train from the escape wheel to the centre wheel. Click 1 zooms
 out to the case and shows one wheel that is 60 times slower, larger than the
-watch: the wheel fades in, then the case, and then the wheel and its
+art: the wheel fades in, then the case, and then the wheel and its
 pinion flash. Clicks
 2 and 3 add the third wheel and then the centre wheel, each with the pinion
 that it drives: each fades in, and then flashes. The drive arrow leaves the
@@ -282,7 +282,7 @@ Only the centre wheel, its arbor, pivot and drive arrow stay undimmed.
 "Wheel driven by hidden mechanism" then fades in, with a leader to the centre wheel.
 The Mainspring slide follows it: the Gear Train text and dimmed watch parts fade out.
 The centre wheel, arbor, pivot and muted arrow remain for one second.
-Then the mechanism fades out. The arrow remains alone for one second, then fades out (`watchLinger`).
+Then the mechanism fades out. The arrow remains alone for one second, then fades out (`artLinger`).
 The camera then jumps, and the bare mainspring and its arbor fade in, with
 "Not back-and-forth / One slow unwind": the title names it, and the text
 says that it is not the hairspring. At click 1 a stud holds its outer end,
@@ -308,7 +308,7 @@ They are described in [watch.md](watch.md).
 **The main focus of a slide is on its left.** Put the picture there, and the
 callouts and text on the right. If the picture takes less than 60% of the
 slide's width, centre it in the slide's left 60%. To set its gap to the text
-instead, give its right edge (`watchRight`; the Gears slide). When the
+instead, give its right edge (`artRight`; the Gears slide). When the
 picture is wider (the Escapement slide), it starts at the left edge, and the
 callouts go in the room on its right and in its gaps. The watch's fitted view
 does this for you ([watch.md](watch.md#fitted-views)). The watch's train is laid out left to right from

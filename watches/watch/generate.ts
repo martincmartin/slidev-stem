@@ -1701,7 +1701,7 @@ interface BuiltPiece {
 class PieceList {
   readonly pieces: BuiltPiece[] = [];
 
-  /** `inAll: false` for a piece that `watch: all` leaves out (`Piece`). */
+  /** `inAll: false` for a piece that `art: all` leaves out (`Piece`). */
   make(name: string, { inAll = true } = {}): BuiltPiece {
     const made: BuiltPiece = { name, meshes: new Set(), inAll };
     this.pieces.push(made);
@@ -2894,7 +2894,7 @@ function views(
  *  views"): as large as they fit in FIT_WIDTH by the band's height, centred
  *  in the slide's left FIT_FOCUS but not left of FIT_LEFT, with their middle
  *  at the band's middle (`bandOf`). If `right` is a number, their right edge
- *  is there instead, in slide px (`watchRight`). It tilts about their middle,
+ *  is there instead, in slide px (`artRight`). It tilts about their middle,
  *  at the middle of their heights. */
 export function fittedView(
   watch: Watch,

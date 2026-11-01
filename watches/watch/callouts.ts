@@ -191,7 +191,7 @@ function slideProjection(
   frontmatter: Record<string, unknown>,
 ): (point: Point2, z: number) => Point2 {
   const state = watchState(frontmatter, 0);
-  if (!state) throw new Error("a slide's callouts need a `watch:`");
+  if (!state) throw new Error("a slide's callouts need an `art:`");
   const stage = stageState(watch, state);
   return (point, z) =>
     onSlide(stage.view, stage, watch.scene.slide, [point[0], point[1], z]);

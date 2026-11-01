@@ -101,8 +101,8 @@ test("a figure marks what its run flashed, but not when that is everything", asy
 
 test("an article setting replaces the default mark", () => {
   const frontmatter = {
-    watch: ["balance wheel", "hairspring"],
-    watchFlash: ["balance wheel"],
+    art: ["balance wheel", "hairspring"],
+    artFlash: ["balance wheel"],
     article: { 0: { mark: ["hairspring"] } },
   };
   assert.deepEqual(figureMarks(watch, frontmatter, 0), ["hairspring"]);

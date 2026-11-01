@@ -74,7 +74,7 @@ const LONGEST_FRAME = 0.1;
 
 /** The groups that go on and off together, by the names that slides use, and
  *  the key for each, and whether each shows at the start. The rest of
- *  `watch: all` shows at the start too. The strap does not: the fit of a
+ *  `art: all` shows at the start too. The strap does not: the fit of a
  *  picture with the strap is mostly strap. */
 const GROUPS = [
   {
@@ -167,7 +167,7 @@ for (const group of groups) {
 let shownMeshes = new Set<Mesh>();
 const NOTHING: ReadonlySet<Mesh> = new Set();
 const UNDIMMED: ReadonlyMap<Mesh, number> = new Map();
-/** The deck's pose whose dimmed pieces are dimmed (`watchDim`), or `null`.
+/** The deck's pose whose dimmed pieces are dimmed (`artDim`), or `null`.
  *  A change of the shown pieces ends it. */
 let dimmedBy: DeckPose | null = null;
 /** The weights of the dimmed meshes' own colours, as the stage has them. */

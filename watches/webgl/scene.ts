@@ -149,7 +149,7 @@ export interface Piece {
   readonly name: string;
   readonly meshes: ReadonlySet<Mesh>;
   /** `false` for a piece that shows only where a slide names it, such as a
-   *  mark on another piece: `watch: all` leaves it out. */
+   *  mark on another piece: `art: all` leaves it out. */
   readonly inAll: boolean;
 }
 

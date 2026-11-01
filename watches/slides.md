@@ -26,8 +26,8 @@ hide: true
 # The live watch stays in the same view on the cover and section.
 layout: cover
 side: left
-watch: all
-watchView: cover
+art: all
+artView: cover
 # the slide's right edge cuts the watch: the article shows it whole
 article:
   0:
@@ -66,19 +66,19 @@ hands, inside the case.]
 layout: section
 side: left
 eyebrow: PART 1
-watch: all
-watchView: cover
+art: all
+artView: cover
 transition: watch-zoom
 ---
 
 # Mechanical Marvels
 
 ---
-watch: [hairspring, collet, stud]
-watchView: hairspring
+art: [hairspring, collet, stud]
+artView: hairspring
 # the oscillator flashes; then the camera zooms in with the whole watch on the
 # screen, and the rest fades out (docs/watch.md)
-watchFlash:
+artFlash:
   [
     balance wheel,
     balance staff,
@@ -88,11 +88,11 @@ watchFlash:
     roller,
     impulse jewel,
   ]
-watchMoveWith: all
-watchTilt: 20
+artMoveWith: all
+artTilt: 20
 # click 2: the balance comes to rest while the diving board covers it;
 # click 3: it swings again (docs/watch.md, "The diving board")
-watchClicks:
+artClicks:
   2:
     watchAtRest: true
   3:
@@ -165,10 +165,10 @@ move is the whole idea of the hairspring.
 -->
 
 ---
-watch: [balance wheel, balance staff, hairspring, collet, stud]
-watchView: hairspring
-watchTilt: 20
-watchFlash: [balance wheel, balance staff]
+art: [balance wheel, balance staff, hairspring, collet, stud]
+artView: hairspring
+artTilt: 20
+artFlash: [balance wheel, balance staff]
 class: balance-wheel
 clicks: 3
 history: "c. 1364"
@@ -292,7 +292,7 @@ system and tweak it to be 99.99% accurate!
 -->
 
 ---
-watch:
+art:
   &escapement [
     balance wheel,
     balance staff,
@@ -305,17 +305,17 @@ watch:
     escape wheel,
     escape arbor,
   ]
-watchView: *escapement # the camera stays when click 2 shows less
-watchTilt: 20
-watchClicks:
+artView: *escapement # the camera stays when click 2 shows less
+artTilt: 20
+artClicks:
   # the wheel's callout appears; the pallet and the balance fade, and then
   # the drive arrow fades in, and the escape wheel spins freely
   1:
-    watch: [escape wheel, escape arbor, escape wheel drive]
+    art: [escape wheel, escape arbor, escape wheel drive]
     watchSpin: 135 # degrees a second
   # they fade back in, and the pallet stops the wheel (docs/watch.md)
   2:
-    watch: [*escapement, escape wheel drive]
+    art: [*escapement, escape wheel drive]
     watchSpin: false
   # the balance comes to rest, with the jewel under its leader
   3:
@@ -458,10 +458,10 @@ the tick and the tock of a watch.
 # that the table, 483 px wide, fits on the right. Neither the Escapement
 # slide nor the Gears slide shows these pieces at the step, so both steps
 # jump the camera
-watch: [seconds hand, fourth arbor]
-watchView: [seconds hand]
-watchRight: 438
-watchTilt: 20
+art: [seconds hand, fourth arbor]
+artView: [seconds hand]
+artRight: 438
+artTilt: 20
 class: ticks-and-turns
 clicks: 3
 ---
@@ -490,7 +490,7 @@ rule for the other two hands. -->
 
 <style>
 /* Where the Gears slide's text is, and the same type, but further left:
-   44 px right of the hand's circle (the frontmatter's watchRight). The
+   44 px right of the hand's circle (the frontmatter's artRight). The
    circle's edge is where the tip reaches at 3 o'clock only. The widest
    line, "60 ticks a turn: once a minute", and the table (216 + 32 + 235 px)
    are each about 483 px: they end at 965 px, as the Gears slide's rule
@@ -582,23 +582,23 @@ Trips people up until they think it through.  How long for a full circle?
 
 ---
 # the camera stays when a click adds pieces
-watchView: &gears [fourth wheel, fourth arbor, escape pinion, escape arbor]
+artView: &gears [fourth wheel, fourth arbor, escape pinion, escape arbor]
 # the span, in the gears' own colours: it cannot be seen until click 1
 # flashes it
-watch: [*gears, fourth wheel span plain, escape pinion span plain]
+art: [*gears, fourth wheel span plain, escape pinion span plain]
 # the fourth wheel's teeth reach 70 px short of the text (.gears-sentence,
 # left: 560px): this edge, plus half the outline, is 70 px left of the "A"
-watchRight: 489
-watchTilt: 20
+artRight: 489
+artTilt: 20
 # the audience has not seen these gears, so their place in the watch does
 # not matter: the Ticks and Turns slide's picture fades out, the camera jumps,
 # and this one fades in, both ways (docs/watch.md, "The Gears slide")
-watchMoveWith: none
+artMoveWith: none
 # the gears turn freely, from the start: the pinion once in 4 s (360 / 4 = 90
 # degrees a second), so the fourth wheel once in 8 s
 watchSpin: 90
 class: gears
-watchClicks:
+artClicks:
   # a span: four teeth of the wheel, and the four leaves that they drive.
   # Four teeth are a quarter of the wheel and half the pinion. The gears
   # turn on. The span is in the flash's colours (second-wash faces, second
@@ -608,9 +608,9 @@ watchClicks:
   # shows, at once. No flash for the text: each callout's leader shows which
   # gear it means
   1:
-    watch: [*gears, fourth wheel span, escape pinion span]
-    watchFlash: [fourth wheel span plain, escape pinion span plain]
-    watchCut:
+    art: [*gears, fourth wheel span, escape pinion span]
+    artFlash: [fourth wheel span plain, escape pinion span plain]
+    artCut:
       [
         fourth wheel span plain,
         escape pinion span plain,
@@ -623,7 +623,7 @@ watchClicks:
   # tick with the escape wheel
   5:
     watchSpin: false
-    watch:
+    art:
       &mechanism [
         fourth wheel drive,
         *gears,
@@ -640,7 +640,7 @@ watchClicks:
   # the seconds hand, on the fourth wheel's arbor: it turns once a minute,
   # and the text says so after the hand has faded in
   6:
-    watch: [*mechanism, seconds hand]
+    art: [*mechanism, seconds hand]
 clicks: 6
 history: "Second hand: c. 1670"
 ---
@@ -674,7 +674,7 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
 
 <style>
 /* On the right of the gears, 70 px from the fourth wheel's teeth: the
-   frontmatter's watchRight follows this left. The callouts are in the
+   frontmatter's artRight follows this left. The callouts are in the
    callout type, next to their gears, above the rule: not in this column.
    The second hand's text is under the rule, 0.7em below it
    (301 + 2 * 43.75 + 24.5 = 413 px).
@@ -797,7 +797,7 @@ Teeth must move at same speed because they mesh.
 # the Gears slide's last picture, in a view that frames the train from the
 # escape wheel to the centre wheel, which do not show yet. The pieces stay on
 # the screen while the camera moves; the balance is partly off the slide
-watch:
+art:
   [
     &seconds [
       fourth wheel,
@@ -817,11 +817,11 @@ watch:
     ],
     fourth wheel drive,
   ]
-watchView: &frame [escape wheel, fourth wheel, third wheel, centre wheel]
-watchRight: 489
-watchTilt: 20
+artView: &frame [escape wheel, fourth wheel, third wheel, centre wheel]
+artRight: 489
+artTilt: 20
 class: gear-train
-watchClicks:
+artClicks:
   # one wheel that is sixty times slower, in one step: it drives the
   # fourth pinion, from the line from the escape arbor through the fourth
   # arbor (docs/watch.md, "The Gear Train slide"). The camera untilts and
@@ -831,34 +831,34 @@ watchClicks:
   # the case, and then they flash. The case's strap is the raised strap,
   # above the wheel
   1:
-    watch:
+    art:
       [
         *seconds,
         fourth pinion,
         one-step wheel,
         &case [case band, lug, crown, raised strap, chapter ring],
       ]
-    watchView: [case band]
-    watchTilt: 0
-    watchLater: *case
-    watchGoLater: [fourth wheel drive]
-    watchFlash: [one-step wheel, fourth pinion]
+    artView: [case band]
+    artTilt: 0
+    artLater: *case
+    artGoLater: [fourth wheel drive]
+    artFlash: [one-step wheel, fourth pinion]
   # the train slows the turn from once a minute to once an hour, in two
   # steps. Each fades in, and then flashes: the wheel, with its arbor, and
   # the pinion that it drives. The drive arrow moves to the new wheel: the
   # old one fades out first, and the new one fades in with its wheel
   2:
-    watch:
+    art:
       [
         *seconds,
         &third [fourth pinion, third wheel, third arbor],
         third wheel drive,
       ]
-    watchView: *frame
-    watchTilt: 20
-    watchFlash: *third
+    artView: *frame
+    artTilt: 20
+    artFlash: *third
   3:
-    watch:
+    art:
       [
         &train [
           &trainContext [*seconds, *third, third pinion],
@@ -867,11 +867,11 @@ watchClicks:
         ],
         centre wheel drive,
       ]
-    watchFlash: [third pinion, centre wheel, centre arbor]
+    artFlash: [third pinion, centre wheel, centre arbor]
   # the minute hand, on the centre wheel's arbor, and the case and the dial
   # (the chapter ring holds its marks); not the hour hand
   4:
-    watch:
+    art:
       [
         *train,
         centre wheel drive,
@@ -881,7 +881,7 @@ watchClicks:
   # keep the centre wheel, its arbor, pivot and drive arrow bright; the hidden
   # source of the push is the next slide's spring
   5:
-    watchDim: [*trainContext, *face]
+    artDim: [*trainContext, *face]
 clicks: 5
 history: "Minute hand: c. 1656"
 ---
@@ -935,7 +935,7 @@ recap for anyone who missed clicks 2 and 3. -->
   paint-order: stroke fill;
 }
 /* Where the Gears slide's text is, and the same type: 70 px right of the
-   picture's right edge (the frontmatter's watchRight). The fades are in
+   picture's right edge (the frontmatter's artRight). The fades are in
    longhands, which keep after-watch's delay. */
 .slidev-layout.gear-train .gt-sentence {
   position: absolute;
@@ -1040,9 +1040,9 @@ Turns the wrong way, counterclockwise.
 # camera stays at every click. The story (watchMainspring) turns the key,
 # winds and lets down the spring, and says when the watch runs
 # (docs/watch.md, "The Mainspring slide")
-watch: &spring [mainspring, barrel arbor]
-watchView: *spring
-watchTilt: 20
+art: &spring [mainspring, barrel arbor]
+artView: *spring
+artTilt: 20
 watchMainspring: free
 # In the article, the figure at click 1 has a slider that winds the spring,
 # and the figure at click 2 a button that lets it go (docs/article.md)
@@ -1054,24 +1054,24 @@ article:
 # The centre wheel, arbor, pivot and drive arrow remain for one second.
 # Then the mechanism fades, leaving the arrow alone for one more second.
 # The arrow fades before the camera changes to the spring's view.
-watchLinger:
+artLinger:
   - pieces: [centre wheel, centre arbor, centre pivot]
     seconds: 1
   - pieces: [centre wheel drive]
     seconds: 1
-watchClicks:
+artClicks:
   # the stud and the dashed rest shape fade in, and the stud flashes; then
   # the key winds it
   1:
-    watch: [*spring, mainspring stud, mainspring rest]
-    watchFlash: [mainspring stud]
+    art: [*spring, mainspring stud, mainspring rest]
+    artFlash: [mainspring stud]
     watchMainspring: wound
   # the stud flashes and is gone at once; the spring uncoils to its rest
   # shape as soon as nothing holds its end
   2:
-    watch: [*spring, mainspring rest]
-    watchFlash: [mainspring stud]
-    watchCut: [mainspring stud]
+    art: [*spring, mainspring rest]
+    artFlash: [mainspring stud]
+    artCut: [mainspring stud]
     watchMainspring: released
   # the rest shape fades out, the camera zooms out to the whole movement,
   # from the barrel to the balance, and the barrel and the watch (all but
@@ -1081,7 +1081,7 @@ watchClicks:
   # pallet fork is not in the list: it is inside the others, and its extent
   # is the whole circle about its pivot
   3:
-    watch:
+    art:
       [
         *spring,
         barrel,
@@ -1114,9 +1114,9 @@ watchClicks:
         crown,
         strap,
       ]
-    watchFlash: [barrel, centre pinion]
+    artFlash: [barrel, centre pinion]
     watchMainspring: barrel
-    watchView:
+    artView:
       &movement [
         barrel,
         centre wheel,
@@ -1127,7 +1127,7 @@ watchClicks:
         hairspring,
         stud,
       ]
-    watchBand: slide
+    artBand: slide
   # a time-lapse, until the barrel has turned once: then the watch stops
   4:
     watchMainspring: run down
@@ -1255,7 +1255,7 @@ Barrel turns once, the minute hand six times, and the mainspring moves out to th
 # move the camera; tilt 20 at every click. While the camera is in on the
 # motion works, all but the centre wheel and the minute hand is dimmed
 # (docs/watch.md, "The Hour Hand slide")
-watch:
+art:
   &watch [
     &faint [
       barrel arbor,
@@ -1288,7 +1288,7 @@ watch:
     ],
     &lit [centre wheel, centre arbor, minute hand, centre pivot],
   ]
-watchView:
+artView:
   &movement [
     barrel,
     centre wheel,
@@ -1299,41 +1299,41 @@ watchView:
     hairspring,
     stud,
   ]
-watchBand: slide
-watchTilt: 20
+artBand: slide
+artTilt: 20
 class: hour-hand
-watchClicks:
+artClicks:
   # one wheel, 12 times slower: a pinion on the centre arbor (the cannon
   # pinion) and a wheel with 12 times its leaves. They fade in and flash
   1:
-    watch: [*watch, &oneStep [cannon pinion, one-step hour wheel]]
-    watchFlash: *oneStep
+    art: [*watch, &oneStep [cannon pinion, one-step hour wheel]]
+    artFlash: *oneStep
   # the hour hand on that wheel's arbor: off centre
   2:
-    watch: [*watch, *oneStep, one-step hour hand]
+    art: [*watch, *oneStep, one-step hour hand]
   # the one-step wheel, its hand and its pinion go; the camera zooms in on
   # the centre wheel, in the picture band, and then all but the centre wheel
   # and the minute hand dims
   3:
-    watch: *watch
-    watchView: [centre wheel]
-    watchBand: picture
-    watchDim: *faint
+    art: *watch
+    artView: [centre wheel]
+    artBand: picture
+    artDim: *faint
   # the cannon pinion and the minute wheel fade in, and flash: out, 3:1
   4:
-    watch: [*watch, &out [cannon pinion, minute wheel, minute arbor]]
-    watchFlash: [cannon pinion, minute wheel]
+    art: [*watch, &out [cannon pinion, minute wheel, minute arbor]]
+    artFlash: [cannon pinion, minute wheel]
   # the minute pinion and the hour wheel fade in, and flash: back, 4:1
   5:
-    watch: [*watch, *out, &back [minute pinion, hour wheel]]
-    watchFlash: *back
+    art: [*watch, *out, &back [minute pinion, hour wheel]]
+    artFlash: *back
   # the camera zooms back out, the dim ends, and the hour hand fades in, on
   # the hour wheel, in the middle
   6:
-    watch: [*watch, *out, *back, hour hand]
-    watchView: *movement
-    watchBand: slide
-    watchDim: false
+    art: [*watch, *out, *back, hour hand]
+    artView: *movement
+    artBand: slide
+    artDim: false
 clicks: 6
 history: "Hour hand: c. 1350"
 ---
@@ -1378,7 +1378,7 @@ recap, as on the Gear Train slide. -->
   paint-order: stroke fill;
 }
 /* Where the Gear Train slide's text is, and the same type: 70 px right of
-   the picture's right edge (the frontmatter's watchRight). The fades are in
+   the picture's right edge (the frontmatter's artRight). The fades are in
    longhands, which keep after-watch's delay. */
 .slidev-layout.hour-hand .hh-sentence {
   position: absolute;
@@ -1446,76 +1446,75 @@ bottom.]
 ---
 # A tour of the train with no text, from the motion works to the balance:
 # the watch fills the slide. Each click is a stop. The camera moves, zooms,
-# tilts and turns at the same time (watchMove: together), and the mechanism
+# tilts and turns at the same time (artMove: together), and the mechanism
 # runs at the stop's speed-up: the slower of the two parts that touch turns
 # once in 30 s (watchLapse). The views put each touch at the middle of the
 # slide (watch/recap.ts; docs/watch.md, "The Recap slide")
 title: Recap
 class: recap after-watch
-watch:
-  [all, cannon pinion, minute wheel, minute pinion, minute arbor, hour wheel]
-watchView: recap motion works
-watchFlash: [hour wheel, minute wheel, minute pinion]
-watchFlashAfterMove: true
+art: [all, cannon pinion, minute wheel, minute pinion, minute arbor, hour wheel]
+artView: recap motion works
+artFlash: [hour wheel, minute wheel, minute pinion]
+artFlashAfterMove: true
 watchUnwind: true
 watchWind: true
-watchTilt: 30
-watchMove: together
+artTilt: 30
+artMove: together
 watchLapse: 1440
 watchTimeScale: true
-watchClicks:
+artClicks:
   # Wind before moving here, even after a long pause at the first stop.
   # The barrel turns once in 6 hours.
   1:
-    watchView: recap barrel
-    watchFlash: [barrel, mainspring, barrel arbor]
+    artView: recap barrel
+    artFlash: [barrel, mainspring, barrel arbor]
     watchLapse: 720
     watchWind: true
   # the barrel's teeth on the centre pinion, low, from about 3:40
   2:
-    watchView: recap barrel touch
-    watchFlash: [barrel, centre pinion]
-    watchTurn: 80
-    watchTilt: 80
+    artView: recap barrel touch
+    artFlash: [barrel, centre pinion]
+    artTurn: 80
+    artTilt: 80
   # back up over the movement: the centre wheel on the third pinion, with
   # the next touch behind it, as at each stop from here. From here the hour
   # hand moves too slowly to pass over a touch during a stop, so it goes
   # when the camera arrives; the minute hand, the centre wheel's own, stays
   # one stop more
   3:
-    watchView: recap centre touch
-    watchFlash: [centre wheel, third pinion]
-    watchTurn: -10
-    watchTilt: 45
+    artView: recap centre touch
+    artFlash: [centre wheel, third pinion]
+    artTurn: -10
+    artTilt: 45
     watchLapse: 120
-    watchHide: [hour hand]
-    watchGoLater: [hour hand]
+    artHide: [hour hand]
+    artGoLater: [hour hand]
   4:
-    watchView: recap third touch
-    watchFlash: [third wheel, fourth pinion]
-    watchTurn: 15
+    artView: recap third touch
+    artFlash: [third wheel, fourth pinion]
+    artTurn: 15
     watchLapse: 15
-    watchHide: [hour hand, minute hand]
-    watchGoLater: [minute hand]
+    artHide: [hour hand, minute hand]
+    artGoLater: [minute hand]
   # the fourth wheel turns once in 30 s, the escape wheel once in 15 s
   5:
-    watchView: recap fourth touch
-    watchFlash: [fourth wheel, escape pinion]
-    watchTurn: 75
+    artView: recap fourth touch
+    artFlash: [fourth wheel, escape pinion]
+    artTurn: 75
     watchLapse: 2
   # from here, the mechanism at its own speed
   6:
-    watchView: recap pallet
-    watchFlash: [escape wheel, pallet fork]
-    watchTurn: 90
+    artView: recap pallet
+    artFlash: [escape wheel, pallet fork]
+    artTurn: 90
     watchLapse: 1
   7:
-    watchView: recap jewel
-    watchFlash: [impulse jewel, pallet fork]
+    artView: recap jewel
+    artFlash: [impulse jewel, pallet fork]
   # where the Hairspring slide shows it, on the left
   8:
-    watchView: hairspring
-    watchFlash:
+    artView: hairspring
+    artFlash:
       [
         balance wheel,
         balance staff,
@@ -1525,8 +1524,8 @@ watchClicks:
         roller,
         impulse jewel,
       ]
-    watchTurn: 0
-    watchTilt: 20
+    artTurn: 0
+    artTilt: 20
     watchTimeScale: false
 clicks: 8
 ---
@@ -1634,16 +1633,16 @@ Two gears run the hour hand.
 
 ---
 # the cover's picture, as on Mechanical Marvels. The step from the Recap
-# slide's last click moves in order (the default watchMove), the reverse of
+# slide's last click moves in order (the default artMove), the reverse of
 # the step from Mechanical Marvels to the Hairspring slide: the motion works
 # fade out, the hands that the Recap slide hid fade in, the camera tilts to
 # 0, and then it zooms out
 layout: section
 side: left
 eyebrow: PART 2
-watch: all
-watchView: cover
-watchMoveAlso: [hour hand, minute hand]
+art: all
+artView: cover
+artMoveAlso: [hour hand, minute hand]
 ---
 
 # Changed The World

@@ -38,17 +38,17 @@ test("Recap winds on entry and at the barrel stop only", () => {
     { watchSpin: 135 },
   ]) {
     assert.throws(
-      () => watchState({ watch: "all", watchUnwind: true, ...other }, 0),
+      () => watchState({ art: "all", watchUnwind: true, ...other }, 0),
       /^Error: watchUnwind/,
     );
   }
   assert.throws(
-    () => watchState({ watch: "all", watchWind: true }, 0),
+    () => watchState({ art: "all", watchWind: true }, 0),
     /^Error: watchWind/,
   );
   for (const key of ["watchUnwind", "watchWind"]) {
     assert.throws(
-      () => watchState({ watch: "all", [key]: "yes" }, 0),
+      () => watchState({ art: "all", [key]: "yes" }, 0),
       new RegExp(`^Error: ${key}`),
     );
   }

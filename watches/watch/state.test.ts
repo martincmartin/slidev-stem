@@ -22,7 +22,7 @@ test("a slide without watch has no state", () => {
 });
 
 test("the fields and their defaults", () => {
-  assert.deepEqual(watchState({ watch: "all" }, 0), {
+  assert.deepEqual(watchState({ art: "all" }, 0), {
     view: null,
     tilt: 0,
     turn: 0,
@@ -46,11 +46,11 @@ test("the fields and their defaults", () => {
     move: "ordered",
   });
   const frontmatter = {
-    watch: ["hairspring", "collet", "stud"],
-    watchView: "hairspring",
-    watchTilt: 20,
-    watchFlash: ["balance wheel"],
-    watchClicks: { 1: { watchAtRest: true } },
+    art: ["hairspring", "collet", "stud"],
+    artView: "hairspring",
+    artTilt: 20,
+    artFlash: ["balance wheel"],
+    artClicks: { 1: { watchAtRest: true } },
   };
   assert.equal(watchState(frontmatter, 0)?.settled, false);
   assert.deepEqual(watchState(frontmatter, 0)?.flash, ["balance wheel"]);
@@ -79,10 +79,10 @@ test("the fields and their defaults", () => {
   });
 });
 
-test("watchDim dims pieces from its click on, until false; the stage gets their meshes at WATCH_DIM", () => {
+test("artDim dims pieces from its click on, until false; the stage gets their meshes at WATCH_DIM", () => {
   const frontmatter = {
-    watch: ["hairspring", "collet", "stud"],
-    watchClicks: { 1: { watchDim: ["stud"] }, 2: { watchDim: false } },
+    art: ["hairspring", "collet", "stud"],
+    artClicks: { 1: { artDim: ["stud"] }, 2: { artDim: false } },
   };
   assert.equal(watchState(frontmatter, 0)?.dim, null);
   const dimmed = watchState(frontmatter, 1) ?? assert.fail();
@@ -98,23 +98,20 @@ test("watchDim dims pieces from its click on, until false; the stage gets their 
     stageState(watch, watchState(frontmatter, 2) ?? assert.fail()).dim,
     undefined,
   );
-  assert.throws(
-    () => watchState({ watch: ["stud"], watchDim: true }, 0),
-    /watchDim/,
-  );
+  assert.throws(() => watchState({ art: ["stud"], artDim: true }, 0), /artDim/);
   assert.throws(
     () => stageState(watch, { ...dimmed, dim: ["no such piece"] }),
-    /watchDim/,
+    /artDim/,
   );
 });
 
-test("watchHide leaves pieces of watch out from its click on, until false, and out of a fitted view", () => {
+test("artHide leaves pieces of watch out from its click on, until false, and out of a fitted view", () => {
   const frontmatter = {
-    watch: ["all", "hour wheel"],
-    watchClicks: {
-      1: { watchHide: ["hour hand"] },
-      2: { watchHide: ["hour hand", "minute hand"] },
-      3: { watchHide: false },
+    art: ["all", "hour wheel"],
+    artClicks: {
+      1: { artHide: ["hour hand"] },
+      2: { artHide: ["hour hand", "minute hand"] },
+      3: { artHide: false },
     },
   };
   const piece = (name: string) =>
@@ -140,42 +137,42 @@ test("watchHide leaves pieces of watch out from its click on, until false, and o
   // a fitted view of the shown pieces does not fit a hidden one
   const fitted = (hide: readonly string[] | null) =>
     stageState(watch, {
-      ...(watchState({ watch: ["hour hand", "stud"] }, 0) ?? assert.fail()),
+      ...(watchState({ art: ["hour hand", "stud"] }, 0) ?? assert.fail()),
       hide,
     }).view;
   assert.deepEqual(
     fitted(["hour hand"]),
-    stageState(watch, watchState({ watch: ["stud"] }, 0) ?? assert.fail()).view,
+    stageState(watch, watchState({ art: ["stud"] }, 0) ?? assert.fail()).view,
   );
   assert.notDeepEqual(fitted(null), fitted(["hour hand"]));
   assert.throws(
-    () => watchState({ watch: "all", watchHide: true }, 0),
-    /^Error: watchHide:/,
+    () => watchState({ art: "all", artHide: true }, 0),
+    /^Error: artHide:/,
   );
   assert.throws(
     () =>
       stageState(
         watch,
-        watchState({ watch: ["stud"], watchHide: ["hour hand"] }, 0) ??
+        watchState({ art: ["stud"], artHide: ["hour hand"] }, 0) ??
           assert.fail(),
       ),
-    /^Error: watchHide: "hour hand" is not in watch/,
+    /^Error: artHide: "hour hand" is not in art/,
   );
   assert.throws(
     () =>
       stageState(
         watch,
-        watchState({ watch: "all", watchHide: ["no such piece"] }, 0) ??
+        watchState({ art: "all", artHide: ["no such piece"] }, 0) ??
           assert.fail(),
       ),
-    /^Error: watchHide: no watch piece/,
+    /^Error: artHide: no watch piece/,
   );
 });
 
-test("watchLinger resolves its pieces and applies only at the declared click", () => {
+test("artLinger resolves its pieces and applies only at the declared click", () => {
   const frontmatter = {
-    watch: ["mainspring", "barrel arbor"],
-    watchLinger: [{ pieces: ["centre wheel drive"], seconds: 1 }],
+    art: ["mainspring", "barrel arbor"],
+    artLinger: [{ pieces: ["centre wheel drive"], seconds: 1 }],
   };
   const parsed = watchState(frontmatter, 0) ?? assert.fail();
   const arrow = watch.scene.pieces.find(
@@ -191,8 +188,8 @@ test("watchLinger resolves its pieces and applies only at the declared click", (
   assert.equal(watchState(frontmatter, 1)?.linger, undefined);
   for (const value of [null, {}, []]) {
     assert.throws(
-      () => watchState({ ...frontmatter, watchLinger: value }, 0),
-      /watchLinger/,
+      () => watchState({ ...frontmatter, artLinger: value }, 0),
+      /artLinger/,
     );
   }
   assert.throws(
@@ -201,7 +198,7 @@ test("watchLinger resolves its pieces and applies only at the declared click", (
         ...parsed,
         linger: [{ pieces: ["unknown"], seconds: 1 }],
       }),
-    /watchLinger/,
+    /artLinger/,
   );
   for (const value of [
     null,
@@ -216,17 +213,17 @@ test("watchLinger resolves its pieces and applies only at the declared click", (
     { pieces: ["centre wheel drive"], seconds: 1, extra: true },
   ]) {
     assert.throws(
-      () => watchState({ ...frontmatter, watchLinger: [value] }, 0),
-      /watchLinger/,
+      () => watchState({ ...frontmatter, artLinger: [value] }, 0),
+      /artLinger/,
     );
   }
 });
 
-test("watchFlashAfterMove carries to later clicks and resolves to the stage", () => {
+test("artFlashAfterMove carries to later clicks and resolves to the stage", () => {
   const frontmatter = {
-    watch: "all",
-    watchFlashAfterMove: true,
-    watchClicks: { 2: { watchFlashAfterMove: false } },
+    art: "all",
+    artFlashAfterMove: true,
+    artClicks: { 2: { artFlashAfterMove: false } },
   };
   for (const click of [0, 1, 2, 3]) {
     const parsed = watchState(frontmatter, click) ?? assert.fail();
@@ -234,19 +231,19 @@ test("watchFlashAfterMove carries to later clicks and resolves to the stage", ()
     assert.equal(stageState(watch, parsed).flashAfterMove, click < 2);
   }
   assert.throws(
-    () => watchState({ watch: "all", watchFlashAfterMove: "true" }, 0),
-    /watchFlashAfterMove/,
+    () => watchState({ art: "all", artFlashAfterMove: "true" }, 0),
+    /artFlashAfterMove/,
   );
 });
 
 test("a flash is of one click: the slide's at click 0, a block's at its click", () => {
   const frontmatter = {
-    watch: "all",
-    watchFlash: ["balance wheel"],
-    watchClicks: {
-      1: { watchTilt: 20 },
-      2: { watchFlash: ["third wheel", ["third arbor"]], watchLater: ["lug"] },
-      3: { watchTilt: 0, watchFlash: ["centre wheel"], watchCut: ["stud"] },
+    art: "all",
+    artFlash: ["balance wheel"],
+    artClicks: {
+      1: { artTilt: 20 },
+      2: { artFlash: ["third wheel", ["third arbor"]], artLater: ["lug"] },
+      3: { artTilt: 0, artFlash: ["centre wheel"], artCut: ["stud"] },
     },
   };
   const flashes = [0, 1, 2, 3, 4].map(
@@ -275,11 +272,11 @@ test("a flash is of one click: the slide's at click 0, a block's at its click", 
 
 test("a click block changes the motion from its click on, as the slide sets it for click 0", () => {
   const frontmatter = {
-    watch: "all",
+    art: "all",
     watchSpin: 45,
-    watchClicks: {
+    artClicks: {
       1: { watchSpin: false, watchAtRest: true },
-      2: { watchSpin: 120, watchTilt: 20 },
+      2: { watchSpin: 120, artTilt: 20 },
       3: { watchAtRest: false, watchTickTock: true, watchTimeScale: true },
       5: { watchTickTock: false },
       4: { watchTimeScale: false },
@@ -309,21 +306,21 @@ test("a click block changes the motion from its click on, as the slide sets it f
   );
   // a block that says what is already so changes nothing
   assert.equal(
-    watchState({ watch: "all", watchClicks: { 2: { watchAtRest: false } } }, 3)
+    watchState({ art: "all", artClicks: { 2: { watchAtRest: false } } }, 3)
       ?.settled,
     false,
   );
 });
 
-test("watchClicks changes what shows from its click on; the camera stays on watchView", () => {
+test("artClicks changes what shows from its click on; the camera stays on artView", () => {
   const gears = ["fourth wheel", "escape pinion"];
   const frontmatter = {
-    watch: gears,
-    watchView: gears,
+    art: gears,
+    artView: gears,
     // a list may hold lists (YAML aliases), and a name twice shows once
-    watchClicks: {
-      3: { watch: [gears, "pallet fork", "escape wheel"] },
-      1: { watch: [gears, "escape wheel", "escape pinion"] },
+    artClicks: {
+      3: { art: [gears, "pallet fork", "escape wheel"] },
+      1: { art: [gears, "escape wheel", "escape pinion"] },
     },
   };
   const at = (clicks: number) => watchState(frontmatter, clicks);
@@ -340,37 +337,37 @@ test("watchClicks changes what shows from its click on; the camera stays on watc
   const last = stageState(watch, at(3) ?? assert.fail());
   assert.deepEqual(last.view, first.view);
   assert.ok(last.shown.size > first.shown.size);
-  // without watchView, the view fits what shows, so it moves
-  const moving = { watch: gears, watchClicks: frontmatter.watchClicks };
+  // without artView, the view fits what shows, so it moves
+  const moving = { art: gears, artClicks: frontmatter.artClicks };
   const fitted = (clicks: number) =>
     stageState(watch, watchState(moving, clicks) ?? assert.fail()).view;
   assert.notDeepEqual(fitted(3), fitted(0));
   // a click can change the frame too: here, to a named view
   const named = {
-    watch: gears,
-    watchClicks: { 2: { watchView: "hairspring" } },
+    art: gears,
+    artClicks: { 2: { artView: "hairspring" } },
   };
   assert.equal(watchState(named, 1)?.view, null);
   assert.equal(watchState(named, 2)?.view, "hairspring");
 });
 
-test("watchClicks and watchView refuse what they cannot hold, with the key's name", () => {
+test("artClicks and artView refuse what they cannot hold, with the key's name", () => {
   for (const [frontmatter, field] of [
-    [{ watchClicks: [{ watch: "all" }] }, "watchClicks"],
-    [{ watchClicks: { one: { watch: "all" } } }, "watchClicks"],
-    [{ watchClicks: { "-1": { watch: "all" } } }, "watchClicks"],
-    [{ watchClicks: { 1.5: { watch: "all" } } }, "watchClicks"],
-    [{ watchClicks: { 1: ["escape wheel"] } }, "watchClicks.1"],
-    [{ watchClicks: { 1: {} } }, "watchClicks.1"],
-    [{ watchClicks: { 1: { watchMoveWith: "all" } } }, "watchClicks.1"],
+    [{ artClicks: [{ art: "all" }] }, "artClicks"],
+    [{ artClicks: { one: { art: "all" } } }, "artClicks"],
+    [{ artClicks: { "-1": { art: "all" } } }, "artClicks"],
+    [{ artClicks: { 1.5: { art: "all" } } }, "artClicks"],
+    [{ artClicks: { 1: ["escape wheel"] } }, "artClicks.1"],
+    [{ artClicks: { 1: {} } }, "artClicks.1"],
+    [{ artClicks: { 1: { artMoveWith: "all" } } }, "artClicks.1"],
     // a block is checked before its click comes
-    [{ watchClicks: { 5: { watch: [] } } }, "watchClicks.5.watch"],
-    [{ watchClicks: { 5: { watchView: 3 } } }, "watchClicks.5.watchView"],
-    [{ watchView: [] }, "watchView"],
-    [{ watchView: [[]] }, "watchView"],
+    [{ artClicks: { 5: { art: [] } } }, "artClicks.5.art"],
+    [{ artClicks: { 5: { artView: 3 } } }, "artClicks.5.artView"],
+    [{ artView: [] }, "artView"],
+    [{ artView: [[]] }, "artView"],
   ] as const) {
     assert.throws(
-      () => watchState({ watch: "all", ...frontmatter }, 0),
+      () => watchState({ art: "all", ...frontmatter }, 0),
       new RegExp(`^Error: ${field.replaceAll(".", "\\.")}:`),
       JSON.stringify(frontmatter),
     );
@@ -380,15 +377,11 @@ test("watchClicks and watchView refuse what they cannot hold, with the key's nam
 test("a slide shows the meshes of its pieces, or all but the marks, in its named or fitted view", () => {
   const named = stageState(
     watch,
-    watchState({ watch: ["stud"], watchView: "hairspring" }, 0) ??
-      assert.fail(),
+    watchState({ art: ["stud"], artView: "hairspring" }, 0) ?? assert.fail(),
   );
   assert.equal(named.view.name, "hairspring");
   assert.equal(named.shown.size, 1);
-  const all = stageState(
-    watch,
-    watchState({ watch: "all" }, 0) ?? assert.fail(),
-  );
+  const all = stageState(watch, watchState({ art: "all" }, 0) ?? assert.fail());
   // every mesh but those of the pieces that only a slide that names them
   // shows: the drive arrows, the Gears slide's spans, the Gear Train slide's
   // one-step wheel and raised strap, the Mainspring slide's props, and the
@@ -423,24 +416,17 @@ test("a slide shows the meshes of its pieces, or all but the marks, in its named
   );
   const fitted = stageState(
     watch,
-    watchState({ watch: ["fourth wheel", "escape pinion"] }, 0) ??
-      assert.fail(),
+    watchState({ art: ["fourth wheel", "escape pinion"] }, 0) ?? assert.fail(),
   );
   assert.equal(fitted.view.name, "fourth wheel, escape pinion");
   assert.equal(fitted.moveWith, "common");
   for (const [frontmatter, error] of [
+    [{ art: ["no such piece"] }, /^Error: art: no watch piece "no such piece"/],
     [
-      { watch: ["no such piece"] },
-      /^Error: watch: no watch piece "no such piece"/,
+      { art: ["stud"], artFlash: ["nor this"] },
+      /^Error: artFlash: no watch piece/,
     ],
-    [
-      { watch: ["stud"], watchFlash: ["nor this"] },
-      /^Error: watchFlash: no watch piece/,
-    ],
-    [
-      { watch: ["stud"], watchView: "nowhere" },
-      /^Error: watchView: no watch view/,
-    ],
+    [{ art: ["stud"], artView: "nowhere" }, /^Error: artView: no watch view/],
   ] as const) {
     assert.throws(
       () => stageState(watch, watchState(frontmatter, 0) ?? assert.fail()),
@@ -449,12 +435,12 @@ test("a slide shows the meshes of its pieces, or all but the marks, in its named
   }
 });
 
-test("watchRight puts a fitted view's right edge there, and needs a fitted view", () => {
+test("artRight puts a fitted view's right edge there, and needs a fitted view", () => {
   const pieces = ["fourth wheel", "escape pinion"];
   const right = (frontmatter: Record<string, unknown>): number => {
     const { view } = stageState(
       watch,
-      watchState({ watch: pieces, ...frontmatter }, 0) ?? assert.fail(),
+      watchState({ art: pieces, ...frontmatter }, 0) ?? assert.fail(),
     );
     const edge = Math.max(
       ...pieces.map(
@@ -467,57 +453,53 @@ test("watchRight puts a fitted view's right edge there, and needs a fitted view"
     );
     return view.scale * edge + view.shift[0];
   };
-  assert.ok(Math.abs(right({ watchRight: 489 }) - 489) < 1e-9);
+  assert.ok(Math.abs(right({ artRight: 489 }) - 489) < 1e-9);
   assert.ok(Math.abs(right({}) - 489) > 1);
   assert.throws(
-    () =>
-      watchState(
-        { watch: pieces, watchView: "hairspring", watchRight: 489 },
-        0,
-      ),
-    /^Error: watchRight: .*set only with a fitted view/,
+    () => watchState({ art: pieces, artView: "hairspring", artRight: 489 }, 0),
+    /^Error: artRight: .*set only with a fitted view/,
   );
 });
 
-test("watchTurn turns a named view's camera, and a fitted view refuses it", () => {
-  const turned = { watch: "all", watchView: "cover", watchTurn: 90 };
+test("artTurn turns a named view's camera, and a fitted view refuses it", () => {
+  const turned = { art: "all", artView: "cover", artTurn: 90 };
   const state = watchState(turned, 0) ?? assert.fail();
   assert.equal(state.turn, 90);
   assert.equal(stageState(watch, state).turn, 90);
   assert.throws(
-    () => watchState({ watch: "all", watchTurn: 90 }, 0),
-    /^Error: watchTurn: .*set only with a named view/,
+    () => watchState({ art: "all", artTurn: 90 }, 0),
+    /^Error: artTurn: .*set only with a named view/,
   );
   // turn 0 is the default, so a fitted view may say it
-  assert.equal(watchState({ watch: "all", watchTurn: 0 }, 0)?.turn, 0);
+  assert.equal(watchState({ art: "all", artTurn: 0 }, 0)?.turn, 0);
   assert.throws(
-    () => watchState({ watch: "all", watchView: "cover", watchTurn: "90" }, 0),
-    /^Error: watchTurn/,
+    () => watchState({ art: "all", artView: "cover", artTurn: "90" }, 0),
+    /^Error: artTurn/,
   );
 });
 
-test("watchMoveWith names what shows while the camera moves into the slide", () => {
-  assert.deepEqual(moveWithBefore({ watch: "all" }), MOVE_WITH_COMMON);
+test("artMoveWith names what shows while the camera moves into the slide", () => {
+  assert.deepEqual(moveWithBefore({ art: "all" }), MOVE_WITH_COMMON);
   for (const value of ["common", "all", "none"]) {
-    assert.deepEqual(moveWithBefore({ watch: "all", watchMoveWith: value }), {
+    assert.deepEqual(moveWithBefore({ art: "all", artMoveWith: value }), {
       rule: value,
       also: [],
     });
   }
   assert.throws(
-    () => watchState({ watch: "all", watchMoveWith: "some" }, 0),
-    /^Error: watchMoveWith:/,
+    () => watchState({ art: "all", artMoveWith: "some" }, 0),
+    /^Error: artMoveWith:/,
   );
   assert.throws(
-    () => watchState({ watchMoveWith: "all" }, 0),
-    /set only with watch/,
+    () => watchState({ artMoveWith: "all" }, 0),
+    /set only with art/,
   );
 });
 
-test("watchMoveAlso names pieces that also show while the camera moves into the slide", () => {
+test("artMoveAlso names pieces that also show while the camera moves into the slide", () => {
   const moveWith = moveWithBefore({
-    watch: "all",
-    watchMoveAlso: ["hour hand", "minute hand"],
+    art: "all",
+    artMoveAlso: ["hour hand", "minute hand"],
   });
   assert.deepEqual(moveWith, {
     rule: "common",
@@ -528,37 +510,34 @@ test("watchMoveAlso names pieces that also show while the camera moves into the 
   );
   assert.equal(hands.length, 2);
   assert.deepEqual(
-    stageState(
-      watch,
-      watchState({ watch: "all" }, 0) ?? assert.fail(),
-      moveWith,
-    ).moveAlso,
+    stageState(watch, watchState({ art: "all" }, 0) ?? assert.fail(), moveWith)
+      .moveAlso,
     new Set(hands.flatMap((piece) => [...piece.meshes])),
   );
   assert.throws(
-    () => moveWithBefore({ watch: "all", watchMoveAlso: "hour hand" }),
-    /^Error: watchMoveAlso:/,
+    () => moveWithBefore({ art: "all", artMoveAlso: "hour hand" }),
+    /^Error: artMoveAlso:/,
   );
   assert.throws(
     () =>
       moveWithBefore({
-        watch: "all",
-        watchMoveWith: "all",
-        watchMoveAlso: ["hour hand"],
+        art: "all",
+        artMoveWith: "all",
+        artMoveAlso: ["hour hand"],
       }),
-    /^Error: watchMoveAlso:.*watchMoveWith: all/,
+    /^Error: artMoveAlso:.*artMoveWith: all/,
   );
   assert.throws(
-    () => moveWithBefore({ watchMoveAlso: ["hour hand"] }),
-    /^Error: watchMoveAlso:.*set only with watch/,
+    () => moveWithBefore({ artMoveAlso: ["hour hand"] }),
+    /^Error: artMoveAlso:.*set only with art/,
   );
   assert.throws(
     () =>
-      stageState(watch, watchState({ watch: "all" }, 0) ?? assert.fail(), {
+      stageState(watch, watchState({ art: "all" }, 0) ?? assert.fail(), {
         rule: "common",
         also: ["no such piece"],
       }),
-    /^Error: watchMoveAlso:/,
+    /^Error: artMoveAlso:/,
   );
 });
 
@@ -568,41 +547,41 @@ test("a key that a click can change needs watch on the slide", () => {
     [{ watchAtRest: true }, "watchAtRest"],
     [{ watchTickTock: true }, "watchTickTock"],
     [{ watchTimeScale: true }, "watchTimeScale"],
-    [{ watchRight: 489 }, "watchRight"],
-    [{ watchFlash: ["stud"] }, "watchFlash"],
-    [{ watchLater: ["stud"] }, "watchLater"],
-    [{ watchClicks: { 1: { watch: "all" } } }, "watchClicks"],
+    [{ artRight: 489 }, "artRight"],
+    [{ artFlash: ["stud"] }, "artFlash"],
+    [{ artLater: ["stud"] }, "artLater"],
+    [{ artClicks: { 1: { art: "all" } } }, "artClicks"],
   ] as const) {
     assert.throws(
       () => watchState(frontmatter, 0),
-      new RegExp(`^Error: ${field}: .*set only with watch`),
+      new RegExp(`^Error: ${field}: .*set only with art`),
       JSON.stringify(frontmatter),
     );
-    assert.throws(() => tickTockState(frontmatter, 0), /set only with watch/);
-    assert.throws(() => timeScaleState(frontmatter, 0), /set only with watch/);
+    assert.throws(() => tickTockState(frontmatter, 0), /set only with art/);
+    assert.throws(() => timeScaleState(frontmatter, 0), /set only with art/);
   }
 });
 
 test("a field of the wrong kind throws, with its name", () => {
   for (const [field, value] of [
-    ["watch", ""],
-    ["watch", 3],
-    ["watchTilt", "20"],
-    ["watchTilt", ""],
-    ["watchTilt", true],
-    ["watchTilt", Number.NaN],
-    ["watch", "stud"],
-    ["watch", []],
-    ["watch", [""]],
-    ["watchView", ""],
-    ["watchView", 1],
-    ["watchFlash", ""],
-    ["watchFlash", 2],
-    ["watchFlash", "stud"],
-    ["watchLater", []],
-    ["watchLater", "stud"],
-    ["watchCut", []],
-    ["watchCut", "stud"],
+    ["art", ""],
+    ["art", 3],
+    ["artTilt", "20"],
+    ["artTilt", ""],
+    ["artTilt", true],
+    ["artTilt", Number.NaN],
+    ["art", "stud"],
+    ["art", []],
+    ["art", [""]],
+    ["artView", ""],
+    ["artView", 1],
+    ["artFlash", ""],
+    ["artFlash", 2],
+    ["artFlash", "stud"],
+    ["artLater", []],
+    ["artLater", "stud"],
+    ["artCut", []],
+    ["artCut", "stud"],
     ["watchAtRest", 1],
     ["watchAtRest", "true"],
     ["watchSpin", "90"],
@@ -614,36 +593,35 @@ test("a field of the wrong kind throws, with its name", () => {
     ["watchTickTock", 1],
     ["watchTimeScale", "yes"],
     ["watchTimeScale", 1],
-    ["watchRight", "489"],
-    ["watchRight", true],
-    ["watchRight", Number.NaN],
-    ["watchBand", "page"],
-    ["watchBand", 1],
+    ["artRight", "489"],
+    ["artRight", true],
+    ["artRight", Number.NaN],
+    ["artBand", "page"],
+    ["artBand", 1],
     ["watchMainspring", "wound up"],
     ["watchMainspring", true],
   ] as const) {
     assert.throws(
-      () => watchState({ watch: "all", [field]: value }, 0),
+      () => watchState({ art: "all", [field]: value }, 0),
       new RegExp(`^Error: ${field}:`),
       `${field}: ${String(value)}`,
     );
     // the same key in a click block, checked before its click
     assert.throws(
-      () =>
-        watchState({ watch: "all", watchClicks: { 3: { [field]: value } } }, 0),
-      new RegExp(`^Error: watchClicks\\.3\\.${field}:`),
-      `watchClicks.3.${field}: ${String(value)}`,
+      () => watchState({ art: "all", artClicks: { 3: { [field]: value } } }, 0),
+      new RegExp(`^Error: artClicks\\.3\\.${field}:`),
+      `artClicks.3.${field}: ${String(value)}`,
     );
   }
 });
 
 test("the Mainspring slide's stage says when the watch runs: only in the barrel, wound", () => {
   const frontmatter = {
-    watch: ["mainspring", "barrel arbor"],
+    art: ["mainspring", "barrel arbor"],
     watchMainspring: "free",
-    watchClicks: {
+    artClicks: {
       2: { watchMainspring: "wound" },
-      4: { watch: "all", watchMainspring: "barrel" },
+      4: { art: "all", watchMainspring: "barrel" },
       5: { watchMainspring: "run down" },
     },
   };
@@ -666,19 +644,19 @@ test("the Mainspring slide's stage says when the watch runs: only in the barrel,
   assert.throws(
     () =>
       watchState(
-        { ...frontmatter, watchClicks: { 1: { watchAtRest: true } } },
+        { ...frontmatter, artClicks: { 1: { watchAtRest: true } } },
         1,
       ),
     /^Error: watchAtRest: true should be left out where watchMainspring is set/,
   );
 });
 
-test("watchBand: slide fits the slide's height, with the picture band's bottom margin at both ends", () => {
+test("artBand: slide fits the slide's height, with the picture band's bottom margin at both ends", () => {
   const pieces = ["barrel", "balance wheel"];
   const view = (band: string) =>
     stageState(
       watch,
-      watchState({ watch: pieces, watchBand: band }, 0) ?? assert.fail(),
+      watchState({ art: pieces, artBand: band }, 0) ?? assert.fail(),
     ).view;
   const picture = view("picture");
   const slide = view("slide");
@@ -695,19 +673,18 @@ test("watchBand: slide fits the slide's height, with the picture band's bottom m
     ) < 1e-9,
   );
   assert.throws(
-    () =>
-      watchState({ watch: pieces, watchView: "cover", watchBand: "slide" }, 0),
-    /^Error: watchBand: "slide" should be set only with a fitted view/,
+    () => watchState({ art: pieces, artView: "cover", artBand: "slide" }, 0),
+    /^Error: artBand: "slide" should be set only with a fitted view/,
   );
 });
 
-test("watchLapse, watchMove, and all in a list of pieces", () => {
+test("watchLapse, artMove, and all in a list of pieces", () => {
   const frontmatter = {
-    watch: ["all", "hour wheel"],
-    watchView: "recap motion works",
+    art: ["all", "hour wheel"],
+    artView: "recap motion works",
     watchLapse: 1440,
-    watchMove: "together",
-    watchClicks: { 1: { watchLapse: 2 } },
+    artMove: "together",
+    artClicks: { 1: { watchLapse: 2 } },
   };
   const first = watchState(frontmatter, 0) ?? assert.fail();
   assert.equal(first.lapse, 1440);
@@ -720,7 +697,7 @@ test("watchLapse, watchMove, and all in a list of pieces", () => {
   // all that `all` shows, and the hour wheel, which `all` leaves out
   const all = stageState(
     watch,
-    watchState({ watch: "all" }, 0) ?? assert.fail(),
+    watchState({ art: "all" }, 0) ?? assert.fail(),
   ).shown;
   const hourWheel =
     watch.scene.pieces.find((piece) => piece.name === "hour wheel") ??
@@ -729,10 +706,10 @@ test("watchLapse, watchMove, and all in a list of pieces", () => {
   for (const [key, value] of [
     ["watchLapse", 0.5],
     ["watchLapse", "fast"],
-    ["watchMove", "sideways"],
+    ["artMove", "sideways"],
   ] as const) {
     assert.throws(
-      () => watchState({ watch: "all", [key]: value }, 0),
+      () => watchState({ art: "all", [key]: value }, 0),
       new RegExp(`^Error: ${key}`),
     );
   }
@@ -744,8 +721,19 @@ test("watchLapse, watchMove, and all in a list of pieces", () => {
     { watchAtRest: true },
   ]) {
     assert.throws(
-      () => watchState({ watch: "all", watchLapse: 2, ...other }, 0),
+      () => watchState({ art: "all", watchLapse: 2, ...other }, 0),
       /^Error: watchLapse/,
     );
   }
+});
+
+test("a key that starts with art or watch and is not a key throws, with its name", () => {
+  for (const key of ["watch", "watchView", "artVeiw", "watchClicks"]) {
+    assert.throws(
+      () => watchState({ art: "all", [key]: "cover" }, 0),
+      new RegExp(`^Error: ${key}: no such key`),
+    );
+  }
+  // other keys of the slide are not the stage's
+  assert.ok(watchState({ art: "all", artwork: 1, watchful: 1 }, 0));
 });

@@ -166,7 +166,7 @@ Train slide's big wheel) gets a crop of its own.
 **Where the slide's top or bottom cuts the watch, the crop centres it.** A
 watch that the slide's bottom cuts sits below the title's space, which the
 figure does not show. So the crop cuts its other side too, until the pieces
-that the view fits (`watchView`) are in its middle, but never into those
+that the view fits (`artView`) are in its middle, but never into those
 pieces. The Gear Train slide's case then shows as much strap above as below.
 Not across: there, what the slide cuts is the case beside the train, and the
 figure keeps it.
@@ -230,7 +230,7 @@ article:
 | `mark`   | a list of pieces, or `false`                                                                                                                                                                                                                                                           |
 | `slider` | `curl`: the diving board's curl, to the hairspring at rest (the Hairspring slide); `twist`: the hairspring's wind from rest, and a swing from there when the reader lets go (the Hairspring slide); `wind`: the Mainspring slide's story, from the bare spring through the key's turns |
 | `button` | `release`: the figure shows the click before its own; the button plays the step to its own click (the Mainspring slide's release)                                                                                                                                                      |
-| `view`   | the figure's camera, in place of the slide's, with the values of `watchView`: a named view, or the pieces that a fitted view fits                                                                                                                                                      |
+| `view`   | the figure's camera, in place of the slide's, with the values of `artView`: a named view, or the pieces that a fitted view fits                                                                                                                                                        |
 
 **Use `view` when the slide cuts the picture across, or cuts the fitted
 pieces.** The crop stops at the slide's edge, so there the watch shows cut

@@ -251,7 +251,7 @@ test("on the Gears slide, the gears spin from the start, and start to fade in as
   // the slide's list, with the view's names in it (a YAML alias) flattened
   assert.deepEqual(
     watchState(GEARS_SLIDE, 0)?.show,
-    (GEARS_SLIDE["watch"] as unknown[]).flat(),
+    (GEARS_SLIDE["art"] as unknown[]).flat(),
   );
   const timeline = new Timeline();
   timeline.show(
