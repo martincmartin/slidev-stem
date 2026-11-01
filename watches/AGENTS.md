@@ -10,6 +10,9 @@ Before you…
 - add or change a slide: `docs/slide-patterns.md`.
 - change the watch (`watch/`, `art/`, its frontmatter, `global-bottom.vue`) or
   the diving board: `docs/watch.md`, and `../docs/webgl.md` for `webgl/`.
+- change the globe or a story map (`globe/`, `art/earth-data.ts`,
+  `art/fetch-earth.sh`, the globe's frontmatter): `docs/globe.md`, and
+  `../docs/webgl.md`.
 - write or change a slide's narration, or change the article
   (`addons/narration/`, `components/FigureLayer.vue`, `watch/article.ts`),
   build it or export its text: `docs/article.md`, and `../docs/export.md`.

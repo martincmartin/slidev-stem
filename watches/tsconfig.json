@@ -33,6 +33,7 @@
   "include": [
     "webgl/**/*.ts",
     "watch/**/*.ts",
+    "globe/**/*.ts",
     "addons/**/*.ts",
     "addons/**/*.vue",
     "art/**/*.ts",

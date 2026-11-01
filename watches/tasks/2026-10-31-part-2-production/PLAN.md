@@ -378,3 +378,11 @@ All made, 2026-10-31.
   still's pose is its state's. So option 2's risk is answered: the camera
   maps exactly, in the same animation frame. The wiring to the deck's
   layer, the stills and the figures is phase 5's, with the story layer.
+- **2026-10-31, phase 2, the land:** `globe/earth.json` (1.26 MB, 0.41 MB
+  compressed), from `art/earth-data.ts`, with `art/fetch-earth.sh` at the
+  globe task's Natural Earth commit. It holds only the land's polygons: the
+  globe takes the coast from the rings at load, and cuts the levels at the
+  1:10m boxes in its geometry, not with a clip. 1:110m: 5,001 points;
+  1:50m: 59,221; 1:10m, in the two boxes: 28,107. The story maps are not
+  files: phase 5 projects them from this land at load, as the house makes
+  geometry ("Geometry is made in TypeScript at load", `docs/webgl.md`).

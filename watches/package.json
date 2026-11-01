@@ -26,7 +26,7 @@
     "format:check": "prettier --check .",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint --max-warnings 0 .",
-    "test": "node --test \"webgl/**/*.test.ts\" \"watch/**/*.test.ts\" \"addons/**/*.test.ts\" \"art/**/*.test.ts\" && uv run art/test_leader_path.py && uv run art/test_favicon.py",
+    "test": "node --test \"webgl/**/*.test.ts\" \"watch/**/*.test.ts\" \"globe/**/*.test.ts\" \"addons/**/*.test.ts\" \"art/**/*.test.ts\" && uv run art/test_leader_path.py && uv run art/test_favicon.py",
     "explore": "vite watch/explorer --open",
     "art:scene": "node watch/dump.ts",
     "art:generated": "uv run art/diving_board.py --check && uv run art/watch_design.py --check && uv run art/favicon.py --check",
