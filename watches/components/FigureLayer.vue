@@ -57,6 +57,8 @@ import type {
 } from "../addons/narration/figure.ts";
 import DivingBoard from "./DivingBoard.vue";
 import StoryMaps from "./StoryMaps.vue";
+import { settled, voyageEndAt, voyageTarget } from "../globe/voyage.ts";
+import type { VoyageStep } from "../globe/voyage.ts";
 import TickTock from "./TickTock.vue";
 import TimeScale from "./TimeScale.vue";
 import { SharedView } from "../webgl/shared.ts";
@@ -72,7 +74,7 @@ import {
 import { boardState } from "../watch/board.ts";
 import type { BoardTarget } from "../watch/board.ts";
 import { stoneStrikes } from "../watch/callouts.ts";
-import { ART, artModel, sharedStage } from "../watch/instance.ts";
+import { ART, GLOBE, artModel, sharedStage } from "../watch/instance.ts";
 import { storyRuns, windSliderTime } from "../watch/mainspring.ts";
 import { twistAngle, WatchModel } from "../watch/model.ts";
 import type { WatchModelState } from "../watch/model.ts";
@@ -84,6 +86,7 @@ import {
   stepMove,
   tickTockState,
   timeScaleState,
+  voyageState,
 } from "../watch/state.ts";
 import type { WatchState } from "../watch/state.ts";
 
@@ -184,6 +187,8 @@ const hidden = computed(() => !state.value || covered.value);
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 /** The view's frames, once it is made: the story maps ride them. */
 const frames = shallowRef<(listener: FrameListener) => () => void>();
+/** The story map's marks: the step to the click's, on the figure's clock. */
+const voyage = shallowRef<VoyageStep>(settled(null));
 const model = shallowRef<WatchModel>();
 let view: SharedView<WatchModelState> | undefined;
 let shown: { clicks: number; state: WatchState | undefined } | undefined;
@@ -272,7 +277,17 @@ function show(to: number, atOnce: boolean): void {
   );
   view.marked = meshesOf(figureMarks(ART, frontmatter.value, to));
   shown = { clicks: to, state: now };
-  setEnd("watch", view.endAt());
+  const target = voyageTarget(
+    GLOBE.stories,
+    stageState(ART, now).view,
+    voyageState(frontmatter.value, to),
+  );
+  const at = figure.now();
+  voyage.value =
+    move === "jump"
+      ? { ...settled(target), at, start: at }
+      : { from: voyage.value.to, to: target, at, start: view.viewEndAt() };
+  setEnd("watch", Math.max(view.endAt(), voyageEndAt(voyage.value)));
 }
 
 onMounted(() => {
@@ -384,7 +399,7 @@ onChange(
     :style="palette.variables"
   >
     <canvas ref="canvas" class="watch-canvas" :style="canvasStyle" />
-    <StoryMaps :frames="frames" />
+    <StoryMaps :frames="frames" :voyage="voyage" />
     <DivingBoard
       :target="board"
       :live="true"

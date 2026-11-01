@@ -115,6 +115,12 @@ export class SharedView<ModelState> {
     return !this.paused || this.changed;
   }
 
+  /** As `Stage.viewEndAt`: when the camera's last move ends (ms, the
+   *  view's time), or now if it does not move. */
+  viewEndAt(): number {
+    return this.timeline.viewEndAt(this.now());
+  }
+
   /** When the change ends (ms, the view's time), with its flash and the
    *  model's story, or now if it has. */
   endAt(): number {

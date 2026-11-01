@@ -21,9 +21,10 @@ import {
 import { articleText, markdownPage } from "./article-text.ts";
 import { historyOf } from "../addons/narration/history.ts";
 import { deckSlides, slideFrontmatter } from "./deck.ts";
-import { generate } from "./generate.ts";
+import { makeArt } from "./art.ts";
 
-const watch = generate();
+/** The deck's art: the watch and the globe. */
+const watch = makeArt().art;
 const slides = await deckSlides();
 
 function totalClicks(frontmatter: Record<string, unknown>): number {

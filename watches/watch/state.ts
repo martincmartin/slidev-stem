@@ -43,6 +43,11 @@
 //   artHide: pieces that `art` shows but that do not show here, nor
 //     count in a fitted view (the Recap slide's hands: `art: [all, ...]`
 //     with no other way to leave a piece out); false (default): none
+//   globeLeg: on a story map's view, the last leg of its voyage that
+//     shows, with the ship at its end; false (default): none
+//     (`voyageState`, globe/stories.ts)
+//   globeMarks: on a story map's view, its marks that show; false
+//     (default): none
 // On the slide or in a block, about the step into that click, so they do
 // not carry on to later clicks (STEP_KEYS):
 //   artFlash: pieces that flash, on the step forward into the slide (on
@@ -69,6 +74,7 @@
 //   artClicks: for a click, the keys that change from that click on
 //     ({1: {art: [*gears, pallet fork], watchSpin: false}})
 
+import type { VoyageNames } from "../globe/voyage.ts";
 import type { Mesh, Piece, View } from "../webgl/scene.ts";
 import { CAMERA_MOVES } from "../webgl/timeline.ts";
 import type { CameraMove, MoveWith, StageState } from "../webgl/timeline.ts";
@@ -269,6 +275,14 @@ function piecesOrNoneOf(
   return value === false ? null : namesOf(name, value);
 }
 
+function nameOrNoneOf(name: string, value: unknown): string | null {
+  if (value === false) return null;
+  if (typeof value !== "string" || value === "") {
+    return wrong(name, value, "a name, or false");
+  }
+  return value;
+}
+
 function isMap(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -339,6 +353,8 @@ const CLICK_KEYS = {
   watchUnwind: booleanOf,
   artDim: piecesOrNoneOf,
   artHide: piecesOrNoneOf,
+  globeLeg: nameOrNoneOf,
+  globeMarks: piecesOrNoneOf,
 } as const;
 type ClickKey = keyof typeof CLICK_KEYS;
 type ClickValues = { [Key in ClickKey]?: ReturnType<(typeof CLICK_KEYS)[Key]> };
@@ -408,8 +424,9 @@ function readClickKeys(
 /** The keys that only the slide holds, which `atClick` does not read. */
 const SLIDE_KEYS = ["artClicks", "artMoveWith", "artMoveAlso"];
 
-/** Throws if the slide holds a key that starts with `art` or `watch` and is
- *  not one of the keys above: a misspelt key would otherwise do nothing. */
+/** Throws if the slide holds a key that starts with `art`, `watch` or
+ *  `globe` and is not one of the keys above: a misspelt key would otherwise
+ *  do nothing. */
 function checkNames(frontmatter: Record<string, unknown>): void {
   const known = [
     ...Object.keys(CLICK_KEYS),
@@ -417,7 +434,7 @@ function checkNames(frontmatter: Record<string, unknown>): void {
     ...SLIDE_KEYS,
   ];
   for (const key of Object.keys(frontmatter)) {
-    if (/^(art|watch)([A-Z]|$)/.test(key) && !known.includes(key)) {
+    if (/^(art|watch|globe)([A-Z]|$)/.test(key) && !known.includes(key)) {
       throw new Error(`${key}: no such key; the keys: ${known.join(", ")}`);
     }
   }
@@ -627,6 +644,16 @@ export function tickTockState(
   clicks: number,
 ): boolean {
   return atClick(frontmatter, clicks).watchTickTock ?? false;
+}
+
+/** The names of the story map's marks at `clicks` (`globeLeg`,
+ *  `globeMarks`). Throws as `watchState` does. */
+export function voyageState(
+  frontmatter: Record<string, unknown>,
+  clicks: number,
+): VoyageNames {
+  const { globeLeg, globeMarks } = atClick(frontmatter, clicks);
+  return { leg: globeLeg ?? null, marks: globeMarks ?? [] };
 }
 
 /** Whether the time scale shows, at `clicks` (`watchTimeScale`). Throws as

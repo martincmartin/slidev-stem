@@ -23,7 +23,7 @@ import {
 } from "./article.ts";
 import { deckSlides } from "./deck.ts";
 import type { DeckSlide } from "./deck.ts";
-import { generate } from "./generate.ts";
+import { makeArt } from "./art.ts";
 import type { Watch } from "./generate.ts";
 
 /** The slides that the page shows: Slidev leaves the hidden ones out. */
@@ -99,5 +99,5 @@ export function articleText(
 }
 
 if (import.meta.main) {
-  process.stdout.write(articleText(await deckSlides(), generate()));
+  process.stdout.write(articleText(await deckSlides(), makeArt().art));
 }

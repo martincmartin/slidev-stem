@@ -5,7 +5,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { deckSlides } from "./deck.ts";
-import { generate } from "./generate.ts";
+import { makeArt } from "./art.ts";
 import { AtRest, discOutline } from "./at-rest.ts";
 import {
   MOVE_WITH_COMMON,
@@ -19,7 +19,8 @@ import type { Move } from "./navigation.ts";
 import type { Mesh, Piece } from "../webgl/scene.ts";
 import { Timeline } from "../webgl/timeline.ts";
 
-const watch = generate();
+/** The deck's art: the watch and the globe. */
+const { art: watch, globe } = makeArt();
 const slides = await deckSlides();
 
 /** The watch's piece called `name`. */
@@ -149,7 +150,9 @@ test("no part that a click shows rises through a paper disc that it shows", () =
       );
       own.delete(disc.group);
       const through = scene.meshes.filter((mesh) => {
-        if (mesh.holdout || own.has(mesh.group)) return false;
+        // the globe is far from the watch
+        if (mesh.holdout || own.has(mesh.group) || globe.piece.meshes.has(mesh))
+          return false;
         if (allowed.get(disc)?.has(mesh)) return false;
         const over = outline.heightsOver(atRest.points(mesh));
         return over !== null && over[0] < height && over[1] > height;

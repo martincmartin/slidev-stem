@@ -11,6 +11,8 @@ import type { Polygon } from "./earth.ts";
 import { DISC_GROUP, discMatrix, globeMeshes } from "./globe.ts";
 import { STORY_MAPS, placeMap } from "./maps.ts";
 import type { PlacedMap } from "./maps.ts";
+import { makeStories } from "./stories.ts";
+import type { Story } from "./stories.ts";
 import { globeViews } from "./views.ts";
 
 const EARTH = parseEarth(earthFile);
@@ -26,6 +28,8 @@ export interface Globe {
   readonly piece: Piece;
   /** The story maps, placed on the globe: drawn over it in SVG. */
   readonly maps: readonly PlacedMap[];
+  /** The story of each map, in the same order: the marks over it. */
+  readonly stories: readonly Story[];
 }
 
 /** The globe, for a slide of `slide` px. */
@@ -38,6 +42,7 @@ export function makeGlobe(slide: readonly [number, number]): Globe {
     views: globeViews(slide, maps),
     piece,
     maps,
+    stories: makeStories(maps, slide),
   };
 }
 

@@ -427,3 +427,22 @@ All made, 2026-10-31.
   flight's time. A test slide, not committed, showed each map whole at its
   click (the groups' opacities 1 0 0, 0 1 0, 0 0 0, 0 0 1 over the four
   clicks), and the globe alone in flight.
+- **2026-11-01, phase 5, the marks:** `globe/stories.ts` holds each story
+  map's marks, ported from the mockup's places: the voyage's legs (a track
+  that draws itself, a dot a day, the ship) and the other marks (the dashed
+  ship, the parallel, the bracket, the scale, the wind, the islands). A
+  slide names each click's target with two new click keys, `globeLeg` and
+  `globeMarks`; the three Part 2 slides follow "Changed The World", with a
+  first draft of their narration so that each figure has alt text (phase 7
+  rewrites it). What a frame shows is a pure function of the step and the
+  clock (`globe/voyage.ts`): the new legs sail once the camera has come,
+  and a step back sails them back, from the last (`stem/docs/navigation.md`,
+  a story animation), where the mockup cut at once. A press during a voyage
+  is a jump. Chromium showed every click of the three slides, mid-leg and
+  mid-flight, and two steps back, as the mockup draws them. Section 7's
+  contrast on the water's wash (`tools/lib.py`, `contrast`): in ledger, the
+  talk's palette, ink 4.09, the subject 3.00 and the paper 3.47, all at 3:1
+  or more. In other house palettes, the paper (the gusts, the dashed ship)
+  is 2.19–2.54 in electric-terracotta, field-notes and kraft-ink, and the
+  subject (the ship, the coast) is 2.93 in beacon: below 3:1. The slug of a
+  title now drops accents (`Fernández` was `ferna-ndez`).

@@ -1,0 +1,214 @@
+// What a story map's marks show at a time (docs/globe.md, "The marks"): a
+// pure function of the step's two targets and the frame's clock, so that
+// the live layer, an article's figure and a still all draw the same thing.
+// A slide names a target for each click (`globeLeg`, `globeMarks`): the
+// last leg of the voyage that shows, and the marks. On a step forward, the
+// new legs sail one after the other once the camera has come (`start`), and
+// the new marks fade in; the marks that go fade out at once. A step back is
+// the step forward reversed: the legs that go sail back, from the last. A
+// jump shows its target at once, but for the marks' fades. No DOM: the
+// tests run it in Node.
+
+import type { View } from "../webgl/scene.ts";
+import type { Leg, Mark, Point, Story } from "./stories.ts";
+
+/** Seconds of a mark's fade. */
+export const MARK_FADE_SECONDS = 0.4;
+
+/** A story map's marks at a click: the story, how many of its legs show
+ *  (the ship is at the end of the last), and the marks that show. */
+export interface VoyageTarget {
+  readonly story: Story;
+  readonly legs: number;
+  readonly marks: ReadonlySet<Mark>;
+}
+
+/** The frontmatter's names of a click's target (`voyageState`): the last
+ *  leg that shows, or null, and the marks. */
+export interface VoyageNames {
+  readonly leg: string | null;
+  readonly marks: readonly string[];
+}
+
+/** The target that `names` give, on the story map whose view is `view`, or
+ *  null if the slide names nothing. Throws if it names a leg or a mark that
+ *  the story does not have, or names any on a view with no story. */
+export function voyageTarget(
+  stories: readonly Story[],
+  view: View,
+  names: VoyageNames,
+): VoyageTarget | null {
+  if (names.leg === null && names.marks.length === 0) return null;
+  const story = stories.find((each) => each.placed.view === view);
+  if (!story) {
+    throw new Error(`globeLeg, globeMarks: the view ${view.name} has no story`);
+  }
+  const legs =
+    names.leg === null
+      ? 0
+      : story.legs.findIndex((leg) => leg.name === names.leg) + 1;
+  if (legs === 0 && names.leg !== null) {
+    throw new Error(
+      `globeLeg: no leg "${names.leg}"; the legs: ${story.legs.map((leg) => leg.name).join(", ")}`,
+    );
+  }
+  const marks = names.marks.map((name) => {
+    const found = story.marks.find((mark) => mark.name === name);
+    if (!found) {
+      throw new Error(
+        `globeMarks: no mark "${name}"; the marks: ${story.marks.map((mark) => mark.name).join(", ")}`,
+      );
+    }
+    return found;
+  });
+  return { story, legs, marks: new Set(marks) };
+}
+
+/** A step between two targets: `at` is when it happens, and `start` when
+ *  its legs start to sail and its marks to fade in (ms; after the camera's
+ *  move). A jump, or a still, has the same target both sides. */
+export interface VoyageStep {
+  readonly from: VoyageTarget | null;
+  readonly to: VoyageTarget | null;
+  readonly at: number;
+  readonly start: number;
+}
+
+/** The step that shows `target` at once. */
+export function settled(target: VoyageTarget | null): VoyageStep {
+  return { from: target, to: target, at: 0, start: 0 };
+}
+
+/** What a story map shows of its voyage at a time. For each of its legs:
+ *  the share of the track drawn (null: the leg is not on the screen) and
+ *  how many of its dots show
+ *  (`dayDots`); where the ship is
+ *  and which way it faces, or null; and each mark's opacity. */
+export interface VoyageFrame {
+  readonly tracks: readonly (number | null)[];
+  readonly dots: readonly number[];
+  readonly ship: {
+    readonly at: Point;
+    readonly heading: Leg["heading"];
+  } | null;
+  readonly marks: ReadonlyMap<Mark, number>;
+}
+
+/** The point at `share` of the way along `route`, by length. */
+export function along(route: readonly Point[], share: number): Point {
+  const lengths = route.slice(1).map((point, index) => {
+    const before = route[index] ?? point;
+    return Math.hypot(point[0] - before[0], point[1] - before[1]);
+  });
+  let left = share * lengths.reduce((sum, length) => sum + length, 0);
+  for (const [index, length] of lengths.entries()) {
+    const [from, to] = [route[index], route[index + 1]];
+    if (!from || !to) break;
+    if (left <= length && length > 0) {
+      const part = left / length;
+      return [
+        from[0] + (to[0] - from[0]) * part,
+        from[1] + (to[1] - from[1]) * part,
+      ];
+    }
+    left -= length;
+  }
+  const last = route.at(-1);
+  if (!last) throw new Error("an empty route");
+  return last;
+}
+
+/** A leg's dots: one where it starts, and one at the end of each day; none
+ *  for a leg of no days. */
+export function dayDots(leg: Leg): Point[] {
+  if (leg.days === 0) return [];
+  return Array.from({ length: leg.days + 1 }, (_, day) =>
+    along(leg.route, day / leg.days),
+  );
+}
+
+const clamp = (value: number): number => Math.min(1, Math.max(0, value));
+
+/** The legs that `step` sails, in the order it sails them, and which
+ *  way: on a step forward within a story, those that were not on the
+ *  screen, from the first; on a step back, those that go, from the last.
+ *  Other steps sail none. */
+function sailing({ from, to }: VoyageStep): {
+  readonly legs: readonly number[];
+  readonly back: boolean;
+} {
+  if (!to || from?.story !== to.story) return { legs: [], back: false };
+  const [low, high] = [
+    Math.min(from.legs, to.legs),
+    Math.max(from.legs, to.legs),
+  ];
+  const legs = Array.from({ length: high - low }, (_, index) => low + index);
+  const back = from.legs > to.legs;
+  return { legs: back ? legs.reverse() : legs, back };
+}
+
+/** When `step`'s change ends (ms): its legs have sailed, and its marks have
+ *  faded. */
+export function voyageEndAt(step: VoyageStep): number {
+  const seconds = sailing(step).legs.reduce(
+    (sum, index) => sum + (step.to?.story.legs[index]?.seconds ?? 0),
+    0,
+  );
+  return Math.max(
+    step.at + MARK_FADE_SECONDS * 1000,
+    step.start + (seconds + MARK_FADE_SECONDS) * 1000,
+  );
+}
+
+/** The voyage of `story` at `now` (ms) in `step`, or null if the step
+ *  leaves it: each story map draws its own. */
+export function voyageAt(
+  story: Story,
+  step: VoyageStep,
+  now: number,
+): VoyageFrame | null {
+  const to = step.to?.story === story ? step.to : null;
+  const from = step.from?.story === story ? step.from : null;
+  if (!to && !from) return null;
+  const fade = MARK_FADE_SECONDS * 1000;
+  const marks = new Map<Mark, number>();
+  for (const mark of story.marks) {
+    const before = from?.marks.has(mark) === true;
+    const after = to?.marks.has(mark) === true;
+    if (before && after) marks.set(mark, 1);
+    else if (after) marks.set(mark, clamp((now - step.start) / fade));
+    else if (before) marks.set(mark, clamp(1 - (now - step.at) / fade));
+  }
+  // each leg's share of its track: whole, but for those that the step
+  // sails, which play one after the other from its start. A leg is on the
+  // screen once it has begun to sail, and until it has sailed back
+  const { legs: sailed, back } = sailing(step);
+  const shares = new Map<number, number | null>();
+  let clock = (now - step.start) / 1000;
+  for (const index of sailed) {
+    const { seconds } = story.legs[index] ?? { seconds: 0 };
+    const share = seconds > 0 ? clamp(clock / seconds) : clock >= 0 ? 1 : 0;
+    const begun = clock >= 0;
+    const over = seconds > 0 ? clock >= seconds : clock >= 0;
+    shares.set(index, back ? (over ? null : 1 - share) : begun ? share : null);
+    clock -= seconds;
+  }
+  const shown = Math.max(to?.legs ?? 0, back ? (from?.legs ?? 0) : 0);
+  const tracks: (number | null)[] = [];
+  const dots: number[] = [];
+  let ship: VoyageFrame["ship"] = null;
+  for (const [index, leg] of story.legs.slice(0, shown).entries()) {
+    const share = shares.has(index) ? (shares.get(index) ?? null) : 1;
+    tracks.push(share);
+    // a dot shows when the ship passes it
+    dots.push(
+      share !== null && leg.days > 0
+        ? Math.floor(share * leg.days + 1e-9) + 1
+        : 0,
+    );
+    // the ship is on the last leg on the screen
+    if (share !== null)
+      ship = { at: along(leg.route, share), heading: leg.heading };
+  }
+  return { tracks, dots, ship, marks };
+}

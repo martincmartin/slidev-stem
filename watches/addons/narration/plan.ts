@@ -123,6 +123,8 @@ export function slug(text: string): string {
     text
       .toLowerCase()
       .normalize("NFKD")
+      // the marks that NFKD splits off a letter: "á" is "a" and an accent
+      .replace(/\p{M}/gu, "")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "") || "slide"
   );

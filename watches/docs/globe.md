@@ -1,11 +1,12 @@
 # The globe and the story maps
 
 **Covers:** Part 2's globe and its story maps: the land data, the globe's
-meshes and levels, its views, the flight between them, and how the globe
-joins the watch's scene. The story maps and their marks are added here as
-they are built.
+meshes and levels, its views, the flight between them, how the globe
+joins the watch's scene, and the marks of each story map and their keys
+(`globeLeg`, `globeMarks`).
 **Read before** you change `globe/`, `watch/art.ts`, `art/earth-data.ts`,
-`art/fetch-earth.sh`, or the globe's frontmatter. The rules for WebGL art
+`art/fetch-earth.sh`, `components/StoryMaps.vue`, or the globe's
+frontmatter. The rules for WebGL art
 in any talk are in [`stem/docs/webgl.md`](../../docs/webgl.md).
 **Tasks:**
 [`2026-10-31-part-2-production`](../tasks/2026-10-31-part-2-production/PLAN.md)
@@ -138,6 +139,65 @@ its map whole, and a slide shows a map by naming its view. The live layer
 (`global-bottom.vue`) and an article's figure (`FigureLayer.vue`) move the
 maps after each frame of their stage (`onFrame`); a printed page's still
 (`slide-bottom.vue`) gives its pose.
+
+## The marks
+
+`globe/stories.ts` holds each story map's marks, in the map's slide px:
+the places come from the sources, in degrees, and the map projects them
+(`project`); a few are slide px off a place, so that a ship does not hide
+what it is near. A story (`Story`) has:
+
+- **Its voyage's legs** (`Leg`): a route that draws itself as a track
+  over the leg's seconds, a dot where it starts and at the end of each
+  day at sea (`DAY_SECONDS`, 0.7 s a day), and the way that the ship
+  faces. The ship sails along the leg; a leg of one point is a place
+  where the ship shows.
+- **Its other marks** (`Mark`): the dashed ship where the crew thought
+  they were (`estimated`), the dashed parallel, the bracket over the gap,
+  the scale in statute miles, the wind (gusts that loop, masked to the
+  sea), and the islands that show when they are sighted. Each mark fades
+  in and out.
+
+The colors are roles that every palette has (the production task,
+section 7): ink for the track, the dots, the parallel, the bracket and
+the scale; the subject for the ship, with its wash for the sails and the
+second color for the pennant; the paper for the dashed ship and the
+gusts.
+
+A slide names each click's target in its frontmatter, with the click keys
+of `docs/watch.md` ("The keys"):
+
+```yaml
+art: [globe]
+artView: juan fernandez
+globeLeg: south
+globeMarks: [scale]
+artClicks:
+  1: { globeLeg: start, globeMarks: [scale, parallel] }
+```
+
+- `globeLeg`: the last leg that shows, with the ship at its end; the legs
+  before it show too.
+- `globeMarks`: the marks that show.
+
+The names are those of the story whose map is the slide's view
+(`voyageTarget`); a name that the story does not have throws.
+
+**What a frame shows** is a pure function of the step and the frame's
+clock (`voyageAt`, `globe/voyage.ts`). On a step forward within a story,
+the new legs sail one after the other once the camera has come (the
+stage's `viewEndAt`), and the new marks fade in then; the marks that go
+fade out at once. A step back is the step forward reversed: the legs that
+go sail back, from the last, and the ship with them
+([`stem/docs/navigation.md`](../../docs/navigation.md), a story
+animation). A jump and a still show the target at once, but for the
+marks' fades. The live layer runs on the stage's clock, and an article's
+figure on its own, which stands while the figure is paused; the figure is
+busy until the voyage ends (`voyageEndAt`). A still shows its click's
+target, and its wind stands, drawn.
+
+`globe/voyage.test.ts` checks the names, the order of the legs, the dots,
+the ship's place and heading, and the marks' fades.
 
 ## The flight
 

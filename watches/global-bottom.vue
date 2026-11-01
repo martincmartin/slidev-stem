@@ -72,7 +72,9 @@ import { stoneStrikes } from "./watch/callouts.ts";
 import type { BoardTarget } from "./watch/board.ts";
 import { WatchModel } from "./watch/model.ts";
 import type { WatchModelState } from "./watch/model.ts";
-import { ART, artModel, watchStills } from "./watch/instance.ts";
+import { settled, voyageEndAt, voyageTarget } from "./globe/voyage.ts";
+import type { VoyageStep } from "./globe/voyage.ts";
+import { ART, GLOBE, artModel, watchStills } from "./watch/instance.ts";
 import { moveOf } from "./watch/navigation.ts";
 import type { Move, Place } from "./watch/navigation.ts";
 import { slidePalette } from "./watch/palette.ts";
@@ -85,6 +87,7 @@ import {
   stepMove,
   tickTockState,
   timeScaleState,
+  voyageState,
   watchState,
 } from "./watch/state.ts";
 import type { StepMoveWith, WatchState } from "./watch/state.ts";
@@ -114,6 +117,8 @@ const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
 /** The stage's frames, once it is made: the story maps ride them. */
 const frames = shallowRef<(listener: FrameListener) => () => void>();
 const board = shallowRef<BoardTarget>({ state: undefined, atOnce: true });
+/** The story map's marks: the step to the click's, on the stage's clock. */
+const voyage = shallowRef<VoyageStep>(settled(null));
 let stage: Stage<WatchModelState> | undefined;
 /** The stage's model: it says when the balance comes to rest, and when a
  *  tooth strikes a pallet stone. */
@@ -254,15 +259,38 @@ function goOutOfSight(): void {
 }
 
 /** Whether a step at `at` (ms) is a press during a move, and so a jump: the
- *  stage's change or the board's story runs, or a burst has not ended. */
+ *  stage's change, the board's story or a story map's voyage runs, or a
+ *  burst has not ended. */
 function pressJumps(at: number): boolean {
-  return boardBusy.value || at < burstUntil || (stage?.endAt(at) ?? at) > at;
+  return (
+    boardBusy.value ||
+    at < burstUntil ||
+    (stage?.endAt(at) ?? at) > at ||
+    voyageEndAt(voyage.value) > at
+  );
 }
 
 /** The frontmatter of the slide numbered `slide` (1-based). */
 function frontmatterOf(slide: number): Record<string, unknown> {
   const route = nav.slides.value.find((each) => each.no === slide);
   return route?.meta.slide?.frontmatter ?? {};
+}
+
+/** Step the story map's marks to the click's: after the camera's move, or
+ *  at once on a jump. After `showWatch`, which moves the camera. */
+function showVoyage(clicks: number, move: Move): void {
+  const to = state.value
+    ? voyageTarget(
+        GLOBE.stories,
+        stageState(ART, state.value).view,
+        voyageState(frontmatter.value, clicks),
+      )
+    : null;
+  const at = performance.now();
+  voyage.value =
+    move === "jump" || !stage
+      ? { ...settled(to), at, start: at }
+      : { from: voyage.value.to, to, at, start: stage.viewEndAt(at) };
 }
 
 function showBoard(clicks: number, move: Move): void {
@@ -319,6 +347,7 @@ onMounted(() => {
         moveWith,
         state.value && stepMove(from, state.value, move),
       );
+      showVoyage(to.clicks, move);
       showBoard(to.clicks, move);
     },
     { immediate: true },
@@ -380,7 +409,7 @@ onMounted(() => {
       class="watch-canvas"
       :data-watch="JSON.stringify(state ?? null)"
     />
-    <StoryMaps :frames="frames" />
+    <StoryMaps :frames="frames" :voyage="voyage" />
     <DivingBoard
       :target="board"
       :live="true"

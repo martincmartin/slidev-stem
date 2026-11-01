@@ -11,8 +11,8 @@ the two lists in step.
 - [watch.md](watch.md): the live watch (files, design, rim screws, frontmatter
   keys, the explorer, zoom line widths, budgets) and the diving board
 - [globe.md](globe.md): Part 2's globe and story maps: the land data, the
-  globe's meshes and levels, its views, the flight, and how it joins the
-  watch's scene
+  globe's meshes and levels, its views, the story maps' marks and their
+  keys, the flight, and how it joins the watch's scene
 - [article.md](article.md): the article at `/article`: the narration, its figure
   markers, what a figure shows, the sliders and the button, the code, the
   static page, the text export

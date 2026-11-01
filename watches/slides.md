@@ -1652,6 +1652,173 @@ And the whole watch.
 -->
 
 ---
+# Part 2's stories, on the globe and its story maps (docs/globe.md). The
+# camera flies from South America to Cape Noir; a click names the story
+# map's marks (globeLeg, globeMarks), and each step draws them after the
+# camera has come
+art: [globe]
+artView: south america
+artClicks:
+  1: { artView: cape noir, artMove: fly, globeMarks: [estimated, scale] }
+  2: { globeLeg: cliffs }
+  3: { globeMarks: [estimated, scale, parallel] }
+  4: { globeMarks: [estimated, scale, parallel, gap] }
+clicks: 4
+---
+
+# At Sea in 1741, Longitude Was a Guess
+
+<!-- narration
+[figure: The globe, turned to show South America.]
+
+In 1741, a British squadron under George Anson sailed around the tip of
+South America, from the Atlantic into the Pacific.
+
+[click]
+
+The crew worked out where they were each day. By their reckoning, they were
+well out to sea, west of the land.
+
+[click]
+
+At 2 a.m. on April 14, a lookout saw cliffs, two miles ahead.
+
+[click]
+
+Their latitude, how far south they were, was correct. A sailor could find it
+from the height of the Sun at noon.
+
+[click]
+
+[figure: A map of the tip of South America. A ship sits just south of the
+cliffs of Cape Noir. A dashed ship, where the crew thought they were, is far
+to the west on the same dashed parallel, and a bracket spans the gap between
+them.]
+
+But their longitude, how far east or west, was 400 miles off. Nobody at sea
+could find it.
+-->
+
+<!--
+South America.
+
+[click] Where they thought they were.
+
+[click] Cliffs, two miles ahead, at 2 a.m.
+
+[click] The latitude was right.
+
+[click] The longitude was 400 miles off.
+-->
+
+---
+# the ship at the bottom of the map as the slide opens; each click sails a
+# leg, a day at sea to each dot (globe/stories.ts)
+art: [globe]
+artView: juan fernandez
+artMove: fly
+globeLeg: south
+globeMarks: [scale]
+artClicks:
+  1: { globeLeg: start, globeMarks: [scale, parallel] }
+  2: { globeLeg: east, globeMarks: [scale, parallel, wind] }
+  3: { globeLeg: west }
+  4: { globeLeg: found, globeMarks: [scale, parallel, wind, islands] }
+clicks: 4
+---
+
+# Hunt for Juan Fernández Island, 1741
+
+<!-- narration
+Anson's crews were dying of scurvy, four to six men a day. They needed the
+island of Juan Fernández, with its fresh water and food.
+
+[click]
+
+A navigator who could not find longitude sailed north or south to the
+island's latitude first. Then he had to choose: east or west?
+
+[click]
+
+They chose east, and after two days they saw the coast of Chile, an enemy
+coast.
+
+[click]
+
+So they turned back west, and sailed for nine days.
+
+[click]
+
+[figure: A map of the sea off Chile. The ship's track runs north, then two
+days east toward the coast, then nine days back west, a dot for each day, to
+the island of Juan Fernández.]
+
+At last they found the island. The detour had cost 70 to 80 men.
+-->
+
+<!--
+Scurvy kills four to six men a day.
+
+[click] Sail to the latitude. Then east or west?
+
+[click] Two days east, to the enemy coast of Chile.
+
+[click] Nine days back.
+
+[click] Found.
+-->
+
+---
+# the flight across the Atlantic, longer than the others (artMoveSeconds)
+art: [globe]
+artView: channel
+artMove: fly
+artMoveSeconds: 7
+artClicks:
+  1: { artView: scilly, globeMarks: [estimated, scale] }
+  2: { globeLeg: wreck }
+  3: { globeMarks: [estimated, scale, gap] }
+clicks: 3
+---
+
+# Admiral Shovell Sails Home, 1707
+
+<!-- narration
+[figure: The globe, turned to show the English Channel, between England and
+France.]
+
+Thirty-four years before, in 1707, a British fleet sailed home to the
+English Channel.
+
+[click]
+
+On October 22 its navigators agreed on where the fleet was: safely south
+and west of the Isles of Scilly.
+
+[click]
+
+At about 8 p.m., in the dark, the flagship struck the rocks of Scilly.
+
+[click]
+
+[figure: A map of the Isles of Scilly. The ship is on the rocks at their
+west end. A dashed ship, where the fleet thought it was, is to the
+south-west, and a bracket spans the gap between them.]
+
+Four warships were lost, and over 1,400 men.
+-->
+
+<!--
+The English Channel, and the Isles of Scilly.
+
+[click] 21 ships, and where they thought they were.
+
+[click] In the dark: the rocks of Scilly.
+
+[click] The gap.
+-->
+
+---
 layout: full
 class: tk-timekeepers
 # Hidden: not in the talk. It stays as the example of every slide pattern
