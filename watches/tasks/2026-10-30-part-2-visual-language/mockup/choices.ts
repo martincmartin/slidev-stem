@@ -1,20 +1,21 @@
 // The mockup's choices: each is a name in the address and a dropdown in the
-// bar under the slide. The first name of each is the default. main.ts makes
+// bar under the slide. The first name of each is the default: the one chosen
+// for the talk (PLAN.md, section 17). main.ts makes
 // the dropdowns from CHOICE_NAMES; tools/shots.ts takes the same names.
 export const CHOICES = {
   /** where the wind blows (main.ts, WIND) */
-  wind: ["bands", "near", "all"],
+  wind: ["near", "bands", "all"],
   /** how a label stands out from the picture under it: the paper's outline,
    *  a card, or words in the paper where the sea is under them */
-  label: ["outline", "card", "paper"],
+  label: ["paper", "outline", "card"],
   /** a label that stays to the end of its slide (story.ts, `stays`):
    *  dimmed, or it leaves as the others do */
   old: ["dim", "remove"],
   /** what a punchline is on: a dark card over the picture, the picture
    *  under a veil of paper, a screen of paper (Lessig), or a paper card */
-  punch: ["card", "veil", "screen", "card-paper"],
+  punch: ["screen", "card", "veil", "card-paper"],
   /** the first view: the whole globe, or South America (geo.ts) */
-  start: ["globe", "america"],
+  start: ["america", "globe"],
 } as const;
 
 export type Choice = keyof typeof CHOICES;

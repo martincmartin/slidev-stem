@@ -331,3 +331,19 @@ Later messages in round 6, verbatim, in order:
 
 > In the 1707 slide, we can remove the "Estimated posiiton" when the error
 > bar shows up.
+
+## Round 7, 2026-10-31
+
+> Ok, please commit to the branch, and we now know what we want for the real
+> talk & article, the production version. We want labels style (not
+> Lessig), wind near. Now that we've rearranged the text, we can adjust he
+> wind lines to be closer to the "2 days east"/"9 days back" text. There
+> used to be a wind line to the left of "2 days east", let's bring that
+> back. Labels are paper, let's do punchline screen, start america.
+
+> In wind near, let's have a wind line on the left side of the screen,
+> blowing near the ship at the end of "9 days back."
+
+> The new wind line on the left for 9 days back is pointing below the ship's
+> hull, it should be higher, the straight line in the middle of all the
+> ship's sails

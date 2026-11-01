@@ -599,4 +599,5 @@ const labels: Style = {
   ],
 };
 
-export const STYLES: readonly Style[] = [lessig, labels];
+// the first is the default: the one chosen for the talk
+export const STYLES: readonly Style[] = [labels, lessig];

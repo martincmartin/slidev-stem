@@ -1,7 +1,8 @@
 // The mockup's page: one slide at Slidev's size, in one of the styles of
 // story.ts, a step at a time. In the address:
-//   ?style=lessig|labels&step=0&wind=bands|near|all&label=outline|card|paper
-//    &old=dim|remove&punch=card|veil|screen&start=globe|america&sea=paper
+//   ?style=labels|lessig&step=0&wind=near|bands|all&label=paper|outline|card
+//    &old=dim|remove&punch=screen|card|veil|card-paper&start=america|globe
+//    &sea=paper
 //    &settle=1&notext=1
 // → or space steps forward, with the picture's motion; ← steps back at once.
 // The story opens on the whole globe, or South America (`start`), and the
@@ -101,8 +102,9 @@ const HANDOVER = { zoom: 3, out: 0.1, in: 0.9 } as const;
 
 /** The wind: lines that end in a curl, drawn from west to east, over and
  *  over. Each is [x, y, curls up]. "bands" keeps the voyage's band clear;
- *  "near" adds a gust by the voyage, in a gap between the labels; "all"
- *  draws in the band too, under the labels. */
+ *  "near" adds two gusts by the voyage, in gaps between the labels, and
+ *  brings the bands in to about 45 px from "2 days east" and "9 days back";
+ *  "all" draws in the band too, under the labels. */
 type Gust = readonly [number, number, boolean];
 const BANDS: readonly Gust[] = [
   [250, 128, true],
@@ -114,7 +116,19 @@ const BANDS: readonly Gust[] = [
 ];
 const WIND: Readonly<Record<Chosen<"wind">, readonly Gust[]>> = {
   bands: BANDS,
-  near: [...BANDS, [250, 268, true]],
+  near: [
+    [250, 206, true],
+    [480, 206, true],
+    // left of "2 days east", where no label is
+    [250, 268, true],
+    // into the bow of the ship at the end of "9 days back", level with
+    // the middle of its sails
+    [20, 320, false],
+    [60, 434, false],
+    [360, 434, false],
+    [200, 500, false],
+    [470, 500, false],
+  ],
   all: [
     ...BANDS,
     [60, 200, true],

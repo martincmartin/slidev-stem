@@ -12,8 +12,9 @@ zooms and turns, from the whole globe to Cape Noir and on to Juan Fernández.
 Round 5 adds the Scilly slide after the Anson slide: a flight across the
 Atlantic to the English Channel, and a zoom in to the Isles of Scilly. It
 also checks the cause of the wreck of 1707. Round 6 cuts words, keeps some labels,
-dimmed, to the end of their slide, and compares three backings for each
-slide's punchline in big type.
+dimmed, to the end of their slide, and compares four backings for each
+slide's punchline in big type. Round 7 sets the choices for the talk, which
+the mockup now draws by default, and brings the wind in nearer the labels.
 
 - `instructions.md`: the request.
 - `PLAN.md`: the criteria, the options, the measurements, the ranking, the
@@ -56,5 +57,7 @@ slide's punchline in big type.
   `punch-card-paper/`: round 6's output of `shots.ts`, the labels with each
   backing for the punchlines; `remove/`, with the labels that stay removed; `lessig/`,
   the Lessig style.
+- `evidence/round-7/talk/`: round 7's output of `shots.ts`, the labels
+  with the talk's choices.
 
 Run each tool from the talk's directory (`PLAN.md`, section 11).

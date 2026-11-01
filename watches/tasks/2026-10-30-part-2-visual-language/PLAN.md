@@ -17,7 +17,9 @@ speeds are in [evidence/round-4/](evidence/round-4/). Round 5 adds the
 Scilly slide after the Anson slide (section 15); its pictures and speeds are
 in [evidence/round-5/](evidence/round-5/). Round 6 cuts words, keeps some
 labels, dimmed, to the end of their slide, and gives each slide a punchline
-in big type (section 16); its pictures are in [evidence/round-6/](evidence/round-6/). Section 11 gives
+in big type (section 16); its pictures are in [evidence/round-6/](evidence/round-6/). Round 7 sets
+the choices for the talk, and brings the wind in nearer the labels (section
+17); its pictures are in [evidence/round-7/](evidence/round-7/). Section 11 gives
 the commands.
 
 **The question.** Part 2 has more text than Part 1. Which visual language
@@ -89,9 +91,12 @@ and the Anson slide must show why the westerlies made the trip back slow.
   east they had come. The fleet was also a little further north, and
   W. E. May, who studied the surviving logbooks, puts the error down to
   latitude and the charts: a detail for the narration, if at all.
-- **Decisions for you** are in section 10: the wind's placement, and the
-  colors of the new marks. You chose a filled sea, and the islands revealed
-  when Anson finds them.
+- **Round 7: the choices for the talk** (section 17). The labels, with
+  the wind `near`, paper-colored words on the sea, the punchline on a
+  screen, and the first view of South America. The mockup draws these with
+  no choices in its address.
+- **Decisions for you** are in section 10: the colors of the new marks, the
+  units, "2 a.m." and Scilly's coast.
 
 ## 1. What the slides must do
 
@@ -540,30 +545,20 @@ read summaries of the three studies, not their full text.
 
 ## 10. Decisions for you
 
-- **The style.** D, as recommended, or another.
-- **The wind's placement**: in bands north and south of the voyage, with one
-  gust by it where no label is ("near", recommended), in the bands only, or
-  under the labels too (section 12).
-- **Colors for the new marks**: the track (ink here), the day dots, the wind
-  (the paper), the ship (the subject, its sails in the subject's wash, a
-  pennant in the second) and the prize's reaches. Each needs a role by
-  [`docs/theme.md`](../../../docs/theme.md) before it goes in the talk.
-- **Units**: statute miles throughout, as the mockup does.
-- **How a label stands out** (section 13): the paper's outline, a card, or
-  paper-colored words on the sea.
-- **The first view** (section 14): the whole globe (`start=globe`), or
-  South America (`start=america`).
-- **"2 a.m."** on Cape Noir's label: Walter says "between one and two"
-  (section 14, "The facts of Cape Noir").
-- **Scilly's coast**: Natural Earth 1:10m, as now, or finer data that
-  draws the Western Rocks (OpenStreetMap, or GSHHG), with its license.
-- **Labels that stay** (section 16): dimmed to the end of the slide
-  (`old=dim`), or removed (`old=remove`).
-- **What a punchline is on** (section 16): a veil (recommended), a screen,
-  or a card.
+- **Colors for the new marks**: each reuses a role that the palette already
+  has, with no new role: ink for the track and the day dots, the paper for
+  the wind, the subject for the ship (its sails in the subject's wash, a
+  pennant in the second). The pennant stays in `second`
+  (decided after round 7). Open: the prize's reaches.
 
 Decided: the sea is filled (round 1's unfilled sea made the land and the sea
-hard to tell apart), and the islands show only when Anson finds them.
+hard to tell apart), and the islands show only when Anson finds them. Round
+7 decided the style (the labels), the wind (`near`), how a label stands out
+(`paper`), the punchline (`screen`) and the first view (`america`); old
+labels stay `dim` (section 17). Decided after round 7: statute miles
+throughout, "2 a.m." on Cape Noir's label, and Scilly's coast from Natural
+Earth 1:10m. The production task answers the colors of the story slides' marks
+(`../2026-10-31-part-2-production/PLAN.md`, section 7).
 
 ## 11. Commands
 
@@ -617,6 +612,9 @@ node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:520
   $E/remove --wind near --style labels --old remove
 node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
   $E/lessig --wind near --style lessig
+# round 7's pictures: the talk's choices, the defaults
+node tasks/2026-10-30-part-2-visual-language/tools/shots.ts http://localhost:5200/ \
+  tasks/2026-10-30-part-2-visual-language/evidence/round-7/talk --style labels
 ```
 
 Round 1's pictures came from the same commands before round 2 changed the
@@ -625,11 +623,15 @@ style. Round 2's came before round 3 changed it. Round 3 removed the rail and
 the cards; the mockup at commit 8703a9a still draws them. Round 4 put the
 Cape Noir steps and the globe before the Anson steps; the mockup at commit
 07bda45 draws round 3's story. Round 5 put the Scilly steps after the Anson
-steps; the mockup at commit 4005b5f draws round 4's story.
+steps; the mockup at commit 4005b5f draws round 4's story. Round 7 moved
+the `near` gusts and made the talk's choices the defaults; the mockup at
+commit 2cc76ff draws round 6's pictures.
 
-In the mockup: `?style=lessig|labels`, and the choices of
-[mockup/choices.ts](mockup/choices.ts): `&wind=bands|near|all`,
-`&label=outline|card|paper`, `&start=globe|america`; also `&sea=paper`. The bar
+In the mockup: `?style=labels|lessig`, and the choices of
+[mockup/choices.ts](mockup/choices.ts), the default first:
+`&wind=near|bands|all`, `&label=paper|outline|card`, `&old=dim|remove`,
+`&punch=screen|card|veil|card-paper`, `&start=america|globe`; also
+`&sea=paper`. The bar
 under the slide has a dropdown for the style and for each choice. → or space steps forward with the motion, ← steps back at
 once. Step 0 plays its motion, if it has any, as the page loads.
 
@@ -1503,3 +1505,63 @@ more opaque, would fix its first two cons, not the accent.
 Chromium only, and the labels in outline only. The dimmed labels and the
 punchlines are checked in settled frames, and the Cape Noir punchline in
 one frame as it fades in.
+
+## 17. Round 7: the choices for the talk
+
+Your message is in [instructions.md](instructions.md), "Round 7". These are
+the choices for the talk and its article:
+
+- **Style:** the labels (D), not Lessig.
+- **Wind:** `near`.
+- **Labels:** `paper`: words in the paper where only the sea is under a
+  label; over the land, ink with the paper's outline.
+- **Punchline:** `screen`, a screen of paper over the picture.
+- **First view:** `america`.
+- **Old labels:** `dim`. You did not name this choice; `dim` is the default
+  and the house rule's exception for a slide told by its picture
+  (`watches/docs/slide-patterns.md`, "Text dims").
+
+In the mockup, the first option of each choice, and the first style, is now
+the one chosen for the talk ([mockup/choices.ts](mockup/choices.ts),
+`STYLES` in [mockup/story.ts](mockup/story.ts)). So the mockup with no
+choices in its address draws the talk's version.
+
+### The wind, nearer the words
+
+The gust left of "2 days east" was in `near` all along. The bar's default
+was `bands`, which does not have it, so the mockup with no choices in its
+address did not show it. `near` is now the default.
+
+Round 6 cut the labels between the bands of wind and the voyage, so `near`
+now brings its bands in to about 45 px from the labels. `bands` and `all`
+keep round 2's gusts. Measured in Chromium, settled, on the Anson slide's
+last step (the gap from each label's box to the nearest gust's box):
+
+| Label         | Gust                | Round 6 | Round 7 |
+| ------------- | ------------------- | ------: | ------: |
+| "2 days east" | the near gust, left |   16 px |   16 px |
+| "2 days east" | the band above      |  123 px |   45 px |
+| "9 days back" | the band below      |   56 px |   44 px |
+
+A gust at the left edge, level with the middle of the sails of the ship at
+the end of "9 days back", blows into its bow, at your request: its curl ends
+about 15 px from the bow. On the last step, it passes about 7 px below the
+small island.
+
+Each band keeps its two rows and its gusts' x positions: the band above
+moved down 78 px (y 128 to 206), and the band below moved up 12 px (rows at
+y 434 and 500). "Sail to latitude. Then east or west?" is 26 px from the
+band above, but the gusts draw in on the east leg, as that label leaves.
+The pictures are in [evidence/round-7/talk/](evidence/round-7/talk/).
+
+### What the talk still needs
+
+These items of section 10 are still open before the talk can use the
+mockup's design: a color role for each new mark, by
+[`docs/theme.md`](../../../docs/theme.md); the units; "2 a.m." against
+Walter's "between one and two"; and Scilly's coast data.
+
+### Limits
+
+Chromium only, settled frames. The gaps are between boxes: a gust's curl
+fills only part of its box.
