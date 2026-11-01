@@ -77,6 +77,7 @@ export function sceneData(
 
 if (import.meta.main) {
   process.stdout.write(
-    JSON.stringify(sceneData(makeArt().scene, INK_VARIABLES), null, 1) + "\n",
+    JSON.stringify(sceneData(makeArt().art.scene, INK_VARIABLES), null, 1) +
+      "\n",
   );
 }

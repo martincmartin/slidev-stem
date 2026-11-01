@@ -12,7 +12,10 @@ import type { WatchModel, WatchModelState } from "./model.ts";
 import { slidePalette } from "./palette.ts";
 import { WatchStills } from "./stills.ts";
 
-export const ART = makeArt();
+const MADE = makeArt();
+export const ART = MADE.art;
+/** The globe in ART's scene, with its story maps. */
+export const GLOBE = MADE.globe;
 
 /** The watch's model, with the globe's disc turned to each frame's camera:
  *  the model of a stage or a view of ART. */

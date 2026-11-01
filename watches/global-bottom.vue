@@ -8,6 +8,8 @@
 // the board's picture shows, it covers the watch: the canvas fades out, and the
 // stage stops. The board's clock decides when (its `cover` event), so the
 // hairspring takes the board's place when the curl ends, with no click.
+// Above the canvas, the story maps over the globe (components/StoryMaps.vue),
+// which ride the stage's camera after each frame.
 // Above both, the words "tick" and "tock" at each strike of a tooth on a pallet
 // stone (components/TickTock.vue), where a slide's `watchTickTock` shows them: they follow
 // the model's clock. And the time scale (components/TimeScale.vue), where a
@@ -58,10 +60,12 @@ import {
 } from "vue";
 import { FIGURE } from "./addons/narration/figure.ts";
 import DivingBoard from "./components/DivingBoard.vue";
+import StoryMaps from "./components/StoryMaps.vue";
 import FigureLayer from "./components/FigureLayer.vue";
 import TickTock from "./components/TickTock.vue";
 import TimeScale from "./components/TimeScale.vue";
 import { Stage } from "./webgl/stage.ts";
+import type { FrameListener } from "./webgl/stage.ts";
 import { FADE_SECONDS } from "./webgl/timeline.ts";
 import { boardState } from "./watch/board.ts";
 import { stoneStrikes } from "./watch/callouts.ts";
@@ -107,6 +111,8 @@ const covered = ref(false);
 const boardBusy = ref(false);
 const hidden = computed(() => !state.value || covered.value);
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
+/** The stage's frames, once it is made: the story maps ride them. */
+const frames = shallowRef<(listener: FrameListener) => () => void>();
 const board = shallowRef<BoardTarget>({ state: undefined, atOnce: true });
 let stage: Stage<WatchModelState> | undefined;
 /** The stage's model: it says when the balance comes to rest, and when a
@@ -278,6 +284,8 @@ onMounted(() => {
     palette.value.palette,
     artModel(model.value),
   );
+  const made = stage;
+  frames.value = (listener) => made.onFrame(listener);
   window.watchStage = stage;
   window.slideState = () =>
     slideState(stage, canvas.value, shownWatch, pressJumps(performance.now()));
@@ -372,6 +380,7 @@ onMounted(() => {
       class="watch-canvas"
       :data-watch="JSON.stringify(state ?? null)"
     />
+    <StoryMaps :frames="frames" />
     <DivingBoard
       :target="board"
       :live="true"
@@ -401,7 +410,8 @@ onMounted(() => {
   height: 100%;
   transition: opacity 0.3s;
 }
-.watch-layer.watch-off .watch-canvas {
+.watch-layer.watch-off .watch-canvas,
+.watch-layer.watch-off .story-maps {
   opacity: 0;
   visibility: hidden;
   transition:

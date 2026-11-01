@@ -11,15 +11,18 @@ import {
   STORY_MAPS,
   fitCamera,
   mapLand,
+  mapOnSlide,
   project,
 } from "./maps.ts";
 import type { StoryMap } from "./maps.ts";
-import { storyLand } from "./model.ts";
-import { globeView } from "./views.ts";
+import { flight } from "../webgl/flight.ts";
+import { globeView } from "./globe.ts";
+import { makeGlobe } from "./model.ts";
 
 const SLIDE: readonly [number, number] = [980, 552];
 const POLYGONS = parseEarth(earthFile).levels[2]?.polygons ?? [];
 const RINGS = POLYGONS.flat();
+const GLOBE = makeGlobe(SLIDE);
 
 test("a map puts its centre at its slide point, north up and east right", () => {
   for (const map of STORY_MAPS) {
@@ -83,5 +86,77 @@ test("a map's land is cut near the slide, and its small islands are apart, large
   assert.ok(xs.some((x) => Math.abs(x - crusoe[0]) < 20));
   assert.equal(mapLand(CAPE_NOIR, POLYGONS, SLIDE).islands, "");
   assert.ok(land.length > 0);
-  assert.equal(storyLand(SLIDE).get(JUAN_FERNANDEZ)?.islands, islands);
+  const placed = GLOBE.maps.find(({ map }) => map === JUAN_FERNANDEZ);
+  assert.equal(placed?.land.islands, islands);
+});
+
+test("at its view, a map is on the slide as it is drawn, and whole", () => {
+  for (const placed of GLOBE.maps) {
+    const pose = {
+      view: placed.view,
+      ...(placed.view.angles ?? assert.fail()),
+    };
+    const { matrix, opacity } = mapOnSlide(placed, pose, SLIDE);
+    // single precision in the camera's matrix
+    const wanted = [1, 0, 0, 1, 0, 0];
+    matrix.forEach((value, index) => {
+      const tolerance = index < 4 ? 1e-4 : 0.05;
+      assert.ok(
+        Math.abs(value - (wanted[index] ?? NaN)) < tolerance,
+        `${placed.map.name}: ${matrix.join(" ")}`,
+      );
+    });
+    assert.equal(opacity, 1);
+  }
+});
+
+test("a map rides the camera, and is gone a tenth of a flight from its view", () => {
+  const viewNamed = (name: string) =>
+    GLOBE.views.find((view) => view.name === name) ?? assert.fail(name);
+  const poseOf = (name: string) => {
+    const view = viewNamed(name);
+    return { view, ...(view.angles ?? assert.fail()) };
+  };
+  for (const [from, to] of [
+    ["south america", "cape noir"],
+    ["cape noir", "juan fernandez"],
+    ["juan fernandez", "channel"],
+    ["channel", "scilly"],
+  ] as const) {
+    const path = flight(poseOf(from), poseOf(to), SLIDE[0]) ?? assert.fail();
+    for (const [name, share] of [
+      [from, 0.12],
+      [to, 0.88],
+    ] as const) {
+      const placed = GLOBE.maps.find((each) => each.view.name === name);
+      if (!placed) continue;
+      const pose = path.at(share);
+      const { matrix, opacity } = mapOnSlide(placed, pose, SLIDE);
+      assert.ok(
+        opacity < 0.05,
+        `${name} at ${String(share)}: ${String(opacity)}`,
+      );
+      // the map's centre goes where the globe draws its place, as near as
+      // at rest, at the pose's zoom
+      const rest = {
+        view: placed.view,
+        ...(placed.view.angles ?? assert.fail()),
+      };
+      const centre = toSphere(placed.map.centre);
+      const [rx, ry] = slidePoint(rest, SLIDE, centre);
+      const [x, y] = placed.map.at;
+      const zoom = pose.view.scale / placed.view.scale;
+      const [a, b, c, d, e, f] = matrix;
+      const [gx, gy] = slidePoint(pose, SLIDE, centre);
+      const gap = Math.hypot(a * x + c * y + e - gx, b * x + d * y + f - gy);
+      assert.ok(
+        gap < Math.hypot(rx - x, ry - y) * zoom + 2,
+        `${name}: the map's centre is ${String(gap)} px from the globe's`,
+      );
+    }
+  }
+  // on the globe's first view, no map shows
+  for (const placed of GLOBE.maps) {
+    assert.equal(mapOnSlide(placed, poseOf("south america"), SLIDE).opacity, 0);
+  }
 });

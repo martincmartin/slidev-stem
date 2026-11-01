@@ -416,3 +416,14 @@ All made, 2026-10-31.
   500 coast points it takes about 50 ms in Node. The earth tool's clip is
   now `globe/clip.ts`, which the maps share; `earth.json` is byte-identical
   (`--check`).
+- **2026-11-01, phase 5, the maps over the globe:** `components/StoryMaps.vue`
+  draws the story maps over the canvas, in the live layer, the article's
+  figures and the printed stills. A map rides the camera on the plane that
+  touches the globe at its view's place, and its fade depends on the pose
+  alone (zoom 1.25 times or pan 80 px), not on the flight's clock as the
+  mockup's did: at 10% of each flight's progress the camera has zoomed
+  1.23–1.79 times or panned 12–82 px, so the hand-over is about the
+  mockup's. With the house's ease, that is about the first 30% of the
+  flight's time. A test slide, not committed, showed each map whole at its
+  click (the groups' opacities 1 0 0, 0 1 0, 0 0 0, 0 0 1 over the four
+  clicks), and the globe alone in flight.

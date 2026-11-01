@@ -16,12 +16,12 @@ import {
   discMatrix,
   facing,
   globeMeshes,
+  globeView,
   landPieces,
   scaleRanges,
   toSphere,
 } from "./globe.ts";
 import { globeMatrices, makeGlobe } from "./model.ts";
-import { globeView, globeViews } from "./views.ts";
 
 const SLIDE: readonly [number, number] = [980, 552];
 const EARTH = parseEarth(earthFile);
@@ -70,10 +70,10 @@ test("a view puts its place at its slide point, with east right and north up", (
 });
 
 test("each view has the globe under the slide's middle, and its own angles", () => {
-  const views = globeViews(SLIDE, EARTH.levels[2]?.polygons.flat() ?? []);
+  const { views } = GLOBE;
   assert.deepEqual(
     views.map((view) => view.name),
-    ["south america", "cape noir", "juan fernandez", "channel", "scilly"],
+    ["south america", "channel", "cape noir", "juan fernandez", "scilly"],
   );
   for (const view of views) {
     assert.equal(view.ball, RADIUS);

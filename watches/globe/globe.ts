@@ -16,6 +16,7 @@ import type {
   Mesh,
   Piece,
   Vec3,
+  View,
 } from "../webgl/scene.ts";
 import type { Matrix4 } from "../webgl/math.ts";
 import type { Box, Earth, Level, LonLat, Polygon, Scale } from "./earth.ts";
@@ -102,6 +103,20 @@ export function onGlobe(
  *  middle on the slide, with north up. */
 export function facing([lon, lat]: LonLat): CameraAngles {
   return { tilt: 90 - lat, turn: 90 + lon };
+}
+
+/** The camera as a view: the globe's centre is the pivot, at `at` on the
+ *  slide, and the angles face `centre`. */
+export function globeView(camera: GlobeCamera): View {
+  const scale = scaleOf(camera.kmPerPx);
+  return {
+    name: camera.name,
+    scale,
+    shift: [camera.at[0] - scale * CENTRE[0], camera.at[1] - scale * CENTRE[1]],
+    pivot: CENTRE,
+    angles: facing(camera.centre),
+    ball: RADIUS,
+  };
 }
 
 function cross(a: Vec3, b: Vec3): Vec3 {

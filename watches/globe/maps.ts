@@ -7,9 +7,11 @@
 // for it is the camera, north up, that fits its coast best (`fitCamera`).
 // No DOM: the tests run it in Node.
 
+import { planeOnSlide, towardCamera } from "../webgl/renderer.ts";
+import type { Affine2, CameraPose, Plane, Vec3, View } from "../webgl/scene.ts";
 import { clipToRect } from "./clip.ts";
 import type { Box, LonLat, Polygon, Ring } from "./earth.ts";
-import { onGlobe } from "./globe.ts";
+import { RADIUS, globeView, onGlobe, toSphere } from "./globe.ts";
 import type { GlobeCamera } from "./globe.ts";
 
 export interface StoryMap {
@@ -231,3 +233,82 @@ export const STORY_MAPS: readonly StoryMap[] = [
   JUAN_FERNANDEZ,
   SCILLY,
 ];
+
+/** A story map placed on the globe: its land, its view (the camera that
+ *  fits it), and the plane that touches the globe at the view's place, with
+ *  (u, v) the slide px at the view. So the map, drawn in slide px, rides the
+ *  camera on the plane (`mapOnSlide`). */
+export interface PlacedMap {
+  readonly map: StoryMap;
+  readonly land: MapLand;
+  readonly view: View;
+  readonly plane: Plane;
+}
+
+/** The map's land, its view and its plane, for a slide of `slide` px. */
+export function placeMap(
+  map: StoryMap,
+  polygons: readonly Polygon[],
+  slide: readonly [number, number],
+): PlacedMap {
+  const { camera } = fitCamera(map, polygons.flat(), slide);
+  const view = globeView(camera);
+  const [lon, lat] = [
+    (camera.centre[0] * Math.PI) / 180,
+    (camera.centre[1] * Math.PI) / 180,
+  ];
+  const step = 1 / view.scale;
+  // east and south, as `toSphere` turns them, a slide px long
+  const u: Vec3 = [-Math.sin(lon) * step, -Math.cos(lon) * step, 0];
+  const v: Vec3 = [
+    Math.sin(lat) * Math.cos(lon) * step,
+    -Math.sin(lat) * Math.sin(lon) * step,
+    -Math.cos(lat) * step,
+  ];
+  const place = toSphere(camera.centre);
+  return {
+    map,
+    land: mapLand(map, polygons, slide),
+    view,
+    plane: {
+      // the world point at the slide's top left, at the view: the camera
+      // looks down at its place, which shows at its `at`
+      origin: [
+        place[0] - camera.at[0] * u[0] - camera.at[1] * v[0],
+        place[1] - camera.at[0] * u[1] - camera.at[1] * v[1],
+        place[2] - camera.at[0] * u[2] - camera.at[1] * v[2],
+      ],
+      u,
+      v,
+    },
+  };
+}
+
+/** How near the camera must be to a map's view for the map to show: within
+ *  this zoom, and this pan (slide px at the map's view). The map fades out
+ *  as the camera leaves, and is gone at either. So a flight hands over from
+ *  the map to the globe in about its first tenth, and back in its last: the
+ *  map fits the globe only near its own view (the production task, section
+ *  4). A still at rest shows the map whole: this depends on the pose
+ *  alone. */
+const NEAR = { zoom: 1.25, pan: 80 } as const;
+
+/** Where the map shows through `pose`, and how much: the SVG matrix that
+ *  takes the map's slide px to the slide's, and its opacity, from 0 to 1. */
+export function mapOnSlide(
+  placed: PlacedMap,
+  pose: CameraPose,
+  slide: readonly [number, number],
+): { readonly matrix: Affine2; readonly opacity: number } {
+  const { view, plane } = placed;
+  const toward = towardCamera(pose);
+  const own = towardCamera(view.angles ?? { tilt: 0, turn: 0 });
+  const cosine = toward[0] * own[0] + toward[1] * own[1] + toward[2] * own[2];
+  const pan = Math.acos(Math.min(1, cosine)) * RADIUS * view.scale;
+  const zoom = Math.abs(Math.log(pose.view.scale / view.scale));
+  const far = Math.min(1, Math.max(zoom / Math.log(NEAR.zoom), pan / NEAR.pan));
+  return {
+    matrix: planeOnSlide(pose, slide, plane),
+    opacity: 1 - far * far * (3 - 2 * far),
+  };
+}

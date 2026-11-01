@@ -22,11 +22,12 @@
 import { useNav, useSlideContext } from "@slidev/client";
 import { computed, ref, watch as onChange } from "vue";
 import DivingBoard from "./components/DivingBoard.vue";
+import StoryMaps from "./components/StoryMaps.vue";
 import TimeScale from "./components/TimeScale.vue";
 import { boardState } from "./watch/board.ts";
 import { ART, watchStills } from "./watch/instance.ts";
 import { slidePalette } from "./watch/palette.ts";
-import { timeScaleState, watchState } from "./watch/state.ts";
+import { stageState, timeScaleState, watchState } from "./watch/state.ts";
 
 const { $frontmatter, $renderContext, $clicks, $page } = useSlideContext();
 const LIVE = ["slide", "presenter"];
@@ -57,6 +58,12 @@ const board = computed(() =>
     : undefined,
 );
 const source = ref<string>();
+/** The still's camera: the story maps over the globe take it. */
+const pose = computed(() => {
+  if (!needsStill.value || !state.value) return undefined;
+  const { view, tilt, turn } = stageState(ART, state.value);
+  return { view, tilt, turn };
+});
 /** The posed board's last `cover`; it holds only while the board is there. */
 const cover = ref(false);
 const covered = computed(() => board.value !== undefined && cover.value);
@@ -89,6 +96,7 @@ onChange(
     data-waitfor=".watch-still-image"
   >
     <img v-if="source" class="watch-still-image" :src="source" alt="" />
+    <StoryMaps v-if="pose" :pose="pose" :style="palette.variables" />
   </div>
   <TimeScale
     v-if="timeScale !== undefined"

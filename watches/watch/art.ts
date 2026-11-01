@@ -25,8 +25,9 @@ export function withGlobe(watch: Watch, globe: Globe): Watch {
   };
 }
 
-/** The art of the talk. */
-export function makeArt(): Watch {
+/** The art of the talk, and its globe (for the story maps over it). */
+export function makeArt(): { readonly art: Watch; readonly globe: Globe } {
   const watch = generate();
-  return withGlobe(watch, makeGlobe(watch.scene.slide));
+  const globe = makeGlobe(watch.scene.slide);
+  return { art: withGlobe(watch, globe), globe };
 }

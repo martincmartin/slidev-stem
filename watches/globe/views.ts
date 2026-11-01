@@ -5,25 +5,10 @@
 // there.
 
 import type { View } from "../webgl/scene.ts";
-import type { LonLat, Ring } from "./earth.ts";
-import { CENTRE, RADIUS, facing, onGlobe, scaleOf } from "./globe.ts";
+import type { LonLat } from "./earth.ts";
+import { globeView, onGlobe } from "./globe.ts";
 import type { GlobeCamera } from "./globe.ts";
-import { CAPE_NOIR, JUAN_FERNANDEZ, SCILLY, fitCamera } from "./maps.ts";
-import type { StoryMap } from "./maps.ts";
-
-/** The camera as a view: the globe's centre is the pivot, at `at` on the
- *  slide, and the angles face `centre`. */
-export function globeView(camera: GlobeCamera): View {
-  const scale = scaleOf(camera.kmPerPx);
-  return {
-    name: camera.name,
-    scale,
-    shift: [camera.at[0] - scale * CENTRE[0], camera.at[1] - scale * CENTRE[1]],
-    pivot: CENTRE,
-    angles: facing(camera.centre),
-    ball: RADIUS,
-  };
-}
+import type { PlacedMap } from "./maps.ts";
 
 /** The slide's band under the title, in slide px, that a fitted camera
  *  fills. */
@@ -66,15 +51,13 @@ export function fitting(
   };
 }
 
-/** The views of Part 2, for a slide of `slide` px, with the land's `rings`
- *  for the story maps' fits. */
+/** The views of Part 2, for a slide of `slide` px: two that fit places,
+ *  and the views of the story maps. */
 export function globeViews(
   slide: readonly [number, number],
-  rings: readonly Ring[],
+  maps: readonly PlacedMap[],
 ): View[] {
   const band: Band = { width: slide[0], top: 78, bottom: 540 };
-  const map = (story: StoryMap): GlobeCamera =>
-    fitCamera(story, rings, slide).camera;
   return [
     // South America: its northern, eastern, western and southern ends
     fitting(
@@ -87,8 +70,6 @@ export function globeViews(
       ],
       band,
     ),
-    map(CAPE_NOIR),
-    map(JUAN_FERNANDEZ),
     // The English Channel and both of its coasts, from west of the Isles
     // of Scilly to the Strait of Dover, and from Brittany to the Bristol
     // Channel
@@ -102,6 +83,7 @@ export function globeViews(
       ],
       band,
     ),
-    map(SCILLY),
-  ].map(globeView);
+  ]
+    .map(globeView)
+    .concat(maps.map(({ view }) => view));
 }

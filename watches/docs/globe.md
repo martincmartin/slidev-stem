@@ -123,6 +123,22 @@ its px for a degree of latitude.
 
 The fits take about 50 ms at load in Node, and the maps' land 10 ms.
 
+**Over the globe.** `components/StoryMaps.vue` draws each map as an SVG
+over the canvas: the slide's rectangle in the water's wash, and the land
+in the paper with its coast in the subject, 3 px at every zoom
+(`vector-effect: non-scaling-stroke`). The map's sea covers the globe. A
+map rides the camera on its plane, which touches the globe at its view's
+place (`PlacedMap.plane`, `mapOnSlide`), and shows only near its view: it
+fades out as the camera zooms 1.25 times, or pans 80 px at the map's
+scale, from it. So a flight hands over from the map to the globe in about
+the first tenth of its progress, and back in the last, as the mockup did;
+in between, the coast shows twice, a few px apart. Not an oversight: the
+fade depends on the pose alone, not on a clock, so a still at rest shows
+its map whole, and a slide shows a map by naming its view. The live layer
+(`global-bottom.vue`) and an article's figure (`FigureLayer.vue`) move the
+maps after each frame of their stage (`onFrame`); a printed page's still
+(`slide-bottom.vue`) gives its pose.
+
 ## The flight
 
 `artMove: fly` flies the camera over the globe, between two of its views

@@ -56,9 +56,11 @@ import type {
   FigureControl,
 } from "../addons/narration/figure.ts";
 import DivingBoard from "./DivingBoard.vue";
+import StoryMaps from "./StoryMaps.vue";
 import TickTock from "./TickTock.vue";
 import TimeScale from "./TimeScale.vue";
 import { SharedView } from "../webgl/shared.ts";
+import type { FrameListener } from "../webgl/stage.ts";
 import type { Mesh, SlideRect } from "../webgl/scene.ts";
 import {
   BUTTON_WORDS,
@@ -180,6 +182,8 @@ const canvasStyle = computed(() => ({
 const covered = ref(false);
 const hidden = computed(() => !state.value || covered.value);
 const canvas = useTemplateRef<HTMLCanvasElement>("canvas");
+/** The view's frames, once it is made: the story maps ride them. */
+const frames = shallowRef<(listener: FrameListener) => () => void>();
 const model = shallowRef<WatchModel>();
 let view: SharedView<WatchModelState> | undefined;
 let shown: { clicks: number; state: WatchState | undefined } | undefined;
@@ -282,6 +286,8 @@ onMounted(() => {
     ART.scene.slide[0],
   );
   view.crop = crop.value;
+  const made = view;
+  frames.value = (listener) => made.onFrame(listener);
   show(clicks.value, true);
   if (settings.value.slider === "twist") {
     model.value.twist(twistDegrees(twist.value), figure.now(), false);
@@ -378,6 +384,7 @@ onChange(
     :style="palette.variables"
   >
     <canvas ref="canvas" class="watch-canvas" :style="canvasStyle" />
+    <StoryMaps :frames="frames" />
     <DivingBoard
       :target="board"
       :live="true"

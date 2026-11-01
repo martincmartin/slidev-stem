@@ -9,8 +9,8 @@ import earthFile from "./earth.json" with { type: "json" };
 import { parseEarth } from "./earth.ts";
 import type { Polygon } from "./earth.ts";
 import { DISC_GROUP, discMatrix, globeMeshes } from "./globe.ts";
-import { STORY_MAPS, mapLand } from "./maps.ts";
-import type { MapLand, StoryMap } from "./maps.ts";
+import { STORY_MAPS, placeMap } from "./maps.ts";
+import type { PlacedMap } from "./maps.ts";
 import { globeViews } from "./views.ts";
 
 const EARTH = parseEarth(earthFile);
@@ -24,24 +24,21 @@ export interface Globe {
   readonly groups: readonly Group[];
   readonly views: readonly View[];
   readonly piece: Piece;
+  /** The story maps, placed on the globe: drawn over it in SVG. */
+  readonly maps: readonly PlacedMap[];
 }
 
 /** The globe, for a slide of `slide` px. */
 export function makeGlobe(slide: readonly [number, number]): Globe {
   const { meshes, piece } = globeMeshes(EARTH);
+  const maps = STORY_MAPS.map((map) => placeMap(map, FINEST, slide));
   return {
     meshes,
     groups: [DISC_GROUP],
-    views: globeViews(slide, FINEST.flat()),
+    views: globeViews(slide, maps),
     piece,
+    maps,
   };
-}
-
-/** Each story map's land, for a slide of `slide` px. */
-export function storyLand(
-  slide: readonly [number, number],
-): ReadonlyMap<StoryMap, MapLand> {
-  return new Map(STORY_MAPS.map((map) => [map, mapLand(map, FINEST, slide)]));
 }
 
 /** The matrix of each of the globe's groups, for a frame whose camera is at
