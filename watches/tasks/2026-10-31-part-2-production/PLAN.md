@@ -287,9 +287,12 @@ Each phase ends with full validation in the talk, and a commit you approve.
    SVG rides the watch's camera in the deck, in the stills and in an
    article figure. If this is hard, stop and compare with option 3.
 4. **The globe in WebGL**: the disc, the coast, the land's fill (`earcut`),
-   the levels by scale, and the new flight move, with tests. The theme
-   needs the inks for the land, the sea and the coast (the globe task,
-   section 9).
+   the levels by scale, and the new flight move, with tests. The
+   renderer's list of inks gets the sea's role, `water-wash` (section 7).
+   The disc is a face in the paper, which `tools/scenecheck.py` refuses
+   today: it gets a rule for a paper face, and
+   [`docs/webgl.md`](../../../docs/webgl.md) a line (the globe task, sections
+   5 and 9).
 5. **The story layer**: the story maps, their fit, the hand-over, and the
    marks, each with a target for each click and a jump when the viewer
    jumps.
@@ -306,6 +309,24 @@ Each phase ends with full validation in the talk, and a commit you approve.
 8. **The checks**: the print check, the three engines in private windows,
    the frame budget in visible windows (`tools/deck_check.py`), and a
    phone for the article.
+
+### The docs that the build adds
+
+In the same change as each phase, as the house's "With each change" asks:
+
+- **`watches/docs/globe.md`**, new: the globe, the story maps and their
+  marks, their frontmatter keys, and the data's tool. An entry in
+  `watches/AGENTS.md` ("before you change the globe or a story map") and in
+  `watches/docs/README.md`.
+- **[`docs/webgl.md`](../../../docs/webgl.md)**: the camera hook, the
+  scale range of a mesh, the flight move and the paper face, because they
+  are the renderer's, not the talk's.
+- **[`docs/article.md`](../../docs/article.md)**: the story layer in a
+  figure, and the gusts' pause.
+- **`watches/docs/slide-patterns.md`**: the map label, the count and the
+  punchline's screen, as patterns for later slides.
+- **The `art…` keys** (phase 1): each doc that names a `watch…` key of the
+  stage.
 
 ## 7. Decisions
 
