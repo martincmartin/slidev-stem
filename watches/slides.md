@@ -1671,7 +1671,7 @@ clicks: 5
 
 # Age of Sail: Longitude Was a Guess
 
-1741: around Cape Horn, then north into the Pacific
+1741: around Cape Horn, then heading north
 
 <MapLabel v-click.hide="1" view="south america" :on="[-58, -12]" centred>South America</MapLabel>
 
