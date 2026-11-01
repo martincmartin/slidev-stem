@@ -1656,8 +1656,8 @@ And the whole watch.
 # camera flies from South America to Cape Noir; a click names the story
 # map's marks (globeLeg, globeMarks), and each step draws them after the
 # camera has come. The labels are at the marks they name (MapLabel.vue);
-# a click's labels leave at the next click, but "Estimated position", which
-# the next clicks measure from, stays, dimmed, until "Latitude: correct"
+# "Estimated position", which the next clicks measure from, stays, dimmed,
+# until "Latitude: correct"
 class: story-map
 art: [globe]
 artView: south america
@@ -1681,7 +1681,7 @@ clicks: 5
 
 <MapLabel v-click="[3, 4]" class="after-watch" view="cape noir" mark="estimated" :offset="[60, -50]">Latitude: correct</MapLabel>
 
-<PunchScreen v-click="5">Longitude:<br><em>400 miles</em> off</PunchScreen>
+<BigWords v-click="5">Longitude:<br><em>400 miles</em> off</BigWords>
 
 <!-- narration
 [figure: The globe shows South America, with Cape Horn at its southern tip.]
@@ -1765,7 +1765,7 @@ clicks: 5
 
 <MapLabel v-click="3" class="after-watch" view="juan fernandez" :offset="[340, 360]" :dimmed="$clicks >= 4">9 days back</MapLabel>
 
-<PunchScreen v-click="5">The detour cost<br><em>70–80 men</em></PunchScreen>
+<BigWords v-click="5">The detour cost<br><em>70–80 men</em></BigWords>
 
 <!-- narration
 Anson's men were dying of scurvy: four to six a day. They needed fresh
@@ -1856,7 +1856,7 @@ clicks: 4
 
 <MapLabel v-click="[2, 3]" class="after-watch" view="scilly" :on="[-6.3972, 49.8656]" :offset="[60, 10]">In the dark: the rocks<br>of Scilly!</MapLabel>
 
-<PunchScreen v-click="4">4 warships lost,<br>over <em>1,400 men</em></PunchScreen>
+<BigWords v-click="4">4 warships lost,<br>over <em>1,400 men</em></BigWords>
 
 <!-- narration
 [figure: The globe shows the English Channel between England and France.]
@@ -1906,6 +1906,78 @@ The English Channel, and the Isles of Scilly.
 [click] The gap.
 
 [click] 4 warships lost, over 1,400 men.
+-->
+
+---
+# Words on two cards, with no picture: the audience knows what 35 miles is
+# (docs/slide-patterns.md, "A slide of words")
+layout: full
+class: act-prizes
+clicks: 2
+---
+
+# The Longitude Act, 1714
+
+<div class="act-cards">
+  <BigWords v-click class="card">1°<br>70 miles<br>£10,000<br>~$2.3 M<small> today</small></BigWords>
+  <BigWords v-click class="card">½°<br>35 miles<br><em>£20,000</em><br>~$4.6 M<small> today</small></BigWords>
+</div>
+
+<style>
+.act-prizes {
+  padding: 40px 34px 36px; /* "~$4.6 M today" needs the width, on one line */
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.act-prizes h1 {
+  margin: 0; /* the flex gap spaces it */
+}
+.act-cards {
+  margin: auto 0; /* centered in the room under the title */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+</style>
+
+<!-- narration
+Seven years after Scilly, Parliament passed the Longitude Act. Disasters like
+these fed the push for it. The Act offered a fortune to anyone who could find
+a ship's longitude at sea.
+
+[nofigure]
+
+[click]
+
+Within one degree, about 70 miles, the prize was £10,000: about 2.3 million
+dollars today.
+
+[click]
+
+[figure: Two cards side by side. One degree, 70 miles, £10,000. Half a degree,
+35 miles, £20,000.]
+
+Within half a degree, about 35 miles, it was £20,000: about 4.6 million dollars
+today. Half the error earned twice the money. At Cape Noir, Anson's squadron
+had been 400 miles off.
+
+> [!aside] Which degree?
+> The Act measures the error in degrees of a great circle. One such degree is
+> 60 nautical miles, about 69 miles, at any latitude. A degree of longitude is
+> that long only at the equator. At Boston's latitude, it is about 51 miles.
+> The Act also offered £15,000 for two-thirds of a degree.
+
+-->
+
+<!--
+Seven years later, after disasters like these, Parliament puts up a prize.
+
+[click] Within 1 degree, 70 miles: £10,000. About 2.3 million dollars today.
+
+[click] Within half a degree, 35 miles: £20,000. Half the error, twice the money. Cape Noir missed by 400. And 35 miles is about from here to Worcester.
+
+IF ASKED: The museum finds no hard evidence that Scilly itself caused the Act: say "disasters like these", not "this wreck". The Act's degree is one of a great circle, 69 miles at any latitude. A degree of longitude is that long only at the equator; at Boston's latitude it is about 51 miles. There was also £15,000 for two-thirds of a degree.
 -->
 
 ---

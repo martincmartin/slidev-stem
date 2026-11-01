@@ -1,8 +1,8 @@
 # Slide patterns
 
 **Covers:** how a slide in this deck is built: the theme on a slide, the
-history line, the timekeeper card, clicks, punchlines, labels on a map,
-speaker notes, what fits, borrowed assets.
+history line, the timekeeper card, clicks, punchlines, slides of words, labels
+on a map, speaker notes, what fits, borrowed assets.
 **Read before** you add or change a slide. For a slide that shows the watch or
 the diving board, read [watch.md](watch.md) as well.
 **Tasks:**
@@ -202,10 +202,8 @@ It is background, not rules.
 
 **In Part 1, text that is no longer the focus dims: its colours mix halfway
 to the paper.** The newest text is the one to read. The text before it
-stays, so the audience can look back. Part 1 is told by the watch, with a
-few words at each click, so it is the house's exception: elsewhere, a
-click's words leave at the next click ([`../../AGENTS.md`](../../AGENTS.md),
-"Writing a talk"). The mechanism is in `style.css` ("TEXT DIMS"):
+stays, so the audience can look back. The mechanism is in `style.css`
+("TEXT DIMS"):
 
 - **Give the element that dims the class `text-dims`.** Its ink is a mix
   with the paper by `--text-dim`, and `--text-dim` fades in `--text-fade`,
@@ -306,7 +304,7 @@ They are described in [watch.md](watch.md).
 ## Punchlines
 
 **A slide told by a map ends on its punchline, a click of its own**:
-`<PunchScreen v-click="5">The detour cost<br><em>70–80 men</em></PunchScreen>`.
+`<BigWords v-click="5">The detour cost<br><em>70–80 men</em></BigWords>`.
 It is a screen of paper over the whole slide, with a few words in a
 screen's big type (Fraunces 600, 76 px), its number in the accent
 (`<em>`), the slide's one accent. The article says the punchline in its
@@ -314,15 +312,22 @@ narration: the screen is not `in-figure`, so a figure shows the map and
 its labels ([article.md](article.md)). Part 2's three slides are the
 examples.
 
+## A slide of words
+
+**A slide can be words alone, when a picture would show only what the
+audience knows.** The Longitude Act slide has two cards (`BigWords`, `class="card"`),
+one a click, in a punchline's big type: its rows compare across, and its one
+accent is the larger prize. The dollar value is as large as the pounds: £20,000 means little to a modern audience. Both cards stay, so a listener who looks away can
+catch up. Not an oversight: a map of how far the prizes reach from the venue
+drew what the speaker can say in a sentence
+([the visual language task](../tasks/2026-10-30-part-2-visual-language/README.md)).
+
 ## Labels on a map
 
 **A fact with a place is a label at that place**, 24 px semibold, eight
 words or fewer, with a time only where the time carries the story ("2 days
-east"). It says nothing that the picture shows. A click's labels leave at
-the next click; on a slide told by its map, with a few words at each
-click, they stay to the end, dimmed (the Juan Fernández slide). The
-component, and how it chooses ink or paper, is in
-[globe.md](globe.md#the-words).
+east"). It says nothing that the picture shows. The component, and how it
+chooses ink or paper, is in [globe.md](globe.md#the-words).
 
 ## Where things go on a slide
 

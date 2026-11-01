@@ -248,7 +248,7 @@ with the `v-click` range of the clicks that show it:
 The count of the scurvy deaths is a mark (`Mark.count`): `perDay` times the
 days at sea that the voyage shows (`VoyageFrame.days`), so it ticks at each
 dot, in the live layer, a figure and a still alike. The punchline is a
-screen (`components/PunchScreen.vue`; `slide-patterns.md`, "Punchlines").
+screen (`components/BigWords.vue`; `slide-patterns.md`, "Punchlines").
 
 `globe/labels.test.ts` checks the pictures both ways, the land, the sea
 under a box, and the anchors.

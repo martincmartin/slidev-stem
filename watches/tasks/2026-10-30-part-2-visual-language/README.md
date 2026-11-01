@@ -80,3 +80,11 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   (`watches/docs/globe.md`, "The marks"). It no longer shows the click
   before at once (`PLAN.md`, section 16), as the house's rule for a
   story animation asks (`docs/navigation.md`).
+- 2026-11-01: the user removed the rule that a click's words or labels leave
+  at the next click, and its exception (`PLAN.md`, sections 7 and 13), from
+  `stem/AGENTS.md` and `watches/docs/slide-patterns.md`. No rule replaces it:
+  labels stay as long as they are relevant.
+- 2026-11-01: the Longitude Act slide is words on two cards, not the map of
+  reaches (`PLAN.md`, sections 7 and 8). The audience does not need a picture
+  of 35 miles. The user also checked the dollar values (`PLAN.md`, section 9,
+  gives them as not checked).
