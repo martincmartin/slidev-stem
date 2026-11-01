@@ -11,7 +11,7 @@ import {
   slidePoint,
   viewProjection,
 } from "./renderer.ts";
-import type { Plane, Pose, Vec3, View } from "./scene.ts";
+import type { Plane, CameraPose, Vec3, View } from "./scene.ts";
 
 const SLIDE = [980, 552] as const;
 const VIEW: View = {
@@ -142,7 +142,7 @@ test("slidePoint: at tilt 0 and turn 0, a point is at scale times it, plus the s
 });
 
 test("slidePoint: at turn 90, a step along the world's x goes down the slide", () => {
-  const pose: Pose = { view: VIEW, tilt: 0, turn: 90 };
+  const pose: CameraPose = { view: VIEW, tilt: 0, turn: 90 };
   const [pivotX, pivotY, pivotZ] = VIEW.pivot;
   const [x0, y0] = slidePoint(pose, SLIDE, VIEW.pivot);
   const [x1, y1] = slidePoint(pose, SLIDE, [pivotX + 10, pivotY, pivotZ]);
@@ -162,7 +162,7 @@ test("planeOnSlide puts each point of a plane where slidePoint puts it, at any t
     [20, 37],
     [75, -120],
   ] as const) {
-    const pose: Pose = { view: VIEW, tilt, turn };
+    const pose: CameraPose = { view: VIEW, tilt, turn };
     const [a, b, c, d, e, f] = planeOnSlide(pose, SLIDE, plane);
     for (const [u, v] of [
       [0, 0],

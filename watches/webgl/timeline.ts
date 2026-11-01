@@ -39,7 +39,7 @@
 // slide (../../docs/navigation.md): the timeline does not know which way a
 // change goes.
 
-import type { CameraAngles, Mesh, View } from "./scene.ts";
+import type { CameraAngles, CameraPose, Mesh, View } from "./scene.ts";
 import { check } from "./checked.ts";
 
 export const MOVE_SECONDS = 1.8;
@@ -181,11 +181,6 @@ export function mixView(first: View, second: View, fraction: number): View {
       mix(first.pivot[2], second.pivot[2], fraction),
     ],
   };
-}
-
-/** Where the camera is and which way it looks. */
-export interface CameraPose extends CameraAngles {
-  readonly view: View;
 }
 
 /** An eased mix of two cameras that move, zoom, tilt and turn at the same

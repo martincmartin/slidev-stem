@@ -175,7 +175,7 @@ export interface CameraAngles {
 
 /** Where the camera is: a view and its angles. A frame has one, and so does
  *  a stage's state at rest. */
-export interface Pose extends CameraAngles {
+export interface CameraPose extends CameraAngles {
   /** Or an eased mix of two views. */
   readonly view: View;
 }
@@ -193,7 +193,7 @@ export interface Plane {
 export type Affine2 = readonly [number, number, number, number, number, number];
 
 /** What the renderer takes for each frame. */
-export interface Frame extends Pose {
+export interface Frame extends CameraPose {
   /** The world matrix of each group that a drawn mesh has: 4 x 4,
    *  column-major, affine. The renderer does not compose `Group.parent`. */
   readonly groupMatrices: ReadonlyMap<Group, Float32Array>;

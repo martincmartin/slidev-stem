@@ -78,7 +78,7 @@ import type {
   MeshGeometry,
   Palette,
   Plane,
-  Pose,
+  CameraPose,
   Recolour,
   Scene,
   SlideRect,
@@ -459,7 +459,7 @@ function clipToSlide(
  *  a layer over the canvas (an SVG) can put a mark on what the canvas draws.
  *  A layer that draws a whole plane uses `planeOnSlide`. */
 export function slidePoint(
-  pose: Pose,
+  pose: CameraPose,
   slide: readonly [number, number],
   point: Vec3,
 ): [number, number] {
@@ -472,7 +472,7 @@ export function slidePoint(
  *  affine at any tilt and turn: a flat drawing in the plane, transformed by
  *  it, rides the camera exactly (docs/webgl.md, "Layers over the canvas"). */
 export function planeOnSlide(
-  pose: Pose,
+  pose: CameraPose,
   slide: readonly [number, number],
   plane: Plane,
 ): Affine2 {

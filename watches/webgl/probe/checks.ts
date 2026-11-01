@@ -23,7 +23,7 @@ import type {
   Mesh,
   MeshGeometry,
   Palette,
-  Pose,
+  CameraPose,
   Scene,
   Vec3,
 } from "../scene.ts";
@@ -989,7 +989,7 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
       };
       const stage = own(new Stage(canvas(), test.scene, PALETTE, model));
       stage.show({ ...stateOf(test), tilt: 30, turn: 25 }, null, true);
-      const poses: Pose[] = [];
+      const poses: CameraPose[] = [];
       const leave = stage.onFrame((pose) => poses.push(pose));
       stage.start();
       await wait(200);

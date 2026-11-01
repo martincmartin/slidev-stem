@@ -24,7 +24,14 @@ import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
 import type { Place } from "./renderer.ts";
 import { FLASH_INKS } from "./scene.ts";
-import type { Group, Mesh, Palette, Pose, Scene, SlideRect } from "./scene.ts";
+import type {
+  Group,
+  Mesh,
+  Palette,
+  CameraPose,
+  Scene,
+  SlideRect,
+} from "./scene.ts";
 import { Timeline } from "./timeline.ts";
 import type { StageState, Values } from "./timeline.ts";
 
@@ -109,7 +116,7 @@ export interface ViewDrawing {
 /** Called after each frame that a stage or a view draws, with the camera
  *  that it drew with and its time: a layer over the canvas moves its marks
  *  with it (`planeOnSlide` in renderer.ts), in the same animation frame. */
-export type FrameListener = (pose: Pose, now: number) => void;
+export type FrameListener = (pose: CameraPose, now: number) => void;
 
 /** Draw one frame of a timeline and a model at `now`, `size` device px,
  *  with the renderer: the stage's frame, and each view's on a shared
@@ -121,7 +128,7 @@ export function drawFrame<ModelState>(
   now: number,
   size: [number, number],
   drawing: ViewDrawing = {},
-): Pose {
+): CameraPose {
   const marked = drawing.marked ?? new Set<Mesh>();
   const values = timeline.valuesAt(now);
   const flashing = timeline.flashingAt(now);
