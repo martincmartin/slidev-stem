@@ -264,7 +264,11 @@ on van Wijk and Nuij's own pace, barely moved for the first and last
 second, and then swept the ground past at up to 1,750 px/s
 (`FLIGHT` in `webgl/flight.ts`; the production task's progress, "2026-11-01,
 the flights' pace").
-A step can still set its own time with `artMoveSeconds`.
+A step can still set its own time with `artMoveSeconds`. For `navcheck`,
+`slideState` gives a flight's camera as its progress, from its start to its
+target by the share of its time (`flightProgress` in `watch/slide-state.ts`):
+the flight's zoom out would break the rule that a `continuous` number stays
+between its ends.
 
 ## The globe in the deck
 

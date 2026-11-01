@@ -615,6 +615,20 @@ export class Timeline {
     return Math.max(now, ...ends);
   }
 
+  /** The flight that runs at `now`, and the share of its time gone (0 to
+   *  1), or null if none runs. */
+  flightAt(
+    now: number,
+  ): { readonly flight: Flight; readonly fraction: number } | null {
+    for (const phase of this.phases) {
+      const fraction = (now - phase.start) / (phase.seconds * 1000);
+      if (phase.channel === "flight" && fraction >= 0 && fraction < 1) {
+        return { flight: phase.flight, fraction };
+      }
+    }
+    return null;
+  }
+
   /** What the timeline is moving at `now`: "flash", the name of a channel, or
    *  `null` if nothing. */
   phaseAt(now: number): string | null {

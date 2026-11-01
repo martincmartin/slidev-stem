@@ -260,6 +260,12 @@ export class Stage<ModelState> {
     return Math.max(this.timeline.endAt(now), this.model.endAt?.(now) ?? now);
   }
 
+  /** The flight that runs at `now`, and the share of its time gone, or
+   *  null. */
+  flightAt(now: number): ReturnType<Timeline["flightAt"]> {
+    return this.timeline.flightAt(now);
+  }
+
   /** What is moving at `now`: the flash, a channel, or the model's phase. */
   phaseAt(now: number): string {
     return this.timeline.phaseAt(now) ?? this.model.phase(now);

@@ -6,6 +6,8 @@
 // jump (`pressJumps`: ../docs/navigation.md, "A press during a move"), so that
 // a check that waits for it presses a step.
 
+import type { Flight } from "../webgl/flight.ts";
+import { mix } from "../webgl/math.ts";
 import type { Stage } from "../webgl/stage.ts";
 import type { WatchModelState } from "./model.ts";
 
@@ -64,6 +66,20 @@ function slideCover(): number {
   return parts.length === 4 ? Number(parts[3]) : 1;
 }
 
+/** A flight's camera numbers as its progress, from where it set out to
+ *  where it goes, by the share of its time (`fraction`). */
+function flightProgress(
+  flight: Flight,
+  fraction: number,
+): { scale: number; tilt: number; turn: number } {
+  const [from, to] = [flight.along(0), flight.along(1)];
+  return {
+    scale: mix(from.view.scale, to.view.scale, fraction),
+    tilt: mix(from.tilt, to.tilt, fraction),
+    turn: mix(from.turn, to.turn, fraction),
+  };
+}
+
 export function slideState(
   stage: Stage<WatchModelState> | undefined,
   canvas: HTMLCanvasElement | null,
@@ -95,9 +111,18 @@ export function slideState(
         .map((mesh) => mesh.name)
         .sort()
         .join(", ");
-      continuous["view scale"] = values.view.scale;
-      continuous["tilt"] = values.tilt;
-      continuous["turn"] = values.turn;
+      // a flight zooms out and back in, and turns along a great circle: its
+      // numbers leave the range between its ends, as the rule for a
+      // `continuous` number does not allow. So during a flight they are its
+      // progress (`flightProgress`): a cut still shows, and the ends are
+      // the real values
+      const flying = stage.flightAt(now);
+      const camera = flying
+        ? flightProgress(flying.flight, flying.fraction)
+        : { scale: values.view.scale, tilt: values.tilt, turn: values.turn };
+      continuous["view scale"] = camera.scale;
+      continuous["tilt"] = camera.tilt;
+      continuous["turn"] = camera.turn;
     }
     if (stage.movingAt(now)) busy = true;
   }
