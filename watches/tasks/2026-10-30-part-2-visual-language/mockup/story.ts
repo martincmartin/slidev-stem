@@ -274,9 +274,10 @@ export interface Style {
 }
 
 /** The point, for every ship of the time, not for Anson alone: the slide
- *  is its example. The clicks show how far off; the title does not give
- *  the number (PLAN.md, section 16). */
-const NOIR_TITLE = "At Sea, Longitude Was a Guess";
+ *  is its example, and the year says when. "At sea": on land, astronomers
+ *  could find longitude. The clicks show how far off; the title does not
+ *  give the number (PLAN.md, section 16). */
+const NOIR_TITLE = "At Sea in 1741, Longitude Was a Guess";
 /** What is searched for, by name; who searches is the speaker's to say, and
  *  the labels then say "the island" (PLAN.md, section 16). */
 const TITLE = "Hunt for Juan Fernández Island, 1741";
@@ -355,7 +356,7 @@ const lessig: Style = {
     { picture: "toll", texts: [] },
     {
       picture: "toll",
-      texts: [{ kind: "screen", html: "<em>Over 1,300</em><br>men died" }],
+      texts: [{ kind: "screen", html: "<em>Over 1,400</em><br>men died" }],
     },
   ],
 };
@@ -366,11 +367,6 @@ const noir = noirPlacesOn(NOIR);
 const scilly = scillyPlacesOn(SCILLY);
 /** The Isles of Scilly in the view of the Channel. */
 const isles: Point = [seen(CHANNEL, ISLES)[0], seen(CHANNEL, ISLES)[1]];
-/** The middle of the gap at Scilly, on its bracket. */
-const gapMiddle: Point = [
-  (scilly.bracket[0][0] + scilly.bracket[1][0]) / 2,
-  (scilly.bracket[0][1] + scilly.bracket[1][1]) / 2,
-];
 
 const labels: Style = {
   name: "labels",
@@ -568,7 +564,9 @@ const labels: Style = {
         {
           kind: "label",
           html: "Estimated position",
+          // it leaves when the bracket shows, as at Cape Noir
           stays: true,
+          until: "toll",
           // below the dashed ship, and below the bracket's end
           at: [scilly.thought[0] - 150, scilly.thought[1] + 52],
           about: scilly.thought,
@@ -581,32 +579,21 @@ const labels: Style = {
       texts: [
         {
           kind: "label",
-          html: "8 p.m.: the rocks<br>of Scilly!",
+          // the dark, not the hour: they could not see the rocks
+          html: "In the dark: the rocks<br>of Scilly!",
           at: [scilly.rock[0] + 60, scilly.rock[1] + 10],
           about: scilly.rock,
         },
       ],
     },
-    // The gap is mostly east: by Orford's reckoning, 24 nautical miles east
-    // and 9 north. So the label says what the outline says, in the form of
-    // Cape Noir's "Longitude: 400 miles off" (PLAN.md, section 15).
+    // The gap alone, with no words, as at Cape Noir: that slide's
+    // punchline has said "Longitude" (PLAN.md, section 16).
+    { title: SCILLY_TITLE, picture: "toll", texts: [] },
     {
       title: SCILLY_TITLE,
       picture: "toll",
       texts: [
-        {
-          kind: "label",
-          html: "Longitude: unsure how<br>far east they had come",
-          at: [gapMiddle[0] - 10, gapMiddle[1] + 36],
-          about: gapMiddle,
-        },
-      ],
-    },
-    {
-      title: SCILLY_TITLE,
-      picture: "toll",
-      texts: [
-        { kind: "punch", html: "4 warships lost,<br>over <em>1,300 men</em>" },
+        { kind: "punch", html: "4 warships lost,<br>over <em>1,400 men</em>" },
       ],
     },
   ],

@@ -68,7 +68,8 @@ and the Anson slide must show why the westerlies made the trip back slow.
   1741, and his name is "Isaac". Anson's chaplain gives "between seventy and
   eighty" men lost to the detour, not hundreds. The delay was "calms and
   contrary winds". For Scilly, the Royal Museums Greenwich gives "over 1,300"
-  dead. The outline's "disasters like this" fed the push for the Act; it
+  dead, and Wikipedia's statements run "from 1,400 to over 2,000"; the slide
+  says "over 1,400". The outline's "disasters like this" fed the push for the Act; it
   does not say that this wreck did, which is the claim that the museum
   finds "no hard evidence" for.
 - **Round 4: Cape Noir, from the globe** (section 14). A slide before the
@@ -413,7 +414,7 @@ The two still frames (mockup/prize.html, mockup/newton.html):
 One slide for each beat of the outline, with what the picture does and what
 the labels say. Each is a proposal, to sketch before it is built.
 
-1. **At Sea, Longitude Was a Guess** (retitled in round 6,
+1. **At Sea in 1741, Longitude Was a Guess** (retitled in round 6,
    section 16; the slide was decided in round 4, section
    14, in place of a general slide about latitude and longitude). The whole
    globe, and the camera zooms to Cape Noir. Click: the dashed ship, "Where
@@ -438,12 +439,12 @@ the labels say. Each is a proposal, to sketch before it is built.
 3. **Admiral Shovell Sails Home, 1707** (built in round 5, section 15). The
    camera flies from Juan Fernández to the English Channel: "English
    Channel", "England", "France", and a callout to the Isles of Scilly.
-   Click: the camera zooms in to the islands; a dashed ship, "Where they
-   thought they were", which stays, dimmed, and "21 ships" above it.
-   Click: the ship sails onto the rocks, "8 p.m.: the rocks of Scilly!".
-   Click: a bracket between the two ships, "Longitude: unsure how far east
-   they had come". Click: the punchline, "4 warships lost, over 1,300 men"
-   (section 16). The gap is mostly east (section 15). The
+   Click: the camera zooms in to the islands; a dashed ship, "Estimated
+   position", which stays, dimmed, until the bracket shows, and "21 ships"
+   above it. Click: the ship
+   sails onto the rocks, "In the dark: the rocks of Scilly!". Click: a
+   bracket between the two ships, with no words, as at Cape Noir. Click:
+   the punchline, "4 warships lost, over 1,400 men" (section 16). The gap is mostly east (section 15). The
    outline's link to the Act is general ("disasters like this"), so the
    narration may keep it, but must not say that this wreck caused the Act.
 4. **The Longitude Act, 1714.** As the still frame: the reaches of ½° and 1°
@@ -1279,8 +1280,10 @@ screen's big type.
 | Anson     | 4     | "9 days back: headwinds and calms"                                  | "9 days back", stays                                     |
 | Anson     | 5     | "Juan Fernández Islands", "June 9: found"                           | (gone: the islands show, and the track ends there)       |
 | Anson     | 5     | "The detour cost 70–80 men"                                         | the punchline, a click of its own                        |
-| Scilly    | 2     | "October 22, 1707: where they think they are"                       | "Estimated position", stays                              |
-| Scilly    | 4     | "4 warships lost, over 1,300 men"                                   | the punchline, a click of its own                        |
+| Scilly    | 2     | "October 22, 1707: where they think they are"                       | "Estimated position", stays to click 3                   |
+| Scilly    | 3     | "8 p.m.: the rocks of Scilly!"                                      | "In the dark: the rocks of Scilly!"                      |
+| Scilly    | 4     | "Longitude: unsure how far east they had come"                      | (gone: the bracket alone, as at Cape Noir)               |
+| Scilly    | 4     | "4 warships lost, over 1,300 men"                                   | the punchline, a click of its own, "over 1,400 men"      |
 
 On the Cape Noir slide, the dashed parallel now crosses the whole slide,
 land and all, as a parallel does on a map.
@@ -1295,14 +1298,16 @@ land and all, as a parallel does on a map.
   joined it only at the end. Moving the ghost and the parallel to where it
   showed would not do: the ship would then sail north off the parallel.
   Walter's "standing to the northward" is for the narration.
-- **The title makes the point, for every ship:** "At Sea, Longitude Was a
-  Guess", not "Commodore Anson Rounds Cape Horn, 1741", which said only who
-  and where. Anson in 1741 is the example, not the point, so the title has
-  no name and no year. It does not give the punchline's number: the clicks
-  show how far off the guess was. 543 px wide at 37 px, of the slide's 980
-  (measured in the page). "Ships Knew Latitude, but Guessed Longitude"
-  (799 px) says more, but gives away the "Latitude: correct" click. With no
-  name here, no slide names Anson: the speaker does.
+- **The title makes the point, for every ship:** "At Sea in 1741,
+  Longitude Was a Guess", not "Commodore Anson Rounds Cape Horn, 1741",
+  which said only who and where. Anson is the example, not the point, so
+  the title has no name. The year says when: in the age of sail, not in
+  Roman times or the 20th century. "At sea", because on land astronomers
+  could find longitude. Not "in the age of sail": by its last decades,
+  ships carried chronometers. It does not give the punchline's number: the
+  clicks show how far off the guess was. 670 px wide at 37 px, of the
+  slide's 980 (measured in the page). No slide names Anson: the speaker
+  does, or a subtitle could, later.
 - **"Cliffs!" is a yell:** on its own line, at the title's size (37 px),
   with an exclamation mark, above "2 a.m., 2 miles ahead". Not in
   capitals, which read slower than a word's shape, and not in the accent,
@@ -1316,10 +1321,19 @@ land and all, as a parallel does on a map.
   and calms" and the islands' label with "Found" (40 words at its last
   click). You cut those three too.
 
-- **Numbers kept from the facts, not from the message.** You wrote "over
-  1,400 men"; the slide keeps "over 1,300", which the museum gives (section
-  15). You wrote "70–80 men died"; the punchline keeps "The detour cost
-  70–80 men", which says what killed them.
+- **"Over 1,400 men",** at your request: the lowest of Wikipedia's
+  statements, "from 1,400 to over 2,000" (section 15). The museum's "over
+  1,300" does not contradict it. You wrote "70–80 men died"; the punchline
+  keeps "The detour cost 70–80 men", which says what killed them.
+- **"In the dark: the rocks of Scilly!",** not "8 p.m.: …": the point is
+  that they could not see, not the hour.
+- **No words at the Scilly gap,** at your request, as at Cape Noir: the
+  bracket alone, then the punchline. Cape Noir's punchline has already said
+  "Longitude". This reverses round 5's decision that the label says
+  longitude ("Longitude: unsure how far east they had come", section 15),
+  which read clumsily. If words come back, "Longitude: about 28 miles off"
+  would match Cape Noir's: by Orford's reckoning the gap is 24 nautical
+  miles east, about 28 statute miles.
 - **The title** is now "Hunt for Juan Fernández Island, 1741", in place of
   "Commodore Anson Hunts for an Island, 1741". With the island's name in
   the title, the latitude label needs no name: "Juan Fernández's latitude"
@@ -1346,7 +1360,8 @@ before. Two kinds of label stay:
   at the dashed ship, on the Cape Noir and Scilly slides. The next clicks
   measure from it. A label can leave before the end of its slide, at a
   picture (`until`, as a mark's): on the Cape Noir slide, it leaves when
-  "Latitude: correct" shows, at your request.
+  "Latitude: correct" shows, and on the Scilly slide when the bracket
+  shows, at your request.
 - **Every label of a slide told by its picture**, with a few words at each
   click: the Anson slide. This is the exception in
   [`stem/AGENTS.md`](../../../AGENTS.md), "Writing a talk".
@@ -1441,7 +1456,7 @@ dropdown **punchline** (`punch`) gives four backings
 picture stays under it, so the punchline reads as the end of the slide
 just seen. A paper screen does not: the Lessig style uses the same screen
 to open the next slide ("October 1707: a fleet sails home") and to end one
-("Over 1,300 men died").
+("Over 1,400 men died").
 
 **Contrast** (WCAG, from Ledger's colors; the floor for large text is
 3:1):

@@ -309,3 +309,25 @@ Later messages in round 6, verbatim, in order:
 > We need something more general, the point wasn't just a failing of
 > Commodore Anson, but that in general Longitude estimates were poor. 1741
 > was just an example.
+
+> Sure, commit.
+>
+> 8 p.m.: the rocks of Scilly!: let's replace 8pm with "Sailing at night," or
+> something else that means darkness.
+>
+> "Longitude: unsure how far east they had come" is clunky wording. Replace
+> it with something better? Do we even need a caption there, since we don't
+> have one when the bar shows up in slide 1?
+>
+> Over 1,300 men should be over 1,400 men
+
+> For the first title, we need something to say this is during the age of
+> sail, and not e.g. during 20th century or roman times or something. What
+> about "In 1741, Longitude Was a Guess" or "At Sea In 1741, Longitude Was A
+> Guess." We don't need Anson's name.
+>
+> Another option would be a subtitle, as you say. No need to make one in
+> this spike.
+
+> In the 1707 slide, we can remove the "Estimated posiiton" when the error
+> bar shows up.

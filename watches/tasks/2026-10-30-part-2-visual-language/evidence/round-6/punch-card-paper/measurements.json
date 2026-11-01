@@ -43,8 +43,8 @@
   ],
   "coverage": {
    "sea": 480086,
-   "seaCovered": 13038,
-   "covered": 15476
+   "seaCovered": 15398,
+   "covered": 18215
   }
  },
  {
@@ -83,8 +83,8 @@
   ],
   "coverage": {
    "sea": 480086,
-   "seaCovered": 20490,
-   "covered": 22928
+   "seaCovered": 22850,
+   "covered": 25667
   }
  },
  {
@@ -109,8 +109,8 @@
   ],
   "coverage": {
    "sea": 480086,
-   "seaCovered": 12409,
-   "covered": 14847
+   "seaCovered": 14769,
+   "covered": 17586
   }
  },
  {
@@ -120,8 +120,8 @@
   "texts": [],
   "coverage": {
    "sea": 480086,
-   "seaCovered": 8766,
-   "covered": 11204
+   "seaCovered": 11126,
+   "covered": 13943
   }
  },
  {
@@ -146,8 +146,8 @@
   ],
   "coverage": {
    "sea": 480086,
-   "seaCovered": 116302,
-   "covered": 124726
+   "seaCovered": 118662,
+   "covered": 127466
   }
  },
  {
@@ -613,14 +613,14 @@
    },
    {
     "kind": "label",
-    "words": 6,
+    "words": 7,
     "fontSize": 24,
     "dimmed": false,
     "onSea": true,
     "box": [
      492.984375,
      270.625,
-     185.578125,
+     238.640625,
      60
     ],
     "travel": 60.816478523909225
@@ -628,48 +628,19 @@
   ],
   "coverage": {
    "sea": 511652,
-   "seaCovered": 24872,
-   "covered": 24909
+   "seaCovered": 26024,
+   "covered": 26061
   }
  },
  {
   "style": "labels",
   "step": 15,
   "picture": "toll",
-  "texts": [
-   {
-    "kind": "label",
-    "words": 2,
-    "fontSize": 24,
-    "dimmed": true,
-    "onSea": true,
-    "box": [
-     39.203125,
-     406.578125,
-     208.421875,
-     30
-    ],
-    "travel": 51.98896364193638
-   },
-   {
-    "kind": "label",
-    "words": 8,
-    "fontSize": 24,
-    "dimmed": false,
-    "onSea": true,
-    "box": [
-     305.734375,
-     382.765625,
-     253.515625,
-     60
-    ],
-    "travel": 35.99811374938383
-   }
-  ],
+  "texts": [],
   "coverage": {
    "sea": 511652,
-   "seaCovered": 29123,
-   "covered": 29160
+   "seaCovered": 15023,
+   "covered": 15060
   }
  },
  {
@@ -677,20 +648,6 @@
   "step": 16,
   "picture": "toll",
   "texts": [
-   {
-    "kind": "label",
-    "words": 2,
-    "fontSize": 24,
-    "dimmed": true,
-    "onSea": true,
-    "box": [
-     39.203125,
-     406.578125,
-     208.421875,
-     30
-    ],
-    "travel": 51.98896364193638
-   },
    {
     "kind": "punch",
     "words": 6,
@@ -708,8 +665,8 @@
   ],
   "coverage": {
    "sea": 511652,
-   "seaCovered": 156046,
-   "covered": 156369
+   "seaCovered": 151781,
+   "covered": 152104
   }
  }
 ]

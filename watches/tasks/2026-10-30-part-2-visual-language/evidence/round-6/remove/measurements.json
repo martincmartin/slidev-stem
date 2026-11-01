@@ -43,8 +43,8 @@
   ],
   "coverage": {
    "sea": 480086,
-   "seaCovered": 13038,
-   "covered": 15476
+   "seaCovered": 15398,
+   "covered": 18215
   }
  },
  {
@@ -69,8 +69,8 @@
   ],
   "coverage": {
    "sea": 480086,
-   "seaCovered": 16218,
-   "covered": 18656
+   "seaCovered": 18578,
+   "covered": 21395
   }
  },
  {
@@ -95,8 +95,8 @@
   ],
   "coverage": {
    "sea": 480086,
-   "seaCovered": 12409,
-   "covered": 14847
+   "seaCovered": 14769,
+   "covered": 17586
   }
  },
  {
@@ -106,8 +106,8 @@
   "texts": [],
   "coverage": {
    "sea": 480086,
-   "seaCovered": 8766,
-   "covered": 11204
+   "seaCovered": 11126,
+   "covered": 13943
   }
  },
  {
@@ -132,8 +132,8 @@
   ],
   "coverage": {
    "sea": 480086,
-   "seaCovered": 115892,
-   "covered": 129984
+   "seaCovered": 118252,
+   "covered": 132723
   }
  },
  {
@@ -459,14 +459,14 @@
   "texts": [
    {
     "kind": "label",
-    "words": 6,
+    "words": 7,
     "fontSize": 24,
     "dimmed": false,
     "onSea": true,
     "box": [
      492.984375,
      270.625,
-     185.578125,
+     238.640625,
      60
     ],
     "travel": 60.816478523909225
@@ -474,34 +474,19 @@
   ],
   "coverage": {
    "sea": 511652,
-   "seaCovered": 20596,
-   "covered": 20633
+   "seaCovered": 21748,
+   "covered": 21785
   }
  },
  {
   "style": "labels",
   "step": 15,
   "picture": "toll",
-  "texts": [
-   {
-    "kind": "label",
-    "words": 8,
-    "fontSize": 24,
-    "dimmed": false,
-    "onSea": true,
-    "box": [
-     305.734375,
-     382.765625,
-     253.515625,
-     60
-    ],
-    "travel": 35.99811374938383
-   }
-  ],
+  "texts": [],
   "coverage": {
    "sea": 511652,
-   "seaCovered": 24847,
-   "covered": 24884
+   "seaCovered": 15023,
+   "covered": 15060
   }
  },
  {
@@ -526,8 +511,8 @@
   ],
   "coverage": {
    "sea": 511652,
-   "seaCovered": 151227,
-   "covered": 151524
+   "seaCovered": 151211,
+   "covered": 151508
   }
  }
 ]
