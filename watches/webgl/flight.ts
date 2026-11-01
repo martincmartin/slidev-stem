@@ -7,7 +7,7 @@
 // after a ramp up and before a ramp down of `FLIGHT.ramp` seconds (`paced`).
 // No DOM: the tests run it in Node.
 
-import { mix } from "./math.ts";
+import { axesAcross, mix } from "./math.ts";
 import {
   pivotOnSlide,
   planeOnSlide,
@@ -50,16 +50,7 @@ export function ballPoint(
   const radius = pose.view.ball;
   if (radius === undefined) return null;
   const toward = towardCamera(pose);
-  const helper: Vec3 = Math.abs(toward[2]) < 0.9 ? [0, 0, 1] : [1, 0, 0];
-  const cross = (a: Vec3, b: Vec3): Vec3 => [
-    a[1] * b[2] - a[2] * b[1],
-    a[2] * b[0] - a[0] * b[2],
-    a[0] * b[1] - a[1] * b[0],
-  ];
-  const across = cross(toward, helper);
-  const length = Math.hypot(...across);
-  const u: Vec3 = [across[0] / length, across[1] / length, across[2] / length];
-  const v = cross(toward, u);
+  const [u, v] = axesAcross(toward);
   const { pivot } = pose.view;
   const [a, b, c, d, e, f] = planeOnSlide(pose, slide, { origin: pivot, u, v });
   const [x, y] = [at[0] - e, at[1] - f];

@@ -10,7 +10,8 @@
 import { planeOnSlide, towardCamera } from "../webgl/renderer.ts";
 import type { Affine2, CameraPose, Plane, Vec3, View } from "../webgl/scene.ts";
 import { clipToRect } from "./clip.ts";
-import type { Box, LonLat, Polygon, Ring } from "./earth.ts";
+import { inBox } from "./earth.ts";
+import type { LonLatBox, LonLat, Polygon, Ring } from "./earth.ts";
 import { RADIUS, globeView, onGlobe, toSphere } from "./globe.ts";
 import type { GlobeCamera } from "./globe.ts";
 
@@ -25,7 +26,7 @@ export interface StoryMap {
   /** Small islands that the map draws apart (`MapLand.islands`), larger
    *  about their own centre, as a map draws a small island so that it
    *  shows: each ring inside the box. */
-  readonly islands?: { readonly box: Box; readonly enlarge: number };
+  readonly islands?: { readonly box: LonLatBox; readonly enlarge: number };
 }
 
 /** The most coast points that a fit uses: an even sample of those on the
@@ -45,12 +46,6 @@ export function project(map: StoryMap, [lon, lat]: LonLat): [number, number] {
     map.at[0] + (lon - map.centre[0]) * map.pxPerDegree * shorten,
     map.at[1] - (lat - map.centre[1]) * map.pxPerDegree,
   ];
-}
-
-function inBox([lon, lat]: LonLat, box: Box): boolean {
-  return (
-    lon >= box.west && lon <= box.east && lat >= box.south && lat <= box.north
-  );
 }
 
 /** A ring as a closed subpath of an SVG path, to 0.1 px. */

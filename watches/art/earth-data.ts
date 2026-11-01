@@ -15,14 +15,15 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { clipToRect } from "../globe/clip.ts";
 import { SCALES } from "../globe/earth.ts";
-import type { Box, LonLat, Scale } from "../globe/earth.ts";
+import type { LonLatBox, LonLat, Scale } from "../globe/earth.ts";
 
 const OUT = fileURLToPath(new URL("../globe/earth.json", import.meta.url));
 
 /** Where the 1:10m level has land: near each story. The globe draws 1:50m
- *  outside them at 1:10m's zooms. Their edges are whole degrees, on the
- *  grid that the globe cuts its land along (globe/model.ts). */
-export const FINE: readonly Box[] = [
+ *  outside them at 1:10m's zooms. Their edges are whole degrees; the globe
+ *  cuts its land along them, as along its grid (`landPieces` in
+ *  globe/globe.ts). */
+export const FINE: readonly LonLatBox[] = [
   // Cape Noir and Juan Fernández
   { west: -100, east: -50, south: -62, north: -12 },
   // the English Channel, with the Isles of Scilly
@@ -41,7 +42,7 @@ const WRITE: Readonly<
     {
       readonly decimals: number;
       readonly step: number;
-      readonly boxes: readonly Box[];
+      readonly boxes: readonly LonLatBox[];
     }
   >
 > = {
@@ -103,7 +104,11 @@ function polygonsOf(json: unknown): Point[][][] {
 }
 
 /** A ring cut to a box grown by `margin` degrees. */
-function ringInBox(ring: readonly Point[], box: Box, margin: number): Point[] {
+function ringInBox(
+  ring: readonly Point[],
+  box: LonLatBox,
+  margin: number,
+): Point[] {
   return clipToRect(
     ring,
     [box.west - margin, box.south - margin],

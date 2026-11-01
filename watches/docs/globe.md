@@ -262,7 +262,8 @@ takes 7 s, the others 3–3.6 s. The speed is the one at which the flight
 across the Atlantic was tuned by eye. Not an oversight: the house's ease,
 on van Wijk and Nuij's own pace, barely moved for the first and last
 second, and then swept the ground past at up to 1,750 px/s
-(`FLIGHT` in `webgl/flight.ts`; the production task's progress, phase 6).
+(`FLIGHT` in `webgl/flight.ts`; the production task's progress, "2026-11-01,
+the flights' pace").
 A step can still set its own time with `artMoveSeconds`.
 
 ## The globe in the deck

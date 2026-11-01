@@ -1,8 +1,8 @@
 # Part 2's opening slides: the plan for the talk
 
-**Status: planning, 2026-10-31. Decided the same day: option 2,** the
-globe in WebGL and the story in SVG (section 3). Nothing outside this
-directory changed.
+**Status: building, 2026-11-01: phases 1–6 are done, and phase 7 has
+begun (section 9).** Decided 2026-10-31: option 2, the globe in WebGL and
+the story in SVG (section 3).
 The request is in [instructions.md](instructions.md). The design comes from
 the mockup of the visual-language task
 ([`../2026-10-30-part-2-visual-language/`](../2026-10-30-part-2-visual-language/PLAN.md),
@@ -477,4 +477,15 @@ All made, 2026-10-31.
   at the 7 s chosen by eye; its time is now its own, so the slide's
   `artMoveSeconds: 7` went, and the other flights take 2.9–3.6 s, not
   1.5–1.9 s.
-
+- **2026-11-01, the general review:** two reviews of the branch (one in
+  this session, one by another agent) found, in order: every step of the
+  deck, Part 1 too, waited 0.4 s for a voyage (`voyageEndAt`); the globe's
+  figures had no picture box, so the punchline's screen showed; the gusts
+  did not pause; `slideState` had no fields for the story maps; a map that
+  a step left cut its voyage at once; the explorer offered the globe's
+  poses, which it cannot draw; no test resolved the globe's names; and a
+  few copied helpers and stale docs. All are fixed. `navcheck` on a build
+  now passes but for the flights' zoom out, which its rule (a number stays
+  between its ends) cannot allow. The house's browser checks now fail on a
+  logged error. Phase 7's crops and the gusts' pause are done; its
+  narration is not.

@@ -18,8 +18,17 @@ import type {
   Vec3,
   View,
 } from "../webgl/scene.ts";
+import { axesAcross, unit } from "../webgl/math.ts";
 import type { Matrix4 } from "../webgl/math.ts";
-import type { Box, Earth, Level, LonLat, Polygon, Scale } from "./earth.ts";
+import { inBox } from "./earth.ts";
+import type {
+  LonLatBox,
+  Earth,
+  Level,
+  LonLat,
+  Polygon,
+  Scale,
+} from "./earth.ts";
 
 /** World units: the globe's radius, and its centre, far from the watch's
  *  parts, so that neither is in the other's views. */
@@ -119,28 +128,13 @@ export function globeView(camera: GlobeCamera): View {
   };
 }
 
-function cross(a: Vec3, b: Vec3): Vec3 {
-  return [
-    a[1] * b[2] - a[2] * b[1],
-    a[2] * b[0] - a[0] * b[2],
-    a[0] * b[1] - a[1] * b[0],
-  ];
-}
-
-function unit(vector: Vec3): Vec3 {
-  const length = Math.hypot(...vector);
-  return [vector[0] / length, vector[1] / length, vector[2] / length];
-}
-
 /** The disc's matrix (4 x 4, column-major): its z axis along `toCamera`,
  *  about the globe's centre. The turn of the disc in its own plane does not
  *  matter. With an orthographic camera, the disc hides exactly the far
  *  half of the globe, and its rim is the true limb. */
 export function discMatrix(toCamera: Vec3): Matrix4 {
   const z = unit(toCamera);
-  const helper: Vec3 = Math.abs(z[2]) < 0.9 ? [0, 0, 1] : [1, 0, 0];
-  const x = unit(cross(helper, z));
-  const y = cross(z, x);
+  const [x, y] = axesAcross(z);
   return Float32Array.from([...x, 0, ...y, 0, ...z, 0, ...CENTRE, 1]);
 }
 
@@ -210,13 +204,7 @@ export function coastLines(polygons: readonly Polygon[]): CoastLine[] {
   return lines;
 }
 
-function inBox([lon, lat]: LonLat, box: Box): boolean {
-  return (
-    lon >= box.west && lon <= box.east && lat >= box.south && lat <= box.north
-  );
-}
-
-const inBoxes = (point: LonLat, boxes: readonly Box[]): boolean =>
+const inBoxes = (point: LonLat, boxes: readonly LonLatBox[]): boolean =>
   boxes.some((box) => inBox(point, box));
 
 const between = (from: LonLat, to: LonLat, along: number): LonLat => [
@@ -229,7 +217,7 @@ const between = (from: LonLat, to: LonLat, along: number): LonLat => [
  *  kept or left out by its middle. */
 export function coastIn(
   lines: readonly CoastLine[],
-  boxes: readonly Box[],
+  boxes: readonly LonLatBox[],
   inside: boolean,
 ): CoastLine[] {
   if (boxes.length === 0) return inside ? [] : [...lines];
@@ -283,7 +271,8 @@ export function coastIn(
 
 // ----------------------------------------------------------------- the land
 
-type Piece2 = LonLat[];
+/** A piece of the land, in degrees: convex, in one cell of the grid. */
+type LandPiece = LonLat[];
 
 /** Where the edge meets the line where coordinate `axis` is `value`: the
  *  same for either order of its ends, so two pieces that share the edge cut
@@ -308,9 +297,9 @@ function meet(
 }
 
 /** A convex piece cut by a line of the grid: the parts below and above. */
-function cut(piece: Piece2, axis: 0 | 1, value: number): Piece2[] {
-  const below: Piece2 = [];
-  const above: Piece2 = [];
+function cut(piece: LandPiece, axis: 0 | 1, value: number): LandPiece[] {
+  const below: LandPiece = [];
+  const above: LandPiece = [];
   piece.forEach((corner, index) => {
     const next = piece[(index + 1) % piece.length] ?? corner;
     if (corner[axis] <= value) below.push(corner);
@@ -331,9 +320,9 @@ function cut(piece: Piece2, axis: 0 | 1, value: number): Piece2[] {
  *  latitudes): convex pieces, each in one cell and on one side of each
  *  line. */
 function cutToGrid(
-  triangle: Piece2,
+  triangle: LandPiece,
   lines: readonly [readonly number[], readonly number[]],
-): Piece2[] {
+): LandPiece[] {
   let pieces = [triangle];
   for (const axis of [0, 1] as const) {
     const values = triangle.map((corner) => corner[axis]);
@@ -356,13 +345,13 @@ function cutToGrid(
  *  half is in front of the disc. */
 export function landPieces(
   polygons: readonly Polygon[],
-  boxes: readonly Box[],
-): Piece2[] {
+  boxes: readonly LonLatBox[],
+): LandPiece[] {
   const lines: [number[], number[]] = [
     boxes.flatMap((box) => [box.west, box.east]),
     boxes.flatMap((box) => [box.south, box.north]),
   ];
-  const pieces: Piece2[] = [];
+  const pieces: LandPiece[] = [];
   for (const polygon of polygons) {
     const flat: number[] = [];
     const holes: number[] = [];
@@ -386,7 +375,7 @@ export function landPieces(
   return pieces;
 }
 
-function middleOf(piece: Piece2): LonLat {
+function middleOf(piece: LandPiece): LonLat {
   const sum = piece.reduce<[number, number]>(
     (total, [lon, lat]) => [total[0] + lon, total[1] + lat],
     [0, 0],
@@ -395,7 +384,7 @@ function middleOf(piece: Piece2): LonLat {
 }
 
 /** The pieces on the sphere, as a fan of triangles each. */
-function triangles(pieces: readonly Piece2[]): Float32Array {
+function triangles(pieces: readonly LandPiece[]): Float32Array {
   const out: number[] = [];
   for (const piece of pieces) {
     const apex = toSphere(piece[0] ?? [0, 0]);
@@ -434,7 +423,7 @@ export function scaleRanges(
 
 function landMesh(
   name: string,
-  pieces: readonly Piece2[],
+  pieces: readonly LandPiece[],
   coast: readonly CoastLine[],
   scales: readonly [number, number],
 ): Mesh {

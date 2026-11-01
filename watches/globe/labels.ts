@@ -11,7 +11,7 @@ import type { LonLat, Polygon, Ring } from "./earth.ts";
 import { EARTH_RADIUS, globeView, onGlobe } from "./globe.ts";
 import type { GlobeCamera } from "./globe.ts";
 import { project } from "./maps.ts";
-import type { PlacedMap, StoryMap } from "./maps.ts";
+import type { StoryMap } from "./maps.ts";
 import type { Point, Story } from "./stories.ts";
 
 /** Land, with each ring's box, so that a test skips the rings far from a
@@ -137,12 +137,9 @@ export function globePicture(camera: GlobeCamera, land: Land): Picture {
   };
 }
 
-/** A story map's view as a picture, in the map's projection. */
-export function mapPicture(
-  placed: PlacedMap,
-  story: Story,
-  land: Land,
-): Picture {
+/** A story's map, its view as a picture, in the map's projection. */
+export function mapPicture(story: Story, land: Land): Picture {
+  const { placed } = story;
   return {
     view: placed.view,
     point: (place) => project(placed.map, place),
@@ -155,8 +152,8 @@ export function mapPicture(
 /** Slide px between the points of a box that `overSea` tests. */
 const SEA_STEP = 6;
 
-/** A box on the slide, in slide px. */
-export interface Box {
+/** The box of a label's words on the slide, in slide px. */
+export interface WordsBox {
   readonly left: number;
   readonly top: number;
   readonly width: number;
@@ -165,7 +162,7 @@ export interface Box {
 
 /** Whether only the sea is under `box` in `picture`: no point of it on the
  *  land, or off the globe (where the paper is under it). */
-export function overSea(picture: Picture, box: Box): boolean {
+export function overSea(picture: Picture, box: WordsBox): boolean {
   const columns = Math.max(1, Math.ceil(box.width / SEA_STEP));
   const rows = Math.max(1, Math.ceil(box.height / SEA_STEP));
   for (let column = 0; column <= columns; column++) {

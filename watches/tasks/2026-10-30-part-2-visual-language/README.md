@@ -69,3 +69,14 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   16). Longitude was a guess at sea for about three and a half of the age
   of sail's four centuries, not in 1741 alone; chronometers came only in
   its last decades.
+- 2026-11-01: a flight's time is no longer 1 s a unit of its length,
+  within 1–3.5 s (`PLAN.md`, sections 14 and 15). It is paced by what
+  the eye sees: a ramp of 1 s at each end, and between them one speed of
+  the ground at the slide's middle and the zoom at its edge
+  (`watches/docs/globe.md`, "The flight"). The flight from Juan Fernández
+  to the Channel still takes about 7 s.
+- 2026-11-01: a step back through a voyage is the step forward reversed:
+  the legs sail back, and the count ticks back with the dots
+  (`watches/docs/globe.md`, "The marks"). It no longer shows the click
+  before at once (`PLAN.md`, section 16), as the house's rule for a
+  story animation asks (`docs/navigation.md`).

@@ -1,8 +1,8 @@
 // What the screen shows now, for tools/navcheck.ts: the contract is in
 // ../docs/navigation.md, "Diagnostic: exhaustive navigation". `settled` must be the same however a
 // (slide, click) is reached; each `continuous` number must move without a cut;
-// `busy` is true while a story animation (the board's bend or curl) or a
-// camera move still runs, so the check waits for it; and while a press would
+// `busy` is true while a story animation (the board's bend or curl, a story
+// map's voyage) or a camera move still runs, so the check waits for it; and while a press would
 // jump (`pressJumps`: ../docs/navigation.md, "A press during a move"), so that
 // a check that waits for it presses a step.
 
@@ -114,6 +114,34 @@ export function slideState(
     settled["time scale"] = Number(timeScale.dataset["speedUp"]);
     continuous["time scale opacity"] = seen * shownOpacity(timeScale);
     if (timeScale.dataset["busy"] === "true") busy = true;
+  }
+  // the story maps over the globe (components/StoryMaps.vue): each map's
+  // fade, and, while it shows, its marks' fades and its voyage. A map that
+  // does not show keeps its last marks: they are not on the screen
+  const maps = document.querySelectorAll<SVGGElement>(
+    ".watch-layer .story-maps > g[data-map]",
+  );
+  for (const map of maps) {
+    const name = map.dataset["map"] ?? "";
+    const opacity = Number(map.getAttribute("opacity"));
+    continuous[`${name} map`] = seen * opacity;
+    if (opacity === 0) continue;
+    const marks = map.querySelectorAll<SVGGElement>(".mark[data-mark]");
+    for (const mark of marks) {
+      const markName = mark.dataset["mark"] ?? "";
+      continuous[`${name}: ${markName}`] =
+        seen * opacity * Number(mark.getAttribute("opacity") ?? 0);
+    }
+    settled[`${name} marks`] = [...marks]
+      .filter((mark) => mark.getAttribute("visibility") === "visible")
+      .map((mark) => mark.dataset["mark"])
+      .join(", ");
+    settled[`${name} legs`] = Number(map.dataset["legs"]);
+    settled[`${name} ship`] = map.dataset["ship"] ?? "";
+    const count = map.querySelector(
+      '.mark[visibility="visible"] .count-number',
+    )?.textContent;
+    if (count) settled[`${name} count`] = count;
   }
   for (const host of boards) {
     const phase = host.dataset["phase"];

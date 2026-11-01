@@ -12,17 +12,11 @@
 // voyage's tracks, its dots and its ship, and the other marks, as
 // `voyageAt` gives them for the step at the frame's time. A still shows its
 // step settled, and its wind stands.
-import {
-  h,
-  onBeforeUnmount,
-  onMounted,
-  useId,
-  useTemplateRef,
-  watch as onChange,
-} from "vue";
+import { h, onBeforeUnmount, onMounted, useId, watch as onChange } from "vue";
 import type { FunctionalComponent } from "vue";
 import { MARGIN, mapOnSlide } from "../globe/maps.ts";
 import { SHIP_FLAG, SHIP_PARTS, SHIP_SCALE } from "../globe/stories.ts";
+import type { Story } from "../globe/stories.ts";
 import { dayDots, voyageAt } from "../globe/voyage.ts";
 import type { VoyageStep } from "../globe/voyage.ts";
 import type { CameraPose } from "../webgl/scene.ts";
@@ -42,7 +36,13 @@ const props = defineProps<{
 }>();
 
 const [width, height] = ART.scene.slide;
-const groups = useTemplateRef<SVGGElement[]>("groups");
+/** Each story's group: its map and its marks. */
+const groups = new Map<Story, SVGGElement>();
+/** A group's template ref: kept while it is mounted. */
+function keep(story: Story, element: unknown): void {
+  if (element instanceof SVGGElement) groups.set(story, element);
+  else groups.delete(story);
+}
 /** The masks' ids: a printed deck holds a still's maps on every page. */
 const masks = useId();
 const point = ([x, y]: readonly [number, number]): string =>
@@ -68,21 +68,20 @@ function fade(element: Element | undefined, opacity: number): void {
   element?.setAttribute("visibility", opacity > 0 ? "visible" : "hidden");
 }
 
-/** Draw the marks of the story at `index`, in `group`, at `now`. */
-function drawMarks(group: SVGGElement, index: number, now: number): void {
-  const story = GLOBE.stories[index];
-  const voyage = story && voyageAt(story, props.voyage, now);
+/** Draw the marks of `story`, in its `group`, at `now`. */
+function drawMarks(group: SVGGElement, story: Story, now: number): void {
+  const voyage = voyageAt(story, props.voyage, now);
   const marks = group.querySelectorAll(":scope > .marks > .mark");
   const tracks = group.querySelectorAll(".track");
   const dots = group.querySelectorAll(".day-dots");
   const ship = group.querySelector(".ship");
-  story?.marks.forEach((mark, place) => {
+  story.marks.forEach((mark, place) => {
     fade(marks[place], voyage?.marks.get(mark) ?? 0);
     const number = marks[place]?.querySelector(".count-number");
     if (mark.count && number)
       number.textContent = String(mark.count.perDay * (voyage?.days ?? 0));
   });
-  story?.legs.forEach((_, leg) => {
+  story.legs.forEach((_, leg) => {
     const share = voyage?.tracks[leg];
     fade(tracks[leg], share == null ? 0 : 1);
     tracks[leg]?.setAttribute("stroke-dashoffset", String(1 - (share ?? 0)));
@@ -97,20 +96,27 @@ function drawMarks(group: SVGGElement, index: number, now: number): void {
     ship?.setAttribute("transform", shipAt(at.at));
     ship?.classList.toggle("west", at.heading === "west");
   }
+  // for watch/slide-state.ts: what the voyage shows, however it was reached
+  group.dataset["legs"] = String(
+    voyage?.tracks.filter((share) => share !== null).length ?? 0,
+  );
+  group.dataset["ship"] = at
+    ? `${point([Math.round(at.at[0]), Math.round(at.at[1])])} ${at.heading}`
+    : "";
 }
 
 /** Place each map for a frame drawn at `pose`, and its marks at `now`. */
 function draw(pose: CameraPose, now: number): void {
-  GLOBE.maps.forEach((placed, index) => {
-    const group = groups.value?.[index];
-    if (!group) return;
-    const { matrix, opacity } = mapOnSlide(placed, pose, ART.scene.slide);
+  for (const story of GLOBE.stories) {
+    const group = groups.get(story);
+    if (!group) continue;
+    const { matrix, opacity } = mapOnSlide(story.placed, pose, ART.scene.slide);
     fade(group, opacity);
     if (opacity > 0) {
       group.setAttribute("transform", `matrix(${matrix.join(" ")})`);
-      drawMarks(group, index, now);
+      drawMarks(group, story, now);
     }
-  });
+  }
 }
 
 let leave: (() => void) | undefined;
@@ -156,27 +162,29 @@ onBeforeUnmount(() => leave?.());
       />
     </clipPath>
     <g
-      v-for="(placed, index) in GLOBE.maps"
-      ref="groups"
-      :key="placed.map.name"
+      v-for="(story, index) in GLOBE.stories"
+      :key="story.placed.map.name"
+      :ref="(element) => keep(story, element)"
+      :data-map="story.placed.map.name"
       opacity="0"
       visibility="hidden"
     >
       <mask :id="`${masks}-sea-${index}`">
         <rect fill="white" :width="width" :height="height" />
-        <path fill="black" fill-rule="evenodd" :d="placed.land.land" />
+        <path fill="black" fill-rule="evenodd" :d="story.placed.land.land" />
       </mask>
       <rect class="story-sea" :width="width" :height="height" />
       <path
         class="story-land"
-        :d="placed.land.land"
+        :d="story.placed.land.land"
         :clip-path="`url(#${masks}-cut)`"
       />
       <g class="marks">
         <g
-          v-for="mark in GLOBE.stories[index]?.marks"
+          v-for="mark in story.marks"
           :key="mark.name"
           class="mark"
+          :data-mark="mark.name"
           :mask="
             mark.name === 'wind' ? `url(#${masks}-sea-${index})` : undefined
           "
@@ -213,7 +221,7 @@ onBeforeUnmount(() => leave?.());
           />
         </g>
       </g>
-      <template v-for="leg in GLOBE.stories[index]?.legs" :key="leg.name">
+      <template v-for="leg in story.legs" :key="leg.name">
         <path
           class="track"
           :d="`M${leg.route.map(point).join('L')}`"

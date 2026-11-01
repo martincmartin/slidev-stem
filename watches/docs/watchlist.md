@@ -7,15 +7,6 @@ lesson yet. The `learn-from-corrections` skill says what an entry holds, and
 when to read and change this list.
 **Read before** you sort a correction in this talk, and before you tag it.
 
-- **2026-11-01: a step back through a story map's voyage cut at once.**
-  The first cut of `globe/voyage.ts` showed a step back's target at once,
-  as the mockup did, where `stem/docs/navigation.md` says a story animation
-  plays backward. Why it was done that way: the marks were ported from the
-  mockup's code, and the doc was not re-read before the click was added,
-  though `AGENTS.md` says to read it first. Why it was not caught sooner:
-  the plan said so (section 1), and the commit's own review found it; no
-  check steps back through a voyage. Commit d374e80, the production task's
-  progress (phase 5, the marks).
 - **2026-10-25: a step in a paused article figure changed the text, not the
   picture.** The figure's state came from a clock that ran only while the
   figure played. Why it was done that way: the rule "the settled screen
@@ -37,7 +28,8 @@ when to read and change this list.
   nothing failed. Now `static-page.test.ts` covers this case, and
   `staticPage` fails on an HTML parse error (parse5). If the static
   page breaks again, make the prerender open the page that it wrote, and
-  fail if a figure does not draw.
+  fail if a figure does not draw. Since 2026-11-01, the house's browser
+  checks fail on a logged error too (`stem/tools/browser.ts`).
 - **2026-10-31: a new helper copied one that `webgl/` already had,
   three times in one build.** `Pose` copied the timeline's `CameraPose`,
   `slidePoint` the callouts' `onSlide` (both merged in 7090d1d and 4135ae6),
@@ -48,4 +40,9 @@ when to read and change this list.
   computation. Why it was not caught sooner: no check finds a computation
   written twice; the house rule ("Keep each fact and each computation in
   one place") is read, but it does not say to search before writing. A
-  self-review of the diff found each one.
+  self-review of the diff found each one. Again on 2026-11-01, the general
+  review of Part 2 found three more: `inBox` (`globe/globe.ts` and
+  `globe/maps.ts`), the axes across the camera's direction
+  (`discMatrix` and `ballPoint`), and `pivotOnSlide` in
+  `webgl/flight.test.ts`. A lesson for any project is proposed: search for
+  the computation before you write a helper.

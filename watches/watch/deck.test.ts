@@ -12,8 +12,11 @@ import {
   moveWithBefore,
   stageState,
   stepMove,
+  voyageState,
   watchState,
 } from "./state.ts";
+import { anchorPoint } from "../globe/labels.ts";
+import { voyageTarget } from "../globe/voyage.ts";
 import type { StepMoveWith, WatchState } from "./state.ts";
 import type { Move } from "./navigation.ts";
 import type { Mesh, Piece } from "../webgl/scene.ts";
@@ -54,6 +57,49 @@ test("every slide's pieces and view exist, at every click", () => {
     }
   }
   assert.ok(shown > 0, "no slide shows the watch");
+});
+
+/** A map label's `:on`, `[lon, lat]` in degrees. */
+function lonLatOf(text: string): readonly [number, number] {
+  const value: unknown = JSON.parse(text);
+  if (Array.isArray(value) && value.length === 2) {
+    const [lon, lat] = value.map((each: unknown) => each);
+    if (typeof lon === "number" && typeof lat === "number") return [lon, lat];
+  }
+  return assert.fail(`:on="${text}" is not [lon, lat]`);
+}
+
+test("every slide's legs, marks and map labels name the story of its view", () => {
+  let named = 0;
+  for (const { title, frontmatter, content } of slides) {
+    const clicks = Number(frontmatter["clicks"] ?? 0);
+    for (let click = 0; click <= clicks; click++) {
+      const state = watchState(frontmatter, click);
+      if (!state) continue;
+      const { view } = stageState(watch, state);
+      // throws for a name that the view's story does not have
+      if (voyageTarget(globe.stories, view, voyageState(frontmatter, click)))
+        named++;
+    }
+    // each label's anchor, as MapLabel.vue finds it
+    for (const [tag] of content.matchAll(/<MapLabel\b[^>]*>/g)) {
+      const attribute = (name: string): string | undefined =>
+        new RegExp(`\\s${name}="([^"]*)"`).exec(tag)?.[1];
+      const viewName = attribute("view");
+      const picture = globe.pictures.find(
+        (each) => each.view.name === viewName,
+      );
+      assert.ok(picture, `${title}: ${tag}`);
+      const on = attribute(":on");
+      anchorPoint(picture, {
+        on: on === undefined ? undefined : lonLatOf(on),
+        mark: attribute("mark"),
+        leg: attribute("leg"),
+      });
+      named++;
+    }
+  }
+  assert.ok(named > 0, "no slide names a story's legs, marks or labels");
 });
 
 test("no slide spins the train while the pallet fork shows: the escape wheel would turn through its stones", () => {

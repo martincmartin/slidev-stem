@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { FLIGHT, ballPoint, flight, pacedShare } from "./flight.ts";
-import { slidePoint, towardCamera } from "./renderer.ts";
+import { pivotOnSlide, slidePoint, towardCamera } from "./renderer.ts";
 import type { CameraPose, Mesh, Vec3, View } from "./scene.ts";
 import { TOGETHER_SECONDS, Timeline } from "./timeline.ts";
 import type { StageState } from "./timeline.ts";
@@ -31,13 +31,6 @@ function pose(
 const near = (actual: number, wanted: number, tolerance = 1e-9): boolean =>
   Math.abs(actual - wanted) <= tolerance;
 
-function onSlide(view: View): [number, number] {
-  return [
-    view.shift[0] + view.scale * view.pivot[0],
-    view.shift[1] + view.scale * view.pivot[1],
-  ];
-}
-
 const NOIR = pose(-76, -55, 8.6);
 const ANSON = pose(-78.83, -33.64, 8.6, [230, 300]);
 const CHANNEL = pose(-2.5, 49.7, 14);
@@ -59,8 +52,8 @@ test("a flight starts and ends at its poses", () => {
         near(camera.view.scale, end.view.scale, 1e-6),
         `scale at ${String(share)}`,
       );
-      const [x, y] = onSlide(camera.view);
-      const [wantedX, wantedY] = onSlide(end.view);
+      const [x, y] = pivotOnSlide(camera.view);
+      const [wantedX, wantedY] = pivotOnSlide(end.view);
       assert.ok(near(x, wantedX, 1e-6) && near(y, wantedY, 1e-6));
       assert.ok(near(camera.tilt, end.tilt, 1e-6), `tilt at ${String(share)}`);
       assert.ok(near(camera.turn, end.turn, 1e-6), `turn at ${String(share)}`);

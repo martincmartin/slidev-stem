@@ -23,6 +23,29 @@ export function checkAffine(matrix: Matrix4, what: string): void {
   );
 }
 
+export function cross(a: Vec3, b: Vec3): Vec3 {
+  return [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0],
+  ];
+}
+
+export function unit(vector: Vec3): Vec3 {
+  const length = Math.hypot(...vector);
+  return [vector[0] / length, vector[1] / length, vector[2] / length];
+}
+
+/** Two unit axes across the direction `normal`: at right angles to it and
+ *  to each other, x and then y = normal x x. Their turn about `normal` is
+ *  any: for a plane through a point, such as a disc that faces the camera. */
+export function axesAcross(normal: Vec3): [Vec3, Vec3] {
+  const z = unit(normal);
+  const helper: Vec3 = Math.abs(z[2]) < 0.9 ? [0, 0, 1] : [1, 0, 0];
+  const x = unit(cross(helper, z));
+  return [x, cross(z, x)];
+}
+
 /** The number `fraction` of the way from `first` to `second`. */
 export function mix(first: number, second: number, fraction: number): number {
   return first + (second - first) * fraction;

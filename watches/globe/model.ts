@@ -10,7 +10,6 @@ import { parseEarth } from "./earth.ts";
 import type { Polygon } from "./earth.ts";
 import { DISC_GROUP, discMatrix, globeMeshes } from "./globe.ts";
 import { STORY_MAPS, placeMap } from "./maps.ts";
-import type { PlacedMap } from "./maps.ts";
 import { globePicture, landOf, mapPicture } from "./labels.ts";
 import type { Picture } from "./labels.ts";
 import { makeStories } from "./stories.ts";
@@ -32,9 +31,8 @@ export interface Globe {
   readonly groups: readonly Group[];
   readonly views: readonly View[];
   readonly piece: Piece;
-  /** The story maps, placed on the globe: drawn over it in SVG. */
-  readonly maps: readonly PlacedMap[];
-  /** The story of each map, in the same order: the marks over it. */
+  /** The stories, each on its story map (`Story.placed`), placed on the
+   *  globe: drawn over it in SVG, with the story's marks. */
   readonly stories: readonly Story[];
   /** Each view as a picture: where its labels go, and what is under them. */
   readonly pictures: readonly Picture[];
@@ -47,18 +45,13 @@ export function makeGlobe(slide: readonly [number, number]): Globe {
   const stories = makeStories(maps, slide);
   const pictures = [
     ...globeCameras(slide).map((camera) => globePicture(camera, GLOBE_LAND)),
-    ...maps.map((placed, index) => {
-      const story = stories[index];
-      if (!story) throw new Error(`no story for ${placed.map.name}`);
-      return mapPicture(placed, story, MAP_LAND);
-    }),
+    ...stories.map((story) => mapPicture(story, MAP_LAND)),
   ];
   return {
     meshes,
     groups: [DISC_GROUP],
     views: pictures.map(({ view }) => view),
     piece,
-    maps,
     stories,
     pictures,
   };

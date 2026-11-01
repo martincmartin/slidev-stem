@@ -9,11 +9,18 @@ export type Ring = readonly LonLat[];
 export type Polygon = readonly Ring[];
 
 /** A box of longitude and latitude, in degrees. */
-export interface Box {
+export interface LonLatBox {
   readonly west: number;
   readonly east: number;
   readonly south: number;
   readonly north: number;
+}
+
+/** Whether a place is in `box`, its edges too. */
+export function inBox([lon, lat]: LonLat, box: LonLatBox): boolean {
+  return (
+    lon >= box.west && lon <= box.east && lat >= box.south && lat <= box.north
+  );
 }
 
 /** Natural Earth's scales, from the coarsest. */
@@ -24,7 +31,7 @@ export type Scale = (typeof SCALES)[number];
  *  box and a margin around it. With none, it has the whole Earth. */
 export interface Level {
   readonly scale: Scale;
-  readonly boxes: readonly Box[];
+  readonly boxes: readonly LonLatBox[];
   readonly polygons: readonly Polygon[];
 }
 
@@ -48,7 +55,7 @@ function finite(value: unknown, what: string): number {
   return value;
 }
 
-function boxOf(value: unknown, what: string): Box {
+function boxOf(value: unknown, what: string): LonLatBox {
   if (!isRecord(value)) return fail(`${what} is not a box`);
   const box = {
     west: finite(value["west"], `${what}.west`),

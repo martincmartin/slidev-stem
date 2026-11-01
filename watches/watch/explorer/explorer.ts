@@ -2,7 +2,8 @@
 // the keys and the mouse move, tilt, turn and zoom; groups of pieces on and off (the
 // case, the chapter ring, the strap, ...); and the mechanism at the deck's
 // time-lapse speeds, run by the deck's own model (`WatchModel`). Each slide's
-// pose, at each click, is a choice too (deck-poses.ts, from slides.md). It
+// pose of the watch, at each click, is a choice too (deck-poses.ts, from
+// slides.md; not the globe's, which this page does not draw). It
 // shows the view that it draws as numbers to copy, and keeps its
 // state in the address, so a link opens the same picture. `pnpm explore`
 // serves it (docs/watch.md, "The explorer").
@@ -34,6 +35,7 @@ import {
 import type { FitBand } from "../generate.ts";
 import { Motion, WatchModel } from "../model.ts";
 import { stageState } from "../state.ts";
+import type { WatchState } from "../state.ts";
 import { deckPoses } from "./deck-poses.ts";
 import type { DeckPose } from "./deck-poses.ts";
 import {
@@ -342,7 +344,23 @@ function fitted(band: FitBand, angles: CameraAngles): Camera {
 // the deck's time-lapse (watch/lapse.ts): a change of speed eases as it does
 // in the deck. The page's clock stops while it is paused.
 
-const poses = deckPoses();
+/** Whether the page's scene, the watch alone, has the view and each piece
+ *  that `state` names. The globe's slides (Part 2) name the globe and its
+ *  views: their cameras come from their story maps (docs/globe.md), not
+ *  from this page. */
+function ofTheWatch(state: WatchState): boolean {
+  const named = state.show === "all" ? [] : state.show;
+  return (
+    named.every(
+      (name) =>
+        name === "all" || scene.pieces.some((piece) => piece.name === name),
+    ) &&
+    (state.view === null ||
+      scene.views.some((view) => view.name === state.view))
+  );
+}
+
+const poses = deckPoses().filter(({ state }) => ofTheWatch(state));
 
 /** ms: the page's clock, which stands still while the page is paused. */
 let clockNow = 0;

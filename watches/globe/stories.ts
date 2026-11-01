@@ -1,6 +1,6 @@
 // The marks of Part 2's three stories, on their story maps (docs/globe.md,
 // "The marks"): where each place is, the voyage's legs, and the marks that
-// a click can show. A slide names them in its frontmatter (`globeVoyage`,
+// a click can show. A slide names them in its frontmatter (`globeLeg`,
 // `globeMarks`); this file says where they are. Places come from the
 // sources, in degrees, and the map projects them; a few are slide px off a
 // place, so that a ship does not hide what it is near. The facts are from

@@ -25,7 +25,7 @@ import {
   useTemplateRef,
 } from "vue";
 import { anchorPoint, overSea } from "../globe/labels.ts";
-import type { Box } from "../globe/labels.ts";
+import type { WordsBox } from "../globe/labels.ts";
 import { LEADER_GAP, straightStart, toward } from "../watch/callouts.ts";
 import { GLOBE } from "../watch/instance.ts";
 
@@ -71,7 +71,7 @@ const anchor = computed(() =>
 const text = useTemplateRef<HTMLDivElement>("text");
 /** The words' size in px, once laid out. */
 const size = ref<[number, number]>();
-const box = computed((): Box | undefined => {
+const box = computed((): WordsBox | undefined => {
   if (!size.value) return undefined;
   const [width, height] = size.value;
   const [x, y] = [

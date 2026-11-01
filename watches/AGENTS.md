@@ -10,6 +10,8 @@ Before you…
 - add or change a slide: `docs/slide-patterns.md`.
 - change the watch (`watch/`, `art/`, its frontmatter, `global-bottom.vue`) or
   the diving board: `docs/watch.md`, and `../docs/webgl.md` for `webgl/`.
+- add a layer that `global-bottom.vue` draws, or a kind of state to one:
+  `docs/watch.md`, "A new layer".
 - change the globe, a story map or its marks (`globe/`, `watch/art.ts`,
   `art/earth-data.ts`, `art/fetch-earth.sh`, `components/StoryMaps.vue`,
   `components/MapLabel.vue`, the globe's frontmatter, `globeLeg`,

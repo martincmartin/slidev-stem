@@ -1,7 +1,7 @@
 # The live watch and the diving board
 
 **Covers:** this talk's live art: the skeleton watch in WebGL (its files, its
-design, how a slide shows it: pieces, views and moves, the frontmatter keys, the explorer, line widths when zooming, its
+design, what each new layer needs, how a slide shows it: pieces, views and moves, the frontmatter keys, the explorer, line widths when zooming, its
 measured budgets) and the diving board on the Hairspring slide.
 **Read before** you change `watch/`, `art/`, the watch's frontmatter,
 `global-bottom.vue`, `slide-bottom.vue`, the diving board, or the slides that show
@@ -77,6 +77,34 @@ ruler that the diving board replaced),
 | `components/TickTock.vue`                                   | the words "tick" and "tock" each time a tooth lands on a pallet stone, in the watch's layer; where they start (`stoneStrikes` in `watch/callouts.ts`)                                                                             |
 | `components/TimeScale.vue`                                  | the time scale: the time-lapse's speed-up, live, in the watch's layer, as "1440×" (`watchTimeScale`; [The Recap slide](#the-recap-slide))                                                                                         |
 | `types/`                                                    | small `.d.ts` files, mapped by `tsconfig.json` `paths` to `@slidev/client` and the internals that the article uses. `vue-tsc` would otherwise check Slidev's own source, which fails our strict settings.                         |
+
+## A new layer
+
+A layer is a part of the picture that the live layer (`global-bottom.vue`)
+draws with the watch, with a state at each click: the diving board, "tick"
+and "tock", the time scale, the story maps. Each part of the deck below
+reads every layer. When you add a layer, or a new kind of state to one, go
+through each of them in the same change:
+
+- **The press** (`global-bottom.vue`): `showEndDelay` and `pressJumps` wait
+  for the layer's change, and only for a change. A step that changes
+  nothing, and a jump, end at once.
+- **A step back** plays the step forward reversed, and a jump shows the
+  target at once ([`stem/docs/navigation.md`](../../docs/navigation.md)).
+- **`slideState`** (`watch/slide-state.ts`): the layer's `settled` and
+  `continuous` fields, so that `navcheck` sees it
+  ([`stem/docs/navigation.md`](../../docs/navigation.md)).
+- **An article's figure** (`components/FigureLayer.vue`,
+  [article.md](article.md)): the layer on the figure's time (`figure.now`)
+  and in `busyUntil`; in `still`, so that a figure where nothing moves has
+  no pause button; a pause that stops what loops; and the figure's crop
+  (`pictureBox` in `watch/article.ts`).
+- **A still** (`slide-bottom.vue`): the layer at its click, settled, for
+  print and the overview.
+- **The deck's names**: a test that resolves each name that a slide gives
+  the layer, at every click (`watch/deck.test.ts`).
+- **The explorer** (`watch/explorer/`) offers only the poses that its scene
+  draws.
 
 ## Changing the design
 
@@ -1498,7 +1526,10 @@ write its frontmatter or a named view.
 - **"Pose" shows a slide at a click as the deck does**: its camera, its
   pieces, the pieces that it dims, and its motion (`deck-poses.ts` reads
   `slides.md` and the pages that it imports, in the browser, with Slidev's
-  parser). "Restart" runs the pose's motion again from its start. A change
+  parser). It offers the watch's poses only: the page draws the watch
+  alone, and the globe's cameras come from its story maps
+  ([globe.md](globe.md)). "Restart" runs the pose's motion again from its
+  start. A change
   of the speed-up ends the pose's motion, and a change of the pieces ends
   its dim; a change of the camera ends neither.
 - **The page shows the view that it draws**: the tilt, the turn, and the

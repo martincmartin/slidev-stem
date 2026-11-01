@@ -6,7 +6,7 @@ import { checkScene } from "../webgl/scene.ts";
 import type { Mesh, Vec3 } from "../webgl/scene.ts";
 import earthFile from "./earth.json" with { type: "json" };
 import { parseEarth } from "./earth.ts";
-import type { Box, LonLat } from "./earth.ts";
+import type { LonLatBox, LonLat } from "./earth.ts";
 import {
   CENTRE,
   DISC_GROUP,
@@ -157,7 +157,7 @@ test("the coast leaves out the cuts at 180 degrees and along the South Pole", ()
 });
 
 test("a coast cut at a box keeps each part on its side, and the whole line", () => {
-  const box: Box = { west: 0, east: 10, south: 0, north: 10 };
+  const box: LonLatBox = { west: 0, east: 10, south: 0, north: 10 };
   const square: LonLat[] = [
     [-2, 5],
     [5, -2],

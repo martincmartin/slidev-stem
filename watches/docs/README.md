@@ -9,8 +9,9 @@ the two lists in step.
 - [slide-patterns.md](slide-patterns.md): how a slide is built: the theme on a
   slide, the timekeeper card, clicks, punchlines, labels on a map, speaker
   notes, what fits, borrowed assets
-- [watch.md](watch.md): the live watch (files, design, rim screws, frontmatter
-  keys, the explorer, zoom line widths, budgets) and the diving board
+- [watch.md](watch.md): the live watch (files, a new layer, design, rim
+  screws, frontmatter keys, the explorer, zoom line widths, budgets) and the
+  diving board
 - [globe.md](globe.md): Part 2's globe and story maps: the land data, the
   globe's meshes and levels, its views, the story maps' marks and their
   keys, the labels on them, the flight, and how it joins the watch's scene
