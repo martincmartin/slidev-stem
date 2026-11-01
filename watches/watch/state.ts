@@ -60,9 +60,6 @@
 //     that stay on the screen while the camera moves, and go after it
 //   artLinger: ordered outgoing groups; each pauses, then fades out,
 //     before the camera moves
-//   artMoveSeconds: seconds of the camera's move on the step into that
-//     click, when it moves together or flies, in place of its own; in
-//     either direction, as artMove (`stepMove`)
 //   watchWind: true: wind the running spring at once at this click, before
 //     the camera moves; only with watchUnwind
 // On the slide only, about the step into it:
@@ -74,7 +71,9 @@
 //   artClicks: for a click, the keys that change from that click on
 //     ({1: {art: [*gears, pallet fork], watchSpin: false}})
 
-import type { VoyageNames } from "../globe/voyage.ts";
+import { voyageTarget } from "../globe/voyage.ts";
+import type { VoyageNames, VoyageTarget } from "../globe/voyage.ts";
+import type { Story } from "../globe/stories.ts";
 import type { Mesh, Piece, View } from "../webgl/scene.ts";
 import { CAMERA_MOVES } from "../webgl/timeline.ts";
 import type { CameraMove, MoveWith, StageState } from "../webgl/timeline.ts";
@@ -155,8 +154,6 @@ export interface WatchState {
   wind: boolean;
   /** How the camera goes to this click. */
   move: CameraMove;
-  /** Seconds of the move, or `null`: its own. */
-  moveSeconds: number | null;
   /** Outgoing groups that pause before their fade, on this step only. */
   linger?: readonly {
     readonly pieces: readonly string[];
@@ -239,14 +236,6 @@ function booleanOf(name: string, value: unknown): boolean {
 function lapseOf(name: string, value: unknown): number {
   if (typeof value !== "number" || !(value >= 1) || !Number.isFinite(value)) {
     return wrong(name, value, "a speed-up of 1 or more");
-  }
-  return value;
-}
-
-/** Seconds: more than 0. */
-function secondsOf(name: string, value: unknown): number {
-  if (typeof value !== "number" || !(value > 0) || !Number.isFinite(value)) {
-    return wrong(name, value, "a number of seconds, more than 0");
   }
   return value;
 }
@@ -366,7 +355,6 @@ const STEP_KEYS = {
   artCut: namesOf,
   artGoLater: namesOf,
   artLinger: lingerGroupsOf,
-  artMoveSeconds: secondsOf,
   watchWind: booleanOf,
 } as const;
 type StepKey = keyof typeof STEP_KEYS;
@@ -546,13 +534,6 @@ export function watchState(
     return wrong("artTurn", now.artTurn, "set only with a named view");
   }
   const move = now.artMove ?? "ordered";
-  if (now.artMoveSeconds !== undefined && move === "ordered") {
-    return wrong(
-      "artMoveSeconds",
-      now.artMoveSeconds,
-      "set only with artMove: together or fly",
-    );
-  }
   const mainspring = now.watchMainspring ?? null;
   if (mainspring !== null && now.watchAtRest !== undefined) {
     return wrong(
@@ -620,11 +601,10 @@ export function watchState(
     unwind,
     wind: now.watchWind ?? false,
     move,
-    moveSeconds: now.artMoveSeconds ?? null,
   };
 }
 
-/** The camera's move (`artMove`, `artMoveSeconds`) on a step from `from`
+/** The camera's move (`artMove`) on a step from `from`
  *  to `to`: the later one's, so that a step back is the step forward,
  *  reversed (../docs/navigation.md). `move` is the step's (`moveOf`);
  *  `from` is `undefined` if it shows no watch. */
@@ -632,9 +612,9 @@ export function stepMove(
   from: WatchState | undefined,
   to: WatchState,
   move: Move,
-): Pick<WatchState, "move" | "moveSeconds"> {
+): CameraMove {
   const later = move === "back" && from ? from : to;
-  return { move: later.move, moveSeconds: later.moveSeconds };
+  return later.move;
 }
 
 /** Whether the words "tick" and "tock" show at each strike, at `clicks`
@@ -654,6 +634,19 @@ export function voyageState(
 ): VoyageNames {
   const { globeLeg, globeMarks } = atClick(frontmatter, clicks);
   return { leg: globeLeg ?? null, marks: globeMarks ?? [] };
+}
+
+/** Resolve the voyage names against the art state's view. No art means
+ *  no voyage. The caller supplies its own state and frontmatter names. */
+export function voyageFor(
+  watch: Watch,
+  stories: readonly Story[],
+  state: WatchState | undefined,
+  names: VoyageNames,
+): VoyageTarget | null {
+  return state
+    ? voyageTarget(stories, stageState(watch, state).view, names)
+    : null;
 }
 
 /** Whether the time scale shows, at `clicks` (`watchTimeScale`). Throws as
@@ -718,7 +711,6 @@ export function stageState(
     tilt: state.tilt ?? view.angles?.tilt ?? 0,
     turn: state.turn ?? view.angles?.turn ?? 0,
     move: state.move,
-    ...(state.moveSeconds === null ? {} : { moveSeconds: state.moveSeconds }),
     shown: meshesOf(piecesOf(state.show)),
     flash: state.flash ? meshesOf(piecesNamed("artFlash", state.flash)) : null,
     flashAfterMove: state.flashAfterMove,

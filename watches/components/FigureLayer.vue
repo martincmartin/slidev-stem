@@ -62,7 +62,7 @@ import {
   movesByItself,
   settled,
   voyageEndAt,
-  voyageTarget,
+  nextVoyage,
 } from "../globe/voyage.ts";
 import type { VoyageStep } from "../globe/voyage.ts";
 import TickTock from "./TickTock.vue";
@@ -93,6 +93,7 @@ import {
   tickTockState,
   timeScaleState,
   voyageState,
+  voyageFor,
 } from "../watch/state.ts";
 import type { WatchState } from "../watch/state.ts";
 
@@ -291,23 +292,25 @@ function show(to: number, atOnce: boolean): void {
     stageState(ART, {
       ...now,
       flash,
-      ...stepMove(shown?.state, now, move),
+      move: stepMove(shown?.state, now, move),
     }),
     modelState(now),
     move === "jump",
   );
   view.marked = meshesOf(figureMarks(ART, frontmatter.value, to));
   shown = { clicks: to, state: now };
-  const target = voyageTarget(
+  const target = voyageFor(
+    ART,
     GLOBE.stories,
-    stageState(ART, now).view,
+    now,
     voyageState(frontmatter.value, to),
   );
   const at = figure.now();
-  voyage.value =
-    move === "jump"
-      ? { ...settled(target), at, start: at }
-      : { from: voyage.value.to, to: target, at, start: view.viewEndAt() };
+  voyage.value = nextVoyage(voyage.value, target, {
+    at,
+    cameraEnd: view.viewEndAt(),
+    jump: move === "jump",
+  });
   setEnd("watch", Math.max(view.endAt(), voyageEndAt(voyage.value)));
 }
 

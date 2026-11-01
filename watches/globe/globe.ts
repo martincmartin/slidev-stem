@@ -34,14 +34,13 @@ import type {
  *  parts, so that neither is in the other's views. */
 export const RADIUS = 500;
 export const CENTRE: Vec3 = [800, 5000, 0];
-/** km: the Earth's radius, and the length of a degree of a great circle. */
+/** km: the Earth's radius. */
 export const EARTH_RADIUS = 6371;
-export const KM_PER_DEGREE = (Math.PI * EARTH_RADIUS) / 180;
 
 /** The km to a slide px that each of Natural Earth's scales is made for, at
  *  0.26 mm to a px. A view draws the scale whose km to a px is nearest its
  *  own, on a log scale. */
-export const KM_PER_PX: Readonly<Record<Scale, number>> = {
+const KM_PER_PX: Readonly<Record<Scale, number>> = {
   "110m": 29,
   "50m": 13,
   "10m": 2.6,
@@ -66,7 +65,7 @@ const LAND: Colour = { ink: INKS.paper, opacity: 1 };
 export const DISC_GROUP: Group = { name: "the globe's disc", parent: null };
 
 /** The view's scale (slide px for a world unit) at `kmPerPx` km to a px. */
-export function scaleOf(kmPerPx: number): number {
+function scaleOf(kmPerPx: number): number {
   return EARTH_RADIUS / RADIUS / kmPerPx;
 }
 

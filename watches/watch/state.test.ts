@@ -9,7 +9,6 @@ import {
   MOVE_WITH_COMMON,
   moveWithBefore,
   stageState,
-  stepMove,
   tickTockState,
   timeScaleState,
   WATCH_DIM,
@@ -45,7 +44,6 @@ test("the fields and their defaults", () => {
     unwind: false,
     wind: false,
     move: "ordered",
-    moveSeconds: null,
   });
   const frontmatter = {
     art: ["hairspring", "collet", "stud"],
@@ -78,7 +76,6 @@ test("the fields and their defaults", () => {
     unwind: false,
     wind: false,
     move: "ordered",
-    moveSeconds: null,
   });
 });
 
@@ -681,47 +678,6 @@ test("artBand: slide fits the slide's height, with the picture band's bottom mar
   );
 });
 
-test("artMoveSeconds sets a move's time, only for a move together or fly", () => {
-  const frontmatter = {
-    art: "all",
-    artView: "cover",
-    artMove: "fly",
-    artMoveSeconds: 7,
-  };
-  const state = watchState(frontmatter, 0) ?? assert.fail();
-  assert.equal(state.moveSeconds, 7);
-  assert.equal(stageState(watch, state).moveSeconds, 7);
-  assert.equal(
-    stageState(watch, watchState({ art: "all" }, 0) ?? assert.fail())
-      .moveSeconds,
-    undefined,
-  );
-  assert.throws(
-    () => watchState({ art: "all", artMoveSeconds: 7 }, 0),
-    /artMoveSeconds.*together or fly/,
-  );
-  assert.throws(
-    () => watchState({ ...frontmatter, artMoveSeconds: 0 }, 0),
-    /more than 0/,
-  );
-  // a step's own: the next click's move takes its own time, either way
-  const steps = {
-    art: "all",
-    artView: "cover",
-    artMove: "fly",
-    artClicks: { 1: { artMoveSeconds: 7 }, 2: { artView: "hairspring" } },
-  };
-  const [first, second, third] = [0, 1, 2].map(
-    (click) => watchState(steps, click) ?? assert.fail(),
-  );
-  assert.ok(first && second && third);
-  assert.equal(second.moveSeconds, 7);
-  assert.equal(third.moveSeconds, null);
-  assert.equal(stepMove(first, second, "forward").moveSeconds, 7);
-  assert.equal(stepMove(second, first, "back").moveSeconds, 7);
-  assert.equal(stepMove(second, third, "forward").moveSeconds, null);
-});
-
 test("a named view with angles gives them to a slide that sets none", () => {
   const cover =
     watch.scene.views.find((view) => view.name === "cover") ?? assert.fail();
@@ -796,7 +752,13 @@ test("watchLapse, artMove, and all in a list of pieces", () => {
 });
 
 test("a key that starts with art or watch and is not a key throws, with its name", () => {
-  for (const key of ["watch", "watchView", "artVeiw", "watchClicks"]) {
+  for (const key of [
+    "watch",
+    "watchView",
+    "artVeiw",
+    "watchClicks",
+    "artMoveSeconds",
+  ]) {
     assert.throws(
       () => watchState({ art: "all", [key]: "cover" }, 0),
       new RegExp(`^Error: ${key}: no such key`),

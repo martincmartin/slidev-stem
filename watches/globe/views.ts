@@ -10,7 +10,7 @@ import type { GlobeCamera } from "./globe.ts";
 
 /** The slide's band under the title, in slide px, that a fitted camera
  *  fills. */
-export interface Band {
+interface Band {
   readonly width: number;
   readonly top: number;
   readonly bottom: number;
@@ -18,7 +18,7 @@ export interface Band {
 
 /** The camera, north up, over the middle of the places' longitudes and
  *  latitudes, that fits them in the band. */
-export function fitting(
+function fitting(
   name: string,
   places: readonly LonLat[],
   band: Band,

@@ -7,11 +7,11 @@
 // them. No DOM: the tests run it in Node.
 
 import type { View } from "../webgl/scene.ts";
-import type { LonLat, Polygon, Ring } from "./earth.ts";
+import { inBox } from "./earth.ts";
+import type { LonLat, LonLatBox, Polygon, Ring } from "./earth.ts";
 import { EARTH_RADIUS, globeView, onGlobe } from "./globe.ts";
 import type { GlobeCamera } from "./globe.ts";
-import { project } from "./maps.ts";
-import type { StoryMap } from "./maps.ts";
+import { project, unproject } from "./maps.ts";
 import type { Point, Story } from "./stories.ts";
 
 /** Land, with each ring's box, so that a test skips the rings far from a
@@ -19,10 +19,7 @@ import type { Point, Story } from "./stories.ts";
 export interface Land {
   readonly rings: readonly {
     readonly ring: Ring;
-    readonly west: number;
-    readonly east: number;
-    readonly south: number;
-    readonly north: number;
+    readonly box: LonLatBox;
   }[];
 }
 
@@ -33,10 +30,12 @@ export function landOf(polygons: readonly Polygon[]): Land {
       const lats = ring.map(([, lat]) => lat);
       return {
         ring,
-        west: Math.min(...lons),
-        east: Math.max(...lons),
-        south: Math.min(...lats),
-        north: Math.max(...lats),
+        box: {
+          west: Math.min(...lons),
+          east: Math.max(...lons),
+          south: Math.min(...lats),
+          north: Math.max(...lats),
+        },
       };
     }),
   };
@@ -46,8 +45,8 @@ export function landOf(polygons: readonly Polygon[]): Land {
  *  a hole in a ring is not land. */
 export function onLand(land: Land, [lon, lat]: LonLat): boolean {
   let inside = false;
-  for (const { ring, west, east, south, north } of land.rings) {
-    if (lon < west || lon > east || lat < south || lat > north) continue;
+  for (const { ring, box } of land.rings) {
+    if (!inBox([lon, lat], box)) continue;
     for (
       let index = 0, last = ring.length - 1;
       index < ring.length;
@@ -74,15 +73,6 @@ export interface Picture {
   readonly land: Land;
   /** The story drawn over it, for a story map's view. */
   readonly story?: Story;
-}
-
-/** The place at `point` on a story map: the inverse of `project`. */
-export function unproject(map: StoryMap, [x, y]: Point): LonLat {
-  const shorten = Math.cos((map.centre[1] * Math.PI) / 180);
-  return [
-    map.centre[0] + (x - map.at[0]) / (map.pxPerDegree * shorten),
-    map.centre[1] - (y - map.at[1]) / map.pxPerDegree,
-  ];
 }
 
 /** The place at `point` through a globe camera, or null off the globe: the

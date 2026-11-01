@@ -343,7 +343,9 @@ escape wheel fade in. Going back, they fade out, and then the camera zooms in.
 Three callouts appear, one at each click: "Wheel driven by hidden mechanism",
 "Pallet blocks wheel" and "Jewel strikes pallet". Each is a
 `components/WatchCallout.vue` in `slides.md`: a label in ink, 28 px, weight
-600, and a leader. The drive arrow on the escape wheel is part of the
+600, and a leader. Both callouts and map labels use
+`onLaidOut` in `components/laid-out.ts` to measure after layout and font loading.
+The drive arrow on the escape wheel is part of the
 watch's drawing ([The drive arrow](#the-drive-arrow)).
 
 - **These are keyword callouts** (`keyword`): each leader points at what one
@@ -1450,8 +1452,7 @@ misspelt key cannot do nothing.
 | `artLater: [case band]`                                   | of the pieces that fade in on a step into the slide (on the slide) or into the block's click (in `artClicks`), those that fade in after the others; it does not carry on to later clicks                                                                                                                                                        |
 | `artGoLater: [fourth wheel drive]`                        | of the pieces that go on a step into the slide (on the slide) or into the block's click (in `artClicks`), those that stay on the screen while the camera moves, and go after it; it does not carry on to later clicks                                                                                                                           |
 | `artLinger: [{pieces: [centre wheel drive], seconds: 1}]` | ordered outgoing groups; each pauses for its declared seconds, then fades out before the next group pauses; the camera waits for all groups; applies only at the declared click                                                                                                                                                                 |
-| `artMoveSeconds: 7`                                       | seconds of the camera's move on the step into this click, in either direction, when it moves `together` or flies, in place of its own; applies only at the declared click                                                                                                                                                                       |
-| `artClicks: {1: {art: […]}}`                              | on the slide only: for a click, the values of the keys that say a state (`CLICK_KEYS`) from that click on, and its flash settings, `artLater`, `artCut`, `artGoLater`, `artLinger`, `artMoveSeconds` and `watchWind` ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way))                                                          |
+| `artClicks: {1: {art: […]}}`                              | on the slide only: for a click, the values of the keys that say a state (`CLICK_KEYS`) from that click on, and its flash settings, `artLater`, `artCut`, `artGoLater`, `artLinger` and `watchWind` ([A slide and a click](#a-slide-and-a-click-say-it-the-same-way))                                                                            |
 
 `watch/state.ts` checks each key, and a key of the wrong kind stops the deck
 at load with the key's name.

@@ -88,6 +88,26 @@ export function settled(target: VoyageTarget | null): VoyageStep {
   return { from: target, to: target, at: 0, start: 0 };
 }
 
+/** Make a step from the last target. A jump shows its target at once;
+ *  otherwise the new legs wait for the camera. Times are in ms. */
+export function nextVoyage(
+  previous: VoyageStep,
+  to: VoyageTarget | null,
+  timing: {
+    readonly at: number;
+    readonly cameraEnd: number;
+    readonly jump: boolean;
+  },
+): VoyageStep {
+  const { at, cameraEnd, jump } = timing;
+  return {
+    from: jump ? to : previous.to,
+    to,
+    at,
+    start: jump ? at : cameraEnd,
+  };
+}
+
 /** What a story map shows of its voyage at a time. For each of its legs:
  *  the share of the track drawn (null: the leg is not on the screen) and
  *  how many of its dots show

@@ -26,12 +26,13 @@ import StoryMaps from "./components/StoryMaps.vue";
 import TimeScale from "./components/TimeScale.vue";
 import { boardState } from "./watch/board.ts";
 import { slidePalette } from "./watch/palette.ts";
-import { settled, voyageTarget } from "./globe/voyage.ts";
+import { settled } from "./globe/voyage.ts";
 import { ART, GLOBE, watchStills } from "./watch/instance.ts";
 import {
   stageState,
   timeScaleState,
   voyageState,
+  voyageFor,
   watchState,
 } from "./watch/state.ts";
 
@@ -74,9 +75,10 @@ const pose = computed(() => {
 const voyage = computed(() =>
   settled(
     pose.value
-      ? voyageTarget(
+      ? voyageFor(
+          ART,
           GLOBE.stories,
-          pose.value.view,
+          state.value,
           voyageState($frontmatter, $clicks.value),
         )
       : null,

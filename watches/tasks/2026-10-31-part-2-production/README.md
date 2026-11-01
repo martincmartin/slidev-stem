@@ -9,3 +9,7 @@ orders the work.
 - `instructions.md`: the request.
 - `PLAN.md`: the requirements, the options with their data, the ranking,
   the lessons of the spike, the work in phases, and the decisions for you.
+
+2026-11-01: The simplicity cleanup removes the unused move-duration override.
+Flights keep their own duration. Voyage steps, label measurement, projection
+calculations, and pixel checks now use shared functions. Test dimensions stay explicit.

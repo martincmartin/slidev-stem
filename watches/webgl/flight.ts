@@ -32,8 +32,8 @@ export interface Flight {
   readonly seconds: number;
   /** The camera at `share` of the path's length, from 0 to 1. */
   along(share: number): CameraPose;
-  /** The camera at `fraction` of a flight that takes `seconds`, paced. */
-  at(fraction: number, seconds: number): CameraPose;
+  /** The camera at `fraction` of the flight's own time, paced. */
+  at(fraction: number): CameraPose;
 }
 
 /** Poses along a path that `paced` samples to measure it. */
@@ -126,10 +126,11 @@ function paced(
       after > before ? (seen * total - before) / (after - before) : 0;
     return (low + Math.min(1, Math.max(0, part))) / PACE_SAMPLES;
   };
+  const seconds = FLIGHT.ramp + total / FLIGHT.speed;
   return {
-    seconds: FLIGHT.ramp + total / FLIGHT.speed,
+    seconds,
     along,
-    at: (fraction, time) => along(shareAt(pacedShare(fraction * time, time))),
+    at: (fraction) => along(shareAt(pacedShare(fraction * seconds, seconds))),
   };
 }
 

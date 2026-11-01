@@ -24,14 +24,8 @@
 // slide is shown). The slide decides when the callout appears (`v-click`):
 // do not bind `:class` on the root, as `v-click` puts its classes there.
 // docs/watch.md, "The Escapement slide".
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  useTemplateRef,
-} from "vue";
+import { computed, ref, useTemplateRef } from "vue";
+import { onLaidOut } from "./laid-out.ts";
 import { at } from "../webgl/checked.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import {
@@ -79,7 +73,6 @@ const PLEX_SANS = { ascent: 1.025, descent: 0.275, capHeight: 0.698 };
 const label = useTemplateRef<HTMLDivElement>("label");
 /** The word's box in slide px: left, top, width, height. */
 const word = ref<[number, number, number, number]>();
-let observer: ResizeObserver | undefined;
 
 function measure(): void {
   const box = label.value;
@@ -95,22 +88,7 @@ function measure(): void {
   ];
 }
 
-// Not an oversight: nothing here makes the browser compute the page's styles
-// (a size, or `document.fonts.ready`) at once. Vue runs each callout's
-// `v-click` just before its onMounted, so a later callout is not hidden yet:
-// styles computed now would show it, and it would fade out from shown when
-// the page loads. The observer's first call measures the word once the page
-// is laid out, before the first paint; the fonts are awaited after Vue's
-// flush, when every callout's `v-click` has run.
-onMounted(() => {
-  observer = new ResizeObserver(measure);
-  if (label.value) observer.observe(label.value);
-  void nextTick(() => document.fonts.ready.then(measure));
-});
-onBeforeUnmount(() => {
-  observer?.disconnect();
-});
-
+onLaidOut(label, measure);
 /** Where a `fromEnd` leader starts: on the line from its aim, half the cap
  *  height in from the label's left edge and up from its first baseline, to
  *  `to`, WORD_GAP outside the quarter-plane right of the edge and above the

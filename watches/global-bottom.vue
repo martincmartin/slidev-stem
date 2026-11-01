@@ -67,12 +67,13 @@ import TimeScale from "./components/TimeScale.vue";
 import { Stage } from "./webgl/stage.ts";
 import type { FrameListener } from "./webgl/stage.ts";
 import { FADE_SECONDS } from "./webgl/timeline.ts";
+import type { CameraMove } from "./webgl/timeline.ts";
 import { boardState } from "./watch/board.ts";
 import { stoneStrikes } from "./watch/callouts.ts";
 import type { BoardTarget } from "./watch/board.ts";
 import { WatchModel } from "./watch/model.ts";
 import type { WatchModelState } from "./watch/model.ts";
-import { settled, voyageEndAt, voyageTarget } from "./globe/voyage.ts";
+import { nextVoyage, settled, voyageEndAt } from "./globe/voyage.ts";
 import type { VoyageStep } from "./globe/voyage.ts";
 import { ART, GLOBE, artModel, watchStills } from "./watch/instance.ts";
 import { moveOf } from "./watch/navigation.ts";
@@ -88,6 +89,7 @@ import {
   tickTockState,
   timeScaleState,
   voyageState,
+  voyageFor,
   watchState,
 } from "./watch/state.ts";
 import type { StepMoveWith, WatchState } from "./watch/state.ts";
@@ -157,7 +159,7 @@ function showWatch(
   move: Move,
   moveWith: StepMoveWith,
   /** How the camera moves on this step (`stepMove`). */
-  cameraMove: Pick<WatchState, "move" | "moveSeconds"> | undefined,
+  cameraMove: CameraMove | undefined,
 ): void {
   // a flash points to where the camera goes, or to what fades in: only on
   // the step forward into the slide or the click that names it. It is not
@@ -196,7 +198,11 @@ function showWatch(
   if (hideTimer !== undefined || hidden.value) goOutOfSight();
   // a slide reached from a slide without the watch starts at its state
   stage.show(
-    stageState(ART, { ...now, flash, ...cameraMove }, moveWith),
+    stageState(
+      ART,
+      { ...now, flash, ...(cameraMove ? { move: cameraMove } : {}) },
+      moveWith,
+    ),
     modelState(now),
     move === "jump" || old === "null",
   );
@@ -214,15 +220,16 @@ function showWatch(
  *  its flash and a story map's voyage, or 0 if it has. */
 function showEndDelay(): void {
   const at = performance.now();
-  const milliseconds = Math.max(
-    0,
-    (stage?.endAt(at) ?? at) - at,
-    voyageEndAt(voyage.value) - at,
-  );
+  const milliseconds = Math.max(0, changeEndAt(at) - at);
   document.documentElement.style.setProperty(
     "--watch-end-delay",
     `${String(milliseconds / 1000)}s`,
   );
+}
+
+/** The end of the stage's change and the story map's voyage, in ms. */
+function changeEndAt(at: number): number {
+  return Math.max(stage?.endAt(at) ?? at, voyageEndAt(voyage.value));
 }
 
 /** Set `--watch-rest-delay`: how long until the balance is at rest, or 0 if
@@ -266,12 +273,7 @@ function goOutOfSight(): void {
  *  stage's change, the board's story or a story map's voyage runs, or a
  *  burst has not ended. */
 function pressJumps(at: number): boolean {
-  return (
-    boardBusy.value ||
-    at < burstUntil ||
-    (stage?.endAt(at) ?? at) > at ||
-    voyageEndAt(voyage.value) > at
-  );
+  return boardBusy.value || at < burstUntil || changeEndAt(at) > at;
 }
 
 /** The frontmatter of the slide numbered `slide` (1-based). */
@@ -283,18 +285,18 @@ function frontmatterOf(slide: number): Record<string, unknown> {
 /** Step the story map's marks to the click's: after the camera's move, or
  *  at once on a jump. After `showWatch`, which moves the camera. */
 function showVoyage(clicks: number, move: Move): void {
-  const to = state.value
-    ? voyageTarget(
-        GLOBE.stories,
-        stageState(ART, state.value).view,
-        voyageState(frontmatter.value, clicks),
-      )
-    : null;
+  const to = voyageFor(
+    ART,
+    GLOBE.stories,
+    state.value,
+    voyageState(frontmatter.value, clicks),
+  );
   const at = performance.now();
-  voyage.value =
-    move === "jump" || !stage
-      ? { ...settled(to), at, start: at }
-      : { from: voyage.value.to, to, at, start: stage.viewEndAt(at) };
+  voyage.value = nextVoyage(voyage.value, to, {
+    at,
+    cameraEnd: stage?.viewEndAt(at) ?? at,
+    jump: move === "jump" || !stage,
+  });
   showEndDelay();
 }
 

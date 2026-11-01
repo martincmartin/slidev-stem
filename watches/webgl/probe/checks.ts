@@ -208,6 +208,20 @@ function pixels(target: HTMLCanvasElement): Uint8Array {
   return values;
 }
 
+/** Compare a slide pixel with an ink. readPixels stores rows from below. */
+function colourNear(
+  values: Uint8Array,
+  [width, height]: readonly [number, number],
+  [x, y]: readonly [number, number],
+  hex: string,
+): boolean {
+  const index = ((height - 1 - Math.floor(y)) * width + Math.floor(x)) * 4;
+  return hexRgb(hex).every(
+    (value, channel) =>
+      Math.abs((values[index + channel] ?? 0) - value * 255) <= 8,
+  );
+}
+
 function noError(target: HTMLCanvasElement): void {
   const gl = contextOf(target);
   const error = gl.getError();
@@ -949,35 +963,17 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
       const frame = frameOf(test, { tilt: 30, turn: 25 });
       drawn.render(frame);
       const values = pixels(target);
-      const [width, height] = SIZE;
-      const colourAt = (point: Vec3): Vec3 => {
-        const [x, y] = slidePoint(frame, test.scene.slide, point);
-        // the device px are the slide's here; a row of readPixels is from the bottom
-        const index =
-          ((height - 1 - Math.floor(y)) * width + Math.floor(x)) * 4;
-        return [
-          values[index] ?? 0,
-          values[index + 1] ?? 0,
-          values[index + 2] ?? 0,
-        ];
-      };
-      const near = (found: Vec3, hex: string, what: string): void => {
-        const wanted = hexRgb(hex).map((value) => value * 255);
-        const off = Math.max(
-          ...found.map((value, index) =>
-            Math.abs(value - (wanted[index] ?? 0)),
-          ),
+      const near = (point: Vec3, hex: string, what: string): void => {
+        const at = slidePoint(frame, test.scene.slide, point);
+        check(
+          colourNear(values, SIZE, at, hex),
+          `${what}: not ${hex} at ${at.join(" ")}`,
         );
-        check(off <= 8, `${what}: ${found.join(" ")}, not ${hex}`);
       };
       // the front box's top face, square(50, 20, 50) at z 30: its middle is
       // in the face's wash, and the middle of its right edge on the line
-      near(
-        colourAt([75, 45, 30]),
-        PALETTE.subjectWash,
-        "the top face's middle",
-      );
-      near(colourAt([100, 45, 30]), PALETTE.subject, "its right edge");
+      near([75, 45, 30], PALETTE.subjectWash, "the top face's middle");
+      near([100, 45, 30], PALETTE.subject, "its right edge");
       drawn.dispose();
     },
   ],
@@ -997,19 +993,16 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
       };
       const target = canvas();
       const drawn = own(renderer(target, scene));
-      const [width, height] = SIZE;
       // the front box's top face, square(50, 20, 50) at z 30, seen from above
       const middle: Vec3 = [75, 45, 30];
       const washAt = (view: View): boolean => {
         const frame = frameOf(test, { view, tilt: 0 });
         drawn.render(frame);
-        const [x, y] = slidePoint(frame, scene.slide, middle);
-        const index =
-          ((height - 1 - Math.floor(y)) * width + Math.floor(x)) * 4;
-        const found = [...pixels(target).slice(index, index + 3)];
-        const wanted = hexRgb(PALETTE.subjectWash).map((value) => value * 255);
-        return found.every(
-          (value, channel) => Math.abs(value - (wanted[channel] ?? 0)) <= 8,
+        return colourNear(
+          pixels(target),
+          SIZE,
+          slidePoint(frame, scene.slide, middle),
+          PALETTE.subjectWash,
         );
       };
       const [far, near] = scene.views;

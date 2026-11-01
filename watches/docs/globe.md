@@ -187,10 +187,12 @@ artClicks:
 - `globeMarks`: the marks that show.
 
 The names are those of the story whose map is the slide's view
-(`voyageTarget`); a name that the story does not have throws.
+(`voyageFor` in `watch/state.ts`, then `voyageTarget`); an invalid name throws.
 
 **What a frame shows** is a pure function of the step and the frame's
-clock (`voyageAt`, `globe/voyage.ts`). On a step forward within a story,
+clock (`voyageAt`, `globe/voyage.ts`). The live layer and article figures
+use `nextVoyage` to make a step from the last target, or jump at once.
+On a step forward within a story,
 the new legs sail one after the other once the camera has come (the
 stage's `viewEndAt`), and the new marks fade in then; the marks that go
 fade out at once. A step back is the step forward reversed: the legs that
@@ -226,12 +228,14 @@ with the `v-click` range of the clicks that show it:
   stops `stop` px short (the Channel's "Isles of Scilly").
 - **What is under it:** each view is a picture (`Picture`,
   `globe/labels.ts`), a map from a place to a slide point and back: a story
-  map's own projection, or the globe's camera. `overSea` tests a grid of
+  map's own projection (`project` and `unproject` in `globe/maps.ts`), or the
+  globe's camera. `overSea` tests a grid of
   points in the label's box against the land (1:10m on a story map, 1:50m
   elsewhere). Where only the sea is under it, its words are in the paper,
   with no outline; else in ink, with the paper's outline. Off the globe,
   the paper is under it.
-- **When:** a label at a click's start waits for that click's change,
+- **When:** `onLaidOut` in `components/laid-out.ts` measures labels after
+  layout and font loading, as it does for watch callouts. A label at a click's start waits for that click's change,
   the voyage too (`after-watch`: `--watch-end-delay` includes the voyage).
   A label from click 0 uses `v-click.hide="n"`: Slidev does not start a
   range at 0. A label that stays dims at a later click: `:dimmed`, a prop,
@@ -264,7 +268,7 @@ on van Wijk and Nuij's own pace, barely moved for the first and last
 second, and then swept the ground past at up to 1,750 px/s
 (`FLIGHT` in `webgl/flight.ts`; the production task's progress, "2026-11-01,
 the flights' pace").
-A step can still set its own time with `artMoveSeconds`. For `navcheck`,
+For `navcheck`,
 `slideState` gives a flight's camera as its progress, from its start to its
 target by the share of its time (`flightProgress` in `watch/slide-state.ts`):
 the flight's zoom out would break the rule that a `continuous` number stays

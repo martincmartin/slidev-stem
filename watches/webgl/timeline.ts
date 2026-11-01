@@ -17,8 +17,7 @@
 //      at the same time instead, in TOGETHER_SECONDS (`mixCamera`). With
 //      `move: fly`, between two views of one ball (a globe), the camera
 //      flies over it, in the flight's own time and pace, not eased
-//      (`flight` in flight.ts); a state's `moveSeconds` sets the time of
-//      either.
+//      (`flight` in flight.ts).
 //   3. D becomes B, as in 1; of the meshes that fade in, those in
 //      `StageState.later` fade in after the others.
 // The meshes in `StageState.cut` do not fade: they go, or come, at once,
@@ -89,8 +88,6 @@ export interface StageState extends CameraAngles {
   view: View;
   /** How the camera goes to this state. Default: `ordered`. */
   move?: CameraMove;
-  /** Seconds of a move `together` or `fly`, in place of its own. */
-  moveSeconds?: number;
   /** The meshes on the screen; the others are faded out. */
   shown: ReadonlySet<Mesh>;
   /** Flashed before the change if they are on the screen, else after it;
@@ -309,7 +306,7 @@ function applyPhase(values: Values, phase: Phase, now: number): void {
         ? phase.to
         : phase.channel === "camera"
           ? mixCamera(phase.from, phase.to, eased)
-          : phase.flight.at(fraction, phase.seconds);
+          : phase.flight.at(fraction);
       values.view = pose.view;
       values.tilt = pose.tilt;
       values.turn = pose.turn;
@@ -524,7 +521,7 @@ export class Timeline {
           flight: path,
           to,
           start,
-          seconds: seen ? (state.moveSeconds ?? path.seconds) : 0,
+          seconds: seen ? path.seconds : 0,
         });
       } else if (state.move === "together" || state.move === "fly") {
         add({
@@ -532,7 +529,7 @@ export class Timeline {
           from,
           to,
           start,
-          seconds: seen ? (state.moveSeconds ?? TOGETHER_SECONDS) : 0,
+          seconds: seen ? TOGETHER_SECONDS : 0,
         });
       } else if (state.view.scale > current.view.scale) {
         move();

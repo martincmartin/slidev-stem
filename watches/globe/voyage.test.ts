@@ -6,6 +6,7 @@ import { DAY_SECONDS } from "./stories.ts";
 import type { Story } from "./stories.ts";
 import {
   MARK_FADE_SECONDS,
+  nextVoyage,
   along,
   dayDots,
   settled,
@@ -31,6 +32,32 @@ function storyOf(map: unknown): Story {
 const NOIR = storyOf(CAPE_NOIR);
 const SEARCH = storyOf(JUAN_FERNANDEZ);
 const WRECK = storyOf(SCILLY);
+
+test("steps wait for the camera; jumps replace the voyage at once", () => {
+  const from = target(SEARCH, { leg: "start", marks: [] });
+  const to = target(SEARCH, { leg: "west", marks: [] });
+  const previous = settled(from);
+  const timing = { at: 500, cameraEnd: 1500, jump: false };
+  const forward = nextVoyage(previous, to, timing);
+  assert.equal(forward.from, from);
+  assert.equal(forward.start, 1500);
+  assert.deepEqual(frameAt(SEARCH, forward, 1000).tracks, [1, 1, null, null]);
+  const back = nextVoyage(settled(to), from, timing);
+  assert.equal(back.from, to);
+  assert.equal(back.to, from);
+  assert.equal(back.start, 1500);
+  const jump = nextVoyage(forward, from, { ...timing, at: 800, jump: true });
+  assert.equal(jump.from, from);
+  assert.equal(jump.to, from);
+  assert.equal(jump.start, 800);
+  assert.equal(voyageEndAt(jump), 800);
+  assert.deepEqual(nextVoyage(previous, null, { ...timing, jump: true }), {
+    from: null,
+    to: null,
+    at: 500,
+    start: 500,
+  });
+});
 
 function target(story: Story, names: VoyageNames): VoyageTarget {
   const made = voyageTarget(stories, story.placed.view, names);

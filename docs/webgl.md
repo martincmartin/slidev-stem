@@ -268,8 +268,7 @@ Renderer(canvas, scene, palette)` takes a `Palette` (one `#rrggbb` for
   oversight: a view can show its pivot far off the slide (a story map's
   camera), and a pivot kept at a slide point swung the globe beyond both
   views as the camera zoomed out (`globe/maps.test.ts`). Between other views,
-  `fly` moves `together`. `StageState.moveSeconds` sets the time of a move
-  `together` or `fly`. A named view can carry the angles that it is made for
+  `fly` moves `together`. A named view can carry the angles that it is made for
   (`View.angles`): a talk's slide that names it and sets no angles gets
   them. Of the meshes that fade in as D becomes B, those in
   `StageState.later` fade in after the others. The meshes in

@@ -16,14 +16,8 @@
 // (`:dimmed="$clicks >= 2"`): a prop, as `v-click.hide` gives no class to
 // dim by. Do not bind `:class` on the root, as `v-click` puts its classes
 // there.
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  useTemplateRef,
-} from "vue";
+import { computed, ref, useTemplateRef } from "vue";
+import { onLaidOut } from "./laid-out.ts";
 import { anchorPoint, overSea } from "../globe/labels.ts";
 import type { WordsBox } from "../globe/labels.ts";
 import { LEADER_GAP, straightStart, toward } from "../watch/callouts.ts";
@@ -106,16 +100,7 @@ function measure(): void {
   size.value = [words.offsetWidth, words.offsetHeight];
 }
 
-let observer: ResizeObserver | undefined;
-// As in WatchCallout.vue: nothing here computes the page's styles at once.
-onMounted(() => {
-  observer = new ResizeObserver(measure);
-  if (text.value) observer.observe(text.value);
-  void nextTick(() => document.fonts.ready.then(measure));
-});
-onBeforeUnmount(() => {
-  observer?.disconnect();
-});
+onLaidOut(text, measure);
 </script>
 
 <template>

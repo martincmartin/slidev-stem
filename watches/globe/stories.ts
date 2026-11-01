@@ -9,7 +9,13 @@
 // facts"). No DOM: the tests run it in Node.
 
 import type { LonLat } from "./earth.ts";
-import { CAPE_NOIR, JUAN_FERNANDEZ, SCILLY, project } from "./maps.ts";
+import {
+  CAPE_NOIR,
+  JUAN_FERNANDEZ,
+  SCILLY,
+  longitudeOffset,
+  project,
+} from "./maps.ts";
 import type { PlacedMap, StoryMap } from "./maps.ts";
 
 export type Point = readonly [number, number];
@@ -116,13 +122,18 @@ function parallel(name: string, y: number, end: number): Mark {
   };
 }
 
+/** A vector perpendicular to a segment, with the given length in px. */
+function normal(from: Point, to: Point, distance: number): Point {
+  const length = Math.hypot(to[0] - from[0], to[1] - from[1]);
+  return [
+    (-(to[1] - from[1]) / length) * distance,
+    ((to[0] - from[0]) / length) * distance,
+  ];
+}
+
 /** A bracket that measures a gap: a line, with a tick across each end. */
 function bracket(name: string, [from, to]: readonly [Point, Point]): Mark {
-  const length = Math.hypot(to[0] - from[0], to[1] - from[1]);
-  const [x, y] = [
-    (-(to[1] - from[1]) / length) * 8,
-    ((to[0] - from[0]) / length) * 8,
-  ];
+  const [x, y] = normal(from, to, 8);
   const tick = ([px, py]: Point): string =>
     `M${number(px - x)},${number(py - y)}L${number(px + x)},${number(py + y)}`;
   return {
@@ -185,8 +196,7 @@ function capeNoir(placed: PlacedMap): Story {
   const cape = project(map, [-73.03, -54.47]);
   // south of the island, with sea between
   const ship: Point = [cape[0] - 6, cape[1] + 46];
-  const shorten = Math.cos((map.centre[1] * Math.PI) / 180);
-  const thought: Point = [ship[0] - 10 * map.pxPerDegree * shorten, ship[1]];
+  const thought: Point = [ship[0] - longitudeOffset(map, 10), ship[1]];
   // below where the track starts, so that the two do not join into one line
   const below = ship[1] + 90;
   return {
@@ -235,21 +245,44 @@ function juanFernandez(
   // the west leg runs due west, on the parallel of the sighting: south of
   // the east leg, so that both show. The ship jumps there from the turn,
   // with no track: the drop is the drawing's, not a course sailed
-  const leg = (
-    name: string,
-    route: readonly Point[],
-    days: number,
-    seconds: number,
-    heading: "east" | "west",
-  ): Leg => ({ name, route, days, seconds, heading });
   return {
     placed,
     legs: [
-      leg("south", [entry, south], 0, 0, "east"),
-      leg("start", [south, start], 0, 2, "east"),
-      leg("east", [start, turn], 2, 2 * DAY_SECONDS, "east"),
-      leg("west", [[turn[0], found[1]], found], 9, 9 * DAY_SECONDS, "west"),
-      leg("found", [found, anchorage], 1, 0.8, "west"),
+      {
+        name: "south",
+        route: [entry, south],
+        days: 0,
+        seconds: 0,
+        heading: "east",
+      },
+      {
+        name: "start",
+        route: [south, start],
+        days: 0,
+        seconds: 2,
+        heading: "east",
+      },
+      {
+        name: "east",
+        route: [start, turn],
+        days: 2,
+        seconds: 2 * DAY_SECONDS,
+        heading: "east",
+      },
+      {
+        name: "west",
+        route: [[turn[0], found[1]], found],
+        days: 9,
+        seconds: 9 * DAY_SECONDS,
+        heading: "west",
+      },
+      {
+        name: "found",
+        route: [found, anchorage],
+        days: 1,
+        seconds: 0.8,
+        heading: "west",
+      },
     ],
     marks: [
       parallel("parallel", start[1], coast[0] - 4),
@@ -309,11 +342,7 @@ function scilly(placed: PlacedMap): Story {
   const thought = project(map, sail([-7.33, 49.67], run.bearing, run.miles));
   // the bracket: parallel to the gap, 40 px on its south side, clear of the
   // track
-  const gap = Math.hypot(wreck[0] - thought[0], wreck[1] - thought[1]);
-  const [x, y] = [
-    (-(wreck[1] - thought[1]) / gap) * 40,
-    ((wreck[0] - thought[0]) / gap) * 40,
-  ];
+  const [x, y] = normal(thought, wreck, 40);
   return {
     placed,
     legs: [

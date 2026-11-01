@@ -39,12 +39,27 @@ const FIT_POINTS = 500;
  *  the land at half this margin, so the cut's line never shows. */
 export const MARGIN = 20;
 
+/** Slide px for a longitude difference at the map's centre. */
+export function longitudeOffset(map: StoryMap, degrees: number): number {
+  return degrees * map.pxPerDegree * Math.cos((map.centre[1] * Math.PI) / 180);
+}
+
 /** Where a place is on the map, in slide px. */
 export function project(map: StoryMap, [lon, lat]: LonLat): [number, number] {
-  const shorten = Math.cos((map.centre[1] * Math.PI) / 180);
   return [
-    map.at[0] + (lon - map.centre[0]) * map.pxPerDegree * shorten,
+    map.at[0] + longitudeOffset(map, lon - map.centre[0]),
     map.at[1] - (lat - map.centre[1]) * map.pxPerDegree,
+  ];
+}
+
+/** The place at a slide point: the inverse of `project`. */
+export function unproject(
+  map: StoryMap,
+  [x, y]: readonly [number, number],
+): LonLat {
+  return [
+    map.centre[0] + (x - map.at[0]) / longitudeOffset(map, 1),
+    map.centre[1] - (y - map.at[1]) / map.pxPerDegree,
   ];
 }
 

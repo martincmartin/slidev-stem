@@ -13,10 +13,10 @@ import {
   stageState,
   stepMove,
   voyageState,
+  voyageFor,
   watchState,
 } from "./state.ts";
 import { anchorPoint } from "../globe/labels.ts";
-import { voyageTarget } from "../globe/voyage.ts";
 import type { StepMoveWith, WatchState } from "./state.ts";
 import type { Move } from "./navigation.ts";
 import type { Mesh, Piece } from "../webgl/scene.ts";
@@ -76,9 +76,10 @@ test("every slide's legs, marks and map labels name the story of its view", () =
     for (let click = 0; click <= clicks; click++) {
       const state = watchState(frontmatter, click);
       if (!state) continue;
-      const { view } = stageState(watch, state);
       // throws for a name that the view's story does not have
-      if (voyageTarget(globe.stories, view, voyageState(frontmatter, click)))
+      if (
+        voyageFor(watch, globe.stories, state, voyageState(frontmatter, click))
+      )
         named++;
     }
     // each label's anchor, as MapLabel.vue finds it
@@ -235,7 +236,7 @@ function cameraPhases(
   const timeline = new Timeline(watch.scene.slide);
   timeline.show(stageState(watch, from, moveWith), 0, true);
   timeline.show(
-    stageState(watch, { ...to, ...stepMove(from, to, move) }, moveWith),
+    stageState(watch, { ...to, move: stepMove(from, to, move) }, moveWith),
     0,
   );
   const phases: { channel: string; milliseconds: number }[] = [];
@@ -301,8 +302,8 @@ test("the step from the Recap slide to the cover's picture moves in order both w
   const hairspring = watchState(recap, Number(recap["clicks"]));
   const cover = watchState(section.frontmatter, 0);
   assert.ok(hairspring && cover);
-  assert.equal(stepMove(hairspring, cover, "forward").move, "ordered");
-  assert.equal(stepMove(cover, hairspring, "back").move, "ordered");
+  assert.equal(stepMove(hairspring, cover, "forward"), "ordered");
+  assert.equal(stepMove(cover, hairspring, "back"), "ordered");
 });
 
 /** What is on the screen at the start and at the end of the camera's move,
@@ -321,7 +322,7 @@ function aroundMove(
   const timeline = new Timeline(watch.scene.slide);
   timeline.show(stageState(watch, from, moveWith), 0, true);
   timeline.show(
-    stageState(watch, { ...to, ...stepMove(from, to, move) }, moveWith),
+    stageState(watch, { ...to, move: stepMove(from, to, move) }, moveWith),
     0,
   );
   const moving: number[] = [];

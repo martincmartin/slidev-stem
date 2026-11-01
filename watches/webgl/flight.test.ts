@@ -112,7 +112,7 @@ test("a paced flight ramps up and down, and goes at one speed between", () => {
   const seen = (time: number): number => {
     const step = 0.01;
     const [pose, next] = [time, time + step].map((each) =>
-      path.at(each / path.seconds, path.seconds),
+      path.at(each / path.seconds),
     );
     if (!pose || !next) return NaN;
     const ground = ballPoint(pose, SLIDE, middle) ?? assert.fail();
@@ -177,7 +177,7 @@ function state(
   };
 }
 
-test("with move: fly, the camera flies in the flight's time, or in moveSeconds", () => {
+test("with move: fly, the camera flies in the flight's own time", () => {
   const seconds = (flight(ANSON, CHANNEL, SLIDE) ?? assert.fail()).seconds;
   const timeline = new Timeline(SLIDE);
   timeline.show(state(ANSON), 0, true);
@@ -188,8 +188,6 @@ test("with move: fly, the camera flies in the flight's time, or in moveSeconds",
   assert.ok(middle.view.scale < CHANNEL.view.scale / 10);
   const end = timeline.valuesAt(seconds * 1000);
   assert.equal(end.view, CHANNEL.view);
-  timeline.show(state(ANSON, { move: "fly", moveSeconds: 7 }), seconds * 1000);
-  assert.equal(timeline.viewEndAt(seconds * 1000), seconds * 1000 + 7000);
 });
 
 test("with move: fly between views that are not of one ball, the camera moves together", () => {

@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { CAPE_NOIR, JUAN_FERNANDEZ, project } from "./maps.ts";
+import { CAPE_NOIR, JUAN_FERNANDEZ, project, unproject } from "./maps.ts";
 import { makeGlobe } from "./model.ts";
-import { anchorPoint, offGlobe, onLand, overSea, unproject } from "./labels.ts";
+import { anchorPoint, offGlobe, onLand, overSea } from "./labels.ts";
 import type { Picture } from "./labels.ts";
 
 const SLIDE: readonly [number, number] = [980, 552];

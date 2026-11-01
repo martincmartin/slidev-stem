@@ -186,7 +186,9 @@ onBeforeUnmount(() => leave?.());
           class="mark"
           :data-mark="mark.name"
           :mask="
-            mark.name === 'wind' ? `url(#${masks}-sea-${index})` : undefined
+            mark.parts.some((part) => part.kind === 'gust')
+              ? `url(#${masks}-sea-${index})`
+              : undefined
           "
           visibility="hidden"
         >
