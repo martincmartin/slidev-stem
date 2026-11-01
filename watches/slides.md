@@ -1671,6 +1671,8 @@ clicks: 5
 
 # Age of Sail: Longitude Was a Guess
 
+1741: around Cape Horn, then north into the Pacific
+
 <MapLabel v-click.hide="1" view="south america" :on="[-58, -12]" centred>South America</MapLabel>
 
 <MapLabel v-click="[1, 3]" class="after-watch" view="cape noir" mark="estimated" :offset="[-105, -76]" :dimmed="$clicks >= 2">Estimated position</MapLabel>

@@ -108,10 +108,12 @@
 }
 
 /* PART 2'S STORY MAPS (docs/globe.md, "The words"). The title is over the
-   map, so it has the paper's outline, as the Balance Wheel slide's. A
+   map, so it and its subtitle have the paper's outline, as the Balance
+   Wheel slide's. A
    label that `lingers` leaves at its v-click's end with that click's new
    labels, after the change (on a jump, at once). */
-.slidev-layout.story-map h1 {
+.slidev-layout.story-map h1,
+.slidev-layout.story-map h1 + p {
   -webkit-text-stroke: 6px var(--palette-background);
   paint-order: stroke fill;
 }
