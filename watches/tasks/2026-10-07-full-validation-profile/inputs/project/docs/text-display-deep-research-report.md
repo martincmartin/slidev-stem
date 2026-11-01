@@ -14,7 +14,7 @@ October 2026. It addresses its reader as "you". The house rules for text are in
 rule disagree, the rule wins. Its citations are footnotes, made from the
 conversation JSON that ChatGPT's page loads.
 
-![Disco Elysium: dialogue in a tall reading rail on the right of the screen](text-display/disco-elysium.png)
+![Disco Elysium: dialogue in a tall reading rail on the right of the screen](https://res.cloudinary.com/lesswrong-2-0/image/upload/f_auto,q_auto/v1/mirroredImages/Ri7ZTY8GsfsAkExCS/pbdt33vmyezownbaihil)
 _Screenshot of Disco Elysium, from [LessWrong](https://www.lesswrong.com/posts/JLMFFA67cGyqwBtFP/evrart-claire-a-case-study-in-anti-epistemology-2)._
 
 ## Executive synthesis
