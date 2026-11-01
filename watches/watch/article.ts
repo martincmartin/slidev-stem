@@ -21,8 +21,8 @@ import type { BoardState } from "./board.ts";
 import type { Watch } from "./generate.ts";
 import { stageState, viewOf, watchState, wrong } from "./state.ts";
 import type { WatchState } from "./state.ts";
-import type { Piece } from "../webgl/scene.ts";
-import { slidePoint } from "../webgl/renderer.ts";
+import type { Piece, View } from "../webgl/scene.ts";
+import { pivotOnSlide, slidePoint } from "../webgl/renderer.ts";
 import type { StageState } from "../webgl/timeline.ts";
 
 /** A box on the slide, in px. */
@@ -367,6 +367,21 @@ function piecesBox(
   return box;
 }
 
+/** Where a view of a ball (`View.ball`: the globe) shows the ball: the box
+ *  of its disc about the pivot, or null for a view of no ball. The ball has
+ *  no box extent: a box's corners would show it wider than its disc. */
+function ballBox(view: View): SlideBox | null {
+  if (view.ball === undefined) return null;
+  const [x, y] = pivotOnSlide(view);
+  const radius = view.ball * view.scale;
+  return {
+    left: x - radius,
+    top: y - radius,
+    right: x + radius,
+    bottom: y + radius,
+  };
+}
+
 /** The crop's top and bottom: `low` to `high`, with BOX_MARGIN, inside the
  *  slide (0 to `size`). Where the slide cuts the picture on one side, the
  *  other side is cut too, so that the fitted pieces (`fitLow` to `fitHigh`)
@@ -392,7 +407,8 @@ function cropTopBottom(
 
 /** Where the picture at `clicks` is on the slide, in px, with BOX_MARGIN
  *  around it and inside the slide: the shown pieces' extents as the view
- *  shows them, and the diving board where it shows. Where the slide's top
+ *  shows them, the ball of a view of a ball (the globe, and so its story
+ *  maps, which fill the slide), and the diving board where it shows. Where the slide's top
  *  or bottom cuts the watch, the crop centres the pieces that the view fits,
  *  up and down (`cropTopBottom`): the title's space above a watch that the
  *  slide's bottom cuts is not kept. Not across: there, what the slide cuts
@@ -418,6 +434,8 @@ export function pictureBox(
     );
     const shownBox = piecesBox(watch, stage, shown);
     if (shownBox) box = union(box, shownBox);
+    const ball = ballBox(stage.view);
+    if (ball) box = union(box, ball);
     const fit = state.fit;
     fitBox =
       fit === "all" || fit.includes("all")

@@ -155,6 +155,26 @@ test("the article settings are checked", () => {
   );
 });
 
+test("a figure of the globe shows its disc, and a story map's the whole slide", async () => {
+  const [width, height] = watch.scene.slide;
+  const whole = { left: 0, top: 0, right: width, bottom: height };
+  const noir = await slideFrontmatter("Age of Sail: Longitude Was a Guess");
+  // South America: the globe whole, narrower than the slide
+  const globe = pictureBox(watch, noir, 0);
+  assert.ok(globe && globe.left > 0 && globe.right < width);
+  for (const title of [
+    "Age of Sail: Longitude Was a Guess",
+    "Hunt for Juan Fernández Island, 1741",
+    "Admiral Shovell Sails Home, 1707",
+  ]) {
+    const frontmatter = await slideFrontmatter(title);
+    // the last click, the punchline's: the figure shows the map, not the
+    // screen, which is not `in-figure`
+    const last = totalClicks(frontmatter);
+    assert.deepEqual(pictureBox(watch, frontmatter, last), whole, title);
+  }
+});
+
 test("every picture's box is inside the slide, and holds something", () => {
   const [width, height] = watch.scene.slide;
   for (const { title, frontmatter } of slides) {

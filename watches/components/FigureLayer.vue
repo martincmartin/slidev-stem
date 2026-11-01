@@ -58,7 +58,12 @@ import type {
 } from "../addons/narration/figure.ts";
 import DivingBoard from "./DivingBoard.vue";
 import StoryMaps from "./StoryMaps.vue";
-import { settled, voyageEndAt, voyageTarget } from "../globe/voyage.ts";
+import {
+  movesByItself,
+  settled,
+  voyageEndAt,
+  voyageTarget,
+} from "../globe/voyage.ts";
 import type { VoyageStep } from "../globe/voyage.ts";
 import TickTock from "./TickTock.vue";
 import TimeScale from "./TimeScale.vue";
@@ -224,22 +229,37 @@ const timeScale = computed(() =>
 );
 
 /** Whether nothing moves by itself at the figure's click, so that the
- *  figure needs no pause button: the balance is at rest, the train neither
- *  spins nor unwinds, the mainspring story is before the watch runs (a
- *  step's change, such as the release, plays once and ends), the board does
- *  not swing, and there is no `twist` slider (a let-go swings for ever). */
+ *  figure needs no pause button: the watch does not show (the globe's
+ *  slides), or its balance is at rest, the train neither spins nor unwinds,
+ *  and the mainspring story is before the watch runs (a step's change, such
+ *  as the release, plays once and ends); no wind blows on a story map; the
+ *  board does not swing; and there is no `twist` slider (a let-go swings
+ *  for ever). */
 const still = computed(() => {
   const now = hidden.value ? undefined : state.value;
   const watchStill =
     !now ||
+    !showsWatch(now) ||
     (now.settled &&
       now.spin === null &&
       (now.mainspring === null || !storyRuns(now.mainspring)) &&
       !now.unwind);
   const boardStill =
     board.value.state?.place !== "swing" || boardScrub.value !== null;
-  return watchStill && boardStill && settings.value.slider !== "twist";
+  return (
+    watchStill &&
+    !movesByItself(voyage.value.to) &&
+    boardStill &&
+    settings.value.slider !== "twist"
+  );
 });
+
+/** Whether `now` shows a piece of the watch, not only the globe. */
+function showsWatch(now: WatchState): boolean {
+  return [...stageState(ART, now).shown].some(
+    (mesh) => !GLOBE.piece.meshes.has(mesh),
+  );
+}
 
 /** The meshes of the pieces named. */
 function meshesOf(names: readonly string[]): Set<Mesh> {
@@ -400,7 +420,11 @@ onChange(
     :style="palette.variables"
   >
     <canvas ref="canvas" class="watch-canvas" :style="canvasStyle" />
-    <StoryMaps :frames="frames" :voyage="voyage" />
+    <StoryMaps
+      :frames="frames"
+      :voyage="voyage"
+      :paused="!figure.moving.value || !figure.near.value"
+    />
     <DivingBoard
       :target="board"
       :live="true"

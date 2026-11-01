@@ -65,6 +65,14 @@ export function voyageTarget(
   return { story, legs, marks: new Set(marks) };
 }
 
+/** Whether `target` shows a mark that moves by itself: the wind's gusts,
+ *  which loop (StoryMaps.vue). */
+export function movesByItself(target: VoyageTarget | null): boolean {
+  return [...(target?.marks ?? [])].some((mark) =>
+    mark.parts.some((part) => part.kind === "gust"),
+  );
+}
+
 /** A step between two targets: `at` is when it happens, and `start` when
  *  its legs start to sail and its marks to fade in (ms; after the camera's
  *  move). A jump, or a still, has the same target both sides. */

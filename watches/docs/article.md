@@ -171,6 +171,18 @@ pieces. The Gear Train slide's case then shows as much strap above as below.
 Not across: there, what the slide cuts is the case beside the train, and the
 figure keeps it.
 
+**A figure of the globe is cropped to its disc** (`ballBox`): the ball of
+a view of a ball (`View.ball`), not a box around it, whose corners would
+show it wider. A story map fills the slide, so its figure is the whole
+slide, with its labels but not its title or its punchline's screen. Its
+voyage and its marks are those of the figure's click
+([globe.md](globe.md), "The marks"). The wind's gusts loop while the
+figure plays (the production task's
+[`PLAN.md`](../tasks/2026-10-31-part-2-production/PLAN.md), section 7,
+"Decisions"). Paused, also from the start for a reader who asks for reduced motion, they
+stand, drawn, as in a still. A figure of the globe with no wind has no
+pause button: nothing in it moves by itself.
+
 A slide with no watch and no board is its own figure: the whole slide, with
 its text, at its last click.
 

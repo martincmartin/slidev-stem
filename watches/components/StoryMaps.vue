@@ -36,6 +36,9 @@ const props = defineProps<{
   frames?: ((listener: FrameListener) => () => void) | undefined;
   /** The step of the marks: on the frames' clock, or settled for a still. */
   voyage: VoyageStep;
+  /** An article's figure whose time stands: its wind stands, drawn, as in
+   *  a still. */
+  paused?: boolean;
 }>();
 
 const [width, height] = ART.scene.slide;
@@ -135,7 +138,7 @@ onBeforeUnmount(() => leave?.());
 <template>
   <svg
     class="story-maps"
-    :class="{ still: pose !== undefined }"
+    :class="{ still: pose !== undefined || paused }"
     :viewBox="`0 0 ${width} ${height}`"
     aria-hidden="true"
   >
@@ -363,7 +366,8 @@ onBeforeUnmount(() => leave?.());
   paint-order: stroke fill;
 }
 /* The wind: each gust draws itself from west to east, curls, and fades. In
-   a still, it stands, drawn. */
+   a still, and in a paused figure, it stands, drawn: a figure paused from
+   the start (reduced motion) would otherwise show a gust not yet drawn. */
 .story-maps .gust {
   fill: none;
   stroke: var(--palette-background);
