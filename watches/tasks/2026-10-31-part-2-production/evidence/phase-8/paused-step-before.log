@@ -1,0 +1,3 @@
+ok chromium: cover and paused article voyage passed with canvas pixel reads blocked
+FAIL firefox: the cover or paused article voyage failed: page.waitForFunction: Timeout 5000ms exceeded.
+FAIL webkit: the cover or paused article voyage failed: page.waitForFunction: Timeout 5000ms exceeded.

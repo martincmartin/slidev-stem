@@ -1,0 +1,764 @@
+[
+  {
+    "engine": "chromium",
+    "version": "156.0.8078.4",
+    "profile": "laptop",
+    "entries": [
+      {
+        "title": "Cape Noir flight",
+        "samples": 445,
+        "gapMedianMs": 8.300000000000182,
+        "gap95Ms": 8.900000000000091,
+        "jsMedianMs": 3.299999952316284,
+        "js95Ms": 3.5999999046325684,
+        "gapsOver12_5": 6,
+        "gapsOver25": 4,
+        "renderer": {
+          "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+          "vendor": "Google Inc. (Apple)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      },
+      {
+        "title": "Juan Fernández flight",
+        "samples": 449,
+        "gapMedianMs": 8.300000000000182,
+        "gap95Ms": 9,
+        "jsMedianMs": 3.299999952316284,
+        "js95Ms": 3.5999999046325684,
+        "gapsOver12_5": 4,
+        "gapsOver25": 2,
+        "renderer": {
+          "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+          "vendor": "Google Inc. (Apple)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      },
+      {
+        "title": "Juan Fernández voyage",
+        "samples": 736,
+        "gapMedianMs": 8.300000000000182,
+        "gap95Ms": 9.300000000000182,
+        "jsMedianMs": 3.3999998569488525,
+        "js95Ms": 3.6999998092651367,
+        "gapsOver12_5": 3,
+        "gapsOver25": 2,
+        "renderer": {
+          "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+          "vendor": "Google Inc. (Apple)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      },
+      {
+        "title": "Atlantic flight",
+        "samples": 837,
+        "gapMedianMs": 8.300000000000182,
+        "gap95Ms": 8.800000000000182,
+        "jsMedianMs": 3.299999952316284,
+        "js95Ms": 3.5999999046325684,
+        "gapsOver12_5": 3,
+        "gapsOver25": 2,
+        "renderer": {
+          "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+          "vendor": "Google Inc. (Apple)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      },
+      {
+        "title": "Scilly flight",
+        "samples": 396,
+        "gapMedianMs": 8.300000000000182,
+        "gap95Ms": 8.799999999999955,
+        "jsMedianMs": 3.299999952316284,
+        "js95Ms": 3.5999999046325684,
+        "gapsOver12_5": 4,
+        "gapsOver25": 1,
+        "renderer": {
+          "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+          "vendor": "Google Inc. (Apple)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "engine": "chromium",
+    "version": "156.0.8078.4",
+    "profile": "projector",
+    "entries": [
+      {
+        "title": "Cape Noir flight",
+        "samples": 483,
+        "gapMedianMs": 8.300000000000182,
+        "gap95Ms": 8.899999999999636,
+        "jsMedianMs": 3.299999952316284,
+        "js95Ms": 3.5999999046325684,
+        "gapsOver12_5": 3,
+        "gapsOver25": 1,
+        "renderer": {
+          "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+          "vendor": "Google Inc. (Apple)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      },
+      {
+        "title": "Juan Fernández flight",
+        "samples": 464,
+        "gapMedianMs": 8.300000000000182,
+        "gap95Ms": 8.900000000000091,
+        "jsMedianMs": 3.299999952316284,
+        "js95Ms": 3.5,
+        "gapsOver12_5": 3,
+        "gapsOver25": 2,
+        "renderer": {
+          "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+          "vendor": "Google Inc. (Apple)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      },
+      {
+        "title": "Juan Fernández voyage",
+        "samples": 753,
+        "gapMedianMs": 8.300000000000182,
+        "gap95Ms": 9.200000000000273,
+        "jsMedianMs": 3.3000001907348633,
+        "js95Ms": 3.6000001430511475,
+        "gapsOver12_5": 4,
+        "gapsOver25": 2,
+        "renderer": {
+          "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+          "vendor": "Google Inc. (Apple)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      },
+      {
+        "title": "Atlantic flight",
+        "samples": 834,
+        "gapMedianMs": 8.300000000000182,
+        "gap95Ms": 8.900000000000091,
+        "jsMedianMs": 3.299999952316284,
+        "js95Ms": 3.5999999046325684,
+        "gapsOver12_5": 5,
+        "gapsOver25": 3,
+        "renderer": {
+          "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+          "vendor": "Google Inc. (Apple)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      },
+      {
+        "title": "Scilly flight",
+        "samples": 396,
+        "gapMedianMs": 8.300000000000182,
+        "gap95Ms": 9.200000000000045,
+        "jsMedianMs": 3.299999952316284,
+        "js95Ms": 3.5,
+        "gapsOver12_5": 4,
+        "gapsOver25": 1,
+        "renderer": {
+          "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M3 Pro, Unspecified Version)",
+          "vendor": "Google Inc. (Apple)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "engine": "firefox",
+    "version": "157.0",
+    "profile": "laptop",
+    "entries": [
+      {
+        "title": "Cape Noir flight",
+        "samples": 430,
+        "gapMedianMs": 8.339999999999918,
+        "gap95Ms": 16.68000000000029,
+        "jsMedianMs": 4,
+        "js95Ms": 5,
+        "gapsOver12_5": 39,
+        "gapsOver25": 7,
+        "renderer": {
+          "renderer": "Apple M1, or similar",
+          "vendor": "Apple",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      },
+      {
+        "title": "Juan Fernández flight",
+        "samples": 412,
+        "gapMedianMs": 8.340000000000146,
+        "gap95Ms": 16.68000000000029,
+        "jsMedianMs": 4,
+        "js95Ms": 6,
+        "gapsOver12_5": 34,
+        "gapsOver25": 8,
+        "renderer": {
+          "renderer": "Apple M1, or similar",
+          "vendor": "Apple",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      },
+      {
+        "title": "Juan Fernández voyage",
+        "samples": 749,
+        "gapMedianMs": 8.339999999999236,
+        "gap95Ms": 8.359999999999673,
+        "jsMedianMs": 4,
+        "js95Ms": 5,
+        "gapsOver12_5": 7,
+        "gapsOver25": 0,
+        "renderer": {
+          "renderer": "Apple M1, or similar",
+          "vendor": "Apple",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      },
+      {
+        "title": "Atlantic flight",
+        "samples": 815,
+        "gapMedianMs": 8.339999999999918,
+        "gap95Ms": 8.900000000000546,
+        "jsMedianMs": 4,
+        "js95Ms": 5,
+        "gapsOver12_5": 22,
+        "gapsOver25": 2,
+        "renderer": {
+          "renderer": "Apple M1, or similar",
+          "vendor": "Apple",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      },
+      {
+        "title": "Scilly flight",
+        "samples": 396,
+        "gapMedianMs": 8.33999999999969,
+        "gap95Ms": 8.7199999999998,
+        "jsMedianMs": 4,
+        "js95Ms": 5,
+        "gapsOver12_5": 3,
+        "gapsOver25": 0,
+        "renderer": {
+          "renderer": "Apple M1, or similar",
+          "vendor": "Apple",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "engine": "firefox",
+    "version": "157.0",
+    "profile": "projector",
+    "entries": [
+      {
+        "title": "Cape Noir flight",
+        "samples": 429,
+        "gapMedianMs": 8.339999999999918,
+        "gap95Ms": 16.68000000000029,
+        "jsMedianMs": 4,
+        "js95Ms": 5,
+        "gapsOver12_5": 41,
+        "gapsOver25": 1,
+        "renderer": {
+          "renderer": "Apple M1, or similar",
+          "vendor": "Apple",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      },
+      {
+        "title": "Juan Fernández flight",
+        "samples": 412,
+        "gapMedianMs": 8.33999999999969,
+        "gap95Ms": 16.680000000000064,
+        "jsMedianMs": 4,
+        "js95Ms": 6,
+        "gapsOver12_5": 34,
+        "gapsOver25": 5,
+        "renderer": {
+          "renderer": "Apple M1, or similar",
+          "vendor": "Apple",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      },
+      {
+        "title": "Juan Fernández voyage",
+        "samples": 748,
+        "gapMedianMs": 8.339999999999918,
+        "gap95Ms": 8.980000000000473,
+        "jsMedianMs": 4,
+        "js95Ms": 5,
+        "gapsOver12_5": 8,
+        "gapsOver25": 1,
+        "renderer": {
+          "renderer": "Apple M1, or similar",
+          "vendor": "Apple",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      },
+      {
+        "title": "Atlantic flight",
+        "samples": 823,
+        "gapMedianMs": 8.339999999999236,
+        "gap95Ms": 9.319999999999936,
+        "jsMedianMs": 4,
+        "js95Ms": 5,
+        "gapsOver12_5": 18,
+        "gapsOver25": 1,
+        "renderer": {
+          "renderer": "Apple M1, or similar",
+          "vendor": "Apple",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      },
+      {
+        "title": "Scilly flight",
+        "samples": 396,
+        "gapMedianMs": 8.339999999999918,
+        "gap95Ms": 9.279999999999745,
+        "jsMedianMs": 4,
+        "js95Ms": 5,
+        "gapsOver12_5": 2,
+        "gapsOver25": 0,
+        "renderer": {
+          "renderer": "Apple M1, or similar",
+          "vendor": "Apple",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "version": "27.2",
+    "profile": "laptop",
+    "entries": [
+      {
+        "title": "Cape Noir flight",
+        "samples": 239,
+        "gapMedianMs": 17,
+        "gap95Ms": 18,
+        "jsMedianMs": 5,
+        "js95Ms": 5,
+        "gapsOver12_5": 237,
+        "gapsOver25": 2,
+        "renderer": {
+          "renderer": "Apple GPU",
+          "vendor": "Apple Inc.",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      },
+      {
+        "title": "Juan Fernández flight",
+        "samples": 228,
+        "gapMedianMs": 17,
+        "gap95Ms": 18,
+        "jsMedianMs": 5,
+        "js95Ms": 5,
+        "gapsOver12_5": 226,
+        "gapsOver25": 3,
+        "renderer": {
+          "renderer": "Apple GPU",
+          "vendor": "Apple Inc.",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      },
+      {
+        "title": "Juan Fernández voyage",
+        "samples": 374,
+        "gapMedianMs": 17,
+        "gap95Ms": 17,
+        "jsMedianMs": 5,
+        "js95Ms": 6,
+        "gapsOver12_5": 371,
+        "gapsOver25": 3,
+        "renderer": {
+          "renderer": "Apple GPU",
+          "vendor": "Apple Inc.",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      },
+      {
+        "title": "Atlantic flight",
+        "samples": 413,
+        "gapMedianMs": 17,
+        "gap95Ms": 18,
+        "jsMedianMs": 4,
+        "js95Ms": 5,
+        "gapsOver12_5": 411,
+        "gapsOver25": 3,
+        "renderer": {
+          "renderer": "Apple GPU",
+          "vendor": "Apple Inc.",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      },
+      {
+        "title": "Scilly flight",
+        "samples": 195,
+        "gapMedianMs": 17,
+        "gap95Ms": 18,
+        "jsMedianMs": 4,
+        "js95Ms": 5,
+        "gapsOver12_5": 191,
+        "gapsOver25": 3,
+        "renderer": {
+          "renderer": "Apple GPU",
+          "vendor": "Apple Inc.",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1728,
+          980,
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "engine": "webkit",
+    "version": "27.2",
+    "profile": "projector",
+    "entries": [
+      {
+        "title": "Cape Noir flight",
+        "samples": 240,
+        "gapMedianMs": 17,
+        "gap95Ms": 18,
+        "jsMedianMs": 5,
+        "js95Ms": 5,
+        "gapsOver12_5": 237,
+        "gapsOver25": 2,
+        "renderer": {
+          "renderer": "Apple GPU",
+          "vendor": "Apple Inc.",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      },
+      {
+        "title": "Juan Fernández flight",
+        "samples": 228,
+        "gapMedianMs": 17,
+        "gap95Ms": 18,
+        "jsMedianMs": 5,
+        "js95Ms": 5,
+        "gapsOver12_5": 227,
+        "gapsOver25": 3,
+        "renderer": {
+          "renderer": "Apple GPU",
+          "vendor": "Apple Inc.",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      },
+      {
+        "title": "Juan Fernández voyage",
+        "samples": 373,
+        "gapMedianMs": 17,
+        "gap95Ms": 18,
+        "jsMedianMs": 4,
+        "js95Ms": 5,
+        "gapsOver12_5": 371,
+        "gapsOver25": 3,
+        "renderer": {
+          "renderer": "Apple GPU",
+          "vendor": "Apple Inc.",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      },
+      {
+        "title": "Atlantic flight",
+        "samples": 419,
+        "gapMedianMs": 17,
+        "gap95Ms": 18,
+        "jsMedianMs": 5,
+        "js95Ms": 5,
+        "gapsOver12_5": 417,
+        "gapsOver25": 3,
+        "renderer": {
+          "renderer": "Apple GPU",
+          "vendor": "Apple Inc.",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      },
+      {
+        "title": "Scilly flight",
+        "samples": 200,
+        "gapMedianMs": 17,
+        "gap95Ms": 18,
+        "jsMedianMs": 5,
+        "js95Ms": 5,
+        "gapsOver12_5": 194,
+        "gapsOver25": 3,
+        "renderer": {
+          "renderer": "Apple GPU",
+          "vendor": "Apple Inc.",
+          "version": "WebGL 2.0",
+          "meshes": 105,
+          "triangles": 254115,
+          "lineSegments": 159364,
+          "contextsLost": 0
+        },
+        "viewport": [
+          1920,
+          1080,
+          1
+        ]
+      }
+    ]
+  }
+]

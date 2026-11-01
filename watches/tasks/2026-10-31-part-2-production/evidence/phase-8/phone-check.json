@@ -1,0 +1,6 @@
+{
+  "target": "Android Firefox",
+  "status": "not completed",
+  "reason": "The phone could not open the local preview. The Mac server listened on all IPv4 interfaces and returned HTTP 200 through its LAN address.",
+  "desktopEmulation": "393 x 851 CSS px, ratio 2, touch enabled; this is not a physical phone test."
+}

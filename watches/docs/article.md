@@ -4,7 +4,7 @@
 as one long page of narration with live figures between the paragraphs, in
 the style of Bartosz Ciechanowski's "Mechanical Watch". How to write the
 narration and place the figures; what a figure shows, and why; the sliders,
-the button and the playing figure; how the code is split between the addon and the
+the button, the playing figure, and Part 2's story figures; how the code is split between the addon and the
 talk; how to build the static page, and where it can go; how to export
 its text.
 **Read before** you write or change a slide's narration, add a click to a
@@ -211,7 +211,10 @@ asks to see that click.
 runs on its own time (`addons/narration/clock.ts`), which stands while it is
 paused. A step in a paused figure plays its move from the picture that
 shows, then the figure stands again: its time runs to the end of the step's
-change (`busyUntil`). A slider's change shows at once; a let-go of the
+change (`busyUntil`). The figure draws that exact endpoint before it stops,
+so a count includes its last day. Manual pauses keep their last picture.
+`pnpm art:privacy DECK` checks a paused voyage step in all three engines,
+with canvas pixel reads blocked. A slider's change shows at once; a let-go of the
 `twist` slider swings the hairspring back to rest, where it stands. **For a
 reader who asks for reduced motion, a step in a paused figure is a jump**:
 the new click at once, with no move and no flash. That reader starts with
@@ -298,6 +301,24 @@ is the point and the words are captions. It steps by itself while it is on
 the screen: each step waits for the change at its click to end, then for
 4.5 s (`DWELL_MS` in `ArticleFigure.vue`). After the last stop it starts
 again. The flash after each move stays: the reader is watching the figure.
+
+## Part 2's story figures
+
+The Cape Noir and Scilly stories each have a globe figure and a final map.
+The final map uses the punchline click. It shows the map and its marks,
+with the punchline in the prose only.
+
+The Juan Fernández story has a figure with steps, from its opening to
+the anchorage (`slides.md`, the narration's figure marker). Readers step
+the ship forward or back. The death count follows the day dots.
+A separate final map at the punchline keeps the complete route and count
+in the static article, where readers cannot step a figure.
+The narration explains that the daily count illustrates the reported rate;
+it is not a record of each day's deaths.
+
+The gusts loop while that figure runs. A pause stops them. The page's
+pause control still lets readers step the voyage; reduced motion makes
+those steps show their targets at once.
 
 ## How the code is split
 
@@ -422,6 +443,5 @@ the live page has blank figures (below).
 - A print stylesheet or a PDF of the article. A print of the live page draws
   only the figures near the screen; the others are blank, with their labels
   (Chromium, 2026-10-27).
-- Part 2 is only its heading: its one slide is hidden.
 - A whole-slide figure repeats its slide's title under the page's heading.
 - Labels do not grow on a phone; reading on a phone is a later goal.

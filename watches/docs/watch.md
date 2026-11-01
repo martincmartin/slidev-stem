@@ -56,7 +56,7 @@ ruler that the diving board replaced),
 | `art/probe.ts`, `watch-stills.ts`                           | build the probe page and draw frames on it in Chromium, as PNGs; the stills for the legibility checks (`pnpm art:stills`)                                                                                                         |
 | `art/pixel-regression.ts`                                   | the frames to compare before and after a change to `webgl/`, and their comparison                                                                                                                                                 |
 | `art/browser.ts`                                            | the three engines, and a built deck or page served to them offline, at a secure origin, each page in a fresh context                                                                                                              |
-| `art/print-check.ts`, `privacy-check.ts`                    | each printed page's watch and board against the live slide's (`pnpm art:print`); the live watch starts with canvas pixel reads blocked (`pnpm art:privacy`)                                                                       |
+| `art/print-check.ts`, `privacy-check.ts`                    | each printed page's watch and board against the live slide's (`pnpm art:print`); the cover and a paused article voyage work with canvas pixel reads blocked (`pnpm art:privacy`)                                                  |
 | `watch/design.json`                                         | written by `art/watch_design.py`; never edit by hand. `art/watch_design.py --check` compares what the file means, not its bytes (`pnpm format` rewrites its spacing)                                                              |
 | `watch/design.ts`, `path.ts`, `shapes.ts`, `generate.ts`    | read and check the design; outlines; the meshes, heights, pieces and their extents, the named views, `fittedView`                                                                                                                 |
 | `watch/teeth.ts`, `teeth.test.ts`                           | the teeth: cycloidal wheel teeth and the pinion leaves they mesh with, also a few at a time (a span); tests that each pair meshes without overlap                                                                                 |
@@ -1829,7 +1829,8 @@ to the renderer's byte values. It rejects invalid and transparent colours.
 Do not use canvas pixel reads for this conversion. Safari's fingerprinting
 protection can change their colour and alpha values. This can stop the deck
 before it draws the first slide. Full validation blocks these reads in each
-supported browser engine. `pnpm art:privacy DECK` checks that the live watch
+supported browser engine. `pnpm art:privacy DECK` checks the cover and a
+paused article voyage. It checks that the live watch
 still starts in each engine. See [browser support](../../docs/talks.md#browser-support)
 for the requirements and test limits.
 

@@ -1,0 +1,8 @@
+{
+  "date": "2026-11-01",
+  "browser": "Android Firefox",
+  "method": "Physical-device confirmation reported by the user",
+  "result": "passed",
+  "userStatement": "Now it works. Android is fine, ship it.",
+  "limits": "The user supplied no device model, browser version, screenshot, or phone frame timings."
+}

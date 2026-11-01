@@ -1684,37 +1684,38 @@ clicks: 5
 <PunchScreen v-click="5">Longitude:<br><em>400 miles</em> off</PunchScreen>
 
 <!-- narration
-[figure: The globe, turned to show South America.]
+[figure: The globe shows South America, with Cape Horn at its southern tip.]
 
-In 1741, a British squadron under George Anson sailed around the tip of
-South America, from the Atlantic into the Pacific.
-
-[click]
-
-The crew worked out where they were each day. By their reckoning, they were
-well out to sea, west of the land.
+In April 1741, George Anson's squadron rounded Cape Horn and turned north
+into the Pacific.
 
 [click]
 
-At 2 a.m. on April 14, a lookout saw cliffs, two miles ahead.
+Their estimated position put them well out to sea, west of the land.
 
 [click]
 
-Their latitude, how far south they were, was correct. A sailor could find it
-from the height of the Sun at noon.
+At about 2 a.m., a lookout saw cliffs two miles ahead. The ships were
+heading straight toward them.
 
 [click]
 
-Their longitude, how far east or west, was another matter.
+Their _latitude_ told them how far north or south they were. They could
+check it from the height of the Sun at noon.
 
 [click]
 
-[figure: A map of the tip of South America. A ship sits just south of the
-cliffs of Cape Noir. A dashed ship, where the crew thought they were, is far
-to the west on the same dashed parallel, and a bracket spans the gap between
-them.]
+But _longitude_ was their position east or west. Their estimate put the
+land far beyond the horizon.
 
-It was 400 miles off. Nobody at sea could find longitude.
+[click]
+
+[figure: A map of Cape Noir shows a ship near the cliffs. A dashed ship marks
+its estimated position to the west. A bracket measures the gap between them.]
+
+Their longitude estimate was about 400 miles off. They had no reliable way
+to measure it at sea.
+
 -->
 
 <!--
@@ -1767,34 +1768,46 @@ clicks: 5
 <PunchScreen v-click="5">The detour cost<br><em>70–80 men</em></PunchScreen>
 
 <!-- narration
-Anson's crews were dying of scurvy, four to six men a day. They needed the
-island of Juan Fernández, with its fresh water and food.
+Anson's men were dying of scurvy: four to six a day. They needed fresh
+water and food from the island of Juan Fernández, off Chile.
+
+[figure 0-4: A ship searches between Chile and Juan Fernández. Its route gains
+a dot for each day at sea. A scurvy death count rises as the ship sails.]
 
 [click]
 
-A navigator who could not find longitude sailed north or south to the
-island's latitude first. Then he had to choose: east or west?
+On May 28, they reached the island's latitude. But had they sailed too far
+east, or too far west?
 
 [click]
 
-They chose east, and after two days they saw the coast of Chile, an enemy
-coast.
+They chose east. Two days later, they saw the coast of Chile. The island
+was behind them, and the coast belonged to their enemy.
 
 [click]
 
-So they turned back west, and sailed for nine days.
+They turned west again. Headwinds and calms stretched the return journey
+to nine days: the same distance that had taken two days eastward.
 
 [click]
 
-At last they found the island.
+At dawn on June 9, they finally saw the island. They still needed another
+day and night to reach its anchorage.
 
 [click]
 
-[figure: A map of the sea off Chile. The ship's track runs north, then two
-days east toward the coast, then nine days back west, a dot for each day, to
-the island of Juan Fernández. A count on the land reads 72 scurvy deaths.]
+[figure: The final route runs east to Chile, west to Juan Fernández, then to
+its anchorage. Day dots mark the track. The illustrative scurvy count reads 72.]
 
-The detour had cost 70 to 80 men.
+The detour had cost 70 to 80 men. They had been only a few hours from the
+island when they turned the wrong way.
+
+> [!aside] What the count means
+> The figure uses six deaths a day to show the cost of time. Its final
+> count is 72. These daily numbers are illustrative, not a recorded list
+> of deaths. [Walter's account](https://www.gutenberg.org/cache/epub/47130/pg47130-images.html),
+> Book I, chapter X, reports four to six deaths a day and a total of 70 to 80.
+
 -->
 
 <!--
@@ -1846,16 +1859,15 @@ clicks: 4
 <PunchScreen v-click="4">4 warships lost,<br>over <em>1,400 men</em></PunchScreen>
 
 <!-- narration
-[figure: The globe, turned to show the English Channel, between England and
-France.]
+[figure: The globe shows the English Channel between England and France.]
 
-Thirty-four years before, in 1707, a British fleet sailed home to the
-English Channel.
+Thirty-four years earlier, Admiral Shovell's fleet was sailing home from
+the Mediterranean. Twenty-one ships approached the English Channel in poor weather.
 
 [click]
 
-On October 22 its navigators agreed on where the fleet was: safely south
-and west of the Isles of Scilly.
+On October 22, 1707, the fleet's estimated position lay south and west of
+the Isles of Scilly. The ships sailed on.
 
 [click]
 
@@ -1863,15 +1875,25 @@ At about 8 p.m., in the dark, the flagship struck the rocks of Scilly.
 
 [click]
 
-They were not where they thought they were.
+The fleet was farther north and east than its navigators thought. The gap
+between the ships' estimated and actual positions was now a line to the rocks.
 
 [click]
 
-[figure: A map of the Isles of Scilly. The ship is on the rocks at their
-west end. A dashed ship, where the fleet thought it was, is to the
-south-west, and a bracket spans the gap between them.]
+[figure: A map of Scilly shows the ship at the rocks. A dashed ship marks
+its estimated position to the southwest. A bracket joins the two positions.]
 
-Four warships were lost, and over 1,400 men.
+Four warships sank. More than 1,400 men died.
+
+> [!aside] A disputed cause
+> The [Royal Museums Greenwich account](https://www.rmg.co.uk/collections/objects/rmgc-object-140657)
+> discusses errors in navigation, compasses, and weather. The cause remains
+> disputed. This map shows the position error; it does not establish one
+> cause for the wreck. The museum also finds no firm evidence that this
+> disaster caused the Longitude Act.
+> [Accounts of the disaster](https://en.wikipedia.org/wiki/Scilly_naval_disaster_of_1707)
+> give death tolls from 1,400 to more than 2,000.
+
 -->
 
 <!--

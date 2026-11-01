@@ -1,0 +1,1157 @@
+{
+  "baseCommit": "4d8e1c8d333890de963ab643b6fa3db6cd7de475",
+  "files": [
+    {
+      "path": ".gitignore",
+      "sha256": "2dc42aabab189f77bd0cf3a696318a9f2851ee4ddaf375da4c8b88f7a259a5cc"
+    },
+    {
+      "path": ".prettierignore",
+      "sha256": "5526a2e893a60c7b3d69c10e2fc5779236cb9855992b78798282bf0ac5f41183"
+    },
+    {
+      "path": ".prettierrc",
+      "sha256": "1371e104a7e7a4003e8e14e7af9126bc06b2434c0568ed5fc9615da4980bc95b"
+    },
+    {
+      "path": ".python-version",
+      "sha256": "fd81c059718aeb990462ccbf0282b57d9488a7213420e8cc637d3182b6fa7697"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "cec2adfe79955ad6cad2153d9ccce9882e15a7626c1e27cc087f0e82544f90ac"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "7a0d70ec6b2843716e800240e279d8bd05599881638a87e19308d71814bdb0fe"
+    },
+    {
+      "path": "LICENSE-content",
+      "sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411"
+    },
+    {
+      "path": "README.md",
+      "sha256": "25fe8482473fd204a7731fa6f6c273c7e27edcd3aac000716a406ac15526690c"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "58537a4fb46cccf6a980c398cf36663fb7029485a769c2e14f4d487a66d06531"
+    },
+    {
+      "path": "docs/export.md",
+      "sha256": "2f4f6f37e39f1d1a0e4035d3686f04e7b04f9afc19a1f7e4f3d9191588dbcf4c"
+    },
+    {
+      "path": "docs/illustrations.md",
+      "sha256": "e7f462a71cacd6f8facae7c6d69713984a170c7747befdc6190549b2af29d02d"
+    },
+    {
+      "path": "docs/legibility.md",
+      "sha256": "4a29a4b27d1f7e28ed05b4c72a91955635d6f16e06d1f893ec2200231b9691f7"
+    },
+    {
+      "path": "docs/navigation.md",
+      "sha256": "eec01489895763727663c357e2433d2a89fab729ae3868780cb3cc3251a7830c"
+    },
+    {
+      "path": "docs/talks.md",
+      "sha256": "10da153570759c2ab2592aade4e1caccb142595f3c887e019abbc01b04aca4f7"
+    },
+    {
+      "path": "docs/text-display-deep-research-report.md",
+      "sha256": "1ee7b27c015321feb965e5504bf8376114deeb48369c45b2ac8017d17e089bf1"
+    },
+    {
+      "path": "docs/theme.md",
+      "sha256": "cf33024f1fd4e20c5d6d34871accb78ffd61e26186c3619365d1d8fb296e00be"
+    },
+    {
+      "path": "docs/webgl.md",
+      "sha256": "a13f88291bcb66bec852396196bbcea86acc11da7769786503bc28475ecb66a8"
+    },
+    {
+      "path": "package.json",
+      "sha256": "cc3769c32c28553f3b35528a261820bfed3e4c71dd84870319d4d55c9155d5d6"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "b06ae5b7cb1e8f09f3a6840d1cf6da5347b7c8422bc98a31de1e67a0b74fa6cd"
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "sha256": "fea83e91c69d138b1bcb94d82f56974cdd268245174f9ea585027040a012a274"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "c808009b1e131859324f508bfc85f69198bcd44f994c627aca00312a094f340d"
+    },
+    {
+      "path": "themes/house/README.md",
+      "sha256": "8344293a930bb770f6f3df0c9bbf8d57d62c51d1ea8345ff8677285029c12719"
+    },
+    {
+      "path": "themes/house/layouts/cover.vue",
+      "sha256": "a0142b3bbba4a77bb4ccccfd623b6708948a7f6c9081aef8ebaa5f1de24be17a"
+    },
+    {
+      "path": "themes/house/layouts/section.vue",
+      "sha256": "85836139895e19bb2daf891062bbc453017bfa5b016a256a20721407f447b8e9"
+    },
+    {
+      "path": "themes/house/navigation.ts",
+      "sha256": "cf15ec86619b0320814512ccec01e86d807a397454fafb0625d002a32ac0ddff"
+    },
+    {
+      "path": "themes/house/package.json",
+      "sha256": "1bcbd1796b78587a14bf1ce8a15028be805b83c02a4bb518cda18bd9d26b3da2"
+    },
+    {
+      "path": "themes/house/setup/root.ts",
+      "sha256": "a717ec04807d0a3edc80935220fd7ebde81bef38b230abf705a85ae1348a3888"
+    },
+    {
+      "path": "themes/house/styles/fonts.css",
+      "sha256": "a420493bdda554c2524c61e1c8b420ce702dc14dfcd390bfa19ad3e6a97dd303"
+    },
+    {
+      "path": "themes/house/styles/house.css",
+      "sha256": "e55164ca994865fd4648ed4bf572cca3cf565b34c0d54a2acb23a1223f92f8ec"
+    },
+    {
+      "path": "themes/house/styles/index.ts",
+      "sha256": "3ec3c8e5b813e86660bec157215586bcbd74338e5fc8f4c128a0ee2e83ea9b24"
+    },
+    {
+      "path": "themes/house/types/slidev-client.d.ts",
+      "sha256": "f16e66e74a9194e05299be55e4f45b24d62ba0fdfe1a6cc32b240e365beb3b72"
+    },
+    {
+      "path": "themes/house/types/vite-env.d.ts",
+      "sha256": "294129c527f3530655f5b610f2dd17ebcaf251f446db3ba1f8e0844d95cfe13b"
+    },
+    {
+      "path": "themes/house/types/vue.d.ts",
+      "sha256": "005961dc29552dfdd7b2cede4769d79631c0923007d3aac5beda8abc55bc25a6"
+    },
+    {
+      "path": "themes/house/utils/side.ts",
+      "sha256": "734b3424ff22d7441f048f0bb7bffa13c43794b173e852b2783d006418dccc71"
+    },
+    {
+      "path": "themes/house/vite.config.mts",
+      "sha256": "160ca272a28c613501d0ee164f85ef26c9be8445bcd96b80446ee7654ee53bc4"
+    },
+    {
+      "path": "themes/palettes/README.md",
+      "sha256": "c7eb5e51fb7007ae188e2bffbf0761ba3fe0708ef2dc4d1d7c7bcfee45e63217"
+    },
+    {
+      "path": "themes/palettes/after-hours/index.html",
+      "sha256": "be8162a311bf4ac5ba1af493f9534342773cc0639fd9bcf7d6c1e4e4a1143755"
+    },
+    {
+      "path": "themes/palettes/after-hours/package.json",
+      "sha256": "13eccb486e8d06a658fb4c8ea87a8add627bc882f4339e6206a6cb436e34ab70"
+    },
+    {
+      "path": "themes/palettes/after-hours/palette.css",
+      "sha256": "b231614467b688c6d907a20c7015ef1437546cd2977e03cc7912dbc0056d86c9"
+    },
+    {
+      "path": "themes/palettes/beacon/index.html",
+      "sha256": "431e29d97d9f90bc367896ae72dd2a620ded3c42a2f7e074e4d80d14c7849c14"
+    },
+    {
+      "path": "themes/palettes/beacon/package.json",
+      "sha256": "a1649b06312d9736ff5abac95391d27df483c0062ec96619f1041d0475fc3c3e"
+    },
+    {
+      "path": "themes/palettes/beacon/palette.css",
+      "sha256": "f1f59c10e8fa09524ffdf5948667d2c0f2905c1153838cb3710a9ac6cf3ccf10"
+    },
+    {
+      "path": "themes/palettes/campfire/index.html",
+      "sha256": "af9989d6f92512492f50e4c4d2b56df346d8bf530193478c748e30b5ad5bfa90"
+    },
+    {
+      "path": "themes/palettes/campfire/package.json",
+      "sha256": "7106f787b763cb48149ff14dedb6071196d79c8ac0b8e2fa1f8991279af94a29"
+    },
+    {
+      "path": "themes/palettes/campfire/palette.css",
+      "sha256": "9b98ef50475d511bc4e3a426b77352493acc8215d0f5ac3ed99ee69b742a70e1"
+    },
+    {
+      "path": "themes/palettes/electric-terracotta/index.html",
+      "sha256": "df0214410075e85db852c0a0592d25685a38abbb9b124ac332fa6b100e1e4e37"
+    },
+    {
+      "path": "themes/palettes/electric-terracotta/package.json",
+      "sha256": "ade17db1bdb88cec6400303a5444055ecf7f326d1097af1acc4c05549990a795"
+    },
+    {
+      "path": "themes/palettes/electric-terracotta/palette.css",
+      "sha256": "c8cfad333f177492a1c29522bd2e53523bf6904412970c787bb01c517400f937"
+    },
+    {
+      "path": "themes/palettes/field-notes/index.html",
+      "sha256": "acf58f30ff4e18c18e5e60034049d7c96b28664f6bd09d2281abeb3bc2718599"
+    },
+    {
+      "path": "themes/palettes/field-notes/package.json",
+      "sha256": "4e5d6b3bc16da5d80026fb19466dc0cc6821d32d4094438e4ce2e77942a593de"
+    },
+    {
+      "path": "themes/palettes/field-notes/palette.css",
+      "sha256": "16e60bac627964eac7bc0a8cc3854bdfeb318f68705d7f335cefaf6332f2d706"
+    },
+    {
+      "path": "themes/palettes/kraft-ink/index.html",
+      "sha256": "8216625560659845111735aac924d845bfdc0a1dc345f945dcfdbd583425aa49"
+    },
+    {
+      "path": "themes/palettes/kraft-ink/package.json",
+      "sha256": "c3cc29dadde5da7f714a7997e4ef8c7e24012d06d4ff2eda87267a9770886243"
+    },
+    {
+      "path": "themes/palettes/kraft-ink/palette.css",
+      "sha256": "9dd3234d02298110ba23ddd6de57235035b46c00a42e63e93d4c3b20357d2d47"
+    },
+    {
+      "path": "themes/palettes/ledger/index.html",
+      "sha256": "c228bb8c639f0d1a054a096640167cbe2c3d2513c4e38e11b430f41b7040588d"
+    },
+    {
+      "path": "themes/palettes/ledger/package.json",
+      "sha256": "418bc82aba4684effcd66a474f3bfa78c33f99ab5fa4d8a636514410e3cf1615"
+    },
+    {
+      "path": "themes/palettes/ledger/palette.css",
+      "sha256": "39d94de837ceefa3aec39126c446e8f2fe8e28d0f0f076321e749af0b03618b7"
+    },
+    {
+      "path": "tools/README.md",
+      "sha256": "abef4b7d33034848a5a6506f22b6dfb86a90970092c088ae88b5bbf7f96a6475"
+    },
+    {
+      "path": "tools/artcheck.py",
+      "sha256": "dd62e1064dc8846faaf9d10efb6e449d759f53a1bfbe6c50cbddc33b3c01218c"
+    },
+    {
+      "path": "tools/barroom.py",
+      "sha256": "4bf2de3b8cc7565fd056b4699f12ab5ae97a5d21c065ad282f744947004f4678"
+    },
+    {
+      "path": "tools/browser.ts",
+      "sha256": "6d88771f9c09c3d5694214fb8798b24506a9580f7ddc19364387eba96a96cb22"
+    },
+    {
+      "path": "tools/browsers.py",
+      "sha256": "2cf495910c097de4e42c1fff0c07ef9e02c11cf15ef4a7f45ede79cc6f30d37e"
+    },
+    {
+      "path": "tools/capture_outputs.sh",
+      "sha256": "da86d5d7402f31e43d287ac04c6ecedc7bfc67d128c62804953a35bc94d2dc8f"
+    },
+    {
+      "path": "tools/check_python.py",
+      "sha256": "5ef718d301d8d7fd09651831c17fcdc565d5ff5f4461149d6ec2c1f4e8fcb1bf"
+    },
+    {
+      "path": "tools/chromium-args.json",
+      "sha256": "f12a93a8c56b126e25bf70f2ab13b4535be7fae013656733d01c851c0eb218de"
+    },
+    {
+      "path": "tools/compare_dist.py",
+      "sha256": "6404bf7abe54fc46fe04525a2cdce9834ad6ecda1a335c4b4568563f8cc646e1"
+    },
+    {
+      "path": "tools/contact.py",
+      "sha256": "f68856fe5acf75ab48ba6bfbfdd2fbdc33b10c255a5863c037e1977d60ccc9fc"
+    },
+    {
+      "path": "tools/deck_check.py",
+      "sha256": "bd0a9e42beb964c82dd66132eec0c56ea55998ff72d7ad372f4414d870df8edb"
+    },
+    {
+      "path": "tools/derive_palette.py",
+      "sha256": "849af98cb639875ab7bf3be2b1fc556305efca624e78ef3e61819cc86f09dc07"
+    },
+    {
+      "path": "tools/doccheck.py",
+      "sha256": "24aafdba675cb39476374b281415df5197bc80bf0dba248c0843b2920695036b"
+    },
+    {
+      "path": "tools/eslint.config.js",
+      "sha256": "fb2334493afb2c6810945b9d8cae971ceecc3fdc640f1e4ba18534619ffedfa2"
+    },
+    {
+      "path": "tools/fade_check.py",
+      "sha256": "249b1fdac261dde5d04efba5a323b5b3c3363654ffdaaa5a55bc311411ca005e"
+    },
+    {
+      "path": "tools/flatten_pnpm_list.py",
+      "sha256": "e71824917d3230e92fe009034dff34a5836df2426c7346d9912263e3c7595f21"
+    },
+    {
+      "path": "tools/lib.py",
+      "sha256": "335d6d28eca9b3fc35886cdcf1a02e511b27bb9fe3b49fda88e4403807e7be1a"
+    },
+    {
+      "path": "tools/motion.py",
+      "sha256": "6cd028c95d325b05709a98aad1f6a9b2d9e5e3d7a1a922ceae8ae7242ce9ce60"
+    },
+    {
+      "path": "tools/navcheck.test.ts",
+      "sha256": "77a8b13da61cac8dd241f048dac33286a7fb95deb5817ec87da874473e44eb4a"
+    },
+    {
+      "path": "tools/navcheck.ts",
+      "sha256": "752416a53a3dfcf82712b38c1cef76f4e8d61c0bf41bd217c4991258d5e86230"
+    },
+    {
+      "path": "tools/offline-check.test.ts",
+      "sha256": "511ca56e9a97b4d9b61f715285c0167f8ce096dfcf3561c744bdb06422539fd7"
+    },
+    {
+      "path": "tools/offline-check.ts",
+      "sha256": "b5043dc05217447a61c30d59c23676493d46cc7c057f323dfc9b56ad79f69bbe"
+    },
+    {
+      "path": "tools/pages_preview.py",
+      "sha256": "52acf5814ac32afa86d8cec0e89a8de18c4aec797707b0225bfec282572454fc"
+    },
+    {
+      "path": "tools/palette.py",
+      "sha256": "53790db0869e615779ed881f8cba5650150d3d3fb9fb49d9ddb6b075d1f5457d"
+    },
+    {
+      "path": "tools/publish_plan.py",
+      "sha256": "dc0002db3dd860c486371fb8ad490154107fed5015bcfcf892357dbd972f9f65"
+    },
+    {
+      "path": "tools/scenecheck.py",
+      "sha256": "d2d135ac8e8b6e11226443b7500a17bc88fd0b0db826dd6b16111a25f62163af"
+    },
+    {
+      "path": "tools/smokecheck.test.ts",
+      "sha256": "0a1b8a2be1e38306b1f35bdfa6e60022125551b0b0e12a4a336858f0e7b74fb1"
+    },
+    {
+      "path": "tools/smokecheck.ts",
+      "sha256": "b6c20f7804314e9fea889d5d16fb87c8bb92060f7cc93cc20f7d5ac2e5a50152"
+    },
+    {
+      "path": "tools/spellcheck.test.ts",
+      "sha256": "4b3f92702c664c3f97c53b160f5ef8d067b7c9ae183d7e8c6f30f44e1599fed9"
+    },
+    {
+      "path": "tools/spellcheck.ts",
+      "sha256": "711e2423c688d911ebbf2e79854b4178b9c9b7d197c05cff62ac3b53be991c1c"
+    },
+    {
+      "path": "tools/talkcheck.py",
+      "sha256": "3152038462227a9132a96819f8454ec3eff5a9fba38c4c4ff238690c8ba31dfa"
+    },
+    {
+      "path": "tools/test_artcheck.py",
+      "sha256": "e6f3c98f2de6e5213a321e5d631a1c792f0a174327198e7a061efec318393013"
+    },
+    {
+      "path": "tools/test_barroom.py",
+      "sha256": "00d10ffca2715913d8138c069ebd04b9f2d2e01eb5d5ca6e84ef961a5a6959e6"
+    },
+    {
+      "path": "tools/test_browsers.py",
+      "sha256": "7088861e3196f571496c7c4199c2e834a77c26453c601b9cf0842a8087d661d9"
+    },
+    {
+      "path": "tools/test_compare_dist.py",
+      "sha256": "ef726f66faffd5666c11522c1bac9ef193c887a1b550f553c885b6f9f5ac903c"
+    },
+    {
+      "path": "tools/test_derive_palette.py",
+      "sha256": "88ea883fd3d54a211b3a79480af2a2eee8fea720d0602dbd734069d1648f3b77"
+    },
+    {
+      "path": "tools/test_doccheck.py",
+      "sha256": "caba05aac4f4a7a9f0d71a735d5a5bfaa0393ca70424c7d313393e389c715b99"
+    },
+    {
+      "path": "tools/test_fade_check.py",
+      "sha256": "1e793a132261487723290c943dab7cdedb8546cd2d8ad31c875399d0a49eab68"
+    },
+    {
+      "path": "tools/test_lib.py",
+      "sha256": "314c9e48492b54dd4376c5599752299f6cd8371ce7bb0615cd024c3f305cecbc"
+    },
+    {
+      "path": "tools/test_pages_preview.py",
+      "sha256": "a2db8a132344564c6d0f830892111a17514cdfc8fe3efd973cff2d57198557db"
+    },
+    {
+      "path": "tools/test_publish_plan.py",
+      "sha256": "66afbf9a8d6db36ef02015bc5791a374cc11770ea4384bb8780289a1dfd061b9"
+    },
+    {
+      "path": "tools/test_scenecheck.py",
+      "sha256": "299d60259ea86b658e7aa3d372deca52fd61e80da6655b776bc90e612fa3a5cf"
+    },
+    {
+      "path": "tools/test_talkcheck.py",
+      "sha256": "a7add7b618479079a40afdefc5cfc827929576f8417ae15f80a4f18dec2cd780"
+    },
+    {
+      "path": "tools/test_validate.py",
+      "sha256": "f5cd3d38a6624cb4b85d2d4e63628c5deb4040be57db7f2ca764f27a579ac403"
+    },
+    {
+      "path": "tools/tsconfig.json",
+      "sha256": "36fbca08f84e3d0349a8f56fa78b2be5fcdc0f463d1b23083a57f5f1e46fdaf5"
+    },
+    {
+      "path": "tools/tsconfig.theme.json",
+      "sha256": "aa439e228195d8f021e5e114699b2667dab62da4cc8dbe3a36d3807207b4357d"
+    },
+    {
+      "path": "tools/validate.py",
+      "sha256": "6eb97accb4e9f7cc095845dc8b4c2e0590ef97505913a8a917faaca660636025"
+    },
+    {
+      "path": "tools/vuecheck.test.ts",
+      "sha256": "28990f2699eee78eafb15c30d1a287383bcf077a7a6a9eac172b323357f729e4"
+    },
+    {
+      "path": "tools/vuecheck.ts",
+      "sha256": "35ae0f8b0700602e8eaceb37184929f594f25d8b7c790ec9ee76cb8463523860"
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "ad2b76ab15f5f4ae1cc1f8e99208327389e4e42ad89b399452139ef3acc1e941"
+    },
+    {
+      "path": "watches/.gitignore",
+      "sha256": "8d820b1da278ce020cad45d1eb12c5099b9b541b8f572cde57fc771a924cbbd3"
+    },
+    {
+      "path": "watches/.prettierignore",
+      "sha256": "190a808d45deb7ded7ae8901d7a88b0887e7f2e5a40300b9fc07add6d03fde7b"
+    },
+    {
+      "path": "watches/.python-version",
+      "sha256": "fd81c059718aeb990462ccbf0282b57d9488a7213420e8cc637d3182b6fa7697"
+    },
+    {
+      "path": "watches/.vscode/extensions.json",
+      "sha256": "8c282fb3fb5c8d9b0436fce001aa74c6b2f67752a72f04a3bd8719e18f5a61eb"
+    },
+    {
+      "path": "watches/.vscode/settings.json",
+      "sha256": "b3ee898a2b0e6b2a3cf8e1e5693fbd582b2767566162f5de56d8925e1da2a895"
+    },
+    {
+      "path": "watches/AGENTS.md",
+      "sha256": "813fc18fcc83da9d334fc6927b5e8d98018e504994ac5607d47106fabf5ba7ba"
+    },
+    {
+      "path": "watches/README.md",
+      "sha256": "bb909df9550eb98b1dd30c1ea32a9943dde747c8989ea5a1ae5d8531855d8c19"
+    },
+    {
+      "path": "watches/addons/narration/clock.test.ts",
+      "sha256": "1434560608368795aa9fcef41eef0f294748d3b52a47c34957ffbab99adfa474"
+    },
+    {
+      "path": "watches/addons/narration/clock.ts",
+      "sha256": "50b4ee61dcd6052518e1b2ca9e399b10a54b4dce670c19aabaababa2fedeff6f"
+    },
+    {
+      "path": "watches/addons/narration/components/ArticleFigure.vue",
+      "sha256": "6cd6afe17dfe4ee6f4a8f9aec3b1449aef8e121cad6054847d7415aaa76382cb"
+    },
+    {
+      "path": "watches/addons/narration/figure.ts",
+      "sha256": "f7421e0ac31ae01fa4f7b71a9ecf451761d08cb640d0ad389b9bd2f8e088e7d4"
+    },
+    {
+      "path": "watches/addons/narration/history.test.ts",
+      "sha256": "6bbbef34ae0f17d07f38df4a1dca87b278f3e3c383c41ef6fdc6b0f5de034b6a"
+    },
+    {
+      "path": "watches/addons/narration/history.ts",
+      "sha256": "48dc7f8c6a14669c204661cad988fba785b0c5d9fefec9178ccafaf6a809ac7a"
+    },
+    {
+      "path": "watches/addons/narration/narration.test.ts",
+      "sha256": "a13aba7e34795e2f8648b9cede107c65fdc819f3bba055b319fe35b33f83966f"
+    },
+    {
+      "path": "watches/addons/narration/narration.ts",
+      "sha256": "25e65285e8dbe71b793487a9328e52b10700c3ed0e6b8bb5951e2cabaed80974"
+    },
+    {
+      "path": "watches/addons/narration/package.json",
+      "sha256": "0791eb3ec827f0578eeac2e5e87ba03c71236355ebafd1f8e2728ca3a2c2b813"
+    },
+    {
+      "path": "watches/addons/narration/plan.test.ts",
+      "sha256": "e64b217e9e693d3e3e09fc80bdf76bd2719d442f5249d369411f7398c614fc29"
+    },
+    {
+      "path": "watches/addons/narration/plan.ts",
+      "sha256": "41b60e7cd5eb833d1b415ac2026d2e29b0b7a655e4c919c26ce9221b13f57f19"
+    },
+    {
+      "path": "watches/addons/narration/prerender.ts",
+      "sha256": "4bc47bb02e2ff02864c9eaeaf36d5359b519ded15f8decc95e7ea3301e2e574e"
+    },
+    {
+      "path": "watches/addons/narration/setup/preparser.ts",
+      "sha256": "2a1dda9bd1f1021174abcd5bf37ba5d4ad43763f305fd692f91f85b1acf36c93"
+    },
+    {
+      "path": "watches/addons/narration/setup/routes.ts",
+      "sha256": "b633dd7b3de955bff5b7bc6ef83c247513ac83341d928f3e21f3c8f32c84f87d"
+    },
+    {
+      "path": "watches/addons/narration/static-page.test.ts",
+      "sha256": "2a7420a4eb259653be6ff9ee14df6be6f806b7bbebadf89d6d2711ad37261a53"
+    },
+    {
+      "path": "watches/addons/narration/static-page.ts",
+      "sha256": "867d1231c8fa25a6e89fbd0b2765788ebd8508727473c2333f6d7d77e5488e0b"
+    },
+    {
+      "path": "watches/addons/narration/text.test.ts",
+      "sha256": "c1ea9e28724226d5fb95ab08b87eae44c98d9474035e82cd3c6a06d2250e3755"
+    },
+    {
+      "path": "watches/addons/narration/text.ts",
+      "sha256": "698a4bf590b8095dc4284edc3b321377c03604b0be399f3c57cfe1335794c1f8"
+    },
+    {
+      "path": "watches/addons/narration/views/ArticlePage.vue",
+      "sha256": "192711234ed3311d57d0146e796b38746e83fb5a961b9f36b2c57c45c8caa5a8"
+    },
+    {
+      "path": "watches/addons/narration/vite.config.ts",
+      "sha256": "4ff5e8201bb447a764f0cc96957abc7c49797cc41d9f85d7c5bfa61b964d3475"
+    },
+    {
+      "path": "watches/art/browser.ts",
+      "sha256": "6c0aa64cdf5017cc1c5ccb3707713425f7645b261fe7570e2d31914d9c8ad065"
+    },
+    {
+      "path": "watches/art/diving_board.py",
+      "sha256": "faa611859127b17594c774f6bd5600847b69ed10e6874d2fd75caf607518bec2"
+    },
+    {
+      "path": "watches/art/earth-data.ts",
+      "sha256": "b158e8790a6bbbf6800627de7c75adfc9b9bb197e7f38cb358723466e2bb7e6f"
+    },
+    {
+      "path": "watches/art/favicon.py",
+      "sha256": "07c4176ec5991c42b08f793a2b65c5540f04b6177d5745c02503892e7640d896"
+    },
+    {
+      "path": "watches/art/fetch-earth.sh",
+      "sha256": "8f64b49bae987f47dbd59860a5d3e4c9d4813bcc78b661001f3367e7f6a792fe"
+    },
+    {
+      "path": "watches/art/pixel-regression.ts",
+      "sha256": "a33b2716547cd7a3683473049be3c4da56c07bddc8c05b8c4b88ea742ea5f132"
+    },
+    {
+      "path": "watches/art/print-check.test.ts",
+      "sha256": "9be88533f9ea0910d9913cf75ca4f95d0c2698e1724acda63c7989a56728533d"
+    },
+    {
+      "path": "watches/art/print-check.ts",
+      "sha256": "809e9c4b8a68a592f2eeb3bff4d490ada0d7d687f7feca855ace16ea592ebe42"
+    },
+    {
+      "path": "watches/art/privacy-check.ts",
+      "sha256": "c1c22cf1efabfd1445d840738f7f093d879a055e6fdb3d84d06fdb84e0431b56"
+    },
+    {
+      "path": "watches/art/probe.ts",
+      "sha256": "247374dedaa6cc9c6ac8edebaa6bec0dfb452c5ffcc17d6bb696867247605eca"
+    },
+    {
+      "path": "watches/art/reference_palette.py",
+      "sha256": "c526abab5de75b3735bab165e4072e2d5c75fc3efe655c0b30df9b765ba13593"
+    },
+    {
+      "path": "watches/art/search_watch_layout.py",
+      "sha256": "1f2f11e100a8a4f85bfcd661159c0d8fab0586973afa6bce2df4340ba7cddf35"
+    },
+    {
+      "path": "watches/art/test_favicon.py",
+      "sha256": "687c17eec1317723276c65b316b9343f191a3414707a8c1afa0d254a2772b51e"
+    },
+    {
+      "path": "watches/art/test_leader_path.py",
+      "sha256": "75405b81db3d2ca27db992fafa4188b5b926f4f606f557d8286640c691bfd330"
+    },
+    {
+      "path": "watches/art/validate_watch_design.py",
+      "sha256": "35b2d8181bef2361ccb0cbd31b440c9258b69f3fdbf48e19f0c080cba710d298"
+    },
+    {
+      "path": "watches/art/watch-stills.ts",
+      "sha256": "561c83ae1c6fd6eacc75d1235515dae2b2d79d1701fb32b7c6c385500c5524a7"
+    },
+    {
+      "path": "watches/art/watch_design.py",
+      "sha256": "22ecb0122e91f617efbe3b180986f14dd8c514492ddc5c20ab1de4f0c8cc1be1"
+    },
+    {
+      "path": "watches/art/watch_geometry.py",
+      "sha256": "91d59e9458a8b66e0e135e84cbc7896ef4b0a7c8bbd49347732de60f6ab559d0"
+    },
+    {
+      "path": "watches/components/DivingBoard.vue",
+      "sha256": "163db6b8115d5d9395214b317b58b71c8a63852b0f9abdbda639ab3afe1a3cff"
+    },
+    {
+      "path": "watches/components/FigureLayer.vue",
+      "sha256": "7c2ec16eb339a6c42bd261159c9f5c513b6918dd130c7dec01c0944d0c060e71"
+    },
+    {
+      "path": "watches/components/MapLabel.vue",
+      "sha256": "a9d0f8343dcb4d70da6f8bd8cf078f5a0afe9e02db731509d08b351b7de46a51"
+    },
+    {
+      "path": "watches/components/PunchScreen.vue",
+      "sha256": "8d3c52a050c53cc2ea2f196ea88b97b4b70cb2a83617ef664f397f7a7ee7038a"
+    },
+    {
+      "path": "watches/components/StoryMaps.vue",
+      "sha256": "6b45b759310d980cff87c8c92ae9d93a4e3fe96d14e96e1340ae664e9d35bc28"
+    },
+    {
+      "path": "watches/components/TickTock.vue",
+      "sha256": "e908d3c35ba543c7dd39e39e6e8b852825a223adeca0413ba9fafd7d5f6bfe68"
+    },
+    {
+      "path": "watches/components/TimeScale.vue",
+      "sha256": "1017bea77711f9687301f12aa9060953c60f4b8cf58f45b116b4e88eda563afb"
+    },
+    {
+      "path": "watches/components/TimekeeperCard.vue",
+      "sha256": "89291ec3076c0f8f5465978641b292a839d950b0ef9ee75026ad762ff20271c0"
+    },
+    {
+      "path": "watches/components/WatchCallout.vue",
+      "sha256": "79fda4c8dc9ff3bd3d55885e025f5a8c7f5b7f2f92e0cdbe4783bb678a163811"
+    },
+    {
+      "path": "watches/components/laid-out.ts",
+      "sha256": "466cb01fbc3e0b75e7e37e9feffeafeb85f5606bad24faf16e881f500761ee6f"
+    },
+    {
+      "path": "watches/docs/README.md",
+      "sha256": "5aafc1ef8c5d8709ed0a04cb9bcb58697a5b50ee1ea1f8e8fa00085da96f93c6"
+    },
+    {
+      "path": "watches/docs/article.md",
+      "sha256": "0c83e15fbeb03751fe690f5f3ec930b811211e593603cf3e8be478cb09cc39bf"
+    },
+    {
+      "path": "watches/docs/globe.md",
+      "sha256": "2dd8a3f26cbfae41ca19fc44a652fa898b0f8e779b43fc3ca4b4999154489f64"
+    },
+    {
+      "path": "watches/docs/measurements.md",
+      "sha256": "f30c33c35b7b8d5e9ba1a541c78abdd631205a4c3f44d3151ba20076b9167210"
+    },
+    {
+      "path": "watches/docs/packages.md",
+      "sha256": "5a98d27c5b12f4fc64008543366fbc9d5dfe30dbbe8e89b1c5d27d7baa690470"
+    },
+    {
+      "path": "watches/docs/rough-slides.md",
+      "sha256": "88e73a00832a0e97d868e5af9af410b63bc6e11bcc10664e73276ca11f50d902"
+    },
+    {
+      "path": "watches/docs/slide-patterns.md",
+      "sha256": "830e2d52e22ab3705e4ecbf7c07644c81176b85bf835b99d1d161f6f618d8f5c"
+    },
+    {
+      "path": "watches/docs/watch.md",
+      "sha256": "dba7755e79155470e596ad465a7ffbc7754ee8446669ee66aae582eda372bda7"
+    },
+    {
+      "path": "watches/docs/watchlist.md",
+      "sha256": "5e2bcdc7c3e62d6538f954dc2fc3ac7c9cc2c59f8068a7ab559977d920132db1"
+    },
+    {
+      "path": "watches/eslint.config.js",
+      "sha256": "6e008aaad80215d72d081bec58399db0d9ecd4b6e6b3abc29fded73fd556c79c"
+    },
+    {
+      "path": "watches/global-bottom.vue",
+      "sha256": "ccc4bdf23a379430f28ca67a8b405d7c30b79f198afa6588d8bd2efee21ab137"
+    },
+    {
+      "path": "watches/globe/README.md",
+      "sha256": "95e231a537af6c795b449c0f708f3659be47ce99242ac327a4511f8fab65bd9d"
+    },
+    {
+      "path": "watches/globe/clip.ts",
+      "sha256": "353cbb3b2e9adeb2f9093b604f72610e582af7ad039d192c3b804d97bcb703a3"
+    },
+    {
+      "path": "watches/globe/earth.json",
+      "sha256": "27c6dedeed3d9ca568a424cec5abec50a1317d15670b76224f8833be631b5f7a"
+    },
+    {
+      "path": "watches/globe/earth.test.ts",
+      "sha256": "4868c49287f5c4b3ffab53cfeccccceaab26e3ec567875c3c02fb5bbb7a25129"
+    },
+    {
+      "path": "watches/globe/earth.ts",
+      "sha256": "9ec6fe90286011ca76dd29cc17a288eee37f7a780f6afdb59246aa7e07048717"
+    },
+    {
+      "path": "watches/globe/globe.test.ts",
+      "sha256": "24615e89df2d1ffa211c8ddabff8beed5e2ae6244256f7643c91ffd34081b054"
+    },
+    {
+      "path": "watches/globe/globe.ts",
+      "sha256": "c61d995c28e6a2591f15e5d7dd992ded37cb351d1ed4c4b2fbc5c0ee07b85244"
+    },
+    {
+      "path": "watches/globe/labels.test.ts",
+      "sha256": "aaa367a22837eaf735460fa9b074be7be32073c9a6bc0b7638960efe72585519"
+    },
+    {
+      "path": "watches/globe/labels.ts",
+      "sha256": "462a930b2105cf7762975d2547f323a76ed1399a4d5c62bd52671189b2e34f79"
+    },
+    {
+      "path": "watches/globe/maps.test.ts",
+      "sha256": "5a91baab54f6e685208f8e00841d6b2c46be708bd01e942421b886cac4bcdf40"
+    },
+    {
+      "path": "watches/globe/maps.ts",
+      "sha256": "4c1686942ae97d3f03ebf9697f0d9f9007088b764c747b6219c466439dbe9f03"
+    },
+    {
+      "path": "watches/globe/model.ts",
+      "sha256": "5d97ca9d7fec12c069d8d1d5c33903f971bea77e5bd0e9af7fa55b01d772c450"
+    },
+    {
+      "path": "watches/globe/stories.ts",
+      "sha256": "c83b5bea643a8181cdca4a3dbcbc635c8c87acdbaeea199e88ee9d387a7a6311"
+    },
+    {
+      "path": "watches/globe/views.ts",
+      "sha256": "14277ebc13c83407b7f9a2135d59ff7f82afb927e6e20c42af47ebc1707ea706"
+    },
+    {
+      "path": "watches/globe/voyage.test.ts",
+      "sha256": "72f52bf4270b36d38cc99290289e8c8a48ad88281083d0528168f11bca365b3f"
+    },
+    {
+      "path": "watches/globe/voyage.ts",
+      "sha256": "6f8aedce56ac0384de5598d62246ffda510412b3ef13067f0c943f0171767b6d"
+    },
+    {
+      "path": "watches/index.html",
+      "sha256": "01877342fd7b85de7deefc82b5fcd2a4c35100a51bb331d4fdc4630cf0dcc44a"
+    },
+    {
+      "path": "watches/package.json",
+      "sha256": "3231c467dff928d098653b71ec32859c346684860e78caa1c7d3ca3c8f47d82f"
+    },
+    {
+      "path": "watches/pnpm-lock.yaml",
+      "sha256": "bd28e97c56eabf6a9f47f0325c6b9484409342a2259c706a694e46d7d73a36c3"
+    },
+    {
+      "path": "watches/pnpm-workspace.yaml",
+      "sha256": "4dc2725870bb7d3c2609ac0bef05dee20f68d33a840059eaf6c2f757e8a62e64"
+    },
+    {
+      "path": "watches/public/diving-board.svg",
+      "sha256": "7c713d9041b2a19ce7a8b134bd01387e1218d0f599b8feb31503a634ed016ced"
+    },
+    {
+      "path": "watches/public/favicon.ico",
+      "sha256": "07f0600b4361a92460b5c220b5ab7bb316cd0ba0f1c403959eb6e198d4e8d061"
+    },
+    {
+      "path": "watches/public/timekeepers/candle.svg",
+      "sha256": "ac3b0591145a32bf9cc62dfa9ff00b941146d6b0dd056236530bab5be3c6438e"
+    },
+    {
+      "path": "watches/public/timekeepers/hourglass.svg",
+      "sha256": "ee58bc7abc32bfe75af93354e49a007e5a8613929bec0f3ef1563b774235f3df"
+    },
+    {
+      "path": "watches/public/timekeepers/sundial.svg",
+      "sha256": "e4022b11940e8bd2392558cfad1d782f34b37f51d5e454fe321dca87676181f5"
+    },
+    {
+      "path": "watches/public/timekeepers/water-clock.svg",
+      "sha256": "45c4273fb22429b8aaf91cfb8b904ac3bf6c008516b3e5fa2f2b70fd06590f33"
+    },
+    {
+      "path": "watches/pyproject.toml",
+      "sha256": "85f3a08cb359cd5558189dd7cdeb2cc07b77bd85f2fed8c9e31aa055223207ed"
+    },
+    {
+      "path": "watches/setup/main.ts",
+      "sha256": "2ab453174c303e83b658ada07ae92a963ed322e3e9e3f6784734055f7ee607ef"
+    },
+    {
+      "path": "watches/slide-bottom.vue",
+      "sha256": "dfd8cba229bb388b7144b0f138d9c2fae03c89048d0711d0a14a44404aee68d9"
+    },
+    {
+      "path": "watches/slide-top.vue",
+      "sha256": "0ea900f198d2085bff476226a02030fb8e08dbb8f28dcce8418578aa6931a995"
+    },
+    {
+      "path": "watches/slides.md",
+      "sha256": "9c2658731079b1bfa65224d65fe4ba59ba1902fc6d983c0ea83744aa2f91a619"
+    },
+    {
+      "path": "watches/spelling-words.txt",
+      "sha256": "5b34a7901b66997eef07be2bcd7f80c5f912ca94cddb2fec365b262c01f2955d"
+    },
+    {
+      "path": "watches/style.css",
+      "sha256": "1b3aaee94ae82b0d7aaf611053c1134ad257e18e2f195d32a378478dd3884ca2"
+    },
+    {
+      "path": "watches/tasks/2026-10-31-part-2-production/PLAN.md",
+      "sha256": "bcfbe7cb49ee21b2a2ad1fbb8e9f3b0e83ff9db3c6f4a51d23ef461620e18681"
+    },
+    {
+      "path": "watches/tasks/2026-10-31-part-2-production/README.md",
+      "sha256": "85ef00c31edc640072ef4112ce56d161074ed384a4aeee0000a3986ea7e5ce43"
+    },
+    {
+      "path": "watches/tasks/2026-10-31-part-2-production/checks/check-article.ts",
+      "sha256": "75874a9f0090678e320d1bb76b5e8c44dd8aa0201c08f515c89f72d001907e6b"
+    },
+    {
+      "path": "watches/tasks/2026-10-31-part-2-production/checks/check-print.ts",
+      "sha256": "8b47a59e4504baa850efe8f9b0cbb865787ca874de193d74490e8ef3f02a9f0f"
+    },
+    {
+      "path": "watches/tasks/2026-10-31-part-2-production/checks/measure-frames.ts",
+      "sha256": "f11c0de331cf2072aad2ce25918b323b85fa8dc4ec3dbd04e69c5b5ff416bb31"
+    },
+    {
+      "path": "watches/tasks/2026-10-31-part-2-production/instructions.md",
+      "sha256": "ae3e66553b1c5d02fd616bda41acebd3bd636962c9bc3e61ce76a09917ca310b"
+    },
+    {
+      "path": "watches/tsconfig.json",
+      "sha256": "6f200e4c840d16bd492e48a5f0ac5420b7e1d748fd3475bc88c33022f3267fad"
+    },
+    {
+      "path": "watches/types/slidev-client.d.ts",
+      "sha256": "782339814539a67b195dbaf29490452f8e1425844fb95bf1867a7b163bd8b4a4"
+    },
+    {
+      "path": "watches/types/slidev-constants.d.ts",
+      "sha256": "aa7dfe901c15bdb51499b95f9272c8c406f50d29f39ba10efc13fa903dddb957"
+    },
+    {
+      "path": "watches/types/slidev-internals.d.ts",
+      "sha256": "8f9d09e82bda7d874395b99a4568636fb231db7c9c1baa536d0862ef03d6e155"
+    },
+    {
+      "path": "watches/types/vite-env.d.ts",
+      "sha256": "e7a80e8d0e2146c71e8bae5648c341d302de537f9a4fb61bdc281dd100b85698"
+    },
+    {
+      "path": "watches/uv.lock",
+      "sha256": "7d0fcc41f3188411d67044a17a4b25cb68b59dd8333eea359a08455a8101124f"
+    },
+    {
+      "path": "watches/watch/art.ts",
+      "sha256": "64ecbeec90473f9bfa0b6c0a44d34a113934b52fdfc226e9bc82278ce4d2a0cd"
+    },
+    {
+      "path": "watches/watch/article-text.ts",
+      "sha256": "eeb7dc2a611ac1e775e9ffb124a299d18697e233a59ff27cb1a60387f3fae4b7"
+    },
+    {
+      "path": "watches/watch/article.test.ts",
+      "sha256": "c72cf4455873ef0797de2016889bfa0fb4841c84f0a742a7657bb74957085221"
+    },
+    {
+      "path": "watches/watch/article.ts",
+      "sha256": "ef346b38e646432891797e0884da2f274874e9b41ea20c46f10a08509e8db058"
+    },
+    {
+      "path": "watches/watch/at-rest.test.ts",
+      "sha256": "332edb665457b0a2beca376421431eea332402c58a1685989da50941d2658625"
+    },
+    {
+      "path": "watches/watch/at-rest.ts",
+      "sha256": "8a1fe35795380d4d5dc49ac38080d6d0c5767f645411e5c97b77308b0eef0220"
+    },
+    {
+      "path": "watches/watch/board.test.ts",
+      "sha256": "6f1927317018c9cece09cf16917a4ce91990e5395734d36a22d3f9ccb003accb"
+    },
+    {
+      "path": "watches/watch/board.ts",
+      "sha256": "0bbbab6eb580b7044aabc4341edcf7ec10274c6e4d4ede4ffa3c151d0904e6f5"
+    },
+    {
+      "path": "watches/watch/callouts.test.ts",
+      "sha256": "5b76857b06935b5ca574ca41cad865ca7757a49f8a5a8ad68cbc4f6847d5b6cb"
+    },
+    {
+      "path": "watches/watch/callouts.ts",
+      "sha256": "12e095800e987bfaf6287fd10be5133543769676b3497226292b4d7575b7a07c"
+    },
+    {
+      "path": "watches/watch/deck.test.ts",
+      "sha256": "042d568ce06ded1ce96cc536cbc783dfd065cd9b25f64071e38d5f746987eb53"
+    },
+    {
+      "path": "watches/watch/deck.ts",
+      "sha256": "7daa3381b29124b3f51a017c467d61d2e07c7107d4842ec4a8c6441498ad2723"
+    },
+    {
+      "path": "watches/watch/design.json",
+      "sha256": "8a283c9f3902d560bbac4d0a26bb9ac76327e1d510067ec8d84e9d4a8d112046"
+    },
+    {
+      "path": "watches/watch/design.test.ts",
+      "sha256": "b985bf2a2488aadaf3c9423776c51359d4a7061abdd6fe182b525631aed68035"
+    },
+    {
+      "path": "watches/watch/design.ts",
+      "sha256": "ce1cb4d9e447cfd332ff3b57b02b3be7ee3859201818a2bcfd42271971b0196d"
+    },
+    {
+      "path": "watches/watch/dump.ts",
+      "sha256": "b749df3223c27758fca52084917875855b7f168817ab4c7d80333da4ac023c01"
+    },
+    {
+      "path": "watches/watch/explorer/address.test.ts",
+      "sha256": "c175a116d39a3e393b45597f2c42620431525de71e6d017ef1846a1c7d06e50c"
+    },
+    {
+      "path": "watches/watch/explorer/address.ts",
+      "sha256": "549b970be9db26bb0763bf651330757f1458a20e45814447d99b4e383f86aa31"
+    },
+    {
+      "path": "watches/watch/explorer/deck-poses.ts",
+      "sha256": "117252d0b4cd675767b594892d0fc37955957ebceb6b64e3c3a07b4613b5713f"
+    },
+    {
+      "path": "watches/watch/explorer/env.d.ts",
+      "sha256": "2cc9c852acc87f97952b468f18f30f04fe851c6cf565fc0f6ee8c672886f9e67"
+    },
+    {
+      "path": "watches/watch/explorer/explorer.css",
+      "sha256": "131711c03274bb69a908f3b2d061d8ae9acbb9ea2df2e4089091725bd62be4c0"
+    },
+    {
+      "path": "watches/watch/explorer/explorer.ts",
+      "sha256": "0f85d3ec3514ce4bdfd84436576a09324eae7d0804b03b9b0cb7a8cb28d2605f"
+    },
+    {
+      "path": "watches/watch/explorer/index.html",
+      "sha256": "f0e11d1a461f7d3b71577cc3a30475c4338a7906ae6045546554f9dcbf233e8d"
+    },
+    {
+      "path": "watches/watch/explorer/vite.config.ts",
+      "sha256": "9289e5f607d687c5bced57ce626522e4061d1e1f8412f16af8ef7644642f3183"
+    },
+    {
+      "path": "watches/watch/generate.test.ts",
+      "sha256": "9ab8cf209e110d375c8d612d3e3787da14cbd9ea34e81220c4ead598cf75a686"
+    },
+    {
+      "path": "watches/watch/generate.ts",
+      "sha256": "203ef6053c5ff194b44587c91bbe7092cdb0355ea3b9c63448033d9523691d2f"
+    },
+    {
+      "path": "watches/watch/instance.ts",
+      "sha256": "548aa83f5ac4ef390c1a553c799a52ee4c5627d091ad51210f0d686f6bd99f3e"
+    },
+    {
+      "path": "watches/watch/lapse.test.ts",
+      "sha256": "45af50b75ac9d73dad126c981a3c45aab530018a8f0a807af385fa815530b2e1"
+    },
+    {
+      "path": "watches/watch/lapse.ts",
+      "sha256": "737e49d1a5db42cf8b8e1082ab2311022157e3c00406f967f0f0dd87eb345bce"
+    },
+    {
+      "path": "watches/watch/mainspring.test.ts",
+      "sha256": "8c5a57a7f474b7f8d490d3fc8b441a6f4dad1942fe70e944926b0bf98ce51c5e"
+    },
+    {
+      "path": "watches/watch/mainspring.ts",
+      "sha256": "2725d21aceb834bcee7bd82d3c02e37d020d81bceb038ac7d64af7dc692d91df"
+    },
+    {
+      "path": "watches/watch/model.test.ts",
+      "sha256": "79b668751a0da9a0853fc24c7a8ca8baafc822c1b072a594cd36eb86fa58b459"
+    },
+    {
+      "path": "watches/watch/model.ts",
+      "sha256": "833b349e3ed0b5547c3ae66290386b0ccf773cbf29d7ce632b551855e0d76162"
+    },
+    {
+      "path": "watches/watch/navigation.test.ts",
+      "sha256": "75249bbc8104ae36a89966d9288624352550293753486de12a33ad886aef63e7"
+    },
+    {
+      "path": "watches/watch/navigation.ts",
+      "sha256": "7cf7023488efed496182e89406a5dd3bc8a58a2f3e06780188a175f4f7a6b338"
+    },
+    {
+      "path": "watches/watch/palette.test.ts",
+      "sha256": "f19c7aa89d1da5b04b271a114f57df9ace07a24f9e5803fd38ea967c841760f0"
+    },
+    {
+      "path": "watches/watch/palette.ts",
+      "sha256": "6227b9249390d7ffa0b5728831dc5758f79311c4e80306ac8773f0d86fd76ca6"
+    },
+    {
+      "path": "watches/watch/path.ts",
+      "sha256": "701117da285bf88d70ef8fee6d4ffb29eb4902c79c586fa2b2be8f98ac1df8ac"
+    },
+    {
+      "path": "watches/watch/recap-mainspring.test.ts",
+      "sha256": "f7db29782ea16ddcc032feb546b7496c897e052f5c136c3e02baffd796a82401"
+    },
+    {
+      "path": "watches/watch/recap.ts",
+      "sha256": "83e4d25ba7e91fad52cb56d6ec5cf6e1f42e613d1080b8b60f0237136584b8f4"
+    },
+    {
+      "path": "watches/watch/shapes.ts",
+      "sha256": "7044769034805f5305a4b57682afaceff46eea694f6ae79cb4543e0c5544a666"
+    },
+    {
+      "path": "watches/watch/slide-state.ts",
+      "sha256": "488ad49e9a90dfe9d60fbc5dd84cd5c25cff56ca9b5026363c57626d251b48db"
+    },
+    {
+      "path": "watches/watch/state.test.ts",
+      "sha256": "8e7f6d0151c1624e30f80eeb0fcf4781e5d565e4569f32eac75481c23fce7a57"
+    },
+    {
+      "path": "watches/watch/state.ts",
+      "sha256": "259c42bf4858539330aa9b6065ee1748d401f0db79f5abbff73c5f3de3c8258b"
+    },
+    {
+      "path": "watches/watch/stills.ts",
+      "sha256": "df3906f2678ac2a745b849660834306d3ee7ad5cb144bad90c93685bd4896d21"
+    },
+    {
+      "path": "watches/watch/teeth.test.ts",
+      "sha256": "8ca7341ee59af73d3c72c1d9fbc3160865a1d3d35404d3f2e612c0011da0a8e0"
+    },
+    {
+      "path": "watches/watch/teeth.ts",
+      "sha256": "2cae6826f930bdb1579500eaf2dd05c819dce84d0883ae4e0fdb38ec291ed360"
+    },
+    {
+      "path": "watches/watch/train.test.ts",
+      "sha256": "b8bb1478b22c3380e511a22288d2e4eb7d0b8ea26cf12c003b8416122a2f859c"
+    },
+    {
+      "path": "watches/webgl/atlas.test.ts",
+      "sha256": "d2bb27ec352543399b62aa5e9510cff5f04450f1850d350e8031da5f536bea3d"
+    },
+    {
+      "path": "watches/webgl/atlas.ts",
+      "sha256": "cd6f8d272f975873a00121fe498b5fa6880c020bc325446b0d91f7a33db35e2f"
+    },
+    {
+      "path": "watches/webgl/checked.test.ts",
+      "sha256": "98d96be07961ad8c9f8f7dfe143235e75c91826248ce90ce137b21aabdf4d927"
+    },
+    {
+      "path": "watches/webgl/checked.ts",
+      "sha256": "2d9708600ced0fa0a4812c22932cf2bff141bce18e40bf01d6dc7d1b2dae5389"
+    },
+    {
+      "path": "watches/webgl/flight.test.ts",
+      "sha256": "3ac191606d067e3fc2632622d8baa63d720c217056c064e3b5101b32cc4013c4"
+    },
+    {
+      "path": "watches/webgl/flight.ts",
+      "sha256": "799cde50f6d075568083e1ca2599ed1cccd793da50cc20f0b17d57b98c6cf101"
+    },
+    {
+      "path": "watches/webgl/math.test.ts",
+      "sha256": "dfd2981e713618924e16a12cc476aea86c6bdf3f8ae344f57bf038d391dfda19"
+    },
+    {
+      "path": "watches/webgl/math.ts",
+      "sha256": "aabb9ab1ea395baaf94df658db86707182911504afb2ca1f2dd6a6ad6baa6dd8"
+    },
+    {
+      "path": "watches/webgl/mesh.test.ts",
+      "sha256": "feaa35f4c19fe92e2347b23b927b9386279d5ef999ca4ee45160795bd0663b1e"
+    },
+    {
+      "path": "watches/webgl/mesh.ts",
+      "sha256": "3606e48ee9d5af7777206ce7246ec3061d79024008634f0c76caadfaa82dc837"
+    },
+    {
+      "path": "watches/webgl/probe/checks.ts",
+      "sha256": "d5bce4afcbe57c913d3fcda9f1c7cb2e317785e753fa51d046096fd9423ccf06"
+    },
+    {
+      "path": "watches/webgl/probe/index.html",
+      "sha256": "e26fc0828458bf42a2d9b8cf8fa4a41f170104cf098e320228f9d8b30fdf23e1"
+    },
+    {
+      "path": "watches/webgl/probe/probe.ts",
+      "sha256": "26357ad0da1cd958dd6ad729fb68a57c7bee62a6b5ce23aff90e14048ebbf250"
+    },
+    {
+      "path": "watches/webgl/renderer.test.ts",
+      "sha256": "49cb36632b427da381b872a48c39eced17eebb3f41a49e75f6a911b44593ff0c"
+    },
+    {
+      "path": "watches/webgl/renderer.ts",
+      "sha256": "1bbb1e5a496f16da9133d7e7f03d0290b95a07072ba19c2679a5265cdec76f75"
+    },
+    {
+      "path": "watches/webgl/scene.test.ts",
+      "sha256": "d71b4bb3d24f70a87d0b91633faaa33ccd8b8758ecb983ba37f7b7aed5c2a33f"
+    },
+    {
+      "path": "watches/webgl/scene.ts",
+      "sha256": "66783e1bd485916ea86c121c06815ab467a72c701468d4cd31ccd7b1b5ca7fe5"
+    },
+    {
+      "path": "watches/webgl/shared.ts",
+      "sha256": "bcd6828df72b35b7608a5122ddc30983d0b91cea224bb01644031116893c82c6"
+    },
+    {
+      "path": "watches/webgl/stage.ts",
+      "sha256": "bee4638e594a69e031da732d02c598e45c418494f8340a0e03046e6831f86b0b"
+    },
+    {
+      "path": "watches/webgl/stills.ts",
+      "sha256": "b9803841e2a14104d9e744dcabce4c248604a143b30c607c81df22c22950c664"
+    },
+    {
+      "path": "watches/webgl/timeline.test.ts",
+      "sha256": "035a240eb808b3d144188576fdb795e122f6d5f779a15f2b91797e497c612257"
+    },
+    {
+      "path": "watches/webgl/timeline.ts",
+      "sha256": "ea8a4172fda255d824ab94a32543dfd954a0dbeeb605edb48d9ac1285c09d6a6"
+    }
+  ]
+}

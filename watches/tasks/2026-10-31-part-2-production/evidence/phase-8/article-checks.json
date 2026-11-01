@@ -1,0 +1,114 @@
+[
+  {
+    "engine": "chromium",
+    "profile": "chromium-desktop",
+    "counts": [
+      12,
+      66,
+      72
+    ],
+    "overflow": 0,
+    "physicalPhone": false,
+    "problems": []
+  },
+  {
+    "engine": "firefox",
+    "profile": "firefox-desktop",
+    "counts": [
+      12,
+      66,
+      72
+    ],
+    "overflow": 0,
+    "physicalPhone": false,
+    "problems": []
+  },
+  {
+    "engine": "webkit",
+    "profile": "webkit-desktop",
+    "counts": [
+      12,
+      66,
+      72
+    ],
+    "overflow": 0,
+    "physicalPhone": false,
+    "problems": []
+  },
+  {
+    "engine": "chromium",
+    "profile": "chromium-desktop-reduced",
+    "counts": [
+      12,
+      66,
+      72
+    ],
+    "overflow": 0,
+    "physicalPhone": false,
+    "problems": []
+  },
+  {
+    "engine": "chromium",
+    "profile": "chromium-phone-reduced",
+    "counts": [
+      12,
+      66,
+      72
+    ],
+    "overflow": 0,
+    "physicalPhone": false,
+    "problems": []
+  },
+  {
+    "engine": "firefox",
+    "profile": "firefox-desktop-reduced",
+    "counts": [
+      12,
+      66,
+      72
+    ],
+    "overflow": 0,
+    "physicalPhone": false,
+    "problems": []
+  },
+  {
+    "engine": "firefox",
+    "profile": "firefox-phone-reduced",
+    "counts": [
+      12,
+      66,
+      72
+    ],
+    "overflow": 0,
+    "physicalPhone": false,
+    "problems": []
+  },
+  {
+    "engine": "webkit",
+    "profile": "webkit-desktop-reduced",
+    "counts": [
+      12,
+      66,
+      72
+    ],
+    "overflow": 0,
+    "physicalPhone": false,
+    "problems": []
+  },
+  {
+    "engine": "webkit",
+    "profile": "webkit-phone-reduced",
+    "counts": [
+      12,
+      66,
+      72
+    ],
+    "overflow": 0,
+    "physicalPhone": false,
+    "problems": []
+  },
+  {
+    "profile": "no-js",
+    "finalImage": "figures/hunt-for-juan-fernandez-island-1741-5.png"
+  }
+]

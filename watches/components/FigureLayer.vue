@@ -370,7 +370,13 @@ onChange(windTime, (time) => {
   }
 });
 onChange(figure.moving, (moving) => {
-  if (view) view.paused = !moving;
+  if (!view) return;
+  view.paused = !moving;
+  // A paused step must draw its exact endpoint. The last animation frame
+  // can precede the clock's stop, leaving a count one day short.
+  // Manual pauses keep their last picture (webgl/shared.ts): the prerender
+  // pauses every figure before each still, so avoid drawing them all again.
+  if (!moving && figure.now() === figure.busyUntil.value) view.redraw();
 });
 onChange(
   still,

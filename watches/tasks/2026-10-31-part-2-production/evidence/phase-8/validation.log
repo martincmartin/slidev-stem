@@ -1,0 +1,35 @@
+running watches/, a talk: 3 worker(s); smoke navigation runs alone
+finished 3 checks
+finished 19 checks
+finished 21 checks
+finished 24 checks
+running smoke navigation alone
+--    watches/, a talk
+ok    build  [5.34 s]
+ok    print  [31.97 s]
+ok    private browsing  [10.40 s]
+ok    ruff format  (9 files already formatted)  [0.09 s]
+ok    ruff check  [0.03 s]
+ok    mypy --strict  [0.22 s]
+ok    pyright  [2.08 s]
+ok    prettier  [3.60 s]
+ok    doccheck  [0.25 s]
+ok    typecheck  [3.58 s]
+ok    lint  [14.61 s]
+ok    test  [12.32 s]
+ok    artcheck  [0.08 s]
+ok    scenecheck  [0.87 s]
+ok    generated  [3.87 s]
+ok    palette  [3.34 s]
+ok    talk setup  [1.18 s]
+ok    vue roots  [0.37 s]
+ok    spelling  [1.22 s]
+ok    barroom  [1.09 s]
+ok    motion  [2.95 s]
+ok    stills  [15.71 s]
+ok    barroom (png)  [1.47 s]
+ok    motion (png)  [1.03 s]
+ok    navigation smoke  (chromium, firefox, webkit: outside requests: 0)  [13.26 s]
+
+all 25 checks passed
+total: 60.98 s

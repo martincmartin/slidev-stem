@@ -1,7 +1,7 @@
 # Part 2's opening slides: the plan for the talk
 
-**Status: building, 2026-11-01: phases 1–6 are done, and phase 7 has
-begun (section 9).** Decided 2026-10-31: option 2, the globe in WebGL and
+**Status, 2026-11-01: phases 1–8 are complete. Full validation passed,
+and the user confirmed the physical Android Firefox check (section 10).** Decided 2026-10-31: option 2, the globe in WebGL and
 the story in SVG (section 3).
 The request is in [instructions.md](instructions.md). The design comes from
 the mockup of the visual-language task
@@ -489,3 +489,101 @@ All made, 2026-10-31.
   between its ends) cannot allow. The house's browser checks now fail on a
   logged error. Phase 7's crops and the gusts' pause are done; its
   narration is not.
+
+
+- **2026-11-01, phase 7, the article:** the three stories have their final
+  narration and alt text. The Juan Fernández story has five reader-controlled
+  steps and a separate final map at its punchline. The static article thus
+  keeps its complete route and count. The daily death count is illustrative;
+  the narration distinguishes it from Walter's reported toll. The Scilly
+  aside keeps the cause disputed and makes no claim that this wreck caused
+  the Longitude Act. Part 2 has six figures; the full article has thirty.
+- **2026-11-01, the paused endpoint:** the phase 8 check found a count of 6
+  where the eastward leg should end at 12. The paused clock stopped between
+  animation frames. `FigureLayer.vue` now requests one draw at the exact
+  endpoint of a paused step. Manual pauses keep their last frame, as before.
+  `art/privacy-check.ts` checks this in every engine with pixel reads blocked.
+  The old paused-step watchlist entry is covered by this regression.
+- **2026-11-01, phase 8:** full validation with print passed. The article
+  matrix, reduced motion, static page, printed voyage counts, and visible
+  window measurements are in `evidence/phase-8/`. No commit was made.
+  The physical phone initially could not open the preview. The user later
+  confirmed that Android Firefox works and approved publication.
+
+## 10. Phases 7 and 8: article and checks
+
+Started 2026-11-01, from `4d8e1c8`, after the simplicity cleanup.
+Read first: `docs/article.md`, `stem/docs/export.md`, `docs/globe.md`,
+`stem/docs/navigation.md`, and `stem/docs/talks.md`.
+What is new: the final narration, a reader-controlled voyage, and checks
+of the production article and the Part 2 pictures.
+
+### Figure options, in rank order
+
+1. **A stepped Juan Fernández figure and a separate final map.**
+   Part 2 has six figures, one more than before. The voyage has five steps,
+   through the anchorage. Readers control the story and its count.
+   A final map at the punchline keeps the complete route and count in the
+   static article, where the step controls do not exist.
+2. **Five static figures.** This keeps the current layout, but the count
+   stays at its final value. The reader cannot follow its motion.
+3. **A voyage that plays by itself.** This shows the motion without a press,
+   but repeats a story that the article rules give to the reader.
+4. **One stepped figure with no final map.** This keeps five figures, but
+   the prerender captures the first step. Readers without JavaScript lose
+   the final route and count. Giving the prerender a new last-step rule
+   would change the shared addon for a choice that narration can express.
+
+Choose option 1. The narration must distinguish the illustrative daily
+count from Walter's reported death toll. It must not present the Scilly
+wreck as proof of one cause or as the cause of the Longitude Act.
+
+### Checks to complete
+
+- Full talk validation with `--print`, and the article text export.
+- The built and prerendered article, with and without JavaScript.
+- Offline browser checks in Chromium, Firefox, and WebKit, each in a fresh
+  private context: final figures, crops, count, gusts, pause, steps, and
+  reduced motion. Check that the punchline screens stay out of figures.
+- Visible-window frame timing. Run the house's `deck_check.py`, then measure
+  Part 2 itself: that tool's window walk covers only the opening two slides.
+- Phone layouts, including Android Firefox. A physical Android Firefox
+  check needs the user's phone; record it separately from desktop emulation.
+- Save the checks, their inputs, and their results with this task.
+
+
+### Results and limits, 2026-11-01
+
+The implementation is in `work2`, based on `4d8e1c8`. The initial article
+checks ran against identical source in `work1`; the transfer was compared
+byte for byte. Final validation and the timing and print-count checks run
+in `work2`. `work1` has no remaining changes from this work.
+
+- Full validation, including print: passed. The final run is saved with
+  [the evidence](evidence/phase-8/README.md).
+- All three engines: the count reaches 12, 66, and 72; paused steps return
+  the ship to its start; gusts run and stop; final figures have no punchline
+  screen. Reduced motion, phone-sized layouts, and the static article pass.
+- Printed voyage counts in all three engines: 12, 66, 72, 72 at the last
+  four clicks. These checks supplement the house's watch and board comparison.
+- Visible Part 2 changes: Chromium and Firefox have median frame gaps near
+  8.3 ms. Their largest per-change 95th-percentile JS times are 3.7 and 6 ms.
+  Firefox's frame-gap 95th percentile reaches 16.7 ms on some changes.
+  WebKit runs near 60 Hz here, with JS 95th percentiles at or below 6 ms.
+  This is not proof of 120 Hz in Safari. The JSON keeps every measured case.
+- The house's opening-window check also ran. It checks one context, no
+  context loss, and drawing size against the visible canvas.
+- The physical Android Firefox check **passed by user confirmation**.
+  The phone initially could not open the preview, but the user later said
+  it works. The [confirmation](evidence/phase-8-android-firefox/README.md)
+  records this result. No phone frame timing was measured.
+
+The [evidence README](evidence/phase-8/README.md) lists commands, inputs,
+results, and the frozen source copy. Do not update saved evidence later.
+
+
+### Publication approval, 2026-11-01
+
+The user confirmed that the Android check works and said to ship it.
+The requested publication includes the commit, linear update of `main`,
+push, and updates to all worktrees, including those with local changes.

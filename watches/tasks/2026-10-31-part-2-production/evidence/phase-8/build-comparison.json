@@ -1,0 +1,9 @@
+{
+  "comparedFiles": 203,
+  "rawBytesIdentical": false,
+  "normalizedBuildsMatch": true,
+  "normalization": "tools/compare_dist.py removes Vue CSS scope IDs and JS/CSS content hashes.",
+  "selection": "Only the tested build assets reachable from index.html and 404.html, plus its static files; excludes stale build assets and the prerendered article.",
+  "limitations": "Normalized chunk contents are compared as multisets; normalized references do not prove the identity of each same-named chunk.",
+  "differences": []
+}

@@ -261,3 +261,32 @@ test("the text export names each figure's controls in their own words", () => {
     assert.ok(text.includes(`"${words.label}"`), words.label);
   }
 });
+
+test("Part 2 figures keep the final maps and give readers the voyage steps", () => {
+  const shown = slides.filter((slide) => slide.frontmatter["hide"] !== true);
+  const page = markdownPage(slides, watch);
+  const cases = [
+    { title: "Age of Sail: Longitude Was a Guess", steps: [[0], [5]] },
+    {
+      title: "Hunt for Juan Fernández Island, 1741",
+      steps: [[0, 1, 2, 3, 4], [5]],
+    },
+    { title: "Admiral Shovell Sails Home, 1707", steps: [[0], [4]] },
+  ];
+  for (const { title, steps } of cases) {
+    const slide = shown.findIndex((candidate) => candidate.title === title) + 1;
+    assert.ok(slide > 0, title);
+    const figures = page
+      .filter((block) => block.kind === "figure")
+      .filter((figure) => figure.slide === slide);
+    assert.deepEqual(
+      figures.map((figure) => figure.steps),
+      steps,
+      title,
+    );
+    assert.ok(
+      figures.every((figure) => !figure.play),
+      `${title}: the reader controls the story`,
+    );
+  }
+});

@@ -17,7 +17,7 @@ the two lists in step.
   keys, the labels on them, the flight, and how it joins the watch's scene
 - [article.md](article.md): the article at `/article`: the narration, its figure
   markers, what a figure shows, the sliders and the button, the code, the
-  static page, the text export
+  Part 2 story figures, the static page, the text export
 - [measurements.md](measurements.md): what the timekeepers, the cover watch,
   balance rim motion, and the diving board measure at the back row
 - [rough-slides.md](rough-slides.md): the talk's outline, as working notes.

@@ -13,3 +13,17 @@ orders the work.
 2026-11-01: The simplicity cleanup removes the unused move-duration override.
 Flights keep their own duration. Voyage steps, label measurement, projection
 calculations, and pixel checks now use shared functions. Test dimensions stay explicit.
+
+2026-11-01: Phase 7 adds the narration, a stepped voyage and its final static
+map. Phase 8 adds the checks below and fixes the paused endpoint. The
+physical Android Firefox check remains open because the phone could not
+reach the preview. Work is in `work2`; no commit was made.
+
+- `checks/check-article.ts`: the browser matrix and static article check.
+- `checks/check-print.ts`: the printed voyage's counts in all three engines.
+- `checks/measure-frames.ts`: Part 2 timing in visible browser windows.
+- `evidence/phase-8/README.md`: results, limits, commands and frozen inputs.
+
+2026-11-01: The user confirmed that the physical Android Firefox check works
+and approved publication. Phases 7 and 8 are complete. The result is in
+[evidence/phase-8-android-firefox/README.md](evidence/phase-8-android-firefox/README.md).
