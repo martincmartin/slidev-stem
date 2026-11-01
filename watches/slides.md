@@ -326,7 +326,7 @@ watchClicks:
     watchAtRest: false
     watchTickTock: true
 clicks: 4
-history: "Verge escapement: c. 1275; Lever escapement: c. 1755"
+history: "c. 1275"
 ---
 
 # Escapement
