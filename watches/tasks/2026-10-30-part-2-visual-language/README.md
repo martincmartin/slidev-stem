@@ -61,3 +61,11 @@ the mockup now draws by default, and brings the wind in nearer the labels.
   with the talk's choices.
 
 Run each tool from the talk's directory (`PLAN.md`, section 11).
+
+## Later changes
+
+- 2026-11-01: the Cape Noir slide's title is "Age of Sail: Longitude Was a
+  Guess", not "At Sea in 1741, Longitude Was a Guess" (`PLAN.md`, section
+  16). Longitude was a guess at sea for about three and a half of the age
+  of sail's four centuries, not in 1741 alone; chronometers came only in
+  its last decades.

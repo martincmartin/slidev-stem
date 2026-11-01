@@ -1669,7 +1669,7 @@ artClicks:
 clicks: 5
 ---
 
-# At Sea in 1741, Longitude Was a Guess
+# Age of Sail: Longitude Was a Guess
 
 <MapLabel v-click.hide="1" view="south america" :on="[-58, -12]" centred>South America</MapLabel>
 
