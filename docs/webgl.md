@@ -95,15 +95,15 @@ these additions.
   colours: a fill in the second's wash, solid, with lines in the second
   (`watches`, the Gears slide's teeth). `tools/scenecheck.py` checks the scene.
 - **A scene holds inks, not colours.** An `Ink` is one of the objects in
-  `INKS` (`webgl/scene.ts`): `subject`, `subjectWash`, `muted`, `mutedWash`
-  and `ink` for the scene, and `second` and `secondWash` for a flash and a
-  mark. Each is
-  an art role of the palette ([theme.md](theme.md), "The roles"). A role may be
+  `INKS` (`webgl/scene.ts`): `subject`, `subjectWash`, `muted`, `mutedWash`,
+  `ink`, `waterWash` and `paper` for the scene, and `second` and
+  `secondWash` for a flash and a mark. Each is
+  an art role of the palette, or the paper ([theme.md](theme.md), "The roles"). A role may be
   a recipe (`color-mix()`): `watch/palette.ts` resolves each one with computed
   CSS style, converts it to sRGB, and makes its hexadecimal value. Canvas
   pixel reads cannot give exact palette colours under fingerprinting protection. `new
-Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
-  `#rrggbb` for each ink) and turns the inks into colours once, when it
+Renderer(canvas, scene, palette)` takes a `Palette` (one `#rrggbb` for
+  each ink, the paper among them) and turns the inks into colours once, when it
   starts. `InkName` is the one list of the inks: `Palette` is a `Record` over
   it, so a palette that lacks an ink does not compile.
 - **A frame can draw meshes in other inks.** A line instance holds the index
@@ -181,6 +181,12 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   depth test. Its lines are drawn in the usual order: give it the
   `lineOrder` of the mesh it covers, and put it after that mesh, so its
   lines cover the other's.
+- **A face in the paper** (`INKS.paper`): a fill that is the page itself,
+  where the picture's material is the paper: a globe's land, on its sea in
+  the water's wash (`INKS.waterWash`). It is solid, it hides what is behind
+  it by the depth test, and it does not flash. No line is in the paper.
+  `tools/scenecheck.py` allows it for a fill only (`PAPER_FILL_ROLE`). A
+  holdout is a flat face in the paper under a part; this is any face.
 - **Holdouts** (`Mesh.holdout`): a part that must look solid, such as a
   wheel with spoke openings over another wheel, has a flat face at its
   bottom in the paper's colour. It hides what is under it, faces and lines,

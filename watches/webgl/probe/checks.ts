@@ -62,6 +62,7 @@ const PALETTE: Palette = {
   ink: "#2A2520",
   second: "#9A6238",
   secondWash: "#E6D8CA",
+  waterWash: "#7087A0",
 };
 /** Another palette, with another paper: Campfire's, as an example. */
 const DARK: Palette = {
@@ -73,6 +74,7 @@ const DARK: Palette = {
   ink: "#F6EEE3",
   second: "#54BCD6",
   secondWash: "#2D3A3C",
+  waterWash: "#417D8B",
 };
 
 function square(left: number, top: number, side: number): Point2[] {

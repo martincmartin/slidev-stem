@@ -16,7 +16,9 @@ check holds for any theme:
   * every fill and every line is in an art ink: an ink whose variable is one
     of the art roles (`lib.ART_ROLES`). A mark is also allowed, in the
     flash's colours: a solid fill in `MARK_FILL_ROLE`, and lines in
-    `MARK_LINE_ROLE` on that mesh only;
+    `MARK_LINE_ROLE` on that mesh only. A face may be the paper
+    (`PAPER_FILL_ROLE`), solid: the page itself, such as a globe's land on its
+    sea. No line is in the paper;
   * every line width is on the stroke ladder (2, 2.5, 3 and 4 CSS px, within
     5%): line widths in a scene are CSS px on the screen, at every zoom;
   * opacities follow the docs: a line is solid, except a line of the detail
@@ -42,6 +44,10 @@ OPACITY_TOLERANCE = 1e-9
 # second. Neither is an art colour, so only a mark's mesh may use them.
 MARK_FILL_ROLE = "second-wash"
 MARK_LINE_ROLE = "second"
+# A face in the paper is the page itself, where the picture's material is
+# the paper: a globe's land, on its sea in the water's wash (docs/webgl.md,
+# "A face in the paper"). It is solid. A line in it would be no line.
+PAPER_FILL_ROLE = "background"
 
 
 @dataclass(frozen=True)
@@ -109,6 +115,14 @@ def fill_findings(mesh: str, fill: dict[str, object], inks: list[Ink]) -> list[F
         if abs(opacity - 1) > OPACITY_TOLERANCE:
             return [
                 Finding(mesh, f"fill opacity {opacity:g} of a mark should be 1: solid")
+            ]
+        return []
+    if ink.role == PAPER_FILL_ROLE:
+        if abs(opacity - 1) > OPACITY_TOLERANCE:
+            return [
+                Finding(
+                    mesh, f"fill opacity {opacity:g} of the paper should be 1: solid"
+                )
             ]
         return []
     found = [ink_finding(mesh, "fill", ink)]

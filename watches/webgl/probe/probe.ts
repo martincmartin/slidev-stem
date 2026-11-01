@@ -55,6 +55,7 @@ const PROBE_PALETTE: Palette = {
   ink: "#2A2520",
   second: "#B5601E",
   secondWash: "#ECD8C4",
+  waterWash: "#7087A0",
 };
 
 const canvas = document.getElementById("stage");

@@ -107,3 +107,21 @@ def test_a_mark_has_a_solid_second_wash_fill_and_second_lines() -> None:
             scene({"ink": 0, "opacity": 1.0}, {"ink": 3, "width": 2.0, "opacity": 1.0})
         )[0]
     )
+
+
+def test_a_face_may_be_the_paper_solid_but_no_line_is() -> None:
+    def with_paper(
+        fill: dict[str, object] | None, style: dict[str, object] | None = None
+    ) -> dict[str, object]:
+        data = scene(fill, style)
+        inks = data["inks"]
+        assert isinstance(inks, list)
+        inks.append({"name": "paper", "variable": "--palette-background"})
+        return data
+
+    assert whats(with_paper({"ink": 4, "opacity": 1.0})) == []
+    assert (
+        "of the paper should be 1" in whats(with_paper({"ink": 4, "opacity": 0.5}))[0]
+    )
+    found = whats(with_paper(None, {"ink": 4, "width": 2.0, "opacity": 1.0}))
+    assert "not an art colour" in found[0]

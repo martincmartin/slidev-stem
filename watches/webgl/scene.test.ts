@@ -56,6 +56,7 @@ const PALETTE: Palette = {
   ink: "#2A2520",
   second: "#9A6238",
   secondWash: "#E6D8CA",
+  waterWash: "#7087A0",
 };
 
 test("checkPalette wants a #rrggbb colour for the paper and for each ink", () => {
@@ -225,9 +226,11 @@ test("checkScene takes a good scene, and names what is wrong with a bad one", ()
   }
 });
 
-test("a flash draws each ink that a scene uses in a flash ink", () => {
+test("a flash draws each ink that a scene uses in a flash ink, but the paper", () => {
   const flashInks: ReadonlySet<Ink> = new Set([INKS.second, INKS.secondWash]);
-  const sceneInks = Object.values(INKS).filter((ink) => !flashInks.has(ink));
+  const sceneInks = Object.values(INKS).filter(
+    (ink) => !flashInks.has(ink) && ink !== INKS.paper,
+  );
   assert.deepEqual(new Set(FLASH_INKS.keys()), new Set(sceneInks));
   for (const ink of FLASH_INKS.values()) assert.ok(flashInks.has(ink));
   assert.equal(FLASH_INKS.get(INKS.subjectWash), INKS.secondWash);

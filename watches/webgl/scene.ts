@@ -13,9 +13,9 @@ import { check, checkFinite } from "./checked.ts";
 export type Vec3 = readonly [number, number, number];
 
 /** The house's art colours, by their jobs (docs/illustrations.md, and the
- *  roles in docs/theme.md): the five that a scene draws with, and the two
- *  that a flash draws with. This is the one list of them: `INKS` and
- *  `Palette` must each cover it. */
+ *  roles in docs/theme.md): those that a scene draws with, and the two that
+ *  a flash draws with. This is the one list of them: `INKS` and `Palette`
+ *  must each cover it. */
 export type InkName =
   | "subject"
   | "subjectWash"
@@ -23,7 +23,9 @@ export type InkName =
   | "mutedWash"
   | "ink"
   | "second"
-  | "secondWash";
+  | "secondWash"
+  | "waterWash"
+  | "paper";
 
 /** A colour by its job, not its value. A scene's fills and lines point to one
  *  of `INKS`; a `Palette` says which colour each ink is when a renderer
@@ -48,24 +50,29 @@ export const INKS = {
   second: { name: "second" },
   /** A flash's faces. */
   secondWash: { name: "secondWash" },
+  /** The water itself: a pool's water, a globe's sea. */
+  waterWash: { name: "waterWash" },
+  /** The paper: what the scene is drawn on, and what a fill's opacity is
+   *  over. As a fill, a face that is the page itself: a globe's land on its
+   *  sea (docs/webgl.md, "A face in the paper"). No line is in it. */
+  paper: { name: "paper" },
 } as const satisfies Readonly<Record<InkName, Ink>>;
 
 /** A flash (docs/illustrations.md, "Flash"): each ink of a flashed part, and
  *  the ink that it is drawn in while the flash is on. Each line goes to the
- *  second, and each wash to the second's wash. */
+ *  second, and each wash, the water's too, to the second's wash. The paper
+ *  is the page: it does not flash. */
 export const FLASH_INKS: ReadonlyMap<Ink, Ink> = new Map<Ink, Ink>([
   [INKS.subject, INKS.second],
   [INKS.muted, INKS.second],
   [INKS.ink, INKS.second],
   [INKS.subjectWash, INKS.secondWash],
   [INKS.mutedWash, INKS.secondWash],
+  [INKS.waterWash, INKS.secondWash],
 ]);
 
-/** `#rrggbb` for the paper (what the scene is drawn on, and what a fill's
- *  opacity is over) and for each ink. */
-export type Palette = Readonly<Record<InkName, string>> & {
-  readonly paper: string;
-};
+/** `#rrggbb` for each ink, the paper among them. */
+export type Palette = Readonly<Record<InkName, string>>;
 
 /** An ink, and how much of it is over the paper. */
 export interface Colour {
@@ -369,6 +376,5 @@ export function checkScene(scene: Scene): void {
 
 /** Throw unless each colour of the palette is `#rrggbb`. */
 export function checkPalette(palette: Palette): void {
-  hexRgb(palette.paper);
   for (const ink of ALL_INKS) hexRgb(palette[ink.name]);
 }

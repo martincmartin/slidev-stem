@@ -20,6 +20,7 @@ const THEME = new Map([
   ["--palette-ink", "#2a2520"],
   ["--palette-second", "#9a6238"],
   ["--palette-second-wash", "#e6d8ca"],
+  ["--palette-water-wash", "#7087a0"],
 ]);
 
 const variables = (values: ReadonlyMap<string, string>) => ({
@@ -66,6 +67,7 @@ test("readPalette gives each ink the colour of its variable", () => {
     ink: "#2a2520",
     second: "#9a6238",
     secondWash: "#e6d8ca",
+    waterWash: "#7087a0",
   });
 });
 

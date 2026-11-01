@@ -16,9 +16,11 @@ export const INK_VARIABLES: Readonly<Record<InkName, string>> = {
   ink: "--palette-ink",
   second: "--palette-second",
   secondWash: "--palette-second-wash",
+  waterWash: "--palette-water-wash",
+  paper: "--palette-background",
 };
 
-export const PAPER_VARIABLE = "--palette-background";
+export const PAPER_VARIABLE = INK_VARIABLES.paper;
 
 /** The start of the name of each of the theme's variables. */
 export const ROLE_PREFIX = "--palette-";
@@ -54,10 +56,9 @@ export function readPalette(variables: Variables, toHex: ToHex): Palette {
     check(value !== "", `the theme does not set ${name}`);
     return toHex(value);
   };
-  const inks = Object.fromEntries(
+  return Object.fromEntries(
     Object.entries(INK_VARIABLES).map(([ink, name]) => [ink, read(name)]),
   ) as Record<InkName, string>;
-  return { paper: read(PAPER_VARIABLE), ...inks };
 }
 
 /** Each ROLE_PREFIX variable of `variables`, and its value. */
