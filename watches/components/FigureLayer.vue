@@ -70,7 +70,7 @@ import {
 import { boardState } from "../watch/board.ts";
 import type { BoardTarget } from "../watch/board.ts";
 import { stoneStrikes } from "../watch/callouts.ts";
-import { sharedStage, WATCH } from "../watch/instance.ts";
+import { ART, artModel, sharedStage } from "../watch/instance.ts";
 import { storyRuns, windSliderTime } from "../watch/mainspring.ts";
 import { twistAngle, WatchModel } from "../watch/model.ts";
 import type { WatchModelState } from "../watch/model.ts";
@@ -108,7 +108,7 @@ const released = ref(false);
 /** Degrees: the balance's angle at the `twist` slider's value. Negative: the
  *  coils draw in (`springPoints`). */
 function twistDegrees(value: number): number {
-  return -value * WATCH.design.timing.amplitude;
+  return -value * ART.design.timing.amplitude;
 }
 
 /** The thumb's way back to rest after a let-go: the value that it last
@@ -128,7 +128,7 @@ function letGo(): void {
   const from = twist.value;
   const start = figure.now();
   model.value?.twist(twistDegrees(from), start, true);
-  const { period } = WATCH.design.timing;
+  const { period } = ART.design.timing;
   setEnd("watch", start + (period / 4) * 1000);
   const follow = (): void => {
     const now = figure.now();
@@ -202,7 +202,7 @@ const boardScrub = computed(() =>
 );
 const tickTock = computed(() =>
   tickTockState(frontmatter.value, clicks.value) && !hidden.value
-    ? { strikes: stoneStrikes(WATCH, frontmatter.value) }
+    ? { strikes: stoneStrikes(ART, frontmatter.value) }
     : undefined,
 );
 const timeScale = computed(() =>
@@ -234,7 +234,7 @@ const still = computed(() => {
 /** The meshes of the pieces named. */
 function meshesOf(names: readonly string[]): Set<Mesh> {
   return new Set(
-    WATCH.scene.pieces
+    ART.scene.pieces
       .filter((piece) => names.includes(piece.name))
       .flatMap((piece) => [...piece.meshes]),
   );
@@ -258,27 +258,28 @@ function show(to: number, atOnce: boolean): void {
   const move = moveTo(to, atOnce);
   const flash = move === "forward" ? now.flash : undefined;
   view.show(
-    stageState(WATCH, {
+    stageState(ART, {
       ...now,
       flash,
-      move: stepMove(shown?.state, now, move),
+      ...stepMove(shown?.state, now, move),
     }),
     modelState(now),
     move === "jump",
   );
-  view.marked = meshesOf(figureMarks(WATCH, frontmatter.value, to));
+  view.marked = meshesOf(figureMarks(ART, frontmatter.value, to));
   shown = { clicks: to, state: now };
   setEnd("watch", view.endAt());
 }
 
 onMounted(() => {
   if (!canvas.value || !state.value) return;
-  model.value = new WatchModel(WATCH, figure.now());
+  model.value = new WatchModel(ART, figure.now());
   view = new SharedView(
     canvas.value,
-    model.value,
+    artModel(model.value),
     palette.value.palette,
     figure.now,
+    ART.scene.slide[0],
   );
   view.crop = crop.value;
   show(clicks.value, true);

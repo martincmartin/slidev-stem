@@ -10,14 +10,14 @@ import {
   pictureBox,
   pictureKey,
 } from "../watch/article.ts";
-import { WATCH } from "../watch/instance.ts";
+import { ART } from "../watch/instance.ts";
 
 export default defineAppSetup(({ app }) => {
   app.provide(ARTICLE_HOOKS, {
     defaultFigures: (frontmatter, total) =>
-      defaultFigures(WATCH, frontmatter, total),
+      defaultFigures(ART, frontmatter, total),
     pictureKey,
-    pictureBox: (frontmatter, clicks) => pictureBox(WATCH, frontmatter, clicks),
+    pictureBox: (frontmatter, clicks) => pictureBox(ART, frontmatter, clicks),
     frameKey,
   });
 });

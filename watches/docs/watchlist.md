@@ -29,3 +29,14 @@ when to read and change this list.
   `staticPage` fails on an HTML parse error (parse5). If the static
   page breaks again, make the prerender open the page that it wrote, and
   fail if a figure does not draw.
+- **2026-10-31: a new helper copied one that `webgl/` already had,
+  three times in one build.** `Pose` copied the timeline's `CameraPose`,
+  `slidePoint` the callouts' `onSlide` (both merged in 7090d1d and 4135ae6),
+  and the flight's `mix` and `pivotOnSlide` the timeline's `mix` and
+  `mixCamera`'s `onSlide` (merged in the phase 4 commit of the production
+  task). Why it was done that way: each helper was written from the task's
+  plan and the spike's code, not from a search of `webgl/` for the same
+  computation. Why it was not caught sooner: no check finds a computation
+  written twice; the house rule ("Keep each fact and each computation in
+  one place") is read, but it does not say to search before writing. A
+  self-review of the diff found each one.

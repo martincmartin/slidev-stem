@@ -45,6 +45,8 @@ const view = (name: string, scale: number): View => ({
   shift: [0, 0],
   pivot: [0, 0, 0],
 });
+/** Slide px. */
+const SLIDE_WIDTH = 980;
 const WIDE = view("wide", 1);
 const CLOSE = view("close", 3);
 const FAR = view("far", 5);
@@ -78,7 +80,7 @@ const TOGETHER = TOGETHER_SECONDS * 1000;
 const FADE = FADE_SECONDS * 1000;
 
 function timelineAt(initial: StageState): Timeline {
-  const timeline = new Timeline();
+  const timeline = new Timeline(SLIDE_WIDTH);
   timeline.show(initial, 0, true);
   return timeline;
 }
@@ -214,7 +216,7 @@ test("two outgoing groups pause and fade in order before the camera changes", ()
 });
 
 test("the first state is shown at once, with no phase", () => {
-  const timeline = new Timeline();
+  const timeline = new Timeline(SLIDE_WIDTH);
   assert.equal(timeline.hasState, false);
   const flashSeconds = timeline.show(
     state({ view: CLOSE, tilt: 20, shown: set(SPRING), flash: set(SPRING) }),
@@ -257,7 +259,7 @@ test("the later meshes fade in after the others, and then the flash plays", () =
 });
 
 test("valuesAt before any state throws", () => {
-  assert.throws(() => new Timeline().valuesAt(0), /no state/);
+  assert.throws(() => new Timeline(SLIDE_WIDTH).valuesAt(0), /no state/);
 });
 
 test("by default the old meshes fade out, the camera moves with the common ones, then the new ones fade in", () => {

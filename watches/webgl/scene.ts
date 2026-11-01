@@ -153,6 +153,12 @@ export interface View {
   readonly scale: number;
   readonly shift: readonly [number, number];
   readonly pivot: Vec3;
+  /** The camera's angles that the view is made for: a slide that names the
+   *  view and sets no angles gets them. Default: 0 and 0. */
+  readonly angles?: CameraAngles;
+  /** A view of a ball about its pivot, such as a globe: the ball's radius,
+   *  in world units. A flight (`move: fly`) pans over it. */
+  readonly ball?: number;
 }
 
 /** A named set of meshes: what a slide names to show a part of the scene. */
@@ -375,6 +381,16 @@ export function checkScene(scene: Scene): void {
   for (const view of scene.views) {
     checkFinite([view.scale, ...view.shift, ...view.pivot], view.name);
     check(view.scale > 0, `${view.name}: scale ${String(view.scale)}`);
+    if (view.angles) {
+      checkFinite(
+        [view.angles.tilt, view.angles.turn],
+        `${view.name}'s angles`,
+      );
+    }
+    if (view.ball !== undefined) {
+      checkFinite([view.ball], `${view.name}'s ball`);
+      check(view.ball > 0, `${view.name}: ball ${String(view.ball)}`);
+    }
   }
   for (const piece of scene.pieces) {
     for (const mesh of piece.meshes) {

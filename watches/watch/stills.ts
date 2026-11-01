@@ -4,6 +4,7 @@
 
 import { Stills } from "../webgl/stills.ts";
 import { at } from "../webgl/checked.ts";
+import type { PoseGroups } from "../webgl/stage.ts";
 import type { Palette } from "../webgl/scene.ts";
 import type { Watch } from "./generate.ts";
 import { linePose, runningSpringPose, stagePose } from "./mainspring.ts";
@@ -16,11 +17,15 @@ export const STILL_TIME = 0.37;
 
 export class WatchStills {
   private readonly watch: Watch;
+  private readonly poseGroups: PoseGroups;
   private readonly motion: Motion;
   private readonly stills: Stills;
 
-  constructor(watch: Watch) {
+  /** `poseGroups`: the matrices of the scene's groups that follow the
+   *  camera (`withPoseGroups`). */
+  constructor(watch: Watch, poseGroups: PoseGroups) {
     this.watch = watch;
+    this.poseGroups = poseGroups;
     this.motion = new Motion(watch);
     this.stills = new Stills(watch.scene);
   }
@@ -78,7 +83,10 @@ export class WatchStills {
         view: stage.view,
         tilt: stage.tilt,
         turn: stage.turn,
-        groupMatrices: this.motion.matrices(time, swing, beats, spring.arbor),
+        groupMatrices: new Map([
+          ...this.motion.matrices(time, swing, beats, spring.arbor),
+          ...this.poseGroups(stage),
+        ]),
         keep: stage.shown,
         rest: 0,
         ...(stage.dim ? { dim: stage.dim } : {}),

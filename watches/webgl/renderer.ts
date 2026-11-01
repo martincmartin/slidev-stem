@@ -361,6 +361,18 @@ export interface Camera {
   toCamera: Vec3;
 }
 
+/** The unit direction to the camera, in world space, at `angles`: the
+ *  gradient of the depth in `viewProjection`. */
+export function towardCamera(angles: CameraAngles): Vec3 {
+  const tilt = (angles.tilt * Math.PI) / 180;
+  const turn = (angles.turn * Math.PI) / 180;
+  return [
+    Math.sin(tilt) * Math.sin(turn),
+    Math.sin(tilt) * Math.cos(turn),
+    Math.cos(tilt),
+  ];
+}
+
 /** A view is a turn about the z axis through its pivot (clockwise on the
  *  slide, by `turn` u), then a tilt about the horizontal axis through it (by
  *  `tilt` t), then the slide's zoom, orthographic: a choice of look (see the
@@ -420,7 +432,7 @@ export function viewProjection(
   }
   return {
     matrix,
-    toCamera: [sine * turnSine, sine * turnCosine, cosine],
+    toCamera: towardCamera(angles),
   };
 }
 
@@ -452,6 +464,15 @@ function clipToSlide(
   [width, height]: readonly [number, number],
 ): [number, number] {
   return [((x + 1) / 2) * width, ((1 - y) / 2) * height];
+}
+
+/** Where a view puts its pivot on the slide, in slide px, at any angles:
+ *  the camera tilts and turns about the pivot. */
+export function pivotOnSlide(view: View): [number, number] {
+  return [
+    view.shift[0] + view.scale * view.pivot[0],
+    view.shift[1] + view.scale * view.pivot[1],
+  ];
 }
 
 /** Where a world point shows on the slide through `pose`, in slide px from

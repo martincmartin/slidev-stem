@@ -25,6 +25,7 @@ import { Renderer } from "./renderer.ts";
 import type { Place } from "./renderer.ts";
 import { FLASH_INKS } from "./scene.ts";
 import type {
+  CameraAngles,
   Group,
   Mesh,
   Palette,
@@ -32,6 +33,7 @@ import type {
   Scene,
   SlideRect,
 } from "./scene.ts";
+import type { Matrix4 } from "./math.ts";
 import { Timeline } from "./timeline.ts";
 import type { StageState, Values } from "./timeline.ts";
 
@@ -64,6 +66,29 @@ export interface Model<ModelState> {
   moving?(now: number): boolean;
   /** What the model is doing, for the measurement scripts. */
   phase(now: number): string;
+}
+
+/** The matrices of groups that follow the camera, for a frame at `angles`:
+ *  a part that faces the camera, such as a globe's disc. */
+export type PoseGroups = (angles: CameraAngles) => Map<Group, Matrix4>;
+
+/** `model`, with the matrices of `groups` in each of its frames too: a
+ *  scene of two parts, one of which has no state of its own. */
+export function withPoseGroups<ModelState>(
+  model: Model<ModelState>,
+  groups: PoseGroups,
+): Model<ModelState> {
+  return {
+    show: (state, now, instantly, after) => {
+      model.show(state, now, instantly, after);
+    },
+    frame: (now, renderer, pose) =>
+      new Map([...model.frame(now, renderer, pose), ...groups(pose)]),
+    ...(model.extra ? { extra: (now) => model.extra?.(now) ?? null } : {}),
+    ...(model.endAt ? { endAt: (now) => model.endAt?.(now) ?? now } : {}),
+    ...(model.moving ? { moving: (now) => model.moving?.(now) ?? false } : {}),
+    phase: (now) => model.phase(now),
+  };
 }
 
 /** The element's size on the screen, in device px. Slidev scales the slide
@@ -174,7 +199,7 @@ export class Stage<ModelState> {
   /** The pending animation frame, while the stage runs. */
   private request: number | null = null;
   private disposed = false;
-  private readonly timeline = new Timeline();
+  private readonly timeline: Timeline;
   private readonly listeners = new Set<FrameListener>();
 
   constructor(
@@ -185,6 +210,7 @@ export class Stage<ModelState> {
   ) {
     this.canvas = canvas;
     this.model = model;
+    this.timeline = new Timeline(scene.slide[0]);
     this.renderer = new Renderer(canvas, scene, palette);
   }
 

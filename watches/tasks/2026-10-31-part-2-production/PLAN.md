@@ -386,3 +386,21 @@ All made, 2026-10-31.
   1:50m: 59,221; 1:10m, in the two boxes: 28,107. The story maps are not
   files: phase 5 projects them from this land at load, as the house makes
   geometry ("Geometry is made in TypeScript at load", `docs/webgl.md`).
+- **2026-10-31, phase 4, the globe:** `globe/globe.ts` makes the sea's
+  disc, the land in the paper and the coast, at three levels by the view's
+  scale (`Mesh.scales`), with 1:10m in its boxes and 1:50m outside them;
+  `globe/views.ts` the five views (South America, Cape Noir, Juan
+  Fernández, the Channel, Scilly), each with the angles that face its place
+  (`View.angles`); `webgl/flight.ts` the flight (`artMove: fly`), with
+  `artMoveSeconds` for the Atlantic's 7 s. The globe joins the watch's
+  scene (`watch/art.ts`); the deck's instance is now `ART`, and
+  `withPoseGroups` adds the disc's matrix to each frame of the stage, the
+  views and the stills. A test slide, not committed, showed each view in
+  Chromium as the mockup did: Robinson Crusoe Island at x = 230, St Mary's
+  at (471, 226) where `slidePoint` puts it at (471, 228). It also found that
+  `artMoveSeconds` must be a key of one step, not of a click and those after
+  it: the 7 s carried on to the flight to Scilly. Three choices differ from
+  the mockup: the flight eases with the house's `ease`, not the mockup's
+  smoothstep; a level change pops, with no cross-fade; the globe costs
+  130–220 ms at load in Node (162,000 triangles), not yet measured in the
+  browsers.

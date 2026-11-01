@@ -14,7 +14,10 @@
 //      on the screen, and the camera jumps. The order is a choice of look,
 //      not a limit (stem/docs/webgl.md, "One rule for every change"). A
 //      state with `move: together` moves, zooms, tilts and turns the camera
-//      at the same time instead, in TOGETHER_SECONDS (`mixCamera`).
+//      at the same time instead, in TOGETHER_SECONDS (`mixCamera`). With
+//      `move: fly`, between two views of one ball (a globe), the camera
+//      flies over it, in the flight's own time (`flight` in flight.ts); a
+//      state's `moveSeconds` sets the time of either.
 //   3. D becomes B, as in 1; of the meshes that fade in, those in
 //      `StageState.later` fade in after the others.
 // The meshes in `StageState.cut` do not fade: they go, or come, at once,
@@ -41,6 +44,10 @@
 
 import type { CameraAngles, CameraPose, Mesh, View } from "./scene.ts";
 import { check } from "./checked.ts";
+import { flight } from "./flight.ts";
+import { mix } from "./math.ts";
+import { pivotOnSlide } from "./renderer.ts";
+import type { Flight } from "./flight.ts";
 
 export const MOVE_SECONDS = 1.8;
 export const FADE_SECONDS = 0.8;
@@ -65,9 +72,10 @@ export function flashIsOn(elapsed: number): boolean {
 }
 
 /** How the camera goes to a state: its move and its change of angles one
- *  after the other (the rule at the top), or `together`: it moves, zooms,
- *  tilts and turns at the same time (`mixCamera`). */
-export const CAMERA_MOVES = ["ordered", "together"] as const;
+ *  after the other (the rule at the top); `together`: it moves, zooms,
+ *  tilts and turns at the same time (`mixCamera`); or `fly`: over a ball,
+ *  between two of its views (`flight`), else as `together`. */
+export const CAMERA_MOVES = ["ordered", "together", "fly"] as const;
 export type CameraMove = (typeof CAMERA_MOVES)[number];
 
 /** What is on the screen while the camera moves: the meshes that the old and
@@ -80,6 +88,8 @@ export interface StageState extends CameraAngles {
   view: View;
   /** How the camera goes to this state. Default: `ordered`. */
   move?: CameraMove;
+  /** Seconds of a move `together` or `fly`, in place of its own. */
+  moveSeconds?: number;
   /** The meshes on the screen; the others are faded out. */
   shown: ReadonlySet<Mesh>;
   /** Flashed before the change if they are on the screen, else after it;
@@ -142,6 +152,7 @@ type Phase = {
   | { channel: "view"; from: View; to: View }
   | { channel: "angles"; from: CameraAngles; to: CameraAngles }
   | { channel: "camera"; from: CameraPose; to: CameraPose }
+  | { channel: "flight"; flight: Flight; to: CameraPose }
   | {
       channel: "fade";
       keep: ReadonlySet<Mesh>;
@@ -160,10 +171,6 @@ type Phase = {
 
 export function ease(fraction: number): number {
   return fraction < 0.5 ? 4 * fraction ** 3 : 1 - (-2 * fraction + 2) ** 3 / 2;
-}
-
-export function mix(first: number, second: number, fraction: number): number {
-  return first + (second - first) * fraction;
 }
 
 /** An eased mix of two views, as a view of its own. */
@@ -206,15 +213,14 @@ export function mixCamera(
   const pivot = [0, 1, 2].map((axis) =>
     mix(from.pivot[axis] ?? 0, to.pivot[axis] ?? 0, along),
   ) as [number, number, number];
-  const onSlide = (view: View, axis: 0 | 1): number =>
-    view.scale * view.pivot[axis] + view.shift[axis];
+  const [start, end] = [pivotOnSlide(from), pivotOnSlide(to)];
   return {
     view: {
       name: `${from.name} to ${to.name}`,
       scale,
       shift: [
-        mix(onSlide(from, 0), onSlide(to, 0), fraction) - scale * pivot[0],
-        mix(onSlide(from, 1), onSlide(to, 1), fraction) - scale * pivot[1],
+        mix(start[0], end[0], fraction) - scale * pivot[0],
+        mix(start[1], end[1], fraction) - scale * pivot[1],
       ],
       pivot,
     },
@@ -296,8 +302,13 @@ function applyPhase(values: Values, phase: Phase, now: number): void {
     case "view":
       values.view = done ? phase.to : mixView(phase.from, phase.to, eased);
       break;
-    case "camera": {
-      const pose = done ? phase.to : mixCamera(phase.from, phase.to, eased);
+    case "camera":
+    case "flight": {
+      const pose = done
+        ? phase.to
+        : phase.channel === "camera"
+          ? mixCamera(phase.from, phase.to, eased)
+          : phase.flight.at(eased);
       values.view = pose.view;
       values.tilt = pose.tilt;
       values.turn = pose.turn;
@@ -323,12 +334,20 @@ function applyPhase(values: Values, phase: Phase, now: number): void {
 }
 
 export class Timeline {
+  /** Slide px: a flight's zoom is in widths of the slide. */
+  private readonly width: number;
   /** Where each channel is, when no phase runs. */
   private values: Values | null = null;
   /** One after another. */
   private phases: Phase[] = [];
   /** The flash and when it starts (ms). */
   private flash: { meshes: ReadonlySet<Mesh>; start: number } | null = null;
+
+  /** For a slide `width` px wide. */
+  constructor(width: number) {
+    check(width > 0, `a slide ${String(width)} px wide`);
+    this.width = width;
+  }
 
   /** Whether a state has been shown yet. Until then, there is nothing to
    *  move from, and the first state is shown at once. */
@@ -491,13 +510,28 @@ export class Timeline {
           seconds: seen ? ANGLES_SECONDS : 0,
         });
       };
-      if (state.move === "together") {
+      const from = {
+        view: current.view,
+        tilt: current.tilt,
+        turn: current.turn,
+      };
+      const to = { view: state.view, tilt: state.tilt, turn: state.turn };
+      const path = state.move === "fly" ? flight(from, to, this.width) : null;
+      if (path) {
+        add({
+          channel: "flight",
+          flight: path,
+          to,
+          start,
+          seconds: seen ? (state.moveSeconds ?? path.seconds) : 0,
+        });
+      } else if (state.move === "together" || state.move === "fly") {
         add({
           channel: "camera",
-          from: { view: current.view, tilt: current.tilt, turn: current.turn },
-          to: { view: state.view, tilt: state.tilt, turn: state.turn },
+          from,
+          to,
           start,
-          seconds: seen ? TOGETHER_SECONDS : 0,
+          seconds: seen ? (state.moveSeconds ?? TOGETHER_SECONDS) : 0,
         });
       } else if (state.view.scale > current.view.scale) {
         move();
@@ -562,7 +596,12 @@ export class Timeline {
    *  last. After a jump, the text waits for the old picture to go. */
   viewEndAt(now: number): number {
     const ends = this.phases
-      .filter((phase) => phase.channel === "view" || phase.channel === "camera")
+      .filter(
+        (phase) =>
+          phase.channel === "view" ||
+          phase.channel === "camera" ||
+          phase.channel === "flight",
+      )
       .map((phase) => phase.start + phase.seconds * 1000);
     return Math.max(now, ...ends);
   }

@@ -336,9 +336,9 @@ From back-and-forth to turning in one direction
 <script setup>
 import { useSlideContext } from "@slidev/client";
 import { escapementMarks, LEADER_GAP } from "./watch/callouts.ts";
-import { WATCH } from "./watch/instance.ts";
+import { ART } from "./watch/instance.ts";
 // where the leaders end: points of the watch, in this slide's view
-const marks = escapementMarks(WATCH, useSlideContext().$frontmatter);
+const marks = escapementMarks(ART, useSlideContext().$frontmatter);
 </script>
 
 <!-- The newest callout is the focus: while the pallet's (click 2) and then the
@@ -652,9 +652,9 @@ Fast gear, meet slow gear
 <script setup>
 import { useSlideContext } from "@slidev/client";
 import { gearsMarks, LEADER_GAP } from "./watch/callouts.ts";
-import { WATCH } from "./watch/instance.ts";
+import { ART } from "./watch/instance.ts";
 // where the leaders end: outside the gears' tip circles, in this slide's view
-const marks = gearsMarks(WATCH, useSlideContext().$frontmatter);
+const marks = gearsMarks(ART, useSlideContext().$frontmatter);
 </script>
 
 <!-- Each callout's leader points at the gear that the whole label names, so
@@ -893,8 +893,8 @@ From once a minute to once an hour
 <script setup>
 import { useSlideContext } from "@slidev/client";
 import { gearTrainMarks, LEADER_GAP } from "./watch/callouts.ts";
-import { WATCH } from "./watch/instance.ts";
-const marks = gearTrainMarks(WATCH, useSlideContext().$frontmatter);
+import { ART } from "./watch/instance.ts";
+const marks = gearTrainMarks(ART, useSlideContext().$frontmatter);
 </script>
 
 <!-- Click 1's text fades in at the click, as the camera starts to move: it

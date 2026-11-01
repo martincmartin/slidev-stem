@@ -68,7 +68,9 @@ it assumes, and throws with a message when an assumption is false:
 - Each frame gives a world matrix (affine) for every group of a drawn mesh.
   There is no identity matrix by default. A model makes them from the
   frame's time and its pose (`Model.frame`), so a part that faces the
-  camera (a globe's disc) can turn with it.
+  camera (a globe's disc) can turn with it: `towardCamera` gives the
+  direction to the camera at a pose's angles. A part with no state of its
+  own joins another model's frames with `withPoseGroups` (`webgl/stage.ts`).
 - A mesh with `scales` is drawn only while the frame's view scale is in
   them, from the first up to the second: a level of detail is a mesh for
   each range.
@@ -251,7 +253,17 @@ Renderer(canvas, scene, palette)` takes a `Palette` (one `#rrggbb` for
   `StageState.move` `together` moves, zooms, tilts and turns the camera at
   the same time (`mixCamera`; the watch talk's Recap slide). That mix takes
   the scale evenly in its logarithm, and moves the pivot so that it crosses
-  the screen at an even speed. Of the meshes that fade in as D becomes B, those in
+  the screen at an even speed. A state with `move` `fly`, between two views
+  of one ball about one pivot (`View.ball`, a globe), flies the camera over
+  the ball (`webgl/flight.ts`): as in van Wijk and Nuij (2003), with
+  $\rho = \sqrt{2}$, it zooms out as far as the pan needs, pans along the
+  great circle between the two views' directions, and zooms in, in 1 s for
+  each unit of the flight's length, within 1–3.5 s. Its zoom is in widths
+  of the slide, so a `Timeline` takes the slide's width. Between other views,
+  `fly` moves `together`. `StageState.moveSeconds` sets the time of a move
+  `together` or `fly`. A named view can carry the angles that it is made for
+  (`View.angles`): a talk's slide that names it and sets no angles gets
+  them. Of the meshes that fade in as D becomes B, those in
   `StageState.later` fade in after the others. The meshes in
   `StageState.cut` go or come at once, with no fade. The meshes in
   `StageState.goLater` stay on the screen while the camera moves, and go

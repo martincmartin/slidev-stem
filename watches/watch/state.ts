@@ -14,13 +14,14 @@
 //     none: they are centred in the slide's left 60% (`fittedView`)
 //   artBand: picture (default) or slide: the band whose height a fitted
 //     view fills (`fittedView`)
-//   artTilt: degrees (default 0)
-//   artTurn: degrees, clockwise on the slide, before the tilt (default 0;
-//     `CameraAngles`); only with a named view
+//   artTilt: degrees (default: the named view's own, `View.angles`, else 0)
+//   artTurn: degrees, clockwise on the slide, before the tilt (default as
+//     artTilt; `CameraAngles`); only with a named view
 //   artMove: ordered (default): the camera moves, then tilts and turns,
-//     or the reverse; together: all at the same time (`CameraMove`). It is
-//     the move of the step between this click and the one before, in either
-//     direction (`stepMove`)
+//     or the reverse; together: all at the same time; fly: over the globe,
+//     between two of its views (`CameraMove`). It is the move of the step
+//     between this click and the one before, in either direction
+//     (`stepMove`)
 //   artFlashAfterMove: true: flash after the camera and fades finish;
 //     false (default): use the ordinary flash order
 //   watchAtRest: true: the balance is at rest; false (default): it swings
@@ -54,6 +55,9 @@
 //     that stay on the screen while the camera moves, and go after it
 //   artLinger: ordered outgoing groups; each pauses, then fades out,
 //     before the camera moves
+//   artMoveSeconds: seconds of the camera's move on the step into that
+//     click, when it moves together or flies, in place of its own; in
+//     either direction, as artMove (`stepMove`)
 //   watchWind: true: wind the running spring at once at this click, before
 //     the camera moves; only with watchUnwind
 // On the slide only, about the step into it:
@@ -96,9 +100,10 @@ export const WATCH_DIM = 0.35;
 export interface WatchState {
   /** A named view, or `null`: the view that fits `fit`. */
   view: string | null;
-  /** Degrees (`CameraAngles`). */
-  tilt: number;
-  turn: number;
+  /** Degrees (`CameraAngles`), or `null`: the named view's own
+   *  (`View.angles`), else 0. */
+  tilt: number | null;
+  turn: number | null;
   /** The names of the pieces shown at this click, or "all". A list may
    *  hold "all": every piece that "all" shows. */
   show: readonly string[] | "all";
@@ -144,6 +149,8 @@ export interface WatchState {
   wind: boolean;
   /** How the camera goes to this click. */
   move: CameraMove;
+  /** Seconds of the move, or `null`: its own. */
+  moveSeconds: number | null;
   /** Outgoing groups that pause before their fade, on this step only. */
   linger?: readonly {
     readonly pieces: readonly string[];
@@ -226,6 +233,14 @@ function booleanOf(name: string, value: unknown): boolean {
 function lapseOf(name: string, value: unknown): number {
   if (typeof value !== "number" || !(value >= 1) || !Number.isFinite(value)) {
     return wrong(name, value, "a speed-up of 1 or more");
+  }
+  return value;
+}
+
+/** Seconds: more than 0. */
+function secondsOf(name: string, value: unknown): number {
+  if (typeof value !== "number" || !(value > 0) || !Number.isFinite(value)) {
+    return wrong(name, value, "a number of seconds, more than 0");
   }
   return value;
 }
@@ -335,6 +350,7 @@ const STEP_KEYS = {
   artCut: namesOf,
   artGoLater: namesOf,
   artLinger: lingerGroupsOf,
+  artMoveSeconds: secondsOf,
   watchWind: booleanOf,
 } as const;
 type StepKey = keyof typeof STEP_KEYS;
@@ -512,6 +528,14 @@ export function watchState(
   if ((now.artTurn ?? 0) !== 0 && !("view" in framed)) {
     return wrong("artTurn", now.artTurn, "set only with a named view");
   }
+  const move = now.artMove ?? "ordered";
+  if (now.artMoveSeconds !== undefined && move === "ordered") {
+    return wrong(
+      "artMoveSeconds",
+      now.artMoveSeconds,
+      "set only with artMove: together or fly",
+    );
+  }
   const mainspring = now.watchMainspring ?? null;
   if (mainspring !== null && now.watchAtRest !== undefined) {
     return wrong(
@@ -553,8 +577,8 @@ export function watchState(
   }
   return {
     view: "view" in framed ? framed.view : null,
-    tilt: now.artTilt ?? 0,
-    turn: now.artTurn ?? 0,
+    tilt: now.artTilt ?? null,
+    turn: now.artTurn ?? null,
     show,
     fit: "fit" in framed ? framed.fit : show,
     right: now.artRight ?? null,
@@ -578,20 +602,22 @@ export function watchState(
     lapse,
     unwind,
     wind: now.watchWind ?? false,
-    move: now.artMove ?? "ordered",
+    move,
+    moveSeconds: now.artMoveSeconds ?? null,
   };
 }
 
-/** The camera's move (`artMove`) on a step from `from` to `to`: the later
- *  one's, so that a step back is the step forward, reversed
- *  (../docs/navigation.md). `move` is the step's (`moveOf`); `from` is
- *  `undefined` if it shows no watch. */
+/** The camera's move (`artMove`, `artMoveSeconds`) on a step from `from`
+ *  to `to`: the later one's, so that a step back is the step forward,
+ *  reversed (../docs/navigation.md). `move` is the step's (`moveOf`);
+ *  `from` is `undefined` if it shows no watch. */
 export function stepMove(
   from: WatchState | undefined,
   to: WatchState,
   move: Move,
-): CameraMove {
-  return move === "back" && from ? from.move : to.move;
+): Pick<WatchState, "move" | "moveSeconds"> {
+  const later = move === "back" && from ? from : to;
+  return { move: later.move, moveSeconds: later.moveSeconds };
 }
 
 /** Whether the words "tick" and "tock" show at each strike, at `clicks`
@@ -657,14 +683,15 @@ export function stageState(
           piecesOf(state.fit),
           state.right,
           state.band,
-          state.tilt,
+          state.tilt ?? 0,
         )
       : namedView(state.view);
   return {
     view,
-    tilt: state.tilt,
-    turn: state.turn,
+    tilt: state.tilt ?? view.angles?.tilt ?? 0,
+    turn: state.turn ?? view.angles?.turn ?? 0,
     move: state.move,
+    ...(state.moveSeconds === null ? {} : { moveSeconds: state.moveSeconds }),
     shown: meshesOf(piecesOf(state.show)),
     flash: state.flash ? meshesOf(piecesNamed("artFlash", state.flash)) : null,
     flashAfterMove: state.flashAfterMove,

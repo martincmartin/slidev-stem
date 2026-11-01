@@ -9,6 +9,7 @@ import {
   MOVE_WITH_COMMON,
   moveWithBefore,
   stageState,
+  stepMove,
   tickTockState,
   timeScaleState,
   WATCH_DIM,
@@ -24,8 +25,8 @@ test("a slide without watch has no state", () => {
 test("the fields and their defaults", () => {
   assert.deepEqual(watchState({ art: "all" }, 0), {
     view: null,
-    tilt: 0,
-    turn: 0,
+    tilt: null,
+    turn: null,
     show: "all",
     fit: "all",
     right: null,
@@ -44,6 +45,7 @@ test("the fields and their defaults", () => {
     unwind: false,
     wind: false,
     move: "ordered",
+    moveSeconds: null,
   });
   const frontmatter = {
     art: ["hairspring", "collet", "stud"],
@@ -57,7 +59,7 @@ test("the fields and their defaults", () => {
   assert.deepEqual(watchState(frontmatter, 1), {
     view: "hairspring",
     tilt: 20,
-    turn: 0,
+    turn: null,
     show: ["hairspring", "collet", "stud"],
     fit: ["hairspring", "collet", "stud"],
     right: null,
@@ -76,6 +78,7 @@ test("the fields and their defaults", () => {
     unwind: false,
     wind: false,
     move: "ordered",
+    moveSeconds: null,
   });
 });
 
@@ -294,7 +297,7 @@ test("a click block changes the motion from its click on, as the slide sets it f
   );
   assert.deepEqual(
     clicks.map((click) => at(click)?.tilt),
-    [0, 0, 20, 20, 20, 20],
+    [null, null, 20, 20, 20, 20],
   );
   assert.deepEqual(
     clicks.map((click) => tickTockState(frontmatter, click)),
@@ -675,6 +678,71 @@ test("artBand: slide fits the slide's height, with the picture band's bottom mar
   assert.throws(
     () => watchState({ art: pieces, artView: "cover", artBand: "slide" }, 0),
     /^Error: artBand: "slide" should be set only with a fitted view/,
+  );
+});
+
+test("artMoveSeconds sets a move's time, only for a move together or fly", () => {
+  const frontmatter = {
+    art: "all",
+    artView: "cover",
+    artMove: "fly",
+    artMoveSeconds: 7,
+  };
+  const state = watchState(frontmatter, 0) ?? assert.fail();
+  assert.equal(state.moveSeconds, 7);
+  assert.equal(stageState(watch, state).moveSeconds, 7);
+  assert.equal(
+    stageState(watch, watchState({ art: "all" }, 0) ?? assert.fail())
+      .moveSeconds,
+    undefined,
+  );
+  assert.throws(
+    () => watchState({ art: "all", artMoveSeconds: 7 }, 0),
+    /artMoveSeconds.*together or fly/,
+  );
+  assert.throws(
+    () => watchState({ ...frontmatter, artMoveSeconds: 0 }, 0),
+    /more than 0/,
+  );
+  // a step's own: the next click's move takes its own time, either way
+  const steps = {
+    art: "all",
+    artView: "cover",
+    artMove: "fly",
+    artClicks: { 1: { artMoveSeconds: 7 }, 2: { artView: "hairspring" } },
+  };
+  const [first, second, third] = [0, 1, 2].map(
+    (click) => watchState(steps, click) ?? assert.fail(),
+  );
+  assert.ok(first && second && third);
+  assert.equal(second.moveSeconds, 7);
+  assert.equal(third.moveSeconds, null);
+  assert.equal(stepMove(first, second, "forward").moveSeconds, 7);
+  assert.equal(stepMove(second, first, "back").moveSeconds, 7);
+  assert.equal(stepMove(second, third, "forward").moveSeconds, null);
+});
+
+test("a named view with angles gives them to a slide that sets none", () => {
+  const cover =
+    watch.scene.views.find((view) => view.name === "cover") ?? assert.fail();
+  const angled = { ...cover, name: "angled", angles: { tilt: 35, turn: 80 } };
+  const withAngles = {
+    ...watch,
+    scene: { ...watch.scene, views: [...watch.scene.views, angled] },
+  };
+  const own = watchState({ art: "all", artView: "angled" }, 0) ?? assert.fail();
+  const stage = stageState(withAngles, own);
+  assert.equal(stage.tilt, 35);
+  assert.equal(stage.turn, 80);
+  const set =
+    watchState({ art: "all", artView: "angled", artTilt: 10 }, 0) ??
+    assert.fail();
+  assert.equal(stageState(withAngles, set).tilt, 10);
+  assert.equal(stageState(withAngles, set).turn, 80);
+  // a view without angles: 0
+  assert.equal(
+    stageState(watch, watchState({ art: "all" }, 0) ?? assert.fail()).tilt,
+    0,
   );
 });
 

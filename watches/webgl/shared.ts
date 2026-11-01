@@ -58,7 +58,7 @@ const SHEET_LIMIT = 4096;
 export class SharedView<ModelState> {
   readonly canvas: HTMLCanvasElement;
   readonly model: Model<ModelState>;
-  readonly timeline = new Timeline();
+  readonly timeline: Timeline;
   /** Drawn in the flash's colours while they show. */
   marked: ReadonlySet<Mesh> = new Set();
   /** The colours that the view draws in: its slide's palette. */
@@ -83,11 +83,13 @@ export class SharedView<ModelState> {
     model: Model<ModelState>,
     palette: Palette,
     now: () => number,
+    width: number,
   ) {
     const context = canvas.getContext("2d");
     check(context !== null, "the canvas has a context of another kind");
     this.canvas = canvas;
     this.model = model;
+    this.timeline = new Timeline(width);
     this.palette = palette;
     this.now = now;
     this.context = context;

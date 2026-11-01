@@ -23,6 +23,11 @@ export function checkAffine(matrix: Matrix4, what: string): void {
   );
 }
 
+/** The number `fraction` of the way from `first` to `second`. */
+export function mix(first: number, second: number, fraction: number): number {
+  return first + (second - first) * fraction;
+}
+
 export function transformPoint(matrix: Matrix4, [x, y, z]: Vec3): Vec3 {
   const output = (row: number): number =>
     at(matrix, row) * x +

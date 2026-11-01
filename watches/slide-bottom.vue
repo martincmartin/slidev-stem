@@ -24,7 +24,7 @@ import { computed, ref, watch as onChange } from "vue";
 import DivingBoard from "./components/DivingBoard.vue";
 import TimeScale from "./components/TimeScale.vue";
 import { boardState } from "./watch/board.ts";
-import { WATCH, watchStills } from "./watch/instance.ts";
+import { ART, watchStills } from "./watch/instance.ts";
 import { slidePalette } from "./watch/palette.ts";
 import { timeScaleState, watchState } from "./watch/state.ts";
 
@@ -66,7 +66,7 @@ onChange(
   async (shown) => {
     if (!shown) return;
     const ratio = window.devicePixelRatio || 1;
-    const [width, height] = WATCH.scene.slide;
+    const [width, height] = ART.scene.slide;
     const picture = await watchStills().of(
       shown,
       [Math.round(width * ratio), Math.round(height * ratio)],

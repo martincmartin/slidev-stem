@@ -68,7 +68,7 @@ import { stoneStrikes } from "./watch/callouts.ts";
 import type { BoardTarget } from "./watch/board.ts";
 import { WatchModel } from "./watch/model.ts";
 import type { WatchModelState } from "./watch/model.ts";
-import { WATCH, watchStills } from "./watch/instance.ts";
+import { ART, artModel, watchStills } from "./watch/instance.ts";
 import { moveOf } from "./watch/navigation.ts";
 import type { Move, Place } from "./watch/navigation.ts";
 import { slidePalette } from "./watch/palette.ts";
@@ -84,7 +84,6 @@ import {
   watchState,
 } from "./watch/state.ts";
 import type { StepMoveWith, WatchState } from "./watch/state.ts";
-import type { CameraMove } from "./webgl/timeline.ts";
 
 /** ms: a step this soon after a press that jumped jumps too. A jump leaves
  *  nothing that runs, so without this, every other press of a burst would
@@ -117,7 +116,7 @@ const model = shallowRef<WatchModel>();
  *  at the strikes. */
 const tickTock = computed(() =>
   tickTockState(frontmatter.value, slidev.nav.clicks) && !hidden.value
-    ? { strikes: stoneStrikes(WATCH, frontmatter.value) }
+    ? { strikes: stoneStrikes(ART, frontmatter.value) }
     : undefined,
 );
 /** The time-lapse's speed-up at the click, while the slide shows the time
@@ -147,7 +146,7 @@ function showWatch(
   move: Move,
   moveWith: StepMoveWith,
   /** How the camera moves on this step (`stepMove`). */
-  cameraMove: CameraMove | undefined,
+  cameraMove: Pick<WatchState, "move" | "moveSeconds"> | undefined,
 ): void {
   // a flash points to where the camera goes, or to what fades in: only on
   // the step forward into the slide or the click that names it. It is not
@@ -186,11 +185,7 @@ function showWatch(
   if (hideTimer !== undefined || hidden.value) goOutOfSight();
   // a slide reached from a slide without the watch starts at its state
   stage.show(
-    stageState(
-      WATCH,
-      { ...now, flash, move: cameraMove ?? now.move },
-      moveWith,
-    ),
+    stageState(ART, { ...now, flash, ...cameraMove }, moveWith),
     modelState(now),
     move === "jump" || old === "null",
   );
@@ -246,7 +241,7 @@ function goOutOfSight(): void {
   clearTimeout(hideTimer);
   hideTimer = undefined;
   if (stageTarget && stage) {
-    stage.show(stageState(WATCH, stageTarget), modelState(stageTarget), true);
+    stage.show(stageState(ART, stageTarget), modelState(stageTarget), true);
     showRestDelay();
   }
   stage?.stop();
@@ -276,12 +271,12 @@ function showBoard(clicks: number, move: Move): void {
 
 onMounted(() => {
   if (!live || !canvas.value) return;
-  model.value = new WatchModel(WATCH);
+  model.value = new WatchModel(ART);
   stage = new Stage(
     canvas.value,
-    WATCH.scene,
+    ART.scene,
     palette.value.palette,
-    model.value,
+    artModel(model.value),
   );
   window.watchStage = stage;
   window.slideState = () =>
@@ -342,8 +337,8 @@ onMounted(() => {
   if (!live || lazy || !location.pathname.startsWith("/presenter")) return;
   const ratio = window.devicePixelRatio || 1;
   const size: [number, number] = [
-    Math.round(WATCH.scene.slide[0] * ratio),
-    Math.round(WATCH.scene.slide[1] * ratio),
+    Math.round(ART.scene.slide[0] * ratio),
+    Math.round(ART.scene.slide[1] * ratio),
   ];
   const pending = nav.slides.value.flatMap((route) => {
     const slide = route.meta.slide?.frontmatter ?? {};

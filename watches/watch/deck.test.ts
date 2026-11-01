@@ -183,10 +183,10 @@ function cameraPhases(
   move: Move,
   moveWith: StepMoveWith,
 ): { channel: string; milliseconds: number }[] {
-  const timeline = new Timeline();
+  const timeline = new Timeline(watch.scene.slide[0]);
   timeline.show(stageState(watch, from, moveWith), 0, true);
   timeline.show(
-    stageState(watch, { ...to, move: stepMove(from, to, move) }, moveWith),
+    stageState(watch, { ...to, ...stepMove(from, to, move) }, moveWith),
     0,
   );
   const phases: { channel: string; milliseconds: number }[] = [];
@@ -252,8 +252,8 @@ test("the step from the Recap slide to the cover's picture moves in order both w
   const hairspring = watchState(recap, Number(recap["clicks"]));
   const cover = watchState(section.frontmatter, 0);
   assert.ok(hairspring && cover);
-  assert.equal(stepMove(hairspring, cover, "forward"), "ordered");
-  assert.equal(stepMove(cover, hairspring, "back"), "ordered");
+  assert.equal(stepMove(hairspring, cover, "forward").move, "ordered");
+  assert.equal(stepMove(cover, hairspring, "back").move, "ordered");
 });
 
 /** What is on the screen at the start and at the end of the camera's move,
@@ -269,10 +269,10 @@ function aroundMove(
   end: ReadonlySet<Mesh>;
   after: ReadonlySet<Mesh>;
 } {
-  const timeline = new Timeline();
+  const timeline = new Timeline(watch.scene.slide[0]);
   timeline.show(stageState(watch, from, moveWith), 0, true);
   timeline.show(
-    stageState(watch, { ...to, move: stepMove(from, to, move) }, moveWith),
+    stageState(watch, { ...to, ...stepMove(from, to, move) }, moveWith),
     0,
   );
   const moving: number[] = [];

@@ -7,7 +7,7 @@
 
 import { INKS } from "../webgl/scene.ts";
 import type { InkName, LineStyle, Mesh, Scene } from "../webgl/scene.ts";
-import { generate } from "./generate.ts";
+import { makeArt } from "./art.ts";
 import { INK_VARIABLES } from "./palette.ts";
 
 /** The scene as plain data. `variables` says which theme variable gives each
@@ -77,6 +77,6 @@ export function sceneData(
 
 if (import.meta.main) {
   process.stdout.write(
-    JSON.stringify(sceneData(generate().scene, INK_VARIABLES), null, 1) + "\n",
+    JSON.stringify(sceneData(makeArt().scene, INK_VARIABLES), null, 1) + "\n",
   );
 }
