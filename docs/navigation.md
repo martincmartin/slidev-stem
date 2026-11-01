@@ -86,7 +86,7 @@ also goes forward.
 Full validation runs `tools/smokecheck.ts` on the built deck.
 Quick validation has no browser walk.
 The smoke check blocks outside requests and walks forward through each slide and click in all three supported engines.
-It checks startup, page errors, each declared next position, and the declared final position.
+It checks startup, page errors and logged errors, each declared next position, and the declared final position.
 It rejects navigation stalls and walks that exceed their limit.
 It does not wait for animations or compare their settled states.
 
@@ -113,7 +113,7 @@ or after ordinary navigation changes.
 The diagnostic walks forward and backward, waits for each animation to settle,
 and loads each position directly. For a rapid walk, whose presses do not
 wait for an animation to end, run `pnpm offline-check <deck> --walk`.
-It rejects page errors, startup failures, and incomplete walks.
+It rejects page errors and logged errors, startup failures, and incomplete walks.
 It also fails if:
 
 - a place after a move differs from the same place loaded directly (rule 0);
@@ -133,6 +133,6 @@ It reads what the deck reports. A talk with layers defines
 
 A deck without `slideState` passes with a note.
 Only headless screen wake-lock acquisition is stubbed
-([talks.md](talks.md#browser-support)); page errors still fail.
+([talks.md](talks.md#browser-support)); page errors and logged errors still fail.
 Give each new layer its fields in the talk's `slideState`, in the same change as the layer.
 The watch talk's is `watches/watch/slide-state.ts`.

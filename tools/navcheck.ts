@@ -31,9 +31,9 @@
 // - a move does not end within MOVE_TIMEOUT_MS, or the page throws an error.
 //
 // A build is served from disk with every outside request aborted
-// (browser.ts); a page error or an outside request fails. For a rapid walk,
-// whose presses do not wait for an animation to end, run offline-check.ts
-// --walk. It exits 1 on a failure, and 2 on a usage error.
+// (browser.ts); a page error, a logged error or an outside request fails.
+// For a rapid walk, whose presses do not wait for an animation to end, run
+// offline-check.ts --walk. It exits 1 on a failure, and 2 on a usage error.
 
 import { parseArgs } from "node:util";
 import type { Page } from "playwright-chromium";

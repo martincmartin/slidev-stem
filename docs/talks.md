@@ -370,7 +370,11 @@ refusal, so the page throws. So a check that drives a deck supplies
 a stand-in `navigator.wakeLock` that grants it (`tools/browser.ts`, and the
 watches talk's `art/browser.ts`). The house's deck checks serve a built deck at
 an https origin, as GitHub Pages does, so they need it too. Every other page error still fails the
-check. The stand-in is a standard web API, not a Slidev setting, so it works
+check. So does an error that the page logs (`console.error`): a production
+Vue build logs an error in a render or a watcher, and goes on, so the page
+throws nothing. The few third-party errors that every deck logs, and that do
+no harm, are listed with their reasons (`KNOWN_LOGGED_ERRORS` in
+`tools/browser.ts`). The stand-in is a standard web API, not a Slidev setting, so it works
 with any Slidev version.
 
 Playwright WebKit is an engine check. It is not the installed Safari browser,
@@ -474,7 +478,7 @@ Comments in Vue files or `slides.md` can change it because the build retains sou
 The [validation-reuse task](../tasks/2026-10-07-validation-reuse/README.md) records the key and build comparisons.
 
 Full validation uses a fast forward smoke walk in each supported engine, with outside requests blocked.
-It checks startup, page errors, navigation stalls, and the declared final position.
+It checks startup, page errors and logged errors, navigation stalls, and the declared final position.
 It does not compare settled states or sample animation continuity.
 
 Exhaustive navigation is a diagnostic tool for an actual or suspected problem.

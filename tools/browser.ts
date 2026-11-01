@@ -150,10 +150,18 @@ export async function withBrowser<T>(
   }
 }
 
-/** What went wrong on a page: an error that its scripts threw, or a request
- *  to another host. */
+/** The logged errors that do not fail a check: each is a third party's, in
+ *  every deck, and does no harm. Slidev's client always installs Shiki's
+ *  twoslash popups (`@slidev/client/setup/main.ts`), which cannot patch
+ *  FloatingVue in a production build and log it; a deck's `twoslash:
+ *  false` does not stop it. */
+const KNOWN_LOGGED_ERRORS: readonly string[] = ["Failed to patch FloatingVue"];
+
+/** What went wrong on a page: an error that its scripts threw, an error
+ *  that it logged, or a request to another host. */
 export type PageProblem =
   | { readonly kind: "page error"; readonly message: string }
+  | { readonly kind: "console error"; readonly message: string }
   | { readonly kind: "outside request"; readonly url: string };
 
 /** The URLs of the outside requests in `problems`. */
@@ -168,9 +176,9 @@ export const reasonOf = (error: unknown) =>
   error instanceof Error ? error.message : String(error);
 
 export function describeProblem(problem: PageProblem): string {
-  return problem.kind === "page error"
-    ? `page error: ${problem.message}`
-    : `outside request: ${problem.url}`;
+  return problem.kind === "outside request"
+    ? `outside request: ${problem.url}`
+    : `${problem.kind}: ${problem.message}`;
 }
 
 /** A page in a fresh context of its own (no saved data, as a private
@@ -241,6 +249,18 @@ export async function openDeck(
   const page = await context.newPage();
   page.on("pageerror", (error) => {
     problems.push({ kind: "page error", message: error.message });
+  });
+  // A framework can log an error and go on, not throw it: a production Vue
+  // build logs an error in a render or a watcher with console.error. So a
+  // logged error fails a check too, as a thrown one does.
+  page.on("console", (message) => {
+    const text = message.text();
+    if (
+      message.type() === "error" &&
+      !KNOWN_LOGGED_ERRORS.some((known) => text.startsWith(known))
+    ) {
+      problems.push({ kind: "console error", message: text });
+    }
   });
   return { page, problems: () => [...problems] };
 }

@@ -15,8 +15,9 @@
 // ../themes/house/navigation.ts (../docs/navigation.md, "Validation: fast
 // smoke navigation").
 // Each press of the right arrow must reach the next position that it declares,
-// and the walk must end at the last slide's last click. A page error, a
-// request to another host, missing or wrong navigation data, and a stall fail.
+// and the walk must end at the last slide's last click. A page error or a
+// logged error (browser.ts), a request to another host, missing or wrong
+// navigation data, and a stall fail.
 // It does not check animations, going back, or loading a place directly: run
 // navcheck.ts when you suspect a navigation problem. It exits 1 on a failure,
 // and 2 on a usage error.

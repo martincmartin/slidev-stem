@@ -24,10 +24,10 @@
 // and a request from any of them is caught.
 //
 // It fails (exit 1) on an outside request, and also if the deck does not
-// work: a page error, a page that shows no slide in time, a walk that does
-// not move from slide 1, or one that reaches MOST_POSITIONS (browser.ts)
-// without an end. A deck that cannot start requests nothing, so a count of
-// requests alone would pass it. It exits 2 on a usage error.
+// work: a page error or a logged error, a page that shows no slide in time,
+// a walk that does not move from slide 1, or one that reaches
+// MOST_POSITIONS (browser.ts) without an end. A deck that cannot start
+// requests nothing, so a count of requests alone would pass it. It exits 2 on a usage error.
 
 import { parseArgs } from "node:util";
 import type { Page } from "playwright-chromium";
@@ -308,7 +308,7 @@ if (import.meta.main) {
       found: [
         ...inspected,
         ...problems
-          .filter((problem) => problem.kind === "page error")
+          .filter((problem) => problem.kind !== "outside request")
           .map(describeProblem),
       ],
       outside: outsideUrls(problems),

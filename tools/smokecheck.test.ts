@@ -24,6 +24,7 @@ function deck(fault: string): string {
       next: fault === "early" || click === 1 ? null : { slide: 1, click: 1 } });
     if (fault === "missing") delete window.slideNavigation;
     if (fault === "page error") setTimeout(() => { throw Error("fixture") }, 0);
+    if (fault === "console error") console.error("fixture");
     if (fault === "outside") fetch("https://outside.test/image").catch(() => {});
     addEventListener("keydown", () => {
       if (fault === "stall") return;
@@ -48,7 +49,15 @@ async function walkOf(
 }
 
 test("the walk passes a good deck, and fails each fault", async () => {
-  const faults = ["none", "stall", "early", "missing", "page error", "outside"];
+  const faults = [
+    "none",
+    "stall",
+    "early",
+    "missing",
+    "page error",
+    "console error",
+    "outside",
+  ];
   const walks = await Promise.all(
     faults.map((fault) => walkOf(deck(fault), "chromium")),
   );
