@@ -26,6 +26,7 @@ import type {
   CameraPose,
   Scene,
   Vec3,
+  View,
 } from "../scene.ts";
 import { Stage } from "../stage.ts";
 import type { Model } from "../stage.ts";
@@ -977,6 +978,47 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
         "the top face's middle",
       );
       near(colourAt([100, 45, 30]), PALETTE.subject, "its right edge");
+      drawn.dispose();
+    },
+  ],
+  [
+    "a mesh with scales is drawn only while the view's scale is in them",
+    (own) => {
+      const test = makeScene();
+      const front = { ...test.front, scales: [2, Infinity] as const };
+      const scene: Scene = {
+        ...test.scene,
+        meshes: [test.back, front, test.spring],
+        views: [
+          ...test.scene.views,
+          { name: "near", scale: 2, shift: [0, 0], pivot: [0, 0, 0] },
+        ],
+        pieces: [],
+      };
+      const target = canvas();
+      const drawn = own(renderer(target, scene));
+      const [width, height] = SIZE;
+      // the front box's top face, square(50, 20, 50) at z 30, seen from above
+      const middle: Vec3 = [75, 45, 30];
+      const washAt = (view: View): boolean => {
+        const frame = frameOf(test, { view, tilt: 0 });
+        drawn.render(frame);
+        const [x, y] = slidePoint(frame, scene.slide, middle);
+        const index =
+          ((height - 1 - Math.floor(y)) * width + Math.floor(x)) * 4;
+        const found = [...pixels(target).slice(index, index + 3)];
+        const wanted = hexRgb(PALETTE.subjectWash).map((value) => value * 255);
+        return found.every(
+          (value, channel) => Math.abs(value - (wanted[channel] ?? 0)) <= 8,
+        );
+      };
+      const [far, near] = scene.views;
+      check(far !== undefined && near !== undefined, "no views");
+      check(!washAt(far), "the front box is drawn at scale 1, below its range");
+      check(
+        washAt(near),
+        "the front box is not drawn at scale 2, in its range",
+      );
       drawn.dispose();
     },
   ],

@@ -142,6 +142,10 @@ export interface Mesh extends MeshGeometry {
   readonly overlay: boolean;
   /** `true` if `Renderer.updateMesh` may change its geometry. */
   readonly dynamic: boolean;
+  /** The view's scales at which the mesh is drawn: from the first, up to
+   *  the second. A level of detail (a globe's coast at 1:110m, 1:50m or
+   *  1:10m) is a mesh for each range. Default: every scale. */
+  readonly scales?: readonly [number, number];
 }
 
 export interface View {
@@ -349,6 +353,14 @@ export function checkScene(scene: Scene): void {
       checkOpacity(mesh.fill.opacity, mesh.name);
     }
     if (mesh.holdout) checkHoldout(mesh);
+    if (mesh.scales) {
+      const [from, to] = mesh.scales;
+      checkFinite([from], `${mesh.name}'s scales`);
+      check(
+        from >= 0 && to > from,
+        `${mesh.name}'s scales ${String(from)} to ${String(to)} are empty`,
+      );
+    }
     checkFinite([mesh.lineOrder], `${mesh.name}'s line order`);
     checkGeometry(mesh, mesh.name);
   }

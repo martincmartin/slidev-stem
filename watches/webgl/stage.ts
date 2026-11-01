@@ -48,8 +48,14 @@ export interface Model<ModelState> {
    *  `after` (ms): when the stage's change ends, for a story that plays
    *  forward. */
   show(state: ModelState, now: number, instantly: boolean, after: number): void;
-  /** The world matrix of each group at `now`; it updates dynamic meshes. */
-  frame(now: number, renderer: Renderer): Map<Group, Float32Array>;
+  /** The world matrix of each group at `now`, for a frame whose camera is
+   *  `pose` (a part that faces the camera turns with it); it updates
+   *  dynamic meshes. */
+  frame(
+    now: number,
+    renderer: Renderer,
+    pose: CameraPose,
+  ): Map<Group, Float32Array>;
   /** The story's meshes at `now`, or `null`. */
   extra?(now: number): Extra | null;
   /** When the story's moves end (ms), or `now`. */
@@ -136,7 +142,8 @@ export function drawFrame<ModelState>(
     flashing && marked.size > 0
       ? new Set([...flashing, ...marked])
       : (flashing ?? (marked.size > 0 ? marked : null));
-  const groupMatrices = model.frame(now, renderer);
+  const pose = { view: values.view, tilt: values.tilt, turn: values.turn };
+  const groupMatrices = model.frame(now, renderer, pose);
   const { keep, fade, rest } = withExtra(values, model.extra?.(now));
   renderer.render(
     {
@@ -156,7 +163,7 @@ export function drawFrame<ModelState>(
     },
     drawing.place,
   );
-  return { view: values.view, tilt: values.tilt, turn: values.turn };
+  return pose;
 }
 
 export class Stage<ModelState> {

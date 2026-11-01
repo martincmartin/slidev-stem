@@ -1319,8 +1319,12 @@ export class Renderer {
     }
     const rest = frame.rest ?? 1;
     check(rest >= 0 && rest <= 1, `rest ${String(rest)} is outside 0..1`);
+    const { scale } = frame.view;
     const shown = this.drawn.filter(
-      ({ mesh }) => !(frame.drawingOnly ?? false) || mesh.inDrawing,
+      ({ mesh }) =>
+        (!(frame.drawingOnly ?? false) || mesh.inDrawing) &&
+        (mesh.scales === undefined ||
+          (mesh.scales[0] <= scale && scale < mesh.scales[1])),
     );
     const picture = this.picture(frame, shown);
     const gl = this.gl;

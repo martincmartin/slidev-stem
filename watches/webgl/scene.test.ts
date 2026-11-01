@@ -123,6 +123,14 @@ test("checkScene takes a good scene, and names what is wrong with a bad one", ()
       { ...GOOD, meshes: [{ ...MESH, triangles: new Float32Array(4) }] },
     ],
     [
+      /scales 2 to 2 are empty/,
+      { ...GOOD, meshes: [{ ...MESH, scales: [2, 2] }] },
+    ],
+    [
+      /scales -1 to 2 are empty/,
+      { ...GOOD, meshes: [{ ...MESH, scales: [-1, 2] }] },
+    ],
+    [
       /NaN/,
       {
         ...GOOD,

@@ -66,7 +66,12 @@ it assumes, and throws with a message when an assumption is false:
 - Only a mesh with `dynamic: true` changes, through `Renderer.updateMesh`. Each
   renderer keeps its own copy of that geometry; the `Mesh` does not change.
 - Each frame gives a world matrix (affine) for every group of a drawn mesh.
-  There is no identity matrix by default.
+  There is no identity matrix by default. A model makes them from the
+  frame's time and its pose (`Model.frame`), so a part that faces the
+  camera (a globe's disc) can turn with it.
+- A mesh with `scales` is drawn only while the frame's view scale is in
+  them, from the first up to the second: a level of detail is a mesh for
+  each range.
 - A canvas has one live renderer. `Renderer`, `Stage` and `Stills` each have
   `dispose()`, which frees all that they hold (GL objects, listeners, frames,
   object URLs). After a context loss, the renderer makes its GL objects again.
