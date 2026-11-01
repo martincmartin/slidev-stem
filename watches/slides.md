@@ -1812,14 +1812,14 @@ Scurvy kills four to six men a day.
 -->
 
 ---
-# the flight across the Atlantic, longer than the others (artMoveSeconds).
-# The Channel's labels say where in the world; "Estimated position" stays,
-# dimmed, until the bracket measures from it
+# the flight across the Atlantic, longer than the others: a flight's time
+# is its length (webgl/flight.ts). The Channel's labels say where in the
+# world; "Estimated position" stays, dimmed, until the bracket measures from
+# it
 class: story-map
 art: [globe]
 artView: channel
 artMove: fly
-artMoveSeconds: 7
 artClicks:
   1: { artView: scilly, globeMarks: [estimated, scale] }
   2: { globeLeg: wreck }

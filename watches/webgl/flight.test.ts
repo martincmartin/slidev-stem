@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { FLIGHT, flight } from "./flight.ts";
-import { towardCamera } from "./renderer.ts";
+import { FLIGHT, ballPoint, flight, pacedShare } from "./flight.ts";
+import { slidePoint, towardCamera } from "./renderer.ts";
 import type { CameraPose, Mesh, Vec3, View } from "./scene.ts";
 import { TOGETHER_SECONDS, Timeline } from "./timeline.ts";
 import type { StageState } from "./timeline.ts";
@@ -54,7 +54,7 @@ test("a flight starts and ends at its poses", () => {
       [0, from],
       [1, to],
     ] as const) {
-      const camera = path.at(share);
+      const camera = path.along(share);
       assert.ok(
         near(camera.view.scale, end.view.scale, 1e-6),
         `scale at ${String(share)}`,
@@ -79,7 +79,7 @@ test("a flight pans along the great circle, and zooms out as far as the pan need
   let least = Infinity;
   let previous = -Infinity;
   for (let step = 0; step <= 20; step++) {
-    const camera = path.at(step / 20);
+    const camera = path.along(step / 20);
     const toward = towardCamera(camera);
     const off =
       toward[0] * normal[0] + toward[1] * normal[1] + toward[2] * normal[2];
@@ -92,20 +92,54 @@ test("a flight pans along the great circle, and zooms out as far as the pan need
   }
   // across the Atlantic, the globe is about the slide's width on the way
   assert.ok(least < ANSON.view.scale / 5, `scale ${String(least)}`);
-  assert.equal(path.seconds, FLIGHT.most);
+  assert.ok(path.seconds > 4, `${String(path.seconds)} s`);
 });
 
-test("a flight's time is its length, within its bounds", () => {
+test("a flight's time is a ramp and its seen length at one speed", () => {
   const short = flight(NOIR, pose(-76, -55, 9), SLIDE) ?? assert.fail();
-  assert.equal(short.seconds, FLIGHT.least);
   const zoom = flight(AMERICA, NOIR, SLIDE) ?? assert.fail();
-  assert.ok(zoom.seconds > FLIGHT.least && zoom.seconds <= FLIGHT.most);
+  const far = flight(ANSON, CHANNEL, SLIDE) ?? assert.fail();
+  assert.ok(short.seconds > FLIGHT.ramp && short.seconds < zoom.seconds);
+  assert.ok(zoom.seconds < far.seconds);
+});
+
+test("a paced flight ramps up and down, and goes at one speed between", () => {
+  assert.equal(pacedShare(0, 5), 0);
+  assert.equal(pacedShare(5, 5), 1);
+  // a ramp of 1 s at 1/4 of the way a second: 1/8 of the way
+  assert.ok(near(pacedShare(1, 5), 1 / 8, 1e-12));
+  assert.ok(near(pacedShare(2.5, 5), 0.5, 1e-12));
+  assert.ok(near(pacedShare(3, 5) - pacedShare(2, 5), 0.25, 1e-12));
+  // a flight shorter than two ramps ramps up for half, and down for half
+  assert.ok(near(pacedShare(0.5, 1), 0.5, 1e-12));
+  // the eye sees one speed in the cruise: the ground at the slide's middle
+  // and the zoom at its edge, in slide widths a second
+  const path = flight(ANSON, CHANNEL, SLIDE) ?? assert.fail();
+  const middle = [SLIDE[0] / 2, SLIDE[1] / 2] as const;
+  const seen = (time: number): number => {
+    const step = 0.01;
+    const [pose, next] = [time, time + step].map((each) =>
+      path.at(each / path.seconds, path.seconds),
+    );
+    if (!pose || !next) return NaN;
+    const ground = ballPoint(pose, SLIDE, middle) ?? assert.fail();
+    const [x, y] = slidePoint(next, SLIDE, ground);
+    const zoom =
+      (Math.abs(Math.log(next.view.scale / pose.view.scale)) * SLIDE[0]) / 2;
+    return Math.hypot(x - middle[0], y - middle[1], zoom) / SLIDE[0] / step;
+  };
+  for (let time = 1.2; time < path.seconds - 1.2; time += 0.25) {
+    assert.ok(
+      Math.abs(seen(time) - FLIGHT.speed) < 0.05,
+      `${String(time)} s: ${String(seen(time))}`,
+    );
+  }
 });
 
 test("a zoom with no pan keeps the camera's direction", () => {
   const path = flight(NOIR, pose(-76, -55, 1), SLIDE) ?? assert.fail();
   for (const share of [0.25, 0.5, 0.75]) {
-    const camera = path.at(share);
+    const camera = path.along(share);
     assert.ok(near(camera.tilt, NOIR.tilt, 1e-9));
     assert.ok(near(camera.turn, NOIR.turn, 1e-9));
     assert.ok(camera.view.scale < NOIR.view.scale && camera.view.scale > 1);

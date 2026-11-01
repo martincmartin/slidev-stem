@@ -244,10 +244,16 @@ under a box, and the anchors.
 `artMove: fly` flies the camera over the globe, between two of its views
 (`webgl/flight.ts`, [`stem/docs/webgl.md`](../../docs/webgl.md), "Motion and
 slides"): it zooms out as far as the pan needs, pans along the great circle,
-and zooms in. A flight takes its own time, 1 s for each unit of its length,
-within 1–3.5 s. A step can set its own time with `artMoveSeconds`: the
-flight across the Atlantic takes 7 s, so that the audience can follow the
-globe as it turns.
+and zooms in. It is paced by what the eye sees: after a ramp up of 1 s,
+the ground at the slide's middle and the zoom at the slide's edge move at
+one speed, half a slide's width a second, and then it slows down for 1 s.
+So a flight's time is its length: the Juan Fernández map to the Channel
+takes 7 s, the others 3–3.6 s. The speed is the one at which the flight
+across the Atlantic was tuned by eye. Not an oversight: the house's ease,
+on van Wijk and Nuij's own pace, barely moved for the first and last
+second, and then swept the ground past at up to 1,750 px/s
+(`FLIGHT` in `webgl/flight.ts`; the production task's progress, phase 6).
+A step can still set its own time with `artMoveSeconds`.
 
 ## The globe in the deck
 

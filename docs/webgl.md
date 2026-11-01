@@ -257,9 +257,12 @@ Renderer(canvas, scene, palette)` takes a `Palette` (one `#rrggbb` for
   of one ball about one pivot (`View.ball`, a globe), flies the camera over
   the ball (`webgl/flight.ts`): as in van Wijk and Nuij (2003), with
   $\rho = \sqrt{2}$, it zooms out as far as the pan needs, pans along the
-  great circle between the two views' directions, and zooms in, in 1 s for
-  each unit of the flight's length, within 1–3.5 s. Its zoom is in widths
-  of the slide, so a `Timeline` takes the slide's size. The pivot's offset
+  great circle between the two views' directions, and zooms in. It is not
+  eased: it is paced by what the eye sees (`paced`): a ramp up, then the
+  ground at the slide's middle and the zoom at its edge at one speed
+  (`FLIGHT.speed`, slide widths a second), then a ramp down, so its time
+  is a ramp and its seen length at that speed. Its zoom is in widths of
+  the slide, so a `Timeline` takes the slide's size. The pivot's offset
   from the slide's middle mixes in world units, not in slide px, so the
   place at the slide's middle moves from one view's to the other's. Not an
   oversight: a view can show its pivot far off the slide (a story map's

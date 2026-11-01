@@ -464,3 +464,17 @@ All made, 2026-10-31.
   slide, and the flight kept that slide point while it zoomed out, so it
   swung over Ireland on the way to Scilly and to Cape Horn on the way from
   Juan Fernández (commit 3dc5bad, `globe/maps.test.ts`).
+- **2026-11-01, the flights' pace:** the flights started too slowly and
+  ended too fast. Measured (the ground at the slide's middle, px/s): the
+  house's cubic ease on van Wijk and Nuij's pace moved 1–5 px/s in the
+  first and last twentieth, and up to 1,170 px/s (Juan Fernández to the
+  Channel, 7 s) and 1,750 px/s (Cape Noir to Juan Fernández, 1.9 s) in the
+  middle. Over a ball, their even pace does not give an even speed: with
+  1 s ramps alone, the ground still went from 180 to 511 px/s. A flight is
+  now paced by what the eye sees, the ground at the middle and the zoom
+  at the edge, in slide widths: a 1 s ramp up, half a width a second, a
+  1 s ramp down (`webgl/flight.ts`, `paced`). That is the Atlantic's speed
+  at the 7 s chosen by eye; its time is now its own, so the slide's
+  `artMoveSeconds: 7` went, and the other flights take 2.9–3.6 s, not
+  1.5–1.9 s.
+

@@ -16,8 +16,9 @@
 //      state with `move: together` moves, zooms, tilts and turns the camera
 //      at the same time instead, in TOGETHER_SECONDS (`mixCamera`). With
 //      `move: fly`, between two views of one ball (a globe), the camera
-//      flies over it, in the flight's own time (`flight` in flight.ts); a
-//      state's `moveSeconds` sets the time of either.
+//      flies over it, in the flight's own time and pace, not eased
+//      (`flight` in flight.ts); a state's `moveSeconds` sets the time of
+//      either.
 //   3. D becomes B, as in 1; of the meshes that fade in, those in
 //      `StageState.later` fade in after the others.
 // The meshes in `StageState.cut` do not fade: they go, or come, at once,
@@ -308,7 +309,7 @@ function applyPhase(values: Values, phase: Phase, now: number): void {
         ? phase.to
         : phase.channel === "camera"
           ? mixCamera(phase.from, phase.to, eased)
-          : phase.flight.at(eased);
+          : phase.flight.at(fraction, phase.seconds);
       values.view = pose.view;
       values.tilt = pose.tilt;
       values.turn = pose.turn;
