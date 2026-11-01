@@ -1,6 +1,7 @@
 // Checks of the renderer, the stage and the stills that need a browser:
 // context loss, dispose, a dynamic mesh drawn last, the fade, a recolour,
-// a dim, the flash, a holdout, and the contract of each input. They draw small scenes of their own, not the
+// a dim, the flash, a holdout, where `slidePoint` puts a point, a stage's
+// frame listeners, and the contract of each input. They draw small scenes of their own, not the
 // watch. `window.webglChecks()` runs them all; art/watch-stills.ts calls it.
 
 import { check } from "../checked.ts";
@@ -13,7 +14,7 @@ import {
   smoothRing,
 } from "../mesh.ts";
 import type { Point2 } from "../mesh.ts";
-import { HOLDOUT_TOLERANCE, Renderer } from "../renderer.ts";
+import { HOLDOUT_TOLERANCE, Renderer, slidePoint } from "../renderer.ts";
 import { FLASH_INKS, INKS, hexRgb } from "../scene.ts";
 import type {
   CameraAngles,
@@ -22,7 +23,9 @@ import type {
   Mesh,
   MeshGeometry,
   Palette,
+  Pose,
   Scene,
+  Vec3,
 } from "../scene.ts";
 import { Stage } from "../stage.ts";
 import type { Model } from "../stage.ts";
@@ -932,6 +935,79 @@ const CHECKS: [string, (own: Own) => Promise<void> | void][] = [
       }
       check(!loads, "the URL still loads after dispose");
       throws(() => stills.of("b", PALETTE, draw), /disposed/);
+    },
+  ],
+  [
+    "slidePoint is where the renderer draws a world point, tilted and turned",
+    (own) => {
+      const test = makeScene();
+      const target = canvas();
+      const drawn = own(renderer(target, test.scene));
+      const frame = frameOf(test, { tilt: 30, turn: 25 });
+      drawn.render(frame);
+      const values = pixels(target);
+      const [width, height] = SIZE;
+      const colourAt = (point: Vec3): Vec3 => {
+        const [x, y] = slidePoint(frame, test.scene.slide, point);
+        // the device px are the slide's here; a row of readPixels is from the bottom
+        const index =
+          ((height - 1 - Math.floor(y)) * width + Math.floor(x)) * 4;
+        return [
+          values[index] ?? 0,
+          values[index + 1] ?? 0,
+          values[index + 2] ?? 0,
+        ];
+      };
+      const near = (found: Vec3, hex: string, what: string): void => {
+        const wanted = hexRgb(hex).map((value) => value * 255);
+        const off = Math.max(
+          ...found.map((value, index) =>
+            Math.abs(value - (wanted[index] ?? 0)),
+          ),
+        );
+        check(off <= 8, `${what}: ${found.join(" ")}, not ${hex}`);
+      };
+      // the front box's top face, square(50, 20, 50) at z 30: its middle is
+      // in the face's wash, and the middle of its right edge on the line
+      near(
+        colourAt([75, 45, 30]),
+        PALETTE.subjectWash,
+        "the top face's middle",
+      );
+      near(colourAt([100, 45, 30]), PALETTE.subject, "its right edge");
+      drawn.dispose();
+    },
+  ],
+  [
+    "a stage gives each frame's pose to its listeners, until they leave",
+    async (own) => {
+      const test = makeScene();
+      const model: Model<null> = {
+        show: () => undefined,
+        frame: () => new Map([[test.group, IDENTITY]]),
+        phase: () => "still",
+      };
+      const stage = own(new Stage(canvas(), test.scene, PALETTE, model));
+      stage.show({ ...stateOf(test), tilt: 30, turn: 25 }, null, true);
+      const poses: Pose[] = [];
+      const leave = stage.onFrame((pose) => poses.push(pose));
+      stage.start();
+      await wait(200);
+      const seen = poses.length;
+      check(seen > 0, "no frame called the listener");
+      check(
+        poses.every(
+          (pose) =>
+            pose.tilt === 30 &&
+            pose.turn === 25 &&
+            pose.view === test.scene.views[0],
+        ),
+        "a pose is not the state's",
+      );
+      leave();
+      await wait(100);
+      check(poses.length === seen, "the listener was called after it left");
+      stage.dispose();
     },
   ],
 ];

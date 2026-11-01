@@ -362,3 +362,19 @@ All made, 2026-10-31.
   WebGL times from the globe task's spike, in a different page. Neither is
   measured on a phone, or in Safari itself.
 - The land's fill at 1:10m in the boxes is not measured.
+
+## 9. Progress
+
+- **2026-10-31, phase 1:** the stage's keys are `art…`, the watch model's
+  `watch…`. Every slide's parsed state, at every click, was byte-identical
+  before and after (a dump of `watchState`, `moveWithBefore`,
+  `tickTockState` and `timeScaleState`). A slide key that starts with `art`
+  or `watch` and is not a key now throws (`checkNames`).
+- **2026-10-31, phase 3, the hook:** `Stage.onFrame` and
+  `SharedView.onFrame` give each frame's pose; `planeOnSlide` and
+  `slidePoint` (`webgl/renderer.ts`) map a plane or a point to slide px. A
+  browser check draws a box tilted and turned, and reads the face's wash and
+  its edge's ink where `slidePoint` says; with slide y flipped, it fails. A
+  still's pose is its state's. So option 2's risk is answered: the camera
+  maps exactly, in the same animation frame. The wiring to the deck's
+  layer, the stills and the figures is phase 5's, with the story layer.

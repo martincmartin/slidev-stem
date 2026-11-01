@@ -24,7 +24,7 @@ import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
 import type { Place } from "./renderer.ts";
 import { FLASH_INKS } from "./scene.ts";
-import type { Group, Mesh, Palette, Scene, SlideRect } from "./scene.ts";
+import type { Group, Mesh, Palette, Pose, Scene, SlideRect } from "./scene.ts";
 import { Timeline } from "./timeline.ts";
 import type { StageState, Values } from "./timeline.ts";
 
@@ -106,9 +106,14 @@ export interface ViewDrawing {
   readonly place?: Place;
 }
 
+/** Called after each frame that a stage or a view draws, with the camera
+ *  that it drew with and its time: a layer over the canvas moves its marks
+ *  with it (`planeOnSlide` in renderer.ts), in the same animation frame. */
+export type FrameListener = (pose: Pose, now: number) => void;
+
 /** Draw one frame of a timeline and a model at `now`, `size` device px,
  *  with the renderer: the stage's frame, and each view's on a shared
- *  renderer (shared.ts), with `drawing`. */
+ *  renderer (shared.ts), with `drawing`. Returns the camera it drew with. */
 export function drawFrame<ModelState>(
   renderer: Renderer,
   timeline: Timeline,
@@ -116,7 +121,7 @@ export function drawFrame<ModelState>(
   now: number,
   size: [number, number],
   drawing: ViewDrawing = {},
-): void {
+): Pose {
   const marked = drawing.marked ?? new Set<Mesh>();
   const values = timeline.valuesAt(now);
   const flashing = timeline.flashingAt(now);
@@ -144,6 +149,7 @@ export function drawFrame<ModelState>(
     },
     drawing.place,
   );
+  return { view: values.view, tilt: values.tilt, turn: values.turn };
 }
 
 export class Stage<ModelState> {
@@ -155,6 +161,7 @@ export class Stage<ModelState> {
   private request: number | null = null;
   private disposed = false;
   private readonly timeline = new Timeline();
+  private readonly listeners = new Set<FrameListener>();
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -236,10 +243,21 @@ export class Stage<ModelState> {
     this.renderer.setPalette(palette);
   }
 
+  /** Call `listener` after each frame, until the returned function is
+   *  called. If it throws, the frame throws (see the top). */
+  onFrame(listener: FrameListener): () => void {
+    check(!this.disposed, "the stage is disposed");
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  }
+
   /** Stop, and free the renderer. Calling it again does nothing. */
   dispose(): void {
     this.stop();
     this.renderer.dispose();
+    this.listeners.clear();
     this.disposed = true;
   }
 
@@ -264,7 +282,8 @@ export class Stage<ModelState> {
     if (this.log.sizes.at(-1)?.[1] !== sizeText) {
       this.log.sizes.push([now, sizeText]);
     }
-    drawFrame(this.renderer, this.timeline, this.model, now, size);
+    const pose = drawFrame(this.renderer, this.timeline, this.model, now, size);
+    for (const listener of this.listeners) listener(pose, now);
     this.log.starts.push(now);
     this.log.drawTimes.push(performance.now() - before);
     this.log.phases.push(this.phaseAt(now));

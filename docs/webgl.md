@@ -284,6 +284,17 @@ Renderer(canvas, scene, palette)` takes a `Palette` (the paper, and one
   `movingAt` include the story.
 - **A fade fades its meshes as one picture**, as SVG's group opacity does:
   the fading parts never show their own hidden lines.
+- **Layers over the canvas.** An SVG over the canvas (a story map, its
+  marks) moves with the camera: `Stage.onFrame` and `SharedView.onFrame`
+  call a listener after each frame with the pose that the frame drew with
+  (its view, tilt and turn), in the same animation frame, so the layer
+  never lags the picture. `planeOnSlide` (`webgl/renderer.ts`) turns a pose
+  and a plane of the world into the 2D map, SVG's `matrix()`, that puts the
+  plane's drawing on the slide; `slidePoint` does it for one point. The
+  camera is orthographic, so a plane maps exactly, at any tilt and turn. A
+  still uses the state's own pose: a `StageState` at rest is one. The
+  checks: `webgl/renderer.test.ts`, and a browser check that the renderer
+  draws a point where `slidePoint` says.
 - **Stills:** the export, the overview and the presenter's "next" pane show a
   picture of each slide's art, drawn by one hidden renderer for the page. The
   PDF export is a bitmap at twice the slide's size: good for a projector, not
@@ -314,7 +325,8 @@ of [talks.md](talks.md):
 - `tools/barroom.py` and `tools/motion.py` on PNG stills (`pnpm art:stills`):
   the back row sees the art, and sees it move. `art:stills` also runs the
   renderer's browser checks (`webgl/probe/checks.ts`): context loss,
-  `dispose`, the fade, a dynamic mesh drawn last, and each input's contract.
+  `dispose`, the fade, a dynamic mesh drawn last, where `slidePoint` puts a
+  point, a stage's frame listeners, and each input's contract.
 - `art/privacy-check.ts` (`pnpm art:privacy DECK`, on the built deck):
   Chromium, Firefox, and WebKit must start the live watch with canvas pixel
   reads blocked. This catches a palette error that can leave a slide blank.

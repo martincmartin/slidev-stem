@@ -173,10 +173,27 @@ export interface CameraAngles {
   readonly turn: number;
 }
 
-/** What the renderer takes for each frame. */
-export interface Frame extends CameraAngles {
+/** Where the camera is: a view and its angles. A frame has one, and so does
+ *  a stage's state at rest. */
+export interface Pose extends CameraAngles {
   /** Or an eased mix of two views. */
   readonly view: View;
+}
+
+/** A plane of the world: a point on it, and the world vectors of its unit
+ *  steps along u and v. */
+export interface Plane {
+  readonly origin: Vec3;
+  readonly u: Vec3;
+  readonly v: Vec3;
+}
+
+/** A 2D affine map, as SVG's `matrix(a, b, c, d, e, f)`: (u, v) goes to
+ *  (a u + c v + e, b u + d v + f). */
+export type Affine2 = readonly [number, number, number, number, number, number];
+
+/** What the renderer takes for each frame. */
+export interface Frame extends Pose {
   /** The world matrix of each group that a drawn mesh has: 4 x 4,
    *  column-major, affine. The renderer does not compose `Group.parent`. */
   readonly groupMatrices: ReadonlyMap<Group, Float32Array>;

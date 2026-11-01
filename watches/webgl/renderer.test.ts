@@ -1,11 +1,17 @@
 // The camera (`viewProjection`): the turn about the world's z axis, before
-// the tilt; and a crop of it (`cropCamera`).
+// the tilt; a crop of it (`cropCamera`); and where it puts a point or a
+// plane on the slide (`slidePoint`, `planeOnSlide`).
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { transformPoint } from "./math.ts";
-import { cropCamera, viewProjection } from "./renderer.ts";
-import type { Vec3, View } from "./scene.ts";
+import {
+  cropCamera,
+  planeOnSlide,
+  slidePoint,
+  viewProjection,
+} from "./renderer.ts";
+import type { Plane, Pose, Vec3, View } from "./scene.ts";
 
 const SLIDE = [980, 552] as const;
 const VIEW: View = {
@@ -119,6 +125,65 @@ test("a crop camera puts the crop's part of the slide on the whole picture", () 
           1e-4,
       );
       assert.ok(Math.abs(croppedZ - z) < 1e-6);
+    }
+  }
+});
+
+test("slidePoint: at tilt 0 and turn 0, a point is at scale times it, plus the shift", () => {
+  for (const [x, y, z] of POINTS) {
+    const [slideX, slideY] = slidePoint(
+      { view: VIEW, tilt: 0, turn: 0 },
+      SLIDE,
+      [x, y, z],
+    );
+    assert.ok(Math.abs(slideX - (VIEW.scale * x + VIEW.shift[0])) < 1e-3);
+    assert.ok(Math.abs(slideY - (VIEW.scale * y + VIEW.shift[1])) < 1e-3);
+  }
+});
+
+test("slidePoint: at turn 90, a step along the world's x goes down the slide", () => {
+  const pose: Pose = { view: VIEW, tilt: 0, turn: 90 };
+  const [pivotX, pivotY, pivotZ] = VIEW.pivot;
+  const [x0, y0] = slidePoint(pose, SLIDE, VIEW.pivot);
+  const [x1, y1] = slidePoint(pose, SLIDE, [pivotX + 10, pivotY, pivotZ]);
+  assert.ok(Math.abs(x1 - x0) < 1e-3);
+  assert.ok(Math.abs(y1 - y0 - 10 * VIEW.scale) < 1e-3);
+});
+
+test("planeOnSlide puts each point of a plane where slidePoint puts it, at any tilt and turn", () => {
+  const plane: Plane = {
+    origin: [680, 240, 4],
+    u: [0.8, 0.6, 0],
+    v: [-0.36, 0.48, 0.8],
+  };
+  for (const [tilt, turn] of [
+    [0, 0],
+    [30, 0],
+    [20, 37],
+    [75, -120],
+  ] as const) {
+    const pose: Pose = { view: VIEW, tilt, turn };
+    const [a, b, c, d, e, f] = planeOnSlide(pose, SLIDE, plane);
+    for (const [u, v] of [
+      [0, 0],
+      [25, 0],
+      [0, -40],
+      [-13, 72],
+    ] as const) {
+      const world: Vec3 = [
+        plane.origin[0] + u * plane.u[0] + v * plane.v[0],
+        plane.origin[1] + u * plane.u[1] + v * plane.v[1],
+        plane.origin[2] + u * plane.u[2] + v * plane.v[2],
+      ];
+      const [x, y] = slidePoint(pose, SLIDE, world);
+      assert.ok(
+        Math.abs(a * u + c * v + e - x) < 1e-2,
+        `x at ${String([tilt, turn, u, v])}`,
+      );
+      assert.ok(
+        Math.abs(b * u + d * v + f - y) < 1e-2,
+        `y at ${String([tilt, turn, u, v])}`,
+      );
     }
   }
 });

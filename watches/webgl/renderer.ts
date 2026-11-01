@@ -69,6 +69,7 @@
 // last geometry of each dynamic mesh.
 
 import type {
+  Affine2,
   CameraAngles,
   Colour,
   Frame,
@@ -76,6 +77,8 @@ import type {
   Mesh,
   MeshGeometry,
   Palette,
+  Plane,
+  Pose,
   Recolour,
   Scene,
   SlideRect,
@@ -441,6 +444,51 @@ export function cropCamera(
   matrix[12] = at(matrix, 12) + (width - 2 * crop.left) / crop.width - 1;
   matrix[13] = at(matrix, 13) + 1 - scaleY + (2 * crop.top) / crop.height;
   return { matrix, toCamera: camera.toCamera };
+}
+
+/** Clip space to slide px: slide y goes down, clip y up. */
+function clipToSlide(
+  [x, y]: Vec3,
+  [width, height]: readonly [number, number],
+): [number, number] {
+  return [((x + 1) / 2) * width, ((1 - y) / 2) * height];
+}
+
+/** Where a world point shows on the slide through `pose`, in slide px from
+ *  the slide's top left: through the camera that the renderer draws with, so
+ *  a layer over the canvas (an SVG) can put a mark on what the canvas draws.
+ *  A layer that draws a whole plane uses `planeOnSlide`. */
+export function slidePoint(
+  pose: Pose,
+  slide: readonly [number, number],
+  point: Vec3,
+): [number, number] {
+  const { matrix } = viewProjection(pose.view, pose, slide);
+  return clipToSlide(transformPoint(matrix, point), slide);
+}
+
+/** A plane of the world on the slide through `pose`: the map from the
+ *  plane's (u, v) to slide px. The camera is orthographic, so the map is
+ *  affine at any tilt and turn: a flat drawing in the plane, transformed by
+ *  it, rides the camera exactly (docs/webgl.md, "Layers over the canvas"). */
+export function planeOnSlide(
+  pose: Pose,
+  slide: readonly [number, number],
+  plane: Plane,
+): Affine2 {
+  const { matrix } = viewProjection(pose.view, pose, slide);
+  const onSlide = (point: Vec3): [number, number] =>
+    clipToSlide(transformPoint(matrix, point), slide);
+  const { origin, u, v } = plane;
+  const step = (along: Vec3): Vec3 => [
+    origin[0] + along[0],
+    origin[1] + along[1],
+    origin[2] + along[2],
+  ];
+  const [e, f] = onSlide(origin);
+  const [uX, uY] = onSlide(step(u));
+  const [vX, vY] = onSlide(step(v));
+  return [uX - e, uY - f, vX - e, vY - f, e, f];
 }
 
 // ---- the renderer --------------------------------------------------------------------

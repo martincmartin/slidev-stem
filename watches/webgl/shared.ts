@@ -43,7 +43,7 @@ import { Renderer } from "./renderer.ts";
 import type { Place } from "./renderer.ts";
 import type { Mesh, Palette, Scene, SlideRect } from "./scene.ts";
 import { deviceSize, drawFrame } from "./stage.ts";
-import type { Model } from "./stage.ts";
+import type { FrameListener, Model } from "./stage.ts";
 import { Timeline } from "./timeline.ts";
 import type { StageState } from "./timeline.ts";
 
@@ -76,6 +76,7 @@ export class SharedView<ModelState> {
   paused = false;
   /** Whether the view must be drawn although its time stands. */
   private changed = true;
+  private readonly listeners = new Set<FrameListener>();
 
   constructor(
     canvas: HTMLCanvasElement,
@@ -124,14 +125,25 @@ export class SharedView<ModelState> {
     return deviceSize(this.canvas);
   }
 
+  /** As `Stage.onFrame`: call `listener` after each frame that draws the
+   *  view, until the returned function is called. */
+  onFrame(listener: FrameListener): () => void {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  }
+
   /** Draw with `renderer` at the view's time, `size` device px, at `place`
    *  on the renderer's canvas. */
   draw(renderer: Renderer, size: [number, number], place: Place): void {
-    drawFrame(renderer, this.timeline, this.model, this.now(), size, {
+    const now = this.now();
+    const pose = drawFrame(renderer, this.timeline, this.model, now, size, {
       marked: this.marked,
       place,
       ...(this.crop ? { crop: this.crop } : {}),
     });
+    for (const listener of this.listeners) listener(pose, now);
     this.changed = false;
   }
 
