@@ -196,11 +196,15 @@ stage's `viewEndAt`), and the new marks fade in then; the marks that go
 fade out at once. A step back is the step forward reversed: the legs that
 go sail back, from the last, and the ship with them
 ([`stem/docs/navigation.md`](../../docs/navigation.md), a story
-animation). A jump and a still show the target at once, but for the
-marks' fades. The live layer runs on the stage's clock, and an article's
-figure on its own, which stands while the figure is paused; the figure is
-busy until the voyage ends (`voyageEndAt`). A still shows its click's
-target, and its wind stands, drawn.
+animation). A step that leaves a story keeps its map's voyage whole, and
+its marks fade out: the map itself fades as the camera leaves. A jump and
+a still show the target at once. The live layer runs on the stage's clock,
+and an article's figure on its own, which stands while the figure is
+paused. The voyage's change ends when its legs have sailed and its marks
+have faded (`voyageEndAt`); a step that changes neither ends at once, so
+a slide with no story map waits for nothing. Until then, a press jumps,
+and a figure is busy. A still shows its click's target, and its wind
+stands, drawn.
 
 `globe/voyage.test.ts` checks the names, the order of the legs, the dots,
 the ship's place and heading, and the marks' fades.

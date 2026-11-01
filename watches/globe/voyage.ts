@@ -6,8 +6,9 @@
 // new legs sail one after the other once the camera has come (`start`), and
 // the new marks fade in; the marks that go fade out at once. A step back is
 // the step forward reversed: the legs that go sail back, from the last. A
-// jump shows its target at once, but for the marks' fades. No DOM: the
-// tests run it in Node.
+// step that leaves a story keeps its voyage whole, and its marks fade out:
+// the map fades with the camera. A jump shows its target at once. No DOM:
+// the tests run it in Node.
 
 import type { View } from "../webgl/scene.ts";
 import type { Leg, Mark, Point, Story } from "./stories.ts";
@@ -151,15 +152,23 @@ function sailing({ from, to }: VoyageStep): {
 }
 
 /** When `step`'s change ends (ms): its legs have sailed, and its marks have
- *  faded. */
+ *  faded. A step that changes nothing ends when it happens (`at`): a jump,
+ *  and every step of a slide with no story map. */
 export function voyageEndAt(step: VoyageStep): number {
+  const { from, to, at, start } = step;
+  const fade = MARK_FADE_SECONDS * 1000;
   const seconds = sailing(step).legs.reduce(
-    (sum, index) => sum + (step.to?.story.legs[index]?.seconds ?? 0),
+    (sum, index) => sum + (to?.story.legs[index]?.seconds ?? 0),
     0,
   );
+  // a mark is of one story, so a step to another story fades all of them
+  const going = [...(from?.marks ?? [])].some((mark) => !to?.marks.has(mark));
+  const coming = [...(to?.marks ?? [])].some((mark) => !from?.marks.has(mark));
   return Math.max(
-    step.at + MARK_FADE_SECONDS * 1000,
-    step.start + (seconds + MARK_FADE_SECONDS) * 1000,
+    at,
+    going ? at + fade : at,
+    coming ? start + fade : at,
+    seconds > 0 ? start + seconds * 1000 : at,
   );
 }
 
@@ -196,7 +205,11 @@ export function voyageAt(
     shares.set(index, back ? (over ? null : 1 - share) : begun ? share : null);
     clock -= seconds;
   }
-  const shown = Math.max(to?.legs ?? 0, back ? (from?.legs ?? 0) : 0);
+  // a map that the step leaves keeps its voyage whole: it goes with the
+  // map's fade, by the camera's pose
+  const shown = to
+    ? Math.max(to.legs, back ? (from?.legs ?? 0) : 0)
+    : (from?.legs ?? 0);
   const tracks: (number | null)[] = [];
   const dots: number[] = [];
   let ship: VoyageFrame["ship"] = null;

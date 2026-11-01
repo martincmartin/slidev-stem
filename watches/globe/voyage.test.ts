@@ -150,10 +150,8 @@ test("a step forward sails the new legs, one after the other, from its start", (
   assert.equal(end.days, 11);
   assert.equal(east50.days, 1);
   assert.deepEqual(end.ship?.at, SEARCH.legs[3]?.route.at(-1));
-  assert.equal(
-    voyageEndAt(step),
-    1000 + east + west + MARK_FADE_SECONDS * 1000,
-  );
+  // no mark comes or goes: it ends when the ship arrives
+  assert.equal(voyageEndAt(step), 1000 + east + west);
 });
 
 test("a step back sails the legs that go back, from the last", () => {
@@ -180,10 +178,7 @@ test("a step back sails the legs that go back, from the last", () => {
   assert.deepEqual(end.tracks, [1, 1, 1, null, null]);
   assert.deepEqual(end.dots, [0, 0, 3, 0, 0]);
   assert.deepEqual(end.ship?.at, SEARCH.legs[2]?.route.at(-1));
-  assert.equal(
-    voyageEndAt(step),
-    1000 + found + west + MARK_FADE_SECONDS * 1000,
-  );
+  assert.equal(voyageEndAt(step), 1000 + found + west);
 });
 
 test("a jump and a still show the target at once", () => {
@@ -195,6 +190,20 @@ test("a jump and a still show the target at once", () => {
   const [wind] = ahead.marks;
   assert.ok(wind);
   assert.equal(still.marks.get(wind), 1);
+  // nothing changes, so nothing waits: a press after a jump is a step
+  assert.equal(voyageEndAt(jump), 5000);
+  assert.equal(voyageEndAt(settled(ahead)), 0);
+});
+
+test("a step that changes no voyage ends when it happens", () => {
+  // a slide with no story map: Part 1's every step
+  assert.equal(voyageEndAt({ from: null, to: null, at: 700, start: 900 }), 700);
+  const same = target(SEARCH, { leg: "east", marks: ["wind"] });
+  const again = target(SEARCH, { leg: "east", marks: ["wind"] });
+  assert.equal(
+    voyageEndAt({ from: same, to: again, at: 700, start: 900 }),
+    700,
+  );
 });
 
 test("marks that come fade in from the start, and marks that go fade out at once", () => {
@@ -214,10 +223,30 @@ test("marks that come fade in from the start, and marks that go fade out at once
   // the ship of a leg with no route stays where it is
   assert.deepEqual(late.tracks, [1]);
   assert.notEqual(late.ship, null);
+  // it ends when the new marks have faded in
+  assert.equal(voyageEndAt(step), 1000 + fade);
+  const going = { from, to: target(NOIR, { leg: "cliffs", marks: [] }) };
+  assert.equal(voyageEndAt({ ...going, at: 0, start: 1000 }), fade);
 });
 
-test("a story map that the step leaves, or never reaches, draws nothing", () => {
+test("a story map that no target names draws nothing", () => {
   const wreck = target(WRECK, { leg: "wreck", marks: [] });
   assert.equal(voyageAt(NOIR, settled(wreck), 0), null);
   assert.ok(voyageAt(WRECK, settled(wreck), 0));
+});
+
+test("a story map that the step leaves keeps its voyage whole, and its marks fade out", () => {
+  const search = target(SEARCH, { leg: "west", marks: ["wind"] });
+  const wreck = target(WRECK, { leg: "wreck", marks: [] });
+  const fade = MARK_FADE_SECONDS * 1000;
+  for (const to of [wreck, null]) {
+    const step = { from: search, to, at: 0, start: 1000 };
+    const leaving = frameAt(SEARCH, step, fade / 2);
+    assert.deepEqual(leaving.tracks, [1, 1, 1, 1]);
+    assert.deepEqual(leaving.ship?.at, SEARCH.legs[3]?.route.at(-1));
+    const [wind] = search.marks;
+    assert.ok(wind);
+    assert.equal(leaving.marks.get(wind), 0.5);
+    assert.equal(voyageEndAt(step), fade);
+  }
 });
