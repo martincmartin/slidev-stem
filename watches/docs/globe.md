@@ -107,8 +107,14 @@ centre's latitude, so that shapes near its centre are true. A map is
 its px for a degree of latitude.
 
 - **Its land** (`mapLand`) is made at load from the 1:10m level, as an SVG
-  path in slide px, cut 20 px outside the slide so that the cut's edges do
-  not show. A map can draw small islands apart, larger about their own
+  path in slide px, cut a little outside the slide (`MARGIN`, in
+  `globe/maps.ts`) so that the cut's edges do not show at the map's view. As
+  the map fades out, it shows smaller than the slide, so StoryMaps.vue clips
+  the land halfway between the slide and the cut: the coast line along the
+  cut never shows. Its sea ends at the slide, in the globe's sea color, so
+  its edge does not show. Not an oversight: a wider cut, as far as the fade
+  can shrink the map (about 325 px), made Cape Noir's land 80% larger, and
+  the clip adds nothing. A map can draw small islands apart, larger about their own
   centre, so that they show (`StoryMap.islands`: the Juan Fernández
   Islands, twice their size); a picture can show them later than the rest.
 - **Its globe view** is the camera, north up, whose globe brings the coast

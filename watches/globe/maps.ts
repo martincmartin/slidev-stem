@@ -33,8 +33,10 @@ export interface StoryMap {
 const FIT_POINTS = 500;
 
 /** Slide px: a map's land is cut this far outside the slide, so that the
- *  cut's edges, and their coast line, do not show. */
-const MARGIN = 20;
+ *  cut's edges, and their coast line, do not show at the map's view. As
+ *  the map leaves, it can show smaller than the slide: StoryMaps.vue clips
+ *  the land at half this margin, so the cut's line never shows. */
+export const MARGIN = 20;
 
 /** Where a place is on the map, in slide px. */
 export function project(map: StoryMap, [lon, lat]: LonLat): [number, number] {

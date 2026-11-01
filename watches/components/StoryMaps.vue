@@ -21,7 +21,7 @@ import {
   watch as onChange,
 } from "vue";
 import type { FunctionalComponent } from "vue";
-import { mapOnSlide } from "../globe/maps.ts";
+import { MARGIN, mapOnSlide } from "../globe/maps.ts";
 import { SHIP_FLAG, SHIP_PARTS, SHIP_SCALE } from "../globe/stories.ts";
 import { dayDots, voyageAt } from "../globe/voyage.ts";
 import type { VoyageStep } from "../globe/voyage.ts";
@@ -139,6 +139,19 @@ onBeforeUnmount(() => leave?.());
     :viewBox="`0 0 ${width} ${height}`"
     aria-hidden="true"
   >
+    <!-- The land, clipped between the slide and the cut (`MARGIN`): a map
+    that leaves shows smaller than the slide, and the coast line along the
+    cut's edges would show. The clip is in each map's own px, so it rides
+    with the map. The sea's rect ends at the slide: its color is the globe's
+    sea, so its edge does not show. -->
+    <clipPath :id="`${masks}-cut`">
+      <rect
+        :x="-MARGIN / 2"
+        :y="-MARGIN / 2"
+        :width="width + MARGIN"
+        :height="height + MARGIN"
+      />
+    </clipPath>
     <g
       v-for="(placed, index) in GLOBE.maps"
       ref="groups"
@@ -151,7 +164,11 @@ onBeforeUnmount(() => leave?.());
         <path fill="black" fill-rule="evenodd" :d="placed.land.land" />
       </mask>
       <rect class="story-sea" :width="width" :height="height" />
-      <path class="story-land" :d="placed.land.land" />
+      <path
+        class="story-land"
+        :d="placed.land.land"
+        :clip-path="`url(#${masks}-cut)`"
+      />
       <g class="marks">
         <g
           v-for="mark in GLOBE.stories[index]?.marks"
