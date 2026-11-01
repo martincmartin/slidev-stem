@@ -359,7 +359,10 @@ The usual right answer is to **reuse a role**. The roles above are already
 more than most slides need. A search of every colour for one more hue beside
 Ledger's subject, accent and second found none that red-green colour-blind
 viewers could tell from all of them by more than about ΔE 23 (the
-[task](../tasks/2026-10-07-theme-colour-system/PLAN.md), §4.10).
+[task](../tasks/2026-10-07-theme-colour-system/PLAN.md), §4.10). When you plan
+or list a new mark, name the role that it reuses ("the track is ink"). Do
+not write that a mark "needs a role": it reads as a new variable. Propose a
+new role only after `tools/palette.py` shows that no role does the job.
 
 When a slide really needs one more, measure it before you commit:
 
