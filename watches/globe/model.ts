@@ -11,14 +11,20 @@ import type { Polygon } from "./earth.ts";
 import { DISC_GROUP, discMatrix, globeMeshes } from "./globe.ts";
 import { STORY_MAPS, placeMap } from "./maps.ts";
 import type { PlacedMap } from "./maps.ts";
+import { globePicture, landOf, mapPicture } from "./labels.ts";
+import type { Picture } from "./labels.ts";
 import { makeStories } from "./stories.ts";
 import type { Story } from "./stories.ts";
-import { globeViews } from "./views.ts";
+import { globeCameras } from "./views.ts";
 
 const EARTH = parseEarth(earthFile);
 /** The finest level's land: the story maps' land, and the coast that
  *  their views fit. */
 const FINEST: readonly Polygon[] = EARTH.levels.at(-1)?.polygons ?? [];
+/** The land under a label: the story maps', and the whole Earth's at
+ *  1:50m for the other views (`overSea`). */
+const MAP_LAND = landOf(FINEST);
+const GLOBE_LAND = landOf(EARTH.levels[1]?.polygons ?? []);
 
 /** The globe's part of a scene. */
 export interface Globe {
@@ -30,19 +36,31 @@ export interface Globe {
   readonly maps: readonly PlacedMap[];
   /** The story of each map, in the same order: the marks over it. */
   readonly stories: readonly Story[];
+  /** Each view as a picture: where its labels go, and what is under them. */
+  readonly pictures: readonly Picture[];
 }
 
 /** The globe, for a slide of `slide` px. */
 export function makeGlobe(slide: readonly [number, number]): Globe {
   const { meshes, piece } = globeMeshes(EARTH);
   const maps = STORY_MAPS.map((map) => placeMap(map, FINEST, slide));
+  const stories = makeStories(maps, slide);
+  const pictures = [
+    ...globeCameras(slide).map((camera) => globePicture(camera, GLOBE_LAND)),
+    ...maps.map((placed, index) => {
+      const story = stories[index];
+      if (!story) throw new Error(`no story for ${placed.map.name}`);
+      return mapPicture(placed, story, MAP_LAND);
+    }),
+  ];
   return {
     meshes,
     groups: [DISC_GROUP],
-    views: globeViews(slide, maps),
+    views: pictures.map(({ view }) => view),
     piece,
     maps,
-    stories: makeStories(maps, slide),
+    stories,
+    pictures,
   };
 }
 

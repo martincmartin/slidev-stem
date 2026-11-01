@@ -2,11 +2,11 @@
 
 **Covers:** Part 2's globe and its story maps: the land data, the globe's
 meshes and levels, its views, the flight between them, how the globe
-joins the watch's scene, and the marks of each story map and their keys
-(`globeLeg`, `globeMarks`).
+joins the watch's scene, the marks of each story map and their keys
+(`globeLeg`, `globeMarks`), and the labels on the globe and the maps.
 **Read before** you change `globe/`, `watch/art.ts`, `art/earth-data.ts`,
-`art/fetch-earth.sh`, `components/StoryMaps.vue`, or the globe's
-frontmatter. The rules for WebGL art
+`art/fetch-earth.sh`, `components/StoryMaps.vue`,
+`components/MapLabel.vue`, or the globe's frontmatter. The rules for WebGL art
 in any talk are in [`stem/docs/webgl.md`](../../docs/webgl.md).
 **Tasks:**
 [`2026-10-31-part-2-production`](../tasks/2026-10-31-part-2-production/PLAN.md)
@@ -198,6 +198,46 @@ target, and its wind stands, drawn.
 
 `globe/voyage.test.ts` checks the names, the order of the legs, the dots,
 the ship's place and heading, and the marks' fades.
+
+## The words
+
+A label of Part 2 is `components/MapLabel.vue`, in the slide's Markdown,
+with the `v-click` range of the clicks that show it:
+
+```md
+<MapLabel v-click="[1, 3]" class="after-watch" view="cape noir" mark="estimated" :offset="[-105, -76]" :dimmed="$clicks >= 2">Estimated position</MapLabel>
+```
+
+- **Where:** it names its view, and an anchor of that view: a place
+  (`on`, degrees), a dashed ship (`mark`) or the end of a leg (`leg`),
+  named as `globeMarks` and `globeLeg` name them; then `offset` px to its
+  top left, or to its centre with `centred`. With no anchor, `offset` is
+  its top left on the slide. `pointsTo` (degrees) draws a leader that
+  stops `stop` px short (the Channel's "Isles of Scilly").
+- **What is under it:** each view is a picture (`Picture`,
+  `globe/labels.ts`), a map from a place to a slide point and back: a story
+  map's own projection, or the globe's camera. `overSea` tests a grid of
+  points in the label's box against the land (1:10m on a story map, 1:50m
+  elsewhere). Where only the sea is under it, its words are in the paper,
+  with no outline; else in ink, with the paper's outline. Off the globe,
+  the paper is under it.
+- **When:** a label at a click's start waits for that click's change,
+  the voyage too (`after-watch`: `--watch-end-delay` includes the voyage).
+  A label from click 0 uses `v-click.hide="n"`: Slidev does not start a
+  range at 0. A label that stays dims at a later click: `:dimmed`, a prop,
+  as `v-click.hide` gives no class to dim by. A dimmed label mixes halfway
+  toward what is under it: ink toward the paper, the paper toward the sea
+  (1.99:1 on Ledger's sea, under 3:1: it is no longer the focus). A label
+  with the class `lingers` leaves at its range's end only when that
+  click's change ends, with the new labels (style.css).
+
+The count of the scurvy deaths is a mark (`Mark.count`): `perDay` times the
+days at sea that the voyage shows (`VoyageFrame.days`), so it ticks at each
+dot, in the live layer, a figure and a still alike. The punchline is a
+screen (`components/PunchScreen.vue`; `slide-patterns.md`, "Punchlines").
+
+`globe/labels.test.ts` checks the pictures both ways, the land, the sea
+under a box, and the anchors.
 
 ## The flight
 

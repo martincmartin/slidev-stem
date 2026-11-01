@@ -12,7 +12,8 @@ Before you…
   the diving board: `docs/watch.md`, and `../docs/webgl.md` for `webgl/`.
 - change the globe, a story map or its marks (`globe/`, `watch/art.ts`,
   `art/earth-data.ts`, `art/fetch-earth.sh`, `components/StoryMaps.vue`,
-  the globe's frontmatter, `globeLeg`, `globeMarks`):
+  `components/MapLabel.vue`, the globe's frontmatter, `globeLeg`,
+  `globeMarks`):
   `docs/globe.md`, and
   `../docs/webgl.md`.
 - write or change a slide's narration, or change the article

@@ -30,8 +30,8 @@
 // The new slide's text waits for the camera, in either direction
 // (`--watch-text-delay`, from the stage). A click's text can wait for the
 // balance to come to rest (`--watch-rest-delay`, from the model), or for the
-// watch's change to end, with its flash and the model's story
-// (`--watch-end-delay`, from the stage).
+// watch's change to end, with its flash, the model's story and a story
+// map's voyage (`--watch-end-delay`).
 //
 // In a figure of the article (addons/narration, which provides `FIGURE`), the
 // layer is the figure's (components/FigureLayer.vue): the slide at the
@@ -211,10 +211,14 @@ function showWatch(
 }
 
 /** Set `--watch-end-delay`: how long until the watch's change ends, with
- *  its flash, or 0 if it has. */
+ *  its flash and a story map's voyage, or 0 if it has. */
 function showEndDelay(): void {
   const at = performance.now();
-  const milliseconds = stage ? stage.endAt(at) - at : 0;
+  const milliseconds = Math.max(
+    0,
+    (stage?.endAt(at) ?? at) - at,
+    voyageEndAt(voyage.value) - at,
+  );
   document.documentElement.style.setProperty(
     "--watch-end-delay",
     `${String(milliseconds / 1000)}s`,
@@ -291,6 +295,7 @@ function showVoyage(clicks: number, move: Move): void {
     move === "jump" || !stage
       ? { ...settled(to), at, start: at }
       : { from: voyage.value.to, to, at, start: stage.viewEndAt(at) };
+  showEndDelay();
 }
 
 function showBoard(clicks: number, move: Move): void {

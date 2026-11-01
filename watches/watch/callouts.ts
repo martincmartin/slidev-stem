@@ -23,6 +23,39 @@ const TIP_POINTS = 120;
 /** In slide px: how far outside its part the wheel's and the pallet's leaders
  *  end (the callout's `stop`, with `clear`). */
 export const LEADER_GAP = 10;
+/** In px: the gap between a label's word and the start of its leader. */
+export const WORD_GAP = 4;
+
+/** The point `distance` along the line from `from` to `to`. */
+export function toward(
+  from: Readonly<Point2>,
+  to: Readonly<Point2>,
+  distance: number,
+): Point2 {
+  const length = Math.hypot(to[0] - from[0], to[1] - from[1]);
+  const fraction = length > 0 ? distance / length : 0;
+  return [
+    from[0] + (to[0] - from[0]) * fraction,
+    from[1] + (to[1] - from[1]) * fraction,
+  ];
+}
+
+/** Where a straight leader from the centre of a box (`width` by `height`)
+ *  to `to` leaves the box, grown by WORD_GAP: on the side that faces `to`
+ *  (stem/docs/illustrations.md, "Leaders"). */
+export function straightStart(
+  centre: Readonly<Point2>,
+  width: number,
+  height: number,
+  to: Readonly<Point2>,
+): Point2 {
+  const [dx, dy] = [to[0] - centre[0], to[1] - centre[1]];
+  const reach = Math.min(
+    dx === 0 ? Infinity : (width / 2 + WORD_GAP) / Math.abs(dx),
+    dy === 0 ? Infinity : (height / 2 + WORD_GAP) / Math.abs(dy),
+  );
+  return [centre[0] + dx * reach, centre[1] + dy * reach];
+}
 
 /** In slide px. */
 export interface EscapementMarks {

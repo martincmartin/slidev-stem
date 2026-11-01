@@ -1655,7 +1655,10 @@ And the whole watch.
 # Part 2's stories, on the globe and its story maps (docs/globe.md). The
 # camera flies from South America to Cape Noir; a click names the story
 # map's marks (globeLeg, globeMarks), and each step draws them after the
-# camera has come
+# camera has come. The labels are at the marks they name (MapLabel.vue);
+# a click's labels leave at the next click, but "Estimated position", which
+# the next clicks measure from, stays, dimmed, until "Latitude: correct"
+class: story-map
 art: [globe]
 artView: south america
 artClicks:
@@ -1663,10 +1666,20 @@ artClicks:
   2: { globeLeg: cliffs }
   3: { globeMarks: [estimated, scale, parallel] }
   4: { globeMarks: [estimated, scale, parallel, gap] }
-clicks: 4
+clicks: 5
 ---
 
 # At Sea in 1741, Longitude Was a Guess
+
+<MapLabel v-click.hide="1" view="south america" :on="[-58, -12]" centred>South America</MapLabel>
+
+<MapLabel v-click="[1, 3]" class="after-watch" view="cape noir" mark="estimated" :offset="[-105, -76]" :dimmed="$clicks >= 2">Estimated position</MapLabel>
+
+<MapLabel v-click="[2, 3]" class="after-watch" view="cape noir" leg="cliffs" :offset="[-270, -104]"><div class="shout">Cliffs!</div>2 a.m., 2 miles ahead</MapLabel>
+
+<MapLabel v-click="[3, 4]" class="after-watch" view="cape noir" mark="estimated" :offset="[60, -50]">Latitude: correct</MapLabel>
+
+<PunchScreen v-click="5">Longitude:<br><em>400 miles</em> off</PunchScreen>
 
 <!-- narration
 [figure: The globe, turned to show South America.]
@@ -1690,13 +1703,16 @@ from the height of the Sun at noon.
 
 [click]
 
+Their longitude, how far east or west, was another matter.
+
+[click]
+
 [figure: A map of the tip of South America. A ship sits just south of the
 cliffs of Cape Noir. A dashed ship, where the crew thought they were, is far
 to the west on the same dashed parallel, and a bracket spans the gap between
 them.]
 
-But their longitude, how far east or west, was 400 miles off. Nobody at sea
-could find it.
+It was 400 miles off. Nobody at sea could find longitude.
 -->
 
 <!--
@@ -1708,12 +1724,19 @@ South America.
 
 [click] The latitude was right.
 
-[click] The longitude was 400 miles off.
+[click] The gap.
+
+[click] Longitude: 400 miles off.
 -->
 
 ---
 # the ship at the bottom of the map as the slide opens; each click sails a
-# leg, a day at sea to each dot (globe/stories.ts)
+# leg, a day at sea to each dot (globe/stories.ts). The slide is told by
+# its map, with a few words at each click, so its labels stay, dimmed, to
+# its end (docs/slide-patterns.md, "Text dims"); the stakes and the
+# question leave when the east leg answers them. The count of deaths ticks
+# with the dots
+class: story-map
 art: [globe]
 artView: juan fernandez
 artMove: fly
@@ -1721,13 +1744,25 @@ globeLeg: south
 globeMarks: [scale]
 artClicks:
   1: { globeLeg: start, globeMarks: [scale, parallel] }
-  2: { globeLeg: east, globeMarks: [scale, parallel, wind] }
+  2: { globeLeg: east, globeMarks: [scale, parallel, wind, count] }
   3: { globeLeg: west }
-  4: { globeLeg: found, globeMarks: [scale, parallel, wind, islands] }
-clicks: 4
+  4: { globeLeg: found, globeMarks: [scale, parallel, wind, count, islands] }
+clicks: 5
 ---
 
 # Hunt for Juan Fernández Island, 1741
+
+<MapLabel v-click.hide="2" view="juan fernandez" leg="south" :offset="[44, -74]" :dimmed="$clicks >= 1">Scurvy kills<br>4–6 men a day</MapLabel>
+
+<MapLabel v-click="[1, 2]" class="lingers after-watch" view="juan fernandez" :offset="[16, 152]" :dimmed="$clicks >= 2">Sail to latitude.<br>Then east or west?</MapLabel>
+
+<MapLabel v-click="2" class="after-watch" view="juan fernandez" :offset="[420, 251]" :dimmed="$clicks >= 3">2 days east</MapLabel>
+
+<MapLabel v-click="2" class="after-watch" view="juan fernandez" :offset="[696, 262]" :dimmed="$clicks >= 3">Chile:<br>an enemy coast</MapLabel>
+
+<MapLabel v-click="3" class="after-watch" view="juan fernandez" :offset="[340, 360]" :dimmed="$clicks >= 4">9 days back</MapLabel>
+
+<PunchScreen v-click="5">The detour cost<br><em>70–80 men</em></PunchScreen>
 
 <!-- narration
 Anson's crews were dying of scurvy, four to six men a day. They needed the
@@ -1749,11 +1784,15 @@ So they turned back west, and sailed for nine days.
 
 [click]
 
+At last they found the island.
+
+[click]
+
 [figure: A map of the sea off Chile. The ship's track runs north, then two
 days east toward the coast, then nine days back west, a dot for each day, to
-the island of Juan Fernández.]
+the island of Juan Fernández. A count on the land reads 72 scurvy deaths.]
 
-At last they found the island. The detour had cost 70 to 80 men.
+The detour had cost 70 to 80 men.
 -->
 
 <!--
@@ -1766,10 +1805,15 @@ Scurvy kills four to six men a day.
 [click] Nine days back.
 
 [click] Found.
+
+[click] The detour cost 70–80 men.
 -->
 
 ---
-# the flight across the Atlantic, longer than the others (artMoveSeconds)
+# the flight across the Atlantic, longer than the others (artMoveSeconds).
+# The Channel's labels say where in the world; "Estimated position" stays,
+# dimmed, until the bracket measures from it
+class: story-map
 art: [globe]
 artView: channel
 artMove: fly
@@ -1778,10 +1822,26 @@ artClicks:
   1: { artView: scilly, globeMarks: [estimated, scale] }
   2: { globeLeg: wreck }
   3: { globeMarks: [estimated, scale, gap] }
-clicks: 3
+clicks: 4
 ---
 
 # Admiral Shovell Sails Home, 1707
+
+<MapLabel v-click.hide="1" view="channel" :on="[-4, 49.55]" centred>English Channel</MapLabel>
+
+<MapLabel v-click.hide="1" view="channel" :on="[-1.6, 51.2]" centred>England</MapLabel>
+
+<MapLabel v-click.hide="1" view="channel" :on="[0.4, 48.7]" centred>France</MapLabel>
+
+<MapLabel v-click.hide="1" view="channel" :on="[-6.32, 49.93]" :offset="[-172, 80]" :points-to="[-6.32, 49.93]" :stop="17">Isles of Scilly</MapLabel>
+
+<MapLabel v-click="[1, 2]" class="after-watch" view="scilly" mark="estimated" :offset="[-48, -76]">21 ships</MapLabel>
+
+<MapLabel v-click="[1, 3]" class="after-watch" view="scilly" :dimmed="$clicks >= 2" mark="estimated" :offset="[-150, 52]">Estimated position</MapLabel>
+
+<MapLabel v-click="[2, 3]" class="after-watch" view="scilly" :on="[-6.3972, 49.8656]" :offset="[60, 10]">In the dark: the rocks<br>of Scilly!</MapLabel>
+
+<PunchScreen v-click="4">4 warships lost,<br>over <em>1,400 men</em></PunchScreen>
 
 <!-- narration
 [figure: The globe, turned to show the English Channel, between England and
@@ -1801,6 +1861,10 @@ At about 8 p.m., in the dark, the flagship struck the rocks of Scilly.
 
 [click]
 
+They were not where they thought they were.
+
+[click]
+
 [figure: A map of the Isles of Scilly. The ship is on the rocks at their
 west end. A dashed ship, where the fleet thought it was, is to the
 south-west, and a bracket spans the gap between them.]
@@ -1816,6 +1880,8 @@ The English Channel, and the Isles of Scilly.
 [click] In the dark: the rocks of Scilly.
 
 [click] The gap.
+
+[click] 4 warships lost, over 1,400 men.
 -->
 
 ---

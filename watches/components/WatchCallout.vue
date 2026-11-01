@@ -13,7 +13,7 @@
 // under or over it, which a straight leader would cross. A `fromEnd` leader
 // is for a one-line label with its part to the left or below: it aims at a
 // point half the cap height in from the label's left edge and up from its
-// baseline, and starts GAP outside the quarter-plane that the left edge and
+// baseline, and starts WORD_GAP outside the quarter-plane that the left edge and
 // the baseline bound. So, followed back, it runs into the first letter, and
 // its start does not depend on the words. With `showLeader`
 // false, the leader fades out and the label stays: for a part that moves
@@ -34,7 +34,12 @@ import {
 } from "vue";
 import { at } from "../webgl/checked.ts";
 import type { Point2 } from "../webgl/mesh.ts";
-import { firstCrossing } from "../watch/callouts.ts";
+import {
+  firstCrossing,
+  straightStart,
+  toward,
+  WORD_GAP,
+} from "../watch/callouts.ts";
 
 const props = withDefaults(
   defineProps<{
@@ -58,8 +63,6 @@ const props = withDefaults(
   },
 );
 
-/** px between the word's box and the leader. */
-const GAP = 4;
 /** A bent leader's level run, in px: the Hairspring slide's (`LeaderDesign`, from `start`
  *  to `elbow`, in art/diving_board.py). Keep them equal. */
 const ELBOW_RUN = 40;
@@ -108,29 +111,9 @@ onBeforeUnmount(() => {
   observer?.disconnect();
 });
 
-const toward = (from: Point2, to: Point2, distance: number): Point2 => {
-  const length = Math.hypot(to[0] - from[0], to[1] - from[1]);
-  const fraction = length > 0 ? distance / length : 0;
-  return [
-    from[0] + (to[0] - from[0]) * fraction,
-    from[1] + (to[1] - from[1]) * fraction,
-  ];
-};
-
-/** Where a straight leader from the word's centre to `to` leaves the word's
- *  box, grown by GAP. */
-function straightStart(centre: Point2, width: number, height: number): Point2 {
-  const [dx, dy] = [props.to[0] - centre[0], props.to[1] - centre[1]];
-  const reach = Math.min(
-    dx === 0 ? Infinity : (width / 2 + GAP) / Math.abs(dx),
-    dy === 0 ? Infinity : (height / 2 + GAP) / Math.abs(dy),
-  );
-  return [centre[0] + dx * reach, centre[1] + dy * reach];
-}
-
 /** Where a `fromEnd` leader starts: on the line from its aim, half the cap
  *  height in from the label's left edge and up from its first baseline, to
- *  `to`, GAP outside the quarter-plane right of the edge and above the
+ *  `to`, WORD_GAP outside the quarter-plane right of the edge and above the
  *  baseline. */
 function fromEndStart(): Point2 {
   const halfLeading =
@@ -140,8 +123,8 @@ function fromEndStart(): Point2 {
   const aim: Point2 = [props.left + halfCap, baseline - halfCap];
   const [dx, dy] = [props.to[0] - aim[0], props.to[1] - aim[1]];
   const reach = Math.min(
-    dx < 0 ? (halfCap + GAP) / -dx : Infinity,
-    dy > 0 ? (halfCap + GAP) / dy : Infinity,
+    dx < 0 ? (halfCap + WORD_GAP) / -dx : Infinity,
+    dy > 0 ? (halfCap + WORD_GAP) / dy : Infinity,
   );
   if (reach === Infinity) {
     throw new Error("a fromEnd leader's part must be left of or below it");
@@ -160,10 +143,10 @@ function corners(): Point2[] | undefined {
   const side = Math.sign(props.to[0] - centre[0]) || 1;
   return props.bent
     ? [
-        [centre[0] + side * (width / 2 + GAP), centre[1]],
-        [centre[0] + side * (width / 2 + GAP + ELBOW_RUN), centre[1]],
+        [centre[0] + side * (width / 2 + WORD_GAP), centre[1]],
+        [centre[0] + side * (width / 2 + WORD_GAP + ELBOW_RUN), centre[1]],
       ]
-    : [straightStart(centre, width, height)];
+    : [straightStart(centre, width, height, props.to)];
 }
 
 const leader = computed(() => {

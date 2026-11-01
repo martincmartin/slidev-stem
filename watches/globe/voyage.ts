@@ -92,6 +92,9 @@ export interface VoyageFrame {
     readonly heading: Leg["heading"];
   } | null;
   readonly marks: ReadonlyMap<Mark, number>;
+  /** The days at sea that the voyage shows: a day ends at each dot after a
+   *  leg's first. */
+  readonly days: number;
 }
 
 /** The point at `share` of the way along `route`, by length. */
@@ -210,5 +213,6 @@ export function voyageAt(
     if (share !== null)
       ship = { at: along(leg.route, share), heading: leg.heading };
   }
-  return { tracks, dots, ship, marks };
+  const days = dots.reduce((sum, shown) => sum + Math.max(0, shown - 1), 0);
+  return { tracks, dots, ship, marks, days };
 }

@@ -446,3 +446,21 @@ All made, 2026-10-31.
   is 2.19–2.54 in electric-terracotta, field-notes and kraft-ink, and the
   subject (the ship, the coast) is 2.93 in beacon: below 3:1. The slug of a
   title now drops accents (`Fernández` was `ferna-ndez`).
+- **2026-11-01, phase 6, the words:** `components/MapLabel.vue` places a
+  label at a place, a dashed ship or a leg's end of its view, and chooses
+  ink with the paper's outline, or the paper over the sea alone, from a
+  grid of points in its box tested against the land through the view's
+  picture (`globe/labels.ts`): the inverse of the story map's projection,
+  or of the globe's camera. The scurvy count is a mark that ticks with the
+  dots (`VoyageFrame.days`); the punchlines are `components/PunchScreen.vue`
+  at a click of their own, so each slide has one more click. Two things
+  differ from the plan: a label from click 0 uses `v-click.hide`, as
+  Slidev starts no range at 0, so a label dims by a prop (`:dimmed`), not
+  by `v-click`'s classes; and `--watch-end-delay` includes the voyage, so
+  `after-watch` labels wait for the ship. The Channel's labels and the
+  leader to Scilly are as the mockup's. Chromium showed every click of the
+  three slides as the mockup draws them. The same day, the flight was
+  fixed: a story map's camera can show the globe's centre far off the
+  slide, and the flight kept that slide point while it zoomed out, so it
+  swung over Ireland on the way to Scilly and to Cape Horn on the way from
+  Juan Fernández (commit 3dc5bad, `globe/maps.test.ts`).

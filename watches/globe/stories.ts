@@ -35,8 +35,17 @@ export interface Mark {
   readonly parts: readonly { readonly kind: string; readonly d: string }[];
   /** The ship's outline, dashed, at a point: where a ship thought it was. */
   readonly ghost?: Point;
-  /** Text on the mark, at a point: a scale's length. */
-  readonly label?: { readonly text: string; readonly at: Point };
+  /** Text on the mark, at a point (its baseline's left end), with a class
+   *  of StoryMaps.vue's styles: a scale's length, or what a count counts. */
+  readonly label?: {
+    readonly kind: string;
+    readonly text: string;
+    readonly at: Point;
+  };
+  /** A number under the label: `perDay` times the days at sea that the
+   *  voyage shows (`VoyageFrame.days`), at a point (its baseline's left
+   *  end). */
+  readonly count?: { readonly perDay: number; readonly at: Point };
 }
 
 /** A story: its map, its voyage's legs, and its other marks. */
@@ -135,7 +144,11 @@ function scale(map: StoryMap, miles: number): Mark {
   return {
     name: "scale",
     parts: [{ kind: "scale", d: `M36,512v8h${number(length)}v-8` }],
-    label: { text: `${String(miles)} miles`, at: [36, 504] },
+    label: {
+      kind: "scale-label",
+      text: `${String(miles)} miles`,
+      at: [36, 504],
+    },
   };
 }
 
@@ -254,6 +267,16 @@ function juanFernandez(
         [200, 500, false],
         [470, 500, false],
       ]),
+      // the deaths at Walter's "six in a day", the top of his "four, five,
+      // and six": 12 days to the anchorage make 72, within his 70-80 (the
+      // visual language task, section 16). The numbers in between are not
+      // his. On the land at the right, from the east leg on
+      {
+        name: "count",
+        parts: [],
+        label: { kind: "count-label", text: "Scurvy deaths:", at: [712, 147] },
+        count: { perDay: 6, at: [712, 189] },
+      },
       // the islands show when the ship sights them
       {
         name: "islands",

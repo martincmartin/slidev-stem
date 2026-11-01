@@ -1,8 +1,8 @@
 # Slide patterns
 
 **Covers:** how a slide in this deck is built: the theme on a slide, the
-history line, the timekeeper card, clicks, speaker notes, what fits, borrowed
-assets.
+history line, the timekeeper card, clicks, punchlines, labels on a map,
+speaker notes, what fits, borrowed assets.
 **Read before** you add or change a slide. For a slide that shows the watch or
 the diving board, read [watch.md](watch.md) as well.
 **Tasks:**
@@ -302,6 +302,27 @@ apply. Each click moves, zooms, tilts and turns the camera at the same time
 to the next touch of the train, at that touch's time-lapse speed. The next
 slide, the Changed The World section, goes back to the cover's picture.
 They are described in [watch.md](watch.md).
+
+## Punchlines
+
+**A slide told by a map ends on its punchline, a click of its own**:
+`<PunchScreen v-click="5">The detour cost<br><em>70–80 men</em></PunchScreen>`.
+It is a screen of paper over the whole slide, with a few words in a
+screen's big type (Fraunces 600, 76 px), its number in the accent
+(`<em>`), the slide's one accent. The article says the punchline in its
+narration: the screen is not `in-figure`, so a figure shows the map and
+its labels ([article.md](article.md)). Part 2's three slides are the
+examples.
+
+## Labels on a map
+
+**A fact with a place is a label at that place**, 24 px semibold, eight
+words or fewer, with a time only where the time carries the story ("2 days
+east"). It says nothing that the picture shows. A click's labels leave at
+the next click; on a slide told by its map, with a few words at each
+click, they stay to the end, dimmed (the Juan Fernández slide). The
+component, and how it chooses ink or paper, is in
+[globe.md](globe.md#the-words).
 
 ## Where things go on a slide
 

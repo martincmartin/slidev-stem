@@ -4,11 +4,9 @@
 // best (`fitCamera` in maps.ts), so the map drawn over the globe fits it
 // there.
 
-import type { View } from "../webgl/scene.ts";
 import type { LonLat } from "./earth.ts";
-import { globeView, onGlobe } from "./globe.ts";
+import { onGlobe } from "./globe.ts";
 import type { GlobeCamera } from "./globe.ts";
-import type { PlacedMap } from "./maps.ts";
 
 /** The slide's band under the title, in slide px, that a fitted camera
  *  fills. */
@@ -51,12 +49,9 @@ export function fitting(
   };
 }
 
-/** The views of Part 2, for a slide of `slide` px: two that fit places,
- *  and the views of the story maps. */
-export function globeViews(
-  slide: readonly [number, number],
-  maps: readonly PlacedMap[],
-): View[] {
+/** The cameras of Part 2's views that are not a story map's, for a slide
+ *  of `slide` px: two that fit places. */
+export function globeCameras(slide: readonly [number, number]): GlobeCamera[] {
   const band: Band = { width: slide[0], top: 78, bottom: 540 };
   return [
     // South America: its northern, eastern, western and southern ends
@@ -83,7 +78,5 @@ export function globeViews(
       ],
       band,
     ),
-  ]
-    .map(globeView)
-    .concat(maps.map(({ view }) => view));
+  ];
 }

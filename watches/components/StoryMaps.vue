@@ -75,6 +75,9 @@ function drawMarks(group: SVGGElement, index: number, now: number): void {
   const ship = group.querySelector(".ship");
   story?.marks.forEach((mark, place) => {
     fade(marks[place], voyage?.marks.get(mark) ?? 0);
+    const number = marks[place]?.querySelector(".count-number");
+    if (mark.count && number)
+      number.textContent = String(mark.count.perDay * (voyage?.days ?? 0));
   });
   story?.legs.forEach((_, leg) => {
     const share = voyage?.tracks[leg];
@@ -176,12 +179,18 @@ onBeforeUnmount(() => leave?.());
           </g>
           <text
             v-if="mark.label"
-            class="scale-label"
+            :class="mark.label.kind"
             :x="mark.label.at[0]"
             :y="mark.label.at[1]"
           >
             {{ mark.label.text }}
           </text>
+          <text
+            v-if="mark.count"
+            class="count-number"
+            :x="mark.count.at[0]"
+            :y="mark.count.at[1]"
+          />
         </g>
       </g>
       <template v-for="leg in GLOBE.stories[index]?.legs" :key="leg.name">
@@ -306,6 +315,26 @@ onBeforeUnmount(() => leave?.());
   fill: none;
   stroke: var(--palette-ink);
   stroke-width: 3;
+}
+/* A count: what it counts at a label's size, and its number at the
+   title's, with digits of one width, so that the number does not shift as
+   it ticks. On the land, in ink with the paper's outline, as a label. */
+.story-maps .count-label,
+.story-maps .count-number {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 600;
+  fill: var(--palette-ink);
+  stroke: var(--palette-background);
+  stroke-width: 6px;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+}
+.story-maps .count-label {
+  font-size: 24px;
+}
+.story-maps .count-number {
+  font-size: 37px;
+  font-variant-numeric: tabular-nums;
 }
 .story-maps .scale-label {
   font:

@@ -48,10 +48,22 @@ test("each story map has a story, and its marks have parts", () => {
   assert.equal(stories.length, 3);
   for (const story of stories) {
     for (const mark of story.marks) {
-      assert.ok(mark.parts.length > 0 || mark.ghost, mark.name);
+      assert.ok(
+        mark.parts.length > 0 ||
+          mark.ghost !== undefined ||
+          mark.count !== undefined,
+        mark.name,
+      );
       for (const { d } of mark.parts) assert.match(d, /^M/, mark.name);
     }
   }
+  // 6 deaths a day, 12 days to the anchorage: 72
+  const count = SEARCH.marks.find((mark) => mark.name === "count")?.count;
+  const all = target(SEARCH, { leg: "found", marks: [] });
+  assert.equal(
+    (count?.perDay ?? 0) * frameAt(SEARCH, settled(all), 0).days,
+    72,
+  );
   // the island and its neighbour show when the ship sights them
   const islands = SEARCH.marks.find((mark) => mark.name === "islands");
   assert.ok(islands?.parts[0]?.d.includes("Z"));
@@ -135,6 +147,8 @@ test("a step forward sails the new legs, one after the other, from its start", (
   const end = at(1000 + east + west + 1);
   assert.deepEqual(end.tracks, [1, 1, 1, 1]);
   assert.equal(end.dots[3], 10);
+  assert.equal(end.days, 11);
+  assert.equal(east50.days, 1);
   assert.deepEqual(end.ship?.at, SEARCH.legs[3]?.route.at(-1));
   assert.equal(
     voyageEndAt(step),
