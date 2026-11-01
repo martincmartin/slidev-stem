@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import type { Point2 } from "../webgl/mesh.ts";
+import { slidePoint } from "../webgl/renderer.ts";
 import {
   distanceToOutline,
   escapementMarks,
   firstCrossing,
   gearsMarks,
   forkAtBanks,
-  onSlide,
   stoneStrikes,
   toothDrops,
 } from "./callouts.ts";
@@ -27,15 +27,18 @@ const { view } = stageState(
   watchState(ESCAPEMENT_SLIDE, 0) ?? assert.fail("no watch"),
 );
 
-test("onSlide is the view's zoom and shift, and a tilt lifts a higher point", () => {
+test("slidePoint is the view's zoom and shift, and a tilt lifts a higher point", () => {
   const point: [number, number, number] = [700, 150, 5];
-  const [x, y] = onSlide(view, { tilt: 0, turn: 0 }, scene.slide, point);
+  const [x, y] = slidePoint({ view, tilt: 0, turn: 0 }, scene.slide, point);
   assert.ok(Math.abs(x - (view.scale * 700 + view.shift[0])) < 1e-3);
   assert.ok(Math.abs(y - (view.scale * 150 + view.shift[1])) < 1e-3);
-  const low = onSlide(view, { tilt: 20, turn: 0 }, scene.slide, [700, 150, 0]);
-  const high = onSlide(
-    view,
-    { tilt: 20, turn: 0 },
+  const low = slidePoint(
+    { view, tilt: 20, turn: 0 },
+    scene.slide,
+    [700, 150, 0],
+  );
+  const high = slidePoint(
+    { view, tilt: 20, turn: 0 },
     scene.slide,
     [700, 150, 10],
   );
@@ -94,14 +97,13 @@ test("the Gears slide's marks: the small gear above the big one, each inside its
 });
 
 test("a fitted view tilts about its pieces' middle: the middle stays where it is, at any tilt", () => {
-  const [, still] = onSlide(
-    view,
-    { tilt: 0, turn: 0 },
+  const [, still] = slidePoint(
+    { view, tilt: 0, turn: 0 },
     scene.slide,
     view.pivot,
   );
   for (const tilt of [20, 45]) {
-    const [, y] = onSlide(view, { tilt, turn: 0 }, scene.slide, view.pivot);
+    const [, y] = slidePoint({ view, tilt, turn: 0 }, scene.slide, view.pivot);
     assert.ok(Math.abs(y - still) < 1e-3, `tilt ${String(tilt)}`);
   }
 });

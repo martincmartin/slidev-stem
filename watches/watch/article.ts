@@ -18,11 +18,11 @@
 
 import { boardState } from "./board.ts";
 import type { BoardState } from "./board.ts";
-import { onSlide } from "./callouts.ts";
 import type { Watch } from "./generate.ts";
 import { stageState, viewOf, watchState, wrong } from "./state.ts";
 import type { WatchState } from "./state.ts";
 import type { Piece } from "../webgl/scene.ts";
+import { slidePoint } from "../webgl/renderer.ts";
 import type { StageState } from "../webgl/timeline.ts";
 
 /** A box on the slide, in px. */
@@ -358,11 +358,7 @@ function piecesBox(
     for (const x of [extent.box.left, extent.box.right]) {
       for (const y of [extent.box.top, extent.box.bottom]) {
         for (const z of [extent.bottom, extent.top]) {
-          const [left, top] = onSlide(stage.view, stage, watch.scene.slide, [
-            x,
-            y,
-            z,
-          ]);
+          const [left, top] = slidePoint(stage, watch.scene.slide, [x, y, z]);
           box = union(box, { left, top, right: left, bottom: top });
         }
       }

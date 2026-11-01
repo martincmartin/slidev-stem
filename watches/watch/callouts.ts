@@ -4,10 +4,8 @@
 // and the view (docs/watch.md, "The Escapement slide" and "The Gears slide").
 
 import { at } from "../webgl/checked.ts";
-import { transformPoint } from "../webgl/math.ts";
 import type { Point2 } from "../webgl/mesh.ts";
-import { viewProjection } from "../webgl/renderer.ts";
-import type { CameraAngles, Vec3, View } from "../webgl/scene.ts";
+import { slidePoint } from "../webgl/renderer.ts";
 import type { Design, Wheel } from "./design.ts";
 import {
   forkOutlineLocal,
@@ -40,19 +38,6 @@ export interface EscapementMarks {
    *  fork at either bank, and the escape wheel's tip circle. */
   readonly forkOutlines: readonly (readonly Point2[])[];
   readonly escapeTips: readonly Point2[];
-}
-
-/** Where the view, at `angles`, shows a point of the world on a slide of
- *  `slide` px. The renderer's own camera: a change to it moves these too. */
-export function onSlide(
-  view: View,
-  angles: CameraAngles,
-  slide: readonly [number, number],
-  point: Vec3,
-): Point2 {
-  const camera = viewProjection(view, angles, slide);
-  const [x, y] = transformPoint(camera.matrix, point);
-  return [((x + 1) / 2) * slide[0], ((1 - y) / 2) * slide[1]];
 }
 
 /** A point turned by `degrees` about `pivot`, as the model turns a group. */
@@ -194,7 +179,7 @@ function slideProjection(
   if (!state) throw new Error("a slide's callouts need an `art:`");
   const stage = stageState(watch, state);
   return (point, z) =>
-    onSlide(stage.view, stage, watch.scene.slide, [point[0], point[1], z]);
+    slidePoint(stage, watch.scene.slide, [point[0], point[1], z]);
 }
 
 /** The impulse jewel's deepest point in the world's plan, with the balance
