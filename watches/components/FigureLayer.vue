@@ -14,7 +14,8 @@
 // of it runs on the figure's time (`figure.now`), which stands while the
 // figure is paused. So a step in a paused figure starts from the picture
 // that shows; the figure's time runs to the end of the step's change
-// (`busyUntil`: the watch's and the board's), and stands again. While
+// (`busyUntil`: the watch's, the voyage's and the board's), and stands
+// again. While
 // `figure.jumps`, a step is a jump. A slider's change is drawn at once. At
 // every click, the figure marks the pieces that its run flashed
 // (`figureMarks`, watch/article.ts): a steady flash, for a reader whose eyes
