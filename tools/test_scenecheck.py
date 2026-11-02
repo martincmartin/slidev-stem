@@ -36,11 +36,12 @@ def test_a_good_line_and_fill_pass() -> None:
     assert whats(good) == []
 
 
-def test_a_detail_line_is_at_half_opacity() -> None:
+def test_a_detail_line_is_at_half_opacity_or_solid() -> None:
     assert whats(scene(None, {"ink": 1, "width": 2.0, "opacity": 0.5})) == []
+    assert whats(scene(None, {"ink": 1, "width": 2.0, "opacity": 1.0})) == []
     assert (
-        "should be 0.5"
-        in whats(scene(None, {"ink": 1, "width": 2.0, "opacity": 1.0}))[0]
+        "should be 0.5 or 1"
+        in whats(scene(None, {"ink": 1, "width": 2.0, "opacity": 0.7}))[0]
     )
 
 
@@ -81,9 +82,18 @@ def test_the_command_line_reader_rejects_nan() -> None:
 
 def test_the_second_is_not_a_fill_or_a_line_off_a_mark() -> None:
     assert "not an art colour" in whats(scene({"ink": 3, "opacity": 1.0}))[0]
-    found = whats(scene(None, {"ink": 3, "width": 2.0, "opacity": 1.0}))
+    found = whats(
+        scene({"ink": 0, "opacity": 1.0}, {"ink": 3, "width": 2.0, "opacity": 1.0})
+    )
     assert len(found) == 1
     assert "not an art colour" in found[0]
+
+
+def test_a_mark_may_be_lines_alone_in_the_second() -> None:
+    assert whats(scene(None, {"ink": 3, "width": 4.0, "opacity": 1.0})) == []
+    assert (
+        "should be 1" in whats(scene(None, {"ink": 3, "width": 4.0, "opacity": 0.5}))[0]
+    )
 
 
 def test_a_mark_has_a_solid_second_wash_fill_and_second_lines() -> None:

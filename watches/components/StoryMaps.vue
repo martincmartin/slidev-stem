@@ -12,9 +12,20 @@
 // voyage's tracks, its dots and its ship, and the other marks, as
 // `voyageAt` gives them for the step at the frame's time. A still shows its
 // step settled, and its wind stands.
-import { h, onBeforeUnmount, onMounted, useId, watch as onChange } from "vue";
+// Also the Longitude From Time slide's labels and ship (docs/globe.md, "The
+// Longitude From Time slide"), which ride the globe as it turns, and show only
+// while the camera is on that turn (`noonMarksAt`).
+import {
+  h,
+  onBeforeUnmount,
+  onMounted,
+  useId,
+  useTemplateRef,
+  watch as onChange,
+} from "vue";
 import type { FunctionalComponent } from "vue";
 import { MARGIN, mapOnSlide } from "../globe/maps.ts";
+import { NOON_LABELS, NOON_SHIP_SCALE, noonMarksAt } from "../globe/noon.ts";
 import { SHIP_FLAG, SHIP_PARTS, SHIP_SCALE } from "../globe/stories.ts";
 import type { Story } from "../globe/stories.ts";
 import { dayDots, voyageAt } from "../globe/voyage.ts";
@@ -105,8 +116,44 @@ function drawMarks(group: SVGGElement, story: Story, now: number): void {
     : "";
 }
 
+/** Each label that rides the globe: kept while it is mounted. */
+const noonLabels = new Map<number, SVGTextElement>();
+function keepNoonLabel(index: number, element: unknown): void {
+  if (element instanceof SVGTextElement) noonLabels.set(index, element);
+  else noonLabels.delete(index);
+}
+/** Their group, and the ship in it. */
+const noonGroup = useTemplateRef<SVGGElement>("noonGroup");
+const noonShip = useTemplateRef<SVGGElement>("noonShip");
+
+/** Show and place the marks that ride the globe, for a frame at `pose`. */
+function drawNoonLabels(pose: CameraPose): void {
+  const group = noonGroup.value;
+  if (!group) return;
+  const marks = noonMarksAt(pose, ART.scene.slide);
+  fade(group, marks ? 1 : 0);
+  // for watch/slide-state.ts: where they are, however it was reached
+  group.dataset["places"] = marks
+    ? [...marks.labels, marks.ship]
+        .map(([x, y]) => point([Math.round(x), Math.round(y)]))
+        .join(" ")
+    : "";
+  noonShip.value?.setAttribute(
+    "transform",
+    marks
+      ? `translate(${point(marks.ship)}) scale(${String(NOON_SHIP_SCALE)})`
+      : "",
+  );
+  marks?.labels.forEach(([x, y], index) => {
+    const label = noonLabels.get(index);
+    label?.setAttribute("x", String(x + (NOON_LABELS[index]?.offset ?? 0)));
+    label?.setAttribute("y", String(y));
+  });
+}
+
 /** Place each map for a frame drawn at `pose`, and its marks at `now`. */
 function draw(pose: CameraPose, now: number): void {
+  drawNoonLabels(pose);
   for (const story of GLOBE.stories) {
     const group = groups.get(story);
     if (!group) continue;
@@ -244,6 +291,19 @@ onBeforeUnmount(() => leave?.());
       </template>
       <g class="ship" visibility="hidden"><ShipParts /></g>
     </g>
+    <g ref="noonGroup" class="noon-labels" visibility="hidden">
+      <g ref="noonShip" class="ship west noon-ship"><ShipParts /></g>
+      <text
+        v-for="(label, index) in NOON_LABELS"
+        :key="label.words"
+        :ref="(element) => keepNoonLabel(index, element)"
+        :class="{ 'noon-degrees': label.degrees }"
+        :text-anchor="label.anchor"
+        dy="0.35em"
+      >
+        {{ label.words }}
+      </text>
+    </g>
   </svg>
 </template>
 
@@ -374,6 +434,29 @@ onBeforeUnmount(() => leave?.());
   stroke: var(--palette-background);
   stroke-width: 5px;
   paint-order: stroke fill;
+}
+/* A label that rides the globe, over land and sea in turn: so always in ink,
+   with the paper's outline, at a label's size. A meridian's label is smaller:
+   two of them can be 42 px apart, and "30°" at 24 px is about 40 px wide. */
+.story-maps .noon-labels text {
+  font:
+    600 24px "IBM Plex Sans",
+    sans-serif;
+  fill: var(--palette-ink);
+  stroke: var(--palette-background);
+  stroke-width: 6px;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+}
+.story-maps .noon-labels text.noon-degrees {
+  font-size: 20px;
+}
+/* The ship is smaller here (NOON_SHIP_SCALE, 0.6): its own px for lines of 2
+   slide px, the bottom of the stroke ladder. */
+.story-maps .noon-ship .ship-sail,
+.story-maps .noon-ship .ship-line,
+.story-maps .noon-ship .ship-wale {
+  stroke-width: 3.33;
 }
 /* The wind: each gust draws itself from west to east, curls, and fades. In
    a still, and in a paused figure, it stands, drawn: a figure paused from

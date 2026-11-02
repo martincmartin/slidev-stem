@@ -16,13 +16,14 @@ check holds for any theme:
   * every fill and every line is in an art ink: an ink whose variable is one
     of the art roles (`lib.ART_ROLES`). A mark is also allowed, in the
     flash's colours: a solid fill in `MARK_FILL_ROLE`, and lines in
-    `MARK_LINE_ROLE` on that mesh only. A face may be the paper
+    `MARK_LINE_ROLE` on that mesh, or lines alone in `MARK_LINE_ROLE` on a mesh
+    with no fill. A face may be the paper
     (`PAPER_FILL_ROLE`), solid: the page itself, such as a globe's land on its
     sea. No line is in the paper;
   * every line width is on the stroke ladder (2, 2.5, 3 and 4 CSS px, within
     5%): line widths in a scene are CSS px on the screen, at every zoom;
-  * opacities follow the docs: a line is solid, except a line of the detail
-    ink, which is at 0.5; a face is a wash, solid; a fill in a line colour is
+  * opacities follow the docs: a line is solid, or, in the detail ink only, at
+    0.5 (a line with joins is solid: webgl/renderer.ts); a face is a wash, solid; a fill in a line colour is
     a substance or a small dark part, at 0.60-1.0.
 
 Stdlib only, with `lib.py`. It exits non-zero on a failure.
@@ -38,10 +39,11 @@ from dataclasses import dataclass
 import lib
 
 OPACITY_TOLERANCE = 1e-9
-# A scene may draw a mark on part of a part in the flash's colours, to say
-# "look here" (docs/illustrations.md, "Colour"; the teeth on the Gears slide
-# of `watches`): a solid fill in the second's wash, with its lines in the
-# second. Neither is an art colour, so only a mark's mesh may use them.
+# A scene may draw a mark in the flash's colours, to say "look here"
+# (docs/illustrations.md, "Colour"): on part of a part, a solid fill in the
+# second's wash with its lines in the second (the teeth on the Gears slide of
+# `watches`), or lines alone in the second (its noon line). Neither is an art
+# colour, so only a mark's mesh may use them.
 MARK_FILL_ROLE = "second-wash"
 MARK_LINE_ROLE = "second"
 # A face in the paper is the page itself, where the picture's material is
@@ -146,9 +148,12 @@ def fill_findings(mesh: str, fill: dict[str, object], inks: list[Ink]) -> list[F
 
 
 def is_mark(fill: dict[str, object] | None, inks: list[Ink]) -> bool:
-    """Is a fill a mark's (`MARK_FILL_ROLE`)? Its mesh may have lines in
-    `MARK_LINE_ROLE`."""
-    if fill is None or malformed("", "fill", fill, ("opacity",), len(inks)):
+    """Can a mesh with this fill be a mark: is the fill a mark's
+    (`MARK_FILL_ROLE`), or has it none, for a mark of lines alone? Its mesh may
+    have lines in `MARK_LINE_ROLE`."""
+    if fill is None:
+        return True
+    if malformed("", "fill", fill, ("opacity",), len(inks)):
         return False
     return inks[int(str(fill["ink"]))].role == MARK_FILL_ROLE
 
@@ -176,12 +181,13 @@ def style_findings(
         )
     opacity = float(str(style["opacity"]))
     detail = ink.role == lib.DETAIL_ROLE
-    wanted = lib.DETAIL_LINE_OPACITY if detail else 1.0
-    if abs(opacity - wanted) > OPACITY_TOLERANCE:
+    allowed = (lib.DETAIL_LINE_OPACITY, 1.0) if detail else (1.0,)
+    if all(abs(opacity - wanted) > OPACITY_TOLERANCE for wanted in allowed):
         found.append(
             Finding(
                 mesh,
-                f"line opacity {opacity:g} should be {wanted:g} "
+                f"line opacity {opacity:g} should be "
+                f"{' or '.join(f'{wanted:g}' for wanted in allowed)} "
                 f"({'detail ink' if detail else 'a solid line'})",
             )
         )

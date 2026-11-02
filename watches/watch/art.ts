@@ -8,8 +8,8 @@ import { makeGlobe } from "../globe/model.ts";
 import { generate } from "./generate.ts";
 import type { Watch } from "./generate.ts";
 
-/** The watch, with the globe's meshes, groups, views and piece in its
- *  scene. The globe's piece has no extent: a slide that shows it names its
+/** The watch, with the globe's meshes, groups, views and pieces in its
+ *  scene. The globe's pieces have no extent: a slide that shows one names its
  *  view. */
 export function withGlobe(watch: Watch, globe: Globe): Watch {
   const { scene } = watch;
@@ -20,7 +20,7 @@ export function withGlobe(watch: Watch, globe: Globe): Watch {
       meshes: [...scene.meshes, ...globe.meshes],
       groups: [...scene.groups, ...globe.groups],
       views: [...scene.views, ...globe.views],
-      pieces: [...scene.pieces, globe.piece],
+      pieces: [...scene.pieces, ...globe.pieces],
     },
   };
 }

@@ -3,7 +3,8 @@
 **Covers:** Part 2's globe and its story maps: the land data, the globe's
 meshes and levels, its views, the flight between them, how the globe
 joins the watch's scene, the marks of each story map and their keys
-(`globeLeg`, `globeMarks`), and the labels on the globe and the maps.
+(`globeLeg`, `globeMarks`), the labels on the globe and the maps, and the Noon
+Comes Later slide.
 **Read before** you change `globe/`, `watch/art.ts`, `art/earth-data.ts`,
 `art/fetch-earth.sh`, `components/StoryMaps.vue`,
 `components/MapLabel.vue`, or the globe's frontmatter. The rules for WebGL art
@@ -93,7 +94,8 @@ center, and it has the angles that face the place (`View.angles`): a slide
 that names the view and sets no `artTilt` or `artTurn` gets them. A story
 map's view (Cape Noir, Juan Fernández, Scilly) is the camera that fits the
 map best ("The story maps"). South America and the Channel fit a list of
-places into the band under the title.
+places into the band under the title. The three views of the Longitude From Time slide
+are its own ("The Longitude From Time slide").
 
 ## The story maps
 
@@ -290,8 +292,60 @@ artView: cape noir
 artMove: fly
 ```
 
-`art: all` leaves the globe out. The globe's piece has no extent, so a
-slide that shows it names its view.
+`art: all` leaves the globe out. The globe's pieces have no extent, so a
+slide that shows one names its view.
+
+## The Longitude From Time slide
+
+`globe/noon.ts` holds what this slide adds to the globe. The camera stays with
+the Sun, 30° above the Equator, and the Earth turns under both. So the Earth's
+turn is a move of the camera along a parallel, between three views at one place on
+the slide (`noon in london`, `noon an hour later`, `noon at the ship`), with
+`artMove: together`: the turn changes, and nothing else does. Each click is one
+hour: the Earth turns by one meridian, and the minute hand goes around once.
+
+- **On the globe,** in the piece `noon`: a meridian every 15°, over the land and
+  the sea, and London's dot, in the paper's halo. The dot stands off the globe, so that
+  it hides the lines under it. A meridian is solid ink: at 0.5, a dark dot
+  shows at each join, and solid `muted` is only 1.43:1 on the sea. It stops at
+  80°, because 24 solid lines make a black star at the pole.
+- **The labels and the ship ride the globe.** "London" and the degrees are not
+  `MapLabel`s, which stand still at a view, but text in `components/StoryMaps.vue`
+  (`NOON_LABELS`). The ship is the story maps' icon, smaller and facing west, with
+  its lines kept at 2 px. The layer moves them after each frame, to where the
+  frame's camera puts their places (`noonMarksAt`), in the live layer, a figure
+  and a still alike. They show only while the camera is on this turn, so a slide
+  needs no key for them. The labels cross land and sea, so they are always in ink,
+  with the paper's outline.
+- **The degree labels** are on their meridians, at the camera's latitude, with a
+  gap in the line for each (`LABELLED`, `LABEL_GAP`), at 20 px, as two of these
+  meridians are 42 px apart. The noon line has the same gap, because each label
+  crosses it at that latitude.
+- **The noon line** is a mesh in the second (a mark of lines alone,
+  [`stem/docs/webgl.md`](../../docs/webgl.md), "Colours"). It is in a group of
+  its own, whose matrix follows the camera's turn (`noonMatrix`), so the Earth
+  turns under it and London's dot passes over it. London and the ship are at one
+  latitude, so each reaches the line at one point. Not an oversight: an SVG line
+  would be over the canvas, and so over the dot.
+- **Over the canvas,** because neither moves: the Sun and the night
+  (`components/NoonSky.vue`). The renderer has no transparent
+  face, which the night needs. The slide's text fades, so they fade with it.
+- **The clock** keeps London's time, in the room at the globe's upper left, near the
+  ship and London. It is a simple
+  dial on the canvas, in the piece `noon`: its groups draw in slide px, facing the
+  camera (`clockMatrix`), and their matrices come from the camera's turn
+  (`hoursAt`). So the minute hand goes around once in each 15° of the turn, in
+  either direction, and a jump or a printed page shows the time of its click.
+  Not an oversight: it is not the watch, whose movement is too busy at this size
+  (the visual-language task's README).
+- **The Sun is not where the real Sun is.** At 30° above the Equator, the real
+  Sun is behind the audience. The slide puts it under the globe to fit, and
+  keeps the night that the real Sun gives: a crescent, with the North Pole on its
+  inner edge.
+
+`globe/globe.test.ts` checks that the noon line stays at the slide's middle,
+that the two places reach it at one point, that the clock's hands follow the
+turn, and that the labels ride it.
 
 `globe/globe.test.ts` checks that a view puts its place at its slide point
 with north up, that the disc faces the camera and hides the far side, that

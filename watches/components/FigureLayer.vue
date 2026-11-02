@@ -258,7 +258,7 @@ const still = computed(() => {
 /** Whether `now` shows a piece of the watch, not only the globe. */
 function showsWatch(now: WatchState): boolean {
   return [...stageState(ART, now).shown].some(
-    (mesh) => !GLOBE.piece.meshes.has(mesh),
+    (mesh) => !GLOBE.pieces.some((piece) => piece.meshes.has(mesh)),
   );
 }
 

@@ -168,6 +168,11 @@ export function slideState(
     )?.textContent;
     if (count) settled[`${name} count`] = count;
   }
+  // the labels that ride the globe on the Longitude From Time slide: where they are
+  const noonPlaces = document.querySelector<SVGGElement>(
+    ".watch-layer .story-maps .noon-labels",
+  )?.dataset["places"];
+  if (noonPlaces) settled["noon labels"] = noonPlaces;
   for (const host of boards) {
     const phase = host.dataset["phase"];
     if (phase !== undefined) settled["board"] = phase;

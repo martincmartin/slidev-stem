@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { transformPoint } from "../webgl/math.ts";
 import { slidePoint, towardCamera, viewProjection } from "../webgl/renderer.ts";
 import { checkScene } from "../webgl/scene.ts";
-import type { Mesh, Vec3 } from "../webgl/scene.ts";
+import type { Mesh, Vec3, View } from "../webgl/scene.ts";
 import earthFile from "./earth.json" with { type: "json" };
 import { parseEarth } from "./earth.ts";
 import type { LonLatBox, LonLat } from "./earth.ts";
@@ -22,6 +22,19 @@ import {
   toSphere,
 } from "./globe.ts";
 import { globeMatrices, makeGlobe } from "./model.ts";
+import {
+  LONDON,
+  NOON_GLOBE,
+  HOUR_GROUP,
+  MINUTE_GROUP,
+  NOON_CLOCK,
+  NOON_GROUP,
+  NOON_LABELS,
+  SHIP,
+  hoursAt,
+  noonMarksAt,
+  noonMatrix,
+} from "./noon.ts";
 
 const SLIDE: readonly [number, number] = [980, 552];
 const EARTH = parseEarth(earthFile);
@@ -73,7 +86,16 @@ test("each view has the globe under the slide's middle, and its own angles", () 
   const { views } = GLOBE;
   assert.deepEqual(
     views.map((view) => view.name),
-    ["south america", "channel", "cape noir", "juan fernandez", "scilly"],
+    [
+      "south america",
+      "channel",
+      "noon in london",
+      "noon an hour later",
+      "noon at the ship",
+      "cape noir",
+      "juan fernandez",
+      "scilly",
+    ],
   );
   for (const view of views) {
     assert.equal(view.ball, RADIUS);
@@ -294,4 +316,112 @@ test("the globe is a scene that the renderer takes, and `all` leaves it out", ()
       pieces: [piece],
     });
   });
+});
+
+test("the noon line stays at the middle of the slide as the Earth turns", () => {
+  for (const name of [
+    "noon in london",
+    "noon an hour later",
+    "noon at the ship",
+  ]) {
+    const view =
+      GLOBE.views.find((each) => each.name === name) ?? assert.fail();
+    const { tilt, turn } = view.angles ?? assert.fail();
+    const matrix = globeMatrices({ tilt, turn }).get(NOON_GROUP);
+    assert.ok(matrix);
+    const lon = turn - 90;
+    for (const lat of [-30, 0, 51.5, 89]) {
+      const phi = (lat * Math.PI) / 180;
+      const placed = transformPoint(matrix, [
+        RADIUS * Math.cos(phi),
+        0,
+        RADIUS * Math.sin(phi),
+      ]);
+      const wanted = toSphere([lon, lat]);
+      placed.forEach((value, axis) => {
+        assert.ok(near(value, wanted[axis] ?? 0, 0.001));
+      });
+      const [x] = slidePoint({ view, tilt, turn }, SLIDE, placed);
+      assert.ok(near(x, NOON_GLOBE.at[0], 0.001));
+    }
+  }
+});
+
+test("noon reaches the ship where it reached London, after 30 degrees", () => {
+  const at = (name: string, place: LonLat): readonly [number, number] => {
+    const view =
+      GLOBE.views.find((each) => each.name === name) ?? assert.fail();
+    const { tilt, turn } = view.angles ?? assert.fail();
+    return slidePoint({ view, tilt, turn }, SLIDE, toSphere(place));
+  };
+  const [londonX, londonY] = at("noon in london", LONDON);
+  const [shipX, shipY] = at("noon at the ship", SHIP);
+  assert.ok(near(londonX, shipX, 0.3));
+  assert.ok(near(londonY, shipY, 0.1));
+  // the North Pole shows, on the line between day and night
+  const [, poleY] = at("noon in london", [0, 90]);
+  const lat = (NOON_GLOBE.lat * Math.PI) / 180;
+  assert.ok(
+    near(poleY, NOON_GLOBE.at[1] - NOON_GLOBE.radius * Math.cos(lat), 0.001),
+  );
+  assert.equal(noonMatrix(90)[0], 1);
+});
+
+test("the clock stays on the slide, and the Earth's turn sets its hands", () => {
+  const view = GLOBE.views.find((each) => each.name === "noon in london");
+  assert.ok(view);
+  // the Earth's turn: noon, a half hour, one o'clock and two o'clock
+  for (const [turn, hour, minute] of [
+    [90, 0, 0],
+    [82.5, 15, 180],
+    [75, 30, 0],
+    [60, 60, 0],
+  ] as const) {
+    const angles = { tilt: 60, turn };
+    const pose = { view, ...angles };
+    const matrices = globeMatrices(angles);
+    const tipOf = (hand: typeof HOUR_GROUP): readonly [number, number] => {
+      const matrix = matrices.get(hand);
+      assert.ok(matrix);
+      return slidePoint(pose, SLIDE, transformPoint(matrix, [0, 10, 0]));
+    };
+    for (const [hand, wanted] of [
+      [HOUR_GROUP, hour],
+      [MINUTE_GROUP, minute],
+    ] as const) {
+      const [x, y] = tipOf(hand);
+      const radians = (wanted * Math.PI) / 180;
+      assert.ok(near(x, NOON_CLOCK.at[0] + 10 * Math.sin(radians), 0.001));
+      assert.ok(near(y, NOON_CLOCK.at[1] - 10 * Math.cos(radians), 0.001));
+    }
+  }
+  // the minute hand goes around twice as the Earth turns 30 degrees
+  assert.equal(hoursAt(60) * 360, 720);
+});
+
+test("the labels ride the globe through the turn, and show only on it", () => {
+  const named = (name: string): View => {
+    const found = GLOBE.views.find((each) => each.name === name);
+    assert.ok(found);
+    return found;
+  };
+  const start = named("noon in london");
+  for (const turn of [90, 80, 75, 60]) {
+    const pose = { view: start, tilt: 60, turn };
+    const marks = noonMarksAt(pose, SLIDE);
+    assert.ok(marks);
+    NOON_LABELS.forEach(({ place }, index) => {
+      const [x, y] = slidePoint(pose, SLIDE, toSphere(place));
+      assert.ok(near(marks.labels[index]?.[0] ?? 0, x, 0.001));
+      assert.ok(near(marks.labels[index]?.[1] ?? 0, y, 0.001));
+    });
+    const [shipX, shipY] = slidePoint(pose, SLIDE, toSphere(SHIP));
+    assert.ok(near(marks.ship[0], shipX, 0.001));
+    assert.ok(near(marks.ship[1], shipY, 0.001));
+  }
+  // past either end of the turn, and at another view, they do not show
+  assert.equal(noonMarksAt({ view: start, tilt: 60, turn: 100 }, SLIDE), null);
+  const other = named("channel");
+  const angles = other.angles ?? assert.fail();
+  assert.equal(noonMarksAt({ view: other, ...angles }, SLIDE), null);
 });

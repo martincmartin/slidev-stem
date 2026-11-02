@@ -341,6 +341,13 @@ does this for you ([watch.md](watch.md#fitted-views)). The watch's train is laid
 the hairspring to the fourth wheel for this reason: see
 [watch.md](watch.md#the-layout-of-the-movement).
 
+**Text beside a picture follows the Balance Wheel slide,** in Part 2 as in
+Part 1: in the slide's right 40% (left 610 px, top 152 px), at 35 px semibold, not
+a label's 24 px. Each click adds a paragraph, the paragraphs before it dim
+([Text dims](#text-dims)), and the one number to take home is larger, in the
+accent. The Longitude From Time slide is the other example. A label on a map is
+different: it stands at its place on the picture.
+
 ## Speaker notes
 
 The last HTML comment on a slide becomes the presenter note. The convention in this

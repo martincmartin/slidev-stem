@@ -1981,6 +1981,116 @@ IF ASKED: The museum finds no hard evidence that Scilly itself caused the Act: s
 -->
 
 ---
+# The camera stays with the Sun, so the Earth's turn is a move of the camera
+# between views, one hour apart: each click turns it by one meridian (docs/globe.md,
+# "The Longitude From Time slide")
+class: noon-later
+art: [globe, noon]
+artView: noon in london
+artClicks:
+  1: { artView: noon an hour later, artMove: together }
+  2: { artView: noon at the ship, artMove: together }
+clicks: 3
+---
+
+# Longitude From Time
+
+<NoonSky />
+
+<div class="noon-sentence">
+  <div class="noon-paragraph text-dims">Noon in London<br>Ship: not noon yet</div>
+  <div v-click="1" class="noon-paragraph text-dims after-watch">1 hour = 15° west</div>
+  <div v-click="2" class="noon-paragraph text-dims after-watch">Noon at the ship<br>2 hours = 30° west</div>
+  <div v-click="3" class="noon-paragraph text-dims">60 min / 15°<br>= <span class="noon-stat">4 min/degree</span></div>
+</div>
+
+<style>
+/* The Balance Wheel slide's text: in the right 40% of the slide, in the same
+   place and type. Each click adds a paragraph, and the ones before it dim
+   (style.css, "TEXT DIMS"). The stat is larger, in the accent. */
+.slidev-layout.noon-later .noon-sentence {
+  position: absolute;
+  left: 610px;
+  top: 152px;
+  font-size: 35px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.slidev-layout.noon-later .noon-paragraph + .noon-paragraph {
+  margin-top: 0.7em;
+}
+.slidev-layout.noon-later
+  .noon-paragraph:has(~ .noon-paragraph:not(.slidev-vclick-hidden)) {
+  --text-dim: var(--text-dimmed);
+}
+.slidev-layout.noon-later .noon-stat {
+  font-size: 48px;
+  line-height: 1;
+  color: color-mix(
+    in srgb,
+    var(--palette-accent),
+    var(--palette-background) var(--text-dim)
+  );
+}
+</style>
+
+<!-- narration
+[figure: A globe from above the Equator, with the Atlantic in the middle and a
+meridian every 15 degrees. The Sun is under the globe, and a line runs from the
+pole down the meridian through London. It is noon in London, and a clock beside
+the globe says so. The ship is 30 degrees to the west.]
+
+Why would a clock help? Because noon does not come to everyone at once. The
+Earth turns toward the east, so the Sun's highest point sweeps west. When it is
+noon in London, a ship 30 degrees to the west has not reached noon yet.
+
+[click]
+
+[figure: The globe has turned by one meridian. The line now runs along the
+meridian 15 degrees west of London. The clock says 1:00.]
+
+In an hour, the Earth turns by 15 degrees, one line on this globe. Noon has moved
+15 degrees west, and it has not reached the ship yet.
+
+[click]
+
+A navigator can measure noon at sea: it is when the Sun stands highest. After a
+second hour, noon reaches the ship. Suppose that the ship carries a clock that
+still keeps London's time. At the ship's noon, it reads 2:00. Two hours behind
+London means 30 degrees west of it.
+
+[click]
+
+[figure: The line runs through the ship, and London is 30 degrees to the east of
+it. The clock says 2:00.]
+
+Sixty minutes for 15 degrees is 4 minutes a degree. So the clock measures the
+ship's longitude. To win half a degree, the Act's top prize,
+the clock must be right to within 2 minutes.
+
+> [!aside] The Sun in the picture
+> The real Sun is behind you as you look at this globe, and over the Equator. The
+> picture puts it under the globe so that it fits, and leaves the night where
+> the real Sun would put it. The real noon also runs up to about 16 minutes
+> ahead of or behind a steady clock through the year. Navigators corrected for
+> that with a table, the _equation of time_.
+
+-->
+
+<!--
+So why would a clock help? Noon doesn't come to everyone at once. Noon in London. The ship, 30 degrees west: not noon yet.
+
+[click] The Earth turns. One hour, once around for the minute hand: one line, 15 degrees.
+
+[click] Another hour, another line. Noon at the ship. A clock still on London time says 2:00. So: 30 degrees west.
+
+[click] 60 minutes for 15 degrees: 4 minutes a degree. Half a degree, the top prize, is 2 minutes.
+
+IF ASKED: The real Sun is behind the audience and over the Equator: the slide puts it under the globe to fit. Solar noon also runs up to about 16 minutes ahead of or behind a steady clock through the year: navigators corrected for it with a table, the equation of time.
+-->
+
+---
 layout: full
 class: tk-timekeepers
 # Hidden: not in the talk. It stays as the example of every slide pattern

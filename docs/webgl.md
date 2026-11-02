@@ -100,7 +100,10 @@ these additions.
   (the impulse jewel) is at 0.60–1.0; the renderer blends a fill below 1 with
   the paper into an opaque fill. A mark on part of a part is in the flash's
   colours: a fill in the second's wash, solid, with lines in the second
-  (`watches`, the Gears slide's teeth). `tools/scenecheck.py` checks the scene.
+  (`watches`, the Gears slide's teeth). A mark can also be lines alone in the
+  second (`watches`, the noon line). A line of the detail ink is at 0.5, or
+  solid if it has joins: at 0.5, two segments overlap at each join and show as
+  a dark dot (`webgl/renderer.ts`). `tools/scenecheck.py` checks the scene.
 - **A scene holds inks, not colours.** An `Ink` is one of the objects in
   `INKS` (`webgl/scene.ts`): `subject`, `subjectWash`, `muted`, `mutedWash`,
   `ink`, `waterWash` and `paper` for the scene, and `second` and

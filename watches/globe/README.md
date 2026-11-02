@@ -8,3 +8,4 @@ The code of Part 2's globe and its story maps ([`docs/globe.md`](../docs/globe.m
   at the commit that the file names. **Licence:** public domain
   ([terms of use](https://www.naturalearthdata.com/about/terms-of-use/)).
 - `earth.ts`: its types, and the parser that checks it.
+- `noon.ts`: what the Longitude From Time slide adds to the globe.

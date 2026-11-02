@@ -198,7 +198,11 @@ test("no part that a click shows rises through a paper disc that it shows", () =
       own.delete(disc.group);
       const through = scene.meshes.filter((mesh) => {
         // the globe is far from the watch
-        if (mesh.holdout || own.has(mesh.group) || globe.piece.meshes.has(mesh))
+        if (
+          mesh.holdout ||
+          own.has(mesh.group) ||
+          globe.pieces.some((piece) => piece.meshes.has(mesh))
+        )
           return false;
         if (allowed.get(disc)?.has(mesh)) return false;
         const over = outline.heightsOver(atRest.points(mesh));

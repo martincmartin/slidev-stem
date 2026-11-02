@@ -96,3 +96,23 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   reaches (`PLAN.md`, sections 7 and 8). The audience does not need a picture
   of 35 miles. The user also checked the dollar values (`PLAN.md`, section 9,
   gives them as not checked).
+- 2026-11-01: the Noon Comes Later slide's degree labels are on their meridians
+  at 30° N, in a gap in each line, not at 70° N or at the equator (`PLAN.md`,
+  section 18). Its text is the Balance Wheel slide's: in the right 40%, added
+  paragraph by paragraph. Its meridians are solid ink, and stop at 80°, not ink at
+  0.5 from pole to pole, which shows a dark dot at each join in WebGL
+  (`watches/docs/globe.md`, "The Noon Comes Later slide").
+- 2026-11-01: the Noon Comes Later slide's title is now "Longitude From Time":
+  it says what the slide is for.
+- 2026-11-01: the ship on the slide is the story maps' ship icon, smaller, not a
+  dot and the word "Ship". The mockup's line from the ship to London is gone: such
+  a line elsewhere in the talk is the path that a ship sailed.
+- 2026-11-01: the slide's labels ride the globe as it turns, so they do not leave
+  and come back (`PLAN.md`, section 18, "Limits", gave this as not tried). The
+  turn is two clicks, an hour each, so that each click shows that one meridian is
+  one hour.
+- 2026-11-01: the slide has a clock on London's time, whose minute hand goes
+  around twice as the Earth turns. The camera's turn sets its hands. It is a simple
+  dial, not the watch. The renderer has one camera, so the watch beside the globe
+  needs a second one, or its meshes copied to the globe's place; the room for it
+  is only 128 px wide; and the model's clock sets its hands, not the Earth's turn.

@@ -7,6 +7,7 @@
 import type { LonLat } from "./earth.ts";
 import { onGlobe } from "./globe.ts";
 import type { GlobeCamera } from "./globe.ts";
+import { NOON_CAMERAS } from "./noon.ts";
 
 /** The slide's band under the title, in slide px, that a fitted camera
  *  fills. */
@@ -50,7 +51,8 @@ function fitting(
 }
 
 /** The cameras of Part 2's views that are not a story map's, for a slide
- *  of `slide` px: two that fit places. */
+ *  of `slide` px: two that fit places, and the two of the Longitude From Time
+ *  slide. */
 export function globeCameras(slide: readonly [number, number]): GlobeCamera[] {
   const band: Band = { width: slide[0], top: 78, bottom: 540 };
   return [
@@ -78,5 +80,6 @@ export function globeCameras(slide: readonly [number, number]): GlobeCamera[] {
       ],
       band,
     ),
+    ...NOON_CAMERAS,
   ];
 }
