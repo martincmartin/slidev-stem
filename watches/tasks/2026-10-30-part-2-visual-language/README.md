@@ -14,7 +14,8 @@ Atlantic to the English Channel, and a zoom in to the Isles of Scilly. It
 also checks the cause of the wreck of 1707. Round 6 cuts words, keeps some labels,
 dimmed, to the end of their slide, and compares four backings for each
 slide's punchline in big type. Round 7 sets the choices for the talk, which
-the mockup now draws by default, and brings the wind in nearer the labels.
+the mockup now draws by default, and brings the wind in nearer the labels. Round 8 compares the camera and the Sun for
+the Noon Comes Later slide, in stills.
 
 - `instructions.md`: the request.
 - `PLAN.md`: the criteria, the options, the measurements, the ranking, the
@@ -32,6 +33,10 @@ the mockup now draws by default, and brings the wind in nearer the labels.
   writes the globe's data at 1:110m, 1:50m and 1:10m.
 - `tools/shots.ts`: takes a picture of each style at each step, and of the
   labels in motion, measures the text, and makes the sheets.
+- `mockup/noon.html`, `mockup/noon.ts`: round 8's still of the Noon Comes
+  Later slide.
+- `tools/noon.ts`: takes a picture of that still at each place for the Sun
+  and each tilt, and makes the sheets.
 - `tools/speed.ts`: times each camera flight in Chromium, Firefox and WebKit,
   in windows if asked.
 - `tsconfig.json`: type-checks the task's TypeScript with the talk's options.
@@ -59,6 +64,9 @@ the mockup now draws by default, and brings the wind in nearer the labels.
   the Lessig style.
 - `evidence/round-7/talk/`: round 7's output of `shots.ts`, the labels
   with the talk's choices.
+- `evidence/round-8/`: round 8's output of `noon.ts`: `frames/`,
+  `sheet-0h.png`, `sheet-2h.png`, `marks-*.png`, `sweep-*.png`, `which-*.png`
+  and `above-*.png`.
 
 Run each tool from the talk's directory (`PLAN.md`, section 11).
 

@@ -347,3 +347,75 @@ Later messages in round 6, verbatim, in order:
 > The new wind line on the left for 9 days back is pointing below the ship's
 > hull, it should be higher, the straight line in the middle of all the
 > ship's sails
+
+## Round 8, 2026-11-01
+
+Your messages about the slide after the Longitude Act slide, verbatim:
+
+> Next up:
+>
+> Explain how telling time would help
+> - Noon comes later, measuring how much later, tells you how far west
+> - 4 min for one degree, 2 min for 1/2 a degree. Over a 6 week voyage,
+>   that's 6 or 3 seconds a day.
+
+> Should the globe be from the Sun's point of view, or looking down on the
+> north pole with the sun on the side? Pros and cons of sun POV vs north POV,
+> recommend.
+
+> I like "Noon comes later" diagram for slide 1. Might put 1 degree is 4 min
+> on that slide, e.g. on the right like we did with the watch mechaism
+> slides, haven't decided yet. Could have a separate punchline slide for the
+> "3x more accurate than a good modern watch" then lead into the Newton quote
+> slide.
+
+> For north pole view: given 16:9 aspect ratio, should sun be at the bottom
+> or the left or right?
+
+> The 15 degree meridians are very familiar from maps and globes, I think we
+> should have them over all (non-land) parts of the map.
+
+> "The 15 degree meridians are very familiar from maps and globes," but maybe
+> not to kids who have only grown up with Google Maps which doesn't have
+> them. We could draw meridians over land if we thought that worked better,
+> perhaps it does here. London isn't on water exactly, but it's close when
+> viewed from this distance, but maybe full meridians makes the point better,
+> because this slide is really about the meridians and not e.g. ships
+> crashing into islands.
+
+> Instead of the camera directly over the north pole, what if it's tilted
+> down a little? 15 degrees, 30 degrees, 45 degrees. Sun still at bottom or
+> left.
+
+> How hard is it to draw both "sun on left" and "sun on bottom", and different
+> angles for the camera POV?
+
+> This can all be part of that Oct 30 task, no need to create a new task for
+> this.
+
+> We should have labels on the meridians somewhere, e.g. around 75 or 70
+> degrees north, of their degree mark, i.e. "0°", "15°" and so on.
+
+> 15 and 30 degrees for the tilt are just suggestions, consider any angle
+> (e.g. anything between 0 and 45 degrees)
+
+> You're drawing 5 lines for the sun's rays, but two of them are outside the
+> radius of the sun. Drop those two, or squish all 5 closer together, something
+> to make it look a little more consistent. I know this is just a test, but I
+> want to show it to a civilian and that might confuse them.
+
+> The degree labels are pretty busy. We could do them every 45 degrees, but I
+> don't know if that communicates that each meridian is 15 degrees without them
+> having to notice only one in 3 has a label, then divide by 3 in their head. So
+> maybe we just leave them out? Where can I find the "sun on left" images? Is
+> there a version of sweep for that?
+
+> Just the three degree labels is great. I feel like we need the sun at the
+> bottom, and the earth almost vertical. So this is like the original POV sun
+> view, except since we tilt it a little bit, we can put the sun at the bottom
+> and have some night at the top. Please generate a sweep from 5 to 40, but this
+> time from vertical (0 degrees = looking at the equator) instead of north pole.
+
+> You can put the labels at the equator in this view. Let's go with 30 degrees.
+> Sure commit the round 8 task files, then productionize the "Noon Comes Later"
+> slide.

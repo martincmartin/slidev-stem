@@ -1565,3 +1565,149 @@ Walter's "between one and two"; and Scilly's coast data.
 
 Chromium only, settled frames. The gaps are between boxes: a gust's curl
 fills only part of its box.
+
+## 18. Round 8: Noon Comes Later
+
+Your messages are in [instructions.md](instructions.md), "Round 8". The slide
+after the Longitude Act slide explains how telling time finds longitude: noon
+comes later as you go west. This round compares where the camera and the Sun
+go, in stills. The deck is not changed.
+
+[mockup/noon.ts](mockup/noon.ts) draws one still:
+`noon.html?sun=bottom|left&tilt=DEGREES&hours=0|2`. London (0°) and a ship
+(30° W, at London's latitude) are on the near side. At 0 hours London is on the
+noon line; at 2 hours the ship is, and a line along the parallel joins them.
+[tools/noon.ts](tools/noon.ts) writes `evidence/round-8/`: each frame, and
+`sheet-0h.png`, `sheet-2h.png`, `marks-*.png`, `sweep-*.png` and `which-*.png`.
+In `watches/`, with the mockup's server
+running:
+
+```bash
+node tasks/2026-10-30-part-2-visual-language/tools/noon.ts http://localhost:5200/ \
+  tasks/2026-10-30-part-2-visual-language/evidence/round-8
+```
+
+### Sun's view against the North Pole's
+
+From the Sun, the turn looks like the three camera flights before it, and the
+Sun cannot show. From over the pole, the Earth visibly turns under a Sun that
+stays still, and day and night show. The cost is that the land is less
+familiar. Over the pole is the choice for these stills.
+
+### The measurements
+
+Calculated, and the frames agree. The gap is the straight distance from the
+ship to London at 0 hours; a radius is in slide px.
+
+| Sun, radius | Tilt | Gap (px) | Globe lit | North Pole above center (px) |
+| ----------- | ---: | -------: | ---------: | ---------------------------: |
+| bottom, 200 | 0° | 64 | 50 % | 0 |
+| bottom, 200 | 15° | 64 | 63 % | 52 |
+| bottom, 200 | 30° | 64 | 75 % | 100 |
+| bottom, 200 | 45° | 63 | 85 % | 141 |
+| left, 231 | 0° | 74 | 50 % | 0 |
+| left, 231 | 15° | 72 | 50 % | 60 |
+| left, 231 | 30° | 65 | 50 % | 116 |
+| left, 231 | 45° | 54 | 50 % | 163 |
+
+### What the frames show
+
+- **Sun at the bottom keeps Africa and Europe nearly upright.** West is on the
+  left, and the noon line is straight at every tilt. With the Sun on the left,
+  the north is toward the globe's center, on the right: Africa lies on its
+  side, and the noon line curves.
+- **30° puts the North Atlantic in the middle of the picture**, with the ship
+  and London on it, and the meridians still fan out from the pole. Night is a
+  quarter of the globe. At 15° night is larger and the picture reads more as a
+  dial; at 45° night is nearly gone.
+- **Full meridians read as one grid**, over the land and the sea. They are dark
+  at the pole, where they meet.
+- **The globe's code needed no change** for a camera over the pole or tilted.
+
+The tilt can be any angle: 15° and 30° were only examples. `sweep-bottom.png` and
+`sweep-left.png` show every 5° from 0° to 45°, with no degree marks. Neighbors differ little.
+Below about 15°, Africa is cut off and the picture reads as a flat map. Above
+about 35°, night is under a fifth of the globe, and the marks crowd the far
+limb.
+
+The recommendation: the Sun at the bottom, tilt about 25°, anywhere from 20° to
+30°. At 25°, night is 29 % of the globe, the pole is 85 px above the center, and
+London is 47 px below it. It is a judgment from the frames, and yours to make.
+
+### The degree marks
+
+You asked for a mark on each meridian, near 70° or 75° N. There, a 15° gap is
+small: at a radius of 200 px it is 18 px at 70° N and 14 px at 75° N (21 and
+16 px at 231 px), and "105°" at 17 px is about 34 px wide. So a mark runs along
+its meridian, as on many printed globes, and starts at that latitude and reads
+outward. `marks-*.png` compares 60°, 70° and 75° N, with and without W and E, at
+the Sun at the bottom and tilt 30°. The gap at 60° N is 26 px at 200 px.
+
+- **75° N:** the marks collide.
+- **70° N, no W or E:** the marks fit, as a ring around the Arctic.
+- **60° N, no W or E:** the cleanest ring, but its marks reach the ship and
+  London, and 180° passes the limb at the far side. Between 60° and 70° N
+  is not tried.
+- **W and E:** too long at 70° N, where they collide and pass the limb at the
+  far side. Without them, each mark from 15° to 165° shows twice, as the west
+  and the east.
+
+### Which meridians have a mark
+
+A mark on every meridian is busy (your message of round 8). Every 45° makes the
+viewer notice that one line in three has a mark, and divide by three.
+`which-*.png` compares no marks, every 45°, and the three meridians that the
+Earth's turn crosses (0°, 15° and 30°), at tilt 25°. The three show the 15°
+step with no division, and put marks only where the story is. Over the far side
+they say nothing, as they need not.
+
+### The camera near the equator
+
+You chose the three marks, the Sun at the bottom, and an Earth that is almost
+vertical: nearly the Sun's view, with enough lean to have the Sun at the bottom
+and some night at the top. So here the camera's height is measured up from the
+equator (0° looks at the equator), which is a tilt from the pole of 90° less
+that height. `above-0h.png` and `above-2h.png` sweep it from 5° to 40°, with
+each frame in `frames/above-*.png`. All values are at a radius of 200 px.
+
+- 5°: night 0.8 px thick, 0.2 % of the globe; London 145 px above the center.
+- 10°: night 3 px, 0.8 %; London 133 px.
+- 15°: night 7 px, 1.7 %; London 119 px.
+- 20°: night 12 px, 3.0 %; London 104 px.
+- 25°: night 19 px, 4.7 %; London 89 px.
+- 30°: night 27 px, 6.7 %; London 73 px.
+- 35°: night 36 px, 9.0 %; London 57 px.
+- 40°: night 47 px, 11.7 %; London 40 px.
+
+Thickness is at the top of the globe, and night tapers to nothing at the sides.
+The ship's straight distance from London stays 62–63 px. At 5° and 10° night does not read
+as night. At 35° and 40° the Arctic's dark spokes start to take attention, and
+the view is no longer almost vertical. The recommendation is 25°, or 20° for a
+more upright Earth. It is a judgment from the frames.
+
+Two things do not yet work in this view:
+
+- **The marks.** At 70° N the three are 18 px apart, and they stay at the top of
+  the globe, in a cramped row. They run almost vertically, so they read sideways,
+  and they flip as the Earth turns: "0°" reads downward beside the noon line at
+  0 h, and "30°" does at 2 h. Upright marks lower down are not tried. The gap at
+  30° N is 45 px.
+- **The Sun's place.** At 25° the real Sun is 65° out of the slide, behind the
+  viewer, and only 25° below the center of the globe. A Sun in the slide's plane
+  would light the lower half, not 95 % of the globe. The picture takes that
+  license.
+
+### The choice
+
+You chose the camera 30° above the equator, the Sun at the bottom, and the three
+marks at the equator, not at 70° N. At 30° night is 27 px thick at a radius of
+200 px, 6.7 % of the globe, and London is 73 px above the center. The stills here
+do not show marks at the equator: the deck's slide is the first to draw them.
+
+### Limits
+
+Chromium only, stills, in the mockup's canvas renderer, not the deck's WebGL
+globe. The spin, the clock tied to it, the labels that follow it and the
+camera's rise over the pole are not tried. The colors of the Sun, the noon line
+and the night are the mockup's, not checked against `docs/theme.md`. Britain
+is small at this scale, and at 1:110m it has little detail.
