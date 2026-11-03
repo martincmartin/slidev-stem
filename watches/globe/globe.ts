@@ -434,7 +434,7 @@ function landMesh(
     holdout: false,
     lineOrder: 1,
     inDrawing: false,
-    overlay: true,
+    overlay: false,
     dynamic: false,
     scales,
     triangles: triangles(pieces),

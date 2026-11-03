@@ -63,6 +63,10 @@ its land is near its boxes.
   that each face stays near the sphere at the limb, and along the boxes'
   edges. The land needs no lift: every face on the near half is in front of
   the disc.
+  So it is not an overlay (`Mesh.overlay`). Not an oversight: a polygon offset
+  grows with a face's slope, and the line test reads it. On the slanted land
+  of a whole globe, it hid bits of the coast, and the bits changed as the
+  globe turned.
 - **The coast** is each ring of the land, less the data's cuts at 180° and
   at the South Pole: the subject's line at 3 px, as a story map's.
 

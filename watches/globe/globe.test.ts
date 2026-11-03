@@ -273,6 +273,14 @@ function landAt(meshes: readonly Mesh[], scale: number, place: LonLat): Mesh[] {
   });
 }
 
+test("the land is not an overlay: its polygon offset would hide its own coast", () => {
+  const land = GLOBE.meshes.filter(
+    (mesh) => mesh.group === null && mesh.scales,
+  );
+  assert.ok(land.length > 0);
+  for (const mesh of land) assert.equal(mesh.overlay, false, mesh.name);
+});
+
 test("at each scale, the land is drawn once, near the stories and away from them", () => {
   const ranges = scaleRanges(EARTH.levels.map((level) => level.scale));
   assert.deepEqual([...ranges.keys()], ["110m", "50m", "10m"]);

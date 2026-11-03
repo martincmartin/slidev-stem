@@ -191,6 +191,9 @@ Renderer(canvas, scene, palette)` takes a `Palette` (one `#rrggbb` for
   depth test. Its lines are drawn in the usual order: give it the
   `lineOrder` of the mesh it covers, and put it after that mesh, so its
   lines cover the other's.
+  The offset grows with a face's slope, and the line test reads it, so on a
+  steep face an overlay can hide its own lines. Use it only where two faces
+  are at the same place.
 - **A face in the paper** (`INKS.paper`): a fill that is the page itself,
   where the picture's material is the paper: a globe's land, on its sea in
   the water's wash (`INKS.waterWash`). It is solid, it hides what is behind

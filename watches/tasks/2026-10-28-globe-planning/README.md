@@ -30,3 +30,11 @@ Run each tool from the talk's directory (`PLAN.md`, section 10).
 `tools/palette_globe.py` reads the house palettes, and it ran before that
 change: run now, its `water` is the new edge color, not the old line color.
 The spike keeps its own copies of two palettes, so it is not changed.
+
+## Later changes
+
+- 2026-11-03: the land is not an `overlay` (`PLAN.md`, sections 4 and 5). The
+  plan needed it where the land met a sphere's faces. The talk's disc hides the
+  far side instead, so the land is always in front of it. The offset grew with
+  the slope, and hid bits of the coast as the globe turned
+  (`watches/docs/globe.md`, "The globe").

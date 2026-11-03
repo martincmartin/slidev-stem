@@ -25,6 +25,12 @@ def test_the_deck_files_start_with_frontmatter_and_are_not_docs(tmp_path: Path) 
     assert names == ["pages/two.md", "slides.md"]
 
 
+def test_an_editors_lock_file_is_not_a_deck_file(tmp_path: Path) -> None:
+    write(tmp_path / "slides.md", DECK)
+    (tmp_path / ".#slides.md").symlink_to("martin@laptop.1234:1700000000")
+    assert talkcheck.deck_files(tmp_path) == [tmp_path / "slides.md"]
+
+
 def test_a_talk_without_its_own_workspace_fails(tmp_path: Path) -> None:
     found = talkcheck.problems(tmp_path, lambda _: "slidev")
     assert len(found) == 1

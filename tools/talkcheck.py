@@ -38,7 +38,10 @@ def deck_files(talk: pathlib.Path) -> list[pathlib.Path]:
     return sorted(
         file
         for file in talk.rglob("*.md")
-        if file.name not in SKIPPED_FILES
+        # An editor's lock file, such as Emacs's `.#slides.md`, can be a symlink
+        # to nothing.
+        if file.is_file()
+        and file.name not in SKIPPED_FILES
         and not any(
             part in SKIPPED_DIRECTORIES or part.startswith(".")
             for part in file.relative_to(talk).parts[:-1]
