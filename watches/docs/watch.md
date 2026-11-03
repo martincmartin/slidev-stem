@@ -1670,7 +1670,7 @@ dashed outline has become. Each step is a quarter of `Timeline.edit` in
   leader (`data-layer="rest-callout"`), as text does: in `--text-fade`, and
   it fades in only after `--text-fade`, when the text that it replaces is gone
   ([slide-patterns.md](slide-patterns.md#text-fades)). So the Balance Wheel slide's sentence,
-  in the same place, never shows on top of it.
+  in the same part of the slide, never shows on top of it.
 - **The leader points to the line "from straight,".** Its baseline starts at
   `LeaderDesign.label`, which the SVG's root gives the page (`data-label-x`,
   `data-label-y`). The leader joins "straight" to the straight outline, and,

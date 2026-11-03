@@ -451,12 +451,12 @@ onBeforeUnmount(() => leave?.());
 .story-maps .noon-labels text.noon-degrees {
   font-size: 20px;
 }
-/* The ship is smaller here (NOON_SHIP_SCALE, 0.6): its own px for lines of 2
+/* The ship is smaller here (NOON_SHIP_SCALE, 0.8): its own px for lines of 2
    slide px, the bottom of the stroke ladder. */
 .story-maps .noon-ship .ship-sail,
 .story-maps .noon-ship .ship-line,
 .story-maps .noon-ship .ship-wale {
-  stroke-width: 3.33;
+  stroke-width: 2.5;
 }
 /* The wind: each gust draws itself from west to east, curls, and fades. In
    a still, and in a paused figure, it stands, drawn: a figure paused from

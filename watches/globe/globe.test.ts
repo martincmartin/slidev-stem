@@ -23,7 +23,7 @@ import {
 } from "./globe.ts";
 import { globeMatrices, makeGlobe } from "./model.ts";
 import {
-  LONDON,
+  GREENWICH,
   NOON_GLOBE,
   HOUR_GROUP,
   MINUTE_GROUP,
@@ -89,7 +89,7 @@ test("each view has the globe under the slide's middle, and its own angles", () 
     [
       "south america",
       "channel",
-      "noon in london",
+      "noon in greenwich",
       "noon an hour later",
       "noon at the ship",
       "cape noir",
@@ -320,7 +320,7 @@ test("the globe is a scene that the renderer takes, and `all` leaves it out", ()
 
 test("the noon line stays at the middle of the slide as the Earth turns", () => {
   for (const name of [
-    "noon in london",
+    "noon in greenwich",
     "noon an hour later",
     "noon at the ship",
   ]) {
@@ -347,19 +347,18 @@ test("the noon line stays at the middle of the slide as the Earth turns", () => 
   }
 });
 
-test("noon reaches the ship where it reached London, after 30 degrees", () => {
+test("noon reaches the ship where it reached Greenwich, after 30 degrees", () => {
   const at = (name: string, place: LonLat): readonly [number, number] => {
     const view =
       GLOBE.views.find((each) => each.name === name) ?? assert.fail();
     const { tilt, turn } = view.angles ?? assert.fail();
     return slidePoint({ view, tilt, turn }, SLIDE, toSphere(place));
   };
-  const [londonX, londonY] = at("noon in london", LONDON);
-  const [shipX, shipY] = at("noon at the ship", SHIP);
-  assert.ok(near(londonX, shipX, 0.3));
-  assert.ok(near(londonY, shipY, 0.1));
+  const [greenwichX] = at("noon in greenwich", GREENWICH);
+  const [shipX] = at("noon at the ship", SHIP);
+  assert.ok(near(greenwichX, shipX, 0.001));
   // the North Pole shows, on the line between day and night
-  const [, poleY] = at("noon in london", [0, 90]);
+  const [, poleY] = at("noon in greenwich", [0, 90]);
   const lat = (NOON_GLOBE.lat * Math.PI) / 180;
   assert.ok(
     near(poleY, NOON_GLOBE.at[1] - NOON_GLOBE.radius * Math.cos(lat), 0.001),
@@ -368,7 +367,7 @@ test("noon reaches the ship where it reached London, after 30 degrees", () => {
 });
 
 test("the clock stays on the slide, and the Earth's turn sets its hands", () => {
-  const view = GLOBE.views.find((each) => each.name === "noon in london");
+  const view = GLOBE.views.find((each) => each.name === "noon in greenwich");
   assert.ok(view);
   // the Earth's turn: noon, a half hour, one o'clock and two o'clock
   for (const [turn, hour, minute] of [
@@ -405,7 +404,7 @@ test("the labels ride the globe through the turn, and show only on it", () => {
     assert.ok(found);
     return found;
   };
-  const start = named("noon in london");
+  const start = named("noon in greenwich");
   for (const turn of [90, 80, 75, 60]) {
     const pose = { view: start, tilt: 60, turn };
     const marks = noonMarksAt(pose, SLIDE);

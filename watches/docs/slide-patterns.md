@@ -4,7 +4,8 @@
 history line, the timekeeper card, clicks, punchlines, slides of words, labels
 on a map, speaker notes, what fits, borrowed assets.
 **Read before** you add or change a slide. For a slide that shows the watch or
-the diving board, read [watch.md](watch.md) as well.
+the diving board, read [watch.md](watch.md) as well. For where a picture and
+its text go, read [slide-layout.md](../../docs/slide-layout.md).
 **Tasks:**
 [`2026-09-23-followups`](../tasks/2026-09-23-followups/instructions.md) (where
 the docs live; the click pattern).
@@ -200,8 +201,8 @@ It is background, not rules.
 
 ## Text dims
 
-**In Part 1, text that is no longer the focus dims: its colours mix halfway
-to the paper.** The newest text is the one to read. The text before it
+**Text that is no longer the focus dims: its colours mix halfway to the
+paper.** The newest text is the one to read. The text before it
 stays, so the audience can look back. The mechanism is in `style.css`
 ("TEXT DIMS"):
 
@@ -331,22 +332,18 @@ chooses ink or paper, is in [globe.md](globe.md#the-words).
 
 ## Where things go on a slide
 
-**The main focus of a slide is on its left.** Put the picture there, and the
-callouts and text on the right. If the picture takes less than 60% of the
-slide's width, centre it in the slide's left 60%. To set its gap to the text
-instead, give its right edge (`artRight`; the Gears slide). When the
-picture is wider (the Escapement slide), it starts at the left edge, and the
-callouts go in the room on its right and in its gaps. The watch's fitted view
-does this for you ([watch.md](watch.md#fitted-views)). The watch's train is laid out left to right from
-the hairspring to the fourth wheel for this reason: see
-[watch.md](watch.md#the-layout-of-the-movement).
+**The default is the house's: the picture on the left, the text on the right,
+with 60/40 as a guideline** ([slide-layout.md](../../docs/slide-layout.md)). In
+this talk:
 
-**Text beside a picture follows the Balance Wheel slide,** in Part 2 as in
-Part 1: in the slide's right 40% (left 610 px, top 152 px), at 35 px semibold, not
-a label's 24 px. Each click adds a paragraph, the paragraphs before it dim
-([Text dims](#text-dims)), and the one number to take home is larger, in the
-accent. The Longitude From Time slide is the other example. A label on a map is
-different: it stands at its place on the picture.
+- **The watch's fitted view places the picture for you**
+  ([watch.md](watch.md#fitted-views)). To set the picture's gap to the text,
+  give its right edge (`artRight`; the Gears slide).
+- **The watch's train is laid out left to right** from the hairspring to the
+  fourth wheel for this reason
+  ([watch.md](watch.md#the-layout-of-the-movement)).
+- **The dim is the class `text-dims`** ([Text dims](#text-dims)). The place and
+  the type are the house theme's class `side-text`.
 
 ## Speaker notes
 

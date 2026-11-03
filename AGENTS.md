@@ -91,6 +91,8 @@ Before you…
   `README.md`, "License".
 - export a talk for readers, write its narration, or write speaker notes:
   `docs/export.md`.
+- place a picture or text on a slide, or choose the type of a slide's text:
+  `docs/slide-layout.md`.
 - design how body text is placed, revealed, moved or styled on slides:
   `docs/text-display-deep-research-report.md` (background).
 - edit a deck file, a layout, a global layer, an addon or the headmatter, or

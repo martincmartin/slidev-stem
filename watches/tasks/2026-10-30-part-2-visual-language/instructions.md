@@ -419,3 +419,16 @@ Your messages about the slide after the Longitude Act slide, verbatim:
 > You can put the labels at the equator in this view. Let's go with 30 degrees.
 > Sure commit the round 8 task files, then productionize the "Noon Comes Later"
 > slide.
+
+## Round 9
+
+> The greenwhich clock seems a little squished in the upper left like it was an
+> afterthought, which it was. So we might want to move the globe a little ro the
+> right to give it room, or move the clock somewhere else, or make the globe
+> smaller. More properly, "Hours x 15" should be "Hours difference x 15" which
+> suggests putting the "= Latitude" on the next line, but I don't know that
+> "difference" really adds enough to be worth it. What are some good options for
+> laying out the slide? pros and cons of each, rank them.
+
+> Also, if we do add "Noon comes later" as a subtitle, that argues for making the
+> globe a little smaller.

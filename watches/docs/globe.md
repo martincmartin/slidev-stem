@@ -300,38 +300,38 @@ slide that shows one names its view.
 `globe/noon.ts` holds what this slide adds to the globe. The camera stays with
 the Sun, 30° above the Equator, and the Earth turns under both. So the Earth's
 turn is a move of the camera along a parallel, between three views at one place on
-the slide (`noon in london`, `noon an hour later`, `noon at the ship`), with
+the slide (`noon in greenwich`, `noon an hour later`, `noon at the ship`), with
 `artMove: together`: the turn changes, and nothing else does. Each click is one
 hour: the Earth turns by one meridian, and the minute hand goes around once.
 
 - **On the globe,** in the piece `noon`: a meridian every 15°, over the land and
-  the sea, and London's dot, in the paper's halo. The dot stands off the globe, so that
+  the sea, and Greenwich's dot, in the paper's halo. The dot stands off the globe, so that
   it hides the lines under it. A meridian is solid ink: at 0.5, a dark dot
   shows at each join, and solid `muted` is only 1.43:1 on the sea. It stops at
   80°, because 24 solid lines make a black star at the pole.
-- **The labels and the ship ride the globe.** "London" and the degrees are not
+- **The labels and the ship ride the globe.** "Greenwich" and the degrees are not
   `MapLabel`s, which stand still at a view, but text in `components/StoryMaps.vue`
   (`NOON_LABELS`). The ship is the story maps' icon, smaller and facing west, with
   its lines kept at 2 px. The layer moves them after each frame, to where the
   frame's camera puts their places (`noonMarksAt`), in the live layer, a figure
   and a still alike. They show only while the camera is on this turn, so a slide
   needs no key for them. The labels cross land and sea, so they are always in ink,
-  with the paper's outline.
-- **The degree labels** are on their meridians, at the camera's latitude, with a
-  gap in the line for each (`LABELLED`, `LABEL_GAP`), at 20 px, as two of these
-  meridians are 42 px apart. The noon line has the same gap, because each label
+  with the paper's outline. So "Greenwich" can run past the globe's edge at the
+  last clicks, and stay legible.
+- **The degree labels** are on their meridians, south of the ship (`LABEL_LAT`),
+  with a gap in the line for each (`LABELLED`, `LABEL_GAP`), at 20 px, as these
+  meridians are less than 50 px apart there. The noon line has the same gap, because each label
   crosses it at that latitude.
 - **The noon line** is a mesh in the second (a mark of lines alone,
   [`stem/docs/webgl.md`](../../docs/webgl.md), "Colours"). It is in a group of
   its own, whose matrix follows the camera's turn (`noonMatrix`), so the Earth
-  turns under it and London's dot passes over it. London and the ship are at one
-  latitude, so each reaches the line at one point. Not an oversight: an SVG line
+  turns under it and Greenwich's dot passes over it. Not an oversight: an SVG line
   would be over the canvas, and so over the dot.
 - **Over the canvas,** because neither moves: the Sun and the night
   (`components/NoonSky.vue`). The renderer has no transparent
   face, which the night needs. The slide's text fades, so they fade with it.
-- **The clock** keeps London's time, in the room at the globe's upper left, near the
-  ship and London. It is a simple
+- **The clock** keeps Greenwich's time, in the room at the globe's upper left, near the
+  ship and Greenwich. It is a simple
   dial on the canvas, in the piece `noon`: its groups draw in slide px, facing the
   camera (`clockMatrix`), and their matrices come from the camera's turn
   (`hoursAt`). So the minute hand goes around once in each 15° of the turn, in

@@ -1711,3 +1711,53 @@ globe. The spin, the clock tied to it, the labels that follow it and the
 camera's rise over the pole are not tried. The colors of the Sun, the noon line
 and the night are the mockup's, not checked against `docs/theme.md`. Britain
 is small at this scale, and at 1:110m it has little detail.
+
+## 19. Round 9: the layout of the Longitude From Time slide
+
+Your messages are in [instructions.md](instructions.md), "Round 9". The clock was
+16 px from the globe, and the last line, "Hours × 15 = Longitude", ended at 985 px
+on a slide 980 px wide. [tools/layouts.mjs](tools/layouts.mjs) rendered each layout
+at the last click, in Chromium: `evidence/round-9/option-*.png`, and the sheet
+`layout-options.png`. The file names are `now`, `shift` (A), `both` (B), `bothtwo`
+(C), `right` (D) and `small` (E).
+
+All lengths are in slide px. The subtitle's bottom is at 116 px.
+
+| Layout | Globe center, radius | Clock to globe | Globe top | Globe to text | Text ends | Label spacing |
+| --- | --- | --- | --- | --- | --- | --- |
+| Before | (294, 286), 200 | 16 | 86 | 116 | 985 | 49 |
+| A. Globe right | (334, 286), 200 | 46 | 86 | 41 | 950 | 49 |
+| B. Right and smaller | (350, 304), 180 | 90 | 124 | 40 | 945 | 44 |
+| C. As B, further right, last line split | (372, 304), 180 | 107 | 124 | 58 | 935 | 44 |
+| D. Clock above the text | (260, 300), 185 | far | 115 | 85 | 905 | 45 |
+| E. Smaller only | (294, 304), 170 | 59 | 134 | 96 | 935 | 41 |
+
+Line widths at 35 px: "Hours × 15 = Longitude" 375; "Hours × 15" 176; "=
+Longitude" 190; "Hours behind × 15" 297; "Hours difference × 15" 350.
+
+Two more failed by arithmetic: a clock of radius 52 in place ("Greenwich" is 85 px
+wide on a chord of 92 px, and 17 px is the floor for its type), and a clock at the
+lower left (a gap of about 2 px, far from Greenwich).
+
+Ranking: B, C, D, E, A.
+
+- **B** gives the clock room, keeps the last line on one line, and leaves 8 px under
+  a subtitle. "Greenwich" runs past the globe's edge at the last clicks.
+- **C** has the most room around the clock, and suits a longer last line, but its
+  text is the tallest (142–524) and "Hours × 15" is thin alone on a line.
+- **D** makes the clock a caption over "Noon in Greenwich", but moves it away from
+  Greenwich and the ship, against the earlier request to bring it near them.
+- **E** changes the least, but has the smallest globe, a band with nothing in it
+  beside the globe, and the closest labels.
+- **A** keeps the size, but the globe's top is 4 px under the title, and a subtitle
+  has no room.
+
+You chose B, with the subtitle "Noon comes later", and kept "Hours × 15 = Longitude":
+the two lines above it show the difference. `evidence/round-9/chosen-click-*.png`
+are the slide as built. In it, "Greenwich" ends about 23 px past the globe's edge, in
+its paper outline, and 32 px from the text.
+
+### Limits
+
+Chromium only, and one click for each layout. The options' pictures are the live
+deck with a subtitle added by script, not its later `slides.md`.

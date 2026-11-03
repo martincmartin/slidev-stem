@@ -3,7 +3,7 @@
 // the turn is a move of the camera between three views, an hour of longitude
 // apart. The meridians and the two places are on the globe, and turn with it.
 // The noon line stays with the camera: its group turns as the camera does. So
-// does a clock, on London's time: the camera's turn sets its hands, so they
+// does a clock, on Greenwich's time: the camera's turn sets its hands, so they
 // cannot leave the Earth, on a step, a jump or a printed page. The labels of the
 // places and the meridians, and the ship, ride the globe too: StoryMaps.vue moves
 // them after each frame (`noonMarksAt`). No DOM: the tests run it in Node.
@@ -27,19 +27,20 @@ import type { LonLat } from "./earth.ts";
 import { CENTRE, EARTH_RADIUS, RADIUS, globeView, toSphere } from "./globe.ts";
 import type { GlobeCamera } from "./globe.ts";
 
-export const LONDON: LonLat = [-0.1, 51.5];
-export const SHIP: LonLat = [-30, 51.5];
+export const GREENWICH: LonLat = [0, 51.5];
+/** South of Greenwich's parallel: only its longitude carries the story. */
+export const SHIP: LonLat = [-30, 45];
 /** Where the globe is on the slide, in slide px, and the latitude that the
  *  camera looks down at: high enough for some night, low enough for an Earth
  *  that is nearly upright (the visual-language task, section 18). */
 export const NOON_GLOBE = {
-  at: [294, 286],
-  radius: 200,
+  at: [350, 304],
+  radius: 180,
   lat: 30,
 } as const;
 
 /** Where the clock is on the slide, in slide px: in the room at the globe's upper
- *  left, near the ship and London. The title is short enough to clear it. */
+ *  left, near the ship and Greenwich. The title is short enough to clear it. */
 export const NOON_CLOCK = {
   at: [92, 92],
   radius: 64,
@@ -52,8 +53,8 @@ const MERIDIAN_STEP = 15;
 /** Where a meridian stops: past this, 24 solid lines make a black star at the
  *  North Pole. The noon line goes on to the pole. */
 const MERIDIAN_LAT = 80;
-/** Degrees between the points of a line: 0.02 px from the sphere at a radius of
- *  200 px. */
+/** Degrees between the points of a line: under 0.02 px from the sphere at this
+ *  slide's radius. */
 const LINE_STEP = 1;
 /** Slide px: a place's dot, and the paper around it. */
 const DOT_RADIUS = 6;
@@ -77,10 +78,10 @@ const camera = (name: string, lon: number): GlobeCamera => ({
   kmPerPx: EARTH_RADIUS / NOON_GLOBE.radius,
 });
 /** The views, an hour apart: it is noon on the meridian at the middle of each. */
-const NOON_IN_LONDON = camera("noon in london", 0);
+const NOON_IN_GREENWICH = camera("noon in greenwich", 0);
 const NOON_AT_SHIP = camera("noon at the ship", -TURNED);
 export const NOON_CAMERAS: readonly GlobeCamera[] = [
-  NOON_IN_LONDON,
+  NOON_IN_GREENWICH,
   camera("noon an hour later", -MERIDIAN_STEP),
   NOON_AT_SHIP,
 ];
@@ -89,11 +90,13 @@ export const NOON_CAMERAS: readonly GlobeCamera[] = [
  *  latitude, with a gap in the line for it. The noon line reaches each label at
  *  that latitude, so it has the gap too. */
 const LABELLED = [0, -15, -30];
-/** Degrees of latitude on each side of a label: about 14 slide px. */
+/** Degrees of latitude on each side of a label: about 13 slide px. */
 const LABEL_GAP = 4;
+/** The latitude of the degree labels: south of the ship. */
+const LABEL_LAT = 20;
 
 /** The ship's icon (SHIP_PARTS in stories.ts), smaller than on a story map. */
-export const NOON_SHIP_SCALE = 0.6;
+export const NOON_SHIP_SCALE = 0.8;
 
 /** A label that rides the globe: its words, at a place, `offset` px across from
  *  it, on the side that `anchor` gives. `degrees` is a meridian's label, on its
@@ -106,19 +109,19 @@ export interface NoonLabel {
   readonly degrees: boolean;
 }
 
-/** London's label stands beside its dot, clear of the dot's paper. */
+/** Greenwich's label stands beside its dot, clear of the dot's paper. */
 const LABEL_OFFSET = 12;
 export const NOON_LABELS: readonly NoonLabel[] = [
   {
-    words: "London",
-    place: LONDON,
+    words: "Greenwich",
+    place: GREENWICH,
     offset: LABEL_OFFSET,
     anchor: "start",
     degrees: false,
   },
   ...LABELLED.map((lon): NoonLabel => ({
     words: `${String(Math.abs(lon))}°`,
-    place: [lon, NOON_GLOBE.lat],
+    place: [lon, LABEL_LAT],
     offset: 0,
     anchor: "middle",
     degrees: true,
@@ -127,7 +130,7 @@ export const NOON_LABELS: readonly NoonLabel[] = [
 
 /** How near a pose's numbers must be to the slide's views. */
 const POSE_TOLERANCE = 1e-6;
-const FROM_VIEW = globeView(NOON_IN_LONDON);
+const FROM_VIEW = globeView(NOON_IN_GREENWICH);
 const TO_VIEW = globeView(NOON_AT_SHIP);
 
 /** Whether a frame's camera is on the Earth's turn of this slide: from its
@@ -203,7 +206,7 @@ export const MINUTE_GROUP: Group = {
   parent: null,
 };
 
-/** Hours since noon in London, for a camera at `turn`: the Earth turns 15
+/** Hours since noon in Greenwich, for a camera at `turn`: the Earth turns 15
  *  degrees an hour (`facing` in globe.ts). */
 export function hoursAt(turn: number): number {
   return (90 - turn) / MERIDIAN_STEP;
@@ -299,8 +302,8 @@ function latitudes(north: number, south: number): number[] {
  *  side of a label. */
 function aroundLabel(lat: number): number[][] {
   return [
-    latitudes(lat, NOON_GLOBE.lat + LABEL_GAP),
-    latitudes(NOON_GLOBE.lat - LABEL_GAP, -lat),
+    latitudes(lat, LABEL_LAT + LABEL_GAP),
+    latitudes(LABEL_LAT - LABEL_GAP, -lat),
   ];
 }
 
@@ -502,19 +505,19 @@ export function noonPiece(): { meshes: Mesh[]; piece: Piece } {
     noonMesh("the meridians", null, null, 2, [], meridians()),
     noonMesh("the noon line", NOON_GROUP, null, 3, [], noonLine()),
     noonMesh(
-      "the paper around London",
+      "the paper around Greenwich",
       null,
       PAPER,
       0,
-      discAt(LONDON, HALO_RADIUS, HALO_LIFT),
+      discAt(GREENWICH, HALO_RADIUS, HALO_LIFT),
       [],
     ),
     noonMesh(
-      "London",
+      "Greenwich",
       null,
       { ink: INKS.ink, opacity: 1 },
       0,
-      discAt(LONDON, DOT_RADIUS, DOT_LIFT),
+      discAt(GREENWICH, DOT_RADIUS, DOT_LIFT),
       [],
     ),
     ...clockMeshes(),

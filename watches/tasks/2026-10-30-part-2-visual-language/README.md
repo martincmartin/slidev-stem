@@ -15,7 +15,8 @@ also checks the cause of the wreck of 1707. Round 6 cuts words, keeps some label
 dimmed, to the end of their slide, and compares four backings for each
 slide's punchline in big type. Round 7 sets the choices for the talk, which
 the mockup now draws by default, and brings the wind in nearer the labels. Round 8 compares the camera and the Sun for
-the Noon Comes Later slide, in stills.
+the Noon Comes Later slide, in stills. Round 9 compares layouts for that slide, now
+Longitude From Time, in the deck.
 
 - `instructions.md`: the request.
 - `PLAN.md`: the criteria, the options, the measurements, the ranking, the
@@ -39,6 +40,7 @@ the Noon Comes Later slide, in stills.
   and each tilt, and makes the sheets.
 - `tools/speed.ts`: times each camera flight in Chromium, Firefox and WebKit,
   in windows if asked.
+- `tools/layouts.mjs`: takes a picture of the deck's slide in each layout of round 9.
 - `tsconfig.json`: type-checks the task's TypeScript with the talk's options.
 - `evidence/round-1/sea-wash/` and `evidence/round-1/sea-paper/`: round 1's
   output of `shots.ts`, every style, with the sea filled and unfilled:
@@ -67,6 +69,9 @@ the Noon Comes Later slide, in stills.
 - `evidence/round-8/`: round 8's output of `noon.ts`: `frames/`,
   `sheet-0h.png`, `sheet-2h.png`, `marks-*.png`, `sweep-*.png`, `which-*.png`
   and `above-*.png`.
+- `evidence/round-9/`: round 9's output of `layouts.mjs` (`option-*.png`,
+  `layout-options.png`), its input (`noon-before.ts.txt`), and the chosen layout
+  as built (`chosen-click-*.png`).
 
 Run each tool from the talk's directory (`PLAN.md`, section 11).
 
@@ -116,3 +121,14 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   dial, not the watch. The renderer has one camera, so the watch beside the globe
   needs a second one, or its meshes copied to the globe's place; the room for it
   is only 128 px wide; and the model's clock sets its hands, not the Earth's turn.
+- 2026-11-02: the slide's text is centred under the title by the house's
+  `side-text` class (`stem/docs/slide-layout.md`), and the rule is no longer named
+  for the Balance Wheel slide. The clock and the globe's label say Greenwich, not
+  London: more people know the name from Greenwich Mean Time. The dot is at 0°.
+- 2026-11-02: the ship is larger and south of Greenwich's parallel, and the degree
+  labels are at 20° N, not 30° N (`PLAN.md`, section 18): the two latitudes need not
+  match, because only the ship's longitude carries the story.
+- 2026-11-03: the slide's globe is smaller, right of where it was, under the
+  subtitle "Noon comes later" (`PLAN.md`, section 19), so that the clock has room
+  and the last line fits. The narration and the speaker notes say Greenwich, not
+  London.

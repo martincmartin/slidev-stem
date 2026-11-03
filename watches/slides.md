@@ -176,7 +176,7 @@ history: "c. 1364"
 
 # Balance Wheel
 
-<div class="bw-sentence">
+<div class="bw-sentence side-text">
   <div class="bw-paragraph text-dims">Add mass, it swings<br>slowly <span v-click="1">and steadily</span></div>
   <div v-click="2" class="bw-paragraph text-dims">
     <div>Well calibrated</div>
@@ -196,21 +196,10 @@ history: "c. 1364"
   -webkit-text-stroke: 6px var(--palette-background);
   paint-order: stroke fill;
 }
-/* The sentence is where the Hairspring slide's was, in the same type: its
-   left edge is the board's sentence's (DivingBoard.vue, --label-x), and its
-   first line's glyphs are where that sentence's first line was, so the new
-   words take the old words' place. The board's sentence is double-spaced,
-   to clear the board; this one is single-spaced, as on the later slides, so
-   its top is lower by half the difference in line height:
-   137 + 35 * (2.1 - 1.25) / 2 = 152 px. */
+/* The house's text beside a picture (side-text). Its left edge is the Hairspring
+   slide's sentence's (DivingBoard.vue, --label-x). */
 .slidev-layout.balance-wheel .bw-sentence {
-  position: absolute;
   left: 610px;
-  top: 152px;
-  font-size: 35px;
-  font-weight: 600;
-  line-height: 1.25;
-  white-space: nowrap;
 }
 /* Each click adds to the sentence, and nothing leaves, so all of the text
    is on the slide at the last click. "and steadily" has its place on the
@@ -475,7 +464,7 @@ Named for what they count
 what the audience has just worked out, and its other rows state the same
 rule for the other two hands. -->
 
-<div class="tt-sentence">
+<div class="tt-sentence side-text">
   <div v-click="1" class="tt-line text-dims">Second hand: a tick a second</div>
   <div v-click="2" class="tt-line text-dims">60 ticks a turn: <span class="turn-time">once a minute</span></div>
   <table v-click="3" class="tt-table">
@@ -489,20 +478,14 @@ rule for the other two hands. -->
 </div>
 
 <style>
-/* Where the Gears slide's text is, and the same type, but further left:
-   44 px right of the hand's circle (the frontmatter's artRight). The
+/* The house's text beside a picture (side-text), further left than the
+   Gears slide's: 44 px right of the hand's circle (the frontmatter's artRight). The
    circle's edge is where the tip reaches at 3 o'clock only. The widest
    line, "60 ticks a turn: once a minute", and the table (216 + 32 + 235 px)
    are each about 483 px: they end at 965 px, as the Gears slide's rule
    does. The cells are left-aligned, so the eye runs down each column. */
 .slidev-layout.ticks-and-turns .tt-sentence {
-  position: absolute;
   left: 482px;
-  top: 165px;
-  font-size: 35px;
-  font-weight: 600;
-  line-height: 1.25;
-  white-space: nowrap;
 }
 .slidev-layout.ticks-and-turns .tt-line + .tt-line,
 .slidev-layout.ticks-and-turns .tt-table {
@@ -661,9 +644,9 @@ const marks = gearsMarks(ART, useSlideContext().$frontmatter);
 the label is all one callout word, in ink: not a keyword callout, whose
 second would merge with the span (docs/watch.md, "The Gears slide"). -->
 
-<WatchCallout v-click="[2, 5]" class="gears-callout text-dims" from-end :to="marks.pinion" :stop="LEADER_GAP" :clear="[marks.pinionTips]" :left="380" :top="165"><span class="callout-word">Half of the small gear</span></WatchCallout>
+<WatchCallout v-click="[2, 5]" class="gears-callout text-dims" from-end :to="marks.pinion" :stop="LEADER_GAP" :clear="[marks.pinionTips]" :left="380" :top="154"><span class="callout-word">Half of the small gear</span></WatchCallout>
 
-<WatchCallout v-click="[3, 5]" class="gears-callout text-dims" from-end :to="marks.wheel" :stop="LEADER_GAP" :clear="[marks.wheelTips]" :left="500" :top="222"><span class="callout-word">A quarter of the big gear</span></WatchCallout>
+<WatchCallout v-click="[3, 5]" class="gears-callout text-dims" from-end :to="marks.wheel" :stop="LEADER_GAP" :clear="[marks.wheelTips]" :left="500" :top="211"><span class="callout-word">A quarter of the big gear</span></WatchCallout>
 
 <div v-click="4" class="gears-sentence gears-rule text-dims">Twice the circumference,<br>half the speed.  Exactly.</div>
 
@@ -677,7 +660,10 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
    frontmatter's artRight follows this left. The callouts are in the
    callout type, next to their gears, above the rule: not in this column.
    The second hand's text is under the rule, 0.7em below it
-   (301 + 2 * 43.75 + 24.5 = 413 px).
+   (290 + 2 * 43.75 + 24.5 = 402 px). Clicks replace the callouts, so no one
+   click shows all of this text: the callouts, the rule and the second hand's
+   text are one stack, centred under the subtitle (side-text does this for a
+   column that one element holds; ../docs/slide-layout.md).
    The second hand's text waits for the hand (after-watch-fade, style.css).
    The fades come with text-dims, in longhands that keep that delay. */
 /* At click 6 the seconds hand turns under the text: the paper's outline
@@ -695,13 +681,12 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
 .slidev-layout.gears .gears-sentence {
   position: absolute;
   left: 560px;
-  top: 165px;
 }
 .slidev-layout.gears .gears-sentence.gears-rule {
-  top: 301px;
+  top: 290px;
 }
 .slidev-layout.gears .gears-sentence.gears-minute {
-  top: 413px;
+  top: 402px;
 }
 .slidev-layout.gears .gears-sentence > div + div {
   margin-top: 0.7em;
@@ -908,7 +893,7 @@ not move. The stages stay at click 4, dimmed, above the minute hand's text: a
 recap for anyone who missed clicks 2 and 3. -->
 
 <div v-click.hide="5" class="gt-reading">
-<div class="gt-sentence" :class="{ 'gt-staged': $clicks >= 2, 'gt-recap': $clicks >= 4 }">
+<div class="gt-sentence side-text" :class="{ 'gt-staged': $clicks >= 2, 'gt-recap': $clicks >= 4 }">
   <div v-click="1" class="gt-problem text-dims">minute:hour = 60:1</div>
   <div v-click="2" class="after-watch gt-stage text-dims">
     <div>Two stages:</div>
@@ -934,17 +919,11 @@ recap for anyone who missed clicks 2 and 3. -->
   -webkit-text-stroke: 6px var(--palette-background);
   paint-order: stroke fill;
 }
-/* Where the Gears slide's text is, and the same type: 70 px right of the
-   picture's right edge (the frontmatter's artRight). The fades are in
+/* The house's text beside a picture (side-text), at the Gears slide's left:
+   70 px right of the picture's right edge (the frontmatter's artRight). The fades are in
    longhands, which keep after-watch's delay. */
 .slidev-layout.gear-train .gt-sentence {
-  position: absolute;
   left: 560px;
-  top: 165px;
-  font-size: 35px;
-  font-weight: 600;
-  line-height: 1.25;
-  white-space: nowrap;
 }
 .slidev-layout.gear-train .gt-sentence div + div {
   margin-top: 0.7em;
@@ -1140,7 +1119,7 @@ history: "c. 1430"
 
 One spring to power them all
 
-<div class="ms-sentence">
+<div class="ms-sentence side-text">
   <div class="ms-paragraph text-dims">Not back-and-forth,<br>one slow unwind</div>
   <div v-click="1" class="ms-paragraph text-dims">Winding causes tension,<br>axle only turns one way</div>
   <div v-click="3" class="ms-paragraph text-dims">Unwinding drives barrel</div>
@@ -1148,8 +1127,8 @@ One spring to power them all
 </div>
 
 <style>
-/* The text is where the Gears and Gear Train slides' text is, in the same
-   type. From click 3 the case runs behind it, so it is outlined in the
+/* The house's text beside a picture (side-text), at the Gears and Gear Train
+   slides' left. From click 3 the case runs behind it, so it is outlined in the
    paper's colour, as the Gear Train slide's text is; so are the title and
    the subtitle, which the movement runs behind at click 3. */
 .slidev-layout.mainspring h1,
@@ -1159,13 +1138,7 @@ One spring to power them all
   paint-order: stroke fill;
 }
 .slidev-layout.mainspring .ms-sentence {
-  position: absolute;
   left: 560px;
-  top: 165px;
-  font-size: 35px;
-  font-weight: 600;
-  line-height: 1.25;
-  white-space: nowrap;
 }
 /* Each click adds a paragraph, and nothing leaves. When a paragraph shows,
    the paragraphs before it dim (style.css, "TEXT DIMS"), as on the Balance
@@ -1348,7 +1321,7 @@ click to end, with its flash (after-watch, style.css), as on the Gear Train
 slide. Clicks 0 and 2's texts are about the one-step wheel, so they go with
 it at click 3 (docs/watch.md, "The Hour Hand slide"). -->
 
-<div v-click.hide="3" class="hh-sentence">
+<div v-click.hide="3" class="hh-sentence side-text">
   <div>12:1 gear ratio</div>
   <div v-click="2" class="after-watch">Hour hand off center!</div>
 </div>
@@ -1356,7 +1329,7 @@ it at click 3 (docs/watch.md, "The Hour Hand slide"). -->
 <!-- The stages stay at click 6, dimmed, above the hour hand's text: a
 recap, as on the Gear Train slide. -->
 
-<div class="hh-sentence" :class="{ 'hh-recap': $clicks >= 6 }">
+<div class="hh-sentence side-text" :class="{ 'hh-recap': $clicks >= 6 }">
   <div v-click="4" class="after-watch hh-stage text-dims">Out: 3:1</div>
   <div v-click="5" class="after-watch hh-stage text-dims">
     <div>Back: 4:1</div>
@@ -1377,17 +1350,11 @@ recap, as on the Gear Train slide. -->
   -webkit-text-stroke: 6px var(--palette-background);
   paint-order: stroke fill;
 }
-/* Where the Gear Train slide's text is, and the same type: 70 px right of
-   the picture's right edge (the frontmatter's artRight). The fades are in
+/* The house's text beside a picture (side-text), at the Gear Train slide's
+   left: 70 px right of the picture's right edge (the frontmatter's artRight). The fades are in
    longhands, which keep after-watch's delay. */
 .slidev-layout.hour-hand .hh-sentence {
-  position: absolute;
   left: 560px;
-  top: 165px;
-  font-size: 35px;
-  font-weight: 600;
-  line-height: 1.25;
-  white-space: nowrap;
 }
 .slidev-layout.hour-hand .hh-sentence div + div {
   margin-top: 0.7em;
@@ -1986,7 +1953,7 @@ IF ASKED: The museum finds no hard evidence that Scilly itself caused the Act: s
 # "The Longitude From Time slide")
 class: noon-later
 art: [globe, noon]
-artView: noon in london
+artView: noon in greenwich
 artClicks:
   1: { artView: noon an hour later, artMove: together }
   2: { artView: noon at the ship, artMove: together }
@@ -1995,27 +1962,25 @@ clicks: 3
 
 # Longitude From Time
 
+Noon comes later
+
 <NoonSky />
 
-<div class="noon-sentence">
-  <div class="noon-paragraph text-dims">Noon in London<br>Ship: not noon yet</div>
-  <div v-click="1" class="noon-paragraph text-dims after-watch">1 hour = 15° west</div>
-  <div v-click="2" class="noon-paragraph text-dims after-watch">Noon at the ship<br>2 hours = 30° west</div>
-  <div v-click="3" class="noon-paragraph text-dims">60 min / 15°<br>= <span class="noon-stat">4 min/degree</span></div>
+<div class="noon-sentence side-text">
+  <div class="noon-paragraph text-dims">Noon in Greenwich<br>Ship: not noon yet</div>
+  <div v-click="1" class="noon-paragraph text-dims after-watch">360°/24 hr = 15°/hr</div>
+  <div v-click="2" class="noon-paragraph text-dims after-watch">2 p.m. in Greenwich<br>Noon at the ship</div>
+<!--  <div v-click="3" class="noon-paragraph text-dims">60 min / 15°<br>= <span class="noon-stat">4 min/°</span></div> -->
+<!--  <div v-click="3" class="noon-paragraph text-dims">60 min / 15° = 4 min/°</div> -->
+  <div v-click="3" class="noon-paragraph text-dims">Hours × 15 = Longitude</div>
 </div>
 
 <style>
-/* The Balance Wheel slide's text: in the right 40% of the slide, in the same
-   place and type. Each click adds a paragraph, and the ones before it dim
-   (style.css, "TEXT DIMS"). The stat is larger, in the accent. */
+/* The house's text beside a picture (side-text). Each click adds a
+   paragraph, and the ones before it dim (style.css, "TEXT DIMS"). The stat is
+   larger, in the accent. */
 .slidev-layout.noon-later .noon-sentence {
-  position: absolute;
-  left: 610px;
-  top: 152px;
-  font-size: 35px;
-  font-weight: 600;
-  line-height: 1.25;
-  white-space: nowrap;
+  left: 570px;
 }
 .slidev-layout.noon-later .noon-paragraph + .noon-paragraph {
   margin-top: 0.7em;
@@ -2038,17 +2003,18 @@ clicks: 3
 <!-- narration
 [figure: A globe from above the Equator, with the Atlantic in the middle and a
 meridian every 15 degrees. The Sun is under the globe, and a line runs from the
-pole down the meridian through London. It is noon in London, and a clock beside
+pole down the meridian through Greenwich. It is noon in Greenwich, and a clock beside
 the globe says so. The ship is 30 degrees to the west.]
 
 Why would a clock help? Because noon does not come to everyone at once. The
 Earth turns toward the east, so the Sun's highest point sweeps west. When it is
-noon in London, a ship 30 degrees to the west has not reached noon yet.
+noon in Greenwich, the part of London that gave Greenwich Mean Time its name, a
+ship 30 degrees to the west has not reached noon yet.
 
 [click]
 
 [figure: The globe has turned by one meridian. The line now runs along the
-meridian 15 degrees west of London. The clock says 1:00.]
+meridian 15 degrees west of Greenwich. The clock says 1:00.]
 
 In an hour, the Earth turns by 15 degrees, one line on this globe. Noon has moved
 15 degrees west, and it has not reached the ship yet.
@@ -2057,12 +2023,12 @@ In an hour, the Earth turns by 15 degrees, one line on this globe. Noon has move
 
 A navigator can measure noon at sea: it is when the Sun stands highest. After a
 second hour, noon reaches the ship. Suppose that the ship carries a clock that
-still keeps London's time. At the ship's noon, it reads 2:00. Two hours behind
-London means 30 degrees west of it.
+still keeps Greenwich's time. At the ship's noon, it reads 2:00. Two hours behind
+Greenwich means 30 degrees west of it.
 
 [click]
 
-[figure: The line runs through the ship, and London is 30 degrees to the east of
+[figure: The line runs through the ship, and Greenwich is 30 degrees to the east of
 it. The clock says 2:00.]
 
 Sixty minutes for 15 degrees is 4 minutes a degree. So the clock measures the
@@ -2079,11 +2045,11 @@ the clock must be right to within 2 minutes.
 -->
 
 <!--
-So why would a clock help? Noon doesn't come to everyone at once. Noon in London. The ship, 30 degrees west: not noon yet.
+So why would a clock help? Noon doesn't come to everyone at once. Noon in Greenwich, the G in GMT. The ship, 30 degrees west: not noon yet.
 
 [click] The Earth turns. One hour, once around for the minute hand: one line, 15 degrees.
 
-[click] Another hour, another line. Noon at the ship. A clock still on London time says 2:00. So: 30 degrees west.
+[click] Another hour, another line. Noon at the ship. A clock still on Greenwich time says 2:00. So: 30 degrees west.
 
 [click] 60 minutes for 15 degrees: 4 minutes a degree. Half a degree, the top prize, is 2 minutes.
 

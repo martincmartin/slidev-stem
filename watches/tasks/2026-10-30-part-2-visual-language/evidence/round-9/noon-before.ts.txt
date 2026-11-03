@@ -1,0 +1,530 @@
+// The Longitude From Time slide on the globe (docs/globe.md, "The Longitude From Time
+// slide"): the camera stays with the Sun, and the Earth turns under both. So
+// the turn is a move of the camera between three views, an hour of longitude
+// apart. The meridians and the two places are on the globe, and turn with it.
+// The noon line stays with the camera: its group turns as the camera does. So
+// does a clock, on Greenwich's time: the camera's turn sets its hands, so they
+// cannot leave the Earth, on a step, a jump or a printed page. The labels of the
+// places and the meridians, and the ship, ride the globe too: StoryMaps.vue moves
+// them after each frame (`noonMarksAt`). No DOM: the tests run it in Node.
+
+import { axesAcross } from "../webgl/math.ts";
+import type { Matrix4 } from "../webgl/math.ts";
+import { slidePoint, towardCamera } from "../webgl/renderer.ts";
+import { INKS } from "../webgl/scene.ts";
+import type {
+  CameraAngles,
+  CameraPose,
+  Colour,
+  Group,
+  Line,
+  LineStyle,
+  Mesh,
+  Piece,
+  Vec3,
+} from "../webgl/scene.ts";
+import type { LonLat } from "./earth.ts";
+import { CENTRE, EARTH_RADIUS, RADIUS, globeView, toSphere } from "./globe.ts";
+import type { GlobeCamera } from "./globe.ts";
+
+export const GREENWICH: LonLat = [0, 51.5];
+/** South of Greenwich's parallel: only its longitude carries the story, and the
+ *  lower ship stands clear of the Arctic's coasts. */
+export const SHIP: LonLat = [-30, 45];
+/** Where the globe is on the slide, in slide px, and the latitude that the
+ *  camera looks down at: high enough for some night, low enough for an Earth
+ *  that is nearly upright (the visual-language task, section 18). */
+export const NOON_GLOBE = {
+  at: [294, 286],
+  radius: 200,
+  lat: 30,
+} as const;
+
+/** Where the clock is on the slide, in slide px: in the room at the globe's upper
+ *  left, near the ship and Greenwich. The title is short enough to clear it. */
+export const NOON_CLOCK = {
+  at: [92, 92],
+  radius: 64,
+} as const;
+
+/** The Earth has turned by this many degrees from one view to the other. */
+const TURNED = -SHIP[0];
+/** Degrees between two meridians: what the Earth turns in an hour. */
+const MERIDIAN_STEP = 15;
+/** Where a meridian stops: past this, 24 solid lines make a black star at the
+ *  North Pole. The noon line goes on to the pole. */
+const MERIDIAN_LAT = 80;
+/** Degrees between the points of a line: 0.02 px from the sphere at a radius of
+ *  200 px. */
+const LINE_STEP = 1;
+/** Slide px: a place's dot, and the paper around it. */
+const DOT_RADIUS = 6;
+const HALO_RADIUS = 8;
+const DISC_SIDES = 32;
+/** Slide px that each stands off the globe. A line stands off it so that the
+ *  land's faces, which are near the sphere, do not hide it in places. A dot's
+ *  paper hides the lines under it, so it stands higher than a line by more than
+ *  the renderer's `HIDDEN_LINE_TOLERANCE`. */
+const LINE_LIFT = 1;
+const HALO_LIFT = 1.5;
+const DOT_LIFT = 2;
+
+/** World units to a slide px, in these views. */
+const WORLD_PER_PX = RADIUS / NOON_GLOBE.radius;
+
+const camera = (name: string, lon: number): GlobeCamera => ({
+  name,
+  centre: [lon, NOON_GLOBE.lat],
+  at: NOON_GLOBE.at,
+  kmPerPx: EARTH_RADIUS / NOON_GLOBE.radius,
+});
+/** The views, an hour apart: it is noon on the meridian at the middle of each. */
+const NOON_IN_GREENWICH = camera("noon in greenwich", 0);
+const NOON_AT_SHIP = camera("noon at the ship", -TURNED);
+export const NOON_CAMERAS: readonly GlobeCamera[] = [
+  NOON_IN_GREENWICH,
+  camera("noon an hour later", -MERIDIAN_STEP),
+  NOON_AT_SHIP,
+];
+
+/** The longitudes that have a degree label on the slide, at the camera's
+ *  latitude, with a gap in the line for it. The noon line reaches each label at
+ *  that latitude, so it has the gap too. */
+const LABELLED = [0, -15, -30];
+/** Degrees of latitude on each side of a label: about 14 slide px. */
+const LABEL_GAP = 4;
+/** The latitude of the degree labels: south of the ship. */
+const LABEL_LAT = 20;
+
+/** The ship's icon (SHIP_PARTS in stories.ts), smaller than on a story map. */
+export const NOON_SHIP_SCALE = 0.8;
+
+/** A label that rides the globe: its words, at a place, `offset` px across from
+ *  it, on the side that `anchor` gives. `degrees` is a meridian's label, on its
+ *  line, in the gap for it. */
+export interface NoonLabel {
+  readonly words: string;
+  readonly place: LonLat;
+  readonly offset: number;
+  readonly anchor: "start" | "middle";
+  readonly degrees: boolean;
+}
+
+/** Greenwich's label stands beside its dot, clear of the dot's paper. */
+const LABEL_OFFSET = 12;
+export const NOON_LABELS: readonly NoonLabel[] = [
+  {
+    words: "Greenwich",
+    place: GREENWICH,
+    offset: LABEL_OFFSET,
+    anchor: "start",
+    degrees: false,
+  },
+  ...LABELLED.map((lon): NoonLabel => ({
+    words: `${String(Math.abs(lon))}°`,
+    place: [lon, LABEL_LAT],
+    offset: 0,
+    anchor: "middle",
+    degrees: true,
+  })),
+];
+
+/** How near a pose's numbers must be to the slide's views. */
+const POSE_TOLERANCE = 1e-6;
+const FROM_VIEW = globeView(NOON_IN_GREENWICH);
+const TO_VIEW = globeView(NOON_AT_SHIP);
+
+/** Whether a frame's camera is on the Earth's turn of this slide: from its
+ *  first view to its last. As a story map shows near its own view, the labels
+ *  need no key of their own. */
+function onTheTurn(pose: CameraPose): boolean {
+  const near = (first: number, second: number): boolean =>
+    Math.abs(first - second) <= POSE_TOLERANCE;
+  const [fromTurn, toTurn] = [
+    FROM_VIEW.angles?.turn ?? 0,
+    TO_VIEW.angles?.turn ?? 0,
+  ];
+  return (
+    near(pose.tilt, FROM_VIEW.angles?.tilt ?? 0) &&
+    near(pose.view.scale, FROM_VIEW.scale) &&
+    near(pose.view.shift[0], FROM_VIEW.shift[0]) &&
+    near(pose.view.shift[1], FROM_VIEW.shift[1]) &&
+    pose.turn >= Math.min(fromTurn, toTurn) - POSE_TOLERANCE &&
+    pose.turn <= Math.max(fromTurn, toTurn) + POSE_TOLERANCE
+  );
+}
+
+/** Where the marks that ride the globe show on the slide, in slide px. */
+export interface NoonMarks {
+  /** Each of `NOON_LABELS`'s places, in its order. */
+  readonly labels: readonly (readonly [number, number])[];
+  readonly ship: readonly [number, number];
+}
+
+/** The marks for a frame at `pose`, or null if the camera is not on the Earth's
+ *  turn. */
+export function noonMarksAt(
+  pose: CameraPose,
+  slide: readonly [number, number],
+): NoonMarks | null {
+  if (!onTheTurn(pose)) return null;
+  const at = (place: LonLat): readonly [number, number] => {
+    const [x, y] = slidePoint(pose, slide, toSphere(place));
+    return [x, y];
+  };
+  return {
+    labels: NOON_LABELS.map(({ place }) => at(place)),
+    ship: at(SHIP),
+  };
+}
+
+const MERIDIAN: LineStyle = { ink: INKS.ink, opacity: 1, width: 2 };
+const NOON_LINE: LineStyle = { ink: INKS.second, opacity: 1, width: 4 };
+const PAPER: Colour = { ink: INKS.paper, opacity: 1 };
+const CLOCK_RIM: LineStyle = { ink: INKS.subject, opacity: 1, width: 3 };
+const CLOCK_MARK: LineStyle = { ink: INKS.ink, opacity: 1, width: 2 };
+/** The clock's parts, in slide px. */
+const CLOCK_SIDES = 96;
+const MARK_INSET = 5;
+const MARK_LENGTH = 7;
+const HOUR_LENGTH = 30;
+const HOUR_WIDTH = 8;
+const MINUTE_LENGTH = 48;
+const MINUTE_WIDTH = 5;
+const HAND_TAIL = 8;
+const PIVOT_RADIUS = 5;
+
+/** The noon line's group: its matrix keeps the line under the camera. */
+export const NOON_GROUP: Group = { name: "the noon line", parent: null };
+/** The clock's groups: the dial stays on the slide, and each hand turns on it. */
+export const DIAL_GROUP: Group = { name: "the clock's dial", parent: null };
+export const HOUR_GROUP: Group = {
+  name: "the clock's hour hand",
+  parent: null,
+};
+export const MINUTE_GROUP: Group = {
+  name: "the clock's minute hand",
+  parent: null,
+};
+
+/** Hours since noon in Greenwich, for a camera at `turn`: the Earth turns 15
+ *  degrees an hour (`facing` in globe.ts). */
+export function hoursAt(turn: number): number {
+  return (90 - turn) / MERIDIAN_STEP;
+}
+
+/** A matrix (4 x 4, column-major) that draws in slide px on the slide, about
+ *  the clock's centre, whichever way the camera looks: x to the right, y up, z
+ *  toward the viewer, turned `clockwise` degrees. The camera's axes are those of
+ *  `viewProjection` in webgl/renderer.ts. */
+function clockMatrix(angles: CameraAngles, clockwise: number): Matrix4 {
+  const radians = Math.PI / 180;
+  const [tilt, turn] = [angles.tilt * radians, angles.turn * radians];
+  const right: Vec3 = [Math.cos(turn), -Math.sin(turn), 0];
+  const up: Vec3 = [
+    -Math.cos(tilt) * Math.sin(turn),
+    -Math.cos(tilt) * Math.cos(turn),
+    Math.sin(tilt),
+  ];
+  const toward = towardCamera(angles);
+  const [cos, sin] = [
+    Math.cos(clockwise * radians),
+    Math.sin(clockwise * radians),
+  ];
+  const [across, above] = [
+    NOON_CLOCK.at[0] - NOON_GLOBE.at[0],
+    NOON_GLOBE.at[1] - NOON_CLOCK.at[1],
+  ];
+  const column = (x: number, y: number): number[] =>
+    [0, 1, 2].map(
+      (axis) => WORLD_PER_PX * (x * (right[axis] ?? 0) + y * (up[axis] ?? 0)),
+    );
+  return Float32Array.from([
+    ...column(cos, -sin),
+    0,
+    ...column(sin, cos),
+    0,
+    ...toward.map((axis) => WORLD_PER_PX * axis),
+    0,
+    ...column(across, above).map(
+      (offset, axis) => offset + (CENTRE[axis] ?? 0),
+    ),
+    1,
+  ]);
+}
+
+/** The matrix of each of the slide's groups, for a frame whose camera is at
+ *  `angles`. */
+export function noonMatrices(angles: CameraAngles): [Group, Matrix4][] {
+  const hours = hoursAt(angles.turn);
+  return [
+    [NOON_GROUP, noonMatrix(angles.turn)],
+    [DIAL_GROUP, clockMatrix(angles, 0)],
+    [HOUR_GROUP, clockMatrix(angles, hours * 30)],
+    [MINUTE_GROUP, clockMatrix(angles, hours * 360)],
+  ];
+}
+
+/** The noon line's matrix (4 x 4, column-major), for a camera at `turn`: it
+ *  takes the line, drawn at longitude 0 about the origin, to the longitude
+ *  that the camera faces (`facing` in globe.ts). */
+export function noonMatrix(turn: number): Matrix4 {
+  const lon = ((turn - 90) * Math.PI) / 180;
+  const [cos, sin] = [Math.cos(lon), Math.sin(lon)];
+  return Float32Array.from([
+    cos,
+    -sin,
+    0,
+    0,
+    sin,
+    cos,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    ...CENTRE,
+    1,
+  ]);
+}
+
+/** Radius of a line off the globe, in world units. */
+const LINE_RADIUS = RADIUS + LINE_LIFT * WORLD_PER_PX;
+
+/** The latitudes from `north` down to `south`. */
+function latitudes(north: number, south: number): number[] {
+  const lats: number[] = [];
+  for (let at = north; at >= south; at -= LINE_STEP) lats.push(at);
+  return lats;
+}
+
+/** A line from `lat` north to `lat` south, as its runs of latitudes on each
+ *  side of a label. */
+function aroundLabel(lat: number): number[][] {
+  return [
+    latitudes(lat, LABEL_LAT + LABEL_GAP),
+    latitudes(LABEL_LAT - LABEL_GAP, -lat),
+  ];
+}
+
+function meridians(): Line[] {
+  const lines: Line[] = [];
+  for (let lon = -180; lon < 180; lon += MERIDIAN_STEP) {
+    const runs = LABELLED.includes(lon)
+      ? aroundLabel(MERIDIAN_LAT)
+      : [latitudes(MERIDIAN_LAT, -MERIDIAN_LAT)];
+    for (const run of runs) {
+      lines.push({
+        points: run.map((lat): Vec3 => {
+          const on = toSphere([lon, lat]);
+          const out = LINE_RADIUS / RADIUS;
+          return [
+            CENTRE[0] + (on[0] - CENTRE[0]) * out,
+            CENTRE[1] + (on[1] - CENTRE[1]) * out,
+            CENTRE[2] + (on[2] - CENTRE[2]) * out,
+          ];
+        }),
+        closed: false,
+        style: MERIDIAN,
+      });
+    }
+  }
+  return lines;
+}
+
+function noonLine(): Line[] {
+  return aroundLabel(90).map((run) => ({
+    points: run.map((lat): Vec3 => {
+      const phi = (lat * Math.PI) / 180;
+      return [LINE_RADIUS * Math.cos(phi), 0, LINE_RADIUS * Math.sin(phi)];
+    }),
+    closed: false,
+    style: NOON_LINE,
+  }));
+}
+
+/** A disc on the globe at `place`, `lift` slide px off it, as triangles. */
+function discAt(place: LonLat, radius: number, lift: number): number[] {
+  const on = toSphere(place);
+  const up: Vec3 = [
+    (on[0] - CENTRE[0]) / RADIUS,
+    (on[1] - CENTRE[1]) / RADIUS,
+    (on[2] - CENTRE[2]) / RADIUS,
+  ];
+  const [across, along] = axesAcross(up);
+  const point = (side: number): number[] => {
+    const angle = (2 * Math.PI * side) / DISC_SIDES;
+    return [0, 1, 2].map(
+      (axis) =>
+        (on[axis] ?? 0) +
+        WORLD_PER_PX *
+          (lift * (up[axis] ?? 0) +
+            radius * Math.cos(angle) * (across[axis] ?? 0) +
+            radius * Math.sin(angle) * (along[axis] ?? 0)),
+    );
+  };
+  const triangles: number[] = [];
+  const middle = [0, 1, 2].map(
+    (axis) => (on[axis] ?? 0) + WORLD_PER_PX * lift * (up[axis] ?? 0),
+  );
+  for (let side = 0; side < DISC_SIDES; side++) {
+    triangles.push(...middle, ...point(side), ...point(side + 1));
+  }
+  return triangles;
+}
+
+function noonMesh(
+  name: string,
+  group: Group | null,
+  fill: Colour | null,
+  lineOrder: number,
+  triangles: readonly number[],
+  lines: readonly Line[],
+): Mesh {
+  return {
+    name,
+    part: "globe",
+    group,
+    fill,
+    holdout: false,
+    lineOrder,
+    inDrawing: false,
+    overlay: false,
+    dynamic: false,
+    triangles: new Float32Array(triangles),
+    lines,
+    silhouetteEdges: [],
+  };
+}
+
+/** A flat disc in a clock's own px, at height `z`, as triangles. */
+function clockDisc(radius: number, z: number): number[] {
+  const point = (side: number): number[] => {
+    const angle = (2 * Math.PI * side) / CLOCK_SIDES;
+    return [radius * Math.cos(angle), radius * Math.sin(angle), z];
+  };
+  const triangles: number[] = [];
+  for (let side = 0; side < CLOCK_SIDES; side++) {
+    triangles.push(0, 0, z, ...point(side), ...point(side + 1));
+  }
+  return triangles;
+}
+
+/** A hand pointing up (to 12), as triangles: it narrows to its tip, with a short
+ *  tail past the centre, at height `z`. */
+function handShape(length: number, width: number, z: number): number[] {
+  const half = width / 2;
+  const tail = -HAND_TAIL;
+  return [
+    -half,
+    tail,
+    z,
+    half,
+    tail,
+    z,
+    half / 2,
+    length,
+    z,
+    -half,
+    tail,
+    z,
+    half / 2,
+    length,
+    z,
+    -half / 2,
+    length,
+    z,
+  ];
+}
+
+/** The clock's meshes: its dial and rim, its hour marks, and its hands, each
+ *  above the one before it. */
+function clockMeshes(): Mesh[] {
+  const { radius } = NOON_CLOCK;
+  const rim: Line = {
+    points: Array.from({ length: CLOCK_SIDES }, (_, side): Vec3 => {
+      const angle = (2 * Math.PI * side) / CLOCK_SIDES;
+      return [radius * Math.cos(angle), radius * Math.sin(angle), 0];
+    }),
+    closed: true,
+    style: CLOCK_RIM,
+  };
+  const marks = Array.from({ length: 12 }, (_, hour): Line => {
+    const angle = (hour * Math.PI) / 6;
+    const end = (at: number): Vec3 => [
+      at * Math.sin(angle),
+      at * Math.cos(angle),
+      0,
+    ];
+    return {
+      points: [
+        end(radius - MARK_INSET - MARK_LENGTH),
+        end(radius - MARK_INSET),
+      ],
+      closed: false,
+      style: CLOCK_MARK,
+    };
+  });
+  const hand: Colour = { ink: INKS.subject, opacity: 1 };
+  return [
+    noonMesh("the clock's dial", DIAL_GROUP, PAPER, 0, clockDisc(radius, 0), [
+      rim,
+      ...marks,
+    ]),
+    noonMesh(
+      "the clock's hour hand",
+      HOUR_GROUP,
+      hand,
+      0,
+      handShape(HOUR_LENGTH, HOUR_WIDTH, 1),
+      [],
+    ),
+    noonMesh(
+      "the clock's minute hand",
+      MINUTE_GROUP,
+      hand,
+      0,
+      handShape(MINUTE_LENGTH, MINUTE_WIDTH, 2),
+      [],
+    ),
+    noonMesh(
+      "the clock's pivot",
+      DIAL_GROUP,
+      hand,
+      0,
+      clockDisc(PIVOT_RADIUS, 3),
+      [],
+    ),
+  ];
+}
+
+/** The slide's meshes on the globe, and its piece: `noon`, which `art: all`
+ *  leaves out. A later line covers the coast, whose line order is 1. */
+export function noonPiece(): { meshes: Mesh[]; piece: Piece } {
+  const meshes = [
+    noonMesh("the meridians", null, null, 2, [], meridians()),
+    noonMesh("the noon line", NOON_GROUP, null, 3, [], noonLine()),
+    noonMesh(
+      "the paper around Greenwich",
+      null,
+      PAPER,
+      0,
+      discAt(GREENWICH, HALO_RADIUS, HALO_LIFT),
+      [],
+    ),
+    noonMesh(
+      "Greenwich",
+      null,
+      { ink: INKS.ink, opacity: 1 },
+      0,
+      discAt(GREENWICH, DOT_RADIUS, DOT_LIFT),
+      [],
+    ),
+    ...clockMeshes(),
+  ];
+  return {
+    meshes,
+    piece: { name: "noon", meshes: new Set(meshes), inAll: false },
+  };
+}

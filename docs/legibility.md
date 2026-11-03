@@ -169,6 +169,8 @@ frame height, which on a 552 px canvas is ≈ 18 px.
 | card unit, date, body         | 17 px | **the floor.** Below this, contrast gates get stricter |
 | credits and similar reference | 14 px | reference only; never content                          |
 
+The type of text beside a picture is in [slide-layout.md](slide-layout.md).
+
 **17 px is a floor with a history**: the cards were built at 14 px, which is 2.5% of
 frame height against that ≈18 px guideline, and it was raised. Do not go back.
 

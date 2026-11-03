@@ -1,17 +1,17 @@
 <script setup lang="ts">
-// The Longitude From Time slide's Sun and night (docs/globe.md, "The Noon Comes
-// Later slide"): an SVG over the canvas, which stays as the Earth turns under
+// The Longitude From Time slide's Sun and night (docs/globe.md, "The Longitude
+// From Time slide"): an SVG over the canvas, which stays as the Earth turns under
 // it. The Sun is on the Equator on the noon line. It is under the globe on the
 // slide, so it fits, and the night is where it would be: a crescent whose inner
 // edge is the half ellipse through the North Pole. It also has the word on the
-// clock's dial, whose hands are on the canvas: the clock keeps London's time.
+// clock's dial, whose hands are on the canvas: the clock keeps Greenwich's time.
 import { NOON_CLOCK, NOON_GLOBE } from "../globe/noon.ts";
 import { ART } from "../watch/instance.ts";
 
 const [width, height] = ART.scene.slide;
 const clockX = NOON_CLOCK.at[0];
 /** Under the pivot, above the 6. */
-const clockY = NOON_CLOCK.at[1] + 32;
+const clockY = NOON_CLOCK.at[1] + 24;
 const [x, y] = NOON_GLOBE.at;
 const { radius, lat } = NOON_GLOBE;
 const toPole = radius * Math.cos((lat * Math.PI) / 180);
@@ -72,7 +72,7 @@ const rays = [-34, -17, 0, 17, 34].map((offset) => {
       :r="NOON_CLOCK.radius"
       fill="none"
     />
-    <text class="noon-clock-word" :x="clockX" :y="clockY">London</text>
+    <text class="noon-clock-word" :x="clockX" :y="clockY">Greenwich</text>
   </svg>
 </template>
 

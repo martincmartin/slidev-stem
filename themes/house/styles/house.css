@@ -26,6 +26,28 @@
   color: var(--palette-muted);
 }
 
+/* TEXT BESIDE A PICTURE (stem/docs/slide-layout.md). The column runs from under
+   the title, or under the subtitle, to the slide's bottom edge, and centres what
+   it holds. Text that a later click adds keeps its space (a hidden v-click keeps
+   its box), so no word moves on a click. Each slide sets its own `left`: it
+   chooses the border between its picture and its text. */
+.slidev-layout .side-text {
+  position: absolute;
+  top: 82px;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  font-size: 35px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.slidev-layout:has(> h1 + p) .side-text {
+  top: 116px;
+}
+
 /* The title slides, cover and section. Their layouts place the text by the
    slide's `side` (utils/side.ts): centred, or left, beside an illustration. */
 .slidev-layout.side-center {
