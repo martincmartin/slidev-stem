@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Seconds a Day mockup</title>
+    <link rel="stylesheet" href="./ledger.css" />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./seconds.css" />
+  </head>
+  <!-- Round 11 (PLAN.md, section 21): the Seconds a Day slide's words on one slide,
+       in six layouts. Each option is a section, and each element's data-click is
+       the click that shows it. Choose with seconds.html?option=a&click=3, or with
+       the keys a to f and the arrow keys. -->
+  <body class="still">
+    <div id="stage">
+      <div id="slide" class="slidev-layout palette-ledger">
+        <!-- A: a table. Each number has its row and its column. -->
+        <section data-option="a" data-name="A. Table">
+          <h1>How Good a Watch Wins the Prize?</h1>
+          <div class="math text-dims" data-click="0">
+            <span class="sum"><span class="fraction"><span>60 min</span><span>15°</span></span><span>=</span><span>4 min/°</span></span>
+            <span class="gloss">Clock ±4 min for 1°</span>
+          </div>
+          <div class="table">
+            <div class="head" data-click="1">Prize</div>
+            <div class="head" data-click="1">Find longitude within</div>
+            <div class="head" data-click="1">Clock</div>
+            <div class="head" data-click="2">Over 6 weeks at sea</div>
+            <div class="rule" data-click="1"></div>
+            <div data-click="1">£10,000</div>
+            <div data-click="1">1°</div>
+            <div data-click="1">±4 min</div>
+            <div data-click="2"><b>±6</b> <small>sec a day</small></div>
+            <div class="rule" data-click="1"></div>
+            <div data-click="1">£20,000</div>
+            <div data-click="1">½°</div>
+            <div data-click="1">±2 min</div>
+            <div data-click="2"><b class="accent">±3</b> <small>sec a day</small></div>
+            <div class="rule thick" data-click="3"></div>
+            <div class="wide" data-click="3">A good watch today<small class="under">on a warm wrist, on dry land</small></div>
+            <div data-click="3"><b class="second">±9</b> <small>sec a day</small></div>
+          </div>
+        </section>
+
+        <!-- B: three cards, in the Longitude Act slide's panel. -->
+        <section data-option="b" data-name="B. Three cards">
+          <h1>How Good a Watch Wins the Prize?</h1>
+          <div class="math text-dims" data-click="0">
+            <span class="sum"><span class="fraction"><span>60 min</span><span>15°</span></span><span>=</span><span>4 min/°</span></span>
+            <span class="gloss">Clock ±4 min for 1°</span>
+          </div>
+          <div class="cards">
+            <div class="panel" data-click="1">
+              <div class="name">£10,000</div>
+              <div>Within 1°</div>
+              <div>Clock ±4 min</div>
+              <div class="stat" data-click="2"><b>±6</b> <small>sec a day</small><small class="under">for 6 weeks at sea</small></div>
+            </div>
+            <div class="panel" data-click="1">
+              <div class="name">£20,000</div>
+              <div>Within ½°</div>
+              <div>Clock ±2 min</div>
+              <div class="stat" data-click="2"><b class="accent">±3</b> <small>sec a day</small><small class="under">for 6 weeks at sea</small></div>
+            </div>
+            <div class="panel" data-click="3">
+              <div class="name">Good watch today</div>
+              <div>On a warm wrist</div>
+              <div>On dry land</div>
+              <div class="stat"><b class="second">±9</b> <small>sec a day</small><small class="under">not at sea</small></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- C: lines of words, the house's default for text, across the slide. -->
+        <section data-option="c" data-name="C. Lines of words">
+          <h1>How Good a Watch Wins the Prize?</h1>
+          <div class="side-text lines">
+            <div class="math text-dims" data-click="0">
+              <span class="sum"><span class="fraction"><span>60 min</span><span>15°</span></span><span>=</span><span>4 min/°</span></span>
+              <span class="gloss">Clock ±4 min for 1°</span>
+            </div>
+            <div class="paragraph text-dims" data-click="1">
+              <div>£10,000 for 1°: clock ±4 min</div>
+              <div>£20,000 for ½°: clock ±2 min</div>
+            </div>
+            <div class="paragraph text-dims" data-click="2">Over 6 weeks at sea: ±6 or <b class="accent">±3</b> sec a day</div>
+            <div class="paragraph" data-click="3">
+              <div>A good watch today: <b class="second">±9</b> sec a day</div>
+              <div>on a warm wrist, on dry land</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- D: the same rows, with the numbers as bars on one scale. -->
+        <section data-option="d" data-name="D. Bars on one scale">
+          <h1>How Good a Watch Wins the Prize?</h1>
+          <div class="math text-dims" data-click="0">
+            <span class="sum"><span class="fraction"><span>60 min</span><span>15°</span></span><span>=</span><span>4 min/°</span></span>
+            <span class="gloss">Clock ±4 min for 1°</span>
+          </div>
+          <div class="bars">
+            <div class="head wide" data-click="2">Over 6 weeks at sea: shorter wins</div>
+            <div data-click="1">£10,000 for 1°<small class="under">clock ±4 min</small></div>
+            <div class="track" data-click="2"><span class="bar" style="--seconds: 6"></span><span class="value">±6</span><small>sec a day</small></div>
+            <div data-click="1">£20,000 for ½°<small class="under">clock ±2 min</small></div>
+            <div class="track" data-click="2"><span class="bar" style="--seconds: 3"></span><span class="value accent">±3</span><small>sec a day</small></div>
+            <div data-click="3">A good watch today<small class="under">on a warm wrist, on dry land</small></div>
+            <div class="track" data-click="3"><span class="bar today" style="--seconds: 9"></span><span class="value second">±9</span><small>sec a day</small></div>
+          </div>
+        </section>
+
+        <!-- E: both limits on two lines, and the two numbers in big type. -->
+        <section data-option="e" data-name="E. Two lines, big numbers">
+          <h1>How Good a Watch Wins the Prize?</h1>
+          <div class="side-text story">
+            <div class="math text-dims" data-click="0">
+              <span class="sum"><span class="fraction"><span>60 min</span><span>15°</span></span><span>=</span><span>4 min/°</span></span>
+              <span class="gloss">Clock ±4 min for 1°</span>
+            </div>
+            <div class="gloss text-dims" data-click="1">Clock ±2 min for ½°</div>
+            <div class="paragraph text-dims" data-click="2">Over 6 weeks at sea</div>
+          </div>
+          <div class="side-text heroes">
+            <div class="hero" data-click="2">
+              <div class="big accent">±3 sec a day</div>
+              <div class="caption">to win £20,000 (±6 for £10,000)</div>
+            </div>
+            <div class="hero" data-click="3">
+              <div class="big second">±9 sec a day</div>
+              <div class="caption">a good watch today,<br />on a warm wrist, on dry land</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- F: E, with both limits in one line, as parentheses. It has nothing new at click 1. -->
+        <section data-option="f" data-name="F. One line, parentheses">
+          <h1>How Good a Watch Wins the Prize?</h1>
+          <div class="side-text story">
+            <div class="math text-dims" data-click="0">
+              <span class="sum"><span class="fraction"><span>60 min</span><span>15°</span></span><span>=</span><span>4 min/°</span></span>
+              <span class="gloss">Clock ±4 min (2 min)<br />for 1° (½°)</span>
+            </div>
+            <div class="paragraph text-dims" data-click="2">Over 6 weeks at sea</div>
+          </div>
+          <div class="side-text heroes">
+            <div class="hero" data-click="2">
+              <div class="big accent">±3 sec a day</div>
+              <div class="caption">to win £20,000 (±6 for £10,000)</div>
+            </div>
+            <div class="hero" data-click="3">
+              <div class="big second">±9 sec a day</div>
+              <div class="caption">a good watch today,<br />on a warm wrist, on dry land</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="./seconds.ts"></script>
+  </body>
+</html>

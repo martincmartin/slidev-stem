@@ -2044,57 +2044,103 @@ IF ASKED: The real Sun is behind the audience and over the Equator: the slide pu
 -->
 
 ---
-# A Lessig screen at each click, with no picture and no title on the slide
+# The chain dims on the left, and the two numbers stay on the right
 # (docs/slide-patterns.md, "A slide of words")
-title: Seconds a Day
 layout: full
 class: seconds-a-day
 clicks: 3
 ---
 
-<BigWords v-click.hide="1"><span class="seconds-sum"><span class="seconds-fraction"><span>60 min</span><span>15°</span></span><span>=</span><span class="seconds-fraction"><em>4 min</em><span>1°</span></span></span></BigWords>
-<BigWords v-click="[1, 2]"><em>2 min</em><br>for ½ a degree</BigWords>
-<BigWords v-click="[2, 3]">Over a<br>6-week voyage</BigWords>
-<BigWords v-click="3">6 or <em>3</em> seconds<br>a day</BigWords>
+# How Good a Watch Wins the Prize?
+
+<div class="seconds-story side-text">
+  <div class="seconds-step text-dims">
+    <div class="seconds-sum"><div class="seconds-fraction"><span>60 min</span><span>15°</span></div><span>=</span><span>4 min/°</span></div>
+    <div>Clock ±4 min for 1°</div>
+  </div>
+  <div v-click="1" class="seconds-step text-dims">Clock ±2 min for ½°</div>
+  <div v-click="2" class="seconds-step seconds-voyage text-dims">Over 6 weeks at sea</div>
+</div>
+
+<div class="seconds-numbers side-text">
+  <div v-click="2">
+    <div class="seconds-number seconds-prize">±3 sec a day</div>
+    <div class="seconds-caption">to win £20,000 (±6 for £10,000)</div>
+  </div>
+  <div v-click="3" class="seconds-today">
+    <div class="seconds-number">±9 sec a day</div>
+    <div class="seconds-caption">a good watch today,<br>on a warm wrist, on dry land</div>
+  </div>
+</div>
 
 <style>
-/* One screen leaves, then the next comes, in either direction (docs/slide-patterns.md,
-   "Text fades"). */
-.seconds-a-day .big-words.slidev-vclick-target {
-  transition: opacity var(--text-fade);
+/* The house's text (side-text), in two columns. Each click adds to the chain, and
+   the steps before it dim. The numbers do not dim: ±3 is the punchline. */
+.slidev-layout.seconds-a-day .seconds-story {
+  left: 70px;
 }
-.seconds-a-day .big-words.slidev-vclick-target:not(.slidev-vclick-hidden) {
-  transition-delay: var(--text-fade);
+.slidev-layout.seconds-a-day .seconds-numbers {
+  left: 440px;
+  gap: 28px;
+}
+.slidev-layout.seconds-a-day
+  .seconds-step:has(~ .seconds-step:not(.slidev-vclick-hidden)),
+.slidev-layout.seconds-a-day:has(.seconds-today:not(.slidev-vclick-hidden))
+  .seconds-voyage {
+  --text-dim: var(--text-dimmed);
+}
+.slidev-layout.seconds-a-day .seconds-voyage {
+  margin-top: 0.7em;
 }
 /* One over the other, as math is written, with the = on the line. */
-.seconds-a-day .seconds-sum {
-  display: inline-flex;
+.slidev-layout.seconds-a-day .seconds-sum {
+  display: flex;
   align-items: center;
   gap: 0.3em;
 }
-.seconds-a-day .seconds-fraction {
+.slidev-layout.seconds-a-day .seconds-fraction {
   display: grid;
+  text-align: center;
 }
-.seconds-a-day .seconds-fraction > :first-child {
-  border-bottom: 4px solid currentColor;
+.slidev-layout.seconds-a-day .seconds-fraction > :first-child {
+  border-bottom: 3px solid currentColor;
+}
+/* A punchline's type (components/BigWords.vue), and the Balance Wheel slide's ±9. */
+.slidev-layout.seconds-a-day .seconds-number {
+  @apply font-serif;
+  font-size: 76px;
+  line-height: 1.05;
+  color: var(--palette-second);
+}
+.slidev-layout.seconds-a-day .seconds-prize {
+  color: var(--palette-accent);
+}
+.slidev-layout.seconds-a-day .seconds-caption {
+  margin-top: 8px; /* clear of the y's descender */
+  font-size: 28px;
+  line-height: 1.2;
 }
 </style>
 
 <!-- narration
-How good must that clock be? Sixty minutes for 15 degrees is 4 minutes a degree.
-To win half a degree, the Act's top prize, the clock must be right to within 2
+How good must that clock be? Sixty minutes for 15 degrees is 4 minutes a degree. So
+to find the longitude within 1 degree, the clock must be right within 4 minutes. To
+find it within half a degree, the Act's top prize, the clock must be right within 2
 minutes.
 
 [nofigure]
 
 [click:3]
 
-[nofigure]
+[figure: Left, 60 minutes over 15 degrees is 4 minutes a degree; the clock within 4
+minutes for 1 degree and within 2 for half a degree, over 6 weeks at sea. Right, in
+big type, plus or minus 3 seconds a day to win £20,000, and plus or minus 9 for a
+good watch today.]
 
 Now take a voyage of 6 weeks, or 42 days. To stay within 4 minutes, the clock can
 gain or lose only about 6 seconds a day. To stay within 2 minutes, it can gain or
 lose only about 3. A good mechanical watch today gains or loses about 9 seconds a
-day, on a wrist, on dry land. The prize asked for 3, on a rolling ship.
+day, on a warm wrist, on dry land. The prize asked for 3, on a rolling ship.
 
 > [!aside] A steady error is not the problem
 > A clock that gains exactly 6 seconds every day is as good as a perfect one, if
@@ -2104,13 +2150,13 @@ day, on a wrist, on dry land. The prize asked for 3, on a rolling ship.
 -->
 
 <!--
-How good must that clock be? 60 minutes for 15 degrees: 4 minutes a degree.
+How good must that clock be? 60 minutes for 15 degrees: 4 minutes a degree. So 1 degree needs the clock right within 4 minutes.
 
 [click] Half a degree, the top prize: 2 minutes.
 
-[click] Now spread that over a voyage of 6 weeks: 42 days.
+[click] Now spread that over a voyage of 6 weeks, 42 days: plus or minus 3 seconds a day to win the £20,000. 6 for the £10,000.
 
-[click] 6 seconds a day, or 3. A good watch today: about 9. On your wrist, on dry land.
+[click] A good watch today: 9. On a warm wrist, on dry land.
 
 IF ASKED: 240 seconds over 42 days is 5.7 a day, and 120 is 2.9. A steady error can be corrected: what matters is a rate that does not change.
 -->

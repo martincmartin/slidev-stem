@@ -324,14 +324,15 @@ catch up. Not an oversight: a map of how far the prizes reach from the venue
 drew what the speaker can say in a sentence
 ([the visual language task](../tasks/2026-10-30-part-2-visual-language/README.md)).
 
-**A slide can be Lessig screens: one `BigWords` at each click, and no other
-text.** The Seconds a Day slide is the example. Each screen leaves before the next
-comes, in either direction: the slide sets the fades in its `<style>`. The first
-screen uses `v-click.hide="1"`, because a range such as `[0, 1]` cannot start at 0:
-Slidev moves it to click 1, and click 0 is blank. Such a slide has a `title:` in its
-frontmatter and no `#`, for the article's contents. Its narration says all of its
-words, with `[nofigure]`. Keep this for a few short numbers that the speaker walks
-through: no screen stays, so none can carry a fact on its own.
+**A chain of small steps can lead to big numbers, on one slide.** On the How Good a
+Watch slide, the left column adds a step at each click, and the earlier steps dim.
+The right column holds the numbers, in a punchline's type, and they do not dim: ±3 is
+the slide's point. Nothing leaves, and its title names the prize, so a listener who
+looks up at any click can see what the numbers measure. Not an oversight: Lessig
+screens, one `BigWords` at each click, left a listener who looked away with "6 or 3
+seconds a day" and nothing to say what it was
+([the visual language task](../tasks/2026-10-30-part-2-visual-language/PLAN.md),
+section 21).
 
 ## A quotation in handwriting
 

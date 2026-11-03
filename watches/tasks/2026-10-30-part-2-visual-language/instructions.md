@@ -456,3 +456,32 @@ Your messages about the slide after the Longitude Act slide, verbatim:
 > For "60 min / 15°, can we do it with a horizontal line instead of a slash? Closer
 > to how math is normally displayed. We shouldn't need LaTeX or anything just to show
 > one thing over another with a horizontal line between, right?
+
+## Round 11
+
+> A down side of four Lessig slides compared to a single slide with accumulating
+> text is, if the waitor asks someone for another drink, and they can't hear each
+> other and there's some back and forth, they miss (say) the first 3 slides and just
+> see "6 or 3 seconds a day" and are left thinking "WHAT is 6 or 3 seconds a day??"
+> Also, the 4 min / degree doesn't make it clear that this is the required accuracy
+> of the watch to win the Longitude prize, it looks like how many minutes behind you
+> are per degree.
+
+> Can you mock up some options for text on one slide? Cards or not, etc. Also work in
+> something about the 9 sec/day from the earlier slide, that's a nice seguey into
+> "variation of heat & cold, wet and dry" etc.
+
+> Let's simplify wording. First it's not "4 min [over] 1°", it's 4 min/°, its a
+> rate like meters/sec, and min/° is the unit.
+
+> "A clock 4 min off puts you 1° off" there should be a simpler way to say that.
+> "For 1° accuracy, clock must be at most 4 min off" is even wordier, something like
+> that.
+
+> What about "Clock +- 4 min for 1°"
+
+> The next next line is +- 2 min for 1/2°. Or combine them: Clock +- 4 min (2 min)
+> for 1° (1/2°)?
+
+> Let's go with E. Does the +- 9 sec section come in with its own click, after +- 3
+> sec? I should, but we can leave +-3 sec not dimmed, that's treally the punchline.

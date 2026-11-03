@@ -17,7 +17,8 @@ slide's punchline in big type. Round 7 sets the choices for the talk, which
 the mockup now draws by default, and brings the wind in nearer the labels. Round 8 compares the camera and the Sun for
 the Noon Comes Later slide, in stills. Round 9 compares layouts for that slide, now
 Longitude From Time, in the deck. Round 10 compares script fonts for Newton's words,
-and builds that slide and the Seconds a Day slide.
+and builds that slide and the Seconds a Day slide. Round 11 mocks up that slide's words on
+one slide, in six layouts, with the Balance Wheel slide's 9 seconds a day.
 
 - `instructions.md`: the request.
 - `PLAN.md`: the criteria, the options, the measurements, the ranking, the
@@ -44,6 +45,12 @@ and builds that slide and the Seconds a Day slide.
 - `tools/layouts.mjs`: takes a picture of the deck's slide in each layout of round 9.
 - `tools/fonts.mjs`: draws Newton's words in each script font of round 10, and
   measures them.
+- `mockup/seconds.html`, `seconds.css`, `seconds.ts`: round 11's layouts, each at each
+  click.
+- `tools/seconds.ts`: takes a picture of each layout at each click, measures them, and
+  makes the sheets.
+- `tools/seconds-deck.ts`: takes a picture of the chosen slide in the deck at each click,
+  and prints its ink and type.
 - `tsconfig.json`: type-checks the task's TypeScript with the talk's options.
 - `evidence/round-1/sea-wash/` and `evidence/round-1/sea-paper/`: round 1's
   output of `shots.ts`, every style, with the sea filled and unfilled:
@@ -77,6 +84,9 @@ and builds that slide and the Seconds a Day slide.
   as built (`chosen-click-*.png`).
 - `evidence/round-10/`: round 10's output of `fonts.mjs` (`fonts.json`, `fonts.png`),
   and the slides as built (`chosen-*.png`).
+- `evidence/round-11/`: round 11's output of `seconds.ts`: `frames/`, `clicks-*.png`,
+  `last-clicks.png` and `measurements.json`; and the chosen slide as built
+  (`chosen-click-*.png`).
 
 Run each tool from the talk's directory (`PLAN.md`, section 11).
 
@@ -141,3 +151,7 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   with a drawing for each reason (`PLAN.md`, sections 7 and 8). The slide after the
   Longitude From Time slide is Lessig screens, not a row of 42 days (`PLAN.md`,
   section 8), and it now has "4 minutes a degree" (`PLAN.md`, section 20).
+- 2026-11-03: the Seconds a Day slide is now the How Good a Watch slide: option E of
+  round 11 (`PLAN.md`, section 21), not Lessig screens (`PLAN.md`, sections 8 and 20).
+  A listener who looked away could not catch up, and "4 min for 1°" did not say that it
+  was the watch's limit for the prize.

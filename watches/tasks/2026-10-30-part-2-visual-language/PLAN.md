@@ -1838,3 +1838,131 @@ accent.
 Chromium only for the pictures and the measures. The numbers are for one line of the
 quotation, on a slide box; a font's look is a judgment. No test in a real room.
 
+## 21. Round 11: the Seconds a Day slide's words on one slide
+
+### The problem
+
+Section 20 chose Lessig screens and accepted section 6's objection at a low cost. You
+raised two costs that it did not count:
+
+- **A listener who looks away cannot catch up.** One who misses three screens sees
+  only "6 or 3 seconds a day", with nothing to say what it measures.
+- **"4 min for 1°" does not say why it matters.** It reads as how far behind you are
+  for each degree, not as how good the watch must be to win the prize.
+
+You also asked for the Balance Wheel slide's 9 seconds a day, which leads into
+Newton's "heat & cold, wet and dry".
+
+### What every option does
+
+`mockup/seconds.html` draws each option at each click, and `tools/seconds.ts` takes
+the pictures and the measures. All have these parts, so that only the layout differs:
+
+- **The title asks the question, and names the prize:** "How Good a Watch Wins the
+  Prize?" A listener who looks up at any click sees what the numbers are for.
+- **Nothing leaves.** Each click adds, and hidden words keep their place.
+- **The math says what it means:** the fraction gives a rate, 4 min/°, with min/° as
+  its unit, like meters/sec. It is not "4 min" over "1°". Then "Clock ±4 min for 1°": 5 words,
+  not the 9 of "A clock 4 min off puts you 1° off", and it states the prize's need, not
+  only the cause. The rows say "clock ±4 min" and "clock ±2 min", not "within", so that
+  all the clock's limits have the ±6, ±3 and ±9 notation.
+- **The prize, the clock and the day are named together:** each option ties £20,000
+  to ½°, to 2 min, to ±3 sec a day.
+- **The errors have a ±:** ±6, ±3 and ±9 are one measure, in the Balance Wheel
+  slide's notation. "6 or 3" did not show that they compare with its ±9.
+- **"On a warm wrist, on dry land" ends the slide.** It sets up Newton's next words:
+  the motion of a ship, heat and cold, wet and dry. "Warm" and "dry" are there for
+  that echo.
+
+### The options
+
+Words count all of the text on the slide at the last click, with the 7 of the title.
+The other columns are at that click too. "Eye travel" is the px of slide between each
+number and the words that say what it is.
+
+| Option                | Words | Smallest type (px) | Largest ± number (px) | ±3 to "£20,000" (px) | ±9 to "good watch" (px) |
+| --------------------- | ----- | ------------------ | --------------------- | -------------------- | ----------------------- |
+| A. Table              | 59    | 22                 | 48                    | 462                  | 280                     |
+| B. Three cards        | 65    | 24                 | 76                    | 156                  | 156                     |
+| C. Lines of words     | 56    | 28                 | 48                    | 209                  | 19                      |
+| D. Bars on one scale  | 60    | 22                 | 48                    | 353                  | 401                     |
+| E. Two lines, big     | 53    | 28                 | 76                    | 1                    | 0                       |
+| F. One line, big      | 51    | 28                 | 76                    | 1                    | 0                       |
+
+All clear the 17 px floor (`docs/legibility.md`), and all stay on the slide
+(`evidence/round-11/measurements.json`).
+
+- **A. Table.** Rows for the prizes, and a last row for today's watch.
+  - Pro: ±6, ±3 and ±9 stand in one column, so they compare with no effort. No
+    other option shows every step for both prizes this plainly.
+  - Con: a table needs its headers read, at 22 px. It is the one that looks most like
+    a spreadsheet, and a room of people at a bar reads it last.
+- **B. Three cards.** The Longitude Act slide's panel, with the same prizes in the
+  same order, and today's watch as the third entrant.
+  - Pro: each card explains itself, so a listener needs no other part of the slide.
+    The numbers are at 76 px, on one line across.
+  - Con: the most words. The look comes two slides after the Longitude Act slide's
+    cards, which section 20 counted against cards. Each card repeats words.
+- **C. Lines of words.** The house's default for text (`docs/slide-layout.md`),
+  centered, with earlier lines dimmed.
+  - Pro: no new pattern, and the easiest to build.
+  - Con: a listener who looks up reads dimmed sentences from the top. The numbers do
+    not line up, and ±6 and ±3 share one line.
+- **D. Bars on one scale.** The rows of the table, with each number as a bar.
+  - Pro: the only one that shows it with no reading: today's watch is three times the
+    top prize's limit.
+  - Con: a longer bar usually means a better one, and here it means worse. That is
+    the worst kind of error for a listener who looks up late, and only 22 px of
+    words ("shorter wins") corrects it.
+- **E. Two lines, big numbers.** The chain on the left, dimmed, with both limits on
+  two lines: "Clock ±4 min for 1°" and "Clock ±2 min for ½°". ±3 and ±9 are in a
+  punchline's type on the right. The £10,000 prize is a parenthesis.
+  - Pro: its two big lines alone say the whole slide: ±3 to win, ±9
+    for a good watch today. It has the fewest words that a listener must read, and
+    each number has its meaning at once (0–1 px). It has one idea, which the talk's
+    brief asks for.
+  - Con: no line ties ½° to £20,000 by name. The Longitude Act slide, two slides before,
+    does, so the speaker can say it.
+- **F. One line, parentheses.** E, with both limits in one sentence: "Clock ±4 min
+  (2 min) for 1° (½°)".
+  - Pro: 2 words fewer than E, and one click fewer.
+  - Con: it does not fit on one line in E's left column, so it wraps. The reader must
+    pair each parenthesis with the other, and "(2 min)" has no ±. The two lines of E need
+    no pairing, and their numbers stand one over the other.
+
+### Ranking
+
+E, F, B, A, D, C. The ranks are judgments from these numbers and the pictures.
+
+1. **E** answers both of your objections most directly, and it is the only one where
+   the 3 and the 9 are the first things that a listener sees.
+2. **F** has the same numbers as E, with 2 words fewer, but a harder line to read.
+3. **B** is the best if ±6 and £10,000 must have equal weight. Its cost is the most
+   words, and cards again so soon.
+4. **A** is the clearest for a careful reader, but a table is the hardest to read in
+   the room.
+5. **D** has the best picture, and a real risk of being misread by the listener this
+   round is for.
+6. **C** solves the problem, but looks like the densest slide of the six.
+
+### The choice
+
+You chose E. The slide is now "How Good a Watch Wins the Prize?", at four clicks: the
+math and ±4 min, then ±2 min, then the voyage and ±3, then ±9. The chain dims, but ±3
+does not, because it is the punchline. In the deck, the math is at the house's 35 px,
+not the mockup's 32 px, and each caption has 8 px above it, clear of the descender of
+"day" (`evidence/round-11/chosen-click-*.png`, from `tools/seconds-deck.ts`).
+
+### The comparison with ±9
+
+Comparing ±3 with ±9 is simple, not exact. The narration's aside says that a steady
+error can be corrected, so a watch that gains exactly 9 seconds a day could still do
+well. So the slide does not say that today's watch would lose the prize: an early
+card said "no prize", and it now says "not at sea". The speaker notes keep the point
+for "IF ASKED".
+
+### Limits
+
+Chromium only, and in the mockup, not the deck: a title's place and the type follow
+the deck by hand. The eye travel measures distance, and no one has timed a reader. No
+test in a real room.

@@ -1,0 +1,256 @@
+/* The six layouts of seconds.html, in the house's type (stem/docs/slide-layout.md):
+   the title at 37 px, body text at 35 px and weight 600, the number to take home at
+   48 px, and a caption at 24 px, the size of a label on a map. */
+#slide section {
+  position: absolute;
+  inset: 0;
+  display: none;
+  font-weight: 600;
+}
+#slide section.shown {
+  display: block;
+}
+#slide h1 {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  left: 0;
+  margin: 0;
+  text-align: center;
+  font-family: "Fraunces", serif;
+  font-size: 37px;
+  font-weight: 600;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+#slide [data-click].unseen {
+  visibility: hidden;
+}
+#slide .dimmed {
+  opacity: 0.5; /* over plain paper, the same as mixing halfway to the paper */
+}
+#slide b {
+  font-size: 48px;
+  line-height: 1;
+}
+#slide small {
+  font-size: 24px;
+  font-weight: 600;
+}
+#slide .under {
+  display: block;
+  color: var(--palette-muted);
+}
+#slide .accent {
+  color: var(--palette-accent);
+}
+#slide .second {
+  color: var(--palette-second);
+}
+
+/* The math, one thing over another with a line between, and what it means. */
+.sum {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+.fraction {
+  display: grid;
+  text-align: center;
+  line-height: 1.2;
+}
+.fraction > :first-child {
+  border-bottom: 3px solid currentColor;
+}
+.math {
+  position: absolute;
+  top: 88px;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  font-size: 32px;
+}
+.gloss {
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+/* A: the table */
+.table {
+  position: absolute;
+  top: 190px;
+  left: 56px;
+  right: 56px;
+  display: grid;
+  grid-template-columns: 180px 190px 180px 1fr;
+  column-gap: 16px;
+  align-items: center;
+  font-size: 35px;
+  line-height: 1.15;
+}
+.table > * {
+  padding: 13px 0;
+}
+.table .wide {
+  grid-column: 1 / 4;
+}
+.table .rule {
+  grid-column: 1 / -1;
+  padding: 0;
+  border-top: 2px solid var(--palette-border);
+}
+.table .rule.thick {
+  border-top-color: var(--palette-ink);
+}
+.head {
+  align-self: end;
+  font-size: 22px;
+  line-height: 1.2;
+  color: var(--palette-muted);
+}
+
+/* B: the cards, with Longitude Act's panel */
+.cards {
+  position: absolute;
+  top: 190px;
+  left: 34px;
+  right: 34px;
+  bottom: 28px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 18px;
+  font-size: 27px;
+  line-height: 1.25;
+  white-space: nowrap;
+  background: var(--palette-panel);
+  border: 1px solid var(--palette-border);
+  border-radius: 12px;
+}
+.panel .name {
+  margin-bottom: 4px;
+  font-family: "Fraunces", serif;
+  font-size: 29px;
+  line-height: 1.15;
+}
+.panel .stat {
+  margin-top: auto;
+}
+#slide .panel .stat b {
+  font-family: "Fraunces", serif;
+  font-size: 76px;
+}
+#slide .panel .stat small {
+  font-size: 24px;
+}
+#slide .panel .stat .under {
+  line-height: 1.2;
+}
+
+/* C: the lines */
+#slide .lines {
+  position: absolute;
+  top: 82px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 35px;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.lines .math {
+  position: static;
+}
+.paragraph {
+  margin-top: 0.5em;
+}
+
+/* D: the bars, on one scale in px a second */
+.bars {
+  --px-a-second: 34px;
+  position: absolute;
+  top: 192px;
+  left: 56px;
+  right: 56px;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 26px 16px;
+  align-items: center;
+  font-size: 30px;
+  line-height: 1.15;
+}
+.bars .wide {
+  grid-column: 2;
+  margin-bottom: -14px;
+}
+.track {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.bar {
+  width: calc(var(--seconds) * var(--px-a-second));
+  height: 44px;
+  background: var(--palette-accent);
+  border-radius: 0 4px 4px 0;
+}
+.bar.today {
+  background: var(--palette-second);
+}
+.value {
+  font-size: 48px;
+  line-height: 1;
+}
+
+/* E: the story on the left, the two numbers on the right */
+#slide .story,
+#slide .heroes {
+  position: absolute;
+  top: 82px;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 35px;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+#slide .story {
+  left: 70px;
+}
+#slide .heroes {
+  left: 440px;
+  gap: 28px;
+}
+.story .math {
+  position: static;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.story .gloss {
+  font-size: 35px;
+  line-height: 1.25;
+}
+.hero .big {
+  font-family: "Fraunces", serif;
+  font-size: 76px;
+  line-height: 1.05;
+}
+.hero .caption {
+  font-size: 28px;
+  line-height: 1.2;
+}

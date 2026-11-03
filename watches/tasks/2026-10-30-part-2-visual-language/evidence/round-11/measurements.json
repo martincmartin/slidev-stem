@@ -1,0 +1,386 @@
+[
+  {
+    "option": "a",
+    "click": 0,
+    "name": "A. Table",
+    "words": 18,
+    "largestNumber": 28,
+    "travel": {
+      "±3 to £20,000": null,
+      "±9 to good watch": null
+    },
+    "smallestType": 28,
+    "left": 177,
+    "right": 803,
+    "top": 33,
+    "bottom": 169
+  },
+  {
+    "option": "a",
+    "click": 1,
+    "name": "A. Table",
+    "words": 31,
+    "largestNumber": 35,
+    "travel": {
+      "±3 to £20,000": null,
+      "±9 to good watch": null
+    },
+    "smallestType": 22,
+    "left": 56,
+    "right": 803,
+    "top": 33,
+    "bottom": 409
+  },
+  {
+    "option": "a",
+    "click": 2,
+    "name": "A. Table",
+    "words": 44,
+    "largestNumber": 48,
+    "travel": {
+      "±3 to £20,000": 462,
+      "±9 to good watch": null
+    },
+    "smallestType": 22,
+    "left": 56,
+    "right": 857,
+    "top": 33,
+    "bottom": 416
+  },
+  {
+    "option": "a",
+    "click": 3,
+    "name": "A. Table",
+    "words": 59,
+    "largestNumber": 48,
+    "travel": {
+      "±3 to £20,000": 462,
+      "±9 to good watch": 280
+    },
+    "smallestType": 22,
+    "left": 56,
+    "right": 857,
+    "top": 33,
+    "bottom": 508
+  },
+  {
+    "option": "b",
+    "click": 0,
+    "name": "B. Three cards",
+    "words": 18,
+    "largestNumber": 28,
+    "travel": {
+      "±3 to £20,000": null,
+      "±9 to good watch": null
+    },
+    "smallestType": 28,
+    "left": 177,
+    "right": 803,
+    "top": 33,
+    "bottom": 169
+  },
+  {
+    "option": "b",
+    "click": 1,
+    "name": "B. Three cards",
+    "words": 30,
+    "largestNumber": 28,
+    "travel": {
+      "±3 to £20,000": null,
+      "±9 to good watch": null
+    },
+    "smallestType": 27,
+    "left": 53,
+    "right": 803,
+    "top": 33,
+    "bottom": 314
+  },
+  {
+    "option": "b",
+    "click": 2,
+    "name": "B. Three cards",
+    "words": 48,
+    "largestNumber": 76,
+    "travel": {
+      "±3 to £20,000": 156,
+      "±9 to good watch": null
+    },
+    "smallestType": 24,
+    "left": 53,
+    "right": 803,
+    "top": 33,
+    "bottom": 510
+  },
+  {
+    "option": "b",
+    "click": 3,
+    "name": "B. Three cards",
+    "words": 65,
+    "largestNumber": 76,
+    "travel": {
+      "±3 to £20,000": 156,
+      "±9 to good watch": 156
+    },
+    "smallestType": 24,
+    "left": 53,
+    "right": 923,
+    "top": 33,
+    "bottom": 510
+  },
+  {
+    "option": "c",
+    "click": 0,
+    "name": "C. Lines of words",
+    "words": 18,
+    "largestNumber": 28,
+    "travel": {
+      "±3 to £20,000": null,
+      "±9 to good watch": null
+    },
+    "smallestType": 28,
+    "left": 177,
+    "right": 803,
+    "top": 33,
+    "bottom": 215
+  },
+  {
+    "option": "c",
+    "click": 1,
+    "name": "C. Lines of words",
+    "words": 30,
+    "largestNumber": 35,
+    "travel": {
+      "±3 to £20,000": null,
+      "±9 to good watch": null
+    },
+    "smallestType": 28,
+    "left": 177,
+    "right": 803,
+    "top": 33,
+    "bottom": 319
+  },
+  {
+    "option": "c",
+    "click": 2,
+    "name": "C. Lines of words",
+    "words": 41,
+    "largestNumber": 48,
+    "travel": {
+      "±3 to £20,000": 209,
+      "±9 to good watch": null
+    },
+    "smallestType": 28,
+    "left": 165,
+    "right": 815,
+    "top": 33,
+    "bottom": 391
+  },
+  {
+    "option": "c",
+    "click": 3,
+    "name": "C. Lines of words",
+    "words": 56,
+    "largestNumber": 48,
+    "travel": {
+      "±3 to £20,000": 209,
+      "±9 to good watch": 19
+    },
+    "smallestType": 28,
+    "left": 165,
+    "right": 815,
+    "top": 33,
+    "bottom": 501
+  },
+  {
+    "option": "d",
+    "click": 0,
+    "name": "D. Bars on one scale",
+    "words": 18,
+    "largestNumber": 28,
+    "travel": {
+      "±3 to £20,000": null,
+      "±9 to good watch": null
+    },
+    "smallestType": 28,
+    "left": 177,
+    "right": 803,
+    "top": 33,
+    "bottom": 169
+  },
+  {
+    "option": "d",
+    "click": 1,
+    "name": "D. Bars on one scale",
+    "words": 30,
+    "largestNumber": 28,
+    "travel": {
+      "±3 to £20,000": null,
+      "±9 to good watch": null
+    },
+    "smallestType": 24,
+    "left": 56,
+    "right": 803,
+    "top": 33,
+    "bottom": 382
+  },
+  {
+    "option": "d",
+    "click": 2,
+    "name": "D. Bars on one scale",
+    "words": 45,
+    "largestNumber": 48,
+    "travel": {
+      "±3 to £20,000": 353,
+      "±9 to good watch": null
+    },
+    "smallestType": 22,
+    "left": 56,
+    "right": 803,
+    "top": 33,
+    "bottom": 382
+  },
+  {
+    "option": "d",
+    "click": 3,
+    "name": "D. Bars on one scale",
+    "words": 60,
+    "largestNumber": 48,
+    "travel": {
+      "±3 to £20,000": 353,
+      "±9 to good watch": 401
+    },
+    "smallestType": 22,
+    "left": 56,
+    "right": 902,
+    "top": 33,
+    "bottom": 470
+  },
+  {
+    "option": "e",
+    "click": 0,
+    "name": "E. Two lines, big numbers",
+    "words": 18,
+    "largestNumber": 35,
+    "travel": {
+      "±3 to £20,000": null,
+      "±9 to good watch": null
+    },
+    "smallestType": 32,
+    "left": 70,
+    "right": 803,
+    "top": 33,
+    "bottom": 330
+  },
+  {
+    "option": "e",
+    "click": 1,
+    "name": "E. Two lines, big numbers",
+    "words": 23,
+    "largestNumber": 35,
+    "travel": {
+      "±3 to £20,000": null,
+      "±9 to good watch": null
+    },
+    "smallestType": 32,
+    "left": 70,
+    "right": 803,
+    "top": 33,
+    "bottom": 373
+  },
+  {
+    "option": "e",
+    "click": 2,
+    "name": "E. Two lines, big numbers",
+    "words": 38,
+    "largestNumber": 76,
+    "travel": {
+      "±3 to £20,000": 1,
+      "±9 to good watch": null
+    },
+    "smallestType": 28,
+    "left": 70,
+    "right": 868,
+    "top": 33,
+    "bottom": 435
+  },
+  {
+    "option": "e",
+    "click": 3,
+    "name": "E. Two lines, big numbers",
+    "words": 53,
+    "largestNumber": 76,
+    "travel": {
+      "±3 to £20,000": 1,
+      "±9 to good watch": 0
+    },
+    "smallestType": 28,
+    "left": 70,
+    "right": 872,
+    "top": 33,
+    "bottom": 463
+  },
+  {
+    "option": "f",
+    "click": 0,
+    "name": "F. One line, parentheses",
+    "words": 21,
+    "largestNumber": 35,
+    "travel": {
+      "±3 to £20,000": null,
+      "±9 to good watch": null
+    },
+    "smallestType": 32,
+    "left": 70,
+    "right": 803,
+    "top": 33,
+    "bottom": 373
+  },
+  {
+    "option": "f",
+    "click": 1,
+    "name": "F. One line, parentheses",
+    "words": 21,
+    "largestNumber": 35,
+    "travel": {
+      "±3 to £20,000": null,
+      "±9 to good watch": null
+    },
+    "smallestType": 32,
+    "left": 70,
+    "right": 803,
+    "top": 33,
+    "bottom": 373
+  },
+  {
+    "option": "f",
+    "click": 2,
+    "name": "F. One line, parentheses",
+    "words": 36,
+    "largestNumber": 76,
+    "travel": {
+      "±3 to £20,000": 1,
+      "±9 to good watch": null
+    },
+    "smallestType": 28,
+    "left": 70,
+    "right": 868,
+    "top": 33,
+    "bottom": 435
+  },
+  {
+    "option": "f",
+    "click": 3,
+    "name": "F. One line, parentheses",
+    "words": 51,
+    "largestNumber": 76,
+    "travel": {
+      "±3 to £20,000": 1,
+      "±9 to good watch": 0
+    },
+    "smallestType": 28,
+    "left": 70,
+    "right": 872,
+    "top": 33,
+    "bottom": 463
+  }
+]
