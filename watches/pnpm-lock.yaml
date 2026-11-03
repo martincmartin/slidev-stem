@@ -166,6 +166,9 @@ importers:
 
   .:
     dependencies:
+      '@fontsource/italianno':
+        specifier: 5.3.0
+        version: 5.3.0
       '@slidev/cli':
         specifier: ^53.0.0
         version: 53.0.0(@nuxt/kit@3.21.11)(@oxc-project/types@0.155.0)(@types/markdown-it@14.2.0)(@types/node@26.6.5)(@vitejs/devtools-kit@0.7.6(cac@7.1.0)(crossws@0.4.15(srvx@1.0.6))(srvx@1.0.6)(vite@8.3.5(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1)))(@vue/compiler-sfc@3.5.44)(cac@7.1.0)(crossws@0.4.15(srvx@1.0.6))(lightningcss@1.33.0)(markdown-it@14.3.3)(oxc-parser@0.153.0)(playwright-chromium@1.64.1)(postcss@8.5.31)(rolldown@1.2.15)(srvx@1.0.6)
@@ -518,6 +521,9 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
+
+  '@fontsource/italianno@5.3.0':
+    resolution: {integrity: sha512-zbI5nY80P4BB1OppKFFnUs8vMKgrbQW1zI0LQ74KR5sD6lmczcJdimM9X7TDIo3auanCRqgYpNSMH341v+7C/Q==}
 
   '@hono/node-server@1.19.17':
     resolution: {integrity: sha512-dSneS5qhiauZWGDCeK4o695Xd9nUNjviSZCMQrj10eetr8Uln1ucn6bbphOM6UynAMMtNIzZNSpL9vnASJwrPQ==}
@@ -4075,6 +4081,8 @@ snapshots:
       '@floating-ui/utils': 0.2.12
 
   '@floating-ui/utils@0.2.12': {}
+
+  '@fontsource/italianno@5.3.0': {}
 
   '@hono/node-server@1.19.17(hono@4.13.13)':
     dependencies:

@@ -1,3 +1,7 @@
+/* The script of the Isaac Newton slide (docs/slide-patterns.md, "A quotation in
+   handwriting"). Its one weight. */
+@import "@fontsource/italianno/400.css";
+
 /* Titles and subtitles are centred unless a title slide's `side: left`
    places them beside an illustration (the house theme's layouts). */
 .slidev-layout h1,

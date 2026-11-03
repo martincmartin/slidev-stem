@@ -16,7 +16,8 @@ dimmed, to the end of their slide, and compares four backings for each
 slide's punchline in big type. Round 7 sets the choices for the talk, which
 the mockup now draws by default, and brings the wind in nearer the labels. Round 8 compares the camera and the Sun for
 the Noon Comes Later slide, in stills. Round 9 compares layouts for that slide, now
-Longitude From Time, in the deck.
+Longitude From Time, in the deck. Round 10 compares script fonts for Newton's words,
+and builds that slide and the Seconds a Day slide.
 
 - `instructions.md`: the request.
 - `PLAN.md`: the criteria, the options, the measurements, the ranking, the
@@ -41,6 +42,8 @@ Longitude From Time, in the deck.
 - `tools/speed.ts`: times each camera flight in Chromium, Firefox and WebKit,
   in windows if asked.
 - `tools/layouts.mjs`: takes a picture of the deck's slide in each layout of round 9.
+- `tools/fonts.mjs`: draws Newton's words in each script font of round 10, and
+  measures them.
 - `tsconfig.json`: type-checks the task's TypeScript with the talk's options.
 - `evidence/round-1/sea-wash/` and `evidence/round-1/sea-paper/`: round 1's
   output of `shots.ts`, every style, with the sea filled and unfilled:
@@ -72,6 +75,8 @@ Longitude From Time, in the deck.
 - `evidence/round-9/`: round 9's output of `layouts.mjs` (`option-*.png`,
   `layout-options.png`), its input (`noon-before.ts.txt`), and the chosen layout
   as built (`chosen-click-*.png`).
+- `evidence/round-10/`: round 10's output of `fonts.mjs` (`fonts.json`, `fonts.png`),
+  and the slides as built (`chosen-*.png`).
 
 Run each tool from the talk's directory (`PLAN.md`, section 11).
 
@@ -132,3 +137,7 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   subtitle "Noon comes later" (`PLAN.md`, section 19), so that the clock has room
   and the last line fits. The narration and the speaker notes say Greenwich, not
   London.
+- 2026-11-03: the Isaac Newton slide is his words alone, in a script, not the still
+  with a drawing for each reason (`PLAN.md`, sections 7 and 8). The slide after the
+  Longitude From Time slide is Lessig screens, not a row of 42 days (`PLAN.md`,
+  section 8), and it now has "4 minutes a degree" (`PLAN.md`, section 20).

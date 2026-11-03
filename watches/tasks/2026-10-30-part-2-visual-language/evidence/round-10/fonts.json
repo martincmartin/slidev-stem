@@ -1,0 +1,488 @@
+[
+ {
+  "font": "meddon",
+  "size": 28,
+  "xHeight": 11.4,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1.21,
+    "middle": 1.71
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.41,
+    "middle": 1.91
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.5,
+    "middle": 2.12
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.71,
+    "middle": 2.12
+   }
+  ]
+ },
+ {
+  "font": "petit-formal-script",
+  "size": 32,
+  "xHeight": 18.8,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 0.71,
+    "middle": 1.21
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1,
+    "middle": 1.5
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.21,
+    "middle": 1.91
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.41,
+    "middle": 1.91
+   }
+  ]
+ },
+ {
+  "font": "pinyon-script",
+  "size": 49,
+  "xHeight": 16.4,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1,
+    "middle": 1.5
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1,
+    "middle": 1.5
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.21,
+    "middle": 2.21
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.41,
+    "middle": 2.12
+   }
+  ]
+ },
+ {
+  "font": "mrs-saint-delafield",
+  "size": 63,
+  "xHeight": 14.1,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1.21,
+    "middle": 2
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.41,
+    "middle": 2.12
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.71,
+    "middle": 2.5
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.71,
+    "middle": 2.5
+   }
+  ]
+ },
+ {
+  "font": "herr-von-muellerhoff",
+  "size": 65,
+  "xHeight": 17.2,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 0.71,
+    "middle": 1.41
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.21,
+    "middle": 2
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.41,
+    "middle": 2.12
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.41,
+    "middle": 2.5
+   }
+  ]
+ },
+ {
+  "font": "mr-de-haviland",
+  "size": 65,
+  "xHeight": 14.2,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1,
+    "middle": 1.41
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.41,
+    "middle": 2
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.71,
+    "middle": 2.12
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.91,
+    "middle": 2.41
+   }
+  ]
+ },
+ {
+  "font": "monsieur-la-doulaise",
+  "size": 57,
+  "xHeight": 9.8,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1,
+    "middle": 1.21
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.21,
+    "middle": 1.5
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.41,
+    "middle": 1.91
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.41,
+    "middle": 2
+   }
+  ]
+ },
+ {
+  "font": "league-script",
+  "size": 38,
+  "xHeight": 12.5,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 0.5,
+    "middle": 0.71
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1,
+    "middle": 1
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1,
+    "middle": 1.21
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1,
+    "middle": 1.21
+   }
+  ]
+ },
+ {
+  "font": "alex-brush",
+  "size": 51,
+  "xHeight": 21.2,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1.21,
+    "middle": 2
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.41,
+    "middle": 2.41
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.5,
+    "middle": 2.62
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.91,
+    "middle": 2.83
+   }
+  ]
+ },
+ {
+  "font": "allura",
+  "size": 51,
+  "xHeight": 15.4,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1.21,
+    "middle": 1.91
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.41,
+    "middle": 2
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.71,
+    "middle": 2.12
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.91,
+    "middle": 2.21
+   }
+  ]
+ },
+ {
+  "font": "rouge-script",
+  "size": 59,
+  "xHeight": 20.1,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1.41,
+    "middle": 1.91
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.5,
+    "middle": 2.41
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.91,
+    "middle": 2.5
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.91,
+    "middle": 2.5
+   }
+  ]
+ },
+ {
+  "font": "great-vibes",
+  "size": 60,
+  "xHeight": 21.4,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1.21,
+    "middle": 2.62
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.41,
+    "middle": 3
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.71,
+    "middle": 3.33
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.91,
+    "middle": 3.5
+   }
+  ]
+ },
+ {
+  "font": "italianno",
+  "size": 65,
+  "xHeight": 17.2,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1,
+    "middle": 1.5
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.41,
+    "middle": 2.12
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.71,
+    "middle": 2.41
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.91,
+    "middle": 2.5
+   }
+  ]
+ },
+ {
+  "font": "tangerine",
+  "size": 65,
+  "xHeight": 16.6,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 0.71,
+    "middle": 1.5
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.41,
+    "middle": 2
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.41,
+    "middle": 2.41
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.71,
+    "middle": 2.5
+   }
+  ]
+ },
+ {
+  "font": "parisienne",
+  "size": 47,
+  "xHeight": 16.6,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1.41,
+    "middle": 1.71
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.5,
+    "middle": 2
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.91,
+    "middle": 2.12
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.91,
+    "middle": 2.12
+   }
+  ]
+ },
+ {
+  "font": "homemade-apple",
+  "size": 30,
+  "xHeight": 17.6,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1.71,
+    "middle": 2.41
+   },
+   {
+    "stroke": 0.5,
+    "thin": 2,
+    "middle": 2.62
+   },
+   {
+    "stroke": 0.7,
+    "thin": 2.12,
+    "middle": 2.83
+   },
+   {
+    "stroke": 0.8,
+    "thin": 2.12,
+    "middle": 2.91
+   }
+  ]
+ },
+ {
+  "font": "la-belle-aurore",
+  "size": 41,
+  "xHeight": 18.2,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 2.12,
+    "middle": 2.62
+   },
+   {
+    "stroke": 0.5,
+    "thin": 2.41,
+    "middle": 2.91
+   },
+   {
+    "stroke": 0.7,
+    "thin": 2.5,
+    "middle": 3
+   },
+   {
+    "stroke": 0.8,
+    "thin": 2.62,
+    "middle": 3.33
+   }
+  ]
+ },
+ {
+  "font": "dawning-of-a-new-day",
+  "size": 46,
+  "xHeight": 14.4,
+  "strokes": [
+   {
+    "stroke": 0,
+    "thin": 1.21,
+    "middle": 1.5
+   },
+   {
+    "stroke": 0.5,
+    "thin": 1.5,
+    "middle": 2
+   },
+   {
+    "stroke": 0.7,
+    "thin": 1.71,
+    "middle": 2
+   },
+   {
+    "stroke": 0.8,
+    "thin": 1.91,
+    "middle": 2
+   }
+  ]
+ }
+]

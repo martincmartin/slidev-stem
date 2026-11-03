@@ -1761,3 +1761,80 @@ its paper outline, and 32 px from the text.
 
 Chromium only, and one click for each layout. The options' pictures are the live
 deck with a subtitle added by script, not its later `slides.md`.
+
+## 20. Round 10: the Seconds a Day and Isaac Newton slides
+
+### The script for Newton's words
+
+The museum's sheet (Royal Museums Greenwich, MS BGN 1:1, about 1741) is a slanted,
+joined hand, with hairlines and long descenders. The words on the slide are exactly
+its transcription, from "by reason" to "made". Only the sheet's last colon is now a
+period. The sheet is a later copy of the committee's record, so the hand is not
+Newton's.
+
+`tools/fonts.mjs` draws the four lines in 18 script fonts on Fontsource (all at
+version 5.3.0, all under the SIL Open Font License but Homemade Apple, under Apache
+2.0), at the largest size that fits a box of 880 × 380 px, and measures them. The
+box comes from the slide's room under a subtitle. The floor for a stroke is 1.64 px
+(`docs/legibility.md`), and body text at 35 px has an x-height of about 18 px. "Thin"
+is the 10th percentile of the stroke's width, from a chamfer distance, to about
+0.25 px. All are in `evidence/round-10/fonts.json`, and `fonts.png` shows each one
+with no stroke.
+
+| Font                 | Size (px) | x-height (px) | Thin, no stroke | Thin, 0.7 px stroke | Look                                  |
+| -------------------- | --------- | ------------- | --------------- | ------------------- | ------------------------------------- |
+| Italianno            | 65        | 17.2          | 1.00            | 1.71                | a quill's slant, nearest the sheet     |
+| Alex Brush           | 51        | 21.2          | 1.21            | 1.50                | clean, a modern brush                  |
+| Rouge Script         | 59        | 20.1          | 1.41            | 1.91                | open, modern                           |
+| Great Vibes          | 60        | 21.4          | 1.21            | 1.71                | a wedding invitation, heavy capitals   |
+| Pinyon Script        | 49        | 16.4          | 1.00            | 1.21                | formal roundhand, of the period        |
+| Herr Von Muellerhoff | 65        | 17.2          | 0.71            | 1.41                | like the sheet, tangled descenders     |
+| Petit Formal Script  | 32        | 18.8          | 0.71            | 1.21                | wide and small, like a certificate     |
+| Meddon               | 28        | 11.4          | 1.21            | 1.50                | from an 18th-century legal hand, wide  |
+
+Ranking: Italianno, Alex Brush, Rouge Script, Great Vibes, Pinyon Script, Herr Von
+Muellerhoff, Petit Formal Script, Meddon. The ranks are judgments from these numbers
+and the sheet.
+
+- **Italianno** is the only one with both a look near the sheet and a thin stroke
+  over the floor at 0.7 px. Its x-height is 96% of the 18 px of body text.
+- **Alex Brush and Rouge Script** have larger letters, but look like this century.
+- **Great Vibes** reads well, but its look is the wrong occasion.
+- **Pinyon Script and Herr Von Muellerhoff** are nearest in period, but even at
+  0.8 px of stroke, their thin strokes stay at 1.41 px, under the floor.
+- **Meddon** has the best origin, and the smallest letters: its words are wide, so
+  only 28 px fits.
+
+The other ten fonts are in the sheet, with smaller letters, thinner strokes or a
+modern look.
+
+The stroke is `-webkit-text-stroke`, which all three browsers draw. It takes the
+text's color, so it dims with the line. A dimmed line's ink is 3.04:1 on Ledger's
+paper, over the 3:1 floor, and at the last click the line that matters is in the
+accent.
+
+### Each slide
+
+- **Seconds a Day: Lessig, as you asked.** Round 1's objection (a screen does not
+  stay, so a viewer who looks away misses it: section 6) holds here too. The cost is
+  low: four short screens of numbers, and the article has them in its narration. The
+  first screen shows the math, as you asked: 60 min over 15° = 4 min over 1°, each
+  with a horizontal line, a border in HTML, so it needs no math library. "= 4 min per
+  degree" does not fit beside a fraction on one line at 76 px, and "per degree" on a
+  line of its own read as a third row under the 15°.
+  The other screens follow from it, so they do not show the math. The alternative was two cards, as on the Longitude Act slide,
+  which would stand alone but would repeat that slide's look at once. This
+  replaces section 8's row of 42 days. A screen leaves before the next comes, which
+  takes 0.8 s for a change, the house's rule for text.
+- **Isaac Newton: his words alone.** This replaces the still of round 1, which has a
+  drawing for each reason. Each click adds a reason, and the reasons before it dim.
+  The speaker reads them as they come. The subtitle is your "of the laws of motion
+  and gravity".
+- **Narration.** The callback to the Balance Wheel slide's 9 seconds a day (section
+  8) and the aside on a steady error are my additions, for you to cut if you wish.
+
+### Limits
+
+Chromium only for the pictures and the measures. The numbers are for one line of the
+quotation, on a slide box; a font's look is a judgment. No test in a real room.
+

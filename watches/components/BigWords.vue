@@ -6,7 +6,8 @@
     the whole slide, picture and all. It is not `in-figure`: an article says
     the punchline in its narration, and a figure does not show the screen
     (docs/article.md). With `class="card"`, it is a card in the slide's
-    layout (docs/slide-patterns.md, "A slide of words"). The class is static:
+    layout, and one at each click makes Lessig screens (docs/slide-patterns.md,
+    "A slide of words"). The class is static:
     a :class here would drop v-click's classes. This comment is inside the
     root: before it, the build gives the component two roots, and the slide's
     v-click does not reach it. -->

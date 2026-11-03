@@ -1970,15 +1970,12 @@ Noon comes later
   <div class="noon-paragraph text-dims">Noon in Greenwich<br>Ship: not noon yet</div>
   <div v-click="1" class="noon-paragraph text-dims after-watch">360°/24 hr = 15°/hr</div>
   <div v-click="2" class="noon-paragraph text-dims after-watch">2 p.m. in Greenwich<br>Noon at the ship</div>
-<!--  <div v-click="3" class="noon-paragraph text-dims">60 min / 15°<br>= <span class="noon-stat">4 min/°</span></div> -->
-<!--  <div v-click="3" class="noon-paragraph text-dims">60 min / 15° = 4 min/°</div> -->
   <div v-click="3" class="noon-paragraph text-dims">Hours × 15 = Longitude</div>
 </div>
 
 <style>
 /* The house's text beside a picture (side-text). Each click adds a
-   paragraph, and the ones before it dim (style.css, "TEXT DIMS"). The stat is
-   larger, in the accent. */
+   paragraph, and the ones before it dim (style.css, "TEXT DIMS"). */
 .slidev-layout.noon-later .noon-sentence {
   left: 570px;
 }
@@ -1988,15 +1985,6 @@ Noon comes later
 .slidev-layout.noon-later
   .noon-paragraph:has(~ .noon-paragraph:not(.slidev-vclick-hidden)) {
   --text-dim: var(--text-dimmed);
-}
-.slidev-layout.noon-later .noon-stat {
-  font-size: 48px;
-  line-height: 1;
-  color: color-mix(
-    in srgb,
-    var(--palette-accent),
-    var(--palette-background) var(--text-dim)
-  );
 }
 </style>
 
@@ -2031,9 +2019,8 @@ Greenwich means 30 degrees west of it.
 [figure: The line runs through the ship, and Greenwich is 30 degrees to the east of
 it. The clock says 2:00.]
 
-Sixty minutes for 15 degrees is 4 minutes a degree. So the clock measures the
-ship's longitude. To win half a degree, the Act's top prize,
-the clock must be right to within 2 minutes.
+So the clock measures the ship's longitude. Take the hours behind Greenwich,
+multiply by 15, and that is how many degrees west the ship is.
 
 > [!aside] The Sun in the picture
 > The real Sun is behind you as you look at this globe, and over the Equator. The
@@ -2051,9 +2038,168 @@ So why would a clock help? Noon doesn't come to everyone at once. Noon in Greenw
 
 [click] Another hour, another line. Noon at the ship. A clock still on Greenwich time says 2:00. So: 30 degrees west.
 
-[click] 60 minutes for 15 degrees: 4 minutes a degree. Half a degree, the top prize, is 2 minutes.
+[click] So the clock gives the longitude: hours behind Greenwich, times 15.
 
 IF ASKED: The real Sun is behind the audience and over the Equator: the slide puts it under the globe to fit. Solar noon also runs up to about 16 minutes ahead of or behind a steady clock through the year: navigators corrected for it with a table, the equation of time.
+-->
+
+---
+# A Lessig screen at each click, with no picture and no title on the slide
+# (docs/slide-patterns.md, "A slide of words")
+title: Seconds a Day
+layout: full
+class: seconds-a-day
+clicks: 3
+---
+
+<BigWords v-click.hide="1"><span class="seconds-sum"><span class="seconds-fraction"><span>60 min</span><span>15°</span></span><span>=</span><span class="seconds-fraction"><em>4 min</em><span>1°</span></span></span></BigWords>
+<BigWords v-click="[1, 2]"><em>2 min</em><br>for ½ a degree</BigWords>
+<BigWords v-click="[2, 3]">Over a<br>6-week voyage</BigWords>
+<BigWords v-click="3">6 or <em>3</em> seconds<br>a day</BigWords>
+
+<style>
+/* One screen leaves, then the next comes, in either direction (docs/slide-patterns.md,
+   "Text fades"). */
+.seconds-a-day .big-words.slidev-vclick-target {
+  transition: opacity var(--text-fade);
+}
+.seconds-a-day .big-words.slidev-vclick-target:not(.slidev-vclick-hidden) {
+  transition-delay: var(--text-fade);
+}
+/* One over the other, as math is written, with the = on the line. */
+.seconds-a-day .seconds-sum {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+}
+.seconds-a-day .seconds-fraction {
+  display: grid;
+}
+.seconds-a-day .seconds-fraction > :first-child {
+  border-bottom: 4px solid currentColor;
+}
+</style>
+
+<!-- narration
+How good must that clock be? Sixty minutes for 15 degrees is 4 minutes a degree.
+To win half a degree, the Act's top prize, the clock must be right to within 2
+minutes.
+
+[nofigure]
+
+[click:3]
+
+[nofigure]
+
+Now take a voyage of 6 weeks, or 42 days. To stay within 4 minutes, the clock can
+gain or lose only about 6 seconds a day. To stay within 2 minutes, it can gain or
+lose only about 3. A good mechanical watch today gains or loses about 9 seconds a
+day, on a wrist, on dry land. The prize asked for 3, on a rolling ship.
+
+> [!aside] A steady error is not the problem
+> A clock that gains exactly 6 seconds every day is as good as a perfect one, if
+> the navigator knows it: subtract 6 seconds a day. What the prize really needs is
+> a clock whose rate does not change.
+
+-->
+
+<!--
+How good must that clock be? 60 minutes for 15 degrees: 4 minutes a degree.
+
+[click] Half a degree, the top prize: 2 minutes.
+
+[click] Now spread that over a voyage of 6 weeks: 42 days.
+
+[click] 6 seconds a day, or 3. A good watch today: about 9. On your wrist, on dry land.
+
+IF ASKED: 240 seconds over 42 days is 5.7 a day, and 120 is 2.9. A steady error can be corrected: what matters is a rate that does not change.
+-->
+
+---
+# His words are the picture, in a script like the record's hand, but larger
+# and thicker (docs/slide-patterns.md, "A quotation in handwriting")
+class: newton-1714
+clicks: 3
+---
+
+# Isaac Newton, 1714
+
+of the laws of motion and gravity
+
+<div class="newton-words side-text">
+  <div class="newton-line text-dims">by reason of the motion of a Ship,</div>
+  <div v-click="1" class="newton-line text-dims">the variation of heat &amp; cold, wet and dry,</div>
+  <div v-click="2" class="newton-line text-dims">and the difference of Gravity in different Latitudes,</div>
+  <div v-click="3" class="newton-line newton-verdict">such a Watch hath not yet been made.</div>
+</div>
+
+<style>
+.slidev-layout.newton-1714 .newton-words {
+  left: 0;
+  right: 0;
+  align-items: center;
+  font-family: "Italianno", cursive;
+  font-size: 65px;
+  font-weight: 400;
+  line-height: 1.3;
+  /* The script's hairlines are under the stroke floor (docs/legibility.md): this
+     thickens them, in the color of the text, so that they dim with it. */
+  -webkit-text-stroke: 0.7px;
+}
+.slidev-layout.newton-1714
+  .newton-line:has(~ .newton-line:not(.slidev-vclick-hidden)) {
+  --text-dim: var(--text-dimmed);
+}
+.slidev-layout.newton-1714 .newton-verdict {
+  color: var(--palette-accent);
+}
+</style>
+
+<!-- narration
+Could anyone build such a clock? In 1714, a committee on the question asked the
+most famous scientist alive: Isaac Newton, of the laws of motion and gravity. A
+watch that keeps time exactly, he said, was one way to find longitude. But, in the
+words of the committee's record:
+
+[nofigure]
+
+[click]
+
+[nofigure]
+
+[click]
+
+[nofigure]
+
+[click]
+
+[figure: Newton's words, in a flowing script: by reason of the motion of a Ship,
+the variation of heat and cold, wet and dry, and the difference of Gravity in
+different Latitudes, such a Watch hath not yet been made.]
+
+A ship rolls and pitches. The weather swings from the tropics to the cold. Even
+gravity is not the same everywhere, and a clock can feel it. Newton's verdict was
+not that it was impossible, only that no one had done it.
+
+> [!aside] Whose handwriting?
+> The Royal Museums Greenwich holds the record of his words, in a copy from about
+> 1741. The script on the slide is a modern font in the spirit of that copy's hand.
+> It is not Newton's own hand. He also named two other ways to find longitude: the
+> eclipses of Jupiter's moons, and the place of the Moon. Neither, he said, could
+> be used at sea yet.
+
+-->
+
+<!--
+Could anyone build it? They asked Isaac Newton. That Newton: laws of motion, gravity. A watch could do it, he said, but: by reason of the motion of a ship.
+
+[click] Heat and cold, wet and dry.
+
+[click] Gravity differs from place to place.
+
+[click] Such a watch hath not yet been made. Not yet.
+
+IF ASKED: These words are from the committee's record of June 1714, in a copy from about 1741: not his own hand, and the script is a modern font. His other two ways: the eclipses of Jupiter's moons, and the place of the Moon. Neither could be used at sea yet.
 -->
 
 ---

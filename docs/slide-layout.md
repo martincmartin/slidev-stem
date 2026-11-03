@@ -64,3 +64,6 @@ something else:
 - **The picture is the whole slide:** on the Recap slide, the only text is a caption
   and a time scale.
 - **There is no picture:** on the Longitude Act slide, the words are on two cards.
+  On the Seconds a Day slide, each click is a screen of a few big words.
+- **The words are the picture:** on the Isaac Newton slide, the words fill the
+  slide's width, centred, in a script. They still use `side-text` to centre them.

@@ -432,3 +432,27 @@ Your messages about the slide after the Longitude Act slide, verbatim:
 
 > Also, if we do add "Noon comes later" as a subtitle, that argues for making the
 > globe a little smaller.
+
+## Round 10
+
+> Ok, next up two more slides. First one is "4 min for one degree, 2 min for 1/2 a
+> degree. Over a 6 week voyage, that's 6 or 3 seconds a day." Maybe Lessig style?
+
+> Second one: Isaac Newton in 1714 (of the laws of motion and gravity): "by reason
+> of the motion of a Ship, the variation of heat & cold, wet and dry, and the
+> difference of Gravity in different Latitudes, such a Watch hath not yet been
+> made." Maybe show it in a cursive script similar to this:
+> https://www.rmg.co.uk/sites/default/files/import/media/pdf/Newton%27s_opinion.pdf
+> but readable?
+
+> We'll move the "4 minutes a degree" to the next slide.
+
+> For the "four min for one degree" you have to show the math: 60 min / 15 ° is 4
+> min per degree, something like that. You can leave the math off "2 min for 1/2
+> degree" as that's clearly half of the previous result.
+
+> For 6 vs 3 seconds a day, I guess we can leave off the math.
+
+> For "60 min / 15°, can we do it with a horizontal line instead of a slash? Closer
+> to how math is normally displayed. We shouldn't need LaTeX or anything just to show
+> one thing over another with a horizontal line between, right?

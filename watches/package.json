@@ -35,6 +35,7 @@
     "art:privacy": "node art/privacy-check.ts"
   },
   "dependencies": {
+    "@fontsource/italianno": "5.3.0",
     "@slidev/cli": "^53.0.0",
     "earcut": "^3.2.4",
     "slidev-addon-palette-after-hours": "link:../themes/palettes/after-hours",

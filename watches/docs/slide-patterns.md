@@ -1,8 +1,9 @@
 # Slide patterns
 
 **Covers:** how a slide in this deck is built: the theme on a slide, the
-history line, the timekeeper card, clicks, punchlines, slides of words, labels
-on a map, speaker notes, what fits, borrowed assets.
+history line, the timekeeper card, clicks, punchlines, slides of words, a
+quotation in handwriting, labels on a map, speaker notes, what fits, borrowed
+assets.
 **Read before** you add or change a slide. For a slide that shows the watch or
 the diving board, read [watch.md](watch.md) as well. For where a picture and
 its text go, read [slide-layout.md](../../docs/slide-layout.md).
@@ -322,6 +323,27 @@ accent is the larger prize. The dollar value is as large as the pounds: £20,000
 catch up. Not an oversight: a map of how far the prizes reach from the venue
 drew what the speaker can say in a sentence
 ([the visual language task](../tasks/2026-10-30-part-2-visual-language/README.md)).
+
+**A slide can be Lessig screens: one `BigWords` at each click, and no other
+text.** The Seconds a Day slide is the example. Each screen leaves before the next
+comes, in either direction: the slide sets the fades in its `<style>`. The first
+screen uses `v-click.hide="1"`, because a range such as `[0, 1]` cannot start at 0:
+Slidev moves it to click 1, and click 0 is blank. Such a slide has a `title:` in its
+frontmatter and no `#`, for the article's contents. Its narration says all of its
+words, with `[nofigure]`. Keep this for a few short numbers that the speaker walks
+through: no screen stays, so none can carry a fact on its own.
+
+## A quotation in handwriting
+
+**When a person's words are the picture, they can be in a script.** On the Isaac
+Newton slide, each click adds a line of his words, in Italianno, a font of this
+talk only (`style.css`, SIL Open Font License). A script has a low x-height and thin
+hairlines, so check both at the size that fits ([legibility.md](../../docs/legibility.md)).
+The slide adds `-webkit-text-stroke` to bring its hairlines over the stroke floor.
+Say in the narration that the script is a font, not the person's hand. The choice
+of font is in
+[the visual language task](../tasks/2026-10-30-part-2-visual-language/PLAN.md),
+section 20.
 
 ## Labels on a map
 
