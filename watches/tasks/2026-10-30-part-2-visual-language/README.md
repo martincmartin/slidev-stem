@@ -217,3 +217,5 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
 - 2026-11-04: the Four Clocks slide is now the Same Time, Every Tick slide, with the subtitle "On a
   rolling ship, hot or cold". It names the real struggle, a swing that always takes the same time,
   without its technical name. Earlier lines keep the old name.
+- 2026-11-04: the Did H4 Win the Prize? slide says "±2 min over 42 days" and "5 sec slow over 81
+  days". The user confirmed that H3 took 19 years and never sailed.

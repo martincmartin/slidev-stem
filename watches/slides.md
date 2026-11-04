@@ -2453,11 +2453,11 @@ clicks: 2
 
 <div class="prize-words side-text">
   <div>
-    <div class="prize-number">2 min over 42 days</div>
+    <div class="prize-number">±2 min over 42 days</div>
     <div class="prize-caption">required</div>
   </div>
   <div v-click="1">
-    <div class="prize-number prize-result">5 sec over 81 days</div>
+    <div class="prize-number prize-result">5 sec slow over 81 days</div>
     <div class="prize-caption">H4 at sea</div>
   </div>
   <div v-click="2">King George III:<br>“By God, Harrison, I will see you righted!”<br>Last payment: 43 years after start. Age 80.</div>
@@ -2498,8 +2498,8 @@ H4 sailed for Jamaica in November 1761. After 81 days, it was 5 seconds slow.
 
 [click]
 
-[figure: In big type, 2 minutes over 42 days, required, and 5 seconds over 81 days, H4 at
-sea. Under them: King George III says, "By God, Harrison, I will see you righted!", and the last
+[figure: In big type, plus or minus 2 minutes over 42 days, required, and 5 seconds slow over
+81 days, H4 at sea. Under them: King George III says, "By God, Harrison, I will see you righted!", and the last
 payment comes 43 years after the start, when Harrison is 80.]
 
 The Board was not convinced, and sent it on a second trial, to Barbados, where it kept time
@@ -2512,7 +2512,7 @@ I will see you righted!" the King told his son William, and Parliament acted. He
 -->
 
 <!--
-Did it win? The prize asked for this: 2 minutes, over 6 weeks.
+Did it win? The prize asked for this: plus or minus 2 minutes, over 6 weeks.
 
 [click] H4, to Jamaica, 1761. 81 days. 5 seconds slow.
 

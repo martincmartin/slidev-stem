@@ -591,3 +591,7 @@ perhaps append "in all weather" or "in any sea" or "come rain or shine" or "what
 The suffix could also be ", on rolling ship, hot or cold", how does that compare to ", in any sea"?
 
 All of that sounds good thanks.
+
+I feel like "2 min " on "did H4 win..." needs a +-. We could put - on the 5, or say "5 sec slow over 81 days."
+
+H3's 19 years is fine, and I checked, H3 never sailed.
