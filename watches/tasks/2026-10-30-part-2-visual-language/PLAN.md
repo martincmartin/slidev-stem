@@ -2123,3 +2123,21 @@ You pasted Table 1 of Cattani, Ferriani and Lanza, "Deconstructing the Outsider 
 to its total, £23,065, and they run from 30 June 1737 to 19 June 1773. It also settles the
 conflict above: £7,500 was paid in 1765, the £10,000 less £2,500 paid in 1762 and 1764. The
 slide uses a tick for each payment and one total. The last two payments are 70.5% of it.
+
+## 23. Where the private file goes
+
+The user asked if the file should be in `watches/private` or `stem/private`, and how a
+stranger and a cloud session work with it. There were 5 worktrees at the time. These ranks
+are judgment, on the numbers in the table.
+
+| Rank | Option                         | Worktrees      | Plain clone        | Cloud                      | Backup and access                               |
+| ---- | ------------------------------ | -------------- | ------------------ | -------------------------- | ----------------------------------------------- |
+| 1    | Sibling private repo           | 1 copy, shared | 1 extra clone      | Attach it; layout untested | History; access for each person                 |
+| 2    | `watches/private`, git ignores | 5 copies       | 1 extra clone      | Needs a setup script       | History; `git clean -fdx` can delete a copy     |
+| 3    | Submodule                      | Update each    | Unreadable URL     | Native; CI must cope       | History; the public repo records the URL        |
+| 4    | Encrypted file in the repo     | Shared by git  | Needs the key      | Needs the key              | Lyrics stay in public history, encrypted        |
+| 5    | Cloud folder (Dropbox, iCloud) | 1 copy         | Manual             | Not visible                | Weak history; no access for each repo           |
+
+Chosen: 1, as `stem-private`, a private GitHub repo. A fresh clone of the public `main`, on a
+laptop that already had the tools and caches, took 37 s to clone (`.git` is 418 MB), 12 s to
+install and 4 s to build. It needs no private file.

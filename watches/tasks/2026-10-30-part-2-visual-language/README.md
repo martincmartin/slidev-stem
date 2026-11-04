@@ -193,3 +193,5 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
 - 2026-11-04: H4's result is settled as 5 seconds slow after 81 days, on the trial to Jamaica
   (Wikipedia, "John Harrison", and the Linda Hall page). `docs/rough-slides.md` no longer says a
   second a month at sea.
+- 2026-11-04: the private folder `stem/private/` is now the private repo `stem-private`, beside
+  the checkout (`PLAN.md`, section 23). Earlier lines give the old path.

@@ -154,6 +154,35 @@ A coding agent also needs the user-level instructions and skills from
 `install` once on each machine. The `AGENTS.md` files here send the agent to
 its `slidev-practices` skill before it edits a deck.
 
+### Private files
+
+A talk can show in the room what it must not publish. These files are in a
+separate private repo, `stem-private`, and most work does not need them. If you
+have access, clone it beside the checkout, in the folder that holds your
+worktrees:
+
+```bash
+gh repo clone stem-private    # beside the checkout: ../stem-private from the root
+```
+
+One clone serves all sibling worktrees. Commit and push in that repo when a file
+changes.
+
+- **With no such repo, a deck builds with no error** and shows a public
+  alternative. So on the machine that gives the talk, check that the slide shows
+  the private content before the talk.
+- **A local build or export can hold the private content.** Do not publish it or
+  copy it into a task. The publish run has no private repo, so a published deck
+  does not hold it.
+- **The public repo does not link to it.** Not an oversight: with a submodule, the
+  public repo records the private URL, each worktree needs its own copy, and a
+  clone must cope with a URL that it cannot read. See
+  [`watches/tasks/2026-10-30-part-2-visual-language/PLAN.md`](../watches/tasks/2026-10-30-part-2-visual-language/PLAN.md),
+  section 23.
+
+What each talk keeps there is in that talk's docs (for `watches/`,
+`docs/slide-patterns.md`).
+
 ### Cloud sessions
 
 A Claude Code cloud session runs `.claude/hooks/session-start.sh` when it
@@ -191,6 +220,13 @@ script, which installs
 An environment without it gives no error. So the hook checks for
 `~/.claude/CLAUDE.md` first: without it, it tells Claude to warn the user
 before anything else.
+
+A cloud session has the [private files](#private-files) only if you attach
+`stem-private` to it as a second repo. Do this only for work on those files. A
+session with several repos does not load repo hooks, so the environment's setup
+script must then do the hook's work. The folder layout of such a session is not
+tested. To check it, run `pwd; ls` in the session. If `stem-private` is not beside
+the checkout, make a symlink to it in the setup script.
 
 ## Why each talk is its own project
 

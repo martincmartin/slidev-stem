@@ -8,15 +8,27 @@ deck is a [Slidev](https://sli.dev) project.
 
 ## Set up, and run a talk
 
-To set up a clone, on macOS or Linux, follow
-[`docs/talks.md`, "Set up a clone"](docs/talks.md#set-up-a-clone). It says
-what to install first (git, pnpm, uv, and on Linux the browsers' system
-libraries), and how to install the projects. Then, in a talk's directory:
+If you have git, pnpm 12 or later and uv, this shows the deck and its article:
 
 ```bash
-pnpm dev        # the deck, at http://localhost:3030
-pnpm export     # a PDF of the deck
+git clone https://github.com/martincmartin/slidev-stem.git
+cd slidev-stem
+pnpm install
+cd watches
+pnpm install
+pnpm dev        # the deck at http://localhost:3030, the article at /article
 ```
+
+For what to install first, and for Linux's system libraries, read
+[`docs/talks.md`, "Set up a clone"](docs/talks.md#set-up-a-clone). In a talk's
+directory, `pnpm export` makes a PDF of the deck.
+
+## Private files
+
+You do not need them. A few things show only in the room, such as lines from songs
+in copyright. They are in a separate private repo, beside the checkout. Without it, a
+deck builds with no error and shows a public alternative:
+[`docs/talks.md`, "Private files"](docs/talks.md#private-files).
 
 ## The house style
 

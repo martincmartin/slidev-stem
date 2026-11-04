@@ -19,7 +19,7 @@ import { fadeFrames, songScreens, titleScreens } from "../watch/songs.ts";
 const props = defineProps<{ titles: unknown; secondsATitle: unknown }>();
 
 const [songs] = Object.values(
-  import.meta.glob<unknown>("../../../private/watches/songs.json", {
+  import.meta.glob<unknown>("../../../stem-private/watches/songs.json", {
     eager: true,
     import: "default",
   }),

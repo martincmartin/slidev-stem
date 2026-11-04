@@ -351,7 +351,8 @@ oversight: they are an Easter egg, for the room to recognize. The article lists 
 the speaker notes name them.
 
 **Song lines must not be in this repo, the article or a published build.** They are in
-`stem/private/watches/songs.json`, beside the worktrees, whose `README.md` gives the format.
+`watches/songs.json` of the private repo `stem-private`, beside the checkout (`docs/talks.md`,
+"Private files"). That repo's `README.md` gives the format.
 A local build or export holds the lines, so do not publish it or copy it into a task.
 
 **With no such file, as on the publish run, the slide shows song titles,** one at a time
