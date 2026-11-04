@@ -334,6 +334,32 @@ seconds a day" and nothing to say what it was
 ([the visual language task](../tasks/2026-10-30-part-2-visual-language/PLAN.md),
 section 21).
 
+**A timeline can be a slide's picture.** On the Four Clocks slide, each clock is a
+`ClockBar`: a photo, and a bar on one scale of years that the slide sets. The bars are
+HTML, not SVG, because only their lengths are data. H3's 19-year bar carries the
+slide, so it has the slide's one accent. Its last click adds a `PaymentTicks`: a tick on the
+axis for each payment in the frontmatter, and their total, which it computes.
+
+## Words that run on their own
+
+**On the Questions slide, lines from songs change with no click.** `SongLines.vue` shows two
+lines at a time, for as long as they take in the song, with the house's fade within that
+time, and starts from the first screen each time the slide starts. This is the one thing on
+a slide that does not wait for a click, so it is on the last slide, where nothing follows
+it. A printed page shows the first screen. The slide does not name the songs. Not an
+oversight: they are an Easter egg, for the room to recognize. The article lists them, and
+the speaker notes name them.
+
+**Song lines must not be in this repo, the article or a published build.** They are in
+`stem/private/watches/songs.json`, beside the worktrees, whose `README.md` gives the format.
+A local build or export holds the lines, so do not publish it or copy it into a task.
+
+**With no such file, as on the publish run, the slide shows song titles,** one at a time
+(`songTitles` and `secondsATitle` in its frontmatter), with no writers and no error. Not an
+oversight: lines from the one song out of copyright, "My Grandfather's Clock", would make a
+melancholy song the focus, when it should be one of many. Before you give the talk, check
+that the slide shows lines, not titles.
+
 ## A quotation in handwriting
 
 **When a person's words are the picture, they can be in a script.** On the Isaac
@@ -409,15 +435,18 @@ of a monthly meetup, not a document.
 
 ## Borrowed assets
 
-**Anything not drawn for this deck needs a credits slide**, with the title linked to
-its source, the author, the licence linked to its terms, what was changed, and where
-it is used. A talk is a public performance, and the licences we borrow under ask for
-credit on every copy performed, not just every copy distributed.
+**Anything not drawn for this deck needs a credit on a slide**: the title, the author and the
+licence, in plain text at the size for credits ([legibility.md](../../docs/legibility.md)).
+Nobody clicks a projected screen, so the links are in the narration, for the article. The
+README beside the file says what was changed. A talk is a public performance, and the licences
+we borrow under ask for credit on every copy performed, not just every copy distributed. Not
+an oversight: CC BY 2.0 also asks for the licence's address with each copy, so the slide shows
+that address as text.
 
-The deck currently borrows **nothing** — the credits slide was removed on 2026-09-21
-along with the one asset it credited. If you add a borrowed image, bring the slide
-back; `tasks/2026-09-20-animation-style/source-video/README.md` has the format and
-the history.
+The Questions slide is the deck's last slide, and its Credits section credits the photos and the painting in
+`public/harrison/`, whose `README.md` holds each source and licence. If you add a
+borrowed image, add it to both. `tasks/2026-09-20-animation-style/source-video/README.md`
+has the format and the history.
 
 ## Before you ship
 

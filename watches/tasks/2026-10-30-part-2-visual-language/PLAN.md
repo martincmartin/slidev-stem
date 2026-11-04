@@ -1966,3 +1966,160 @@ for "IF ASKED".
 Chromium only, and in the mockup, not the deck: a title's place and the type follow
 the deck by hand. The eye travel measures distance, and no one has timed a reader. No
 test in a real room.
+
+## 22. Round 12: John Harrison, ideas for the slides
+
+Nothing here is built or mocked up. The counts of words and clicks are estimates.
+
+### Pictures that the repo can hold
+
+The repo's rule is in `README.md`, "License". The Commons pages gave these licences on
+2026-11-03. A borrowed picture brings back the credits slide
+(`docs/slide-patterns.md`, "Borrowed assets").
+
+- Portrait: [Thomas King, 1767](https://commons.wikimedia.org/wiki/File:John_Harrison_(Gem%C3%A4lde).jpg), public domain on Commons, 1600 × 1955 px. It is dark for a bar's projector.
+- H1: [Mike Prince](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(32416544837).jpg), CC BY 2.0, 2048 × 1536 px.
+- H2: [Mike Prince](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(46635402754).jpg), CC BY 2.0, 1536 × 2048 px.
+- H3: [Tony Hisgett](https://commons.wikimedia.org/wiki/File:Harrison_H3_Clock_(35491292866).jpg), CC BY 2.0, 3179 × 4123 px.
+- H4, the movement: [Mike Prince](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(32416554787).jpg), CC BY 2.0, 2048 × 1536 px.
+
+Not usable: the Science Museum's own image of the painting (CC BY-NC-SA, a limit on use
+that the other pictures do not have) and Royal Museums Greenwich's photographs (all
+rights reserved). The museum's H1 is now in conservation and a replica is on display, so
+check the date of the H1 photograph before saying that it shows the original.
+
+### Facts
+
+- [Royal Museums Greenwich, the story](https://www.rmg.co.uk/stories/time/harrisons-clocks-longitude-problem): a carpenter by trade, self-taught in clocks. His goal for a portable clock was "within three seconds a day". H3 took 19 years. H2 was never tried at sea.
+- [H1](https://www.rmg.co.uk/collections/objects/rmgc-object-79139): 1730–35, 620 × 680 × 450 mm. [H2](https://www.rmg.co.uk/collections/objects/rmgc-object-79140): 1737–39, 686 mm, 40 kg. [H3](https://www.rmg.co.uk/collections/objects/rmgc-object-79141): 1740–59, 622 mm. [H4](https://www.rmg.co.uk/collections/objects/rmgc-object-79142): 1755–59, 165 × 124 × 28 mm, 1.45 kg.
+- H3's page: "two extremely important inventions, both relevant today", the bimetallic strip and the caged roller bearing. It says that H3 did not win the prize.
+- H1's weight, 75 lb, comes from a search summary of [Naval History magazine](https://www.usni.org/magazines/naval-history-magazine/2019/october/john-harrison-and-longitude-problem), and I could not open the page. Another source gives 72 lb. H3's weight: not found.
+- [The portrait](https://blog.sciencemuseum.org.uk/portrait-mr-harrison-timekeepers/) shows H3 in its case behind him, and in his hand a watch of 1753 by John Jefferys, not H4.
+- Born in 1693, so he turned 21 in the year of Newton's words. 37 when H1 began; 80 when [Parliament paid him](https://www.lindahall.org/about/news/scientist-of-the-day/john-harrison) in 1773; died in 1776.
+
+Open points:
+
+- **H4's result conflicts.** The Linda Hall page gives 5 seconds slow from Jamaica. A
+  search summary gives an error of up to 1 min 54.5 s for the same voyage, which may
+  be with no correction for the rate. Check a primary source before a slide uses it.
+- **"Side project".** The sources support "carpenter by trade, self-taught". From 1737
+  the Board paid him for the work, so "began as a side project" or "a passion" is safe,
+  and "43 years of a side project" is not.
+- **`docs/rough-slides.md` is wrong or loose on H4.** It says "about a second a month
+  at sea". Royal Museums Greenwich gives one second a month for his longcase clocks.
+
+### The options
+
+"Covers" counts your five notes: painting, H1, passion, inventions, timeline.
+
+| Option                     | Slides | Clicks | Words at the last click | Photos | Covers | New drawings |
+| -------------------------- | ------ | ------ | ----------------------- | ------ | ------ | ------------ |
+| A. Person, then timeline   | 2      | 7      | 25 + 35                 | 5      | 5      | bars only    |
+| B. Three slides            | 3      | 9      | 25 + 25 + 20            | 5      | 5      | 2 mechanisms |
+| C. Line-up at true scale   | 2      | 7      | 25 + 30                 | 5      | 4–5    | none         |
+| D. One timeline slide      | 1      | 6      | 50                      | 5, small | 5    | bars only    |
+| E. Cold open on inventions | 2      | 6      | 15 + 40                 | 5      | 5      | photos or 2  |
+| F. Portrait and H1 only    | 1      | 3      | 20                      | 2      | 3      | none         |
+
+- **A. Person, then timeline.** "A Carpenter's Side Project": the painting, then H1
+  beside it. "Four Clocks, 43 Years": bars to scale, a photo on each, and the inventions
+  on H3's bar.
+  - Pro: all five notes, each slide has one idea, and H3's 19-year bar shows the failure
+    with no words.
+  - Con: small photos on the timeline, and the inventions are named but not explained.
+- **B. Three slides.** A, with a third slide for H3's inventions, drawn by us: the strip
+  bending with heat, and rollers with and without a cage.
+  - Pro: the best for this audience. The strip answers Newton's "heat & cold". Drawings
+    need no credit.
+  - Con: the most time and work, and the talk still has later slides to fit.
+- **C. Line-up at true scale.** Four clocks on one scale, from H1 to the size of H4,
+  with dates under them.
+  - Pro: H4's pocket-watch look becomes the surprise: 34 kg down to 1.45 kg.
+  - Con: it shows size and not time, so H3's 19 years need words. Photos from different
+    angles do not compare exactly.
+- **D. One timeline slide.** Age and years along the axis, with everything as labels.
+  - Pro: the fewest slides. It follows the talk's language of labels on a picture.
+  - Con: H1 and the painting are too small to enjoy, and it is the densest.
+- **E. Cold open on inventions.** "You own something Harrison invented", then who he was.
+  - Pro: a surprise for the room.
+  - Con: it breaks the hand-off from Newton's "such a Watch hath not yet been made".
+- **F. Portrait and H1 only.** The speaker says the rest.
+  - Pro: the cheapest, with big pictures.
+  - Con: a listener who looks away has no record, and it drops two notes from the slide.
+
+### Ranking
+
+A, B, C, D, E, F. The ranks are judgments, with no reader tested. A covers all the notes
+at the lowest cost. B is better if the talk has the time. C's size line-up can be the
+last click of A's timeline instead of its own slide.
+
+### The choice
+
+You chose A, built straight in the deck with no mockup, to adjust there: the John Harrison
+slide, the Four Clocks slide and the Credits slide. H4's words say only "Met the Act's
+top limit" (Royal Museums Greenwich, on the Board's meeting of February 1765), so no
+slide depends on the trial numbers that conflict. H1's photo is dated 2017.
+
+### A video of H1
+
+You asked for a video of H1 moving. On 2026-11-03, a search of Wikimedia Commons for
+video of Harrison's clocks found none, and web searches found no clip with an open
+licence. I could not filter YouTube by licence from here. An ordinary YouTube licence
+does not meet the repo's rule (`README.md`, "License"), and the talk must run offline.
+
+- **Ask for permission for a real clip.** The real machine is the most impressive, and it
+  costs an email, but the answer and its terms are unknown. It must allow a public repo
+  and the article. Candidates: Royal Museums Greenwich, and the owner of a working
+  replica.
+- **Draw the two linked balances ourselves.** It needs no permission and works offline,
+  and it can show why a ship's roll does not upset them. It is not the real machine, and
+  it costs the most work.
+- **Link a clip from the article and the notes.** The cheapest, but the room does not see
+  it during the talk.
+- **Keep a clip on the laptop only.** Not recommended: showing it in public still needs
+  permission.
+
+Ranking: permission, then the drawing as the fallback, then the link. These ranks are
+judgments.
+
+You chose the link. The article's John Harrison section links, and the speaker notes point to it:
+["John Harrison's "H1" clock in action"](https://www.youtube.com/watch?v=_mRTMZ3pTtM), by
+Matuga Spudd, 30 s. Its title, its length and three frames from YouTube were checked on
+2026-11-03, but no one here has watched it. The clip stays on YouTube, so the repo and
+the slides do not hold it. Others: [closer, 20 s](https://www.youtube.com/watch?v=HRPVgwWxLjg),
+and [a replica, close up, 87 s](https://www.youtube.com/watch?v=y-v4VqCd71Q).
+
+The Credits slide gives each picture's title, author and licence. What was changed is in
+`public/harrison/README.md`, at your request.
+
+### H1's accuracy, and the payments
+
+You asked to mention H1's accuracy, and whether the timeline should list about 16 payments.
+
+**Accuracy.** The slide says that H1 beat the ship's navigator by 60 miles (Royal Museums
+Greenwich; Wikipedia gives the same account). I found no solid figure in seconds a day. A
+[Dartmouth exhibit](https://journeys.dartmouth.edu/digitalexhibition/harrison-others-and-the-shifting-materiality-of-chronometers/)
+says "within 10 seconds per day", with no byline and with its sources not readable here.
+A search summary said about 8. History Today, in a search summary, says that H1 reached
+Lisbon with a very substantial error.
+
+**Payments.** No source that I could read lists them one by one.
+[Wikipedia](https://en.wikipedia.org/wiki/Longitude_rewards) gives £23,065 over 36 years and
+five groups of payments, but its groups sum to £21,365. A
+[summary of Howse](https://teleskopos.wordpress.com/tag/john-harrison/) gives £22,000. It also
+gives £7,500 for 1765, where Wikipedia's John Harrison page gives £10,000.
+
+- **Label each payment.** 16 labels of about 55 px need 880 px, and the axis is 774 px, even
+  if they did not cluster. Not recommended.
+- **A tick for each, and one total.** It shows a slow drip of money. It needs a dated list.
+- **Three labels: the first, 1765 and 1773.** It is simple, but it hides the drip.
+- **One line for the total.** It needs no dates: for example, "£23,065 over 36 years".
+
+Ranking: ticks and a total, then the one line, then three labels, then each label. These are
+judgments.
+
+You pasted Table 1 of Cattani, Ferriani and Lanza, "Deconstructing the Outsider Puzzle"
+(2017), adapted from Andrewes, _The Quest for Longitude_ (1996), p. 234. Its 16 payments sum
+to its total, £23,065, and they run from 30 June 1737 to 19 June 1773. It also settles the
+conflict above: £7,500 was paid in 1765, the £10,000 less £2,500 paid in 1762 and 1764. The
+slide uses a tick for each payment and one total. The last two payments are 70.5% of it.

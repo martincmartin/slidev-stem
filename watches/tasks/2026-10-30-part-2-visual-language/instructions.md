@@ -485,3 +485,53 @@ Your messages about the slide after the Longitude Act slide, verbatim:
 
 > Let's go with E. Does the +- 9 sec section come in with its own click, after +- 3
 > sec? I should, but we can leave +-3 sec not dimmed, that's treally the punchline.
+
+## Round 12
+
+> Next up, John Harrison. Here are my notes:
+>
+> - Picture of (painting of) John Harrison. Can we find one we can put in the repo,
+>   e.g. redistributable?
+> - Picture of H1 (H4 looks like a pocketwatch of the era and you can't see any of the
+>   mechanism).
+> - Talk about passion/side project! [The STEM speaker series is also for people to
+>   talk about their passion/side projects]
+> - Inventions that outlasted: bimetallic strip, caged roller bearing.
+> - Maybe a timeline of the four clocks?
+>
+> Please generate some ideas on slides to communicate all this. Pros and cons of each,
+> rank them.
+
+> Let's do A, no need to mock it up you can put it right in the actual talk, we can
+> adjust it from there.
+
+> I don't suppose we can get a video of H1? Watching it move is pretty impressive
+
+> Get rid of "on warm wrist," make it "a watch today, on dry land" on one line. A good
+> (mechanical) watch is COSC certified which is better than \_+ 9.
+
+> 3. link a clip article.
+
+> On the credits slide, do we need to say "All scaled down" or "cropped square on the
+> Four Clocks slide"?
+
+> Let's leave out the "Used on the ... slides."
+
+> We should mention the accuracy of H1. Should we list the payments made to John Harrison
+> on the timeline? There were about 16 of them.
+
+Also, in the actual talk, don't put the title and author under the lyrics. Think of them like an easter egg, I want people to think "huh, what's that?" and then hopefully recognize some lyrics, then try to guess which other ones they can recognize.
+
+Please write out the open questions, e.g. whether/how to show payments. For H2, maybe say something about he he abandonded it for H3, and that it never sailed?
+
+If the lyrics file isn't available, we shouldn't just cycle My Grandfather's Clock lyrics, that song is melancholy/drepressing to be the focus, instead of one of many. Maybe just cycle the song titles, with or without authors ("Time" kind of needs "By Pink Floyd", but "Rock Around The Clock" is instantly recognizable and "by Bill Haley and His Comets" just clutters up the screen. IDK I'm leaning twoards no author just title, and Pink Floyd gets what they deserve for having such a generic song title.)
+
+Let's shrink the credits and put them in the lower left, above the lyrics of course, with enough of a gap that they're obviously different sectins. And no need for links in the talk, it'll be projected on a screen nobody is clicking on it. Links in the article of course.
+
+Here's the story we want to tell about Harrison, the Four Clocks gets some of it:
+
+Harrison takes 5 years to build H1, first Longitude Act submission worthy of a sea trial. Beat's ship's navigator by 60 miles. Starts H2, after 2 years he recognizes serious design flaw, starts over. Then spent 17 years (!) on H3. Invents the bimetallic strip and the caged roller bearing, still in use today. Switches to watch (why?). H4 made a sea trial, and was found to be only 5 seconds slow over 81 days. Has to have King George III lean on Parliament, but finally gets the prize.
+
+What are some options for telling that story? With the fewest words possible. For example, the timeline says 5 years for H1 with the only text being H1.
+
+How would you tell this story in Lessig slides? Just give me the text of each slide here in the chat, no need to actually create the slides.

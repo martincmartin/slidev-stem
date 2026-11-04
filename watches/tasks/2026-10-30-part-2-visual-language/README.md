@@ -18,7 +18,8 @@ the mockup now draws by default, and brings the wind in nearer the labels. Round
 the Noon Comes Later slide, in stills. Round 9 compares layouts for that slide, now
 Longitude From Time, in the deck. Round 10 compares script fonts for Newton's words,
 and builds that slide and the Seconds a Day slide. Round 11 mocks up that slide's words on
-one slide, in six layouts, with the Balance Wheel slide's 9 seconds a day.
+one slide, in six layouts, with the Balance Wheel slide's 9 seconds a day. Round 12
+compares ideas for the John Harrison slides, with pictures that the repo can hold.
 
 - `instructions.md`: the request.
 - `PLAN.md`: the criteria, the options, the measurements, the ranking, the
@@ -155,3 +156,40 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   round 11 (`PLAN.md`, section 21), not Lessig screens (`PLAN.md`, sections 8 and 20).
   A listener who looked away could not catch up, and "4 min for 1°" did not say that it
   was the watch's limit for the prize.
+- 2026-11-03: round 12's option A is in the deck, with no mockup (`PLAN.md`, section 22).
+  The deck borrows pictures again, so the Credits slide is back.
+- 2026-11-03: the How Good a Watch slide's ±9 is "a watch today, on dry land", on one
+  line, not "a good watch today, on a warm wrist, on dry land" (`PLAN.md`, section 21). A
+  good mechanical watch, certified by COSC, does better than ±9.
+- 2026-11-03: the Credits slide is now the Thank You slide, with lines from songs that
+  change with no click (`watches/docs/slide-patterns.md`, "Words that run on their own").
+- 2026-11-03: lines from songs in copyright are in a private file beside the worktrees,
+  not in the repo, the article or a published build (`watches/docs/slide-patterns.md`,
+  "Words that run on their own"). The article lists the songs by title and writer.
+- 2026-11-03: the Thank You slide does not name its songs. They are an Easter egg for the
+  room to recognize. The speaker notes name them for a question, and the article lists them.
+- 2026-11-03: the Four Clocks slide says that H2 was abandoned for H3 and never sailed. Royal
+  Museums Greenwich: a fault in its balances, so it was never tested at sea.
+- 2026-11-03: with no private file, the Thank You slide cycles song titles, not the lines of
+  "My Grandfather's Clock", which is too melancholy to be the only song. Those lines moved to
+  the private file, so the repo holds no song lines. "Time" joined the titles and the article.
+- 2026-11-03: "Time" also has lines in the private file, so it plays in the room too. Its tempo
+  is an estimate: most listings I could search give about 120 bpm, and they disagree.
+- 2026-11-03: "Clocks" joined the titles, the article and the private file, for one screen only.
+  Its tempo and beats are an estimate from memory.
+- 2026-11-03: "Does Anybody Really Know What Time It Is?" joined the titles, the article and the
+  private file, for one screen. Its tempo is an estimate from online listings, about 117 bpm. Its
+  beats are from memory.
+- 2026-11-03: the Thank You slide's credits are at 14 px in the lower left, above the song lines,
+  with no links: nobody clicks a projected screen, and the article keeps the links. The slide
+  shows CC BY 2.0's address as text, because the licence asks for it with each copy.
+- 2026-11-03: "Lose Yourself" joined the titles, the article and the private file, for one screen.
+  Its tempo and beats are an estimate from memory.
+- 2026-11-04: "The Windmills of Your Mind" lost its last screen in the private file, because that
+  screen does not mention time. Its second screen stays, because it describes the Longitude From
+  Time slide. The cycle of song lines is now about 85 s.
+- 2026-11-04: the Thank You slide is now the Questions slide. Its title is "Questions?". The lines
+  above that say "Thank You slide" keep the name it had then.
+- 2026-11-04: H4's result is settled as 5 seconds slow after 81 days, on the trial to Jamaica
+  (Wikipedia, "John Harrison", and the Linda Hall page). `docs/rough-slides.md` no longer says a
+  second a month at sea.

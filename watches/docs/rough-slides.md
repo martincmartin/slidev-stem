@@ -44,7 +44,7 @@
 - Sailors could find their **latitude** easily from the stars, but **longitude** at sea was essentially unsolvable — and it was getting ships wrecked.
 - The British Parliament's **Longitude Act** offered up to **£20,000** (several million pounds today) to anyone who could determine longitude at sea to within 30 nautical miles after a transatlantic voyage.
 - The core idea: if you know the exact time back at your home port _and_ the local time where you are now (from the sun), the difference tells you how far east or west you've traveled. All you need is a clock that can survive a rolling ship, salt air, and huge swings in temperature and humidity without losing time.
-- **John Harrison** spent roughly 40 years chasing this, building a series of marine timekeepers (H1 through H4). His **H4** (1759) — a chronometer the size of a large pocket watch — kept time to about a second a month at sea.
+- **John Harrison** spent roughly 40 years chasing this, building a series of marine timekeepers (H1 through H4). His **H4** (1759) — a chronometer the size of a large pocket watch — was only 5 seconds slow after 81 days at sea, on its first trial to Jamaica.
 - What it produced: the **marine chronometer** as a category, plus real innovations in temperature-compensated bimetallic balances, the grasshopper escapement, and the idea that a small, precise watch could outperform a room-sized astronomical instrument. It set the bar for precision watchmaking for the next 150 years.
 
 ---

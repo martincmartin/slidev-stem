@@ -266,7 +266,7 @@ carries its own momentum, so a knock to your wrist, or turning it upside down,
 barely changes its rhythm.
 
 [click] How good is it? A well-calibrated mechanical watch, even an everyday
-Seiko or Citizen, is about 99.99% accurate.  A day has 86,400 seconds, so a good
+Seiko or Citizen, is about 99.99% accurate.  A day has 86,400 seconds, so that
 watch gains or loses about nine seconds a day.
 
 I'm not particularly handy with mechanical things. If I tried to build a table
@@ -2069,7 +2069,7 @@ clicks: 3
   </div>
   <div v-click="3" class="seconds-today">
     <div class="seconds-number">±9 sec a day</div>
-    <div class="seconds-caption">a good watch today,<br>on a warm wrist, on dry land</div>
+    <div class="seconds-caption">a watch today, on dry land</div>
   </div>
 </div>
 
@@ -2135,12 +2135,12 @@ minutes.
 [figure: Left, 60 minutes over 15 degrees is 4 minutes a degree; the clock within 4
 minutes for 1 degree and within 2 for half a degree, over 6 weeks at sea. Right, in
 big type, plus or minus 3 seconds a day to win £20,000, and plus or minus 9 for a
-good watch today.]
+watch today.]
 
 Now take a voyage of 6 weeks, or 42 days. To stay within 4 minutes, the clock can
 gain or lose only about 6 seconds a day. To stay within 2 minutes, it can gain or
-lose only about 3. A good mechanical watch today gains or loses about 9 seconds a
-day, on a warm wrist, on dry land. The prize asked for 3, on a rolling ship.
+lose only about 3. An everyday mechanical watch today gains or loses about 9
+seconds a day, on dry land. The prize asked for 3, on a rolling ship.
 
 > [!aside] A steady error is not the problem
 > A clock that gains exactly 6 seconds every day is as good as a perfect one, if
@@ -2156,7 +2156,7 @@ How good must that clock be? 60 minutes for 15 degrees: 4 minutes a degree. So 1
 
 [click] Now spread that over a voyage of 6 weeks, 42 days: plus or minus 3 seconds a day to win the £20,000. 6 for the £10,000.
 
-[click] A good watch today: 9. On a warm wrist, on dry land.
+[click] A watch today: 9. On dry land.
 
 IF ASKED: 240 seconds over 42 days is 5.7 a day, and 120 is 2.9. A steady error can be corrected: what matters is a rate that does not change.
 -->
@@ -2249,6 +2249,231 @@ IF ASKED: These words are from the committee's record of June 1714, in a copy fr
 -->
 
 ---
+# A picture on the left, and on the right the words and his first clock
+# (../docs/slide-layout.md)
+layout: full
+class: john-harrison
+clicks: 1
+---
+
+# John Harrison: A Carpenter's Side Project
+
+<img class="harrison-portrait" src="/harrison/portrait.jpg" alt="John Harrison, seated, in a red coat and a white wig, in a painting of about 1767.">
+
+<div class="harrison-words side-text">
+  <div>Carpenter by trade<br>Self-taught in clocks</div>
+  <div v-click="1" class="harrison-first">
+    <img src="/harrison/h1.jpg" alt="H1: a large brass machine with four dials, on a brass base.">
+    <div class="harrison-caption">H1, 1735: 5 years’ work, 75 lb</div>
+  </div>
+</div>
+
+<style>
+.slidev-layout.john-harrison .harrison-portrait {
+  position: absolute;
+  top: 92px;
+  left: 44px;
+  height: 430px;
+  border-radius: 4px;
+}
+.slidev-layout.john-harrison .harrison-words {
+  left: 450px;
+}
+.slidev-layout.john-harrison .harrison-first {
+  margin-top: 0.5em;
+}
+.slidev-layout.john-harrison .harrison-first img {
+  width: 372px;
+  border-radius: 4px;
+}
+.slidev-layout.john-harrison .harrison-caption {
+  margin-top: 6px;
+  font-size: 28px;
+  line-height: 1.2;
+}
+</style>
+
+<!-- narration
+Newton said that such a watch had not yet been made. That same year, John Harrison
+turned 21, in the north of England. He was a carpenter by trade, and he taught himself
+to make clocks.
+
+[nofigure]
+
+[click]
+
+[figure: On the left, a painting of John Harrison. On the right, H1, a large brass
+machine with four dials.]
+
+His aim was a clock for the sea that kept time within 3 seconds a day. In 1730, at
+about 37, he began one at home in Lincolnshire, probably with help from his
+brother James. It took 5 years. H1 weighs about 75 pounds, has two linked balances that
+a ship's motion does not upset, and runs with no oil at all. To see it move, watch this
+[30-second clip of H1 at Greenwich](https://www.youtube.com/watch?v=_mRTMZ3pTtM).
+
+> [!aside] What is in the painting?
+> Behind him is H3, in its traveling case. The watch in his hand is not H4: it is a
+> watch of 1753, made to his design by John Jefferys. That watch showed him that a
+> small timekeeper could work.
+
+-->
+
+<!--
+Not yet, said Newton. That same year, Harrison turned 21. A carpenter, self-taught in clocks. This meetup is for side projects: here is the side project that changed the world.
+
+[click] H1. Five years' work, starting at about 37, at home. 75 pounds. Aim: 3 seconds a day.
+
+IF ASKED: The portrait shows H3 behind him and a 1753 watch by John Jefferys in his hand, not H4. It began as a side project, but from 1737 the Board of Longitude paid him for the work. A 30-second clip of H1 moving is linked in the article.
+-->
+
+---
+# One bar to a clock, all on one scale of years (components/ClockBar.vue)
+layout: full
+class: four-clocks
+clicks: 5
+# From Andrewes, The Quest for Longitude, 1996, p. 234, as in Cattani, Ferriani and
+# Lanza, "Deconstructing the Outsider Puzzle", 2017, Table 1.
+payments:
+  - { date: "1737-06-30", pounds: 250 }
+  - { date: "1741-01-16", pounds: 500 }
+  - { date: "1746-06-04", pounds: 500 }
+  - { date: "1753-07-17", pounds: 500 }
+  - { date: "1755-06-19", pounds: 500 }
+  - { date: "1757-11-28", pounds: 500 }
+  - { date: "1760-07-18", pounds: 500 }
+  - { date: "1761-03-12", pounds: 250 }
+  - { date: "1761-10-13", pounds: 200 }
+  - { date: "1762-06-03", pounds: 300 }
+  - { date: "1762-08-17", pounds: 1500 }
+  - { date: "1763-08-09", pounds: 300 }
+  - { date: "1764-09-18", pounds: 1000 }
+  - { date: "1765-02-09", pounds: 15 }
+  - { date: "1765-10-28", pounds: 7500 }
+  - { date: "1773-06-19", pounds: 8750 }
+---
+
+# Four Clocks, 43 Years
+
+<div class="clock-rows">
+  <ClockBar name="H1: 5 years, 75 lb" picture="harrison/h1.jpg" alt="H1, a large brass machine." :from="1730" :to="1735">
+    Beat the ship’s navigator by 60 miles
+  </ClockBar>
+  <ClockBar v-click="1" name="H2: 2 years" picture="harrison/h2.jpg" alt="H2, a tall brass frame." :from="1737" :to="1739">
+    Abandoned for H3. Never sailed.
+  </ClockBar>
+  <ClockBar v-click="2" name="H3: 19 years" picture="harrison/h3.jpg" alt="H3, a brass machine with a large arc." :from="1740" :to="1759" accent>
+    <div v-click="3">Did not win. Still in use:<br>bimetallic strip, caged roller bearing</div>
+  </ClockBar>
+  <ClockBar v-click="4" name="H4: 4 years, 3 lb" picture="harrison/h4.jpg" alt="H4's movement, round and engraved, like a large pocket watch." :from="1755" :to="1759">
+    Met the Act’s top limit
+  </ClockBar>
+  <div class="clock-axis">
+    <span style="--year: 1730">1730</span>
+    <span style="--year: 1740">1740</span>
+    <span style="--year: 1750">1750</span>
+    <span style="--year: 1760">1760</span>
+    <span style="--year: 1770">1770</span>
+    <PaymentTicks v-click="5" :payments="$frontmatter.payments" />
+  </div>
+</div>
+
+<style>
+.slidev-layout.four-clocks .clock-rows {
+  --first-year: 1730;
+  --last-year: 1774; /* the end of 1773 */
+  --px-a-year: 18px;
+  --clock-photo-size: 76px;
+  --clock-photo-gap: 16px;
+  position: absolute;
+  top: 88px;
+  right: 0;
+  left: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.slidev-layout.four-clocks .clock-axis {
+  position: relative;
+  width: calc((var(--last-year) - var(--first-year)) * var(--px-a-year));
+  height: 80px;
+  margin-left: calc(var(--clock-photo-size) + var(--clock-photo-gap));
+  border-top: 2px solid var(--palette-ink);
+  font-size: 22px;
+  font-weight: 600;
+}
+.slidev-layout.four-clocks .clock-axis > span {
+  position: absolute;
+  top: 14px;
+  left: calc((var(--year) - var(--first-year)) * var(--px-a-year));
+  transform: translateX(-50%);
+}
+</style>
+
+<!-- narration
+Harrison stayed on this problem for 43 years. H1 sailed to Lisbon and back in 1736. It
+did poorly on the way out. On the way home, the ship's master put the ship 60 miles east of
+where it was, and H1 was right. That won him money for a better clock.
+
+[nofigure]
+
+[click]
+
+[nofigure]
+
+H2 took 2 years. He found a fault in its balances, so he abandoned it for H3. It never sailed.
+
+[click]
+
+[nofigure]
+
+H3 took 19 years, and it did not win. He could not get its two large, heavy balances to
+keep time well enough.
+
+[click]
+
+[nofigure]
+
+But look at what he made on the way. To cancel the effect of heat, he joined brass and
+steel in a _bimetallic strip_, which still works in thermostats. To cut friction, he kept
+rollers apart in a _caged roller bearing_, which is now nearly everywhere in machinery.
+
+[click]
+
+[nofigure]
+
+Then he gave up on big clocks. H4 took 4 years and weighs about 3 pounds: from the
+outside, a large pocket watch. In 1765, the Board agreed that it had kept time within the
+strictest limit of the Act.
+
+[click]
+
+[figure: A timeline from 1730 to 1773, with a photo and a bar for each clock. H1, 5
+years. H2, 2 years. H3, 19 years, the longest. H4, 4 years, ending the same year as H3.
+Ticks on the axis mark 16 payments, from 1737 to 1773.]
+
+The money came slowly: 16 payments over 36 years, £23,065 in all, most of it at the end. The
+last two payments are more than 70% of the total. The last, £8,750, came in 1773, after he
+appealed to King George III and Parliament acted. He was 80. He died three years later.
+
+-->
+
+<!--
+Four clocks. H1: 5 years. On the way home from Lisbon, it beat the ship’s navigator by 60 miles.
+
+[click] H2: 2 years. He found a fault, abandoned it for H3, and it never sailed.
+
+[click] H3: 19 years. And it did not win.
+
+[click] But it left two things we still use: the bimetallic strip, in thermostats, and the caged roller bearing, in nearly all machinery. The side effects of a failed project.
+
+[click] H4: 4 years, 3 pounds. It looks like a pocket watch. It met the Act's top limit.
+
+[click] And the money? 16 payments over 36 years. £23,065 in all, over 70% of it in the last two. The last came when he was 80.
+
+IF ASKED: H1 did poorly on the way to Lisbon, and I have no solid number for its seconds a day. The payments are from Andrewes, The Quest for Longitude, p. 234. Parliament's 1773 payment was £8,750, after he appealed to George III. H4 was 5 seconds slow after 81 days on the trial to Jamaica, and within 39 seconds on the trial to Barbados.
+-->
+
+---
 layout: full
 class: tk-timekeepers
 # Hidden: not in the talk. It stays as the example of every slide pattern
@@ -2335,4 +2560,89 @@ Before clocks, people told time by watching something flow.
 [click] Every one of these runs at a rate set by the outside world. A clock sets its own. Remember 15 minutes a day: the first mechanical clocks probably didn't beat it.
 
 IF ASKED: Rome's first public sundial was war loot from Sicily; Pliny says Romans followed its wrong hours for 99 years (the latitude explanation is debated). Roman hours were 1/12 of daylight, about 45 min in winter to 75 in summer. Sailors shook the glass to end a watch early: "flogging the glass."
+-->
+
+---
+layout: full
+class: questions
+# The titles show only with no private file of song lines, as on the publish run
+# (components/SongLines.vue; docs/slide-patterns.md, "Words that run on their own").
+songTitles:
+  - Rock Around the Clock
+  - My Grandfather’s Clock
+  - The Windmills of Your Mind
+  - Time
+  - Clocks
+  - Does Anybody Really Know What Time It Is?
+  - Lose Yourself
+secondsATitle: 4
+---
+
+# Questions?
+
+<div class="questions-credits">
+  <h2>Credits</h2>
+  <p>John Harrison, Thomas King, c. 1767. Public domain.</p>
+  <p>H1, H2 and H4, Mike Prince. CC BY 2.0.</p>
+  <p>H3, Tony Hisgett. CC BY 2.0.</p>
+  <p>CC BY 2.0: creativecommons.org/licenses/by/2.0</p>
+</div>
+
+<SongLines class="questions-songs" :titles="$frontmatter.songTitles" :seconds-a-title="$frontmatter.secondsATitle" />
+
+<style>
+.slidev-layout.questions .questions-credits {
+  position: absolute;
+  bottom: 136px;
+  left: 60px;
+  font-size: 14px;
+}
+.slidev-layout.questions .questions-credits h2 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.slidev-layout.questions .questions-credits p {
+  margin: 0;
+  line-height: 1.3;
+}
+.slidev-layout.questions .questions-songs {
+  position: absolute;
+  right: 0;
+  bottom: 28px;
+  left: 0;
+}
+</style>
+
+<!-- narration
+Thank you for reading. Here are some great songs about time:
+
+- "Rock Around the Clock," by Max C. Freedman and James E. Myers
+- "My Grandfather's Clock," by Henry Clay Work
+- "The Windmills of Your Mind," by Michel Legrand, Alan Bergman and Marilyn Bergman
+- "Time," by Pink Floyd
+- "Clocks," by Coldplay
+- "Does Anybody Really Know What Time It Is?" by Chicago
+- "Lose Yourself," by Eminem
+
+The painting of John Harrison is by Thomas King, about 1767, and is in the
+[public domain](https://commons.wikimedia.org/wiki/File:John_Harrison_(Gem%C3%A4lde).jpg).
+The photos of
+[H1](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(32416544837).jpg),
+[H2](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(46635402754).jpg)
+and
+[H4](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(32416554787).jpg)
+are by Mike Prince, and the photo of
+[H3](https://commons.wikimedia.org/wiki/File:Harrison_H3_Clock_(35491292866).jpg) is by
+Tony Hisgett, all under [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
+
+[nofigure]
+
+-->
+
+<!--
+Thank you. Questions? The song lines run by themselves, so this slide can stay up for the rest of the evening.
+
+IF ASKED: The lines are an Easter egg, so the slide does not name them: Rock Around the Clock (Freedman and Myers), My Grandfather's Clock (Henry Clay Work), The Windmills of Your Mind (Legrand and the Bergmans), Time (Pink Floyd), Clocks (Coldplay), Does Anybody Really Know What Time It Is? (Chicago), and Lose Yourself (Eminem).
 -->

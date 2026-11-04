@@ -56,6 +56,8 @@ How the talks, their versions and their checks work:
   licence lets anyone download it from a public repository. Write its source and
   its licence in the README of its directory. A paid stock-photo licence usually
   does not let you do this.
+- **Lines from songs in copyright** are not in this repository. A talk shows them from a
+  private file (`watches/docs/slide-patterns.md`, "Words that run on their own").
 - **The built decks in `tasks/`** contain third-party code and fonts under their
   own licences: for example Vue and Slidev (MIT), and the house fonts Fraunces
   and IBM Plex (SIL Open Font License).
