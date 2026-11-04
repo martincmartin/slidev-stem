@@ -195,3 +195,18 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   second a month at sea.
 - 2026-11-04: the private folder `stem/private/` is now the private repo `stem-private`, beside
   the checkout (`PLAN.md`, section 23). Earlier lines give the old path.
+- 2026-11-04: the talk's name is now "What Everyone Should Know About Watches": it is for a lay
+  audience. Earlier lines and tasks keep the old name.
+- 2026-11-04: the Four Clocks slide has no weights and no payment ticks, and each clock has the
+  user's short text. H4's result and how it ended are on a new slide, "Did H4 Win the Prize?". The
+  payments are now only in that slide's narration and notes. `PaymentTicks` and `payments.ts` are
+  in commit `76cc859`.
+- 2026-11-04: the Four Clocks slide's words do not give the years. The bars show them.
+- 2026-11-04: the Longitude Act slide is now the Longitude Prize slide, "The Longitude Prize, 1714".
+  "Act" does not say that it is a contest that anyone can enter, with a prize from the government.
+  The article still names the Longitude Act once, as the law. Earlier lines keep the old name.
+- 2026-11-04: the Four Clocks slide has 3 clicks, one for each clock after H1. The accent is on the
+  newest clock's bar, not always on H3's. Earlier clocks have grey bars and dimmed words.
+- 2026-11-04: the Four Clocks slide's title has no years, and its axis ends at 1760, at 26 px a year,
+  not 18: nothing on it now runs later. H3's words are on 3 lines to fit. "43 years" is on the Did
+  H4 Win the Prize? slide, with the last payment.

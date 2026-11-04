@@ -317,7 +317,7 @@ examples.
 ## A slide of words
 
 **A slide can be words alone, when a picture would show only what the
-audience knows.** The Longitude Act slide has two cards (`BigWords`, `class="card"`),
+audience knows.** The Longitude Prize slide has two cards (`BigWords`, `class="card"`),
 one a click, in a punchline's big type: its rows compare across, and its one
 accent is the larger prize. The dollar value is as large as the pounds: £20,000 means little to a modern audience. Both cards stay, so a listener who looks away can
 catch up. Not an oversight: a map of how far the prizes reach from the venue
@@ -336,9 +336,7 @@ section 21).
 
 **A timeline can be a slide's picture.** On the Four Clocks slide, each clock is a
 `ClockBar`: a photo, and a bar on one scale of years that the slide sets. The bars are
-HTML, not SVG, because only their lengths are data. H3's 19-year bar carries the
-slide, so it has the slide's one accent. Its last click adds a `PaymentTicks`: a tick on the
-axis for each payment in the frontmatter, and their total, which it computes.
+HTML, not SVG, because only their lengths are data. The newest clock's bar has the slide's one accent, and each clock before it has a grey bar and dimmed words: the accent follows the story. The length of H3's bar makes its point with no colour. Each clock's words give what happened, not how long it took. Not an oversight: the bar shows the years, so the words do not repeat them.
 
 ## Words that run on their own
 

@@ -4,7 +4,7 @@
 # (../docs/theme.md, "Palettes").
 theme: house
 colorSchema: light
-title: What Every Nerd Should Know About Watches
+title: What Everyone Should Know About Watches
 author: Martin C. Martin
 # The article, at /article: the talk for readers, with its narration and live
 # figures (docs/article.md). "@/" is this talk's directory: a relative path
@@ -34,7 +34,7 @@ article:
     view: centred cover
 ---
 
-# What Every Nerd Should Know About Mechanical Watches
+# What Everyone Should Know About Mechanical Watches
 
 Martin C. Martin
 
@@ -1883,7 +1883,7 @@ class: act-prizes
 clicks: 2
 ---
 
-# The Longitude Act, 1714
+# The Longitude Prize, 1714
 
 <div class="act-cards">
   <BigWords v-click class="card">1°<br>70 miles<br>£10,000<br>~$2.3 M<small> today</small></BigWords>
@@ -1938,7 +1938,7 @@ had been 400 miles off.
 -->
 
 <!--
-Seven years later, after disasters like these, Parliament puts up a prize.
+Seven years later, after disasters like these, Parliament puts up a prize, and anyone can enter.
 
 [click] Within 1 degree, 70 miles: £10,000. About 2.3 million dollars today.
 
@@ -2264,7 +2264,7 @@ clicks: 1
   <div>Carpenter by trade<br>Self-taught in clocks</div>
   <div v-click="1" class="harrison-first">
     <img src="/harrison/h1.jpg" alt="H1: a large brass machine with four dials, on a brass base.">
-    <div class="harrison-caption">H1, 1735: 5 years’ work, 75 lb</div>
+    <div class="harrison-caption">H1, 1735: 5 years’ work</div>
   </div>
 </div>
 
@@ -2307,7 +2307,7 @@ machine with four dials.]
 
 His aim was a clock for the sea that kept time within 3 seconds a day. In 1730, at
 about 37, he began one at home in Lincolnshire, probably with help from his
-brother James. It took 5 years. H1 weighs about 75 pounds, has two linked balances that
+brother James. It took 5 years. H1 has two linked balances that
 a ship's motion does not upset, and runs with no oil at all. To see it move, watch this
 [30-second clip of H1 at Greenwich](https://www.youtube.com/watch?v=_mRTMZ3pTtM).
 
@@ -2321,7 +2321,7 @@ a ship's motion does not upset, and runs with no oil at all. To see it move, wat
 <!--
 Not yet, said Newton. That same year, Harrison turned 21. A carpenter, self-taught in clocks. This meetup is for side projects: here is the side project that changed the world.
 
-[click] H1. Five years' work, starting at about 37, at home. 75 pounds. Aim: 3 seconds a day.
+[click] H1. Five years' work, starting at about 37, at home. Aim: 3 seconds a day.
 
 IF ASKED: The portrait shows H3 behind him and a 1753 watch by John Jefferys in his hand, not H4. It began as a side project, but from 1737 the Board of Longitude paid him for the work. A 30-second clip of H1 moving is linked in the article.
 -->
@@ -2330,58 +2330,37 @@ IF ASKED: The portrait shows H3 behind him and a 1753 watch by John Jefferys in 
 # One bar to a clock, all on one scale of years (components/ClockBar.vue)
 layout: full
 class: four-clocks
-clicks: 5
-# From Andrewes, The Quest for Longitude, 1996, p. 234, as in Cattani, Ferriani and
-# Lanza, "Deconstructing the Outsider Puzzle", 2017, Table 1.
-payments:
-  - { date: "1737-06-30", pounds: 250 }
-  - { date: "1741-01-16", pounds: 500 }
-  - { date: "1746-06-04", pounds: 500 }
-  - { date: "1753-07-17", pounds: 500 }
-  - { date: "1755-06-19", pounds: 500 }
-  - { date: "1757-11-28", pounds: 500 }
-  - { date: "1760-07-18", pounds: 500 }
-  - { date: "1761-03-12", pounds: 250 }
-  - { date: "1761-10-13", pounds: 200 }
-  - { date: "1762-06-03", pounds: 300 }
-  - { date: "1762-08-17", pounds: 1500 }
-  - { date: "1763-08-09", pounds: 300 }
-  - { date: "1764-09-18", pounds: 1000 }
-  - { date: "1765-02-09", pounds: 15 }
-  - { date: "1765-10-28", pounds: 7500 }
-  - { date: "1773-06-19", pounds: 8750 }
+clicks: 3
 ---
 
-# Four Clocks, 43 Years
+# Four Clocks
 
 <div class="clock-rows">
-  <ClockBar name="H1: 5 years, 75 lb" picture="harrison/h1.jpg" alt="H1, a large brass machine." :from="1730" :to="1735">
-    Beat the ship’s navigator by 60 miles
+  <ClockBar picture="harrison/h1.jpg" alt="H1, a large brass machine." :from="1730" :to="1735">
+    H1: Sea trial. Beat ship’s navigator by 60 miles.
   </ClockBar>
-  <ClockBar v-click="1" name="H2: 2 years" picture="harrison/h2.jpg" alt="H2, a tall brass frame." :from="1737" :to="1739">
-    Abandoned for H3. Never sailed.
+  <ClockBar v-click="1" picture="harrison/h2.jpg" alt="H2, a tall brass frame." :from="1737" :to="1739">
+    H2: Realizes design flaw. Never sailed.
   </ClockBar>
-  <ClockBar v-click="2" name="H3: 19 years" picture="harrison/h3.jpg" alt="H3, a brass machine with a large arc." :from="1740" :to="1759" accent>
-    <div v-click="3">Did not win. Still in use:<br>bimetallic strip, caged roller bearing</div>
+  <ClockBar v-click="2" picture="harrison/h3.jpg" alt="H3, a brass machine with a large arc." :from="1740" :to="1759">
+    H3: Invents bimetallic strip<br>&amp; caged roller bearing,<br>still in use today. Never sailed.
   </ClockBar>
-  <ClockBar v-click="4" name="H4: 4 years, 3 lb" picture="harrison/h4.jpg" alt="H4's movement, round and engraved, like a large pocket watch." :from="1755" :to="1759">
-    Met the Act’s top limit
+  <ClockBar v-click="3" picture="harrison/h4.jpg" alt="H4's movement, round and engraved, like a large pocket watch." :from="1755" :to="1759">
+    H4: Sea trial.
   </ClockBar>
   <div class="clock-axis">
     <span style="--year: 1730">1730</span>
     <span style="--year: 1740">1740</span>
     <span style="--year: 1750">1750</span>
     <span style="--year: 1760">1760</span>
-    <span style="--year: 1770">1770</span>
-    <PaymentTicks v-click="5" :payments="$frontmatter.payments" />
   </div>
 </div>
 
 <style>
 .slidev-layout.four-clocks .clock-rows {
   --first-year: 1730;
-  --last-year: 1774; /* the end of 1773 */
-  --px-a-year: 18px;
+  --last-year: 1760;
+  --px-a-year: 26px;
   --clock-photo-size: 76px;
   --clock-photo-gap: 16px;
   position: absolute;
@@ -2395,7 +2374,7 @@ payments:
 .slidev-layout.four-clocks .clock-axis {
   position: relative;
   width: calc((var(--last-year) - var(--first-year)) * var(--px-a-year));
-  height: 80px;
+  height: 48px;
   margin-left: calc(var(--clock-photo-size) + var(--clock-photo-gap));
   border-top: 2px solid var(--palette-ink);
   font-size: 22px;
@@ -2410,7 +2389,7 @@ payments:
 </style>
 
 <!-- narration
-Harrison stayed on this problem for 43 years. H1 sailed to Lisbon and back in 1736. It
+H1 sailed to Lisbon and back in 1736. It
 did poorly on the way out. On the way home, the ship's master put the ship 60 miles east of
 where it was, and H1 was right. That won him money for a better clock.
 
@@ -2426,12 +2405,8 @@ H2 took 2 years. He found a fault in its balances, so he abandoned it for H3. It
 
 [nofigure]
 
-H3 took 19 years, and it did not win. He could not get its two large, heavy balances to
+H3 took 19 years, and it never sailed. He could not get its two large, heavy balances to
 keep time well enough.
-
-[click]
-
-[nofigure]
 
 But look at what he made on the way. To cancel the effect of heat, he joined brass and
 steel in a _bimetallic strip_, which still works in thermostats. To cut friction, he kept
@@ -2442,35 +2417,103 @@ rollers apart in a _caged roller bearing_, which is now nearly everywhere in mac
 [nofigure]
 
 Then he gave up on big clocks. H4 took 4 years and weighs about 3 pounds: from the
-outside, a large pocket watch. In 1765, the Board agreed that it had kept time within the
-strictest limit of the Act.
+outside, a large pocket watch. In 1761, it went on a sea trial.
 
-[click]
-
-[figure: A timeline from 1730 to 1773, with a photo and a bar for each clock. H1, 5
-years. H2, 2 years. H3, 19 years, the longest. H4, 4 years, ending the same year as H3.
-Ticks on the axis mark 16 payments, from 1737 to 1773.]
-
-The money came slowly: 16 payments over 36 years, £23,065 in all, most of it at the end. The
-last two payments are more than 70% of the total. The last, £8,750, came in 1773, after he
-appealed to King George III and Parliament acted. He was 80. He died three years later.
+[figure: A timeline from 1730 to 1760, with a photo and a bar for each clock. H1's bar
+is 5 years long and H2's is 2. H3's is 19, the longest. H4's is 4, and ends the same year as H3's.]
 
 -->
 
 <!--
 Four clocks. H1: 5 years. On the way home from Lisbon, it beat the ship’s navigator by 60 miles.
 
-[click] H2: 2 years. He found a fault, abandoned it for H3, and it never sailed.
+[click] H2: 2 years in, he finds a design flaw. It never sails.
 
-[click] H3: 19 years. And it did not win.
+[click] H3: 19 years. It never sails either. But it left two things we still use: the bimetallic strip, in thermostats, and the caged roller bearing, in nearly all machinery. The side effects of a failed project.
 
-[click] But it left two things we still use: the bimetallic strip, in thermostats, and the caged roller bearing, in nearly all machinery. The side effects of a failed project.
+[click] H4: 4 years. It looks like a pocket watch. And it goes to sea.
 
-[click] H4: 4 years, 3 pounds. It looks like a pocket watch. It met the Act's top limit.
+IF ASKED: H1 did poorly on the way to Lisbon, and I have no solid number for its seconds a day.
+-->
 
-[click] And the money? 16 payments over 36 years. £23,065 in all, over 70% of it in the last two. The last came when he was 80.
+---
+# The two numbers in a punchline's type, and then how it ended
+# (docs/slide-patterns.md, "A slide of words")
+layout: full
+class: h4-prize
+clicks: 2
+---
 
-IF ASKED: H1 did poorly on the way to Lisbon, and I have no solid number for its seconds a day. The payments are from Andrewes, The Quest for Longitude, p. 234. Parliament's 1773 payment was £8,750, after he appealed to George III. H4 was 5 seconds slow after 81 days on the trial to Jamaica, and within 39 seconds on the trial to Barbados.
+# Did H4 Win the Prize?
+
+<div class="prize-words side-text">
+  <div>
+    <div class="prize-number">2 min over 42 days</div>
+    <div class="prize-caption">required</div>
+  </div>
+  <div v-click="1">
+    <div class="prize-number prize-result">5 sec over 81 days</div>
+    <div class="prize-caption">H4 at sea</div>
+  </div>
+  <div v-click="2">King George III leans on Parliament to pay Harrison.<br>Last payment: 43 years after he started, age 80.</div>
+</div>
+
+<style>
+.slidev-layout.h4-prize .prize-words {
+  left: 70px;
+  gap: 24px;
+}
+/* A punchline's type, as on the How Good a Watch slide. */
+.slidev-layout.h4-prize .prize-number {
+  @apply font-serif;
+  font-size: 76px;
+  line-height: 1.05;
+}
+.slidev-layout.h4-prize .prize-result {
+  color: var(--palette-accent);
+}
+.slidev-layout.h4-prize .prize-caption {
+  margin-top: 8px; /* clear of the y's descender */
+  font-size: 28px;
+  line-height: 1.2;
+}
+</style>
+
+<!-- narration
+Did it win? To win the top prize, the Act asked for a clock that was right within 2
+minutes after 6 weeks at sea.
+
+[nofigure]
+
+[click]
+
+[nofigure]
+
+H4 sailed for Jamaica in November 1761. After 81 days, it was 5 seconds slow.
+
+[click]
+
+[figure: In big type, 2 minutes over 42 days, required, and 5 seconds over 81 days, H4 at
+sea. Under them: King George III leans on Parliament to pay Harrison, and the last payment
+comes 43 years after he started, when he is 80.]
+
+The Board was not convinced, and sent it on a second trial, to Barbados, where it kept time
+within 39 seconds. In 1765, the Board agreed that it had kept time within the strictest
+limit of the Act. But the money came slowly: 16 payments over 36 years, £23,065 in all, most
+of it at the end. The last two payments are more than 70% of the total. The last, £8,750,
+came in 1773, 43 years after he started, after he appealed to King George III and Parliament
+acted. He was 80. He died three years later. The Act's official prize was never given to anyone.
+
+-->
+
+<!--
+Did it win? The prize asked for this: 2 minutes, over 6 weeks.
+
+[click] H4, to Jamaica, 1761. 81 days. 5 seconds slow.
+
+[click] The Board still won't pay in full. He has to go to King George III, and the King leans on Parliament. The last payment comes 43 years after he started. He's 80. He dies three years later.
+
+IF ASKED: Before sailing, H4 lost 24 seconds in 9 days, so the 5 seconds probably allows for that known rate. On the second trial, to Barbados, it kept within 39 seconds. The payments: 16 over 36 years, £23,065 in all, over 70% of it in the last two (Andrewes, The Quest for Longitude, p. 234). The last was £8,750 from Parliament in 1773. The Act's official prize was never given to anyone.
 -->
 
 ---

@@ -1,4 +1,4 @@
-# What Every Nerd Should Know About Watches
+# What Everyone Should Know About Watches
 
 The house rules for every STEM talk are in `../AGENTS.md` and `../docs/`. This
 talk's own docs are in `docs/`.

@@ -1,4 +1,4 @@
-# What Every Nerd Should Know About Watches
+# What Everyone Should Know About Watches
 
 ---
 

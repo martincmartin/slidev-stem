@@ -63,7 +63,7 @@ something else:
   last click. The callouts and the text are one stack, and the stack is centred.
 - **The picture is the whole slide:** on the Recap slide, the only text is a caption
   and a time scale.
-- **There is no picture:** on the Longitude Act slide, the words are on two cards.
+- **There is no picture:** on the Longitude Prize slide, the words are on two cards.
   On the How Good a Watch slide, a chain of steps leads to two numbers in big type.
 - **The words are the picture:** on the Isaac Newton slide, the words fill the
   slide's width, centred, in a script. They still use `side-text` to centre them.

@@ -535,3 +535,34 @@ Harrison takes 5 years to build H1, first Longitude Act submission worthy of a s
 What are some options for telling that story? With the fewest words possible. For example, the timeline says 5 years for H1 with the only text being H1.
 
 How would you tell this story in Lessig slides? Just give me the text of each slide here in the chat, no need to actually create the slides.
+
+You can drop the 75 lbs, the weight isn't significant enough.
+
+If we keep the timeline as now, for text we could have:
+H1: Sea trial. Beat ship's navigator by 60 miles.
+H2: 2 years in, realizes design flaw. Never sailed.
+H3: Invents bimetallic strip & caged roller bearing, still in use today. Never sailed.
+H4: Sea trial.
+
+And maybe put the 5 sec over 81 days vs required 2 min over 42 days and King George III Age 80 on a separate slide?
+
+Please replace:
+
+H1: 5 years
+Sea trial. Beat ship's navigator by 60 miles.
+
+With
+
+H1: Sea trial. Beat ship's navigator by 60 miles.
+
+The whole point of the timeline is that we don't need the times in text.
+
+We've studiously avoided calling it a prize up to now, but I think that's a mistake. "Longitude Prize" is a better slide title than "Longitude Act," because even if you read that as "Act of parliament", it's not clear its establishing a contest that anyone can enter with a prize payed by the government.
+
+We have a separate click for "H3: ", we don't need that, just one click for "H3: Invents ...".
+
+Should we dim the older text to help visual attention? Should the accent (blue) bar move with what's being discussed? e.g. the 5 year H1 bar starts blue, then then H2 comes H1 turns the current grey and H2 is blue, etc. So the bottom most bar is accent & regular text, older bars are grey and older text dimmed.
+
+"King George III steps in. Harrison is 80." doesn't say why he steped in or acomplished, we need something about getting paid.
+
+We can take the 43 years off the slide title, and put it on the "win the prize" slide: last payment 43 years after he started. I guess then we should shorten the axis? What should we do about the text then?

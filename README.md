@@ -4,7 +4,7 @@ Slide decks for a monthly STEM meetup around Cambridge and Somerville, MA:
 15–20 minute talks for curious non-specialists, in the back room of a bar. Each
 deck is a [Slidev](https://sli.dev) project.
 
-- What Every Nerd Should Know About Watches: [`watches/`](watches/)
+- What Everyone Should Know About Watches: [`watches/`](watches/)
 
 ## Set up, and run a talk
 

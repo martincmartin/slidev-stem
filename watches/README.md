@@ -1,4 +1,4 @@
-# What Every Nerd Should Know About Watches
+# What Everyone Should Know About Watches
 
 A [Slidev](https://github.com/slidevjs/slidev) deck for a monthly STEM meetup:
 15–20 minutes, weekday evening, back room of a bar.
