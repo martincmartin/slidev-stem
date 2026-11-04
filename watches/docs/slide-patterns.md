@@ -334,7 +334,7 @@ seconds a day" and nothing to say what it was
 ([the visual language task](../tasks/2026-10-30-part-2-visual-language/PLAN.md),
 section 21).
 
-**A timeline can be a slide's picture.** On the Four Clocks slide, each clock is a
+**A timeline can be a slide's picture.** On the Same Time, Every Tick slide, each clock is a
 `ClockBar`: a photo, and a bar on one scale of years that the slide sets. The bars are
 HTML, not SVG, because only their lengths are data. The newest clock's bar has the slide's one accent, and each clock before it has a grey bar and dimmed words: the accent follows the story. The length of H3's bar makes its point with no colour. Each clock's words give what happened, not how long it took. Not an oversight: the bar shows the years, so the words do not repeat them.
 

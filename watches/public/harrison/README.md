@@ -1,7 +1,7 @@
 # John Harrison's pictures
 
 Each picture keeps its own licence (`README.md` at the repo root, "License"). Each is
-scaled down, and its metadata is removed. The Four Clocks slide crops the four clocks
+scaled down, and its metadata is removed. The Same Time, Every Tick slide crops the four clocks
 square in CSS. The Questions slide in `slides.md` credits them.
 
 - `portrait.jpg`: [John Harrison](<https://commons.wikimedia.org/wiki/File:John_Harrison_(Gem%C3%A4lde).jpg>), by Thomas King, c. 1767. Public domain.

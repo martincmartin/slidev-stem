@@ -2333,7 +2333,9 @@ class: four-clocks
 clicks: 3
 ---
 
-# Four Clocks
+# Same Time, Every Tick
+
+On a rolling ship, hot or cold
 
 <div class="clock-rows">
   <ClockBar picture="harrison/h1.jpg" alt="H1, a large brass machine." :from="1730" :to="1735">
@@ -2343,7 +2345,7 @@ clicks: 3
     H2: Realizes design flaw. Never sailed.
   </ClockBar>
   <ClockBar v-click="2" picture="harrison/h3.jpg" alt="H3, a brass machine with a large arc." :from="1740" :to="1759">
-    H3: Invents bimetallic strip<br>&amp; caged roller bearing,<br>still in use today. Never sailed.
+    H3: Invents bimetallic strip &amp; caged<br>roller bearing, still used today. Never sailed.
   </ClockBar>
   <ClockBar v-click="3" picture="harrison/h4.jpg" alt="H4's movement, round and engraved, like a large pocket watch." :from="1755" :to="1759">
     H4: Sea trial.
@@ -2364,7 +2366,7 @@ clicks: 3
   --clock-photo-size: 76px;
   --clock-photo-gap: 16px;
   position: absolute;
-  top: 88px;
+  top: 124px;
   right: 0;
   left: 40px;
   display: flex;
@@ -2389,7 +2391,8 @@ clicks: 3
 </style>
 
 <!-- narration
-H1 sailed to Lisbon and back in 1736. It
+Four clocks, one problem. Each tick is one swing of the balance, and every swing must take
+the same time, on a rolling ship, hot or cold. H1 sailed to Lisbon and back in 1736. It
 did poorly on the way out. On the way home, the ship's master put the ship 60 miles east of
 where it was, and H1 was right. That won him money for a better clock.
 
@@ -2399,14 +2402,15 @@ where it was, and H1 was right. That won him money for a better clock.
 
 [nofigure]
 
-H2 took 2 years. He found a fault in its balances, so he abandoned it for H3. It never sailed.
+H2 took 2 years. He found a fault in its balances: a ship's turn changes the time of their
+swing. So he abandoned it for H3. It never sailed.
 
 [click]
 
 [nofigure]
 
-H3 took 19 years, and it never sailed. He could not get its two large, heavy balances to
-keep time well enough.
+H3 took 19 years, and it never sailed. The swings of its two large, heavy balances still
+varied.
 
 But look at what he made on the way. To cancel the effect of heat, he joined brass and
 steel in a _bimetallic strip_, which still works in thermostats. To cut friction, he kept
@@ -2417,7 +2421,8 @@ rollers apart in a _caged roller bearing_, which is now nearly everywhere in mac
 [nofigure]
 
 Then he gave up on big clocks. H4 took 4 years and weighs about 3 pounds: from the
-outside, a large pocket watch. In 1761, it went on a sea trial.
+outside, a large pocket watch. Its balance is small and fast, with five ticks a second. In
+1761, it went on a sea trial.
 
 [figure: A timeline from 1730 to 1760, with a photo and a bar for each clock. H1's bar
 is 5 years long and H2's is 2. H3's is 19, the longest. H4's is 4, and ends the same year as H3's.]
@@ -2425,13 +2430,13 @@ is 5 years long and H2's is 2. H3's is 19, the longest. H4's is 4, and ends the 
 -->
 
 <!--
-Four clocks. H1: 5 years. On the way home from Lisbon, it beat the ship’s navigator by 60 miles.
+Same time, every tick. Each tick is one swing of the balance, and every swing must take the same time: on a rolling ship, hot or cold. Four clocks. H1: 5 years. On the way home from Lisbon, it beat the ship’s navigator by 60 miles.
 
-[click] H2: 2 years in, he finds a design flaw. It never sails.
+[click] H2: 2 years in, he finds a design flaw: the ship's turning changes the swing. It never sails.
 
-[click] H3: 19 years. It never sails either. But it left two things we still use: the bimetallic strip, in thermostats, and the caged roller bearing, in nearly all machinery. The side effects of a failed project.
+[click] H3: 19 years. Big, heavy balances, and the swings still vary. It never sails either. But it left two things we still use: the bimetallic strip, his fix for heat, now in thermostats, and the caged roller bearing, in nearly all machinery. The side effects of a failed project.
 
-[click] H4: 4 years. It looks like a pocket watch. And it goes to sea.
+[click] H4: 4 years. It looks like a pocket watch, with a small, fast balance. And it goes to sea.
 
 IF ASKED: H1 did poorly on the way to Lisbon, and I have no solid number for its seconds a day.
 -->
@@ -2455,7 +2460,7 @@ clicks: 2
     <div class="prize-number prize-result">5 sec over 81 days</div>
     <div class="prize-caption">H4 at sea</div>
   </div>
-  <div v-click="2">King George III leans on Parliament to pay Harrison.<br>Last payment: 43 years after he started, age 80.</div>
+  <div v-click="2">King George III:<br>“By God, Harrison, I will see you righted!”<br>Last payment: 43 years after start. Age 80.</div>
 </div>
 
 <style>
@@ -2494,15 +2499,15 @@ H4 sailed for Jamaica in November 1761. After 81 days, it was 5 seconds slow.
 [click]
 
 [figure: In big type, 2 minutes over 42 days, required, and 5 seconds over 81 days, H4 at
-sea. Under them: King George III leans on Parliament to pay Harrison, and the last payment
-comes 43 years after he started, when he is 80.]
+sea. Under them: King George III says, "By God, Harrison, I will see you righted!", and the last
+payment comes 43 years after the start, when Harrison is 80.]
 
 The Board was not convinced, and sent it on a second trial, to Barbados, where it kept time
 within 39 seconds. In 1765, the Board agreed that it had kept time within the strictest
 limit of the Act. But the money came slowly: 16 payments over 36 years, £23,065 in all, most
 of it at the end. The last two payments are more than 70% of the total. The last, £8,750,
-came in 1773, 43 years after he started, after he appealed to King George III and Parliament
-acted. He was 80. He died three years later. The Act's official prize was never given to anyone.
+came in 1773, 43 years after he started. He had appealed to King George III. "By God, Harrison,
+I will see you righted!" the King told his son William, and Parliament acted. He was 80. He died three years later. The Act's official prize was never given to anyone.
 
 -->
 
@@ -2511,9 +2516,9 @@ Did it win? The prize asked for this: 2 minutes, over 6 weeks.
 
 [click] H4, to Jamaica, 1761. 81 days. 5 seconds slow.
 
-[click] The Board still won't pay in full. He has to go to King George III, and the King leans on Parliament. The last payment comes 43 years after he started. He's 80. He dies three years later.
+[click] The Board still won't pay in full. He has to go to King George III. By God, Harrison, I will see you righted! And the King leans on Parliament. The last payment comes 43 years after he started. He's 80. He dies three years later.
 
-IF ASKED: Before sailing, H4 lost 24 seconds in 9 days, so the 5 seconds probably allows for that known rate. On the second trial, to Barbados, it kept within 39 seconds. The payments: 16 over 36 years, £23,065 in all, over 70% of it in the last two (Andrewes, The Quest for Longitude, p. 234). The last was £8,750 from Parliament in 1773. The Act's official prize was never given to anyone.
+IF ASKED: The King's words are in Sobel, Longitude, p. 147. He said them to Harrison's son William, in about 1772, and they seem to go back to an account by William's son in 1835. Before sailing, H4 lost 24 seconds in 9 days, so the 5 seconds probably allows for that known rate. On the second trial, to Barbados, it kept within 39 seconds. The payments: 16 over 36 years, £23,065 in all, over 70% of it in the last two (Andrewes, The Quest for Longitude, p. 234). The last was £8,750 from Parliament in 1773. The Act's official prize was never given to anyone.
 -->
 
 ---

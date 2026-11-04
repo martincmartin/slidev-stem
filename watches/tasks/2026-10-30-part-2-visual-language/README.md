@@ -210,3 +210,10 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
 - 2026-11-04: the Four Clocks slide's title has no years, and its axis ends at 1760, at 26 px a year,
   not 18: nothing on it now runs later. H3's words are on 3 lines to fit. "43 years" is on the Did
   H4 Win the Prize? slide, with the last payment.
+- 2026-11-04: H3's words on the Four Clocks slide are on 2 lines, with "still used today". The break
+  falls inside "caged roller bearing", so that "Invents" stays.
+- 2026-11-04: the Did H4 Win the Prize? slide quotes King George III. The user confirmed the words
+  in Sobel, Longitude, p. 147.
+- 2026-11-04: the Four Clocks slide is now the Same Time, Every Tick slide, with the subtitle "On a
+  rolling ship, hot or cold". It names the real struggle, a swing that always takes the same time,
+  without its technical name. Earlier lines keep the old name.

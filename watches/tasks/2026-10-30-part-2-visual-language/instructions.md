@@ -566,3 +566,28 @@ Should we dim the older text to help visual attention? Should the accent (blue) 
 "King George III steps in. Harrison is 80." doesn't say why he steped in or acomplished, we need something about getting paid.
 
 We can take the 43 years off the slide title, and put it on the "win the prize" slide: last payment 43 years after he started. I guess then we should shorten the axis? What should we do about the text then?
+
+Can we fit H3 text on two lines if we shorten it? "still used today"? "used today"?
+
+Let's do "Last payment: 41 years after start. Age 80."
+
+Sorry yes 43.
+
+Nowhere do we really call out that isochronism is the real technical struggle, we quote Newton but that's a one off. Let's change the title of Four Clocks. What do you suggest? What would a Lessig slide say to communicate that, without using the word ischronism of course?
+
+"By God, Harrison, I will see you righted!" is confirmed on p. 147 of Sobel, I have a copy. So let's do:
+
+King George III: "By God, Harrison, I will see you righted!"
+
+Suggestions:
+
+Same time, every tick.
+Equal-time swings
+Equal-time ticks
+Same pace
+
+perhaps append "in all weather" or "in any sea" or "come rain or shine" or "whatever the elements." or "come storm or heat" or ", fair winds or foul" or "through heat and heave" or "whatever the sea or sky"
+
+The suffix could also be ", on rolling ship, hot or cold", how does that compare to ", in any sea"?
+
+All of that sounds good thanks.
