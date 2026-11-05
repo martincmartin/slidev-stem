@@ -350,7 +350,9 @@ the speaker notes name them.
 
 **Choose a song the room will recognize, whose lines are about knowing or telling the time, or
 about a clock or a watch.** Lines about time in general do not qualify: a song about wishing for
-more time, or about what time is like, is not about a clock.
+more time, or about what time is like, is not about a clock. A song that qualifies can also show
+lines about the Earth turning or the Sun moving, which tie to the Longitude From Time slide. Alone,
+such lines do not qualify a song.
 
 **Song lines must not be in this repo, the article or a published build.** They are in
 `watches/songs.json` of the private repo `stem-private`, beside the checkout (`docs/talks.md`,
