@@ -1,0 +1,44 @@
+<!doctype html>
+<!-- GitHub Pages serves this page for each path that is not a file, for
+     example a link to one slide: /<repo>/<talk>/5. It loads the talk's
+     index.html in its place, and the deck shows the slide of the URL. GitHub
+     Pages uses only the 404.html at the site's root, not the one that
+     `slidev build` writes. The publish workflow copies this file from the
+     default branch on each run (docs/talks.md, "Publish a talk"). -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Page not found</title>
+    <script>
+      // the first two parts of the path: the repo and the talk
+      const talk = /^\/[^/]+\/[a-z0-9-]+\//.exec(location.pathname)?.[0];
+      if (talk) {
+        fetch(talk + "index.html")
+          .then((response) => (response.ok ? response.text() : null))
+          .then((html) => {
+            if (html === null) return;
+            document.open();
+            document.write(html);
+            document.close();
+          });
+      }
+    </script>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: system-ui, sans-serif;
+        line-height: 1.5;
+      }
+      body {
+        max-width: 40rem;
+        margin: 3rem auto;
+        padding: 0 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Page not found</h1>
+    <p><a href="/slidev-stem/">The list of talks</a></p>
+  </body>
+</html>
