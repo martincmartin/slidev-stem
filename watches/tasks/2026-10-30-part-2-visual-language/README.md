@@ -219,3 +219,8 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   without its technical name. Earlier lines keep the old name.
 - 2026-11-04: the Did H4 Win the Prize? slide says "±2 min over 42 days" and "5 sec slow over 81
   days". The user confirmed that H3 took 19 years and never sailed.
+- 2026-11-04: the Questions slide's songs are now 12: "Time After Time", "TiK ToK", "Stay", "In the
+  End" and "4 Minutes" joined the titles, the article, the notes and the private file. The user set
+  the rule in `docs/slide-patterns.md`: lines about knowing or telling the time, or about a clock or
+  a watch, not time in general. The Chicago song passes, because it asks what time it is. The cycle
+  of song lines is now about 134 s. "4 Minutes" shows at 6 beats a line, for reading, not as sung.

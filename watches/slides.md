@@ -1638,7 +1638,7 @@ clicks: 5
 
 # Age of Sail: Longitude Was a Guess
 
-1741: around Cape Horn, then heading north
+Around Cape Horn, then heading north, 1741
 
 <MapLabel v-click.hide="1" view="south america" :on="[-58, -12]" centred>South America</MapLabel>
 
@@ -2622,6 +2622,11 @@ songTitles:
   - Time
   - Clocks
   - Does Anybody Really Know What Time It Is?
+  - Time After Time
+  - TiK ToK
+  - Stay
+  - In the End
+  - 4 Minutes
   - Lose Yourself
 secondsATitle: 4
 ---
@@ -2672,6 +2677,11 @@ Thank you for reading. Here are some great songs about time:
 - "Time," by Pink Floyd
 - "Clocks," by Coldplay
 - "Does Anybody Really Know What Time It Is?" by Chicago
+- "Time After Time," by Cyndi Lauper
+- "TiK ToK," by Kesha
+- "Stay," by Zedd and Alessia Cara
+- "In the End," by Linkin Park
+- "4 Minutes," by Madonna, with Justin Timberlake and Timbaland
 - "Lose Yourself," by Eminem
 
 The painting of John Harrison is by Thomas King, about 1767, and is in the
@@ -2692,5 +2702,5 @@ Tony Hisgett, all under [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/
 <!--
 Thank you. Questions? The song lines run by themselves, so this slide can stay up for the rest of the evening.
 
-IF ASKED: The lines are an Easter egg, so the slide does not name them: Rock Around the Clock (Freedman and Myers), My Grandfather's Clock (Henry Clay Work), The Windmills of Your Mind (Legrand and the Bergmans), Time (Pink Floyd), Clocks (Coldplay), Does Anybody Really Know What Time It Is? (Chicago), and Lose Yourself (Eminem).
+IF ASKED: The lines are an Easter egg, so the slide does not name them: Rock Around the Clock (Freedman and Myers), My Grandfather's Clock (Henry Clay Work), The Windmills of Your Mind (Legrand and the Bergmans), Time (Pink Floyd), Clocks (Coldplay), Does Anybody Really Know What Time It Is? (Chicago), Time After Time (Cyndi Lauper), TiK ToK (Kesha), Stay (Zedd and Alessia Cara), In the End (Linkin Park), 4 Minutes (Madonna, with Justin Timberlake and Timbaland), and Lose Yourself (Eminem).
 -->

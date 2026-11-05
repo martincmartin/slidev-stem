@@ -595,3 +595,5 @@ All of that sounds good thanks.
 I feel like "2 min " on "did H4 win..." needs a +-. We could put - on the 5, or say "5 sec slow over 81 days."
 
 H3's 19 years is fine, and I checked, H3 never sailed.
+
+The "age of sail" slide has 1741: in the subtitle, please change it to have ", 1741" at the end of the subtitle, to be consistent with the other slides.

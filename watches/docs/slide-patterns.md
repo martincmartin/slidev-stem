@@ -348,6 +348,10 @@ it. A printed page shows the first screen. The slide does not name the songs. No
 oversight: they are an Easter egg, for the room to recognize. The article lists them, and
 the speaker notes name them.
 
+**Choose a song the room will recognize, whose lines are about knowing or telling the time, or
+about a clock or a watch.** Lines about time in general do not qualify: a song about wishing for
+more time, or about what time is like, is not about a clock.
+
 **Song lines must not be in this repo, the article or a published build.** They are in
 `watches/songs.json` of the private repo `stem-private`, beside the checkout (`docs/talks.md`,
 "Private files"). That repo's `README.md` gives the format.
