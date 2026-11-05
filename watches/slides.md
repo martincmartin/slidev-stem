@@ -2460,7 +2460,7 @@ clicks: 2
     <div class="prize-number prize-result">5 sec slow over 81 days</div>
     <div class="prize-caption">H4 at sea</div>
   </div>
-  <div v-click="2">King George III:<br>“By God, Harrison, I will see you righted!”<br>Last payment: 43 years after start. Age 80.</div>
+  <div v-click="2">King George III:<br>“By God, Harrison, I will see you righted!”<br>Last payment 43 years after start. Age 80.</div>
 </div>
 
 <style>
