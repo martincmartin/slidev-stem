@@ -333,6 +333,34 @@ def test_a_slide_class_may_set_a_role(tmp_path: Path) -> None:
     )
 
 
+def test_a_slide_in_another_palette_sets_a_role_of_that_palette(tmp_path: Path) -> None:
+    """A rule whose selector names a palette class is measured in that
+    palette, not the talk's: the slide shows that palette."""
+    write(
+        tmp_path / "style.css",
+        ".slidev-layout.palette-campfire.dark { --palette-second: #80E0C0; }\n",
+    )
+    override = declarations(tmp_path).overrides[0]
+    assert override.palette_class() == "campfire"
+    palette = override.palette(lib.REFERENCE_RECIPES)
+    campfire = lib.resolve(lib.palette_recipes("campfire"))
+    assert palette["second"] == Colour(0x80, 0xE0, 0xC0)
+    assert palette["background"] == campfire["background"]
+
+
+def test_a_class_that_only_starts_like_a_palette_is_not_one(tmp_path: Path) -> None:
+    write(
+        tmp_path / "style.css",
+        ".slidev-layout.palette-preview.warm { --palette-ink: #112233; }\n",
+    )
+    override = declarations(tmp_path).overrides[0]
+    assert override.palette_class() is None
+    assert (
+        override.palette(lib.REFERENCE_RECIPES)["background"]
+        == lib.REFERENCE["background"]
+    )
+
+
 def test_a_slide_class_that_sets_a_role_changes_its_recipes_too(tmp_path: Path) -> None:
     write(
         tmp_path / "slides.md",

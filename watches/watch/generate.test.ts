@@ -335,6 +335,53 @@ test("where an arbor comes up through a face, a line lies on the face's top, in 
   }
 });
 
+test("the lume lies inside the hands and over the hour marks, solid in the subject, and `all` leaves it out", () => {
+  const lume = piece("lume");
+  assert.equal(lume.inAll, false);
+  const hosts = new Map(
+    ["chapter ring", "hour hand", "minute hand"].map((name) => [
+      name,
+      at([...piece(name).meshes], 0),
+    ]),
+  );
+  assert.equal(lume.meshes.size, hosts.size);
+  const flat = (mesh: Mesh): Point2[] =>
+    Array.from({ length: mesh.triangles.length / 3 }, (_, index) => [
+      at(mesh.triangles, 3 * index),
+      at(mesh.triangles, 3 * index + 1),
+    ]);
+  /** Inside one of the mesh's faces, seen from above. */
+  const inside = (point: Point2, mesh: Mesh): boolean => {
+    const corners = flat(mesh);
+    for (let index = 0; index < corners.length; index += 3) {
+      const [a, b, c] = [
+        at(corners, index),
+        at(corners, index + 1),
+        at(corners, index + 2),
+      ];
+      const side = (from: Point2, to: Point2): number =>
+        (to[0] - from[0]) * (point[1] - from[1]) -
+        (to[1] - from[1]) * (point[0] - from[0]);
+      const sides = [side(a, b), side(b, c), side(c, a)];
+      if (sides.every((each) => each >= 0) || sides.every((each) => each <= 0))
+        if (sides.some((each) => each !== 0)) return true;
+    }
+    return false;
+  };
+  for (const mesh of lume.meshes) {
+    const host = hosts.get(mesh.part);
+    assert.ok(host, `${mesh.name} lies on no dial piece`);
+    // paint on the host's top: an overlay at its heights, filled, no lines
+    assert.equal(mesh.overlay, true, mesh.name);
+    assert.equal(mesh.group, host.group, mesh.name);
+    assert.deepEqual(heights(mesh), heights(host), mesh.name);
+    assert.deepEqual(mesh.fill, { ink: INKS.subject, opacity: 1 }, mesh.name);
+    assert.equal(mesh.lines.length, 0, mesh.name);
+    for (const point of flat(mesh))
+      assert.ok(inside(point, host), `${mesh.name} at ${String(point)}`);
+  }
+});
+
 test("the Gears slide's spans are whole teeth of their gears, in the flash's colours, and turn with them", () => {
   const fourth = design.wheels.find((wheel) => wheel.name === "fourth");
   assert.ok(fourth);

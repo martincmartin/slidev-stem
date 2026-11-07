@@ -244,7 +244,9 @@ with that class only (the `slidev-practices` skill, "Slide classes and styles"):
 ```
 
 Put the rule in the talk's `styles/`, or in a `<style>` on the slide. Use a
-`#rrggbb` value and a role of the palettes. A recipe of the talk's palette that
+`#rrggbb` value and a role of the palettes. **For a slide with a palette
+class, name the class in the selector too** (`.slidev-layout.palette-after-hours.in-the-dark`):
+`tools/palette.py` then measures the rule in that palette, not the talk's. A recipe of the talk's palette that
 uses the role follows it: a slide that changes `--palette-muted` also changes
 `--palette-muted-wash`. `uv run tools/palette.py --talk <talk>` fails if the
 talk sets a `--palette-*` variable in any other rule, in any of its source
@@ -257,7 +259,10 @@ does not reach a global layer (the `slidev-practices` skill). In `watches`, the 
 `slide-bottom.vue`). `slidePalette()` in `watches/watch/palette.ts` reads the
 `--palette-*` values from a hidden element with the slide's classes. The layer
 sets them on itself, and gives the WebGL renderer the colours. So any class
-that changes a role reaches the watch, not only a palette class.
+that changes a role reaches the watch, not only a palette class. **A rule
+that must reach such a layer goes in a global style sheet**, not in the
+slide's `<style>`: Slidev scopes that to the slide's own elements, so the
+hidden element does not match it (`watches/style.css`, "THE LUME").
 
 ## Palette classes: a slide in another palette
 
@@ -458,7 +463,8 @@ a dark palette it is a reason to keep muted text large. The reason for Ledger
 is pasted content, above.
 
 One dark slide is fine and is recommended: **a full-bleed dark slide at the
-talk's turning point.** A dark _card_ inside a light slide reads as a
+talk's turning point.** In `watches`, the Reading a Watch in the Dark, World War I slide is
+one, in After-Hours. A dark _card_ inside a light slide reads as a
 rendering error. A dark _slide_ reads as a dark slide.
 
 ## Palettes

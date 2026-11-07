@@ -903,12 +903,26 @@ class SlideOverride:
 
     def palette(self, base: Recipes) -> Palette:
         """`base` (the talk's palette), with this rule's roles replaced: what
-        those slides show. A recipe of `base` that uses a replaced role
+        those slides show. If the selector names a house palette's class,
+        that palette is the base: the slides are in it (docs/theme.md,
+        "Palette classes"). A recipe of the base that uses a replaced role
         follows it, as in CSS."""
+        named = self.palette_class()
         return resolve(
-            base
+            (palette_recipes(named) if named else base)
             | {declaration.role: declaration.value for declaration in self.declarations}
         )
+
+    def palette_class(self) -> str | None:
+        """The house palette whose class the selector names, or None."""
+        names = {
+            name
+            for name in re.findall(r"\.palette-([\w-]+)", self.selector)
+            if name in house_palettes()
+        }
+        if len(names) > 1:
+            raise ValueError(f"{self.selector} names two palettes: {sorted(names)}")
+        return next(iter(names), None)
 
 
 @dataclass(frozen=True)

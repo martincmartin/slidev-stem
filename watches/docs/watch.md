@@ -1,13 +1,14 @@
 # The live watch and the diving board
 
 **Covers:** this talk's live art: the skeleton watch in WebGL (its files, its
-design, what each new layer needs, how a slide shows it: pieces, views and moves, the frontmatter keys, the explorer, line widths when zooming, its
+design, what each new layer needs, how a slide shows it: pieces, views and moves, the frontmatter keys, the lume on the Reading a Watch in the Dark, World War I slide, the explorer, line widths when zooming, its
 measured budgets) and the diving board on the Hairspring slide.
 **Read before** you change `watch/`, `art/`, the watch's frontmatter,
 `global-bottom.vue`, `slide-bottom.vue`, the diving board, or the slides that show
 them. The rules for WebGL art in any talk are in
 [`stem/docs/webgl.md`](../../docs/webgl.md); read it first for `webgl/`.
 **Tasks:**
+[`2026-11-05-radium-girls`](../tasks/2026-11-05-radium-girls/PLAN.md) (the lume, and the dark slide that shows it),
 [`2026-10-13-hand-periods`](../tasks/2026-10-13-hand-periods/PLAN.md) (the Ticks and Turns slide: how often each hand turns),
 [`2026-10-13-recap-hands`](../tasks/2026-10-13-recap-hands/PLAN.md) (the hands hidden from the Recap slide's slow stops),
 [`2026-10-13-arbor-seams`](../tasks/2026-10-13-arbor-seams/PLAN.md) (a line where an arbor comes up through a face),
@@ -1115,6 +1116,39 @@ picture band do not apply. The options and the evidence are in
   zooms out. The section's title comes in
   after the move (`--watch-text-delay`). A step back reverses it.
 
+## The Reading a Watch in the Dark, World War I slide
+
+The first Radium Girls slide shows a watch at night: only its paint glows.
+The choices are in
+[`2026-11-05-radium-girls`](../tasks/2026-11-05-radium-girls/PLAN.md).
+
+- **The slide is dark.** Its class is `palette-after-hours`, the talk's one
+  dark slide, at its turn ([`theme.md`](../../docs/theme.md), "Dark
+  palettes"). The watch follows the class, as it follows any palette class.
+- **Only the case shows**, dimmed (`art` and `artDim`: the case band, lugs,
+  strap and crown). At night, the movement does not show. At click 2, the
+  `lume` piece fades in: the hour plots and the paint on the hour and minute
+  hands, with no hand outlines, as a radium dial looks in the dark.
+- **The lume is in the subject's colour, and the slide sets the subject to
+  the paint's glow** (`style.css`, "THE LUME"). On this slide the paint is
+  the subject, and paint is a substance, which may be a solid fill in a line
+  colour ([`illustrations.md`](../../docs/illustrations.md), "Colour"). Not
+  an oversight: the second would glow as well, but the second and its wash
+  say "look here", and `scenecheck` allows them on a mark's mesh only. The
+  rule is in `style.css`, not in the slide's `<style>`: Slidev scopes that,
+  and `slidePalette` reads the palette from an element with the slide's
+  classes only. Its selector names the palette class too, so
+  `tools/palette.py` measures it in After-Hours.
+- **The lume is overlays.** Each piece of it has the heights of the solid
+  that it lies on (the chapter ring, a hand), as the Gears slide's span has
+  (`lumeMeshes` in `watch/generate.ts`). Not an oversight: a solid of its
+  own would stack on the hand, and lift the minute hand and the pivot on
+  every slide. The paint on a hand is a lozenge inside the hand, so the
+  hand's outline never covers it; an hour plot is a baton over the hour
+  mark, which it hides.
+- **The mechanism rests** (`watchAtRest: true`): no part that moves shows,
+  so the article's figures are still and need no pause button.
+
 ## Balance rim motion
 
 Four radial screws make the rim's swing visible on the cover and the Balance Wheel slide.
@@ -1168,25 +1202,26 @@ Each mesh of the watch belongs to one piece, with a name that a slide uses
 (`Scene.pieces`; each solid names its piece where `watch/generate.ts` draws
 it). `art: all` shows every piece but the marks that only a slide that names
 them shows: the Gears slide's spans, the Gear Train slide's one-step
-wheel and raised strap, the Mainspring slide's props, and the motion works
-with the Hour Hand slide's one-step hour wheel (`inAll: false`,
+wheel and raised strap, the Mainspring slide's props, the motion works
+with the Hour Hand slide's one-step hour wheel, and the lume (`inAll: false`,
 `webgl/scene.ts`).
 
-| Pieces                                                                                | What they are                                                                    |
-| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `escape wheel`, `fourth wheel`, `third wheel`, `centre wheel`                         | a train wheel with its hub                                                       |
-| `escape pinion`, `fourth pinion`, … ; `escape arbor`, `fourth arbor`, …               | its pinion; its arbor, which stands on the wheel                                 |
-| `barrel`, `mainspring`, `barrel arbor`                                                | the barrel; the arbor has the key's square                                       |
-| `balance wheel`, `balance staff`, `hairspring`, `collet`, `stud`                      | the balance wheel with its screws, and the spring                                |
-| `roller`, `impulse jewel`, `pallet fork`                                              | the rest of the escapement                                                       |
-| `fourth wheel span`, `escape pinion span`; `… span plain`                             | the Gears slide's span, in the flash's colours; in the gear's own inks, to flash |
-| `escape wheel drive`, `fourth wheel drive`, `third wheel drive`, `centre wheel drive` | the [drive arrow](#the-drive-arrow) on that wheel                                |
-| `one-step wheel`, `raised strap`                                                      | the Gear Train slide's one-step wheel, and the strap above it                    |
-| `cannon pinion`, `minute wheel`, `minute pinion`, `minute arbor`, `hour wheel`        | the [motion works](#the-motion-works)                                            |
-| `one-step hour wheel`, `one-step hour hand`                                           | the Hour Hand slide's one-step wheel, and its hand                               |
-| `mainspring stud`, `mainspring rest`, `winding key`                                   | the Mainspring slide's props; the story shows the key                            |
-| `seconds hand`, `minute hand`, `hour hand`, `centre pivot`, `chapter ring`            | the dial side                                                                    |
-| `case band`, `strap`, `lug`, `crown`                                                  | the case                                                                         |
+| Pieces                                                                                | What they are                                                                                                                                        |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `escape wheel`, `fourth wheel`, `third wheel`, `centre wheel`                         | a train wheel with its hub                                                                                                                           |
+| `escape pinion`, `fourth pinion`, … ; `escape arbor`, `fourth arbor`, …               | its pinion; its arbor, which stands on the wheel                                                                                                     |
+| `barrel`, `mainspring`, `barrel arbor`                                                | the barrel; the arbor has the key's square                                                                                                           |
+| `balance wheel`, `balance staff`, `hairspring`, `collet`, `stud`                      | the balance wheel with its screws, and the spring                                                                                                    |
+| `roller`, `impulse jewel`, `pallet fork`                                              | the rest of the escapement                                                                                                                           |
+| `fourth wheel span`, `escape pinion span`; `… span plain`                             | the Gears slide's span, in the flash's colours; in the gear's own inks, to flash                                                                     |
+| `escape wheel drive`, `fourth wheel drive`, `third wheel drive`, `centre wheel drive` | the [drive arrow](#the-drive-arrow) on that wheel                                                                                                    |
+| `one-step wheel`, `raised strap`                                                      | the Gear Train slide's one-step wheel, and the strap above it                                                                                        |
+| `cannon pinion`, `minute wheel`, `minute pinion`, `minute arbor`, `hour wheel`        | the [motion works](#the-motion-works)                                                                                                                |
+| `one-step hour wheel`, `one-step hour hand`                                           | the Hour Hand slide's one-step wheel, and its hand                                                                                                   |
+| `mainspring stud`, `mainspring rest`, `winding key`                                   | the Mainspring slide's props; the story shows the key                                                                                                |
+| `seconds hand`, `minute hand`, `hour hand`, `centre pivot`, `chapter ring`            | the dial side                                                                                                                                        |
+| `case band`, `strap`, `lug`, `crown`                                                  | the case                                                                                                                                             |
+| `lume`                                                                                | the paint on the hands and the hour marks ([The Reading a Watch in the Dark, World War I slide](#the-reading-a-watch-in-the-dark-world-war-i-slide)) |
 
 A new part of the model names its piece when it is drawn (`solids.add`), and
 a slide can show it at once. `watch/deck.test.ts` fails if a slide names a

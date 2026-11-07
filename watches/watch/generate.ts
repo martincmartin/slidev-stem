@@ -54,6 +54,7 @@ import {
   polygon,
   radians,
 } from "./shapes.ts";
+import type { DaggerOptions } from "./shapes.ts";
 import {
   drivenWheelTeeth,
   drivingPinionLeaves,
@@ -382,7 +383,8 @@ export interface Watch {
 interface Paint {
   /** The subject's faces. */
   subjectWash: Colour;
-  /** A small dark part of the subject, solid: the jewel. */
+  /** A small dark part of the subject, solid: the jewel. Or a substance
+   *  that is a slide's subject: the lume. */
   subjectFill: Colour;
   /** Muted, solid: the hands. */
   mutedFill: Colour;
@@ -2371,20 +2373,7 @@ function dialSolids(kit: Kit): Solid {
     minutePart,
     "body",
     minuteGroup,
-    ringsOf([
-      turned(
-        dagger({
-          length: 206,
-          maxWidth: 13,
-          widestAt: 0.7,
-          tail: 12,
-          tailWidth: 3,
-          neck: 26,
-        }),
-        design.hands.minute * 6,
-      ),
-      line(3),
-    ]),
+    ringsOf([minuteHandPath(design), line(3)]),
     mutedFill,
   );
   solids.add(
@@ -2398,19 +2387,117 @@ function dialSolids(kit: Kit): Solid {
   return ringSolid;
 }
 
+/** The hour hand, pointing at 12 from its arbor. */
+const HOUR_HAND: DaggerOptions = {
+  length: 140,
+  maxWidth: 17,
+  widestAt: 0.62,
+  tail: 10,
+  tailWidth: 3,
+  neck: 26,
+};
+
+/** The minute hand, pointing at 12 from its arbor. */
+const MINUTE_HAND: DaggerOptions = {
+  length: 206,
+  maxWidth: 13,
+  widestAt: 0.7,
+  tail: 12,
+  tailWidth: 3,
+  neck: 26,
+};
+
+/** The hour hand's angle at the design's time, in degrees from 12. */
+function hourHandAngle(design: Design): number {
+  return (design.hands.hour + design.hands.minute / 60) * 30;
+}
+
+/** The minute hand's angle at the design's time, in degrees from 12. */
+function minuteHandAngle(design: Design): number {
+  return design.hands.minute * 6;
+}
+
 /** The hour hand about its arbor, at the design's time. */
 function hourHandPath(design: Design): Path {
-  return turned(
-    dagger({
-      length: 140,
-      maxWidth: 17,
-      widestAt: 0.62,
-      tail: 10,
-      tailWidth: 3,
-      neck: 26,
-    }),
-    (design.hands.hour + design.hands.minute / 60) * 30,
-  );
+  return turned(dagger(HOUR_HAND), hourHandAngle(design));
+}
+
+/** The minute hand about its arbor, at the design's time. */
+function minuteHandPath(design: Design): Path {
+  return turned(dagger(MINUTE_HAND), minuteHandAngle(design));
+}
+
+// ---- the lume (docs/watch.md, "The Reading a Watch in the Dark, World War I slide") ----
+/** How far the lume on a hand stays inside the hand's outline: from its
+ *  tip and its neck along the hand, and from its widest point across. More
+ *  than half the hand's line (3), so the outline never covers the lume. */
+const LUME_INSET = { along: 12, across: 3 };
+/** An hour plot on the chapter ring: a baton over the hour mark (200 to 220
+ *  in `decalMeshes`, 4 wide), so that the plot hides it. */
+const LUME_PLOT = { from: 198, to: 222, width: 10 };
+
+/** The lume on a hand that points at 12: a lozenge inside the dagger, widest
+ *  where the hand is. */
+function handLumePath(hand: DaggerOptions): Path {
+  const widest = hand.length * hand.widestAt;
+  const half = hand.maxWidth / 2 - LUME_INSET.across;
+  const from = (hand.neck ?? 0) + LUME_INSET.along;
+  const to = hand.length - LUME_INSET.along;
+  return polygon([
+    [0, -to],
+    [half, -widest],
+    [0, -from],
+    [-half, -widest],
+  ]);
+}
+
+/** The twelve hour plots, about the watch's centre. */
+function hourPlotsPath(): Path {
+  const half = LUME_PLOT.width / 2;
+  const plot = polygon([
+    [-half, -LUME_PLOT.to],
+    [half, -LUME_PLOT.to],
+    [half, -LUME_PLOT.from],
+    [-half, -LUME_PLOT.from],
+  ]);
+  const plots = new Path();
+  for (let hour = 0; hour < 12; hour++) plots.append(turned(plot, hour * 30));
+  return plots;
+}
+
+/** The luminous paint: on the hour hand, the minute hand and the chapter
+ *  ring's hour marks. Each is an overlay with the heights of the solid that
+ *  it lies on, as the Gears slide's span is, so it adds no height to the
+ *  stack: a solid would lift the hands above it on every slide. Paint is a
+ *  substance, and the only slide that shows it is about it: so it is solid
+ *  in the subject's colour, with no outline, and that slide sets the subject
+ *  to the paint's glow (style.css, "THE LUME"). */
+function lumeMeshes(
+  design: Design,
+  on: { hour: Solid; minute: Solid; ring: Solid },
+  heightOf: (which: Solid) => Heights,
+  paint: Paint,
+): Mesh[] {
+  const lying = (solid: Solid, path: Path): Mesh => {
+    const { bottom, top } = heightOf(solid);
+    return extrude(ringsOf([path, null]), bottom, top, {
+      name: `${solid.piece.name} lume`,
+      part: solid.part.name,
+      group: solid.group,
+      fill: paint.subjectFill,
+      lineOrder: top,
+      inDrawing: false,
+      overlay: true,
+    });
+  };
+  return [
+    lying(on.ring, hourPlotsPath()),
+    lying(on.hour, turned(handLumePath(HOUR_HAND), hourHandAngle(design))),
+    lying(
+      on.minute,
+      turned(handLumePath(MINUTE_HAND), minuteHandAngle(design)),
+    ),
+  ];
 }
 
 /** The balance staff, which the drawing lacks: it rises through the spring's
@@ -2662,6 +2749,17 @@ export function generate(design: Design = DESIGN): Watch {
 
   const decals = decalMeshes(paint, root, ringTop);
   meshes.push(...decals);
+  const lume = lumeMeshes(
+    design,
+    {
+      hour: solidAt(parts.hour, "body"),
+      minute: solidAt(parts.minute, "body"),
+      ring: ringSolid,
+    },
+    heightOf,
+    paint,
+  );
+  meshes.push(...lume);
 
   // the Mainspring slide's props (docs/watch.md, "The Mainspring slide")
   const mainspringMesh = lookup(
@@ -2735,6 +2833,9 @@ export function generate(design: Design = DESIGN): Watch {
       .meshes.add(leaves);
   }
   for (const mesh of decals) ringSolid.piece.meshes.add(mesh);
+  // the Reading a Watch in the Dark, World War I slide's glow: not in `all`
+  const lumePiece = kit.pieces.make("lume", { inAll: false });
+  for (const mesh of lume) lumePiece.meshes.add(mesh);
   // a slide names the arrow that it shows: not in `all`
   for (const arrow of driveArrows) {
     const piece = kit.pieces.make(`${arrow.wheel.name} wheel drive`, {

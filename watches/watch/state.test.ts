@@ -384,8 +384,9 @@ test("a slide shows the meshes of its pieces, or all but the marks, in its named
   const all = stageState(watch, watchState({ art: "all" }, 0) ?? assert.fail());
   // every mesh but those of the pieces that only a slide that names them
   // shows: the drive arrows, the Gears slide's spans, the Gear Train slide's
-  // one-step wheel and raised strap, the Mainspring slide's props, and the
-  // motion works with the Hour Hand slide's one-step hour wheel
+  // one-step wheel and raised strap, the Mainspring slide's props, the
+  // motion works with the Hour Hand slide's one-step hour wheel, and the
+  // Reading a Watch in the Dark, World War I slide's lume
   const marks = watch.scene.pieces.filter((piece) => !piece.inAll);
   assert.deepEqual(marks.map((piece) => piece.name).sort(), [
     "cannon pinion",
@@ -397,6 +398,7 @@ test("a slide shows the meshes of its pieces, or all but the marks, in its named
     "fourth wheel span",
     "fourth wheel span plain",
     "hour wheel",
+    "lume",
     "mainspring rest",
     "mainspring stud",
     "minute arbor",

@@ -2522,6 +2522,402 @@ IF ASKED: The King's words are in Sobel, Longitude, p. 147. He said them to Harr
 -->
 
 ---
+# A dark slide at the talk's turn (../docs/theme.md, "Dark palettes"): night
+# on the Western Front. Only the case shows, dimmed into the night. At click 2
+# the lume fades in, in the subject, which style.css sets to the paint's glow
+# on this slide: at night, only the paint shows (docs/watch.md, "The Reading
+# a Watch in the Dark slide"). The camera frames the case at every click. No
+# part that moves shows, so the mechanism rests: the article's figures are
+# then still, with no pause button
+layout: full
+class: palette-after-hours in-the-dark
+art: &case [case band, lug, strap, crown]
+artView: [case band, crown]
+artDim: *case
+watchAtRest: true
+artClicks:
+  2: { art: [*case, lume] }
+clicks: 2
+---
+
+# Reading a Watch in the Dark, World War I
+
+<div class="dark-words side-text">
+  <div v-click="1" class="dark-paragraph text-dims">Strike a match:<br>draw a sniper’s fire</div>
+  <div v-click="2" class="dark-paragraph text-dims after-watch-fade">Undark:<br><em>radium paint</em></div>
+</div>
+
+<style>
+/* The house's text beside a picture (side-text). Each click adds a
+   paragraph, and the ones before it dim (style.css, "TEXT DIMS"). */
+.slidev-layout.in-the-dark .dark-words {
+  left: 580px;
+}
+.slidev-layout.in-the-dark .dark-paragraph + .dark-paragraph {
+  margin-top: 0.7em;
+}
+.slidev-layout.in-the-dark
+  .dark-paragraph:has(~ .dark-paragraph:not(.slidev-vclick-hidden)) {
+  --text-dim: var(--text-dimmed);
+}
+/* The paint is the slide's one accent. */
+.slidev-layout.in-the-dark .dark-paragraph em {
+  font-style: normal;
+  color: color-mix(
+    in srgb,
+    var(--palette-accent),
+    var(--palette-background) var(--text-dim)
+  );
+}
+</style>
+
+<!-- narration
+[figure: A wristwatch in the dark: its wheels, hands and case are faint shapes,
+barely lighter than the night around them.]
+
+Harrison was paid in the end, at 80. The next people to change the watch never
+were.
+
+In World War I, on the Western Front, soldiers lived in trenches, and much of
+the war happened at night. A soldier on watch needed the time, and in the dark he
+could not read his watch.
+
+[click]
+
+He could strike a match. But a light in a trench gave a sniper a target.
+
+[click]
+
+[figure: The same watch in the dark. Its hour marks and the hour and minute
+hands glow a pale green, and they show the time.]
+
+The answer was a paint that glowed by itself. Its secret was _radium_, an
+element that Marie and Pierre Curie had found in 1898. Radium gives off
+radiation, and the radiation makes a crystal mixed with it, zinc sulfide, glow.
+The U.S. Radium Corporation sold its paint as _Undark_. On a watch's hands and
+hour marks, it showed the time all night, with no light to charge it first.
+Demand for luminous watches and instruments surged in the war.
+
+> [!aside] Who made it?
+> The company that made Undark began in 1914, as the Radium Luminous Material
+> Corporation, and took the name U.S. Radium in 1921. Ingersoll sold radium-dial
+> watches, its Radiolites, from 1916. Undark's glow was a faint blue-green.
+
+-->
+
+<!--
+Harrison got paid in the end, at 80. The next people to change the watch never were. World War One, the Western Front. Night, in a trench. What time is it?
+
+[click] You could strike a match. And give a sniper something to aim at.
+
+[click] The answer: a paint that glows by itself. Radium, the element the Curies found in 1898, mixed with a crystal that its radiation makes glow. The U.S. Radium Corporation called it Undark. It glows all night.
+
+IF ASKED: The company began in 1914 as the Radium Luminous Material Corporation, and became U.S. Radium in 1921. Ingersoll's Radiolite watches had radium dials from 1916. Undark was radium mixed with zinc sulfide, and gave a faint blue-green light.
+-->
+
+---
+# The photo on the left and the words on the right
+# (../docs/slide-layout.md). Each click adds a paragraph, and the ones
+# before it dim
+layout: full
+class: lip-dip-paint
+clicks: 2
+---
+
+# Lip, Dip, Paint
+
+<img class="painters-photo" src="/radium/painters.jpg" alt="Young women in a row at long wooden desks, in a bright factory room with tall windows, each bent over her work.">
+
+<div class="painters-words side-text">
+  <div class="painters-paragraph text-dims">4,000 women<br>painted dials</div>
+  <div v-click="1" class="painters-paragraph text-dims">Shaped brush <em>with lips</em></div>
+  <div v-click="2" class="painters-paragraph text-dims">Radium goes into bone</div>
+</div>
+
+<style>
+.slidev-layout.lip-dip-paint .painters-photo {
+  position: absolute;
+  top: 110px;
+  left: 40px;
+  height: 380px;
+  border-radius: 4px;
+}
+/* The house's text beside a picture (side-text). Each click adds a
+   paragraph, and the ones before it dim (style.css, "TEXT DIMS"). */
+.slidev-layout.lip-dip-paint .painters-words {
+  left: 556px;
+}
+.slidev-layout.lip-dip-paint .painters-paragraph + .painters-paragraph {
+  margin-top: 0.7em;
+}
+.slidev-layout.lip-dip-paint
+  .painters-paragraph:has(~ .painters-paragraph:not(.slidev-vclick-hidden)) {
+  --text-dim: var(--text-dimmed);
+}
+/* The rule that killed them is the slide's one accent. */
+.slidev-layout.lip-dip-paint .painters-paragraph em {
+  font-style: normal;
+  color: color-mix(
+    in srgb,
+    var(--palette-accent),
+    var(--palette-background) var(--text-dim)
+  );
+}
+</style>
+
+<!-- narration
+Thousands of young women were hired to paint those tiny dials by hand: about
+4,000 in the United States and Canada. It was a good job, in bright, clean
+rooms. They were paid by the dial, about a penny and a half each, and a fast
+painter did 250 dials in a shift. They were told the paint was harmless. Some
+painted their nails and their teeth with it, for fun.
+
+[click]
+
+The numbers were tiny, so the brush needed a fine point, and after a few
+strokes its bristles spread. So their supervisors taught them to point it with
+their lips: _lip, dip, paint_. With every dial, they swallowed a little radium.
+
+[click]
+
+[figure: A photo of dial painters at work, about 1922. Beside it: 4,000 women
+painted dials; they shaped the brush with their lips; radium goes into bone.]
+
+The body takes radium for calcium, and builds it into bone. There it stays,
+and its radiation works from inside, for years. First the teeth ached and came
+loose. Then the jaw rotted, and some of the women got bone cancer.
+
+-->
+
+<!--
+Thousands of young women painted those dials, about 4,000 in the US and Canada. Good pay, by the dial. They were told it was harmless. Some painted their nails and teeth with it, for fun.
+
+[click] The brush has to come to a fine point, and it spreads after a few strokes. So the supervisors taught them: point it with your lips. Lip, dip, paint. Every dial, a little radium.
+
+[click] The body takes radium for calcium. It goes into the bone, and stays there. Teeth ache, then come loose. Then the jaw. Then cancer.
+
+IF ASKED: About a penny and a half a dial, 250 dials in a shift. USRC itself hired about 70 women to handle the radium; the 4,000 is for all the companies in the US and Canada. The photo is USRC's plant, about 1922.
+-->
+
+---
+# Words alone, by year (docs/slide-patterns.md, "A slide of words"). Each
+# click adds a year, the years before it dim, and the punchline ends it
+layout: full
+class: glowing-bones
+clicks: 3
+---
+
+# Bones That Glow
+
+<div class="bones-rows side-text">
+  <div class="bones-row text-dims"><span class="bones-year">1922</span><span>Mollie Maggia dies of “syphilis”</span></div>
+  <div v-click="1" class="bones-row text-dims"><span class="bones-year">1924</span><span>Harvard finds radium. The company:<br>“every girl is in perfect condition”</span></div>
+  <div v-click="2" class="bones-row text-dims"><span class="bones-year">1927</span><span>Exhumed, her bones expose photo film</span></div>
+  <div v-click="3" class="bones-punchline">Not syphilis. <em>Radium.</em></div>
+</div>
+
+<style>
+/* Words alone, centered under the title. The years are a column of their
+   own, so each row's words start at one edge. */
+.slidev-layout.glowing-bones .bones-rows {
+  left: 80px;
+}
+.slidev-layout.glowing-bones .bones-row {
+  display: grid;
+  grid-template-columns: 120px auto;
+}
+.slidev-layout.glowing-bones .bones-rows > * + * {
+  margin-top: 0.7em;
+}
+.slidev-layout.glowing-bones
+  .bones-row:has(~ :not(.slidev-vclick-hidden)) {
+  --text-dim: var(--text-dimmed);
+}
+/* A punchline's type, as on the How Good a Watch slide, a little smaller to
+   fit under the years. "Radium" is the slide's one accent. */
+.slidev-layout.glowing-bones .bones-punchline {
+  @apply font-serif;
+  font-size: 60px;
+  line-height: 1.1;
+  transition: opacity var(--text-fade);
+}
+.slidev-layout.glowing-bones .bones-punchline em {
+  font-style: normal;
+  color: var(--palette-accent);
+}
+</style>
+
+<!-- narration
+In 1922, Mollie Maggia, a dial painter, died. Her teeth had come out,
+and her jaw had rotted: when her dentist touched it, the bone came away in his
+hand. Her death was put down to syphilis. For years, the company would point to
+that.
+
+[click]
+
+More painters fell ill. In 1924 the company asked Cecil and Katherine Drinker,
+of Harvard's School of Public Health, to look at its plant in Orange, New
+Jersey. They found radium dust everywhere, and on the painters themselves: in
+the dark, the women glowed. The Drinkers' report named radium. The company sent
+the state its own version of the report, which said that "every girl is in
+perfect condition." The Drinkers published the real one in 1925.
+
+[click]
+
+In 1927, Mollie Maggia's body was exhumed. Her bones were so radioactive that,
+laid on photographic film in the dark, they took their own picture.
+
+[click]
+
+[figure: In words, by year: 1922, Mollie Maggia dies of "syphilis". 1924,
+Harvard finds radium, and the company says that every girl is in perfect
+condition. 1927, exhumed, her bones expose photo film. Under them: not syphilis,
+radium.]
+
+It was not syphilis. It was radium.
+
+> [!aside] Which year?
+> Some accounts say that the first painter died in 1923. This one follows Kate
+> Moore's _The Radium Girls_: Mollie Maggia died on September 12, 1922, and was
+> exhumed on October 15, 1927.
+
+-->
+
+<!--
+1922. Mollie Maggia, a dial painter. Her teeth come out. Her dentist touches her jaw, and the bone comes away in his hand. The death certificate says: syphilis.
+
+[click] More women fall ill. The company calls in Harvard, just up the road from here. Cecil and Katherine Drinker find radium dust everywhere: in the dark, the women glow. So the company sends the state its own version: "every girl is in perfect condition." The Drinkers publish the real one.
+
+[click] 1927. They dig up Mollie Maggia. They lay her bones on photographic film, in the dark. The bones take their own picture.
+
+[click] Not syphilis. Radium.
+
+IF ASKED: Some accounts put the first death in 1923; Kate Moore's The Radium Girls gives Mollie Maggia's as September 12, 1922, and the exhumation as October 15, 1927. The Drinkers published in the Journal of Industrial Hygiene, August 1925.
+-->
+
+---
+# The photo on the left and the words on the right
+# (../docs/slide-layout.md): the court cases, and then what came of them,
+# each a group of its own, centered by itself. The second group fades in when
+# the first has faded out
+layout: full
+class: raise-a-hand
+clicks: 4
+---
+
+# Too Weak to Raise a Hand
+
+<img class="fryer-photo" src="/radium/fryer.jpg" alt="Grace Fryer, a young woman with short dark waved hair and a pearl necklace, in a studio portrait.">
+
+<div v-click.hide="2" class="fryer-words side-text">
+  <div class="fryer-paragraph text-dims">1927: Grace Fryer<br>and four others sue</div>
+  <div v-click="1" class="fryer-paragraph text-dims">1938, Illinois:<br>the women win</div>
+</div>
+
+<div v-click="2" class="fryer-words side-text">
+  <div class="fryer-paragraph text-dims">1941, MIT: from their<br>bones, a safe limit</div>
+  <div v-click="3" class="fryer-paragraph text-dims">Abuses like these led<br>to <em>labor laws and OSHA</em></div>
+  <div v-click="4" class="fryer-paragraph text-dims">Today: tritium, or<br>paint that stores light</div>
+</div>
+
+<style>
+.slidev-layout.raise-a-hand .fryer-photo {
+  position: absolute;
+  top: 100px;
+  left: 60px;
+  height: 420px;
+  border-radius: 4px;
+}
+/* The house's text beside a picture (side-text). Each click adds a
+   paragraph, and the ones before it dim (style.css, "TEXT DIMS"). A group
+   that comes in waits for the other to fade out (style.css, "TEXT FADES"). */
+.slidev-layout.raise-a-hand .fryer-words {
+  left: 440px;
+}
+.slidev-layout.raise-a-hand .fryer-words.slidev-vclick-target {
+  transition: opacity var(--text-fade);
+}
+.slidev-layout.raise-a-hand
+  .fryer-words.slidev-vclick-target:not(.slidev-vclick-hidden) {
+  transition-delay: var(--text-fade);
+}
+.slidev-layout.raise-a-hand .fryer-paragraph + .fryer-paragraph {
+  margin-top: 0.7em;
+}
+.slidev-layout.raise-a-hand
+  .fryer-paragraph:has(~ .fryer-paragraph:not(.slidev-vclick-hidden)) {
+  --text-dim: var(--text-dimmed);
+}
+/* What came of it is the slide's one accent. */
+.slidev-layout.raise-a-hand .fryer-paragraph em {
+  font-style: normal;
+  color: color-mix(
+    in srgb,
+    var(--palette-accent),
+    var(--palette-background) var(--text-dim)
+  );
+}
+</style>
+
+<!-- narration
+Grace Fryer had painted dials since she was 18. She lost her teeth, and in
+time she needed a brace to sit up. It took her two years to find a lawyer who
+would take on the company. In 1927, she and four other women sued. At their first hearing, in
+January 1928, two of them were in bed, and none could raise an arm to take the
+oath. They settled that year: $10,000 each, $600 a year, and their medical bills.
+Grace Fryer died in 1933.
+
+[click]
+
+[figure 1: Grace Fryer's portrait. Beside it: 1927, Grace Fryer and four others
+sue; 1938, Illinois, the women win.]
+
+In Ottawa, Illinois, the dial painters of the Radium Dial Company sued too.
+Catherine Donohue was too ill to travel, so in 1938 the hearing came to her home.
+The women won, and in 1939 the Supreme Court refused to hear the company's
+appeal. Donohue did not live to see it. Cases like theirs helped to establish
+the right of a worker to sue a company for damages from abuse at work.
+
+[click]
+
+At MIT, Robley Evans measured how much radium the painters' bodies held, and
+what it did to them. In 1941, his data set the first limit for radium in the
+body: a tenth of a millionth of a gram. Later limits, for plutonium among
+others, were set from it.
+
+[click]
+
+Corporate abuses like these led to modern labor laws, and to the creation of
+OSHA, the Occupational Safety and Health Administration, in 1970.
+
+[click]
+
+[figure: Grace Fryer's portrait. Beside it: 1941, at MIT, a safe limit from their
+bones; abuses like these led to labor laws and OSHA; today, tritium, or paint
+that stores light.]
+
+Radium was phased out of watch dials in the 1960s. _Tritium_ took its place: a
+form of hydrogen with two extra neutrons, whose weak radiation a watch's glass
+stops. Today most watches glow with a paint that stores light and gives it back
+in the dark, with no radiation at all. So tonight, look at your watch in the dark.
+
+-->
+
+<!--
+Grace Fryer. Painting dials since she was a teenager. It took her two years to find a lawyer. In 1927 she and four others take U.S. Radium to court. At the first hearing, two are in bed. None of them can raise an arm to take the oath. They settle: $10,000 each.
+
+[click] In Illinois, Catherine Donohue is too sick to travel, so the court comes to her house. 1938: the women win. She doesn't live to see the appeal fail.
+
+[click] And their bones keep teaching. At MIT, just down the road, Robley Evans measures them, and in 1941 sets the first safe limit for radium in the body.
+
+[click] Corporate abuses like these led to modern labor laws, and to the creation of OSHA.
+
+[click] Radium was phased out in the 1960s. Then tritium: hydrogen with two extra neutrons. Today, mostly a paint that just stores light. So tonight, look at your watch in the dark.
+
+IF ASKED: The five settled in 1928 for $10,000 each, $600 a year and their medical bills; Grace Fryer died in 1933. The Illinois Industrial Commission ruled in 1938, and the US Supreme Court declined the appeal on October 23, 1939. Evans's limit was 0.1 microgram of radium; later limits for plutonium were set from it. Swiss watches used tritium paint until 1998; tritium gas tubes are still made. Super-LumiNova, from 1993, is not radioactive. The 1960s are when radium left watch dials; the last radium paint factory closed in 1978.
+-->
+
+---
 layout: full
 class: tk-timekeepers
 # Hidden: not in the talk. It stays as the example of every slide pattern
@@ -2639,6 +3035,7 @@ secondsATitle: 4
   <p>H1, H2 and H4, Mike Prince. CC BY 2.0.</p>
   <p>H3, Tony Hisgett. CC BY 2.0.</p>
   <p>CC BY 2.0: creativecommons.org/licenses/by/2.0</p>
+  <p>Dial painters, c. 1922, and Grace Fryer, 1925. Public domain.</p>
 </div>
 
 <SongLines class="questions-songs" :titles="$frontmatter.songTitles" :seconds-a-title="$frontmatter.secondsATitle" />
@@ -2694,6 +3091,10 @@ and
 are by Mike Prince, and the photo of
 [H3](https://commons.wikimedia.org/wiki/File:Harrison_H3_Clock_(35491292866).jpg) is by
 Tony Hisgett, all under [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
+The photos of the
+[dial painters](<https://commons.wikimedia.org/wiki/File:All_women_or_girls_using_radium_paint_with_no_protection_or_warnings_in_1922,_from-_USRadiumGirls-Argonne1,ca1922-23-150dpi_(cropped).jpg>),
+about 1922, and of [Grace Fryer](https://commons.wikimedia.org/wiki/File:Grace_Fryer.jpg),
+1925, are by unknown photographers, and are in the public domain.
 
 [nofigure]
 

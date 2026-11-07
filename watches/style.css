@@ -124,3 +124,15 @@
 .slidev-layout .map-label.lingers.slidev-vclick-hidden {
   transition-delay: var(--watch-end-delay, 0s);
 }
+
+/* THE LUME: the Reading a Watch in the Dark, World War I slide is in After-Hours, the dark
+   slide at the talk's turn (../docs/theme.md, "Dark palettes"). Its subject
+   is the paint, so the subject is the paint's glow: radium paint gave a faint
+   blue-green light. The lume is a substance in the subject's colour
+   (watch/generate.ts, `lumeMeshes`), and the rest of the watch, dimmed, takes
+   a little of its green. Here, not in the slide's own <style>: Slidev scopes
+   that, and the watch's layer reads the palette from an element with the
+   slide's classes only (watch/palette.ts, `slidePalette`). */
+.slidev-layout.palette-after-hours.in-the-dark {
+  --palette-subject: #8eeac0; /* a pale mint green */
+}

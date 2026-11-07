@@ -25,7 +25,8 @@ Each tool, with what it needs in brackets, and what it answers:
 - `browsers.py` (playwright): does this venv's Playwright have its browser; if
   not, install it (the Python tools that render call it)
 - `palette.py` (stdlib): does each palette pass its gates; a talk's palette, its
-  colorSchema, and does it set roles; can I use this colour
+  colorSchema, and does it set roles (a rule for a slide in a palette class is
+  measured in that palette); can I use this colour
 - `derive_palette.py` (stdlib): a palette's art roles, derived from its text
   roles, as its CSS rule
 - `artcheck.py` (stdlib): is this SVG valid, in-style, and thick enough at the
