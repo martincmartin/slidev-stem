@@ -1722,7 +1722,7 @@ clicks: 5
 
 # Hunt for Juan Fernández Island, 1741
 
-<MapLabel v-click.hide="2" view="juan fernandez" leg="south" :offset="[44, -74]" :dimmed="$clicks >= 1">Scurvy kills<br>4–6 men a day</MapLabel>
+<MapLabel v-click.hide="2" view="juan fernandez" leg="south" :offset="[44, -74]" :dimmed="$clicks >= 1">Scurvy kills<br>4–6 sailors a day</MapLabel>
 
 <MapLabel v-click="[1, 2]" class="lingers after-watch" view="juan fernandez" :offset="[16, 152]" :dimmed="$clicks >= 2">Sail to latitude.<br>Then east or west?</MapLabel>
 
@@ -1732,10 +1732,10 @@ clicks: 5
 
 <MapLabel v-click="3" class="after-watch" view="juan fernandez" :offset="[340, 360]" :dimmed="$clicks >= 4">9 days back</MapLabel>
 
-<BigWords v-click="5">The detour cost<br><em>70–80 men</em></BigWords>
+<BigWords v-click="5">The detour cost<br><em>70–80 sailors</em></BigWords>
 
 <!-- narration
-Anson's men were dying of scurvy: four to six a day. They needed fresh
+Anson's sailors were dying of scurvy: four to six a day. They needed fresh
 water and food from the island of Juan Fernández, off Chile.
 
 [figure 0-4: A ship searches between Chile and Juan Fernández. Its route gains
@@ -1766,7 +1766,7 @@ day and night to reach its anchorage.
 [figure: The final route runs east to Chile, west to Juan Fernández, then to
 its anchorage. Day dots mark the track. The illustrative scurvy count reads 72.]
 
-The detour had cost 70 to 80 men. They had been only a few hours from the
+The detour had cost 70 to 80 sailors. They had been only a few hours from the
 island when they turned the wrong way.
 
 > [!aside] What the count means
@@ -1778,7 +1778,7 @@ island when they turned the wrong way.
 -->
 
 <!--
-Scurvy kills four to six men a day.
+Scurvy kills four to six sailors a day.
 
 [click] Sail to the latitude. Then east or west?
 
@@ -1788,7 +1788,7 @@ Scurvy kills four to six men a day.
 
 [click] Found.
 
-[click] The detour cost 70–80 men.
+[click] The detour cost 70–80 sailors.
 -->
 
 ---
@@ -1823,7 +1823,7 @@ clicks: 4
 
 <MapLabel v-click="[2, 3]" class="after-watch" view="scilly" :on="[-6.3972, 49.8656]" :offset="[60, 10]">In the dark: the rocks<br>of Scilly!</MapLabel>
 
-<BigWords v-click="4">4 warships lost,<br>over <em>1,400 men</em></BigWords>
+<BigWords v-click="4">4 warships lost,<br>over <em>1,400 sailors</em></BigWords>
 
 <!-- narration
 [figure: The globe shows the English Channel between England and France.]
@@ -1850,7 +1850,7 @@ between the ships' estimated and actual positions was now a line to the rocks.
 [figure: A map of Scilly shows the ship at the rocks. A dashed ship marks
 its estimated position to the southwest. A bracket joins the two positions.]
 
-Four warships sank. More than 1,400 men died.
+Four warships sank. More than 1,400 sailors died.
 
 > [!aside] A disputed cause
 > The [Royal Museums Greenwich account](https://www.rmg.co.uk/collections/objects/rmgc-object-140657)
@@ -1872,7 +1872,7 @@ The English Channel, and the Isles of Scilly.
 
 [click] The gap.
 
-[click] 4 warships lost, over 1,400 men.
+[click] 4 warships lost, over 1,400 sailors.
 -->
 
 ---

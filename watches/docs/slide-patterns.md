@@ -306,7 +306,7 @@ They are described in [watch.md](watch.md).
 ## Punchlines
 
 **A slide told by a map ends on its punchline, a click of its own**:
-`<BigWords v-click="5">The detour cost<br><em>70–80 men</em></BigWords>`.
+`<BigWords v-click="5">The detour cost<br><em>70–80 sailors</em></BigWords>`.
 It is a screen of paper over the whole slide, with a few words in a
 screen's big type (Fraunces 600, 76 px), its number in the accent
 (`<em>`), the slide's one accent. The article says the punchline in its
