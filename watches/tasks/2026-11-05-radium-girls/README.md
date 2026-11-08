@@ -18,3 +18,7 @@ Watch in the Dark, World War I; Lip, Dip, Paint; Bones That Glow; and Too Weak t
   "4,000 women painted dials", "Shaped brush with lips" and "Radium goes
   into bone". "Radium paint" on the first slide is in the accent. The
   `evidence/` screenshot of that slide shows the earlier text.
+- 2026-11-08: the Waltham Watch Company slide now comes between the Did H4 Win the
+  Prize? slide and this section, so the bridge from Harrison ("The next
+  people to change the watch never were") is gone from the first slide's
+  narration and notes ([the Waltham task](../2026-11-08-waltham/PLAN.md)).

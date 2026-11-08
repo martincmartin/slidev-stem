@@ -2567,6 +2567,140 @@ IF ASKED: The King's words are in Sobel, Longitude, p. 147. He said them to Harr
 -->
 
 ---
+# The photo on the left, about 60% of the width, and the words on the right
+# (../docs/slide-layout.md). Each click adds a paragraph, and the ones before
+# it dim. The facts and the choices are in tasks/2026-11-08-waltham/PLAN.md
+layout: full
+class: watch-factory
+clicks: 3
+---
+
+# Waltham Watch Company, 1870s
+
+<img class="factory-photo" src="/waltham/machine-room.jpg" alt="A long factory room with tall windows, in the 1870s: rows of young women at small machines, each driven by a belt from a pulley under the ceiling.">
+
+<div class="factory-words side-text">
+  <div class="factory-paragraph text-dims">Mass produced</div>
+  <div v-click="1" class="factory-paragraph text-dims">Steam-powered<br>tools</div>
+  <div v-click="2" class="factory-paragraph text-dims">±10 to 15 sec a day</div>
+  <div v-click="3" class="factory-paragraph text-dims"><em>$150 → $25</em></div>
+</div>
+
+<style>
+/* The photo bleeds off the top, the bottom and the left, 60% of the slide's
+   width; its sides are cropped to fit. The title is over it, with the
+   paper's outline, as on the story maps (style.css). */
+.slidev-layout.watch-factory .factory-photo {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 588px;
+  height: 100%;
+  object-fit: cover;
+}
+.slidev-layout.watch-factory h1 {
+  position: relative;
+  z-index: 1;
+  -webkit-text-stroke: 6px var(--palette-background);
+  paint-order: stroke fill;
+}
+/* The house's text beside a picture (side-text). Each click adds a
+   paragraph, and the ones before it dim (style.css, "TEXT DIMS"). */
+.slidev-layout.watch-factory .factory-words {
+  left: 626px;
+}
+.slidev-layout.watch-factory .factory-paragraph + .factory-paragraph {
+  margin-top: 0.7em;
+}
+.slidev-layout.watch-factory
+  .factory-paragraph:has(~ .factory-paragraph:not(.slidev-vclick-hidden)) {
+  --text-dim: var(--text-dimmed);
+}
+/* The number to take home is the slide's one accent, and larger
+   (../docs/slide-layout.md). */
+.slidev-layout.watch-factory .factory-paragraph em {
+  font-style: normal;
+  font-size: 48px;
+  line-height: 1;
+  color: color-mix(
+    in srgb,
+    var(--palette-accent),
+    var(--palette-background) var(--text-dim)
+  );
+}
+</style>
+
+<!-- narration
+H4 was one watch, made by hand over four years. Around 1850, nearly every good
+watch was still finished that way: a craftsman filed each part to fit its own
+watch. If a part broke, a watchmaker had to make a new one, by hand.
+
+Aaron Dennison, a Boston watch repairer, had seen how the Springfield Armory
+made muskets: by machine, with every part checked against a gauge. Why not
+watches? With Edward Howard and others, he started a watch company in 1850,
+and in 1854 it moved to Waltham, six miles up the Charles River from
+Cambridge. Every part was measured against a master gauge, so a repairer could
+order a new part by number. In 1876, the factory made 2,200 watches a week.
+
+[click]
+
+Steam engines turned long shafts under the ceilings, and belts from the shafts
+drove rows of machines that cut brass and steel finer than a hair. Waltham is
+still the Watch City, and every Mother's Day weekend it hosts the Watch City
+Steampunk Festival.
+
+[click]
+
+And the watches were good. Waltham's everyday watch, the P.S. Bartlett, kept
+time to within 10 to 15 seconds a day. Before, only a watch fitted by hand
+kept time that well.
+
+[click]
+
+[figure: A long factory room in the 1870s: rows of young women at small
+machines, each driven by a belt from a pulley under the ceiling. Beside it:
+mass produced; steam-powered tools; ±10 to 15 seconds a day; $150 to $25.]
+
+A hand-fitted watch that good could cost $150. A P.S. Bartlett cost about
+$25. An accurate watch became an everyday thing, for railroad workers,
+soldiers and the general public. In 1876, a Swiss judge saw Waltham's
+watches, went home and told Switzerland to buy machines.
+
+> [!aside] Was Waltham first?
+> The Smithsonian calls it the first firm to mass-produce watches by machine.
+> Others made watch parts by machine earlier: Japy in France, Vacheron
+> Constantin in Geneva, and the Pitkin brothers in Hartford, who made fewer
+> than a thousand watches.
+
+> [!aside] How good were the best?
+> In 1876, judges at the Philadelphia exhibition tested seven of Waltham's
+> best watches, at $300 each. Five of them kept time within about 5 seconds a
+> day, near the 3 seconds a day that the Longitude Prize asked of a clock at
+> sea.
+
+> [!aside] How interchangeable?
+> Not fully, at first. In 1876, two Swiss visitors found that a watch with new
+> parts still needed some hand work. And Waltham's cheapest watches kept time
+> no better than Swiss ones at the same price.
+
+-->
+
+<!--
+H4: one watch, by hand, four years. In 1850, good watches were still finished that way: each part filed to fit its own watch. If a part broke, a watchmaker made a new one.
+
+Aaron Dennison, a Boston watch repairer, saw the Springfield Armory make muskets by machine. Why not watches? In 1854 his factory opened in Waltham, six miles up the Charles from here. Every part checked against a gauge, so a broken part? Order it by number. By 1876: 2,200 watches a week.
+
+[click] Steam engines turned those belts, and the belts turned machines that cut parts finer than a hair. Waltham is still the Watch City: every Mother's Day weekend, it hosts the Watch City Steampunk Festival.
+
+[click] And good. Their everyday watch, the P.S. Bartlett: 10 to 15 seconds a day. Before, only a hand-fitted watch kept time that well.
+
+[click] And a hand-fitted watch that good could cost $150. A Bartlett: about $25. Railroad workers, soldiers, anyone could own one that kept good time. A Swiss judge saw them in 1876, went home and told Switzerland to buy machines.
+
+IF ASKED: First? The Smithsonian calls Waltham the first firm to mass-produce watches by machine; Japy, Vacheron Constantin and the Pitkin brothers made parts by machine earlier. Not fully interchangeable at first: in 1876, a watch with new parts still needed hand work. Waltham's best, 1876: a 5-day test of seven $300 watches, five within about 5 seconds a day; the cheap ones were ordinary. In the 1850s, a Waltham cost half as much as an import of the same quality (Smithsonian). The photo is the Wheel and Pinion Making Room, 1870s.
+-->
+
+---
 # A dark slide at the talk's turn (../docs/theme.md, "Dark palettes"): night
 # on the Western Front. Only the case shows, dimmed into the night. At click 2
 # the lume fades in, in the subject, which style.css sets to the paint's glow
@@ -2620,9 +2754,6 @@ clicks: 2
 [figure: A wristwatch in the dark: its wheels, hands and case are faint shapes,
 barely lighter than the night around them.]
 
-Harrison was paid in the end, at 80. The next people to change the watch never
-were.
-
 In World War I, on the Western Front, soldiers lived in trenches, and much of
 the war happened at night. A soldier on watch needed the time, and in the dark he
 could not read his watch.
@@ -2651,7 +2782,7 @@ Demand for luminous watches and instruments surged in the war.
 -->
 
 <!--
-Harrison got paid in the end, at 80. The next people to change the watch never were. World War One, the Western Front. Night, in a trench. What time is it?
+World War One, the Western Front. Night, in a trench. What time is it?
 
 [click] You could strike a match. And give a sniper something to aim at.
 
@@ -3080,6 +3211,7 @@ secondsATitle: 4
   <p>H1, H2 and H4, Mike Prince. CC BY 2.0.</p>
   <p>H3, Tony Hisgett. CC BY 2.0.</p>
   <p>CC BY 2.0: creativecommons.org/licenses/by/2.0</p>
+  <p>Waltham watch factory, Thomas R. Lewis, 1870s. Public domain.</p>
   <p>Dial painters, c. 1922, and Grace Fryer, 1925. Public domain.</p>
 </div>
 

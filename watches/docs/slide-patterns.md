@@ -317,7 +317,7 @@ examples.
 ## A dark slide
 
 **The Reading a Watch in the Dark, World War I slide is the talk's one dark slide**, at its
-turn from Harrison to the Radium Girls ([theme.md](../../docs/theme.md),
+turn to the Radium Girls ([theme.md](../../docs/theme.md),
 "Dark palettes"). Its class is a dark palette's, and the watch follows it
 ([watch.md](watch.md#the-reading-a-watch-in-the-dark-world-war-i-slide)). It has no
 punchline screen: a screen of paper would hide the glow that it is about.
@@ -465,7 +465,7 @@ an oversight: CC BY 2.0 also asks for the licence's address with each copy, so t
 that address as text.
 
 The Questions slide is the deck's last slide, and its Credits section credits the photos and the painting in
-`public/harrison/` and `public/radium/`, whose `README.md` files hold each source and licence. If you add a
+`public/harrison/`, `public/waltham/` and `public/radium/`, whose `README.md` files hold each source and licence. If you add a
 borrowed image, add it to both. `tasks/2026-09-20-animation-style/source-video/README.md`
 has the format and the history.
 
