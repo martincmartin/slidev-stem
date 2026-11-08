@@ -2751,9 +2751,9 @@ clicks: 3
 
 <div class="factory-words side-text">
   <div class="factory-paragraph text-dims">Mass produced</div>
-  <div v-click="1" class="factory-paragraph text-dims">Steam-powered<br>tools</div>
-  <div v-click="2" class="factory-paragraph text-dims">±10 to 15 sec a day</div>
-  <div v-click="3" class="factory-paragraph text-dims"><em>$150 → $25</em><br>~$4,700 → ~$780<br>today</div>
+  <div v-click="1" class="factory-paragraph text-dims">±10 to 15 sec a day</div>
+  <div v-click="2" class="factory-paragraph text-dims"><em>$150 → $25</em><br>~$4,700 → ~$780<br>today</div>
+  <div v-click="3" class="factory-paragraph text-dims">Steam-powered<br>tools</div>
 </div>
 
 <style>
@@ -2815,28 +2815,29 @@ order a new part by number. In 1876, the factory made 2,200 watches a week.
 
 [click]
 
-Steam engines turned long shafts under the ceilings, and belts from the shafts
-drove rows of machines that cut brass and steel finer than a hair. Waltham is
-still the Watch City, and every Mother's Day weekend it hosts the Watch City
-Steampunk Festival.
-
-[click]
-
 And the watches were good. Waltham's everyday watch, the P.S. Bartlett, kept
 time to within 10 to 15 seconds a day. Before, only a watch fitted by hand
 kept time that well.
 
 [click]
 
+A hand-fitted watch that good could cost $150, about $4,700 in today's
+dollars. A P.S. Bartlett cost about $25, about $780 today. An accurate watch
+became an everyday thing, for railroad workers, soldiers and the general
+public.
+
+[click]
+
 [figure: A long factory room in the 1870s: rows of young women at small
 machines, each driven by a belt from a pulley under the ceiling. Beside it:
-mass produced; steam-powered tools; ±10 to 15 seconds a day; $150 to $25,
-about $4,700 to $780 today.]
+mass produced; ±10 to 15 seconds a day; $150 to $25, about $4,700 to $780
+today; steam-powered tools.]
 
-A hand-fitted watch that good could cost $150, about $4,700 in today's
-dollars. A P.S. Bartlett cost about $25, about $780 today. An accurate watch became an everyday thing, for railroad workers,
-soldiers and the general public. In 1876, a Swiss judge saw Waltham's
-watches, went home and told Switzerland to buy machines.
+Steam engines turned long shafts under the ceilings, and belts from the shafts
+drove rows of machines that cut brass and steel finer than a hair. Waltham is
+still the Watch City, and every Mother's Day weekend it hosts the Watch City
+Steampunk Festival. In 1876, a Swiss judge saw Waltham's machines, went home
+and told Switzerland to buy machines too.
 
 > [!aside] Was Waltham first?
 > The Smithsonian calls it the first firm to mass-produce watches by machine.
@@ -2862,11 +2863,11 @@ Those reliable watches came from London, made by hand: $150 each. In 1850, good 
 
 Aaron Dennison, a Boston watch repairer, saw the Springfield Armory make muskets by machine. Why not watches? In 1854 his factory opened in Waltham, six miles up the Charles from here. Every part checked against a gauge, so a broken part? Order it by number. By 1876: 2,200 watches a week.
 
-[click] Steam engines turned those belts, and the belts turned machines that cut parts finer than a hair. Waltham is still the Watch City: every Mother's Day weekend, it hosts the Watch City Steampunk Festival.
-
 [click] And good. Their everyday watch, the P.S. Bartlett: 10 to 15 seconds a day. Before, only a hand-fitted watch kept time that well.
 
-[click] And a hand-fitted watch that good could cost $150: about $4,700 today. A Bartlett: about $25, under $800 today. Railroad workers, soldiers, anyone could own one that kept good time. A Swiss judge saw them in 1876, went home and told Switzerland to buy machines.
+[click] And a hand-fitted watch that good could cost $150: about $4,700 today. A Bartlett: about $25, under $800 today. Railroad workers, soldiers, anyone could own one that kept good time.
+
+[click] Steam engines turned those belts, and the belts turned machines that cut parts finer than a hair. Waltham is still the Watch City: every Mother's Day weekend, it hosts the Watch City Steampunk Festival. A Swiss judge saw those machines in 1876, went home and told Switzerland to buy machines too.
 
 IF ASKED: First? The Smithsonian calls Waltham the first firm to mass-produce watches by machine; Japy, Vacheron Constantin and the Pitkin brothers made parts by machine earlier. Not fully interchangeable at first: in 1876, a watch with new parts still needed hand work. Waltham's best, 1876: a 5-day test of seven $300 watches, five within about 5 seconds a day; the cheap ones were ordinary. In the 1850s, a Waltham cost half as much as an import of the same quality (Smithsonian). The photo is the Wheel and Pinion Making Room, 1870s.
 -->

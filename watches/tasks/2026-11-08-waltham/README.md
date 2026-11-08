@@ -25,3 +25,9 @@ estimated: 1001.3; read 2026-11-08), at the user's request
 (`tasks/2026-11-08-railroad/instructions.md`, the fourteenth message). One
 year for both prices keeps their ratio. The narration and the notes say it
 too.
+
+2026-11-08: the user reordered the clicks: click 1 is the accuracy, click 2
+the price (with today's dollars), and click 3 the steam-powered tools. The
+narration, the notes and the figure's description follow that order. The
+Swiss judge, who told Switzerland to buy machines, now closes click 3,
+after the machines.
