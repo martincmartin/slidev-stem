@@ -1,0 +1,160 @@
+1c1
+< @babel/helper-string-parser@7.29.7
+---
+> @babel/helper-string-parser@7.29.13
+3,4c3,4
+< @babel/parser@7.29.9
+< @babel/types@7.29.8
+---
+> @babel/parser@7.29.13
+> @babel/types@7.29.11
+7,14c7,14
+< @cspell/cspell-bundled-dicts@10.4.0
+< @cspell/cspell-json-reporter@10.4.0
+< @cspell/cspell-performance-monitor@10.4.0
+< @cspell/cspell-pipe@10.4.0
+< @cspell/cspell-resolver@10.4.0
+< @cspell/cspell-service-bus@10.4.0
+< @cspell/cspell-types@10.4.0
+< @cspell/cspell-worker@10.4.0
+---
+> @cspell/cspell-bundled-dicts@10.4.1
+> @cspell/cspell-json-reporter@10.4.1
+> @cspell/cspell-performance-monitor@10.4.1
+> @cspell/cspell-pipe@10.4.1
+> @cspell/cspell-resolver@10.4.1
+> @cspell/cspell-service-bus@10.4.1
+> @cspell/cspell-types@10.4.1
+> @cspell/cspell-worker@10.4.1
+19c19
+< @cspell/dict-companies@3.2.13
+---
+> @cspell/dict-companies@3.2.14
+25c25
+< @cspell/dict-data-science@2.0.16
+---
+> @cspell/dict-data-science@2.0.17
+30c30
+< @cspell/dict-en-common-misspellings@2.2.5
+---
+> @cspell/dict-en-common-misspellings@2.2.6
+56c56
+< @cspell/dict-npm@5.2.55
+---
+> @cspell/dict-npm@5.2.56
+60c60
+< @cspell/dict-python@4.5.2
+---
+> @cspell/dict-python@4.5.3
+66c66
+< @cspell/dict-software-terms@5.4.8
+---
+> @cspell/dict-software-terms@5.4.9
+74,78c74,78
+< @cspell/dynamic-import@10.4.0
+< @cspell/filetypes@10.4.0
+< @cspell/rpc@10.4.0
+< @cspell/strong-weak-map@10.4.0
+< @cspell/url@10.4.0
+---
+> @cspell/dynamic-import@10.4.1
+> @cspell/filetypes@10.4.1
+> @cspell/rpc@10.4.1
+> @cspell/strong-weak-map@10.4.1
+> @cspell/url@10.4.1
+100a101
+> @streetsidesoftware/unindent@1.0.1
+102c103
+< @types/estree@1.0.9
+---
+> @types/estree@1.0.10
+104,119c105,120
+< @types/node@26.6.5
+< @typescript-eslint/eslint-plugin@8.72.0
+< @typescript-eslint/parser@8.72.0
+< @typescript-eslint/project-service@8.72.0
+< @typescript-eslint/scope-manager@8.72.0
+< @typescript-eslint/tsconfig-utils@8.72.0
+< @typescript-eslint/type-utils@8.72.0
+< @typescript-eslint/types@8.72.0
+< @typescript-eslint/typescript-estree@8.72.0
+< @typescript-eslint/utils@8.72.0
+< @typescript-eslint/visitor-keys@8.72.0
+< @vue/compiler-core@3.5.44
+< @vue/compiler-dom@3.5.44
+< @vue/compiler-sfc@3.5.44
+< @vue/compiler-ssr@3.5.44
+< @vue/shared@3.5.44
+---
+> @types/node@26.6.6
+> @typescript-eslint/eslint-plugin@8.72.1
+> @typescript-eslint/parser@8.72.1
+> @typescript-eslint/project-service@8.72.1
+> @typescript-eslint/scope-manager@8.72.1
+> @typescript-eslint/tsconfig-utils@8.72.1
+> @typescript-eslint/type-utils@8.72.1
+> @typescript-eslint/types@8.72.1
+> @typescript-eslint/typescript-estree@8.72.1
+> @typescript-eslint/utils@8.72.1
+> @typescript-eslint/visitor-keys@8.72.1
+> @vue/compiler-core@3.5.45
+> @vue/compiler-dom@3.5.45
+> @vue/compiler-sfc@3.5.45
+> @vue/compiler-ssr@3.5.45
+> @vue/shared@3.5.45
+123c124
+< ansi-regex@6.4.0
+---
+> ansi-regex@6.5.0
+132c133
+< commander@15.0.0
+---
+> commander@15.1.0
+135,143c136,144
+< cspell-config-lib@10.4.0
+< cspell-dictionary@10.4.0
+< cspell-gitignore@10.4.0
+< cspell-glob@10.4.0
+< cspell-grammar@10.4.0
+< cspell-io@10.4.0
+< cspell-lib@10.4.0
+< cspell-trie-lib@10.4.0
+< cspell@10.4.0
+---
+> cspell-config-lib@10.4.1
+> cspell-dictionary@10.4.1
+> cspell-gitignore@10.4.1
+> cspell-glob@10.4.1
+> cspell-grammar@10.4.1
+> cspell-io@10.4.1
+> cspell-lib@10.4.1
+> cspell-trie-lib@10.4.1
+> cspell@10.4.1
+153c154
+< eslint@10.13.0
+---
+> eslint@10.14.0
+162c163
+< fast-equals@6.2.1
+---
+> fast-equals@6.2.2
+177c178
+< ignore@7.0.13
+---
+> ignore@7.0.14
+197c198
+< node@26.12.1
+---
+> node@26.13.0
+209c210
+< postcss@8.5.31
+---
+> postcss@8.5.32
+216c217
+< semver@7.8.5
+---
+> semver@7.8.6
+224c225
+< typescript-eslint@8.72.0
+---
+> typescript-eslint@8.72.1

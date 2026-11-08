@@ -1,0 +1,46 @@
+{
+  "name": "stem-talks",
+  "private": true,
+  "type": "module",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "26.12.1",
+      "onFail": "download"
+    },
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.15.0",
+      "onFail": "download"
+    }
+  },
+  "scripts": {
+    "format": "prettier --write docs themes tools site .github \"*.{md,json,yaml}\"",
+    "format:check": "prettier --check docs themes tools site .github \"*.{md,json,yaml}\"",
+    "typecheck": "tsc -p tools && tsc -p tools/tsconfig.theme.json",
+    "lint": "eslint --max-warnings 0 tools",
+    "test": "node --test \"tools/*.test.ts\"",
+    "vuecheck": "node tools/vuecheck.ts",
+    "spellcheck": "node tools/spellcheck.ts",
+    "smokecheck": "node tools/smokecheck.ts",
+    "navcheck": "node tools/navcheck.ts",
+    "offline-check": "node tools/offline-check.ts"
+  },
+  "devDependencies": {
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.8.1",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.5",
+    "@vue/compiler-core": "^3.5.44",
+    "@vue/compiler-sfc": "^3.5.44",
+    "cspell": "^10.4.0",
+    "eslint": "^10.13.0",
+    "eslint-config-prettier": "^10.1.8",
+    "playwright-chromium": "1.64.1",
+    "playwright-firefox": "1.64.1",
+    "playwright-webkit": "1.64.1",
+    "prettier": "^3.9.10",
+    "prettier-plugin-slidev": "^1.0.5",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.0"
+  }
+}

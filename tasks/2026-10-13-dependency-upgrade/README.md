@@ -44,3 +44,5 @@ uv run compare_grouped_builds.py /path/to/before /path/to/after
 
 The script normalizes chunk hashes and Vue scope IDs.
 It compares content multisets when several chunks share a base name.
+
+2026-11-08: the next upgrade is in `../2026-11-08-dependency-upgrade/`. Its re-resolve also deletes `node_modules/.pnpm/lock.yaml`.

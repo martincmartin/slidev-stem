@@ -11,7 +11,8 @@ publish a talk, start a new talk, add a deck file, or change a house item.
 [`tasks/2026-10-06-validation-speed/`](../tasks/2026-10-06-validation-speed/PLAN.md),
 [`tasks/2026-10-07-validation-reuse/`](../tasks/2026-10-07-validation-reuse/PLAN.md),
 [`tasks/2026-10-10-cloud-validation/`](../tasks/2026-10-10-cloud-validation/README.md),
-[`tasks/2026-10-27-publish-on-push/`](../tasks/2026-10-27-publish-on-push/PLAN.md).
+[`tasks/2026-10-27-publish-on-push/`](../tasks/2026-10-27-publish-on-push/PLAN.md),
+[`tasks/2026-11-08-dependency-upgrade/`](../tasks/2026-11-08-dependency-upgrade/PLAN.md).
 
 Each talk is a separate project, with its own package versions. A talk that you
 gave is tagged, and a talk that you retired is frozen. This page tells you why,
@@ -546,8 +547,17 @@ Upgrade only a talk in progress. In the talk's directory:
    ```bash
    uv lock --upgrade && uv sync        # Python packages
    pnpm update --latest                # the JS packages in package.json
-   rm pnpm-lock.yaml && pnpm install   # and every package below them
+   rm pnpm-lock.yaml node_modules/.pnpm/lock.yaml
+   pnpm install                        # and every package below them
    ```
+
+   Delete both lockfiles. pnpm keeps a copy of the lockfile in
+   `node_modules/.pnpm/lock.yaml`. If only `pnpm-lock.yaml` is gone, pnpm
+   rebuilds it from that copy, says "resolution step is skipped", and does not
+   upgrade the packages below the ones in `package.json`.
+
+   To keep a package at its version (for a peer requirement), exclude it:
+   `pnpm update --latest '!typescript'`.
 
    Keep the house's Python `playwright` (the root's `uv.lock`) and the
    talk's JS `playwright-chromium` (and its `playwright-firefox` and

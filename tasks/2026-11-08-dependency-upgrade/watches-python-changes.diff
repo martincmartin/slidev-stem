@@ -1,0 +1,8 @@
+4c4
+< ├── mypy v2.4.0 (group: dev)
+---
+> ├── mypy v2.4.1 (group: dev)
+6c6
+< └── ruff v0.17.2 (group: dev)
+---
+> └── ruff v0.17.4 (group: dev)

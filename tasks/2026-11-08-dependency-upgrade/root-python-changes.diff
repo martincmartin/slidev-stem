@@ -1,0 +1,10 @@
+6c6
+< ├── mypy v2.4.0 (group: dev)
+---
+> ├── mypy v2.4.1 (group: dev)
+8,9c8,9
+< ├── pytest v9.1.1 (group: dev)
+< └── ruff v0.17.2 (group: dev)
+---
+> ├── pytest v9.2.0 (group: dev)
+> └── ruff v0.17.4 (group: dev)
