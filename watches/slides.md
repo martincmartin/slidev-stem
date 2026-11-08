@@ -2327,30 +2327,56 @@ IF ASKED: The portrait shows H3 behind him and a 1753 watch by John Jefferys in 
 -->
 
 ---
-# One bar to a clock, all on one scale of years (components/ClockBar.vue)
+# One bar to a clock, all on one scale of years (components/ClockBar.vue). Each
+# photo shows large, then docks at the start of its bar: H1 alone, H2 and H3
+# together, then H4 (docs/slide-patterns.md, "A timeline can be a slide's
+# picture"). The large frames have each picture's own aspect ratio.
 layout: full
 class: four-clocks
-clicks: 3
+clicks: 5
 ---
 
 # Same Time, Every Tick
 
 On a rolling ship, hot or cold
 
+<script setup>
+// The clocks, from the top row down. A clock dims when the next clocks after it
+// show large, as the focus moves to them, so clocks that dock together stay
+// bright together and dim together.
+const clocks = [
+  {
+    picture: "harrison/h1.jpg", alt: "H1, a large brass machine.", from: 1730, to: 1735,
+    dockAt: 1, big: { left: 218, top: 124, width: 544, height: 408 },
+    words: "Beat ship’s navigator by 60 miles.",
+  },
+  {
+    picture: "harrison/h2.jpg", alt: "H2, a tall brass frame.", from: 1737, to: 1739,
+    bigFrom: 2, dockAt: 3, big: { left: 168, top: 124, width: 306, height: 408 },
+    words: "Design flaw.",
+  },
+  {
+    picture: "harrison/h3.jpg", alt: "H3, a brass machine with a large arc.", from: 1740, to: 1759,
+    bigFrom: 2, dockAt: 3, big: { left: 498, top: 124, width: 314, height: 408 },
+    words: "Never sailed.",
+  },
+  {
+    picture: "harrison/h4.jpg", alt: "H4's movement, round and engraved, like a large pocket watch.",
+    from: 1755, to: 1759, bigFrom: 4, dockAt: 5, big: { left: 218, top: 124, width: 544, height: 408 },
+    words: "Sea trial.",
+  },
+];
+function dimAt(clock) {
+  const later = clocks
+    .filter((other) => other.dockAt > clock.dockAt)
+    .map((other) => other.bigFrom ?? 0);
+  return later.length > 0 ? Math.min(...later) : undefined;
+}
+</script>
+
 <div class="clock-rows">
-  <ClockBar picture="harrison/h1.jpg" alt="H1, a large brass machine." :from="1730" :to="1735">
-    H1: Sea trial. Beat ship’s navigator by 60 miles.
-  </ClockBar>
-  <ClockBar v-click="1" picture="harrison/h2.jpg" alt="H2, a tall brass frame." :from="1737" :to="1739">
-    H2: Realizes design flaw. Never sailed.
-  </ClockBar>
-  <ClockBar v-click="2" picture="harrison/h3.jpg" alt="H3, a brass machine with a large arc." :from="1740" :to="1759">
-    H3: Invents bimetallic strip &amp; caged<br>roller bearing, still used today. Never sailed.
-  </ClockBar>
-  <ClockBar v-click="3" picture="harrison/h4.jpg" alt="H4's movement, round and engraved, like a large pocket watch." :from="1755" :to="1759">
-    H4: Sea trial.
-  </ClockBar>
-  <div class="clock-axis">
+  <ClockBar v-for="(clock, row) in clocks" :key="clock.picture" v-bind="clock" :row="row" :dim-at="dimAt(clock)" />
+  <div v-click="1" class="clock-axis">
     <span style="--year: 1730">1730</span>
     <span style="--year: 1740">1740</span>
     <span style="--year: 1750">1750</span>
@@ -2359,28 +2385,36 @@ On a rolling ship, hot or cold
 </div>
 
 <style>
+/* The rows' parent covers the slide, so that a photo's large frame and its
+   docked place are both in the slide's px. */
 .slidev-layout.four-clocks .clock-rows {
   --first-year: 1730;
   --last-year: 1760;
   --px-a-year: 26px;
+  --rows-left: 40px;
+  --rows-top: 124px;
+  --clock-rows: 4;
   --clock-photo-size: 76px;
   --clock-photo-gap: 16px;
+  --clock-row-pitch: 88px;
+  --clock-move: 0.8s;
   position: absolute;
-  top: 124px;
-  right: 0;
-  left: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  inset: 0;
 }
+/* The axis comes with H1's bar, when H1 has docked. */
 .slidev-layout.four-clocks .clock-axis {
-  position: relative;
+  position: absolute;
+  top: calc(var(--rows-top) + var(--clock-rows) * var(--clock-row-pitch));
+  left: calc(var(--rows-left) + var(--clock-photo-size) + var(--clock-photo-gap));
   width: calc((var(--last-year) - var(--first-year)) * var(--px-a-year));
   height: 48px;
-  margin-left: calc(var(--clock-photo-size) + var(--clock-photo-gap));
   border-top: 2px solid var(--palette-ink);
   font-size: 22px;
   font-weight: 600;
+  transition: opacity var(--text-fade);
+}
+.slidev-layout.four-clocks .clock-axis:not(.slidev-vclick-hidden) {
+  transition-delay: var(--clock-move);
 }
 .slidev-layout.four-clocks .clock-axis > span {
   position: absolute;
@@ -2392,9 +2426,7 @@ On a rolling ship, hot or cold
 
 <!-- narration
 Four clocks, one problem. Each tick is one swing of the balance, and every swing must take
-the same time, on a rolling ship, hot or cold. H1 sailed to Lisbon and back in 1736. It
-did poorly on the way out. On the way home, the ship's master put the ship 60 miles east of
-where it was, and H1 was right. That won him money for a better clock.
+the same time, on a rolling ship, hot or cold.
 
 [nofigure]
 
@@ -2402,41 +2434,54 @@ where it was, and H1 was right. That won him money for a better clock.
 
 [nofigure]
 
-H2 took 2 years. He found a fault in its balances: a ship's turn changes the time of their
-swing. So he abandoned it for H3. It never sailed.
+H1 had its sea trial in 1736: to Lisbon and back. It did poorly on the way out. On the way
+home, the ship's master put the ship 60 miles east of where it was, and H1 was right. That
+won him money for a better clock.
 
 [click]
 
 [nofigure]
 
-H3 took 19 years, and it never sailed. The swings of its two large, heavy balances still
-varied.
+H2 took 2 years. He found a design flaw in its balances: a ship's turn changes the time of
+their swing. So he abandoned it for H3. H2 never sailed.
 
-But look at what he made on the way. To cancel the effect of heat, he joined brass and
-steel in a _bimetallic strip_, which still works in thermostats. To cut friction, he kept
-rollers apart in a _caged roller bearing_, which is now nearly everywhere in machinery.
+H3 took 19 years, and it never sailed either. The swings of its two large, heavy balances
+still varied.
 
-[click]
+But look at what he invented on the way, which we still use today. To cancel the effect of
+heat, he joined brass and steel in a _bimetallic strip_, which still works in thermostats.
+To cut friction, he kept rollers apart in a _caged roller bearing_, which is now nearly
+everywhere in machinery.
+
+[click:2]
 
 [nofigure]
 
 Then he gave up on big clocks. H4 took 4 years and weighs about 3 pounds: from the
-outside, a large pocket watch. Its balance is small and fast, with five ticks a second. In
-1761, it went on a sea trial.
+outside, a large pocket watch. Its balance is small and fast, with five ticks a second.
 
-[figure: A timeline from 1730 to 1760, with a photo and a bar for each clock. H1's bar
-is 5 years long and H2's is 2. H3's is 19, the longest. H4's is 4, and ends the same year as H3's.]
+[click]
+
+In 1761, H4 went on a sea trial.
+
+[figure: A timeline from 1730 to 1760, with a bar for each clock, and its photo at the
+start of its bar. H1's bar is 5 years long and H2's is 2. H3's is 19, the longest. H4's
+is 4, and ends the same year as H3's.]
 
 -->
 
 <!--
-Same time, every tick. Each tick is one swing of the balance, and every swing must take the same time: on a rolling ship, hot or cold. Four clocks. H1: 5 years. On the way home from Lisbon, it beat the ship’s navigator by 60 miles.
+Same time, every tick. Each tick is one swing of the balance, and every swing must take the same time: on a rolling ship, hot or cold. Four clocks. Here is H1.
 
-[click] H2: 2 years in, he finds a design flaw: the ship's turning changes the swing. It never sails.
+[click] H1: 5 years. Its sea trial: on the way home from Lisbon, it beat the ship’s navigator by 60 miles.
 
-[click] H3: 19 years. Big, heavy balances, and the swings still vary. It never sails either. But it left two things we still use: the bimetallic strip, his fix for heat, now in thermostats, and the caged roller bearing, in nearly all machinery. The side effects of a failed project.
+[click] H2 and H3. In H2, he finds a design flaw: the ship's turning changes the swing. H3 has big, heavy balances, and the swings still vary. But on the way, he invents two things we still use today: the bimetallic strip, his fix for heat, now in thermostats, and the caged roller bearing, in nearly all machinery. The side effects of a failed project.
 
-[click] H4: 4 years. It looks like a pocket watch, with a small, fast balance. And it goes to sea.
+[click] H2: 2 years, and it never sails. H3: 19 years, and it never sails either.
+
+[click] H4. It looks like a pocket watch, with a small, fast balance.
+
+[click] H4: 4 years. And it goes to sea, for its sea trial.
 
 IF ASKED: H1 did poorly on the way to Lisbon, and I have no solid number for its seconds a day.
 -->

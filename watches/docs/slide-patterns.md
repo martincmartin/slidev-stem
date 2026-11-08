@@ -344,7 +344,15 @@ section 21).
 
 **A timeline can be a slide's picture.** On the Same Time, Every Tick slide, each clock is a
 `ClockBar`: a photo, and a bar on one scale of years that the slide sets. The bars are
-HTML, not SVG, because only their lengths are data. The newest clock's bar has the slide's one accent, and each clock before it has a grey bar and dimmed words: the accent follows the story. The length of H3's bar makes its point with no colour. Each clock's words give what happened, not how long it took. Not an oversight: the bar shows the years, so the words do not repeat them.
+HTML, not SVG, because only their lengths are data. The clocks are an array in the slide's `<script setup>`, and a clock's row is its place in it. The newest clocks' bars have the slide's one accent, and a clock gets a grey bar and dimmed words at the click where the next clocks show large: the accent follows the audience's focus. Clocks that dock at the same click, as H2 and H3 do, keep the accent together and dim together. The length of H3's bar makes its point with no colour. Each clock's words give what happened, not how long it took, and not its name: the photo names it. Not an oversight: the bar shows the years, so the words do not repeat them.
+
+**A photo shows large, then docks at the start of its bar.** At one click a clock's photo
+fades in large, whole and on top of the timeline (`bigFrom`, and its frame `big`). At the
+next it moves and shrinks to a square at the start of its bar (`dockAt`), and then its bar
+and words fade in. H1 starts large, H2 and H3 come in together, side by side, and H4 comes
+last. Going back, the words fade out first, and then the photo moves ([navigation.md](../../docs/navigation.md),
+"Text timing"). The move is CSS transitions on the photo's place and size, so the settled screen
+depends only on the click.
 
 ## Words that run on their own
 

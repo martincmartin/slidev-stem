@@ -224,3 +224,7 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   the rule in `docs/slide-patterns.md`: lines about knowing or telling the time, or about a clock or
   a watch, not time in general. The Chicago song passes, because it asks what time it is. The cycle
   of song lines is now about 134 s. "4 Minutes" shows at 6 beats a line, for reading, not as sung.
+- 2026-11-08: the Same Time, Every Tick slide's words drop the names H1 to H4, H1's "Sea trial",
+  H2's "Realizes" and "Never sailed", and H3's inventions. The notes and the article say them. Each
+  photo shows large first, then docks at the start of its bar: H1, then H2 and H3 together, then
+  H4. The slide has 5 clicks.

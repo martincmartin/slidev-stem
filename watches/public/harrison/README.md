@@ -1,8 +1,8 @@
 # John Harrison's pictures
 
 Each picture keeps its own licence (`README.md` at the repo root, "License"). Each is
-scaled down, and its metadata is removed. The Same Time, Every Tick slide crops the four clocks
-square in CSS. The Questions slide in `slides.md` credits them.
+scaled down, and its metadata is removed. The Same Time, Every Tick slide shows each of the four
+clocks whole, and then crops it square in CSS. The Questions slide in `slides.md` credits them.
 
 - `portrait.jpg`: [John Harrison](<https://commons.wikimedia.org/wiki/File:John_Harrison_(Gem%C3%A4lde).jpg>), by Thomas King, c. 1767. Public domain.
 - `h1.jpg`: [H1](<https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(32416544837).jpg>), by Mike Prince, 2017. [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
