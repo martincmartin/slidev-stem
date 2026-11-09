@@ -88,6 +88,10 @@ function drawMarks(group: SVGGElement, story: Story, now: number): void {
   const ship = group.querySelector(".ship");
   story.marks.forEach((mark, place) => {
     fade(marks[place], voyage?.marks.get(mark) ?? 0);
+    marks[place]?.classList.toggle(
+      "flashed-off",
+      voyage?.flashedOff.has(mark) === true,
+    );
     const number = marks[place]?.querySelector(".count-number");
     if (mark.count && number)
       number.textContent = String(mark.count.perDay * (voyage?.days ?? 0));
@@ -366,6 +370,13 @@ onBeforeUnmount(() => leave?.());
   stroke: var(--palette-second);
   stroke-width: 3;
   stroke-linejoin: round;
+}
+/* A mark that flashes (`globeFlash`) hides in the flash's "on" halves:
+   one in the second's colors already would not change if recolored
+   (docs/globe.md, "The marks"). Its opacity, which slideState reads, is
+   unchanged. */
+.story-maps .mark.flashed-off {
+  visibility: hidden;
 }
 .story-maps .latitude {
   fill: none;

@@ -52,6 +52,8 @@
 // not carry on to later clicks (STEP_KEYS):
 //   artFlash: pieces that flash, on the step forward into the slide (on
 //     the slide) or into the block's click
+//   globeFlash: of `globeMarks`, the marks that flash, on the step forward
+//     into that click (globe/voyage.ts)
 //   artLater: of the pieces that fade in on a step into that click, those
 //     that fade in after the others
 //   artCut: of the pieces that go or come on a step into that click,
@@ -351,6 +353,7 @@ type ClickValues = { [Key in ClickKey]?: ReturnType<(typeof CLICK_KEYS)[Key]> };
  *  click: they do not carry on to later clicks. */
 const STEP_KEYS = {
   artFlash: namesOf,
+  globeFlash: namesOf,
   artLater: namesOf,
   artCut: namesOf,
   artGoLater: namesOf,
@@ -627,13 +630,18 @@ export function tickTockState(
 }
 
 /** The names of the story map's marks at `clicks` (`globeLeg`,
- *  `globeMarks`). Throws as `watchState` does. */
+ *  `globeMarks`), and those that flash on the step into it (`globeFlash`).
+ *  Throws as `watchState` does. */
 export function voyageState(
   frontmatter: Record<string, unknown>,
   clicks: number,
 ): VoyageNames {
-  const { globeLeg, globeMarks } = atClick(frontmatter, clicks);
-  return { leg: globeLeg ?? null, marks: globeMarks ?? [] };
+  const { globeLeg, globeMarks, globeFlash } = atClick(frontmatter, clicks);
+  return {
+    leg: globeLeg ?? null,
+    marks: globeMarks ?? [],
+    flash: globeFlash ?? [],
+  };
 }
 
 /** Resolve the voyage names against the art state's view. No art means

@@ -296,6 +296,7 @@ function showVoyage(clicks: number, move: Move): void {
     at,
     cameraEnd: stage?.viewEndAt(at) ?? at,
     jump: move === "jump" || !stage,
+    forward: move === "forward",
   });
   showEndDelay();
 }

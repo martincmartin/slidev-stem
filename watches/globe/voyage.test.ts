@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { CAPE_NOIR, JUAN_FERNANDEZ, SCILLY } from "./maps.ts";
+import { CAPE_NOIR, JUAN_FERNANDEZ, NEW_ENGLAND, SCILLY } from "./maps.ts";
 import { makeGlobe } from "./model.ts";
 import { DAY_SECONDS } from "./stories.ts";
 import type { Story } from "./stories.ts";
+import { FLASH_ON_SECONDS, FLASH_SECONDS } from "../webgl/timeline.ts";
 import {
   MARK_FADE_SECONDS,
   nextVoyage,
@@ -32,12 +33,13 @@ function storyOf(map: unknown): Story {
 const NOIR = storyOf(CAPE_NOIR);
 const SEARCH = storyOf(JUAN_FERNANDEZ);
 const WRECK = storyOf(SCILLY);
+const RAILROAD = storyOf(NEW_ENGLAND);
 
 test("steps wait for the camera; jumps replace the voyage at once", () => {
   const from = target(SEARCH, { leg: "start", marks: [] });
   const to = target(SEARCH, { leg: "west", marks: [] });
   const previous = settled(from);
-  const timing = { at: 500, cameraEnd: 1500, jump: false };
+  const timing = { at: 500, cameraEnd: 1500, jump: false, forward: true };
   const forward = nextVoyage(previous, to, timing);
   assert.equal(forward.from, from);
   assert.equal(forward.start, 1500);
@@ -276,4 +278,58 @@ test("a story map that the step leaves keeps its voyage whole, and its marks fad
     assert.equal(leaving.marks.get(wind), 0.5);
     assert.equal(voyageEndAt(step), fade);
   }
+});
+
+test("a mark that flashes hides in the flash's on halves, on a step forward only", () => {
+  const crash = RAILROAD.marks.find((mark) => mark.name === "crash");
+  if (!crash) throw new Error("no crash mark");
+  const before = target(RAILROAD, { leg: null, marks: ["towns"] });
+  const after = target(RAILROAD, {
+    leg: null,
+    marks: ["towns", "crash"],
+    flash: ["crash"],
+  });
+  assert.deepEqual([...after.flash], [crash]);
+  const timing = { at: 0, cameraEnd: 1000, jump: false, forward: true };
+  const step = nextVoyage(settled(before), after, timing);
+  const fade = MARK_FADE_SECONDS * 1000;
+  const flashAt = 1000 + fade;
+  // it fades in first, and is not hidden while it does
+  const fading = frameAt(RAILROAD, step, 1000 + fade / 2);
+  assert.equal(fading.marks.get(crash), 0.5);
+  assert.equal(fading.flashedOff.size, 0);
+  // then it hides in each on half, and shows in each off half, at full
+  // opacity throughout
+  for (const cycle of [0, 4]) {
+    const start = flashAt + cycle * 2 * FLASH_ON_SECONDS * 1000;
+    const on = frameAt(RAILROAD, step, start + 100);
+    assert.ok(on.flashedOff.has(crash), `cycle ${String(cycle)}, on`);
+    assert.equal(on.marks.get(crash), 1);
+    const off = frameAt(RAILROAD, step, start + FLASH_ON_SECONDS * 1000 + 100);
+    assert.equal(off.flashedOff.size, 0, `cycle ${String(cycle)}, off`);
+  }
+  const end = flashAt + FLASH_SECONDS * 1000;
+  assert.equal(voyageEndAt(step), end);
+  assert.equal(frameAt(RAILROAD, step, end).flashedOff.size, 0);
+  // a step back, a jump and a still do not flash
+  for (const other of [
+    nextVoyage(settled(before), after, { ...timing, forward: false }),
+    nextVoyage(settled(before), after, { ...timing, jump: true }),
+    settled(after),
+  ]) {
+    assert.equal(other.flash, undefined);
+    assert.equal(frameAt(RAILROAD, other, flashAt + 100).flashedOff.size, 0);
+  }
+});
+
+test("a mark that flashes must show", () => {
+  assert.throws(
+    () =>
+      voyageTarget(stories, RAILROAD.placed.view, {
+        leg: null,
+        marks: ["towns"],
+        flash: ["crash"],
+      }),
+    /globeFlash: "crash" is not in globeMarks/,
+  );
 });

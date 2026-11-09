@@ -243,8 +243,11 @@ its own colours.
 - **In an inlined SVG**: a CSS animation on the part's group, five cycles of
   0.5 s with `steps`, that sets `stroke` to `var(--palette-second)` and
   `fill` to `var(--palette-second-wash)` for the first half of each
-  cycle. An animation wins over the drawing's own class rules. No SVG flashes
-  yet: the first one builds the helper.
+  cycle. An animation wins over the drawing's own class rules. No inlined
+  SVG flashes yet: the first one builds the helper.
+- **A part in the flash colours already** (the watch talk's burst on a story
+  map) would not change. It hides in each first half instead, and shows in
+  each second half ([`globe.md`](../watches/docs/globe.md), "The marks").
 
 ## Drawing a new one
 

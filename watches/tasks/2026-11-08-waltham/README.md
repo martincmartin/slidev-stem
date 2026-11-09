@@ -31,3 +31,8 @@ the price (with today's dollars), and click 3 the steam-powered tools. The
 narration, the notes and the figure's description follow that order. The
 Swiss judge, who told Switzerland to buy machines, now closes click 3,
 after the machines.
+
+2026-11-08: today's dollars are rounded to one figure, "~$5,000 → ~$800",
+at the user's request: easier to read and to reason about. By the same CPI,
+$150 and $25 are $4,694 and $782, so the rounding is 7% and 2%, inside the
+error of any price index for 1876.

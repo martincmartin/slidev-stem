@@ -290,7 +290,11 @@ thirteenth messages.
 - **The marks:** dots for Boston, Worcester and Providence, with their
   names; the route, a best estimate through the towns of the Blackstone
   valley, with a dot at its start, Uxbridge; a burst at the crash, at click
-  2; a scale of 20 miles. Uxbridge and Valley Falls have no label (the
+  2; a scale of 10 miles, so that all of it is on land (the
+  nineteenth message). At click 2, the burst flashes: it hides and shows
+  five times, with the watch's flash timing, and then "Head-on collision"
+  fades in (the eighteenth message). The flash hides the burst, because
+  the burst is in the flash's colors already. Uxbridge and Valley Falls have no label (the
   eighth message): neither name plays a role in the story. The state
   lines are muted, dashed and dotted. The route is a mark, not a voyage's
   leg: it shows at click 0 and does not move, so no train is drawn.

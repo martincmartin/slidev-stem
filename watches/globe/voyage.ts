@@ -7,10 +7,14 @@
 // the new marks fade in; the marks that go fade out at once. A step back is
 // the step forward reversed: the legs that go sail back, from the last. A
 // step that leaves a story keeps its voyage whole, and its marks fade out:
-// the map fades with the camera. A jump shows its target at once. No DOM:
-// the tests run it in Node.
+// the map fades with the camera. A jump shows its target at once. A click
+// can name marks that flash (`globeFlash`): on the step forward into it
+// only, once its marks have faded in, they hide and show again, in the
+// flash's rhythm (../../docs/illustrations.md, "Flash"). No DOM: the tests
+// run it in Node.
 
 import type { View } from "../webgl/scene.ts";
+import { FLASH_SECONDS, flashIsOn } from "../webgl/timeline.ts";
 import type { Leg, Mark, Point, Story } from "./stories.ts";
 
 /** Seconds of a mark's fade. */
@@ -22,13 +26,17 @@ export interface VoyageTarget {
   readonly story: Story;
   readonly legs: number;
   readonly marks: ReadonlySet<Mark>;
+  /** Of `marks`, those that flash on the step forward into this click. */
+  readonly flash: ReadonlySet<Mark>;
 }
 
 /** The frontmatter's names of a click's target (`voyageState`): the last
- *  leg that shows, or null, and the marks. */
+ *  leg that shows, or null, the marks, and the marks that flash on the
+ *  step forward into the click (none if absent). */
 export interface VoyageNames {
   readonly leg: string | null;
   readonly marks: readonly string[];
+  readonly flash?: readonly string[];
 }
 
 /** The target that `names` give, on the story map whose view is `view`, or
@@ -62,7 +70,16 @@ export function voyageTarget(
     }
     return found;
   });
-  return { story, legs, marks: new Set(marks) };
+  const flash = (names.flash ?? []).map((name) => {
+    const found = marks.find((mark) => mark.name === name);
+    if (!found) {
+      throw new Error(
+        `globeFlash: "${name}" is not in globeMarks: ${names.marks.join(", ")}`,
+      );
+    }
+    return found;
+  });
+  return { story, legs, marks: new Set(marks), flash: new Set(flash) };
 }
 
 /** Whether `target` shows a mark that moves by itself: the wind's gusts,
@@ -75,12 +92,14 @@ export function movesByItself(target: VoyageTarget | null): boolean {
 
 /** A step between two targets: `at` is when it happens, and `start` when
  *  its legs start to sail and its marks to fade in (ms; after the camera's
- *  move). A jump, or a still, has the same target both sides. */
+ *  move). A jump, or a still, has the same target both sides. `flash`: the
+ *  marks that flash once the marks have faded in; none if absent. */
 export interface VoyageStep {
   readonly from: VoyageTarget | null;
   readonly to: VoyageTarget | null;
   readonly at: number;
   readonly start: number;
+  readonly flash?: ReadonlySet<Mark>;
 }
 
 /** The step that shows `target` at once. */
@@ -89,7 +108,9 @@ export function settled(target: VoyageTarget | null): VoyageStep {
 }
 
 /** Make a step from the last target. A jump shows its target at once;
- *  otherwise the new legs wait for the camera. Times are in ms. */
+ *  otherwise the new legs wait for the camera. The target's marks flash
+ *  only on a step forward (../../docs/navigation.md, an attention cue).
+ *  Times are in ms. */
 export function nextVoyage(
   previous: VoyageStep,
   to: VoyageTarget | null,
@@ -97,15 +118,24 @@ export function nextVoyage(
     readonly at: number;
     readonly cameraEnd: number;
     readonly jump: boolean;
+    readonly forward: boolean;
   },
 ): VoyageStep {
-  const { at, cameraEnd, jump } = timing;
+  const { at, cameraEnd, jump, forward } = timing;
+  const none: ReadonlySet<Mark> = new Set();
+  const flash = !jump && forward ? (to?.flash ?? none) : none;
   return {
     from: jump ? to : previous.to,
     to,
     at,
     start: jump ? at : cameraEnd,
+    ...(flash.size > 0 ? { flash } : {}),
   };
+}
+
+/** When `step`'s flash starts (ms): when its marks have faded in. */
+function flashStart(step: VoyageStep): number {
+  return step.start + MARK_FADE_SECONDS * 1000;
 }
 
 /** What a story map shows of its voyage at a time. For each of its legs:
@@ -121,6 +151,8 @@ export interface VoyageFrame {
     readonly heading: Leg["heading"];
   } | null;
   readonly marks: ReadonlyMap<Mark, number>;
+  /** The marks that a flash hides now, at their opacity in `marks`. */
+  readonly flashedOff: ReadonlySet<Mark>;
   /** The days at sea that the voyage shows: a day ends at each dot after a
    *  leg's first. */
   readonly days: number;
@@ -179,8 +211,8 @@ function sailing({ from, to }: VoyageStep): {
   return { legs: back ? legs.reverse() : legs, back };
 }
 
-/** When `step`'s change ends (ms): its legs have sailed, and its marks have
- *  faded. A step that changes nothing ends when it happens (`at`): a jump,
+/** When `step`'s change ends (ms): its legs have sailed, its marks have
+ *  faded, and its flash has ended. A step that changes nothing ends when it happens (`at`): a jump,
  *  and every step of a slide with no story map. */
 export function voyageEndAt(step: VoyageStep): number {
   const { from, to, at, start } = step;
@@ -197,6 +229,7 @@ export function voyageEndAt(step: VoyageStep): number {
     going ? at + fade : at,
     coming ? start + fade : at,
     seconds > 0 ? start + seconds * 1000 : at,
+    step.flash?.size ? flashStart(step) + FLASH_SECONDS * 1000 : at,
   );
 }
 
@@ -255,5 +288,9 @@ export function voyageAt(
       ship = { at: along(leg.route, share), heading: leg.heading };
   }
   const days = dots.reduce((sum, shown) => sum + Math.max(0, shown - 1), 0);
-  return { tracks, dots, ship, marks, days };
+  const off = flashIsOn((now - flashStart(step)) / 1000);
+  const flashedOff = new Set(
+    [...(step.flash ?? [])].filter((mark) => off && marks.has(mark)),
+  );
+  return { tracks, dots, ship, marks, flashedOff, days };
 }

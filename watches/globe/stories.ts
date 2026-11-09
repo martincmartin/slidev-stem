@@ -435,7 +435,7 @@ function newEngland(placed: PlacedMap): Story {
         ],
       },
       burst("crash", project(map, [-71.388, 41.895])),
-      scale(map, 20),
+      scale(map, 10),
     ],
   };
 }

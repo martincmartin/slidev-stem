@@ -3,7 +3,7 @@
 **Covers:** Part 2's globe and its story maps: the land and state-line
 data, the globe's meshes and levels, its views, the flight between them, how
 the globe joins the watch's scene, the marks of each story map and their
-keys (`globeLeg`, `globeMarks`), the labels on the globe and the maps, and
+keys (`globeLeg`, `globeMarks`, `globeFlash`), the labels on the globe and the maps, and
 the Noon Comes Later slide.
 **Read before** you change `globe/`, `watch/art.ts`, `art/earth-data.ts`,
 `art/fetch-earth.sh`, `components/StoryMaps.vue`,
@@ -187,6 +187,18 @@ what it is near. A story (`Story`) has:
   England map: the towns' dots, the railroad's route with a dot where it
   starts, and a burst where the trains met. Each mark fades in and out.
 
+A mark can flash, to say "look here", on the step forward into a click
+(`globeFlash`). A flash recolors a part in the second's colors
+([`stem/docs/illustrations.md`](../../docs/illustrations.md), "Flash"),
+but the burst is in those colors already, so a mark's flash hides it
+instead: once the step's marks have faded in, it hides in each "on" half
+of the flash and shows in each "off" half, with the watch's timing
+(`FLASH_*` in `webgl/timeline.ts`). Its opacity stays at 1, so
+`slideState` sees no jump. A step back, a jump and a still do not flash.
+A click's text that comes after the flash has the class `after-watch`
+(the railroad slide's "Head-on collision"):
+the voyage's change ends with the flash.
+
 A story can have no legs: the railroad crash has only marks.
 
 The colors are roles that every palette has (the production task,
@@ -211,6 +223,8 @@ artClicks:
 - `globeLeg`: the last leg that shows, with the ship at its end; the legs
   before it show too.
 - `globeMarks`: the marks that show.
+- `globeFlash`: of those, the marks that flash on the step forward into
+  that click; a step key, so it does not carry on to later clicks.
 
 The names are those of the story whose map is the slide's view
 (`voyageFor` in `watch/state.ts`, then `voyageTarget`); an invalid name throws.
@@ -228,14 +242,14 @@ animation). A step that leaves a story keeps its map's voyage whole, and
 its marks fade out: the map itself fades as the camera leaves. A jump and
 a still show the target at once. The live layer runs on the stage's clock,
 and an article's figure on its own, which stands while the figure is
-paused. The voyage's change ends when its legs have sailed and its marks
-have faded (`voyageEndAt`); a step that changes neither ends at once, so
+paused. The voyage's change ends when its legs have sailed, its marks
+have faded and its flash has ended (`voyageEndAt`); a step that changes neither ends at once, so
 a slide with no story map waits for nothing. Until then, a press jumps,
 and a figure is busy. A still shows its click's target, and its wind
 stands, drawn.
 
 `globe/voyage.test.ts` checks the names, the order of the legs, the dots,
-the ship's place and heading, and the marks' fades.
+the ship's place and heading, the marks' fades, and a mark's flash.
 
 ## The words
 

@@ -310,6 +310,7 @@ function show(to: number, atOnce: boolean): void {
     at,
     cameraEnd: view.viewEndAt(),
     jump: move === "jump",
+    forward: move === "forward",
   });
   setEnd("watch", Math.max(view.endAt(), voyageEndAt(voyage.value)));
 }

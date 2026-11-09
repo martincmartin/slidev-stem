@@ -127,3 +127,20 @@
 > On the RR slide, I'm guessing we don't have room to add a note about 4
 > dying 3 days earlier from a watch that was 2.5 min slow? We should at least
 > put that in the notes & narration.
+
+## The eighteenth message, 2026-11-08
+
+> The star for the location might not be noticable, especially since the
+> text comes in at the same time. Instead, it should flash 5 times (either in
+> & out or blue/orange), and then the "head on collision" text should fade
+> in.
+
+## The nineteenth message, 2026-11-08
+
+> Let's make the 20 mile line a 10 mile line, partly so that the whole line
+> is on land.
+
+## The twentieth message, 2026-11-08
+
+> For the Waltham Watch Company prices, isn't ~$5,000 -> ~$800 defensible
+> and easier to read/reason about?

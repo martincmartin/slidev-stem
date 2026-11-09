@@ -2570,7 +2570,8 @@ IF ASKED: The King's words are in Sobel, Longitude, p. 147. He said them to Harr
 # A story map of southern New England over the whole slide, and its words
 # in the right 40% (globe/maps.ts, NEW_ENGLAND). Boston, Worcester and
 # Providence orient the audience; the state lines are dashed. Each click
-# adds a paragraph, and none leaves. At click 2, a burst marks the crash. At
+# adds a paragraph, and none leaves. At click 2, a burst marks the crash:
+# it flashes, and then "Head-on collision" fades in (after-watch). At
 # click 3, the daguerreotype covers the slide, under the title and the words;
 # the toll comes at click 4, and the changes at click 5. The facts and the
 # choices are in tasks/2026-11-08-railroad/PLAN.md
@@ -2579,7 +2580,7 @@ art: [globe]
 artView: new england
 globeMarks: [towns, route, scale]
 artClicks:
-  2: { globeMarks: [towns, route, scale, crash] }
+  2: { globeMarks: [towns, route, scale, crash], globeFlash: [crash] }
 clicks: 5
 ---
 
@@ -2595,7 +2596,7 @@ clicks: 5
 
 <div class="crash-words side-text">
   <div v-click="1" class="crash-paragraph text-dims">Conductor's watch<br>2 min slow</div>
-  <div v-click="2" class="crash-paragraph text-dims">Head-on collision</div>
+  <div v-click="2" class="crash-paragraph text-dims after-watch">Head-on collision</div>
   <div v-click="4" class="crash-paragraph text-dims"><em>14 died</em><br>17 seriously injured</div>
   <div v-click="5" class="crash-paragraph text-dims">Watch inspections<br>1st US time zone</div>
 </div>
@@ -2752,7 +2753,7 @@ clicks: 3
 <div class="factory-words side-text">
   <div class="factory-paragraph text-dims">Mass produced</div>
   <div v-click="1" class="factory-paragraph text-dims">±10 to 15 sec a day</div>
-  <div v-click="2" class="factory-paragraph text-dims"><em>$150 → $25</em><br>~$4,700 → ~$780<br>today</div>
+  <div v-click="2" class="factory-paragraph text-dims"><em>$150 → $25</em><br>~$5,000 → ~$800<br>today</div>
   <div v-click="3" class="factory-paragraph text-dims">Steam-powered<br>tools</div>
 </div>
 
@@ -2821,8 +2822,8 @@ kept time that well.
 
 [click]
 
-A hand-fitted watch that good could cost $150, about $4,700 in today's
-dollars. A P.S. Bartlett cost about $25, about $780 today. An accurate watch
+A hand-fitted watch that good could cost $150, about $5,000 in today's
+dollars. A P.S. Bartlett cost about $25, about $800 today. An accurate watch
 became an everyday thing, for railroad workers, soldiers and the general
 public.
 
@@ -2830,7 +2831,7 @@ public.
 
 [figure: A long factory room in the 1870s: rows of young women at small
 machines, each driven by a belt from a pulley under the ceiling. Beside it:
-mass produced; ±10 to 15 seconds a day; $150 to $25, about $4,700 to $780
+mass produced; ±10 to 15 seconds a day; $150 to $25, about $5,000 to $800
 today; steam-powered tools.]
 
 Steam engines turned long shafts under the ceilings, and belts from the shafts
@@ -2865,7 +2866,7 @@ Aaron Dennison, a Boston watch repairer, saw the Springfield Armory make muskets
 
 [click] And good. Their everyday watch, the P.S. Bartlett: 10 to 15 seconds a day. Before, only a hand-fitted watch kept time that well.
 
-[click] And a hand-fitted watch that good could cost $150: about $4,700 today. A Bartlett: about $25, under $800 today. Railroad workers, soldiers, anyone could own one that kept good time.
+[click] And a hand-fitted watch that good could cost $150: about $5,000 today. A Bartlett: about $25, about $800 today. Railroad workers, soldiers, anyone could own one that kept good time.
 
 [click] Steam engines turned those belts, and the belts turned machines that cut parts finer than a hair. Waltham is still the Watch City: every Mother's Day weekend, it hosts the Watch City Steampunk Festival. A Swiss judge saw those machines in 1876, went home and told Switzerland to buy machines too.
 
