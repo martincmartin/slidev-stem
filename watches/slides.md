@@ -1642,6 +1642,8 @@ Around Cape Horn, then heading north, 1741
 
 <MapLabel v-click.hide="1" view="south america" :on="[-58, -12]" centred>South America</MapLabel>
 
+<MapLabel v-click.hide="1" view="south america" :on="[-67.27, -55.98]" :offset="[-203, -66]" :points-to="[-67.27, -55.98]" :stop="17">Cape Horn</MapLabel>
+
 <MapLabel v-click="[1, 3]" class="after-watch" view="cape noir" mark="estimated" :offset="[-105, -76]" :dimmed="$clicks >= 2">Estimated position</MapLabel>
 
 <MapLabel v-click="[2, 3]" class="after-watch" view="cape noir" leg="cliffs" :offset="[-270, -104]"><div class="shout">Cliffs!</div>2 a.m., 2 miles ahead</MapLabel>
