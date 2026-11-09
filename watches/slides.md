@@ -1659,49 +1659,34 @@ Around Cape Horn, then heading north, 1741
 [figure: The globe shows South America, with Cape Horn at its southern tip.]
 
 In April 1741, George Anson's squadron rounded Cape Horn and turned north
-into the Pacific.
+into the Pacific. They estimated they were safely hundreds of miles from the coast.
 
-[click]
+But around 1–2 a.m. on April 14, 1741, the weather suddenly cleared, and
+moonlight revealed cliffs only about two miles away. The ships were heading
+straight toward them.  If the clouds had stayed, the could easily have wrecked
+on the rocks.
 
-Their estimated position put them well out to sea, west of the land.
-
-[click]
-
-At about 2 a.m., a lookout saw cliffs two miles ahead. The ships were
-heading straight toward them.
-
-[click]
-
-Their _latitude_ told them how far north or south they were. They could
-check it from the height of the Sun at noon.
-
-[click]
-
-But _longitude_ was their position east or west. Their estimate put the
-land far beyond the horizon.
-
-[click]
+[click:5]
 
 [figure: A map of Cape Noir shows a ship near the cliffs. A dashed ship marks
 its estimated position to the west. A bracket measures the gap between them.]
 
-Their longitude estimate was about 400 miles off. They had no reliable way
-to measure it at sea.
+_Latitude_ is how far north or south you are. They could check it accurately
+from the height of the Sun at noon or the angle of the north star.  But
+_longitude_ is their position east or west.  Throughout most of the age of sail,
+it was a guess.
 
 -->
 
 <!--
-South America.
+Rounding Cape Horn, heading north
 
-[click] Where they thought they were.
+[click:2] Weather suddenly cleared
+- If weather hadn't cleared, could easily have wrecked
 
-[click] Cliffs, two miles ahead, at 2 a.m.
+[click] Latitude is north-south
 
-[click] The latitude was right.
-
-[click] The gap.
-
-[click] Longitude: 400 miles off.
+[click] Longitude is east-west
 -->
 
 ---
@@ -1740,6 +1725,7 @@ clicks: 5
 <BigWords v-click="5">The detour cost<br><em>70–80 sailors</em></BigWords>
 
 <!-- narration
+
 Anson's sailors were dying of scurvy: four to six a day. They needed fresh
 water and food from the island of Juan Fernández, off Chile.
 
