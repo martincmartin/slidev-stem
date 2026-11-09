@@ -2691,6 +2691,11 @@ Fourteen people died, and seventeen were seriously injured.
 
 [nofigure]
 
+It was the second crash of its kind that week. Three days earlier, two
+trains of the Camden & Amboy Railroad had collided near Old Bridge, New
+Jersey. Four people died. The watches of the two crews were two and a half
+minutes apart.
+
 The public was outraged, and the railroads changed their rules. Within days,
 the Boston & Providence Railroad, whose line met this one at Boston Switch,
 made each conductor have his watch certified as reliable by Bond & Sons of
@@ -2708,6 +2713,9 @@ States.
 > [Rails West](http://www.railswest.com/time/watches.html), from Ian Bartky's
 > _Selling the True Time_ (2000). The time zone is from the
 > [Harvard Gazette](https://news.harvard.edu/gazette/story/2011/11/americas-first-time-zone/).
+> The Old Bridge collision, its toll and the watches are from
+> [Scientific American](https://www.scientificamerican.com/article/railroad-accidentsthe-remedy/)
+> of August 20, 1853. Its date, August 9, is from later lists of wrecks.
 > The state lines on the map are today's.
 
 -->
@@ -2723,9 +2731,9 @@ Friday, August 12, 1853. An excursion train leaves Uxbridge with about 475 peopl
 
 [click] Fourteen people died. Seventeen were seriously injured.
 
-[click] The public was outraged. Railroads made their conductors carry watches certified as reliable, and paid to keep them that way. And they agreed to one time, sent by telegraph from the Harvard College Observatory, right here in Cambridge. In effect, the first time zone in America.
+[click] And it was the second crash like it that week. Three days earlier, in New Jersey, two trains collided near Old Bridge. Four died. The two crews' watches were two and a half minutes apart. The public was outraged. Railroads made their conductors carry watches certified as reliable, and paid to keep them that way. And they agreed to one time, sent by telegraph from the Harvard College Observatory, right here in Cambridge. In effect, the first time zone in America.
 
-IF ASKED: Both trains were the Providence & Worcester's. The watch rules quoted are the Boston & Providence's, whose line met this one at Boston Switch. Putnam was charged with manslaughter; I found no record of the verdict. The railroad paid $43,876 to victims and families, and built a second track. 13 or 14 dead, depending on the source.
+IF ASKED: Both trains were the Providence & Worcester's. The watch rules quoted are the Boston & Providence's, whose line met this one at Boston Switch. Putnam was charged with manslaughter; I found no record of the verdict. The railroad paid $43,876 to victims and families, and built a second track. 13 or 14 dead, depending on the source (Scientific American, a week later, said 12). Old Bridge: the Camden & Amboy, August 9, 1853, 4 killed, 7 wounded; the conductor had not compared his watch with the engineer's or the station clock.
 -->
 
 ---

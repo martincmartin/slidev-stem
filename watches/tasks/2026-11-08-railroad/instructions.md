@@ -106,3 +106,24 @@
 ## The fourteenth message, 2026-11-08
 
 > Sure add ~$4,700 → ~$780 today".
+
+## The fifteenth message, 2026-11-08
+
+> For the RR image, there's no a lot of crap at the bottom of the image.
+> Let's keep the upper left corner where it is, but zoom in a bit, this will
+> also cut a little off the right hand side, but I think we can e.g. cut off
+> half of the train car on the RHS without ruinining the impact of the
+> collision.
+
+## The sixteenth message, 2026-11-08
+
+> Head-on collision is actually not in the sky, but rather on the roof of the
+> car, obscuring some damage. Can we move the crop up without changing the
+> zoom maybe? Even though it will bring some oval or other stuff in the upper
+> left corner?
+
+## The seventeenth message, 2026-11-08
+
+> On the RR slide, I'm guessing we don't have room to add a note about 4
+> dying 3 days earlier from a watch that was 2.5 min slow? We should at least
+> put that in the notes & narration.

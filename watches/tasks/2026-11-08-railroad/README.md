@@ -9,6 +9,6 @@ Falls, and what changed after it.
   photo and its crops, three designs for the last click with a ranking, the
   order with the Waltham slide, a draft of the speaker notes, the build
   steps, and the sources.
-- `evidence/`: the daguerreotype, whole and in four 16:9 crops: inside the
-  oval (section 3), the full width, to the oval's edge, and inside its rim
-  of tarnish (the one on the slide).
+- `evidence/`: the daguerreotype, whole and in five 16:9 crops: inside the
+  oval (section 3), the full width, to the oval's edge, inside its rim of
+  tarnish, and 10% tighter and 150 px higher (the one on the slide).

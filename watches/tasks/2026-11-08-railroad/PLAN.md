@@ -258,6 +258,13 @@ About 170 words, about 75 seconds at 140 words a minute:
   ordered more reliable watches", the time from Harvard.
 - [Blackstone Valley Historical Society, "The Train Wreck that Changed Time"](https://www.bvhsri.org/2023/11/11/the-train-wreck-that-changed-time/)
   (2023): 13 killed, about 40 wounded.
+- [Scientific American, "Railroad Accidents—The Remedy"](https://www.scientificamerican.com/article/railroad-accidentsthe-remedy/)
+  (August 20, 1853, vol. 8, no. 49): the Camden & Amboy collision near Old
+  Bridge, New Jersey, 4 killed and 7 wounded, from "a difference of 2½
+  minutes" between the crews' watches (the scan's text says "2J"); its
+  conductor did not compare his watch with the engineer's or the station
+  clock. It gives 12 killed at Valley Falls. The date, August 9, is from a
+  secondary list of wrecks caused by watches only.
 - [Wikimedia Commons, the daguerreotype](https://commons.wikimedia.org/wiki/File:L._Wright_-_Train_wreck_on_the_Providence_Worcester_Railroad_near_Pawtucket,_Rhode_Island_-_Google_Art_Project.jpg):
   public domain, 3791 × 2878 px.
 
@@ -295,11 +302,20 @@ thirteenth messages.
   inspections / 1st US time zone". No bullets, and no colon as a header:
   the changes are short, so that all four paragraphs fit under the
   title.
+- **The week's other crash** (the seventeenth message): the Old Bridge
+  collision, three days earlier, is in the narration and the notes of the
+  last click, not on the slide: the four paragraphs fill the rail.
 - **The photo** is the widest crop of the slide's shape, centred on the
   oval, that stays clear of the dark rim of tarnish inside its edge: 2720 ×
   1530 px, 13% wider than the crop of section 3 (the thirteenth message).
   The crop that touches the oval, 2900 px wide, has the rim's smear and
-  scratches in its corners. Both are in `evidence/`. It is 1470 px wide,
+  scratches in its corners. Both are in `evidence/`. Then, from the same
+  top left corner, 10% tighter (2465 × 1386 px), so that less of the
+  ground shows; it cuts the car at the right in half (the fifteenth
+  message). Then 150 px higher (at 528, 533), so that "Head-on collision"
+  is in the sky, not on the car's roof, where it hid some of the damage
+  (the sixteenth message; `evidence/photo-crop-tighter.jpg`). A little
+  tarnish shows in the top corners, behind the title. It is 1470 px wide,
   223 kB. At click 3 it covers the slide under the title and the words. It
   does not dim at the later clicks: the words keep their outline over it.
 - **The words are as high as they can be** (the twelfth message), not
