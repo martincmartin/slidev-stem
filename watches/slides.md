@@ -2891,10 +2891,10 @@ artClicks:
 clicks: 2
 ---
 
-# Reading a Watch in the Dark, World War I
+# World War I, Trenches at Night
 
 <div class="dark-words side-text">
-  <div v-click="1" class="dark-paragraph text-dims">Strike a match:<br>draw a sniper’s fire</div>
+  <div v-click="1" class="dark-paragraph text-dims">Strike a match,<br>draw a sniper’s fire</div>
   <div v-click="2" class="dark-paragraph text-dims after-watch-fade">Undark:<br><em>radium paint</em></div>
 </div>
 
