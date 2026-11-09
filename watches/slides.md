@@ -1624,7 +1624,8 @@ And the whole watch.
 # map's marks (globeLeg, globeMarks), and each step draws them after the
 # camera has come. The labels are at the marks they name (MapLabel.vue);
 # "Estimated position", which the next clicks measure from, stays, dimmed,
-# until "Latitude: correct"
+# until "Latitude: correct". "400 miles" names the gap in the article's
+# figure only (figure-only): in the talk, the punchline says it
 class: story-map
 art: [globe]
 artView: south america
@@ -1649,6 +1650,8 @@ Around Cape Horn, then heading north, 1741
 <MapLabel v-click="[2, 3]" class="after-watch" view="cape noir" leg="cliffs" :offset="[-270, -104]"><div class="shout">Cliffs!</div>2 a.m., 2 miles ahead</MapLabel>
 
 <MapLabel v-click="[3, 4]" class="after-watch" view="cape noir" mark="estimated" :offset="[60, -50]">Latitude: correct</MapLabel>
+
+<MapLabel v-click="4" class="figure-only" view="cape noir" mark="estimated" :offset="[215, 66]" centred>400 miles</MapLabel>
 
 <BigWords v-click="5">Longitude:<br><em>400 miles</em> off</BigWords>
 

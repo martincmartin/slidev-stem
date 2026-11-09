@@ -174,8 +174,11 @@ figure keeps it.
 **A figure of the globe is cropped to its disc** (`ballBox`): the ball of
 a view of a ball (`View.ball`), not a box around it, whose corners would
 show it wider. A story map fills the slide, so its figure is the whole
-slide, with its labels but not its title or its punchline's screen. Its
-voyage and its marks are those of the figure's click
+slide, with its labels but not its title or its punchline's screen. A
+label with the class `figure-only` shows in a figure but not in the talk
+(`style.css`, "FIGURE ONLY"): the Longitude Was a Guess slide's "400
+miles" names the gap in the figure, where the speaker's punchline does
+not. Its voyage and its marks are those of the figure's click
 ([globe.md](globe.md), "The marks"). The wind's gusts loop while the
 figure plays (the production task's
 [`PLAN.md`](../tasks/2026-10-31-part-2-production/PLAN.md), section 7,

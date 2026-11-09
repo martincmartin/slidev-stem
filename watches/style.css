@@ -85,6 +85,15 @@
 .article-figure {
   --text-dimmed: 0%;
 }
+/* FIGURE ONLY: a label with the class `figure-only` shows in the article's
+   figures, but not in the talk, where the speaker says it
+   (docs/article.md, "What a figure shows"). */
+.figure-only {
+  visibility: hidden;
+}
+.article-figure .figure-only {
+  visibility: visible;
+}
 /* The article shows a slide's history line under its heading, so a figure
    does not (slide-top.vue). */
 .article-figure .slide-history {
