@@ -8,6 +8,7 @@ import { CENTRE, RADIUS, toSphere } from "./globe.ts";
 import {
   CAPE_NOIR,
   JUAN_FERNANDEZ,
+  NEW_ENGLAND,
   SCILLY,
   STORY_MAPS,
   fitCamera,
@@ -21,7 +22,8 @@ import { globeView } from "./globe.ts";
 import { makeGlobe } from "./model.ts";
 
 const SLIDE: readonly [number, number] = [980, 552];
-const POLYGONS = parseEarth(earthFile).levels[2]?.polygons ?? [];
+const EARTH = parseEarth(earthFile);
+const POLYGONS = EARTH.levels[2]?.polygons ?? [];
 const RINGS = POLYGONS.flat();
 const GLOBE = makeGlobe(SLIDE);
 /** The story maps, placed on the globe. */
@@ -40,11 +42,13 @@ test("a map puts its centre at its slide point, north up and east right", () => 
 test("the globe, through a map's view, draws the coast where the map does", () => {
   // the most, and the 95th percentile, of the gaps, in slide px: the fit in
   // the production task's progress (phase 5) found 12.8 and 6.8 for Juan
-  // Fernández, 14.0 and 7.3 for Cape Noir, and 0.9 and 0.8 for Scilly
+  // Fernández, 14.0 and 7.3 for Cape Noir, and 0.9 and 0.8 for Scilly;
+  // the railroad task found 2.3 and 1.1 for New England
   const limits = new Map<StoryMap, { most: number; percentile: number }>([
     [CAPE_NOIR, { most: 15, percentile: 8 }],
     [JUAN_FERNANDEZ, { most: 14, percentile: 8 }],
     [SCILLY, { most: 1.5, percentile: 1 }],
+    [NEW_ENGLAND, { most: 3, percentile: 1.5 }],
   ]);
   for (const map of STORY_MAPS) {
     const { camera, gaps } = fitCamera(map, RINGS, SLIDE);
@@ -71,14 +75,19 @@ test("the globe, through a map's view, draws the coast where the map does", () =
 
 test("a map's land is cut near the slide, and its small islands are apart, larger", () => {
   for (const map of STORY_MAPS) {
-    const { land } = mapLand(map, POLYGONS, SLIDE);
+    const { land } = mapLand(map, POLYGONS, EARTH.borders, SLIDE);
     const numbers = [...land.matchAll(/-?\d+\.\d/g)].map((found) =>
       Number(found[0]),
     );
     assert.ok(numbers.length > 100, map.name);
     assert.ok(Math.min(...numbers) >= -20 && Math.max(...numbers) <= 1000);
   }
-  const { islands, land } = mapLand(JUAN_FERNANDEZ, POLYGONS, SLIDE);
+  const { islands, land } = mapLand(
+    JUAN_FERNANDEZ,
+    POLYGONS,
+    EARTH.borders,
+    SLIDE,
+  );
   // Robinson Crusoe and Alejandro Selkirk, at twice their size: 1:10m has
   // no ring of its own for Santa Clara
   assert.equal(islands.split("Z").length - 1, 2);
@@ -87,10 +96,27 @@ test("a map's land is cut near the slide, and its small islands are apart, large
   );
   const crusoe = project(JUAN_FERNANDEZ, [-78.83, -33.63]);
   assert.ok(xs.some((x) => Math.abs(x - crusoe[0]) < 20));
-  assert.equal(mapLand(CAPE_NOIR, POLYGONS, SLIDE).islands, "");
+  assert.equal(mapLand(CAPE_NOIR, POLYGONS, EARTH.borders, SLIDE).islands, "");
   assert.ok(land.length > 0);
   const placed = MAPS.find(({ map }) => map === JUAN_FERNANDEZ);
   assert.equal(placed?.land.islands, islands);
+});
+
+test("only New England's map has state lines, open, and on the slide", () => {
+  for (const map of STORY_MAPS) {
+    const { borders } = mapLand(map, POLYGONS, EARTH.borders, SLIDE);
+    if (map !== NEW_ENGLAND) {
+      assert.equal(borders, "", map.name);
+      continue;
+    }
+    assert.ok(!borders.includes("Z"));
+    // the line between Massachusetts and Rhode Island, north of Woonsocket
+    const [x, y] = project(map, [-71.6, 42.014]);
+    const points = [...borders.matchAll(/[ML](-?\d+\.\d),(-?\d+\.\d)/g)].map(
+      (found) => [Number(found[1]), Number(found[2])] as const,
+    );
+    assert.ok(points.some(([px, py]) => Math.hypot(px - x, py - y) < 40));
+  }
 });
 
 test("at its view, a map is on the slide as it is drawn, and whole", () => {

@@ -226,6 +226,12 @@ onBeforeUnmount(() => leave?.());
         :d="story.placed.land.land"
         :clip-path="`url(#${masks}-cut)`"
       />
+      <path
+        v-if="story.placed.land.borders"
+        class="story-border"
+        :d="story.placed.land.borders"
+        :clip-path="`url(#${masks}-cut)`"
+      />
       <g class="marks">
         <g
           v-for="mark in story.marks"
@@ -329,6 +335,37 @@ onBeforeUnmount(() => leave?.());
   stroke-width: 3;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
+}
+/* A state line: context, so muted, at the ladder's floor, dashed and
+   dotted, unlike the dashed parallel. Its width holds at every zoom, as the
+   coast's does. */
+.story-border {
+  fill: none;
+  stroke: var(--palette-muted);
+  stroke-width: 2;
+  stroke-dasharray: 10 4 2 4;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+/* A town, and a railroad: in ink, as a voyage's dots and track. */
+.story-maps .town {
+  fill: var(--palette-ink);
+  stroke: var(--palette-background);
+  stroke-width: 2;
+}
+.story-maps .rail {
+  fill: none;
+  stroke: var(--palette-ink);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Where something struck: "look here", a mark in the second's colors. */
+.story-maps .burst {
+  fill: var(--palette-second-wash);
+  stroke: var(--palette-second);
+  stroke-width: 3;
+  stroke-linejoin: round;
 }
 .story-maps .latitude {
   fill: none;

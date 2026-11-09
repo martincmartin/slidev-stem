@@ -1,10 +1,10 @@
 # The globe and the story maps
 
-**Covers:** Part 2's globe and its story maps: the land data, the globe's
-meshes and levels, its views, the flight between them, how the globe
-joins the watch's scene, the marks of each story map and their keys
-(`globeLeg`, `globeMarks`), the labels on the globe and the maps, and the Noon
-Comes Later slide.
+**Covers:** Part 2's globe and its story maps: the land and state-line
+data, the globe's meshes and levels, its views, the flight between them, how
+the globe joins the watch's scene, the marks of each story map and their
+keys (`globeLeg`, `globeMarks`), the labels on the globe and the maps, and
+the Noon Comes Later slide.
 **Read before** you change `globe/`, `watch/art.ts`, `art/earth-data.ts`,
 `art/fetch-earth.sh`, `components/StoryMaps.vue`,
 `components/MapLabel.vue`, or the globe's frontmatter. The rules for WebGL art
@@ -16,7 +16,9 @@ words),
 [`2026-10-30-part-2-visual-language`](../tasks/2026-10-30-part-2-visual-language/PLAN.md)
 (the mockup, and the design of the slides),
 [`2026-10-28-globe-planning`](../tasks/2026-10-28-globe-planning/PLAN.md)
-(the globe in the house renderer, and the disc that hides the far side).
+(the globe in the house renderer, and the disc that hides the far side),
+[`2026-11-08-railroad`](../tasks/2026-11-08-railroad/PLAN.md) (the New
+England map and its state lines).
 
 ## The data
 
@@ -26,7 +28,8 @@ three scales, one level each (`globe/earth.ts` reads and checks it):
 - **1:110m and 1:50m: the whole Earth,** to 0.01° (1.1 km).
 - **1:10m: only near the stories,** in boxes (`FINE` in
   `art/earth-data.ts`): one for Cape Noir and Juan Fernández, one for the
-  English Channel and the Isles of Scilly. Each is cut 2° outside its box,
+  English Channel and the Isles of Scilly, and one for southern New England.
+  Each is cut 2° outside its box,
   so the cut's edges are not on the box; the globe cuts again at the box.
   It is to 0.001°, and a point within 0.5 km of the last is dropped. The
   whole Earth at 1:10m would be 10 MB.
@@ -35,6 +38,14 @@ A level is a list of polygons, each an outline and its holes, each ring a
 flat list of longitudes and latitudes. There is no separate coast: the
 globe takes the coast from the rings, less the data's cuts at 180° and at
 the South Pole. The file is about 1.3 MB, 0.4 MB compressed.
+
+**The state lines** (`borders`) are Natural Earth's 1:10m admin-1 lines,
+public domain, at the same commit, only near the stories whose maps show
+them (`BORDERED`: New England), and only those on land: a line that the data
+names on both sides. A line in the water (Long Island Sound, Mount Hope Bay)
+has no names. Each line is an open, flat list of points, written as the
+1:10m land is. They are today's lines, not those of the story's year: they
+orient the audience.
 
 To make it again (in `watches/`):
 
@@ -46,8 +57,9 @@ node art/earth-data.ts NE_DIR --check # fails if the file is not what NE_DIR mak
 
 Validation does not run `--check`: it needs the downloads.
 `globe/earth.test.ts` checks the file itself: it parses, the levels are in
-order, 1:10m has the Juan Fernández Islands and the Isles of Scilly, and
-its land is near its boxes.
+order, 1:10m has the Juan Fernández Islands, the Isles of Scilly and
+Narragansett Bay, its land is near its boxes, and the state lines are New
+England's.
 
 ## The globe
 
@@ -96,7 +108,8 @@ that neither is in the other's views. Its radius is 500 world units.
 Each looks straight down at a place, north up. Its pivot is the globe's
 center, and it has the angles that face the place (`View.angles`): a slide
 that names the view and sets no `artTilt` or `artTurn` gets them. A story
-map's view (Cape Noir, Juan Fernández, Scilly) is the camera that fits the
+map's view (Cape Noir, Juan Fernández, Scilly, New England) is the camera
+that fits the
 map best ("The story maps"). South America and the Channel fit a list of
 places into the band under the title. The three views of the Longitude From Time slide
 are its own ("The Longitude From Time slide").
@@ -123,6 +136,8 @@ its px for a degree of latitude.
   the clip adds nothing. A map can draw small islands apart, larger about their own
   centre, so that they show (`StoryMap.islands`: the Juan Fernández
   Islands, twice their size); a picture can show them later than the rest.
+  Its state lines, if the data has any near it, are open paths, clipped
+  with the land, in muted, dashed and dotted (`.story-border`).
 - **Its globe view** is the camera, north up, whose globe brings the coast
   nearest to the map's (`fitCamera`): by least squares over the place that
   the camera looks down at, where it shows, and the scale, on an even
@@ -132,7 +147,8 @@ its px for a degree of latitude.
   plane, as the mockup's fit had, fits no better, and the house camera has
   no such turn. The gaps (median / 95th percentile / most, slide px): Juan
   Fernández 2.7 / 6.8 / 12.8, Cape Noir 2.6 / 7.3 / 14.0, Scilly
-  0.4 / 0.8 / 0.9 (`globe/maps.test.ts` holds limits).
+  0.4 / 0.8 / 0.9, New England 0.6 / 1.1 / 2.3 (`globe/maps.test.ts` holds
+  limits).
 
 The fits take about 50 ms at load in Node, and the maps' land 10 ms.
 
@@ -167,14 +183,18 @@ what it is near. A story (`Story`) has:
 - **Its other marks** (`Mark`): the dashed ship where the crew thought
   they were (`estimated`), the dashed parallel, the bracket over the gap,
   the scale in statute miles, the wind (gusts that loop, masked to the
-  sea), and the islands that show when they are sighted. Each mark fades
-  in and out.
+  sea), and the islands that show when they are sighted. On the New
+  England map: the towns' dots, the railroad's route with a dot where it
+  starts, and a burst where the trains met. Each mark fades in and out.
+
+A story can have no legs: the railroad crash has only marks.
 
 The colors are roles that every palette has (the production task,
-section 7): ink for the track, the dots, the parallel, the bracket and
-the scale; the subject for the ship, with its wash for the sails and the
-second color for the pennant; the paper for the dashed ship and the
-gusts.
+section 7): ink for the track, the dots, the parallel, the bracket, the
+scale, the towns and the railroad; the subject for the ship, with its
+wash for the sails and the second color for the pennant; the paper for
+the dashed ship and the gusts; the second, "look here", for the burst's
+lines, and its wash for the burst's face.
 
 A slide names each click's target in its frontmatter, with the click keys
 of `docs/watch.md` ("The keys"):

@@ -1,7 +1,8 @@
 #!/bin/sh
-# Downloads Natural Earth's land at 1:110m, 1:50m and 1:10m, at the commit
-# that globe/earth.json was made from, into DIR, and writes the commit to
-# DIR/SHA for art/earth-data.ts. Natural Earth is in the public domain
+# Downloads Natural Earth's land at 1:110m, 1:50m and 1:10m, and its state
+# lines at 1:10m, at the commit that globe/earth.json was made from, into
+# DIR, and writes the commit to DIR/SHA for art/earth-data.ts. Natural
+# Earth is in the public domain
 # (https://www.naturalearthdata.com/about/terms-of-use/).
 #   sh art/fetch-earth.sh DIR
 set -eu
@@ -12,4 +13,6 @@ for scale in 110m 50m 10m; do
   curl -sfL -o "$1/ne_${scale}_land.geojson" \
     "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/$COMMIT/geojson/ne_${scale}_land.geojson"
 done
+curl -sfL -o "$1/ne_10m_admin_1_states_provinces_lines.geojson" \
+  "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/$COMMIT/geojson/ne_10m_admin_1_states_provinces_lines.geojson"
 echo "$COMMIT" > "$1/SHA"

@@ -13,3 +13,15 @@ what to show, what to say, and the designs to choose from. Section 12 of
 - `evidence/`: a contact sheet of the ten candidate pictures, and their
   sources and licences; two contact sheets of the photo's contrast variants,
   and the script that makes them (section 13).
+
+2026-11-08: the order is now the crash, then Waltham (option b of PLAN.md,
+section 11), and the Waltham slide's speaker notes and narration open from
+the crash: the railroads' reliable watches came from London, made by hand,
+at $150 each. See `tasks/2026-11-08-railroad/PLAN.md`, section 9.
+
+2026-11-08: click 3 adds "~$4,700 → ~$780 / today" under "$150 → $25", in
+1876 dollars by the Minneapolis Fed's CPI since 1800 (1876: 32; 2026,
+estimated: 1001.3; read 2026-11-08), at the user's request
+(`tasks/2026-11-08-railroad/instructions.md`, the fourteenth message). One
+year for both prices keeps their ratio. The narration and the notes say it
+too.

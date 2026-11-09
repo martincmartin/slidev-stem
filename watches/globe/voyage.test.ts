@@ -72,7 +72,7 @@ function frameAt(story: Story, step: VoyageStep, now: number): VoyageFrame {
 }
 
 test("each story map has a story, and its marks have parts", () => {
-  assert.equal(stories.length, 3);
+  assert.equal(stories.length, 4);
   for (const story of stories) {
     for (const mark of story.marks) {
       assert.ok(

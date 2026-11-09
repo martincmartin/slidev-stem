@@ -1,5 +1,6 @@
-// The Earth's land for the globe, at Natural Earth's three scales:
-// globe/earth.json, which art/earth-data.ts writes. Its types, and a parser
+// The Earth's land for the globe, at Natural Earth's three scales, and the
+// state lines of the story maps that show them: globe/earth.json, which
+// art/earth-data.ts writes. Its types, and a parser
 // that checks the file where the globe reads it (docs/globe.md, "The data").
 
 export type LonLat = readonly [number, number];
@@ -7,6 +8,8 @@ export type LonLat = readonly [number, number];
 export type Ring = readonly LonLat[];
 /** An outline, then its holes. */
 export type Polygon = readonly Ring[];
+/** An open line of 2 or more points: a border between two states. */
+export type Line = readonly LonLat[];
 
 /** A box of longitude and latitude, in degrees. */
 export interface LonLatBox {
@@ -35,9 +38,11 @@ export interface Level {
   readonly polygons: readonly Polygon[];
 }
 
-/** The levels, one for each of SCALES, in its order. */
+/** The levels, one for each of SCALES, in its order, and the state lines
+ *  near the story maps that show them, at 1:10m. */
 export interface Earth {
   readonly levels: readonly Level[];
+  readonly borders: readonly Line[];
 }
 
 function fail(what: string): never {
@@ -71,8 +76,19 @@ function boxOf(value: unknown, what: string): LonLatBox {
 
 /** A ring written flat: lon, lat, lon, lat, ... */
 function ringOf(value: unknown, what: string): Ring {
-  if (!Array.isArray(value) || value.length < 6 || value.length % 2 !== 0) {
-    return fail(`${what} is not a flat list of 3 or more points`);
+  return pointsOf(value, 3, what);
+}
+
+/** At least `least` points, written flat: lon, lat, lon, lat, ... */
+function pointsOf(value: unknown, least: number, what: string): LonLat[] {
+  if (
+    !Array.isArray(value) ||
+    value.length < 2 * least ||
+    value.length % 2 !== 0
+  ) {
+    return fail(
+      `${what} is not a flat list of ${String(least)} or more points`,
+    );
   }
   const ring: LonLat[] = [];
   for (let index = 0; index < value.length; index += 2) {
@@ -84,6 +100,14 @@ function ringOf(value: unknown, what: string): Ring {
     ring.push([lon, lat]);
   }
   return ring;
+}
+
+/** The state lines: each written flat, as a ring is, but open. */
+function bordersOf(value: unknown): Line[] {
+  if (!Array.isArray(value)) return fail("no borders");
+  return value.map((line: unknown, at) =>
+    pointsOf(line, 2, `borders[${String(at)}]`),
+  );
 }
 
 /** The file's JSON as an Earth. Throws, with the place, if it is not one. */
@@ -124,5 +148,6 @@ export function parseEarth(json: unknown): Earth {
         }),
       };
     }),
+    borders: bordersOf(json["borders"]),
   };
 }

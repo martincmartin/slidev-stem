@@ -11,7 +11,7 @@ import { planeOnSlide, towardCamera } from "../webgl/renderer.ts";
 import type { Affine2, CameraPose, Plane, Vec3, View } from "../webgl/scene.ts";
 import { clipToRect } from "./clip.ts";
 import { inBox } from "./earth.ts";
-import type { LonLatBox, LonLat, Polygon, Ring } from "./earth.ts";
+import type { Line, LonLatBox, LonLat, Polygon, Ring } from "./earth.ts";
 import { RADIUS, globeView, onGlobe, toSphere } from "./globe.ts";
 import type { GlobeCamera } from "./globe.ts";
 
@@ -63,14 +63,19 @@ export function unproject(
   ];
 }
 
-/** A ring as a closed subpath of an SVG path, to 0.1 px. */
-function subpath(points: readonly (readonly [number, number])[]): string {
-  return `${points
+/** A line as an open subpath of an SVG path, to 0.1 px. */
+function openSubpath(points: readonly (readonly [number, number])[]): string {
+  return points
     .map(
       ([x, y], index) =>
         `${index === 0 ? "M" : "L"}${x.toFixed(1)},${y.toFixed(1)}`,
     )
-    .join("")}Z`;
+    .join("");
+}
+
+/** A ring as a closed subpath of an SVG path, to 0.1 px. */
+function subpath(points: readonly (readonly [number, number])[]): string {
+  return `${openSubpath(points)}Z`;
 }
 
 /** A map's land as SVG paths, in slide px: an outline and its holes, so the
@@ -80,12 +85,16 @@ export interface MapLand {
   /** The islands of `StoryMap.islands`, enlarged, or "": a picture can show
    *  them later than the rest. */
   readonly islands: string;
+  /** The state lines on the slide, open subpaths, or "". */
+  readonly borders: string;
 }
 
-/** The map's land on a slide of `slide` px, cut to the slide and MARGIN. */
+/** The map's land on a slide of `slide` px, cut to the slide and MARGIN,
+ *  and the state lines that cross the slide. */
 export function mapLand(
   map: StoryMap,
   polygons: readonly Polygon[],
+  borders: readonly Line[],
   slide: readonly [number, number],
 ): MapLand {
   const low = [-MARGIN, -MARGIN] as const;
@@ -111,7 +120,21 @@ export function mapLand(
     const kept = clipToRect(points, low, high);
     if (kept.length >= 3) land.push(subpath(kept));
   }
-  return { land: land.join(""), islands: islands.join("") };
+  // a line is kept whole if a point of it is on the slide: StoryMaps.vue
+  // clips it with the land
+  const lines = borders
+    .map((line) => line.map((place) => project(map, place)))
+    .filter((points) =>
+      points.some(
+        ([x, y]) => x >= low[0] && x <= high[0] && y >= low[1] && y <= high[1],
+      ),
+    )
+    .map(openSubpath);
+  return {
+    land: land.join(""),
+    islands: islands.join(""),
+    borders: lines.join(""),
+  };
 }
 
 /** How far the globe's coast, through a camera, is from the map's, at each
@@ -239,11 +262,25 @@ export const SCILLY: StoryMap = {
   pxPerDegree: 600,
 };
 
+/** Southern New England, for the railroad crash of 1853, zoomed out so that
+ *  the coast is one that the audience knows: Worcester 24 px from the left
+ *  edge, Boston at y = 95, where a subtitle would be, Massachusetts Bay
+ *  north to Nahant, all of Narragansett Bay (41.38° at the bottom edge), and
+ *  Cape Cod. The slide's words are in the right 40%, over the Atlantic and
+ *  the tip of Cape Cod. */
+export const NEW_ENGLAND: StoryMap = {
+  name: "new england",
+  centre: [-71.43, 41.95],
+  at: [153, 286],
+  pxPerDegree: 467,
+};
+
 /** The story maps of Part 2. */
 export const STORY_MAPS: readonly StoryMap[] = [
   CAPE_NOIR,
   JUAN_FERNANDEZ,
   SCILLY,
+  NEW_ENGLAND,
 ];
 
 /** A story map placed on the globe: its land, its view (the camera that
@@ -261,6 +298,7 @@ export interface PlacedMap {
 export function placeMap(
   map: StoryMap,
   polygons: readonly Polygon[],
+  borders: readonly Line[],
   slide: readonly [number, number],
 ): PlacedMap {
   const { camera } = fitCamera(map, polygons.flat(), slide);
@@ -280,7 +318,7 @@ export function placeMap(
   const place = toSphere(camera.centre);
   return {
     map,
-    land: mapLand(map, polygons, slide),
+    land: mapLand(map, polygons, borders, slide),
     view,
     plane: {
       // the world point at the slide's top left, at the view: the camera
@@ -315,8 +353,16 @@ export function mapOnSlide(
   const { view, plane } = placed;
   const toward = towardCamera(pose);
   const own = towardCamera(view.angles ?? { tilt: 0, turn: 0 });
+  // the angle between the two, by atan2: acos of a dot product near 1
+  // turns its rounding into a pan, so that a map at its own view is not
+  // whole
   const cosine = toward[0] * own[0] + toward[1] * own[1] + toward[2] * own[2];
-  const pan = Math.acos(Math.min(1, cosine)) * RADIUS * view.scale;
+  const sine = Math.hypot(
+    toward[1] * own[2] - toward[2] * own[1],
+    toward[2] * own[0] - toward[0] * own[2],
+    toward[0] * own[1] - toward[1] * own[0],
+  );
+  const pan = Math.atan2(sine, cosine) * RADIUS * view.scale;
   const zoom = Math.abs(Math.log(pose.view.scale / view.scale));
   const far = Math.min(1, Math.max(zoom / Math.log(NEAR.zoom), pan / NEAR.pan));
   return {

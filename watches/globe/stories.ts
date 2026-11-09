@@ -1,6 +1,7 @@
 // The marks of Part 2's three stories, on their story maps (docs/globe.md,
 // "The marks"): where each place is, the voyage's legs, and the marks that
-// a click can show. A slide names them in its frontmatter (`globeLeg`,
+// a click can show; and the marks of the railroad crash of 1853, a story
+// with no voyage. A slide names them in its frontmatter (`globeLeg`,
 // `globeMarks`); this file says where they are. Places come from the
 // sources, in degrees, and the map projects them; a few are slide px off a
 // place, so that a ship does not hide what it is near. The facts are from
@@ -12,6 +13,7 @@ import type { LonLat } from "./earth.ts";
 import {
   CAPE_NOIR,
   JUAN_FERNANDEZ,
+  NEW_ENGLAND,
   SCILLY,
   longitudeOffset,
   project,
@@ -182,6 +184,29 @@ function wind(gusts: readonly (readonly [number, number, boolean])[]): Mark {
     name: "wind",
     parts: gusts.map(([x, y, up]) => ({ kind: "gust", d: gust([x, y], up) })),
   };
+}
+
+/** Dots at places: a town on a map. */
+function dots(name: string, places: readonly Point[]): Mark {
+  const radius = 5;
+  return {
+    name,
+    parts: places.map(([x, y]) => ({
+      kind: "town",
+      d: `M${number(x - radius)},${number(y)}a${String(radius)},${String(radius)} 0 1,0 ${String(2 * radius)},0a${String(radius)},${String(radius)} 0 1,0 ${String(-2 * radius)},0Z`,
+    })),
+  };
+}
+
+/** A burst at a point: a star of `points` points, where something struck. */
+function burst(name: string, [x, y]: Point): Mark {
+  const [points, outer, inner] = [8, 20, 9];
+  const corners = Array.from({ length: 2 * points }, (_, index) => {
+    const radius = index % 2 === 0 ? outer : inner;
+    const angle = (index * Math.PI) / points - Math.PI / 2;
+    return `${number(x + radius * Math.cos(angle))},${number(y + radius * Math.sin(angle))}`;
+  });
+  return { name, parts: [{ kind: "burst", d: `M${corners.join("L")}Z` }] };
 }
 
 // ---------------------------------------------------------- the stories
@@ -365,6 +390,56 @@ function scilly(placed: PlacedMap): Story {
   };
 }
 
+/** Southern New England, August 12, 1853. The excursion train of the
+ *  Providence & Worcester left Uxbridge at 6:30 a.m. for Providence, and met
+ *  the regular train from Providence head-on, just south of Valley Falls,
+ *  at a curve near Boston Switch (Wikipedia, "Valley Falls train
+ *  collision", read 2026-11-08). The route is a best estimate: town centres
+ *  along the Blackstone River, which the line followed. The crash is
+ *  between Valley Falls and Pawtucket; at this scale, 3 km is 13 px. Boston,
+ *  Worcester and Providence are there to orient the audience
+ *  (`tasks/2026-11-08-railroad/PLAN.md`). */
+function newEngland(placed: PlacedMap): Story {
+  const { map } = placed;
+  const providence: LonLat = [-71.413, 41.824];
+  const boston: LonLat = [-71.059, 42.36];
+  const worcester: LonLat = [-71.802, 42.263];
+  const route: readonly LonLat[] = [
+    [-71.63, 42.077], // Uxbridge
+    [-71.58, 42.028], // Millville
+    [-71.541, 42.018], // Blackstone
+    [-71.515, 42.003], // Woonsocket
+    [-71.471, 41.971], // Manville
+    [-71.406, 41.917], // Lonsdale
+    [-71.391, 41.907], // Valley Falls
+    [-71.383, 41.879], // Pawtucket
+    providence,
+  ];
+  const routeOnMap = route.map((place) => project(map, place));
+  const path = routeOnMap
+    .map(([x, y]) => `${number(x)},${number(y)}`)
+    .join("L");
+  return {
+    placed,
+    legs: [],
+    marks: [
+      dots(
+        "towns",
+        [boston, worcester, providence].map((place) => project(map, place)),
+      ),
+      {
+        name: "route",
+        parts: [
+          { kind: "rail", d: `M${path}` },
+          ...dots("start", routeOnMap.slice(0, 1)).parts,
+        ],
+      },
+      burst("crash", project(map, [-71.388, 41.895])),
+      scale(map, 20),
+    ],
+  };
+}
+
 /** The story of each placed map, for a slide of `slide` px. Throws if a
  *  map has no story. */
 export function makeStories(
@@ -375,6 +450,7 @@ export function makeStories(
     if (placed.map === CAPE_NOIR) return capeNoir(placed);
     if (placed.map === JUAN_FERNANDEZ) return juanFernandez(placed, slide);
     if (placed.map === SCILLY) return scilly(placed);
+    if (placed.map === NEW_ENGLAND) return newEngland(placed);
     throw new Error(`no story for the map ${placed.map.name}`);
   });
 }

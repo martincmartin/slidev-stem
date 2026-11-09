@@ -52,7 +52,9 @@ export interface Globe {
 export function makeGlobe(slide: readonly [number, number]): Globe {
   const { meshes, piece } = globeMeshes(EARTH);
   const noon = noonPiece();
-  const maps = STORY_MAPS.map((map) => placeMap(map, FINEST, slide));
+  const maps = STORY_MAPS.map((map) =>
+    placeMap(map, FINEST, EARTH.borders, slide),
+  );
   const stories = makeStories(maps, slide);
   const pictures = [
     ...globeCameras(slide).map((camera) => globePicture(camera, GLOBE_LAND)),

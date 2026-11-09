@@ -228,3 +228,5 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   H2's "Realizes" and "Never sailed", and H3's inventions. The notes and the article say them. Each
   photo shows large first, then docks at the start of its bar: H1, then H2 and H3 together, then
   H4. The slide has 5 clicks.
+- 2026-11-08: the Did H4 Win the Prize? slide is now titled "Did Harrison Win the Prize?"
+  (the user's request in `tasks/2026-11-08-railroad/`).

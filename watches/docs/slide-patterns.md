@@ -314,6 +314,12 @@ narration: the screen is not `in-figure`, so a figure shows the map and
 its labels ([article.md](article.md)). Part 2's three slides are the
 examples.
 
+**A photo can take a punchline's place.** On the Providence & Worcester
+Railroad Disaster, 1853 slide, the daguerreotype of the wreck covers the map
+at click 3, under the title and the slide's words. The words stay: each click
+adds a paragraph in the right 40%, in the paper's outline, and the ones
+before it dim. The toll's number is the accent.
+
 ## A dark slide
 
 **The Reading a Watch in the Dark, World War I slide is the talk's one dark slide**, at its
@@ -465,7 +471,7 @@ an oversight: CC BY 2.0 also asks for the licence's address with each copy, so t
 that address as text.
 
 The Questions slide is the deck's last slide, and its Credits section credits the photos and the painting in
-`public/harrison/`, `public/waltham/` and `public/radium/`, whose `README.md` files hold each source and licence. If you add a
+`public/harrison/`, `public/waltham/`, `public/railroad/` and `public/radium/`, whose `README.md` files hold each source and licence. If you add a
 borrowed image, add it to both. `tasks/2026-09-20-animation-style/source-video/README.md`
 has the format and the history.
 

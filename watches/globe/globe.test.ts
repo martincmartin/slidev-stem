@@ -95,6 +95,7 @@ test("each view has the globe under the slide's middle, and its own angles", () 
       "cape noir",
       "juan fernandez",
       "scilly",
+      "new england",
     ],
   );
   for (const view of views) {

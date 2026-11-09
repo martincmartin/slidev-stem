@@ -2494,7 +2494,7 @@ class: h4-prize
 clicks: 2
 ---
 
-# Did H4 Win the Prize?
+# Did Harrison Win the Prize?
 
 <div class="prize-words side-text">
   <div>
@@ -2567,6 +2567,168 @@ IF ASKED: The King's words are in Sobel, Longitude, p. 147. He said them to Harr
 -->
 
 ---
+# A story map of southern New England over the whole slide, and its words
+# in the right 40% (globe/maps.ts, NEW_ENGLAND). Boston, Worcester and
+# Providence orient the audience; the state lines are dashed. Each click
+# adds a paragraph, and none leaves. At click 2, a burst marks the crash. At
+# click 3, the daguerreotype covers the slide, under the title and the words;
+# the toll comes at click 4, and the changes at click 5. The facts and the
+# choices are in tasks/2026-11-08-railroad/PLAN.md
+class: story-map railroad
+art: [globe]
+artView: new england
+globeMarks: [towns, route, scale]
+artClicks:
+  2: { globeMarks: [towns, route, scale, crash] }
+clicks: 5
+---
+
+# Providence & Worcester Railroad Disaster, 1853
+
+<MapLabel view="new england" :on="[-71.059, 42.36]" :offset="[-92, -16]">Boston</MapLabel>
+
+<MapLabel view="new england" :on="[-71.802, 42.263]" :offset="[14, -16]">Worcester</MapLabel>
+
+<MapLabel view="new england" :on="[-71.413, 41.824]" :offset="[-136, -16]">Providence</MapLabel>
+
+<img v-click="3" class="crash-photo in-figure" src="/railroad/valley-falls-1853.jpg" alt="A daguerreotype of the wreck in 1853: one locomotive reared up over the other, the cars behind them broken, and a crowd beside the track.">
+
+<div class="crash-words side-text">
+  <div v-click="1" class="crash-paragraph text-dims">Conductor's watch<br>2 min slow</div>
+  <div v-click="2" class="crash-paragraph text-dims">Head-on collision</div>
+  <div v-click="4" class="crash-paragraph text-dims"><em>14 died</em><br>17 seriously injured</div>
+  <div v-click="5" class="crash-paragraph text-dims">Watch inspections<br>1st US time zone</div>
+</div>
+
+<style>
+/* The words are in the right 40%, in the house's type for text beside a
+   picture (side-text), with the paper's outline of a story map's title: over
+   the Atlantic, east of Cape Cod, and then over the photo. Each click adds a
+   paragraph, none leaves, and the ones before the newest dim (style.css,
+   "TEXT DIMS"), as on the Waltham slide. */
+.slidev-layout.railroad .crash-words {
+  left: 630px;
+  /* Not centered, as the house's side-text is: as high as it can be
+     without crowding the title, so that "Head-on collision" is as high as
+     it can be in the photo's sky, above the trains (the user's request,
+     tasks/2026-11-08-railroad/instructions.md, the twelfth message). */
+  top: 100px;
+  justify-content: flex-start;
+  z-index: 2;
+  -webkit-text-stroke: 6px var(--palette-background);
+  paint-order: stroke fill;
+}
+.slidev-layout.railroad .crash-paragraph + .crash-paragraph {
+  margin-top: 0.7em;
+}
+.slidev-layout.railroad
+  .crash-paragraph:has(~ .crash-paragraph:not(.slidev-vclick-hidden)) {
+  --text-dim: var(--text-dimmed);
+}
+/* The toll's number is the slide's one accent, at the size of the number to
+   take home (../docs/slide-layout.md). It dims with its paragraph. */
+.slidev-layout.railroad .crash-paragraph em {
+  font-style: normal;
+  font-size: 48px;
+  line-height: 1;
+  color: color-mix(
+    in srgb,
+    var(--palette-accent),
+    var(--palette-background) var(--text-dim)
+  );
+}
+/* The photo covers the slide, under the title and the words, which keep
+   the paper's outline of a story map's title. */
+.slidev-layout.railroad h1 {
+  position: relative;
+  z-index: 2;
+}
+.slidev-layout.railroad .crash-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+</style>
+
+<!-- narration
+[figure 0-2: A map of southern New England, with Boston, Worcester and Providence, and the state lines dashed. A railroad runs from Uxbridge, Massachusetts, down the Blackstone River to Providence, Rhode Island. At the last step, a burst marks the crash, just south of Valley Falls.]
+
+On Friday, August 12, 1853, an excursion train of the Providence & Worcester
+Railroad left Uxbridge, Massachusetts, with about 475 people, bound for
+Providence and the beaches of Narragansett Bay. The line had one track. A
+regular train was coming north out of Providence, and the excursion had to
+reach the double track at Pawtucket before that train left it.
+
+[click]
+
+At Valley Falls, the conductor, Frederick Putnam, looked at his watch. He
+thought he had time. But his watch was two minutes slow, although he had set
+it to the company's time the night before.
+
+[click]
+
+Just past a blind curve, near a junction called Boston Switch, the two trains
+met head-on. The other train had left Pawtucket a minute late. A minute
+earlier, and it would have been past the curve, in sight of the station.
+
+[click]
+
+[figure: A daguerreotype of the wreck: one locomotive reared up over the other, the cars behind them broken, and a crowd beside the track.]
+
+A photographer from Pawtucket, L. Wright, made this daguerreotype soon after.
+It may be the first photograph of a train wreck.
+
+[click]
+
+[nofigure]
+
+Fourteen people died, and seventeen were seriously injured.
+
+[click]
+
+[nofigure]
+
+The public was outraged, and the railroads changed their rules. Within days,
+the Boston & Providence Railroad, whose line met this one at Boston Switch,
+made each conductor have his watch certified as reliable by Bond & Sons of
+Boston. Bond repaired the watches at the railroad's cost, and lent a reliable
+one while a conductor's watch was in the shop. And the railroads of New
+England agreed on one time, sent by telegraph from the Harvard College
+Observatory, in Cambridge: in effect, the first time zone in the United
+States.
+
+> [!aside] Sources
+> The trains, the inquest and the toll are from
+> [Wikipedia](https://en.wikipedia.org/wiki/Valley_Falls_train_collision),
+> which cites the coroner's verdict. The Blackstone Valley Historical Society
+> counts 13 dead. The Boston & Providence's rules of August 1853 are quoted by
+> [Rails West](http://www.railswest.com/time/watches.html), from Ian Bartky's
+> _Selling the True Time_ (2000). The time zone is from the
+> [Harvard Gazette](https://news.harvard.edu/gazette/story/2011/11/americas-first-time-zone/).
+> The state lines on the map are today's.
+
+-->
+
+<!--
+Friday, August 12, 1853. An excursion train leaves Uxbridge with about 475 people, bound for Providence and the beaches. One track. A regular train is coming north out of Providence. The rule: the excursion must reach the double track at Pawtucket first.
+
+[click] At Valley Falls, the conductor looks at his watch. He thinks he has time. His watch is two minutes slow.
+
+[click] Just past a blind curve, the trains meet head-on. The other train had left a minute late. One minute either way, and they would have seen each other.
+
+[click] A photographer from Pawtucket took this. It may be the first photograph of a train wreck.
+
+[click] Fourteen people died. Seventeen were seriously injured.
+
+[click] The public was outraged. Railroads made their conductors carry watches certified as reliable, and paid to keep them that way. And they agreed to one time, sent by telegraph from the Harvard College Observatory, right here in Cambridge. In effect, the first time zone in America.
+
+IF ASKED: Both trains were the Providence & Worcester's. The watch rules quoted are the Boston & Providence's, whose line met this one at Boston Switch. Putnam was charged with manslaughter; I found no record of the verdict. The railroad paid $43,876 to victims and families, and built a second track. 13 or 14 dead, depending on the source.
+-->
+
+---
 # The photo on the left, about 60% of the width, and the words on the right
 # (../docs/slide-layout.md). Each click adds a paragraph, and the ones before
 # it dim. The facts and the choices are in tasks/2026-11-08-waltham/PLAN.md
@@ -2583,7 +2745,7 @@ clicks: 3
   <div class="factory-paragraph text-dims">Mass produced</div>
   <div v-click="1" class="factory-paragraph text-dims">Steam-powered<br>tools</div>
   <div v-click="2" class="factory-paragraph text-dims">±10 to 15 sec a day</div>
-  <div v-click="3" class="factory-paragraph text-dims"><em>$150 → $25</em></div>
+  <div v-click="3" class="factory-paragraph text-dims"><em>$150 → $25</em><br>~$4,700 → ~$780<br>today</div>
 </div>
 
 <style>
@@ -2632,9 +2794,9 @@ clicks: 3
 </style>
 
 <!-- narration
-H4 was one watch, made by hand over four years. Around 1850, nearly every good
-watch was still finished that way: a craftsman filed each part to fit its own
-watch. If a part broke, a watchmaker had to make a new one, by hand.
+After the crash, railroads bought reliable watches from London, made by hand.
+The Vermont Central paid $150 each. Around 1850, nearly every good watch was
+still finished that way: a craftsman filed each part to fit its own watch. If a part broke, a watchmaker had to make a new one, by hand.
 
 Aaron Dennison, a Boston watch repairer, had seen how the Springfield Armory
 made muskets: by machine, with every part checked against a gauge. Why not
@@ -2660,10 +2822,11 @@ kept time that well.
 
 [figure: A long factory room in the 1870s: rows of young women at small
 machines, each driven by a belt from a pulley under the ceiling. Beside it:
-mass produced; steam-powered tools; ±10 to 15 seconds a day; $150 to $25.]
+mass produced; steam-powered tools; ±10 to 15 seconds a day; $150 to $25,
+about $4,700 to $780 today.]
 
-A hand-fitted watch that good could cost $150. A P.S. Bartlett cost about
-$25. An accurate watch became an everyday thing, for railroad workers,
+A hand-fitted watch that good could cost $150, about $4,700 in today's
+dollars. A P.S. Bartlett cost about $25, about $780 today. An accurate watch became an everyday thing, for railroad workers,
 soldiers and the general public. In 1876, a Swiss judge saw Waltham's
 watches, went home and told Switzerland to buy machines.
 
@@ -2687,7 +2850,7 @@ watches, went home and told Switzerland to buy machines.
 -->
 
 <!--
-H4: one watch, by hand, four years. In 1850, good watches were still finished that way: each part filed to fit its own watch. If a part broke, a watchmaker made a new one.
+Those reliable watches came from London, made by hand: $150 each. In 1850, good watches were still finished that way: each part filed to fit its own watch. If a part broke, a watchmaker made a new one.
 
 Aaron Dennison, a Boston watch repairer, saw the Springfield Armory make muskets by machine. Why not watches? In 1854 his factory opened in Waltham, six miles up the Charles from here. Every part checked against a gauge, so a broken part? Order it by number. By 1876: 2,200 watches a week.
 
@@ -2695,7 +2858,7 @@ Aaron Dennison, a Boston watch repairer, saw the Springfield Armory make muskets
 
 [click] And good. Their everyday watch, the P.S. Bartlett: 10 to 15 seconds a day. Before, only a hand-fitted watch kept time that well.
 
-[click] And a hand-fitted watch that good could cost $150. A Bartlett: about $25. Railroad workers, soldiers, anyone could own one that kept good time. A Swiss judge saw them in 1876, went home and told Switzerland to buy machines.
+[click] And a hand-fitted watch that good could cost $150: about $4,700 today. A Bartlett: about $25, under $800 today. Railroad workers, soldiers, anyone could own one that kept good time. A Swiss judge saw them in 1876, went home and told Switzerland to buy machines.
 
 IF ASKED: First? The Smithsonian calls Waltham the first firm to mass-produce watches by machine; Japy, Vacheron Constantin and the Pitkin brothers made parts by machine earlier. Not fully interchangeable at first: in 1876, a watch with new parts still needed hand work. Waltham's best, 1876: a 5-day test of seven $300 watches, five within about 5 seconds a day; the cheap ones were ordinary. In the 1850s, a Waltham cost half as much as an import of the same quality (Smithsonian). The photo is the Wheel and Pinion Making Room, 1870s.
 -->
@@ -3211,6 +3374,7 @@ secondsATitle: 4
   <p>H1, H2 and H4, Mike Prince. CC BY 2.0.</p>
   <p>H3, Tony Hisgett. CC BY 2.0.</p>
   <p>CC BY 2.0: creativecommons.org/licenses/by/2.0</p>
+  <p>Train wreck near Valley Falls, attr. L. Wright, 1853. Public domain.</p>
   <p>Waltham watch factory, Thomas R. Lewis, 1870s. Public domain.</p>
   <p>Dial painters, c. 1922, and Grace Fryer, 1925. Public domain.</p>
 </div>
