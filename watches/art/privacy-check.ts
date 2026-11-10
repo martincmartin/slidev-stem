@@ -45,15 +45,15 @@ async function checkEngine(deck: string, engine: Engine): Promise<string[]> {
       );
       await page.goto(`${ORIGIN}/article`);
       await page.locator(".article-motion button").click();
-      const voyage = page.locator("#hunt-for-juan-fernandez-island-1741-0");
+      const voyage = page.locator("#hunt-for-juan-fernandez-island-1741-1");
       await voyage.scrollIntoViewIfNeeded();
       await voyage
-        .getByRole("button", { name: "Step 3 of 5", exact: true })
+        .getByRole("button", { name: "Step 4 of 6", exact: true })
         .click();
       await page.waitForFunction(
         () =>
           document.querySelector(
-            '#hunt-for-juan-fernandez-island-1741-0 [data-map="juan fernandez"] .count-number',
+            '#hunt-for-juan-fernandez-island-1741-1 [data-map="juan fernandez"] .count-number',
           )?.textContent === "12",
         undefined,
         { timeout: CHECK_TIMEOUT_MS },

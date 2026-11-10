@@ -1635,6 +1635,7 @@ artClicks:
   3: { globeMarks: [estimated, scale, parallel] }
   4: { globeMarks: [estimated, scale, parallel, gap] }
 clicks: 5
+hide: true
 ---
 
 # Age of Sail: Longitude Was a Guess
@@ -1653,7 +1654,7 @@ Around Cape Horn, then heading north, 1741
 
 <MapLabel v-click="4" class="figure-only" view="cape noir" mark="estimated" :offset="[215, 66]" centred>400 miles</MapLabel>
 
-<BigWords v-click="5">Longitude:<br><em>400 miles</em> off</BigWords>
+<BigWords v-click="5">Longitude<br><em>400 miles</em> off</BigWords>
 
 <!-- narration
 [figure: The globe shows South America, with Cape Horn at its southern tip.]
@@ -1671,10 +1672,9 @@ on the rocks.
 [figure: A map of Cape Noir shows a ship near the cliffs. A dashed ship marks
 its estimated position to the west. A bracket measures the gap between them.]
 
-_Latitude_ is how far north or south you are. They could check it accurately
-from the height of the Sun at noon or the angle of the north star.  But
-_longitude_ is their position east or west.  Throughout most of the age of sail,
-it was a guess.
+_Latitude_, how far north or south you are, they could find from the height of
+the Sun at noon or the angle of the north star.  But _longitude_ is their
+position east or west.  Throughout most of the age of sail, it was a guess.
 
 -->
 
@@ -1690,75 +1690,50 @@ Rounding Cape Horn, heading north
 -->
 
 ---
-# the ship at the bottom of the map as the slide opens; each click sails a
-# leg, a day at sea to each dot (globe/stories.ts). The slide is told by
+# South America first, so that the audience knows where the story is; the
+# camera comes from the section's watch. No label names the island here:
+# the map shows it only when the ship finds it. Click 1 flies to the
+# island's map, with the ship at the bottom of it; each later click sails
+# a leg, a day at sea to each dot (globe/stories.ts). The slide is told by
 # its map, with a few words at each click, so its labels stay, dimmed, to
 # its end (docs/slide-patterns.md, "Text dims"); the stakes and the
 # question leave when the east leg answers them. The count of deaths ticks
 # with the dots
 class: story-map
 art: [globe]
-artView: juan fernandez
-artMove: fly
-globeLeg: south
-globeMarks: [scale]
+artView: south america
 artClicks:
-  1: { globeLeg: start, globeMarks: [scale, parallel] }
-  2: { globeLeg: east, globeMarks: [scale, parallel, wind, count] }
-  3: { globeLeg: west }
-  4: { globeLeg: found, globeMarks: [scale, parallel, wind, count, islands] }
-clicks: 5
+  1:
+    {
+      artView: juan fernandez,
+      artMove: fly,
+      globeLeg: south,
+      globeMarks: [scale],
+    }
+  2: { globeLeg: start, globeMarks: [scale, parallel] }
+  4: { globeLeg: east, globeMarks: [scale, parallel, wind, count] }
+  5: { globeLeg: west }
+  6: { globeLeg: found, globeMarks: [scale, parallel, wind, count, islands] }
+clicks: 7
 ---
 
 # Hunt for Juan Fernández Island, 1741
 
-<MapLabel v-click.hide="2" view="juan fernandez" leg="south" :offset="[44, -74]" :dimmed="$clicks >= 1">Scurvy kills<br>4–6 sailors a day</MapLabel>
+<MapLabel v-click.hide="1" view="south america" :on="[-58, -12]" centred>South America</MapLabel>
 
-<MapLabel v-click="[1, 2]" class="lingers after-watch" view="juan fernandez" :offset="[16, 152]" :dimmed="$clicks >= 2">Sail to latitude.<br>Then east or west?</MapLabel>
+<MapLabel v-click="[2, 4]" class="lingers after-watch" view="juan fernandez" :offset="[16, 152]" :dimmed="$clicks >= 3">Sail to latitude.<br>Then east or west?</MapLabel>
 
-<MapLabel v-click="2" class="after-watch" view="juan fernandez" :offset="[420, 251]" :dimmed="$clicks >= 3">2 days east</MapLabel>
+<MapLabel v-click="[3, 4]" class="lingers after-watch" view="juan fernandez" leg="start" :offset="[-220, 24]">Scurvy kills<br>4–6 sailors a day</MapLabel>
 
-<MapLabel v-click="2" class="after-watch" view="juan fernandez" :offset="[696, 262]" :dimmed="$clicks >= 3">Chile:<br>an enemy coast</MapLabel>
+<MapLabel v-click="4" class="after-watch" view="juan fernandez" :offset="[420, 251]" :dimmed="$clicks >= 5">2 days east</MapLabel>
 
-<MapLabel v-click="3" class="after-watch" view="juan fernandez" :offset="[340, 360]" :dimmed="$clicks >= 4">9 days back</MapLabel>
+<MapLabel v-click="4" class="after-watch" view="juan fernandez" :offset="[696, 262]" :dimmed="$clicks >= 5">Chile:<br>an enemy coast</MapLabel>
 
-<BigWords v-click="5">The detour cost<br><em>70–80 sailors</em></BigWords>
+<MapLabel v-click="5" class="after-watch" view="juan fernandez" :offset="[340, 360]" :dimmed="$clicks >= 6">9 days back</MapLabel>
+
+<BigWords v-click="7">The detour cost<br><em>70–80 lives</em></BigWords>
 
 <!-- narration
-
-Anson's sailors were dying of scurvy: four to six a day. They needed fresh
-water and food from the island of Juan Fernández, off Chile.
-
-[figure 0-4: A ship searches between Chile and Juan Fernández. Its route gains
-a dot for each day at sea. A scurvy death count rises as the ship sails.]
-
-[click]
-
-On May 28, they reached the island's latitude. But had they sailed too far
-east, or too far west?
-
-[click]
-
-They chose east. Two days later, they saw the coast of Chile. The island
-was behind them, and the coast belonged to their enemy.
-
-[click]
-
-They turned west again. Headwinds and calms stretched the return journey
-to nine days: the same distance that had taken two days eastward.
-
-[click]
-
-At dawn on June 9, they finally saw the island. They still needed another
-day and night to reach its anchorage.
-
-[click]
-
-[figure: The final route runs east to Chile, west to Juan Fernández, then to
-its anchorage. Day dots mark the track. The illustrative scurvy count reads 72.]
-
-The detour had cost 70 to 80 sailors. They had been only a few hours from the
-island when they turned the wrong way.
 
 > [!aside] What the count means
 > The figure uses six deaths a day to show the cost of time. Its final
@@ -1766,12 +1741,56 @@ island when they turned the wrong way.
 > of deaths. [Walter's account](https://www.gutenberg.org/cache/epub/47130/pg47130-images.html),
 > Book I, chapter X, reports four to six deaths a day and a total of 70 to 80.
 
+So a common tactic was to sail north or south to the correct latitude, then turn and sail east
+or west.
+
+That's what Commodore Anson did.
+
+[figure: The globe shows South America.]
+
+[click]
+
+A month and a half later in the same voyage,
+four to six of Anson's sailors were dying of scurvy every day. They needed fresh
+water and food fast from the island of Juan Fernández, off Chile.
+
+[figure 1-6: A ship searches between Chile and Juan Fernández. Its route gains
+a dot for each day at sea. A scurvy death count rises as the ship sails.]
+
+[click]
+
+On May 28, they reached the island's latitude but didn't know whether the island
+was east or west of them.  They chose east. Two days later, when they saw land,
+it wasn't the island they desperately needed, it was Chile, enemy territory!
+
+[click:3]
+
+They turned around. Headwinds and calms stretched the return journey to nine
+days, the same distance that had taken two days eastward, a handful of sailors
+dying every day.
+
+[click:2]
+
+[nofigure]
+
+At dawn on June 9, they finally saw the island. They still needed another
+day and night to reach its anchorage.
+
+
+Not being able to tell their longitude led them on an 11 day detour which cost
+70 to 80 lives. They had been only a few hours from the island when they
+turned the wrong way.
+
 -->
 
 <!--
-Scurvy kills four to six sailors a day.
+Sail north/south to latitude, then turn east/west
 
-[click] Sail to the latitude. Then east or west?
+[click] 1½ months later
+
+[click]
+
+[click] Scurvy kills 4–6 sailors a day.
 
 [click] Two days east, to the enemy coast of Chile.
 
@@ -1779,7 +1798,7 @@ Scurvy kills four to six sailors a day.
 
 [click] Found.
 
-[click] The detour cost 70–80 sailors.
+[click] The detour cost 70–80 lives.
 -->
 
 ---
@@ -1796,6 +1815,7 @@ artClicks:
   2: { globeLeg: wreck }
   3: { globeMarks: [estimated, scale, gap] }
 clicks: 4
+hide: true
 ---
 
 # Admiral Shovell Sails Home, 1707
@@ -1814,7 +1834,7 @@ clicks: 4
 
 <MapLabel v-click="[2, 3]" class="after-watch" view="scilly" :on="[-6.3972, 49.8656]" :offset="[60, 10]">In the dark: the rocks<br>of Scilly!</MapLabel>
 
-<BigWords v-click="4">4 warships lost,<br>over <em>1,400 sailors</em></BigWords>
+<BigWords v-click="4">4 warships lost,<br>over <em>1,400 lives.</em></BigWords>
 
 <!-- narration
 [figure: The globe shows the English Channel between England and France.]
@@ -1841,7 +1861,7 @@ between the ships' estimated and actual positions was now a line to the rocks.
 [figure: A map of Scilly shows the ship at the rocks. A dashed ship marks
 its estimated position to the southwest. A bracket joins the two positions.]
 
-Four warships sank. More than 1,400 sailors died.
+Four warships sank. More than 1,400 lives lost.
 
 > [!aside] A disputed cause
 > The [Royal Museums Greenwich account](https://www.rmg.co.uk/collections/objects/rmgc-object-140657)
@@ -1863,7 +1883,7 @@ The English Channel, and the Isles of Scilly.
 
 [click] The gap.
 
-[click] 4 warships lost, over 1,400 sailors.
+[click] 4 warships lost, over 1,400 lives.
 -->
 
 ---

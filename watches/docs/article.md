@@ -311,8 +311,8 @@ The Cape Noir and Scilly stories each have a globe figure and a final map.
 The final map uses the punchline click. It shows the map and its marks,
 with the punchline in the prose only.
 
-The Juan Fernández story has a figure with steps, from its opening to
-the anchorage (`slides.md`, the narration's figure marker). Readers step
+The Juan Fernández story opens on a figure of South America, then has
+a figure with steps, from the ship's start to the anchorage (`slides.md`, the narration's figure marker). Readers step
 the ship forward or back. The death count follows the day dots.
 A separate final map at the punchline keeps the complete route and count
 in the static article, where readers cannot step a figure.
