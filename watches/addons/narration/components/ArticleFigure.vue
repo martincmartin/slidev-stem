@@ -414,6 +414,15 @@ watch([step, near, paused, busyUntil], schedule);
 .article-figure-picture .slidev-page .slidev-layout .in-figure {
   visibility: visible;
 }
+/* A figure of the whole slide shows its text, but not its title: the
+   article's heading just above says it. The title takes no room, so the
+   rest of the slide's layout fills the figure. */
+.article-figure-slide:not(.article-figure-picture)
+  .slidev-page
+  .slidev-layout
+  h1 {
+  display: none;
+}
 .article-figure-caption {
   max-width: 34em;
   margin-top: 0.6em;

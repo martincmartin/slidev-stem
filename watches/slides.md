@@ -1614,6 +1614,12 @@ artMoveAlso: [hour hand, minute hand]
 
 # Changed The World
 
+<!-- narration
+
+Watches and clocks don't just look good on your wrist, they have also changed the world.
+
+-->
+
 <!--
 And the whole watch.
 -->
@@ -1690,50 +1696,77 @@ Rounding Cape Horn, heading north
 -->
 
 ---
-# South America first, so that the audience knows where the story is; the
-# camera comes from the section's watch. No label names the island here:
-# the map shows it only when the ship finds it. Click 1 flies to the
-# island's map, with the ship at the bottom of it; each later click sails
-# a leg, a day at sea to each dot (globe/stories.ts). The slide is told by
-# its map, with a few words at each click, so its labels stay, dimmed, to
-# its end (docs/slide-patterns.md, "Text dims"); the stakes and the
-# question leave when the east leg answers them. The count of deaths ticks
-# with the dots
+# South America first, so that the audience knows where the next story
+# is; the camera comes from the section's watch. The Hunt for Juan
+# Fernández slide flies from here to the island's map
 class: story-map
 art: [globe]
 artView: south america
+---
+
+# Age of Sail: Longitude Was a Guess
+
+<MapLabel view="south america" :on="[-58, -12]" centred>South America</MapLabel>
+
+<!-- narration
+
+[nofigure]
+
+_Latitude_ is how far north or south you are. During the Age of Sail, sailors
+could find it from the height of the Sun at noon or the angle of the north star.
+But _longitude_, your position east or west, they had no good way to estimate
+and could be off by 400 miles or more.
+
+-->
+
+<!--
+During Age of Sail, ships could tell _latitude_ (north/south), but not _longitude_ (east/west).
+-->
+
+---
+# The camera flies from South America (the slide before) to the island's
+# map, with the ship at the bottom of it and the stakes beside it; each
+# click sails a leg, a day at sea to each dot (globe/stories.ts). No label
+# names the island: the map shows it only when the ship finds it. The
+# slide is told by its map, with a few words at each click, so its labels
+# from the east leg on stay, dimmed, to its end (docs/slide-patterns.md,
+# "Text dims"). The stakes leave as the ship sails north; the question
+# leaves when the east leg answers it. The count of deaths ticks with the
+# dots. "Sail to latitude" fades in with the parallel that it names
+# (docs/globe.md, "The words")
+class: story-map
+art: [globe]
+artView: juan fernandez
+artMove: fly
+globeLeg: south
+globeMarks: [scale]
 artClicks:
-  1:
-    {
-      artView: juan fernandez,
-      artMove: fly,
-      globeLeg: south,
-      globeMarks: [scale],
-    }
-  2: { globeLeg: start, globeMarks: [scale, parallel] }
-  4: { globeLeg: east, globeMarks: [scale, parallel, wind, count] }
-  5: { globeLeg: west }
-  6: { globeLeg: found, globeMarks: [scale, parallel, wind, count, islands] }
-clicks: 7
+  1: { globeLeg: start, globeMarks: [scale, parallel] }
+  2: { globeLeg: east, globeMarks: [scale, parallel, wind, count] }
+  3: { globeLeg: west }
+  4: { globeLeg: found, globeMarks: [scale, parallel, wind, count, islands] }
+clicks: 5
 ---
 
 # Hunt for Juan Fernández Island, 1741
 
-<MapLabel v-click.hide="1" view="south america" :on="[-58, -12]" centred>South America</MapLabel>
+<MapLabel v-click.hide="1" view="juan fernandez" leg="south" :offset="[50, -62]">Scurvy killing<br>4–6 sailors a day</MapLabel>
 
-<MapLabel v-click="[2, 4]" class="lingers after-watch" view="juan fernandez" :offset="[16, 152]" :dimmed="$clicks >= 3">Sail to latitude.<br>Then east or west?</MapLabel>
+<MapLabel v-click="[1, 2]" class="lingers" view="juan fernandez" :offset="[16, 152]">Sail to latitude.<br>Then east or west?</MapLabel>
 
-<MapLabel v-click="[3, 4]" class="lingers after-watch" view="juan fernandez" leg="start" :offset="[-220, 24]">Scurvy kills<br>4–6 sailors a day</MapLabel>
+<MapLabel v-click="2" class="after-watch" view="juan fernandez" :offset="[420, 251]" :dimmed="$clicks >= 3">2 days east</MapLabel>
 
-<MapLabel v-click="4" class="after-watch" view="juan fernandez" :offset="[420, 251]" :dimmed="$clicks >= 5">2 days east</MapLabel>
+<MapLabel v-click="2" class="after-watch" view="juan fernandez" :offset="[696, 262]" :dimmed="$clicks >= 3">Chile:<br>an enemy coast</MapLabel>
 
-<MapLabel v-click="4" class="after-watch" view="juan fernandez" :offset="[696, 262]" :dimmed="$clicks >= 5">Chile:<br>an enemy coast</MapLabel>
+<MapLabel v-click="3" class="after-watch" view="juan fernandez" :offset="[340, 360]" :dimmed="$clicks >= 4">9 days back</MapLabel>
 
-<MapLabel v-click="5" class="after-watch" view="juan fernandez" :offset="[340, 360]" :dimmed="$clicks >= 6">9 days back</MapLabel>
-
-<BigWords v-click="7">The detour cost<br><em>70–80 lives</em></BigWords>
+<BigWords v-click="5">The detour cost<br><em>70–80 lives</em></BigWords>
 
 <!-- narration
+
+[figure 0-1: A ship, with a label "Scurvy killing 4–6 sailors a day", travels
+north to a horizontal dashed line, with a label "Sail to latitude. Then east or
+west?"]
 
 > [!aside] What the count means
 > The figure uses six deaths a day to show the cost of time. Its final
@@ -1741,64 +1774,38 @@ clicks: 7
 > of deaths. [Walter's account](https://www.gutenberg.org/cache/epub/47130/pg47130-images.html),
 > Book I, chapter X, reports four to six deaths a day and a total of 70 to 80.
 
-So a common tactic was to sail north or south to the correct latitude, then turn and sail east
-or west.
 
-That's what Commodore Anson did.
+In May 1741, Commodore George Anson's three ships were low on fresh water and
+provisions.  Scurvy was rapidly spreading, kill four to six sailors a day.  They
+headed for Juan Fernández island, off the coast of Chile.  They used a common tactic, sailing north to the correct latitude, then turning and sailing east or west.
 
-[figure: The globe shows South America.]
+[figure 1-4: A ship searches east then west between Chile and Juan
+Fernández. Its route gains a dot for each day at sea. A scurvy death count rises
+as the ship sails.]
 
-[click]
-
-A month and a half later in the same voyage,
-four to six of Anson's sailors were dying of scurvy every day. They needed fresh
-water and food fast from the island of Juan Fernández, off Chile.
-
-[figure 1-6: A ship searches between Chile and Juan Fernández. Its route gains
-a dot for each day at sea. A scurvy death count rises as the ship sails.]
-
-[click]
-
-On May 28, they reached the island's latitude but didn't know whether the island
-was east or west of them.  They chose east. Two days later, when they saw land,
-it wasn't the island they desperately needed, it was Chile, enemy territory!
+When they reached it's latitude, they didn't know whether the island was east or
+west of them.  After Commodore Anson consulted with the officers, they sailed
+east. Two days later, when they saw land, it wasn't the island they desperately
+needed, it was Chile, enemy territory.
 
 [click:3]
 
 They turned around. Headwinds and calms stretched the return journey to nine
-days, the same distance that had taken two days eastward, a handful of sailors
-dying every day.
+days, the same distance that had taken two days eastward. A handful of sailors
+died every day.
 
 [click:2]
 
 [nofigure]
 
-At dawn on June 9, they finally saw the island. They still needed another
-day and night to reach its anchorage.
-
-
-Not being able to tell their longitude led them on an 11 day detour which cost
-70 to 80 lives. They had been only a few hours from the island when they
-turned the wrong way.
+At dawn on June 9, they finally saw the island.  Not being able to tell their
+longitude led them on an 11 day detour which cost 70 to 80 lives. They had been
+only a few hours from the island when they turned the wrong way.
 
 -->
 
 <!--
-Sail north/south to latitude, then turn east/west
-
-[click] 1½ months later
-
-[click]
-
-[click] Scurvy kills 4–6 sailors a day.
-
-[click] Two days east, to the enemy coast of Chile.
-
-[click] Nine days back.
-
-[click] Found.
-
-[click] The detour cost 70–80 lives.
+1741, Commodore George Anson.  Low on food and water.
 -->
 
 ---
@@ -1920,31 +1927,29 @@ clicks: 2
 </style>
 
 <!-- narration
-Seven years after Scilly, Parliament passed the Longitude Act. Disasters like
-these fed the push for it. The Act offered a fortune to anyone who could find
-a ship's longitude at sea.
+
+> [!aside] Which degree?
+>
+> A degree of longitude is a smaller distance as you move away from the equator.
+> At the north and south poles, all lines of longitude meet and the distance
+> between them is zero.  The Act measures the error in degrees of a great
+> circle, essentially, at the equator.
+
+Prompted by catastrophic maritime disasters, Parliament passed the Longitude
+Act. It offered a fortune to anyone who could find a ship's longitude at sea:
+
+Within one degree, about 70 miles, the prize was £10,000: about $2.3 million
+in 2026.  If you could reduce the error by half, to half a degree or 35 miles,
+the prize became £20,000: about $4.6 million in 2026.
 
 [nofigure]
 
 [click]
 
-Within one degree, about 70 miles, the prize was £10,000: about 2.3 million
-dollars today.
-
 [click]
 
 [figure: Two cards side by side. One degree, 70 miles, £10,000. Half a degree,
 35 miles, £20,000.]
-
-Within half a degree, about 35 miles, it was £20,000: about 4.6 million dollars
-today. Half the error earned twice the money. At Cape Noir, Anson's squadron
-had been 400 miles off.
-
-> [!aside] Which degree?
-> The Act measures the error in degrees of a great circle. One such degree is
-> 60 nautical miles, about 69 miles, at any latitude. A degree of longitude is
-> that long only at the equator. At Boston's latitude, it is about 51 miles.
-> The Act also offered £15,000 for two-thirds of a degree.
 
 -->
 

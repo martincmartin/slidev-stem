@@ -277,6 +277,10 @@ with the `v-click` range of the clicks that show it:
 - **When:** `onLaidOut` in `components/laid-out.ts` measures labels after
   layout and font loading, as it does for watch callouts. A label at a click's start waits for that click's change,
   the voyage too (`after-watch`: `--watch-end-delay` includes the voyage).
+  A label that names a mark, at the click that fades the mark in, has no
+  `after-watch`: it fades in with the mark, as the legs sail. Both fade in
+  0.4 s (`--text-fade`, `MARK_FADE_SECONDS`), at once if the camera does not
+  move (the Hunt for Juan Fernández slide's "Sail to latitude").
   A label from click 0 uses `v-click.hide="n"`: Slidev does not start a
   range at 0. A label that stays dims at a later click: `:dimmed`, a prop,
   as `v-click.hide` gives no class to dim by. A dimmed label mixes halfway

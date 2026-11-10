@@ -20,8 +20,10 @@ import {
 } from "./browser.ts";
 import type { Engine } from "./browser.ts";
 
-/** ms for cover startup or a paused voyage step to finish. */
-const CHECK_TIMEOUT_MS = 5_000;
+/** ms for cover startup or a paused voyage step to finish. The step goes
+ *  from the Juan Fernández search's start to the end of its west leg: 11
+ *  days at 0.7 s a day (7.7 s, `DAY_SECONDS` in globe/stories.ts). */
+const CHECK_TIMEOUT_MS = 10_000;
 
 /** The problems of `engine`: cover startup and a paused article step. */
 async function checkEngine(deck: string, engine: Engine): Promise<string[]> {
@@ -48,13 +50,13 @@ async function checkEngine(deck: string, engine: Engine): Promise<string[]> {
       const voyage = page.locator("#hunt-for-juan-fernandez-island-1741-1");
       await voyage.scrollIntoViewIfNeeded();
       await voyage
-        .getByRole("button", { name: "Step 4 of 6", exact: true })
+        .getByRole("button", { name: "Step 3 of 4", exact: true })
         .click();
       await page.waitForFunction(
         () =>
           document.querySelector(
             '#hunt-for-juan-fernandez-island-1741-1 [data-map="juan fernandez"] .count-number',
-          )?.textContent === "12",
+          )?.textContent === "66",
         undefined,
         { timeout: CHECK_TIMEOUT_MS },
       );

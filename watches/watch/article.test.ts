@@ -159,9 +159,9 @@ test("a figure of the globe shows its disc, and a story map's the whole slide", 
   const [width, height] = watch.scene.slide;
   const whole = { left: 0, top: 0, right: width, bottom: height };
   // the parser leaves out hidden slides, so these are shown ones
-  const juan = await slideFrontmatter("Hunt for Juan Fernández Island, 1741");
+  const america = await slideFrontmatter("Age of Sail: Longitude Was a Guess");
   // South America: the globe whole, narrower than the slide
-  const globe = pictureBox(watch, juan, 0);
+  const globe = pictureBox(watch, america, 0);
   assert.ok(globe && globe.left > 0 && globe.right < width);
   for (const title of ["Hunt for Juan Fernández Island, 1741"]) {
     const frontmatter = await slideFrontmatter(title);
@@ -262,11 +262,15 @@ test("the text export names each figure's controls in their own words", () => {
 test("Part 2 figures keep the final maps and give readers the voyage steps", () => {
   const shown = slides.filter((slide) => slide.frontmatter["hide"] !== true);
   const page = markdownPage(slides, watch);
-  // South America, then the search, which ends on the final map
+  // the sail to the latitude, then the search from there, which ends on the
+  // final map
   const cases = [
     {
       title: "Hunt for Juan Fernández Island, 1741",
-      steps: [[0], [1, 2, 3, 4, 5, 6]],
+      steps: [
+        [0, 1],
+        [1, 2, 3, 4],
+      ],
     },
   ];
   for (const { title, steps } of cases) {

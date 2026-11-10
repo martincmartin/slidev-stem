@@ -20,7 +20,8 @@
 //
 // IN A FIGURE OF A PICTURE (the talk's `pictureBox` gives a box), the slide's
 // text is hidden: only elements with the class `in-figure` (a callout's
-// label) show over the picture. docs/article.md has the reasons.
+// label) show over the picture. IN A FIGURE OF THE WHOLE SLIDE (no box), the
+// slide's text shows, but not its title. docs/article.md has the reasons.
 
 import type { InjectionKey, Ref } from "vue";
 

@@ -127,7 +127,7 @@ ends where the next click moves the camera, makes a piece go, or changes the
 diving board's place. Within a run, a click only adds pieces, changes text,
 or changes the motion (a rest, a spin, "tick" and "tock"). The last click of
 each run gets a figure: it shows all that the run built. A slide with no
-watch and no board is one run, so its figure shows all its text.
+watch and no board is one run, so its figure shows all its text but its title.
 `defaultFigures` in `watch/article.ts`. A section slide gets no figure: it is
 a heading. A slide's first default figure is dropped if it shows the same
 picture as the figure before it, on the slide before.
@@ -155,6 +155,12 @@ hidden. A label is measured by what it draws: a callout's leader is an
 the `<svg>`. The crop is 1.65 times larger on a phone than the whole slide
 would be.
 
+**A figure of a slide with no picture is the whole slide, with its text but
+not its title** (`pictureBox` gives `null`; `ArticleFigure.vue`). The
+article's heading just above the figure says the title, so the figure would
+only repeat it. The title takes no room, and the rest of the layout fills
+the figure: the Longitude Prize slide's two cards are in its middle.
+
 **The figures of one slide that share a camera share a crop** (`frameKey`
 in `watch/article.ts`, `cropGroups` in `addons/narration/plan.ts`): the box
 over all their pictures and all their labels. So a piece keeps its place
@@ -176,7 +182,7 @@ a view of a ball (`View.ball`), not a box around it, whose corners would
 show it wider. A story map fills the slide, so its figure is the whole
 slide, with its labels but not its title or its punchline's screen. A
 label with the class `figure-only` shows in a figure but not in the talk
-(`style.css`, "FIGURE ONLY"): the Longitude Was a Guess slide's "400
+(`style.css`, "FIGURE ONLY"): on the hidden slide of Cape Noir, "400
 miles" names the gap in the figure, where the speaker's punchline does
 not. Its voyage and its marks are those of the figure's click
 ([globe.md](globe.md), "The marks"). The wind's gusts loop while the
@@ -311,8 +317,10 @@ The Cape Noir and Scilly stories each have a globe figure and a final map.
 The final map uses the punchline click. It shows the map and its marks,
 with the punchline in the prose only.
 
-The Juan Fernández story opens on a figure of South America, then has
-a figure with steps, from the ship's start to the anchorage (`slides.md`, the narration's figure marker). Readers step
+The Juan Fernández story opens on a slide of South America, with text and
+no figure. Then the Hunt for Juan Fernández slide has two figures with steps (`slides.md`, the narration's figure markers): the sail
+north to the island's latitude, and the search, from the ship's start to the
+anchorage. Readers step
 the ship forward or back. The death count follows the day dots.
 A separate final map at the punchline keeps the complete route and count
 in the static article, where readers cannot step a figure.
