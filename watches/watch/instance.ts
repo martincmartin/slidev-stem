@@ -4,9 +4,11 @@
 // share them.
 
 import { globeMatrices } from "../globe/model.ts";
+import { FIGURE_CLOCK_AT, NOON_CLOCK } from "../globe/noon.ts";
+import type { SlidePoint } from "../globe/noon.ts";
 import { SharedStage } from "../webgl/shared.ts";
 import { withPoseGroups } from "../webgl/stage.ts";
-import type { Model } from "../webgl/stage.ts";
+import type { Model, PoseGroups } from "../webgl/stage.ts";
 import { makeArt } from "./art.ts";
 import type { WatchModel, WatchModelState } from "./model.ts";
 import { slidePalette } from "./palette.ts";
@@ -17,10 +19,22 @@ export const ART = MADE.art;
 /** The globe in ART's scene, with its story maps. */
 export const GLOBE = MADE.globe;
 
+/** The globe's matrices with the Longitude From Time slide's clock at
+ *  `clockAt`. */
+function globeGroups(clockAt: SlidePoint): PoseGroups {
+  return (angles) => globeMatrices(angles, clockAt);
+}
+
 /** The watch's model, with the globe's disc turned to each frame's camera:
- *  the model of a stage or a view of ART. */
+ *  the model of the slides' stage. */
 export function artModel(watch: WatchModel): Model<WatchModelState> {
-  return withPoseGroups(watch, globeMatrices);
+  return withPoseGroups(watch, globeGroups(NOON_CLOCK.at));
+}
+
+/** The model of an article's figure: as `artModel`, with the clock where a
+ *  figure has it (`FIGURE_CLOCK_AT`). */
+export function figureModel(watch: WatchModel): Model<WatchModelState> {
+  return withPoseGroups(watch, globeGroups(FIGURE_CLOCK_AT));
 }
 
 let stills: WatchStills | undefined;
@@ -28,7 +42,7 @@ let stills: WatchStills | undefined;
 /** The stills that all pages share, made at the first call. Call it only in
  *  the browser. */
 export function watchStills(): WatchStills {
-  stills ??= new WatchStills(ART, globeMatrices);
+  stills ??= new WatchStills(ART, globeGroups(NOON_CLOCK.at));
   return stills;
 }
 

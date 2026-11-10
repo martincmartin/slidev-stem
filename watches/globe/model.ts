@@ -21,6 +21,7 @@ import {
   noonMatrices,
   noonPiece,
 } from "./noon.ts";
+import type { SlidePoint } from "./noon.ts";
 import { makeStories } from "./stories.ts";
 import type { Story } from "./stories.ts";
 import { globeCameras } from "./views.ts";
@@ -71,10 +72,14 @@ export function makeGlobe(slide: readonly [number, number]): Globe {
 }
 
 /** The matrix of each of the globe's groups, for a frame whose camera is at
- *  `angles`. */
-export function globeMatrices(angles: CameraAngles): Map<Group, Matrix4> {
+ *  `angles`, with the Longitude From Time slide's clock at `clockAt`
+ *  (`noonMatrices`). */
+export function globeMatrices(
+  angles: CameraAngles,
+  clockAt: SlidePoint,
+): Map<Group, Matrix4> {
   return new Map([
     [DISC_GROUP, discMatrix(towardCamera(angles))],
-    ...noonMatrices(angles),
+    ...noonMatrices(angles, clockAt),
   ]);
 }

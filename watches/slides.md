@@ -2005,6 +2005,7 @@ Noon comes later
 </style>
 
 <!-- narration
+
 [figure: A globe from above the Equator, with the Atlantic in the middle and a
 meridian every 15 degrees. The Sun is under the globe, and a line runs from the
 pole down the meridian through Greenwich. It is noon in Greenwich, and a clock beside

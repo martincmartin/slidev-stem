@@ -5,13 +5,17 @@
 // slide, so it fits, and the night is where it would be: a crescent whose inner
 // edge is the half ellipse through the North Pole. It also has the word on the
 // clock's dial, whose hands are on the canvas: the clock keeps Greenwich's time.
-import { NOON_CLOCK, NOON_GLOBE } from "../globe/noon.ts";
+// In an article's figure, the clock is beside the globe (`FIGURE_CLOCK_AT`).
+import { inject } from "vue";
+import { FIGURE } from "../addons/narration/figure.ts";
+import { FIGURE_CLOCK_AT, NOON_CLOCK, NOON_GLOBE } from "../globe/noon.ts";
 import { ART } from "../watch/instance.ts";
 
 const [width, height] = ART.scene.slide;
-const clockX = NOON_CLOCK.at[0];
+const [clockX, clockY] =
+  inject(FIGURE, null) === null ? NOON_CLOCK.at : FIGURE_CLOCK_AT;
 /** Under the pivot, above the 6. */
-const clockY = NOON_CLOCK.at[1] + 24;
+const wordY = clockY + 24;
 const [x, y] = NOON_GLOBE.at;
 const { radius, lat } = NOON_GLOBE;
 const toPole = radius * Math.cos((lat * Math.PI) / 180);
@@ -66,13 +70,8 @@ const rays = [-34, -17, 0, 17, 34].map((offset) => {
     />
     <!-- no paint: it says where the clock is, on the canvas, so that an article's
     figure keeps it in its crop (ArticleFigure.vue, `measureLabels`) -->
-    <circle
-      :cx="clockX"
-      :cy="NOON_CLOCK.at[1]"
-      :r="NOON_CLOCK.radius"
-      fill="none"
-    />
-    <text class="noon-clock-word" :x="clockX" :y="clockY">Greenwich</text>
+    <circle :cx="clockX" :cy="clockY" :r="NOON_CLOCK.radius" fill="none" />
+    <text class="noon-clock-word" :x="clockX" :y="wordY">Greenwich</text>
   </svg>
 </template>
 

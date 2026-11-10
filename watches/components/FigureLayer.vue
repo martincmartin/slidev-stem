@@ -80,7 +80,7 @@ import {
 import { boardState } from "../watch/board.ts";
 import type { BoardTarget } from "../watch/board.ts";
 import { stoneStrikes } from "../watch/callouts.ts";
-import { ART, GLOBE, artModel, sharedStage } from "../watch/instance.ts";
+import { ART, GLOBE, figureModel, sharedStage } from "../watch/instance.ts";
 import { storyRuns, windSliderTime } from "../watch/mainspring.ts";
 import { twistAngle, WatchModel } from "../watch/model.ts";
 import type { WatchModelState } from "../watch/model.ts";
@@ -320,7 +320,7 @@ onMounted(() => {
   model.value = new WatchModel(ART, figure.now());
   view = new SharedView(
     canvas.value,
-    artModel(model.value),
+    figureModel(model.value),
     palette.value.palette,
     figure.now,
     ART.scene.slide,

@@ -23,6 +23,7 @@ import {
 } from "./globe.ts";
 import { globeMatrices, makeGlobe } from "./model.ts";
 import {
+  FIGURE_CLOCK_AT,
   GREENWICH,
   NOON_GLOBE,
   HOUR_GROUP,
@@ -145,7 +146,8 @@ test("the disc faces the camera about the globe's centre, and hides the far side
     [120, 89],
   ] as const) {
     const angles = facing(place);
-    const matrix = globeMatrices(angles).get(DISC_GROUP) ?? assert.fail();
+    const matrix =
+      globeMatrices(angles, NOON_CLOCK.at).get(DISC_GROUP) ?? assert.fail();
     assert.deepEqual(matrix, discMatrix(towardCamera(angles)));
     const toward = towardCamera(angles);
     const [x, y, z] = transformPoint(matrix, [0, 0, 1]);
@@ -336,7 +338,7 @@ test("the noon line stays at the middle of the slide as the Earth turns", () => 
     const view =
       GLOBE.views.find((each) => each.name === name) ?? assert.fail();
     const { tilt, turn } = view.angles ?? assert.fail();
-    const matrix = globeMatrices({ tilt, turn }).get(NOON_GROUP);
+    const matrix = globeMatrices({ tilt, turn }, NOON_CLOCK.at).get(NOON_GROUP);
     assert.ok(matrix);
     const lon = turn - 90;
     for (const lat of [-30, 0, 51.5, 89]) {
@@ -378,16 +380,30 @@ test("noon reaches the ship where it reached Greenwich, after 30 degrees", () =>
 test("the clock stays on the slide, and the Earth's turn sets its hands", () => {
   const view = GLOBE.views.find((each) => each.name === "noon in greenwich");
   assert.ok(view);
+  // in a figure, the clock is level with Greenwich's dot at the first click
+  const [, greenwichY] = slidePoint(
+    { view, tilt: 60, turn: 90 },
+    SLIDE,
+    toSphere(GREENWICH),
+  );
+  assert.ok(near(FIGURE_CLOCK_AT[1], greenwichY, 0.001));
   // the Earth's turn: noon, a half hour, one o'clock and two o'clock
-  for (const [turn, hour, minute] of [
-    [90, 0, 0],
-    [82.5, 15, 180],
-    [75, 30, 0],
-    [60, 60, 0],
-  ] as const) {
+  for (const [clockAt, turn, hour, minute] of [
+    NOON_CLOCK.at,
+    FIGURE_CLOCK_AT,
+  ].flatMap((at) =>
+    (
+      [
+        [90, 0, 0],
+        [82.5, 15, 180],
+        [75, 30, 0],
+        [60, 60, 0],
+      ] as const
+    ).map((time) => [at, ...time] as const),
+  )) {
     const angles = { tilt: 60, turn };
     const pose = { view, ...angles };
-    const matrices = globeMatrices(angles);
+    const matrices = globeMatrices(angles, clockAt);
     const tipOf = (hand: typeof HOUR_GROUP): readonly [number, number] => {
       const matrix = matrices.get(hand);
       assert.ok(matrix);
@@ -399,8 +415,8 @@ test("the clock stays on the slide, and the Earth's turn sets its hands", () => 
     ] as const) {
       const [x, y] = tipOf(hand);
       const radians = (wanted * Math.PI) / 180;
-      assert.ok(near(x, NOON_CLOCK.at[0] + 10 * Math.sin(radians), 0.001));
-      assert.ok(near(y, NOON_CLOCK.at[1] - 10 * Math.cos(radians), 0.001));
+      assert.ok(near(x, clockAt[0] + 10 * Math.sin(radians), 0.001));
+      assert.ok(near(y, clockAt[1] - 10 * Math.cos(radians), 0.001));
     }
   }
   // the minute hand goes around twice as the Earth turns 30 degrees

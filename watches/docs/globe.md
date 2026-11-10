@@ -380,6 +380,11 @@ hour: the Earth turns by one meridian, and the minute hand goes around once.
   either direction, and a jump or a printed page shows the time of its click.
   Not an oversight: it is not the watch, whose movement is too busy at this size
   (the visual-language task's README).
+  In an article's figure, the clock is left of the globe, level with
+  Greenwich's dot at the first click (`FIGURE_CLOCK_AT`). The figure shows no
+  title, so a clock above the globe only makes the figure taller.
+  `components/FigureLayer.vue` gives the figure's model that place
+  (`figureModel`), and `NoonSky.vue` puts the clock's word there in a figure.
 - **The Sun is not where the real Sun is.** At 30° above the Equator, the real
   Sun is behind the audience. The slide puts it under the globe to fit, and
   keeps the night that the real Sun gives: a crescent, with the North Pole on its

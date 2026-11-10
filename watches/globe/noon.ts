@@ -39,12 +39,25 @@ export const NOON_GLOBE = {
   lat: 30,
 } as const;
 
+/** A point on the slide, in slide px. */
+export type SlidePoint = readonly [number, number];
+
 /** Where the clock is on the slide, in slide px: in the room at the globe's upper
  *  left, near the ship and Greenwich. The title is short enough to clear it. */
 export const NOON_CLOCK = {
-  at: [92, 92],
+  at: [92, 92] as SlidePoint,
   radius: 64,
 } as const;
+
+/** Where the clock is in an article's figure: left of the globe, level with
+ *  Greenwich's dot at the first click. The figure shows no title, and a clock
+ *  above the globe would make the figure taller than its picture. */
+export const FIGURE_CLOCK_AT: SlidePoint = [
+  80,
+  NOON_GLOBE.at[1] -
+    NOON_GLOBE.radius *
+      Math.sin(((GREENWICH[1] - NOON_GLOBE.lat) * Math.PI) / 180),
+];
 
 /** The Earth has turned by this many degrees from one view to the other. */
 const TURNED = -SHIP[0];
@@ -214,9 +227,13 @@ export function hoursAt(turn: number): number {
 
 /** A matrix (4 x 4, column-major) that draws in slide px on the slide, about
  *  the clock's centre, whichever way the camera looks: x to the right, y up, z
- *  toward the viewer, turned `clockwise` degrees. The camera's axes are those of
- *  `viewProjection` in webgl/renderer.ts. */
-function clockMatrix(angles: CameraAngles, clockwise: number): Matrix4 {
+ *  toward the viewer, turned `clockwise` degrees, with the clock at `clockAt`.
+ *  The camera's axes are those of `viewProjection` in webgl/renderer.ts. */
+function clockMatrix(
+  angles: CameraAngles,
+  clockAt: SlidePoint,
+  clockwise: number,
+): Matrix4 {
   const radians = Math.PI / 180;
   const [tilt, turn] = [angles.tilt * radians, angles.turn * radians];
   const right: Vec3 = [Math.cos(turn), -Math.sin(turn), 0];
@@ -231,8 +248,8 @@ function clockMatrix(angles: CameraAngles, clockwise: number): Matrix4 {
     Math.sin(clockwise * radians),
   ];
   const [across, above] = [
-    NOON_CLOCK.at[0] - NOON_GLOBE.at[0],
-    NOON_GLOBE.at[1] - NOON_CLOCK.at[1],
+    clockAt[0] - NOON_GLOBE.at[0],
+    NOON_GLOBE.at[1] - clockAt[1],
   ];
   const column = (x: number, y: number): number[] =>
     [0, 1, 2].map(
@@ -253,14 +270,18 @@ function clockMatrix(angles: CameraAngles, clockwise: number): Matrix4 {
 }
 
 /** The matrix of each of the slide's groups, for a frame whose camera is at
- *  `angles`. */
-export function noonMatrices(angles: CameraAngles): [Group, Matrix4][] {
+ *  `angles`, with the clock at `clockAt`: `NOON_CLOCK.at` on the slide, or
+ *  `FIGURE_CLOCK_AT` in an article's figure. */
+export function noonMatrices(
+  angles: CameraAngles,
+  clockAt: SlidePoint,
+): [Group, Matrix4][] {
   const hours = hoursAt(angles.turn);
   return [
     [NOON_GROUP, noonMatrix(angles.turn)],
-    [DIAL_GROUP, clockMatrix(angles, 0)],
-    [HOUR_GROUP, clockMatrix(angles, hours * 30)],
-    [MINUTE_GROUP, clockMatrix(angles, hours * 360)],
+    [DIAL_GROUP, clockMatrix(angles, clockAt, 0)],
+    [HOUR_GROUP, clockMatrix(angles, clockAt, hours * 30)],
+    [MINUTE_GROUP, clockMatrix(angles, clockAt, hours * 360)],
   ];
 }
 
