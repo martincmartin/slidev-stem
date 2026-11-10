@@ -21,6 +21,7 @@ import {
 import { articleText, markdownPage } from "./article-text.ts";
 import { historyOf } from "../addons/narration/history.ts";
 import { deckSlides, slideFrontmatter } from "./deck.ts";
+import { voyageState } from "./state.ts";
 import { makeArt } from "./art.ts";
 
 /** The deck's art: the watch and the globe. */
@@ -259,34 +260,36 @@ test("the text export names each figure's controls in their own words", () => {
   }
 });
 
-test("Part 2 figures keep the final maps and give readers the voyage steps", () => {
+test("a reader can step to each leg of a voyage, and no voyage plays by itself", () => {
   const shown = slides.filter((slide) => slide.frontmatter["hide"] !== true);
   const page = markdownPage(slides, watch);
-  // the sail to the latitude, then the search from there, which ends on the
-  // final map
-  const cases = [
-    {
-      title: "Hunt for Juan Fernández Island, 1741",
-      steps: [
-        [0, 1],
-        [1, 2, 3, 4],
-      ],
-    },
-  ];
-  for (const { title, steps } of cases) {
-    const slide = shown.findIndex((candidate) => candidate.title === title) + 1;
-    assert.ok(slide > 0, title);
+  let voyages = 0;
+  shown.forEach(({ title, frontmatter }, index) => {
+    // the clicks that sail a leg: where the last leg that shows changes
+    const legClicks: number[] = [];
+    let before: string | null = null;
+    for (let clicks = 0; clicks <= totalClicks(frontmatter); clicks++) {
+      const { leg } = voyageState(frontmatter, clicks);
+      if (leg !== before && leg !== null) legClicks.push(clicks);
+      before = leg;
+    }
+    if (legClicks.length === 0) return;
+    voyages++;
     const figures = page
       .filter((block) => block.kind === "figure")
-      .filter((figure) => figure.slide === slide);
-    assert.deepEqual(
-      figures.map((figure) => figure.steps),
-      steps,
-      title,
-    );
+      .filter((figure) => figure.slide === index + 1);
+    const steps = new Set(figures.flatMap((figure) => figure.steps));
+    for (const clicks of legClicks) {
+      assert.ok(
+        steps.has(clicks),
+        `${title}: no figure shows the leg at ${String(clicks)}`,
+      );
+    }
     assert.ok(
       figures.every((figure) => !figure.play),
       `${title}: the reader controls the story`,
     );
-  }
+  });
+  // the Hunt for Juan Fernández slide, at least
+  assert.ok(voyages > 0, "no shown slide has a voyage");
 });

@@ -318,12 +318,15 @@ The final map uses the punchline click. It shows the map and its marks,
 with the punchline in the prose only.
 
 The Juan Fernández story opens on a slide of South America, with text and
-no figure. Then the Hunt for Juan Fernández slide has two figures with steps (`slides.md`, the narration's figure markers): the sail
-north to the island's latitude, and the search, from the ship's start to the
-anchorage. Readers step
-the ship forward or back. The death count follows the day dots.
-A separate final map at the punchline keeps the complete route and count
-in the static article, where readers cannot step a figure.
+no figure. Then the Hunt for Juan Fernández slide has two figures with steps
+(`slides.md`, the narration's figure markers): the sail north to the island's
+latitude, and the search, from there to the anchorage. Readers step the ship
+forward or back. The death count follows the day dots. The punchline's click
+has no figure: if the article needs the punchline, a pull quote says it, not a
+figure. The static article shows the search's first step only ("Build the
+static page"), so the prose tells how the search ends.
+`watch/article.test.ts` checks that a reader can step to each leg of each
+shown voyage, and that no voyage plays by itself.
 The narration explains that the daily count illustrates the reported rate;
 it is not a record of each day's deaths.
 
@@ -394,7 +397,9 @@ it 3.7× faster (64 s here); the settles are most of what is left
 ([the task](../tasks/2026-10-22-article-prerender-speed/PLAN.md)). It writes
 `dist/article/index.html`: the deck's `index.html`, with the article's text
 in it as HTML and each figure a still (`dist/article/figures/`, about 6 MB at
-twice the pixel density). So:
+twice the pixel density). A figure with steps is a still of its first step:
+the live figure shows that step too when it takes the still's place, so the
+page does not jump. So:
 
 - the page reads with no JavaScript, and a search engine sees its text;
 - with JavaScript, the deck's code starts at `/article/`, and the live article
