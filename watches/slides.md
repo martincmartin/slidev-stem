@@ -1985,7 +1985,7 @@ Noon comes later
 
 <div class="noon-sentence side-text">
   <div class="noon-paragraph text-dims">Noon in Greenwich<br>Ship: not noon yet</div>
-  <div v-click="1" class="noon-paragraph text-dims after-watch">360°/24 hr = 15°/hr</div>
+  <div v-click="1" class="noon-paragraph text-dims after-watch">15°/hr</div>
   <div v-click="2" class="noon-paragraph text-dims after-watch">2 p.m. in Greenwich<br>Noon at the ship</div>
   <div v-click="3" class="noon-paragraph text-dims">Hours × 15 = Longitude</div>
 </div>
@@ -2016,8 +2016,8 @@ Noon comes later
 
 What does this have to do with watches?  Noon does not come to everyone at once,
 which is why we have time zones. The Earth turns toward the east.  When it is
-noon at the Royal Observatory in Greenwich, England, (the definition of 0° longitude), a
-ship 30 degrees to the west has not reached noon yet.
+noon at the Royal Observatory in Greenwich, England, (the definition of 0°
+longitude), a ship 30 degrees to the west has not reached noon yet.
 
 [figure: A globe from above the Equator, with the Atlantic in the middle and a
 meridian every 15 degrees. The Sun is under the globe, and a line runs from the
@@ -2066,26 +2066,22 @@ IF ASKED: The real Sun is behind the audience and over the Equator: the slide pu
 # (docs/slide-patterns.md, "A slide of words")
 layout: full
 class: seconds-a-day
-clicks: 3
+clicks: 2
 ---
 
 # How Good a Watch Wins the Prize?
 
 <div class="seconds-story side-text">
-  <div class="seconds-step text-dims">
-    <div class="seconds-sum"><div class="seconds-fraction"><span>60 min</span><span>15°</span></div><span>=</span><span>4 min/°</span></div>
-    <div>Clock ±4 min for 1°</div>
-  </div>
-  <div v-click="1" class="seconds-step text-dims">Clock ±2 min for ½°</div>
-  <div v-click="2" class="seconds-step seconds-voyage text-dims">Over 6 weeks at sea</div>
+  <div class="seconds-step text-dims">Clock ±2 min for ½°</div>
+  <div v-click="1" class="seconds-step seconds-voyage text-dims">Over 6 weeks at sea</div>
 </div>
 
 <div class="seconds-numbers side-text">
-  <div v-click="2">
+  <div v-click="1">
     <div class="seconds-number seconds-prize">±3 sec a day</div>
     <div class="seconds-caption">to win £20,000 (±6 for £10,000)</div>
   </div>
-  <div v-click="3" class="seconds-today">
+  <div v-click="2" class="seconds-today">
     <div class="seconds-number">±9 sec a day</div>
     <div class="seconds-caption">a watch today, on dry land</div>
   </div>
@@ -2109,19 +2105,6 @@ clicks: 3
 }
 .slidev-layout.seconds-a-day .seconds-voyage {
   margin-top: 0.7em;
-}
-/* One over the other, as math is written, with the = on the line. */
-.slidev-layout.seconds-a-day .seconds-sum {
-  display: flex;
-  align-items: center;
-  gap: 0.3em;
-}
-.slidev-layout.seconds-a-day .seconds-fraction {
-  display: grid;
-  text-align: center;
-}
-.slidev-layout.seconds-a-day .seconds-fraction > :first-child {
-  border-bottom: 3px solid currentColor;
 }
 /* A punchline's type (components/BigWords.vue), and the Balance Wheel slide's ±9. */
 .slidev-layout.seconds-a-day .seconds-number {
@@ -2155,7 +2138,7 @@ be right within 2 minutes.
 
 [nofigure]
 
-[click:3]
+[click:2]
 
 [nofigure]
 
@@ -2169,9 +2152,7 @@ rolling ship.
 -->
 
 <!--
-How good must that clock be? 60 minutes for 15 degrees: 4 minutes a degree. So 1 degree needs the clock right within 4 minutes.
-
-[click] Half a degree, the top prize: 2 minutes.
+How good must that clock be? 60 minutes for 15 degrees: 4 minutes a degree. So 1 degree needs the clock right within 4 minutes. Half a degree, the top prize: 2 minutes.
 
 [click] Now spread that over a voyage of 6 weeks, 42 days: plus or minus 3 seconds a day to win the £20,000. 6 for the £10,000.
 
