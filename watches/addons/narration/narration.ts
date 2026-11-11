@@ -11,7 +11,9 @@
 //   [figure 0-8 play]   a figure that plays its steps by itself; the parts of
 //                       those clicks are its captions, not prose
 //   [nofigure]          the part's click has no figure, even by default
-// A quote block whose first line is `> [!aside] Title` is an aside.
+// A quote block whose first line is `> [!aside] Title` is an aside. One whose
+// first line is `> [!quote]` is a pull quote: each line after it is a line of
+// the quote. `> [!quote script-1714]` gives the quote the talk's classes too.
 //
 // No Slidev and no DOM here: the preparser (setup/preparser.ts) and the
 // tests use it.
@@ -39,7 +41,17 @@ export interface AsideBlock {
   readonly markdown: string;
 }
 
-export type NarrationBlock = ProseBlock | AsideBlock | FigureMarker;
+/** A pull quote: words that the page shows large, a line for each line. */
+export interface QuoteBlock {
+  readonly kind: "quote";
+  /** The talk's CSS classes for the quote, such as its font. */
+  readonly classes: readonly string[];
+  /** Each line, in Markdown here; in the plan, in the output's format. */
+  readonly lines: readonly string[];
+}
+
+export type NarrationBlock =
+  ProseBlock | AsideBlock | QuoteBlock | FigureMarker;
 
 export interface NarrationPart {
   /** The click from which the part is said. */
@@ -54,6 +66,7 @@ const CLICK = /\[click(?::(\d+))?\]/gi;
 const FIGURE =
   /\[figure(?:\s+(\d+)(?:-(\d+))?)?(?:\s+(play))?(?::\s*([^\]]*?))?\s*\]|\[nofigure\]/g;
 const ASIDE = /^>\s*\[!aside\]\s*(.*)$/i;
+const QUOTE = /^>\s*\[!quote((?:\s+[\w-]+)*)\]\s*$/i;
 
 /** The narration comment's text, or `null` if the slide has none. */
 export function narrationText(content: string): string | null {
@@ -67,9 +80,9 @@ export function noteIsNarration(note: string): boolean {
   return /^\s*narration\s*\n/.test(note);
 }
 
-/** The prose and the asides of `text`, in order. */
-function textBlocks(text: string): (ProseBlock | AsideBlock)[] {
-  const blocks: (ProseBlock | AsideBlock)[] = [];
+/** The prose, the asides and the quotes of `text`, in order. */
+function textBlocks(text: string): (ProseBlock | AsideBlock | QuoteBlock)[] {
+  const blocks: (ProseBlock | AsideBlock | QuoteBlock)[] = [];
   const prose: string[] = [];
   const flush = (): void => {
     const markdown = prose.join("\n").trim();
@@ -80,7 +93,8 @@ function textBlocks(text: string): (ProseBlock | AsideBlock)[] {
   for (let index = 0; index < lines.length; index++) {
     const line = lines[index] ?? "";
     const aside = ASIDE.exec(line.trim());
-    if (!aside) {
+    const quote = QUOTE.exec(line.trim());
+    if (!aside && !quote) {
       prose.push(line);
       continue;
     }
@@ -90,9 +104,17 @@ function textBlocks(text: string): (ProseBlock | AsideBlock)[] {
       index++;
       body.push((lines[index] ?? "").replace(/^\s*>\s?/, ""));
     }
+    if (quote) {
+      blocks.push({
+        kind: "quote",
+        classes: (quote[1] ?? "").trim().split(/\s+/).filter(Boolean),
+        lines: body.map((each) => each.trim()).filter(Boolean),
+      });
+      continue;
+    }
     blocks.push({
       kind: "aside",
-      title: (aside[1] ?? "").trim(),
+      title: (aside?.[1] ?? "").trim(),
       markdown: body.join("\n").trim(),
     });
   }

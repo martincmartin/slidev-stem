@@ -393,7 +393,11 @@ that the slide shows lines, not titles.
 Newton slide, each click adds a line of his words, in Italianno, a font of this
 talk only (`style.css`, SIL Open Font License). A script has a low x-height and thin
 hairlines, so check both at the size that fits ([legibility.md](../../docs/legibility.md)).
-The slide adds `-webkit-text-stroke` to bring its hairlines over the stroke floor.
+The script's class (`script-1714` in `style.css`) adds `-webkit-text-stroke` to
+bring its hairlines over the stroke floor. Put the class on an element inside
+the slide's `side-text`, which holds the lines: on the `side-text` itself, the
+house's rule for it wins. In the article, the words are a pull quote in the
+same class ([article.md](article.md), "A pull quote"), not a figure.
 Say in the narration that the script is a font, not the person's hand. The choice
 of font is in
 [the visual language task](../tasks/2026-10-30-part-2-visual-language/PLAN.md),

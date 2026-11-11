@@ -38,6 +38,8 @@ function outline(blocks: readonly PageBlock[]): string[] {
         return block.text;
       case "aside":
         return `aside ${block.title}`;
+      case "quote":
+        return `quote ${block.lines.join(" / ")}`;
       default:
         return `${block.kind} ${block.text}`;
     }

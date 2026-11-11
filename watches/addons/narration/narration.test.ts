@@ -1,4 +1,5 @@
-// The narration comment: its parts, its figure markers and its asides.
+// The narration comment: its parts, its figure markers, its asides and its
+// pull quotes.
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
@@ -92,6 +93,25 @@ test("a quote block that starts [!aside] is an aside, with its title", () => {
       markdown: "Mass at the rim.\nIt counts most.",
     },
     { kind: "prose", markdown: "More prose." },
+  ]);
+});
+
+test("a quote block that starts [!quote] is a pull quote, a line for each line", () => {
+  const [part] = parseNarration(
+    "But:\n\n> [!quote script-1714 large]\n> by reason of a Ship,\n>   such a Watch.\n\nMore prose.",
+  );
+  assert.deepEqual(part?.blocks, [
+    { kind: "prose", markdown: "But:" },
+    {
+      kind: "quote",
+      classes: ["script-1714", "large"],
+      lines: ["by reason of a Ship,", "such a Watch."],
+    },
+    { kind: "prose", markdown: "More prose." },
+  ]);
+  const [plain] = parseNarration("> [!quote]\n> Words.");
+  assert.deepEqual(plain?.blocks, [
+    { kind: "quote", classes: [], lines: ["Words."] },
   ]);
 });
 

@@ -16,7 +16,7 @@ the two lists in step.
   globe's meshes and levels, its views, the story maps' marks and their
   keys, the labels on them, the flight, and how it joins the watch's scene
 - [article.md](article.md): the article at `/article`: the narration, its figure
-  markers, what a figure shows, the sliders and the button, the code, the
+  markers, pull quotes, what a figure shows, the sliders and the button, the code, the
   Part 2 story figures, the static page, the text export
 - [measurements.md](measurements.md): what the timekeepers, the cover watch,
   balance rim motion, and the diving board measure at the back row

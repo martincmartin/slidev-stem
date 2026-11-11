@@ -1,8 +1,9 @@
 <script setup lang="ts">
 // The article: the talk as one long page, for readers. The cover's title and
 // the author, the contents, then each slide's heading, its narration, its
-// asides (in the margin on a wide window), and its figures: the slides
-// themselves, live (components/ArticleFigure.vue). What goes where is the
+// asides (in the margin on a wide window), its pull quotes
+// (components/ArticleQuote.vue), and its figures: the slides themselves,
+// live (components/ArticleFigure.vue). What goes where is the
 // page model's (../plan.ts), with the talk's rules (`ARTICLE_HOOKS`,
 // ../figure.ts). docs/article.md has the rules and the reasons.
 //
@@ -22,6 +23,7 @@ import {
   ref,
 } from "vue";
 import ArticleFigure from "../components/ArticleFigure.vue";
+import ArticleQuote from "../components/ArticleQuote.vue";
 import { ARTICLE_HOOKS, DEFAULT_HOOKS } from "../figure.ts";
 import type { Box } from "../figure.ts";
 import { cropGroups, pagePlan, slideInput } from "../plan.ts";
@@ -262,6 +264,11 @@ onBeforeUnmount(() => {
           <div v-html="block.text" />
         </aside>
         <!-- eslint-enable vue/no-v-html -->
+        <ArticleQuote
+          v-else-if="block.kind === 'quote'"
+          :classes="block.classes"
+          :lines="block.lines"
+        />
         <ArticleFigure
           v-else-if="block.kind === 'figure'"
           :figure="block"
@@ -303,8 +310,10 @@ html.article-mode #app {
   max-width: 700px;
   margin: 0 auto;
 }
-/* A figure may be wider than the text: it is centred on the column. */
-.article-column > .article-figure {
+/* A figure may be wider than the text: it is centred on the column. So may a
+   pull quote: its type is large, so even a wide line has few words, and the
+   eye finds the next line (docs/article.md, "A pull quote"). */
+.article-column > :is(.article-figure, .article-quote) {
   width: min(980px, 100vw - 32px);
   margin-left: calc((100% - min(980px, 100vw - 32px)) / 2);
 }

@@ -1933,10 +1933,11 @@ clicks: 2
 > A degree of longitude is a smaller distance as you move away from the equator.
 > At the north and south poles, all lines of longitude meet and the distance
 > between them is zero.  The Act measures the error in degrees of a great
-> circle, essentially, at the equator.
+> circle, essentially at the equator.
 
-Prompted by catastrophic maritime disasters, Parliament passed the Longitude
-Act. It offered a fortune to anyone who could find a ship's longitude at sea:
+Prompted by catastrophic maritime disasters, in 1714 Britain's Parliament passed
+the Longitude Act. It offered a fortune to anyone who could find a ship's
+longitude at sea:
 
 Within one degree, about 70 miles, the prize was £10,000: about $2.3 million
 in 2026.  If you could reduce the error by half, to half a degree or 35 miles,
@@ -2006,29 +2007,36 @@ Noon comes later
 
 <!-- narration
 
+> [!aside] The Sun in the picture
+> The real Sun is behind you as you look at this globe, and over the Equator. The
+> picture puts it under the globe so that it fits, and leaves the night where
+> the real Sun would put it. The real noon also runs up to about 16 minutes
+> ahead of or behind a steady clock through the year. Navigators corrected for
+> that with a table, the _equation of time_.
+
+What does this have to do with watches?  Noon does not come to everyone at once,
+which is why we have time zones. The Earth turns toward the east.  When it is
+noon at the Royal Observatory in Greenwich, England, (the definition of 0° longitude), a
+ship 30 degrees to the west has not reached noon yet.
+
 [figure: A globe from above the Equator, with the Atlantic in the middle and a
 meridian every 15 degrees. The Sun is under the globe, and a line runs from the
 pole down the meridian through Greenwich. It is noon in Greenwich, and a clock beside
 the globe says so. The ship is 30 degrees to the west.]
 
-Why would a clock help? Because noon does not come to everyone at once. The
-Earth turns toward the east, so the Sun's highest point sweeps west. When it is
-noon in Greenwich, the part of London that gave Greenwich Mean Time its name, a
-ship 30 degrees to the west has not reached noon yet.
+An hour later, the Earth has turned by 15 degrees, one line on this globe. Noon
+has moved 15 degrees west, and it has not reached the ship yet.
 
 [click]
 
 [figure: The globe has turned by one meridian. The line now runs along the
-meridian 15 degrees west of Greenwich. The clock says 1:00.]
-
-In an hour, the Earth turns by 15 degrees, one line on this globe. Noon has moved
-15 degrees west, and it has not reached the ship yet.
+meridian 15 degrees west of Greenwich. The clock says 1 p.m.]
 
 [click]
 
 A navigator can measure noon at sea: it is when the Sun stands highest. After a
-second hour, noon reaches the ship. Suppose that the ship carries a clock that
-still keeps Greenwich's time. At the ship's noon, it reads 2:00. Two hours behind
+second hour, noon reaches the ship. Suppose that the ship carries a watch that
+still keeps Greenwich's time. At the ship's noon, it reads 2 p.m. Two hours behind
 Greenwich means 30 degrees west of it.
 
 [click]
@@ -2036,15 +2044,8 @@ Greenwich means 30 degrees west of it.
 [figure: The line runs through the ship, and Greenwich is 30 degrees to the east of
 it. The clock says 2:00.]
 
-So the clock measures the ship's longitude. Take the hours behind Greenwich,
+So the watch measures the ship's longitude. Take the hours behind Greenwich,
 multiply by 15, and that is how many degrees west the ship is.
-
-> [!aside] The Sun in the picture
-> The real Sun is behind you as you look at this globe, and over the Equator. The
-> picture puts it under the globe so that it fits, and leaves the night where
-> the real Sun would put it. The real noon also runs up to about 16 minutes
-> ahead of or behind a steady clock through the year. Navigators corrected for
-> that with a table, the _equation of time_.
 
 -->
 
@@ -2140,29 +2141,30 @@ clicks: 3
 </style>
 
 <!-- narration
-How good must that clock be? Sixty minutes for 15 degrees is 4 minutes a degree. So
-to find the longitude within 1 degree, the clock must be right within 4 minutes. To
-find it within half a degree, the Act's top prize, the clock must be right within 2
-minutes.
+
+> [!aside] A steady error is not the problem
+>
+> A clock that gains exactly 6 seconds every day is as good as a perfect one, if
+> the navigator knows it, since they can just subtract 6 seconds a day. What the
+> prize really needs is a clock whose rate does not change.
+
+How good must that watch be?  Sixty minutes divided by 15 degrees is 4 minutes a
+degree. So to find the longitude within 1 degree, the clock must be right within
+4 minutes. To find it within half a degree, the Act's top prize, the clock must
+be right within 2 minutes.
 
 [nofigure]
 
 [click:3]
 
-[figure: Left, 60 minutes over 15 degrees is 4 minutes a degree; the clock within 4
-minutes for 1 degree and within 2 for half a degree, over 6 weeks at sea. Right, in
-big type, plus or minus 3 seconds a day to win £20,000, and plus or minus 9 for a
-watch today.]
+[nofigure]
 
-Now take a voyage of 6 weeks, or 42 days. To stay within 4 minutes, the clock can
-gain or lose only about 6 seconds a day. To stay within 2 minutes, it can gain or
-lose only about 3. An everyday mechanical watch today gains or loses about 9
-seconds a day, on dry land. The prize asked for 3, on a rolling ship.
 
-> [!aside] A steady error is not the problem
-> A clock that gains exactly 6 seconds every day is as good as a perfect one, if
-> the navigator knows it: subtract 6 seconds a day. What the prize really needs is
-> a clock whose rate does not change.
+Now take a voyage of 6 weeks, or 42 days. To stay within 4 minutes, the clock
+can gain or lose only about 6 seconds a day. To stay within 2 minutes, it can
+gain or lose only about 3. An everyday mechanical watch with today's materials
+gains or loses about 9 seconds a day, on dry land. The prize asked for 3, on a
+rolling ship.
 
 -->
 
@@ -2187,27 +2189,21 @@ clicks: 3
 
 # Isaac Newton, 1714
 
-of the laws of motion and gravity
-
 <div class="newton-words side-text">
-  <div class="newton-line text-dims">by reason of the motion of a Ship,</div>
-  <div v-click="1" class="newton-line text-dims">the variation of heat &amp; cold, wet and dry,</div>
-  <div v-click="2" class="newton-line text-dims">and the difference of Gravity in different Latitudes,</div>
-  <div v-click="3" class="newton-line newton-verdict">such a Watch hath not yet been made.</div>
+  <div class="script-1714">
+    <div class="newton-line text-dims">by reason of the motion of a Ship,</div>
+    <div v-click="1" class="newton-line text-dims">the variation of heat &amp; cold, wet and dry,</div>
+    <div v-click="2" class="newton-line text-dims">and the difference of Gravity in different Latitudes,</div>
+    <div v-click="3" class="newton-line newton-verdict">such a Watch hath not yet been made.</div>
+  </div>
 </div>
 
 <style>
+/* The script is the article's pull quote's too (`script-1714`, style.css). */
 .slidev-layout.newton-1714 .newton-words {
   left: 0;
   right: 0;
   align-items: center;
-  font-family: "Italianno", cursive;
-  font-size: 65px;
-  font-weight: 400;
-  line-height: 1.3;
-  /* The script's hairlines are under the stroke floor (docs/legibility.md): this
-     thickens them, in the color of the text, so that they dim with it. */
-  -webkit-text-stroke: 0.7px;
 }
 .slidev-layout.newton-1714
   .newton-line:has(~ .newton-line:not(.slidev-vclick-hidden)) {
@@ -2219,10 +2215,15 @@ of the laws of motion and gravity
 </style>
 
 <!-- narration
-Could anyone build such a clock? In 1714, a committee on the question asked the
-most famous scientist alive: Isaac Newton, of the laws of motion and gravity. A
-watch that keeps time exactly, he said, was one way to find longitude. But, in the
-words of the committee's record:
+
+In 1714, the most famous scientist alive, Isaac Newton, weighed in. A watch that
+keeps time exactly, he said, was one way to find longitude. But:
+
+> [!quote script-1714]
+> by reason of the motion of a Ship,
+> the variation of heat & cold, wet and dry,
+> and the difference of Gravity in different Latitudes,
+> _such a Watch hath not yet been made._
 
 [nofigure]
 
@@ -2236,33 +2237,18 @@ words of the committee's record:
 
 [click]
 
-[figure: Newton's words, in a flowing script: by reason of the motion of a Ship,
-the variation of heat and cold, wet and dry, and the difference of Gravity in
-different Latitudes, such a Watch hath not yet been made.]
+[nofigure]
 
-A ship rolls and pitches. The weather swings from the tropics to the cold. Even
-gravity is not the same everywhere, and a clock can feel it. Newton's verdict was
-not that it was impossible, only that no one had done it.
-
-> [!aside] Whose handwriting?
-> The Royal Museums Greenwich holds the record of his words, in a copy from about
-> 1741. The script on the slide is a modern font in the spirit of that copy's hand.
-> It is not Newton's own hand. He also named two other ways to find longitude: the
-> eclipses of Jupiter's moons, and the place of the Moon. Neither, he said, could
-> be used at sea yet.
+On land, pendulum clocks were far more accurate, but a ship rolls and pitches,
+rendering them useless.  The weather plunges from the tropics to the English
+cold, affecting how fast a hairspring swings and also the animal oils used to
+lubricate all those axles. Even gravity is not the same everywhere, and a clock
+can feel it.
 
 -->
 
 <!--
-Could anyone build it? They asked Isaac Newton. That Newton: laws of motion, gravity. A watch could do it, he said, but: by reason of the motion of a ship.
-
-[click] Heat and cold, wet and dry.
-
-[click] Gravity differs from place to place.
-
-[click] Such a watch hath not yet been made. Not yet.
-
-IF ASKED: These words are from the committee's record of June 1714, in a copy from about 1741: not his own hand, and the script is a modern font. His other two ways: the eclipses of Jupiter's moons, and the place of the Moon. Neither could be used at sea yet.
+Most famous living scientist.
 -->
 
 ---

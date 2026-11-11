@@ -3,7 +3,7 @@
 **Covers:** the article at `/article`: the talk for people who did not see it,
 as one long page of narration with live figures between the paragraphs, in
 the style of Bartosz Ciechanowski's "Mechanical Watch". How to write the
-narration and place the figures; what a figure shows, and why; the sliders,
+narration and place the figures; pull quotes; what a figure shows, and why; the sliders,
 the button, the playing figure, and Part 2's story figures; how the code is split between the addon and the
 talk; how to build the static page, and where it can go; how to export
 its text.
@@ -32,7 +32,8 @@ Android).
 - Under a slide's heading, its history line, if it has one
   ([slide-patterns.md](slide-patterns.md), "The history line").
 - For each slide, its narration, its asides (in the right margin on a window
-  at least 1,280 px wide, in the text on a narrower one) and its figures.
+  at least 1,280 px wide, in the text on a narrower one), its pull quotes and
+  its figures.
 - **A figure is the slide itself, live**, at one click: the WebGL watch, the
   diving board, the labels. It runs while it is on the screen. Near the
   screen, it gets one picture, so that it is not blank when it comes on.
@@ -41,7 +42,7 @@ Android).
   pause button; a still one has none (`still` in
   `addons/narration/figure.ts`).
 - **A copy of the page is its prose**: the headings, the narration, the
-  asides and the captions. A figure's words (its labels, the diving board's
+  asides, the pull quotes and the captions. A figure's words (its labels, the diving board's
   sentence also where it has faded out, its controls) and the "Pause them
   all" button cannot be selected (`user-select: none` in
   `ArticleFigure.vue` and `ArticlePage.vue`). So a reader can paste the page
@@ -98,6 +99,7 @@ The speaker's cues, as before.
 | `[figure 0-8 play]`  | a figure that plays its steps by itself; the text after it, and the parts said at its clicks, are its captions |
 | `[nofigure]`         | no figure for the part's click, even by default                                                                |
 | `> [!aside] Title`   | a quote block that starts so is an aside; put the `IF ASKED` material here                                     |
+| `> [!quote classes]` | a quote block that starts so is a pull quote, a line for each line; the classes are the talk's, and optional   |
 
 **Every figure has alt text.** A screen reader gets only that, and so does
 a chatbot that reads the article as text. It says what the picture shows
@@ -119,6 +121,37 @@ here" colour, so two parts in one figure could not have two colours
 The markdown is rendered with `markdown-exit`, as Slidev renders notes, with
 smart quotes. A table is Markdown. There is no math yet: write "seven and a
 half times eight is sixty".
+
+### A pull quote
+
+**Words that are the picture are a pull quote, not a figure.** A quote block
+that starts `> [!quote]` is one: each line after it is a line of the quote,
+in large type, centered (`components/ArticleQuote.vue`). The names after the
+marker are the talk's CSS classes for it: `> [!quote script-1714]` gives the
+Isaac Newton slide's quote the slide's script (`style.css`, "THE 1714
+SCRIPT"). A quote with no class is in the text's font, at twice its size.
+Give the click whose figure the quote replaces a `[nofigure]`. A pull quote
+is prose: a reader can select and copy it, and a screen reader reads its
+words, with no alt text.
+
+**A pull quote is as wide as a figure, wider than the text.** Not an
+oversight. A column of text is narrow so that the eye, back at the left,
+finds the next line and does not land on the wrong one. A pull quote's type
+is large and its lines far apart, so even a line as wide as a figure has few
+words (Newton's longest has 53 characters), and the next line is easy to
+find.
+
+**Each line stays one line.** A line of the quote is a line of the
+original, and a break in it would read as one. So where the widest line
+does not fit, the quote's type shrinks until it does (`fit`). Without
+JavaScript, a line that does not fit wraps.
+
+**Italics in a pull quote are its accent.** Write the words that the quote
+is for in italics (`> _such a Watch hath not yet been made._`), and the page
+shows them in the accent, not slanted: the slide's punchline, marked as the
+slide marks it. A script is already slanted, so a slant would only fake a
+second style of it. All the lines show at once, so the accent, not a dim,
+marks the punchline.
 
 ## Which clicks get a figure
 
@@ -156,10 +189,11 @@ the `<svg>`. The crop is 1.65 times larger on a phone than the whole slide
 would be.
 
 **A figure of a slide with no picture is the whole slide, with its text but
-not its title** (`pictureBox` gives `null`; `ArticleFigure.vue`). The
-article's heading just above the figure says the title, so the figure would
-only repeat it. The title takes no room, and the rest of the layout fills
-the figure: the Longitude Prize slide's two cards are in its middle.
+not its title or subtitle** (`pictureBox` gives `null`; `ArticleFigure.vue`).
+The article's heading just above the figure says the title, so the figure
+would only repeat it, and the subtitle belongs to the title. They take no
+room, and the rest of the layout fills the figure: the Longitude Prize
+slide's two cards are in its middle.
 
 **The figures of one slide that share a camera share a crop** (`frameKey`
 in `watch/article.ts`, `cropGroups` in `addons/narration/plan.ts`): the box
@@ -336,16 +370,16 @@ those steps show their targets at once.
 
 ## How the code is split
 
-| Where                                                           | What                                                                                                                                                                           |
-| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `addons/narration/` (a Slidev addon; the headmatter's `addons`) | the narration's parser, the preparser, the page model, the `/article` route and its line in `pnpm dev`, the page and its figures, the prerender. It knows nothing of the watch |
-| `addons/narration/figure.ts`                                    | what the addon and the talk say to each other: `FIGURE` (a figure's click, its time, controls, stillness) and `ARTICLE_HOOKS` (the talk's rules)                               |
-| `setup/main.ts`                                                 | gives the article the talk's rules (`ARTICLE_HOOKS`)                                                                                                                           |
-| `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, the camera's key, marks, the `article` settings, the controls' words                                               |
-| `addons/narration/text.ts`                                      | the page plan as Markdown, for the text export                                                                                                                                 |
-| `watch/article-text.ts`                                         | the text export (`pnpm article:text`), and the page that the talk's tests check, from `slides.md`                                                                              |
-| `global-bottom.vue`, `components/FigureLayer.vue`               | in a figure, the layer is the figure's: the watch at the figure's click, the board, "tick" and "tock", the time scale                                                          |
-| `webgl/shared.ts`, `watch/instance.ts`                          | one renderer, one WebGL context, for all the figures (`sharedStage`)                                                                                                           |
+| Where                                                           | What                                                                                                                                                                                            |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `addons/narration/` (a Slidev addon; the headmatter's `addons`) | the narration's parser, the preparser, the page model, the `/article` route and its line in `pnpm dev`, the page, its figures and its pull quotes, the prerender. It knows nothing of the watch |
+| `addons/narration/figure.ts`                                    | what the addon and the talk say to each other: `FIGURE` (a figure's click, its time, controls, stillness) and `ARTICLE_HOOKS` (the talk's rules)                                                |
+| `setup/main.ts`                                                 | gives the article the talk's rules (`ARTICLE_HOOKS`)                                                                                                                                            |
+| `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, the camera's key, marks, the `article` settings, the controls' words                                                                |
+| `addons/narration/text.ts`                                      | the page plan as Markdown, for the text export                                                                                                                                                  |
+| `watch/article-text.ts`                                         | the text export (`pnpm article:text`), and the page that the talk's tests check, from `slides.md`                                                                                               |
+| `global-bottom.vue`, `components/FigureLayer.vue`               | in a figure, the layer is the figure's: the watch at the figure's click, the board, "tick" and "tock", the time scale                                                                           |
+| `webgl/shared.ts`, `watch/instance.ts`                          | one renderer, one WebGL context, for all the figures (`sharedStage`)                                                                                                                            |
 
 **One renderer for the page.** A browser keeps about 16 WebGL contexts on a
 page. Each figure is a 2D canvas, with its own timeline and model, and the
@@ -441,7 +475,8 @@ pnpm article:text > article.md   # the article as Markdown, in under a second
 For a reader that takes text, such as a chatbot asked for feedback on the
 wording and the structure. It holds what the page holds, in its order: the
 headings, the history lines, the narration's Markdown as written, each aside
-as a quote, and each figure in its place, as
+as a quote, each pull quote as a quote with a line break at each line, and
+each figure in its place, as
 `[Figure: <alt text> <its steps>. Controls: <its slider or button>.]`. A
 playing figure's captions follow it. The controls are in the words that the
 figure shows (`SLIDER_WORDS` and `BUTTON_WORDS` in `watch/article.ts`).
@@ -459,5 +494,4 @@ the live page has blank figures (below).
 - A print stylesheet or a PDF of the article. A print of the live page draws
   only the figures near the screen; the others are blank, with their labels
   (Chromium, 2026-10-27).
-- A whole-slide figure repeats its slide's title under the page's heading.
 - Labels do not grow on a phone; reading on a phone is a later goal.

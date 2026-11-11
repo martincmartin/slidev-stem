@@ -25,6 +25,11 @@ function rendered(part: NarrationPart): RenderedPart {
             title: markdown.renderInline(block.title),
             text: markdown.render(block.markdown),
           };
+        case "quote":
+          return {
+            ...block,
+            lines: block.lines.map((line) => markdown.renderInline(line)),
+          };
         case "figure":
           return block;
       }

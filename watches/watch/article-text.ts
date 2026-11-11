@@ -46,7 +46,7 @@ export function markdownPage(
           : parseNarration(text).map((part) => ({
               ...part,
               blocks: part.blocks.map((block): RenderedBlock =>
-                block.kind === "figure"
+                block.kind === "figure" || block.kind === "quote"
                   ? block
                   : { ...block, text: block.markdown },
               ),

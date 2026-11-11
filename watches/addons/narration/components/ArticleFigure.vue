@@ -414,13 +414,14 @@ watch([step, near, paused, busyUntil], schedule);
 .article-figure-picture .slidev-page .slidev-layout .in-figure {
   visibility: visible;
 }
-/* A figure of the whole slide shows its text, but not its title: the
-   article's heading just above says it. The title takes no room, so the
-   rest of the slide's layout fills the figure. */
+/* A figure of the whole slide shows its text, but not its title or the
+   title's subtitle (the paragraph right after it): the article's heading
+   just above says the title, and the subtitle belongs to it. They take no
+   room, so the rest of the slide's layout fills the figure. */
 .article-figure-slide:not(.article-figure-picture)
   .slidev-page
   .slidev-layout
-  h1 {
+  :is(h1, h1 + p) {
   display: none;
 }
 .article-figure-caption {

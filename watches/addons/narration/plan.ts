@@ -16,7 +16,7 @@
 
 import type { ArticleHooks } from "./figure.ts";
 import { historyOf } from "./history.ts";
-import type { FigureMarker } from "./narration.ts";
+import type { FigureMarker, QuoteBlock } from "./narration.ts";
 
 /** A part of a slide's narration, rendered for the plan's output: as
  *  `NarrationPart`, with each block's `text` in the output's format. The plan
@@ -31,6 +31,7 @@ export interface RenderedPart {
 export type RenderedBlock =
   | { readonly kind: "prose"; readonly text: string }
   | { readonly kind: "aside"; readonly title: string; readonly text: string }
+  | QuoteBlock
   | FigureMarker;
 
 export interface SlideInput {
@@ -115,6 +116,7 @@ export type PageBlock =
     }
   | { readonly kind: "prose"; readonly text: string }
   | { readonly kind: "aside"; readonly title: string; readonly text: string }
+  | QuoteBlock
   | FigureBlock;
 
 /** A name for a URL's fragment: lower case, words joined by `-`. */
@@ -134,8 +136,8 @@ function range(from: number, to: number): number[] {
   return Array.from({ length: to - from + 1 }, (_, index) => from + index);
 }
 
-/** What one slide puts on the page after its heading: its prose, asides and
- *  figures, in order. `previousKey` is the key of the page's last figure. */
+/** What one slide puts on the page after its heading: its prose, asides,
+ *  quotes and figures, in order. `previousKey` is the key of the page's last figure. */
 function slideBlocks(
   slide: SlideInput,
   idOf: (base: string) => string,

@@ -37,6 +37,22 @@ test("headings, history lines, prose and asides, in order", () => {
   );
 });
 
+test("a pull quote keeps its lines, with Markdown's line breaks", () => {
+  assert.equal(
+    articleMarkdown(
+      [
+        {
+          kind: "quote",
+          classes: ["script-1714"],
+          lines: ["By a Ship,", "no Watch."],
+        },
+      ],
+      () => [],
+    ),
+    "> By a Ship,\\\n> no Watch.\n",
+  );
+});
+
 test("a figure is its alt text, its steps and its controls", () => {
   assert.equal(
     articleMarkdown([figure()], () => ["a slider"]),

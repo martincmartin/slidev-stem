@@ -1,7 +1,7 @@
 // The article as Markdown: for a reader that takes text, such as a chatbot
-// asked for feedback. The headings, the history lines, the prose and the
-// asides, in order, and each figure in its place, as its alt text and what a
-// reader can do with it. No Slidev and no DOM here: the talk's script gives
+// asked for feedback. The headings, the history lines, the prose, the asides
+// and the pull quotes, in order, and each figure in its place, as its alt
+// text and what a reader can do with it. No Slidev and no DOM here: the talk's script gives
 // the page, with its text in Markdown, and the words for a figure's controls
 // (../../docs/article.md, "Export the text").
 
@@ -69,6 +69,10 @@ export function articleMarkdown(
         break;
       case "aside":
         chunks.push(quote(`**Aside: ${block.title}**\n\n${block.text.trim()}`));
+        break;
+      case "quote":
+        // a backslash at a line's end is Markdown's line break
+        chunks.push(quote(block.lines.join("\\\n")));
         break;
       case "figure":
         chunks.push(figureText(block, controlsOf(block)));
