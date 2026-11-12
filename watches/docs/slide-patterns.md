@@ -223,7 +223,9 @@ stays, so the audience can look back. The mechanism is in `style.css`
   inherited: set it and fade it on one element only.
 
 Not for the "Before clocks" cards: a card is a panel with art, not text over
-a picture, so it dims with an opacity ([Clicks](#clicks)).
+a picture, so it dims with an opacity ([Clicks](#clicks)). Not for the How Good a
+Watch slide either: its lines are one sum, read together
+([A slide of words](#a-slide-of-words)).
 
 ## A full turn's time
 
@@ -338,11 +340,12 @@ catch up. Not an oversight: a map of how far the prizes reach from the venue
 drew what the speaker can say in a sentence
 ([the visual language task](../tasks/2026-10-30-part-2-visual-language/README.md)).
 
-**A chain of small steps can lead to big numbers, on one slide.** On the How Good a
-Watch slide, the left column adds a step at each click, and the earlier steps dim.
-The right column holds the numbers, in a punchline's type, and they do not dim: ±3 is
-the slide's point. Nothing leaves, and its title names the prize, so a listener who
-looks up at any click can see what the numbers measure. Not an oversight: Lessig
+**A chain of small steps can lead to a big number, on one slide.** On the How Good a
+Watch slide, one centred column reads down as a sum: the clock's limit, the voyage,
+and the number that they give, ±3, in a punchline's type and the slide's one accent.
+Nothing dims: the number's size and accent show what is new, and the lines above it
+say what it measures. Nothing leaves, and its title names the prize, so a listener who
+looks up at any click can see what the number measures. Not an oversight: Lessig
 screens, one `BigWords` at each click, left a listener who looked away with "6 or 3
 seconds a day" and nothing to say what it was
 ([the visual language task](../tasks/2026-10-30-part-2-visual-language/PLAN.md),

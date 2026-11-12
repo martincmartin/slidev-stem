@@ -64,6 +64,7 @@ something else:
 - **The picture is the whole slide:** on the Recap slide, the only text is a caption
   and a time scale.
 - **There is no picture:** on the Longitude Prize slide, the words are on two cards.
-  On the How Good a Watch slide, a chain of steps leads to two numbers in big type.
+  On the How Good a Watch slide, a chain of steps leads to a number in big type, in
+  one centred column.
 - **The words are the picture:** on the Isaac Newton slide, the words fill the
   slide's width, centred, in a script. They still use `side-text` to centre them.

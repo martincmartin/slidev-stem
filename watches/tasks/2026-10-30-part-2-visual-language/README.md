@@ -234,3 +234,8 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   turns 15°/hour", "Noon at ship / 2 p.m. Greenwich" and "Hours × 15 = Longitude". Each fits on
   one line of the 375 px column but the ship's, which needs two. "Ship: not noon yet" is gone. "4
   min/°" is on no slide: the narration of the How Good a Watch Wins the Prize? slide says it.
+- 2026-11-12: the How Good a Watch Wins the Prize? slide drops "±9 sec a day / a watch today, on
+  dry land": the speaker notes and the narration still say it. Its words are one centred column,
+  "Clock ±2 min for ½°", then "Over 6 weeks at sea" and ±3 with its caption at the one click, and
+  nothing dims (`PLAN.md`, section 21, chose two columns that dim). The notes' IF ASKED gives 3
+  seconds a day as 0.003%, which the user suggested and the slide leaves out.

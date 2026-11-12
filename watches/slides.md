@@ -1987,7 +1987,7 @@ Noon comes later
   <div class="noon-paragraph text-dims">Noon at Greenwich, 0°</div>
   <div v-click="1" class="noon-paragraph text-dims after-watch">Earth turns 15°/hour</div>
   <div v-click="2" class="noon-paragraph text-dims after-watch">Noon at ship<br>2 p.m. Greenwich</div>
-  <div v-click="3" class="noon-paragraph text-dims">Hours × 15 = Longitude</div>
+  <div v-click="3" class="noon-paragraph text-dims">Hours × 15° = Longitude</div>
 </div>
 
 <style>
@@ -2062,58 +2062,41 @@ IF ASKED: The real Sun is behind the audience and over the Equator: the slide pu
 -->
 
 ---
-# The chain dims on the left, and the two numbers stay on the right
+# One column, read down as a sum, and nothing dims
 # (docs/slide-patterns.md, "A slide of words")
 layout: full
 class: seconds-a-day
-clicks: 2
+clicks: 1
 ---
 
 # How Good a Watch Wins the Prize?
 
-<div class="seconds-story side-text">
-  <div class="seconds-step text-dims">Clock ±2 min for ½°</div>
-  <div v-click="1" class="seconds-step seconds-voyage text-dims">Over 6 weeks at sea</div>
-</div>
-
-<div class="seconds-numbers side-text">
+<div class="seconds-sum side-text">
+  <div>Clock ±2 min for ½°</div>
   <div v-click="1">
-    <div class="seconds-number seconds-prize">±3 sec a day</div>
+    <div>Over 6 weeks at sea</div>
+    <div class="seconds-number">±3 sec a day</div>
     <div class="seconds-caption">to win £20,000 (±6 for £10,000)</div>
-  </div>
-  <div v-click="2" class="seconds-today">
-    <div class="seconds-number">±9 sec a day</div>
-    <div class="seconds-caption">a watch today, on dry land</div>
   </div>
 </div>
 
 <style>
-/* The house's text (side-text), in two columns. Each click adds to the chain, and
-   the steps before it dim. The numbers do not dim: ±3 is the punchline. */
-.slidev-layout.seconds-a-day .seconds-story {
-  left: 70px;
+/* The house's text (side-text), in one column, centred on the slide. It reads
+   down as a sum: the clock's limit and the voyage give the number. Nothing dims:
+   the number's size and accent show what is new, and the lines above it say
+   what it measures. */
+.slidev-layout.seconds-a-day .seconds-sum {
+  left: 0;
+  right: 0;
+  align-items: center;
+  text-align: center;
 }
-.slidev-layout.seconds-a-day .seconds-numbers {
-  left: 440px;
-  gap: 28px;
-}
-.slidev-layout.seconds-a-day
-  .seconds-step:has(~ .seconds-step:not(.slidev-vclick-hidden)),
-.slidev-layout.seconds-a-day:has(.seconds-today:not(.slidev-vclick-hidden))
-  .seconds-voyage {
-  --text-dim: var(--text-dimmed);
-}
-.slidev-layout.seconds-a-day .seconds-voyage {
-  margin-top: 0.7em;
-}
-/* A punchline's type (components/BigWords.vue), and the Balance Wheel slide's ±9. */
+/* A punchline's type (components/BigWords.vue). */
 .slidev-layout.seconds-a-day .seconds-number {
   @apply font-serif;
+  margin-top: 0.3em;
   font-size: 76px;
   line-height: 1.05;
-  color: var(--palette-second);
-}
-.slidev-layout.seconds-a-day .seconds-prize {
   color: var(--palette-accent);
 }
 .slidev-layout.seconds-a-day .seconds-caption {
@@ -2138,10 +2121,9 @@ be right within 2 minutes.
 
 [nofigure]
 
-[click:2]
+[click]
 
 [nofigure]
-
 
 Now take a voyage of 6 weeks, or 42 days. To stay within 4 minutes, the clock
 can gain or lose only about 6 seconds a day. To stay within 2 minutes, it can
@@ -2154,11 +2136,9 @@ rolling ship.
 <!--
 How good must that clock be? 60 minutes for 15 degrees: 4 minutes a degree. So 1 degree needs the clock right within 4 minutes. Half a degree, the top prize: 2 minutes.
 
-[click] Now spread that over a voyage of 6 weeks, 42 days: plus or minus 3 seconds a day to win the £20,000. 6 for the £10,000.
+[click] Now spread that over a voyage of 6 weeks, 42 days: plus or minus 3 seconds a day to win the £20,000. 6 for the £10,000. A watch today: 9. On dry land.
 
-[click] A watch today: 9. On dry land.
-
-IF ASKED: 240 seconds over 42 days is 5.7 a day, and 120 is 2.9. A steady error can be corrected: what matters is a rate that does not change.
+IF ASKED: 240 seconds over 42 days is 5.7 a day, and 120 is 2.9. As a fraction, 3 seconds a day is 0.003%: about one part in 30,000, or a second every 8 hours. A steady error can be corrected: what matters is a rate that does not change.
 -->
 
 ---
