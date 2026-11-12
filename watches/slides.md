@@ -2143,7 +2143,8 @@ IF ASKED: 240 seconds over 42 days is 5.7 a day, and 120 is 2.9. As a fraction, 
 
 ---
 # His words are the picture, in a script like the record's hand, but larger
-# and thicker (docs/slide-patterns.md, "A quotation in handwriting")
+# and thicker, with a short note in plain type beside each reason
+# (docs/slide-patterns.md, "A quotation in handwriting")
 class: newton-1714
 clicks: 3
 ---
@@ -2151,26 +2152,49 @@ clicks: 3
 # Isaac Newton, 1714
 
 <div class="newton-words side-text">
-  <div class="script-1714">
-    <div class="newton-line text-dims">by reason of the motion of a Ship,</div>
-    <div v-click="1" class="newton-line text-dims">the variation of heat &amp; cold, wet and dry,</div>
-    <div v-click="2" class="newton-line text-dims">and the difference of Gravity in different Latitudes,</div>
-    <div v-click="3" class="newton-line newton-verdict">such a Watch hath not yet been made.</div>
+  <div class="newton-row text-dims">
+    <div class="script-1714">by reason of the motion of a Ship,</div>
+    <div>jolts the balance</div>
   </div>
+  <div v-click="1" class="newton-row text-dims">
+    <div class="script-1714">the variation of heat &amp; cold,</div>
+    <div>±1 °F: ±6 sec/day</div>
+  </div>
+  <div v-click="2" class="newton-row text-dims">
+    <div class="script-1714">wet and dry, …</div>
+    <div>rust</div>
+  </div>
+  <div v-click="3" class="newton-verdict script-1714">such a Watch hath not yet been made.</div>
 </div>
 
 <style>
-/* The script is the article's pull quote's too (`script-1714`, style.css). */
+/* The script is the article's pull quote's too (`script-1714`, style.css). Two
+   columns, centred on the slide: his words, right-aligned, and a note in the
+   house's text beside each, on its baseline. Each row is a subgrid, so that a
+   click shows and dims the words and the note together. */
 .slidev-layout.newton-1714 .newton-words {
   left: 0;
   right: 0;
-  align-items: center;
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 36px;
+  justify-content: center;
+  align-content: center;
 }
-.slidev-layout.newton-1714
-  .newton-line:has(~ .newton-line:not(.slidev-vclick-hidden)) {
+.slidev-layout.newton-1714 .newton-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+}
+.slidev-layout.newton-1714 .newton-row > .script-1714 {
+  text-align: right;
+}
+.slidev-layout.newton-1714 .newton-row:has(~ :not(.slidev-vclick-hidden)) {
   --text-dim: var(--text-dimmed);
 }
 .slidev-layout.newton-1714 .newton-verdict {
+  grid-column: 1 / -1;
   color: var(--palette-accent);
 }
 </style>
@@ -2201,15 +2225,35 @@ keeps time exactly, he said, was one way to find longitude. But:
 [nofigure]
 
 On land, pendulum clocks were far more accurate, but a ship rolls and pitches,
-rendering them useless.  The weather plunges from the tropics to the English
-cold, affecting how fast a hairspring swings and also the animal oils used to
-lubricate all those axles. Even gravity is not the same everywhere, and a clock
-can feel it.
+rendering them useless. A watch's balance swings on a spring instead, but each
+roll still jolts it.
+
+Heat is worse. As a steel hairspring warms, it gets weaker, and the watch loses
+about 6 seconds a day for each degree Fahrenheit. Warm it by half a degree, and
+the prize's 3 seconds a day are gone. The weather plunges from the tropics to the
+English cold, and the animal and vegetable oils on all those axles thicken in the
+cold and go rancid in the heat. And salt spray rusts the steel.
+
+> [!aside] What about gravity?
+>
+> Gravity is a little weaker near the equator, and a pendulum feels it. In 1672,
+> Jean Richer took a pendulum clock from Paris to Cayenne, near the equator, and it
+> ran 2 minutes 28 seconds a day slow. Newton reported that number in his
+> _Principia_. A balance swings on a spring, not on gravity, so a watch hardly feels
+> it. The talk leaves that line out.
 
 -->
 
 <!--
-Most famous living scientist.
+Most famous living scientist. A ship rolls: no pendulum, and each roll jolts the balance.
+
+[click] Heat: warm the hairspring 1 degree Fahrenheit, it weakens, the watch loses 6 seconds a day. The prize allowed 3. Oils thicken in the cold, go rancid in the tropics.
+
+[click] Wet: salt spray rusts the steel.
+
+[click] His verdict.
+
+IF ASKED: The dots are Newton's line on gravity, which matters for a pendulum, not a balance. In 1672, Richer's pendulum clock ran 2 min 28 s a day slow in Cayenne, and Newton reported it in the Principia. The hairspring figure is about 11 seconds a day per degree Celsius, for steel with no compensation.
 -->
 
 ---

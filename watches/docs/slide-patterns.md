@@ -394,7 +394,12 @@ that the slide shows lines, not titles.
 
 **When a person's words are the picture, they can be in a script.** On the Isaac
 Newton slide, each click adds a line of his words, in Italianno, a font of this
-talk only (`style.css`, SIL Open Font License). A script has a low x-height and thin
+talk only (`style.css`, SIL Open Font License). Beside each reason, a note of a
+few words in the house's text says what it does to a watch ("jolts the balance").
+The words are in a column of their own, right-aligned, so that each ends next to
+its note, and the earlier rows dim. The slide leaves out his line on gravity, which
+matters for a pendulum, not a balance, and an ellipsis marks the cut. The article
+quotes him in full. A script has a low x-height and thin
 hairlines, so check both at the size that fits ([legibility.md](../../docs/legibility.md)).
 The script's class (`script-1714` in `style.css`) adds `-webkit-text-stroke` to
 bring its hairlines over the stroke floor. Put the class on an element inside

@@ -239,3 +239,10 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   "Clock ±2 min for ½°", then "Over 6 weeks at sea" and ±3 with its caption at the one click, and
   nothing dims (`PLAN.md`, section 21, chose two columns that dim). The notes' IF ASKED gives 3
   seconds a day as 0.003%, which the user suggested and the slide leaves out.
+- 2026-11-12: the Isaac Newton slide is no longer his exact words (`PLAN.md`, section 20). It
+  leaves out "and the difference of Gravity in different Latitudes", which matters for a
+  pendulum, not a balance, and marks the cut with "…". "wet and dry" is a line of its own.
+  Beside each reason, a note: "jolts the balance", "±1 °F: ±6 sec/day" and "rust", in two columns.
+  The article still quotes him in full, and an aside there tells Richer's pendulum clock in
+  Cayenne. The heat figure is about 11 sec a day per °C for an uncompensated steel hairspring
+  (Wikipedia, "Balance wheel"; Europa Star).

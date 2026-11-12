@@ -66,5 +66,6 @@ something else:
 - **There is no picture:** on the Longitude Prize slide, the words are on two cards.
   On the How Good a Watch slide, a chain of steps leads to a number in big type, in
   one centred column.
-- **The words are the picture:** on the Isaac Newton slide, the words fill the
-  slide's width, centred, in a script. They still use `side-text` to centre them.
+- **The words are the picture:** on the Isaac Newton slide, his words are in a
+  script, with a short note beside each reason, and the two columns are centred.
+  They still use `side-text` to centre them.
