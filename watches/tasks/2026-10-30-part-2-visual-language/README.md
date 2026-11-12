@@ -252,3 +252,6 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   and red. H1 is no longer on that slide: the Same Time, Every Tick slide starts with it, and
   H1's paragraph in the narration moved there. The click adds "Wooden clock, 1722 / Still
   running today", his Brocklesby Park clock.
+- 2026-11-12: the How Good a Watch Wins the Prize? slide drops "(±6 for £10,000)": its caption is
+  now "to win £20,000" (`PLAN.md`, section 21, made the £10,000 prize a parenthesis). The
+  speaker notes and the narration still give 6 seconds a day for the £10,000.

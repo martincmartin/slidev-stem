@@ -2076,7 +2076,7 @@ clicks: 1
   <div v-click="1">
     <div>Over 6 weeks at sea</div>
     <div class="seconds-number">±3 sec a day</div>
-    <div class="seconds-caption">to win £20,000 (±6 for £10,000)</div>
+    <div class="seconds-caption">to win £20,000</div>
   </div>
 </div>
 
