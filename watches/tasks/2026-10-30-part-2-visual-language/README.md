@@ -230,3 +230,7 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   H4. The slide has 5 clicks.
 - 2026-11-08: the Did H4 Win the Prize? slide is now titled "Did Harrison Win the Prize?"
   (the user's request in `tasks/2026-11-08-railroad/`).
+- 2026-11-12: the Longitude From Time slide's words are shorter: "Noon at Greenwich, 0°", "Earth
+  turns 15°/hour", "Noon at ship / 2 p.m. Greenwich" and "Hours × 15 = Longitude". Each fits on
+  one line of the 375 px column but the ship's, which needs two. "Ship: not noon yet" is gone. "4
+  min/°" is on no slide: the narration of the How Good a Watch Wins the Prize? slide says it.

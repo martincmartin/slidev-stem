@@ -1984,9 +1984,9 @@ Noon comes later
 <NoonSky />
 
 <div class="noon-sentence side-text">
-  <div class="noon-paragraph text-dims">Noon in Greenwich<br>Ship: not noon yet</div>
-  <div v-click="1" class="noon-paragraph text-dims after-watch">15°/hr</div>
-  <div v-click="2" class="noon-paragraph text-dims after-watch">2 p.m. in Greenwich<br>Noon at the ship</div>
+  <div class="noon-paragraph text-dims">Noon at Greenwich, 0°</div>
+  <div v-click="1" class="noon-paragraph text-dims after-watch">Earth turns 15°/hour</div>
+  <div v-click="2" class="noon-paragraph text-dims after-watch">Noon at ship<br>2 p.m. Greenwich</div>
   <div v-click="3" class="noon-paragraph text-dims">Hours × 15 = Longitude</div>
 </div>
 
