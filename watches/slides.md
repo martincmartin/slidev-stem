@@ -2257,8 +2257,10 @@ IF ASKED: The dots are Newton's line on gravity, which matters for a pendulum, n
 -->
 
 ---
-# A picture on the left, and on the right the words and his first clock
-# (../docs/slide-layout.md)
+# A picture on the left, and the words on the right (../docs/slide-layout.md).
+# The click adds his wooden clocks, and the words before it dim. H1 is not
+# here: the next slide starts with it. The painting's scan and its tones are
+# in tasks/2026-11-12-harrison-portrait/PLAN.md
 layout: full
 class: john-harrison
 clicks: 1
@@ -2266,72 +2268,87 @@ clicks: 1
 
 # John Harrison: A Carpenter's Side Project
 
-<img class="harrison-portrait" src="/harrison/portrait.jpg" alt="John Harrison, seated, in a red coat and a white wig, in a painting of about 1767.">
+<img class="harrison-portrait" src="/harrison/portrait.jpg" alt="John Harrison, seated, in a brown coat and a white wig, holding a watch, with a large clock in a glass case behind him, in a painting of about 1767.">
 
 <div class="harrison-words side-text">
-  <div>Carpenter by trade<br>Self-taught in clocks</div>
-  <div v-click="1" class="harrison-first">
-    <img src="/harrison/h1.jpg" alt="H1: a large brass machine with four dials, on a brass base.">
-    <div class="harrison-caption">H1, 1735: 5 years’ work</div>
-  </div>
+  <div class="harrison-paragraph text-dims">Village carpenter<br>Self-taught in clocks</div>
+  <div v-click="1" class="harrison-paragraph text-dims">Wooden clock, 1722<br>Still running today</div>
 </div>
 
 <style>
+/* The painting fills the slide's height, flush with its left edge, as the
+   photo on the Waltham Watch Company slide does. The title stands on it, with
+   an outline in the background colour so that it reads on the dark paint. */
 .slidev-layout.john-harrison .harrison-portrait {
   position: absolute;
-  top: 92px;
-  left: 44px;
-  height: 430px;
-  border-radius: 4px;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+.slidev-layout.john-harrison h1 {
+  position: relative;
+  z-index: 1;
+  -webkit-text-stroke: 6px var(--palette-background);
+  paint-order: stroke fill;
 }
 .slidev-layout.john-harrison .harrison-words {
-  left: 450px;
+  left: 482px;
 }
-.slidev-layout.john-harrison .harrison-first {
-  margin-top: 0.5em;
+/* The house's text beside a picture (side-text). The click adds a
+   paragraph, and the one before it dims (style.css, "TEXT DIMS"). */
+.slidev-layout.john-harrison .harrison-paragraph + .harrison-paragraph {
+  margin-top: 0.7em;
 }
-.slidev-layout.john-harrison .harrison-first img {
-  width: 372px;
-  border-radius: 4px;
-}
-.slidev-layout.john-harrison .harrison-caption {
-  margin-top: 6px;
-  font-size: 28px;
-  line-height: 1.2;
+.slidev-layout.john-harrison
+  .harrison-paragraph:has(~ .harrison-paragraph:not(.slidev-vclick-hidden)) {
+  --text-dim: var(--text-dimmed);
 }
 </style>
 
 <!-- narration
-Newton said that such a watch had not yet been made. That same year, John Harrison
-turned 21, in the north of England. He was a carpenter by trade, and he taught himself
-to make clocks.
+
+Newton said that such a watch had not yet been made. That same year, John
+Harrison turned 21, in the north of England. He was a village carpenter by
+trade, and he taught himself to make clocks.
 
 [nofigure]
 
 [click]
 
-[figure: On the left, a painting of John Harrison. On the right, H1, a large brass
-machine with four dials.]
+[figure: A painting of John Harrison, seated, with a watch in his hand. Behind
+him, in the shadows, a large clock in a glass case.]
 
-His aim was a clock for the sea that kept time within 3 seconds a day. In 1730, at
-about 37, he began one at home in Lincolnshire, probably with help from his
-brother James. It took 5 years. H1 has two linked balances that
-a ship's motion does not upset, and runs with no oil at all. To see it move, watch this
-[30-second clip of H1 at Greenwich](https://www.youtube.com/watch?v=_mRTMZ3pTtM).
+His first clocks, from 1713, were made almost entirely of wood. The oils of his
+day were poor: they thickened, and a clock had to stop to be cleaned and oiled.
+So he made clocks that need no oil. Their bearings are _lignum vitae_, a
+tropical hardwood that oils itself. In about 1722, for the stable tower at
+Brocklesby Park in Lincolnshire, he built a wooden clock with a new escapement,
+the _grasshopper_, which also needs no oil. That clock still runs, 300 years
+later.
+
+> [!aside] What else did he invent before the sea clocks?
+>
+> From 1725, he and his brother James made precision pendulum clocks. For them,
+> he invented the _gridiron pendulum_, in about 1726: rods of brass and of steel.
+> Heat lengthens both, but the brass raises the weight as much as the steel
+> lowers it. So the pendulum keeps its length, and its swing keeps its time.
+> The grasshopper escapement and the gridiron both came before he started on
+> H1, in 1730.
 
 > [!aside] What is in the painting?
-> Behind him is H3, in its traveling case. The watch in his hand is not H4: it is a
-> watch of 1753, made to his design by John Jefferys. That watch showed him that a
-> small timekeeper could work.
+>
+> Behind him is H3, in its traveling case. The watch in his hand is not H4: it
+> is a watch of 1753, made to his design by John Jefferys. That watch showed him
+> that a small timekeeper could work.
 
 -->
 
 <!--
-Not yet, said Newton. That same year, Harrison turned 21. A carpenter, self-taught in clocks. This meetup is for side projects: here is the side project that changed the world.
+Not yet, said Newton. That same year, Harrison turned 21. A village carpenter, self-taught in clocks. This meetup is for side projects: here is the side project that changed the world.
 
-[click] H1. Five years' work, starting at about 37, at home. Aim: 3 seconds a day.
+[click] His clocks were made of wood. Oil back then gummed up, and the clock stopped. So he built clocks that need no oil, with a new escapement. One, from 1722, in a stable tower, still runs today: over 300 years later.
 
-IF ASKED: The portrait shows H3 behind him and a 1753 watch by John Jefferys in his hand, not H4. It began as a side project, but from 1737 the Board of Longitude paid him for the work. A 30-second clip of H1 moving is linked in the article.
+IF ASKED: First clock 1713, almost all wood; its bearings are lignum vitae, a wood that oils itself. The Brocklesby Park clock is from about 1722, with his grasshopper escapement, which needs no oil; I found no source that it has never been oiled. With his brother James, from 1725, precision clocks with his gridiron pendulum (about 1726), of brass and steel rods, so heat does not change its swing. Both before H1, in 1730. The portrait shows H3 behind him and a 1753 watch by John Jefferys in his hand, not H4. It began as a side project, but from 1737 the Board of Longitude paid him for the work.
 -->
 
 ---
@@ -2442,6 +2459,13 @@ the same time, on a rolling ship, hot or cold.
 
 [nofigure]
 
+His aim was a clock for the sea that kept time within 3 seconds a day. In 1730,
+at about 37 years old, he began one at home in Lincolnshire, probably with help
+from his brother James. It took 5 years. H1 has two linked balances that a
+ship's motion does not upset, and runs with no oil at all. To see it move, watch
+this [30-second clip of H1 at
+Greenwich](https://www.youtube.com/watch?v=_mRTMZ3pTtM).
+
 H1 had its sea trial in 1736: to Lisbon and back. It did poorly on the way out. On the way
 home, the ship's master put the ship 60 miles east of where it was, and H1 was right. That
 won him money for a better clock.
@@ -2481,7 +2505,7 @@ is 4, and ends the same year as H3's.]
 <!--
 Same time, every tick. Each tick is one swing of the balance, and every swing must take the same time: on a rolling ship, hot or cold. Four clocks. Here is H1.
 
-[click] H1: 5 years. Its sea trial: on the way home from Lisbon, it beat the ship’s navigator by 60 miles.
+[click] H1: 5 years, at home, from age 37. Its sea trial: on the way home from Lisbon, it beat the ship’s navigator by 60 miles.
 
 [click] H2 and H3. In H2, he finds a design flaw: the ship's turning changes the swing. H3 has big, heavy balances, and the swings still vary. But on the way, he invents two things we still use today: the bimetallic strip, his fix for heat, now in thermostats, and the caged roller bearing, in nearly all machinery. The side effects of a failed project.
 
@@ -2491,7 +2515,7 @@ Same time, every tick. Each tick is one swing of the balance, and every swing mu
 
 [click] H4: 4 years. And it goes to sea, for its sea trial.
 
-IF ASKED: H1 did poorly on the way to Lisbon, and I have no solid number for its seconds a day.
+IF ASKED: H1 did poorly on the way to Lisbon, and I have no solid number for its seconds a day. A 30-second clip of H1 moving is linked in the article.
 -->
 
 ---
@@ -3441,7 +3465,7 @@ Thank you for reading. Here are some great songs about time:
 - "Lose Yourself," by Eminem
 
 The painting of John Harrison is by Thomas King, about 1767, and is in the
-[public domain](https://commons.wikimedia.org/wiki/File:John_Harrison_(Gem%C3%A4lde).jpg).
+[public domain](https://commons.wikimedia.org/wiki/File:John_Harrison_(Gem%C3%A4lde)_01.jpg).
 The photos of
 [H1](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(32416544837).jpg),
 [H2](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(46635402754).jpg)

@@ -246,3 +246,9 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   The article still quotes him in full, and an aside there tells Richer's pendulum clock in
   Cayenne. The heat figure is about 11 sec a day per °C for an uncompensated steel hairspring
   (Wikipedia, "Balance wheel"; Europa Star).
+- 2026-11-12: the John Harrison slide's portrait now comes from a better scan on Commons, "John
+  Harrison (Gemälde) 01.jpg", with its dark tones lifted, at the slide's full height, flush left
+  (`tasks/2026-11-12-harrison-portrait/PLAN.md`). Section 22 listed the old scan, which is faded
+  and red. H1 is no longer on that slide: the Same Time, Every Tick slide starts with it, and
+  H1's paragraph in the narration moved there. The click adds "Wooden clock, 1722 / Still
+  running today", his Brocklesby Park clock.
