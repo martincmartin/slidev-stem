@@ -1,0 +1,1 @@
+import{F as e,N as t,j as n}from"./modules/shiki-BdqBXHwB.js";function r(r,i){let a,o=!1;e(()=>{a=new ResizeObserver(i),r.value&&a.observe(r.value),n(()=>document.fonts.ready.then(()=>{o||i()}))}),t(()=>{o=!0,a?.disconnect()})}export{r as t};
