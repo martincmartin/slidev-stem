@@ -2605,7 +2605,9 @@ IF ASKED: The King's words are in Sobel, Longitude, p. 147. He said them to Harr
 # adds a paragraph, and none leaves. At click 2, a burst marks the crash:
 # it flashes, and then "Head-on collision" fades in (after-watch). At
 # click 3, the daguerreotype covers the slide, under the title and the words;
-# the toll comes at click 4, and the changes at click 5. The facts and the
+# the toll comes at click 4, and the slide ends on it: the photo with the
+# toll is the punchline. The railroads' reforms are not on the slide (the
+# next slide shows that they took time seriously). The facts and the
 # choices are in tasks/2026-11-08-railroad/PLAN.md
 class: story-map railroad
 art: [globe]
@@ -2613,7 +2615,7 @@ artView: new england
 globeMarks: [towns, route, scale]
 artClicks:
   2: { globeMarks: [towns, route, scale, crash], globeFlash: [crash] }
-clicks: 5
+clicks: 4
 ---
 
 # Providence & Worcester Railroad Disaster, 1853
@@ -2630,7 +2632,6 @@ clicks: 5
   <div v-click="1" class="crash-paragraph text-dims">Conductor's watch<br>2 min slow</div>
   <div v-click="2" class="crash-paragraph text-dims after-watch">Head-on collision</div>
   <div v-click="4" class="crash-paragraph text-dims"><em>14 died</em><br>17 seriously injured</div>
-  <div v-click="5" class="crash-paragraph text-dims">Watch inspections<br>1st US time zone</div>
 </div>
 
 <style>
@@ -2658,12 +2659,14 @@ clicks: 5
   .crash-paragraph:has(~ .crash-paragraph:not(.slidev-vclick-hidden)) {
   --text-dim: var(--text-dimmed);
 }
-/* The toll's number is the slide's one accent, at the size of the number to
-   take home (../docs/slide-layout.md). It dims with its paragraph. */
+/* The toll's number is the slide's one accent, in a punchline's type
+   (components/BigWords.vue): with the photo, it is the slide's punchline
+   (docs/slide-patterns.md, "Punchlines"). It dims with its paragraph. */
 .slidev-layout.railroad .crash-paragraph em {
+  @apply font-serif;
   font-style: normal;
-  font-size: 48px;
-  line-height: 1;
+  font-size: 76px;
+  line-height: 1.05;
   color: color-mix(
     in srgb,
     var(--palette-accent),
@@ -2720,10 +2723,6 @@ It may be the first photograph of a train wreck.
 
 Fourteen people died, and seventeen were seriously injured.
 
-[click]
-
-[nofigure]
-
 It was the second crash of its kind that week. Three days earlier, two
 trains of the Camden & Amboy Railroad had collided near Old Bridge, New
 Jersey. Four people died. The watches of the two crews were two and a half
@@ -2762,11 +2761,9 @@ Friday, August 12, 1853. An excursion train leaves Uxbridge with about 475 peopl
 
 [click] A photographer from Pawtucket took this. It may be the first photograph of a train wreck.
 
-[click] Fourteen people died. Seventeen were seriously injured.
+[click] Fourteen people died. Seventeen were seriously injured. And it was the second crash like it that week. Three days earlier, in New Jersey, two trains collided near Old Bridge. Four died. The two crews' watches were two and a half minutes apart.
 
-[click] And it was the second crash like it that week. Three days earlier, in New Jersey, two trains collided near Old Bridge. Four died. The two crews' watches were two and a half minutes apart. The public was outraged. Railroads made their conductors carry watches certified as reliable, and paid to keep them that way. And they agreed to one time, sent by telegraph from the Harvard College Observatory, right here in Cambridge. In effect, the first time zone in America.
-
-IF ASKED: Both trains were the Providence & Worcester's. The watch rules quoted are the Boston & Providence's, whose line met this one at Boston Switch. Putnam was charged with manslaughter; I found no record of the verdict. The railroad paid $43,876 to victims and families, and built a second track. 13 or 14 dead, depending on the source (Scientific American, a week later, said 12). Old Bridge: the Camden & Amboy, August 9, 1853, 4 killed, 7 wounded; the conductor had not compared his watch with the engineer's or the station clock.
+IF ASKED: After the crash, railroads made their conductors carry watches certified as reliable, and paid to keep them that way. And they agreed to one time, sent by telegraph from the Harvard College Observatory, right here in Cambridge: in effect, the first time zone in America. Both trains were the Providence & Worcester's. The watch rules quoted are the Boston & Providence's, whose line met this one at Boston Switch. Putnam was charged with manslaughter; I found no record of the verdict. The railroad paid $43,876 to victims and families, and built a second track. 13 or 14 dead, depending on the source (Scientific American, a week later, said 12). Old Bridge: the Camden & Amboy, August 9, 1853, 4 killed, 7 wounded; the conductor had not compared his watch with the engineer's or the station clock.
 -->
 
 ---

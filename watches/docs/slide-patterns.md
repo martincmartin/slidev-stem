@@ -320,7 +320,13 @@ examples.
 Railroad Disaster, 1853 slide, the daguerreotype of the wreck covers the map
 at click 3, under the title and the slide's words. The words stay: each click
 adds a paragraph in the right 40%, in the paper's outline, and the ones
-before it dim. The toll's number is the accent.
+before it dim. The toll comes last, and the slide ends on it. Its number is
+the accent, in a punchline's type (Fraunces 600, 76 px), not the 48 px of a
+number to take home ([slide-layout.md](../../docs/slide-layout.md)): the toll
+beside the wreck is the punchline. It stays in the column, under the cause
+("Conductor's watch 2 min slow"), so the two read down as cause and cost, and
+it covers no more of the photo. Not an oversight: the toll larger, on the left,
+over the photo, would hide the wreck that it stands beside.
 
 ## A dark slide
 
