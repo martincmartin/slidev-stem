@@ -260,3 +260,10 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   gives ±9 seconds a day for a watch today, or 6 seconds a day for the £10,000. The Isaac Newton
   slide's article has no aside on Richer's pendulum clock in Cayenne. The Hunt for Juan
   Fernández punchline is now "Not knowing longitude / cost 70–80 lives".
+- 2026-11-14: H1's words on the Same Time, Every Tick slide are "Caught the navigator's 70-mile
+  error.", not "Beat ship's navigator by 60 miles.", which could mean that both were off and H1 by
+  less. The sources' 60 miles are nautical miles, the east-west gap from Start Point to the Lizard:
+  about 69 statute miles (the Flamsteed Society gives 68). The talk's other distances are statute
+  miles, so the slide and the narration say 70, and the notes' IF ASKED gives both units. No
+  source gives H1's own error in miles: it named the Lizard, and Wills's certificate says that
+  it was right.

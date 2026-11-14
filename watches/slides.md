@@ -2367,7 +2367,7 @@ const clocks = [
   {
     picture: "harrison/h1.jpg", alt: "H1, a large brass machine.", from: 1730, to: 1735,
     dockAt: 1, big: { left: 218, top: 124, width: 544, height: 408 },
-    words: "Beat ship’s navigator by 60 miles.",
+    words: "Caught the navigator’s 70-mile error.",
   },
   {
     picture: "harrison/h2.jpg", alt: "H2, a tall brass frame.", from: 1737, to: 1739,
@@ -2457,8 +2457,8 @@ all. To see it move, watch this [30-second clip of H1 at
 Greenwich](https://www.youtube.com/watch?v=_mRTMZ3pTtM).
 
 It had its sea trial in 1736, to Lisbon and back. It did poorly on the way out,
-but on the way home, the ship's master put the ship 60 miles east of where it
-was, while Harrison's clock got the longitude right. That won him money for
+but on the way home, the ship's master put the ship about 70 miles east of where
+it was, while Harrison's clock got the longitude right. That won him money for
 a better clock.
 
 [click]
@@ -2500,7 +2500,7 @@ is 4, and ends the same year as H3's.]
 
 [click] H4: 4 years. And it goes to sea, for its sea trial.
 
-IF ASKED: H1 did poorly on the way to Lisbon, and I have no solid number for its seconds a day. A 30-second clip of H1 moving is linked in the article.
+IF ASKED: H1 did poorly on the way to Lisbon, and I have no solid number for its seconds a day. On the way home, no one recorded H1's own error: only that it named the right headland, the Lizard. The sources' 60 miles are nautical: about 70 of ours. A 30-second clip of H1 moving is linked in the article.
 -->
 
 ---
