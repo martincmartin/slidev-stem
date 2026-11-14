@@ -1,10 +1,11 @@
 # Talks as projects: versions, upgrades and checks
 
 **Covers:** each talk as its own project: the layout, setting up a clone, why
-each talk keeps its own versions, how to change a house item, and how to
-upgrade a talk's packages, and how to publish a talk on GitHub Pages.
-**Read before** you set up a clone, upgrade, validate, tag, retire, build or
-publish a talk, start a new talk, add a deck file, or change a house item.
+each talk keeps its own versions, how to change a house item, how to give a
+talk, how to upgrade a talk's packages, and how to publish a talk on GitHub
+Pages.
+**Read before** you set up a clone, upgrade, validate, give, tag, retire, build
+or publish a talk, start a new talk, add a deck file, or change a house item.
 **Tasks:**
 [`tasks/2026-09-28-per-talk-dependencies/`](../tasks/2026-09-28-per-talk-dependencies/PLAN.md),
 [`tasks/2026-09-28-validate/`](../tasks/2026-09-28-validate/PLAN.md),
@@ -263,6 +264,50 @@ because it is a week from its date. Then copy the item to a new directory with
 a version number, for example `themes/house-2/`. Make the change in the copy,
 and point only the other talk at it. When no talk in progress uses the old
 copy, delete it. The tags keep it.
+
+## Give a talk
+
+Do these steps for each talk that you give, in this order.
+
+1. **Check and tag the talk** before the day ("Tag, rebuild or retire a
+   talk"). To publish the version that you give, push the tag ("Publish a
+   talk").
+2. **Make the PDF fallback,** if the talk has live art
+   ([`webgl.md`](webgl.md), "Stills"). Do not publish it: it can hold private
+   content ("Private files").
+3. **Present a local build** on the laptop that gives the talk. Build it from
+   the tagged commit, with no uncommitted changes, so that the tag rebuilds
+   what the room saw. At the root:
+
+   ```bash
+   uv run tools/pages_preview.py <talk>
+   ```
+
+   Open the URL that it prints, and put that window on the projector. On the
+   laptop's screen, open the same URL with `presenter/1` after it, for
+   example `http://127.0.0.1:8400/slidev-stem/watches/presenter/1`. The
+   presenter view shows the slide, the next slide and the speaker notes. The
+   two windows stay at the same click.
+
+4. **Check the private content** on that laptop ("Private files"). Then do
+   the talk's own checks: its `AGENTS.md` index lists them, under "give the
+   talk".
+
+Why a local build:
+
+- **It is the deck that validation checks.** The build, the print check and
+  the private-browsing check all run on a built deck. No check runs on
+  `pnpm dev`, and `pnpm dev` reloads the deck when a file changes on disk.
+- **It needs no network.** The published site needs the venue's network, and
+  it has no private content.
+
+Rehearse with the local build too: `slidev dev` can show a page right that a
+build shows wrong ("Publish a talk").
+
+Tested on 2026-11-14 in Chromium, on a local build of `watches` from
+`pages_preview.py`: the presenter view showed the slide, the next slide and
+the notes; a slides window followed the presenter's click; and the private
+song lines showed.
 
 ## Tag, rebuild or retire a talk
 

@@ -22,8 +22,8 @@ lists in step. What is true of one talk only is in that talk's `docs/` (for
   text, the text's type, how clicks add to it, moving the border between them,
   when to leave the default
 - [talks.md](talks.md): each talk as its own project: set up a clone, why,
-  adding a deck file, changing a house item, validation, upgrading a talk's
-  packages, publishing a talk on GitHub Pages
+  adding a deck file, changing a house item, giving a talk, validation,
+  upgrading a talk's packages, publishing a talk on GitHub Pages
 - [export.md](export.md): the forms of a talk for readers (the article, a
   narrated mode, a PDF): which exist, the rules, the traps
 - [text-display-deep-research-report.md](text-display-deep-research-report.md):

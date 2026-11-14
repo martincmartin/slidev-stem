@@ -28,3 +28,6 @@ Before you…
   `../docs/talks.md`.
 - sort a correction, or tag the talk: `docs/watchlist.md`, with the
   `learn-from-corrections` skill.
+- give the talk: `../docs/talks.md`, "Give a talk"; then
+  `docs/slide-patterns.md`, "Words that run on their own" (the song lines),
+  and `docs/measurements.md`, "The timekeepers" (the room's lights).
