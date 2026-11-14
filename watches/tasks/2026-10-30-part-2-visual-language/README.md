@@ -255,3 +255,8 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
 - 2026-11-12: the How Good a Watch Wins the Prize? slide drops "(±6 for £10,000)": its caption is
   now "to win £20,000" (`PLAN.md`, section 21, made the £10,000 prize a parenthesis). The
   speaker notes and the narration still give 6 seconds a day for the £10,000.
+- 2026-11-14: the user's hand edits to the narration and the speaker notes, from the Age of
+  Sail slide to the Did Harrison Win the Prize? slide. Neither the narration nor the notes now
+  gives ±9 seconds a day for a watch today, or 6 seconds a day for the £10,000. The Isaac Newton
+  slide's article has no aside on Richer's pendulum clock in Cayenne. The Hunt for Juan
+  Fernández punchline is now "Not knowing longitude / cost 70–80 lives".
