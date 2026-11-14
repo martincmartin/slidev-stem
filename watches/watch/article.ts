@@ -413,7 +413,8 @@ function cropTopBottom(
  *  up and down (`cropTopBottom`): the title's space above a watch that the
  *  slide's bottom cuts is not kept. Not across: there, what the slide cuts
  *  is the case beside the train, and the figure keeps it. `null` for a slide
- *  with no watch and no board: its figure is the whole slide. */
+ *  with no watch and no board: its figure is its `in-figure` elements, or
+ *  the whole slide (ArticleHooks.pictureBox). */
 export function pictureBox(
   watch: Watch,
   frontmatter: Record<string, unknown>,

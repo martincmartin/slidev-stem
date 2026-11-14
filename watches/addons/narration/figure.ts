@@ -20,8 +20,10 @@
 //
 // IN A FIGURE OF A PICTURE (the talk's `pictureBox` gives a box), the slide's
 // text is hidden: only elements with the class `in-figure` (a callout's
-// label) show over the picture. IN A FIGURE OF THE WHOLE SLIDE (no box), the
-// slide's text shows, but not its title. docs/article.md has the reasons.
+// label) show over the picture. Where the talk gives no box, a slide's
+// `in-figure` elements are its picture (a painting): the figure is cropped
+// to them. IN A FIGURE OF THE WHOLE SLIDE (no box, and nothing `in-figure`),
+// the slide's text shows, but not its title. docs/article.md has the reasons.
 
 import type { InjectionKey, Ref } from "vue";
 
@@ -99,8 +101,9 @@ export interface ArticleHooks {
     clicks: number,
   ): string | null;
   /** Where the picture is on the slide at a click: the figure is cropped to
-   *  it, and the slide's text is hidden. `null`: the figure is the whole
-   *  slide, with its text. */
+   *  it, and the slide's text is hidden. `null`: the figure is cropped to the
+   *  slide's `in-figure` elements, or, with none, is the whole slide, with
+   *  its text. */
   pictureBox(frontmatter: Record<string, unknown>, clicks: number): Box | null;
   /** A key for the camera at a click: the figures of one slide whose clicks
    *  share a key get one crop, so that the picture keeps its place and size

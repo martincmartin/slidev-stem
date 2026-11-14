@@ -2260,7 +2260,8 @@ IF ASKED: The dots are Newton's line on gravity, which matters for a pendulum, n
 # A picture on the left, and the words on the right (../docs/slide-layout.md).
 # The click adds his wooden clocks, and the words before it dim. H1 is not
 # here: the next slide starts with it. The painting's scan and its tones are
-# in tasks/2026-11-12-harrison-portrait/PLAN.md
+# in tasks/2026-11-12-harrison-portrait/PLAN.md. The painting is `in-figure`:
+# the article's figure shows it alone (docs/article.md, "What a figure shows").
 layout: full
 class: john-harrison
 clicks: 1
@@ -2268,7 +2269,7 @@ clicks: 1
 
 # John Harrison: A Carpenter's Side Project
 
-<img class="harrison-portrait" src="/harrison/portrait.jpg" alt="John Harrison, seated, in a brown coat and a white wig, holding a watch, with a large clock in a glass case behind him, in a painting of about 1767.">
+<img class="harrison-portrait in-figure" src="/harrison/portrait.jpg" alt="John Harrison, seated, in a brown coat and a white wig, holding a watch, with a large clock in a glass case behind him, in a painting of about 1767.">
 
 <div class="harrison-words side-text">
   <div class="harrison-paragraph text-dims">Village carpenter<br>Self-taught in clocks</div>

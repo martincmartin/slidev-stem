@@ -22,7 +22,10 @@
 // talk's), widened to hold the labels: the elements with `in-figure` that
 // show at its steps, measured on the page once they are drawn. The figure
 // emits its own labels' box, and the page gives back `labels`, the box over
-// the figures that share its crop (views/ArticlePage.vue).
+// the figures that share its crop (views/ArticlePage.vue). Where the talk
+// gives no box, a slide's `in-figure` elements are its picture (a painting,
+// a photo): the figure is cropped to them, and hides the slide's text. A
+// slide with neither is the whole slide.
 import { createFixedClicks } from "@slidev/client/composables/useClicks.ts";
 import { useFixedNav } from "@slidev/client/composables/useNav.ts";
 import { slideHeight, slideWidth } from "@slidev/client/env.ts";
@@ -49,7 +52,8 @@ const props = defineProps<{
   /** The clicks of the figure's steps (the figure's own, or the slide's
    *  last for a slide that does not say how many it has). */
   steps: readonly number[];
-  /** The crop, in slide px, or `null`: the whole slide, with its text. */
+  /** The talk's box of the picture, in slide px, or `null`: the talk
+   *  gives none. */
   box: Box | null;
   /** px: the width that the figure may take on the page. */
   width: number;
@@ -104,6 +108,9 @@ function union(first: Box | null, second: Box): Box {
   };
 }
 
+/** Whether the figure is of a picture (the talk's box, or the labels where
+ *  the talk gives none), not of the whole slide with its text. */
+const picture = computed(() => props.box !== null || props.labels !== null);
 const crop = computed<Box>(() => {
   const whole = {
     left: 0,
@@ -111,8 +118,8 @@ const crop = computed<Box>(() => {
     right: slideWidth.value,
     bottom: slideHeight.value,
   };
-  if (!props.box) return whole;
   const box = props.labels ? union(props.box, props.labels) : props.box;
+  if (!box) return whole;
   return {
     left: Math.max(whole.left, box.left),
     top: Math.max(whole.top, box.top),
@@ -167,7 +174,7 @@ const LABELS_WAIT_MS = 4000;
  *  they draw. */
 function measureLabels(): void {
   const slide = frame.value?.querySelector(".print-slide-container");
-  if (!props.box || !slide) return;
+  if (!slide) return;
   const origin = slide.getBoundingClientRect();
   const ratio = origin.width / slideWidth.value;
   const layer = (rect: DOMRect): boolean =>
@@ -192,6 +199,12 @@ function measureLabels(): void {
     }
   }
   emit("labels", box);
+}
+
+/** Measure the labels at the next frame, once what changed is drawn. */
+function measureSoon(): void {
+  cancelAnimationFrame(measureFrame);
+  measureFrame = requestAnimationFrame(measureLabels);
 }
 
 /** Set `moving` from the clock, and again when its run ends. */
@@ -228,11 +241,7 @@ onMounted(() => {
   if (frame.value) observer.observe(frame.value);
   // the slide's component loads after the figure mounts, and a callout
   // draws its leader after it mounts; the words' widths wait for the fonts
-  const measureSoon = (): void => {
-    cancelAnimationFrame(measureFrame);
-    measureFrame = requestAnimationFrame(measureLabels);
-  };
-  if (frame.value && props.box) {
+  if (frame.value) {
     mutations = new MutationObserver(measureSoon);
     mutations.observe(frame.value, { childList: true, subtree: true });
     setTimeout(() => mutations?.disconnect(), LABELS_WAIT_MS);
@@ -262,6 +271,9 @@ watch(busyUntil, (end) => {
   trackClock();
 });
 watch([step, near, paused, busyUntil], schedule);
+// a figure of the whole slide hides its title, and one of a picture keeps
+// the title's room: the labels can move when it turns into one
+watch(picture, measureSoon);
 </script>
 
 <template>
@@ -275,7 +287,7 @@ watch([step, near, paused, busyUntil], schedule);
     >
       <div
         class="article-figure-slide"
-        :class="{ 'article-figure-picture': box !== null }"
+        :class="{ 'article-figure-picture': picture }"
         :style="slideStyle"
       >
         <PrintSlideClick :nav="nav" />

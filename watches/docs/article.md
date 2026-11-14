@@ -195,6 +195,13 @@ would only repeat it, and the subtitle belongs to the title. They take no
 room, and the rest of the layout fills the figure: the Longitude Prize
 slide's two cards are in its middle.
 
+**A slide with no watch can mark its picture `in-figure`**, where the words
+beside the picture only repeat the prose. Its figure is then of that
+picture: cropped to the `in-figure` elements, as measured on the page, with
+the slide's text hidden (`ArticleFigure.vue`). The John Harrison slide marks
+its painting so; the Waltham Watch Company slide does not, and its figure
+keeps the words beside the photo.
+
 **The figures of one slide that share a camera share a crop** (`frameKey`
 in `watch/article.ts`, `cropGroups` in `addons/narration/plan.ts`): the box
 over all their pictures and all their labels. So a piece keeps its place
@@ -226,8 +233,8 @@ figure plays (the production task's
 stand, drawn, as in a still. A figure of the globe with no wind has no
 pause button: nothing in it moves by itself.
 
-A slide with no watch and no board is its own figure: the whole slide, with
-its text, at its last click.
+A slide with no watch and no board, and nothing `in-figure`, is its own
+figure: the whole slide, with its text, at its last click.
 
 **A figure does not flash, it marks.** A flash points at a part at the
 moment the speaker names it, and a reader's eyes are on the words, not on
