@@ -72,8 +72,8 @@ something else:
   last click. The callouts and the text are one stack, and the stack is centred.
 - **The picture is the whole slide:** on the Recap slide, the only text is a caption
   and a time scale.
-- **The title would cover something that matters in the picture:** on the Too Weak
-  to Raise a Hand slide, a bleed puts the title across Grace Fryer's head. So her
+- **The title would cover something that matters in the picture:** on the Radium
+  Girls slide, a bleed puts the title across Grace Fryer's head. So her
   portrait stands inside the slide, with a margin.
 - **There is no picture:** on the Longitude Prize slide, the words are on two cards.
   On the How Good a Watch slide, a chain of steps leads to a number in big type, in
