@@ -248,9 +248,6 @@ provides the _mass_ and _inertia_.
 [figure 3: The balance wheel on the hairspring, swinging. The wheel is
 marked.]
 
-A hairspring alone would oscillate far too fast to count.  The wheel slows it to a
-pace that the gears can count.
-
 > [!aside] Why a wheel, and not a disc?
 >
 > Mass at the rim counts most, like a figure skater who spins slower with her
@@ -259,6 +256,9 @@ pace that the gears can count.
 > about the same time whether it swings through a big angle or small angle
 > (_isochronism_). That comes from the spring and the mass together, and it is
 > why a watch keeps time even while the watch winds down.
+
+A hairspring alone would oscillate far too fast to count.  The wheel slows it to a
+pace that the gears can count.
 
 [click] Mass also makes the swing steady. Push an empty playground swing, and it
 jerks about. Put a child on it and it swings much more gracefully. A heavy wheel
@@ -542,14 +542,6 @@ counts, not for how long it takes to make a full 360° turn.
 | Second hand | Once a minute |
 | Minute hand | Once an hour  |
 | Hour hand   | Twice a day   |
-
-
-> [!aside] Why is this second hand not in the middle?
->
-> On most watches the second hand is in the middle, with the minute and hour
-> hands.  But putting three hands all on the same shaft makes the diagram
-> confusing, and many older watches had their second hand off center.
-> Watchmakers call it _small seconds_.
 
 -->
 
@@ -988,6 +980,11 @@ the _center wheel_ runs 8 times slower than that.
 
 [figure: The minute hand on the center wheel's arbor, in the middle of the
 case.]
+
+> [!aside] Why is this second hand not in the middle?
+>
+> On most watches it is, but that takes more parts. Many older watches had it
+> off center, as this one does: watchmakers call it _small seconds_.
 
 The minute hand goes on the center wheel's axle (_arbor_), in the middle of the dial.
 It makes a full turn once an hour.
