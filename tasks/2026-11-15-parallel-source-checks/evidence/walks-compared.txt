@@ -1,0 +1,4 @@
+watches: deck_files: 1 files, same: True, 0.372 s -> 0.001 s
+watches: talk_source_files: 141 files, same: True, 0.875 s -> 0.001 s
+.: deck_files: 1 files, same: True, 0.526 s -> 0.002 s
+.: talk_source_files: 181 files, same: True, 1.159 s -> 0.003 s

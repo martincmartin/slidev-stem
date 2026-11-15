@@ -222,3 +222,9 @@ result in order after all three finish. `tools/offline_check.py` is now
 2026-10-23: `navcheck --offline` is gone. It added only the rapid walk, which
 `pnpm offline-check <deck> --walk` runs; navcheck checks continuity and rule 0
 alone.
+
+2026-11-15: the finding that four workers do not help held for the groups of
+that time: few groups, one of them all the source checks in sequence. Each
+source check is now a group of its own, and with that, four workers are the
+fastest of the counts measured (3 to 6). See
+[`tasks/2026-11-15-parallel-source-checks/`](../../../tasks/2026-11-15-parallel-source-checks/PLAN.md).

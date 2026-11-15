@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 import validate
 from check_python import STEM, Check
-from validate import Later, run_all
+from validate import Later, Phase, run_all
 
 
 def passing(label: str) -> Check:
@@ -12,6 +12,14 @@ def passing(label: str) -> Check:
 
 def failing(label: str) -> Check:
     return Check(label, STEM, ("false",))
+
+
+def one_phase(*groups: list[validate.Item]) -> list[Phase]:
+    return [Phase("checks", groups)]
+
+
+def items_of(phases: list[Phase]) -> list[validate.Item]:
+    return [item for phase in phases for group in phase.groups for item in group]
 
 
 def test_every_check_runs_and_a_summary_is_printed(
@@ -134,10 +142,15 @@ def test_worker_groups_keep_dependencies_and_navigation_runs_alone(
 
     monkeypatch.setattr(validate, "run", execute)
     assert (
-        validate.run_groups(
+        validate.run_phases(
             "heading",
-            [[producer, Later("dependent", dependent)], [independent]],
-            [navigation],
+            [
+                Phase(
+                    "preparation",
+                    [[producer, Later("dependent", dependent)], [independent]],
+                ),
+                Phase("navigation", [[navigation]]),
+            ],
         )
         == 0
     )
@@ -154,8 +167,9 @@ def test_parallel_failures_and_launch_errors_do_not_hide_other_checks(
 ) -> None:
     missing = Check("missing command", STEM, ("/definitely/absent/validation-command",))
     assert (
-        validate.run_groups(
-            "heading", [[missing, passing("after missing")], [failing("failed")]]
+        validate.run_phases(
+            "heading",
+            one_phase([missing, passing("after missing")], [failing("failed")]),
         )
         == 1
     )
@@ -173,14 +187,65 @@ def test_quick_mode_keeps_generation_and_build_but_omits_browser_checks(
         '{"scripts": {"art:generated": "x", "art:stills": "x", "art:print": "x"}}'
     )
     (talk / "pyproject.toml").write_text('[tool.mypy]\nfiles = ["art"]\n')
-    groups, exclusive = validate.talk_groups(
+    phases = validate.talk_phases(
         talk, tmp_path / "deck", tmp_path / "work", False, True
     )
-    labels = [item.label for group in groups for item in group]
+    labels = [item.label for item in items_of(phases)]
     assert "generated" in labels and "build" in labels and "artcheck" in labels
     assert "spelling" in labels
     assert not {"stills", "print", "motion", "barroom"}.intersection(labels)
-    assert not exclusive
+    assert "navigation smoke" not in labels
+
+
+PYTHON_LABELS = {"ruff format", "ruff check", "mypy --strict", "pyright"}
+
+
+def full_talk(tmp_path: Path) -> Path:
+    """A talk with every script that adds a check."""
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    scripts = (
+        *("typecheck", "lint", "test"),
+        *("art:scene", "art:generated", "art:stills", "art:print", "art:privacy"),
+    )
+    (talk / "package.json").write_text(
+        '{"scripts": {' + ", ".join(f'"{name}": "x"' for name in scripts) + "}}"
+    )
+    (talk / "pyproject.toml").write_text('[tool.mypy]\nfiles = ["art"]\n')
+    return talk
+
+
+def labels_of(phase: Phase) -> list[set[str]]:
+    return [{item.label for item in group} for group in phase.groups]
+
+
+def test_without_fix_each_source_check_is_a_group_but_the_python_checks(
+    tmp_path: Path,
+) -> None:
+    talk = full_talk(tmp_path)
+    work = tmp_path / "work"
+    full = validate.talk_phases(talk, tmp_path / "deck", work, False, False)
+    quick = validate.talk_phases(talk, tmp_path / "deck", work, False, True)
+    preparation, smoke = full
+    assert labels_of(smoke) == [{"navigation smoke"}]
+    assert {"lint"} in labels_of(preparation)
+    for (phase,) in (quick, validate.house_phases(False)):
+        labels = labels_of(phase)
+        assert labels[:2] == [PYTHON_LABELS, {"prettier"}]
+        assert {"lint"} in labels
+        assert all(len(group) == 1 for group in labels[2:])
+
+
+def test_with_fix_ruff_and_prettier_are_a_phase_before_the_checks_that_read(
+    tmp_path: Path,
+) -> None:
+    talk = full_talk(tmp_path)
+    work = tmp_path / "work"
+    full = validate.talk_phases(talk, tmp_path / "deck", work, True, False)
+    quick = validate.talk_phases(talk, tmp_path / "deck", work, True, True)
+    for first, *rest in (full, quick, validate.house_phases(True)):
+        assert labels_of(first) == [PYTHON_LABELS, {"prettier"}]
+        assert "lint" in {item.label for item in items_of(rest)}
 
 
 def test_spelling_checks_the_deck_files_only(tmp_path: Path) -> None:
@@ -202,7 +267,12 @@ def test_json_report_exposes_timings_and_failures(
 ) -> None:
     import json
 
-    assert validate.run_groups("heading", [[failing("failed")]], machine_json=True) == 1
+    assert (
+        validate.run_phases(
+            "heading", one_phase([failing("failed")]), machine_json=True
+        )
+        == 1
+    )
     result = json.loads(capsys.readouterr().out)
     assert result["passed"] is False
     assert result["checks"][0]["seconds"] >= 0
@@ -300,17 +370,17 @@ def test_a_pass_is_reused_while_the_key_is_the_same(
     record = validate.PassRecord(tmp_path / ".validate" / "passes.json")
     key = "first"
     item = validate.Reusable(passing("print"), lambda: key, record)
-    assert validate.run_groups("heading", [[item]], machine_json=True) == 0
+    assert validate.run_phases("heading", one_phase([item]), machine_json=True) == 0
     assert ran == ["print"]
     capsys.readouterr()
-    assert validate.run_groups("heading", [[item]], machine_json=True) == 0
+    assert validate.run_phases("heading", one_phase([item]), machine_json=True) == 0
     assert ran == ["print"]
     import json
 
     (result,) = json.loads(capsys.readouterr().out)["checks"]
     assert result["reused"] is True
     key = "second"
-    assert validate.run_groups("heading", [[item]], machine_json=True) == 0
+    assert validate.run_phases("heading", one_phase([item]), machine_json=True) == 0
     assert ran == ["print", "print"]
 
 
@@ -321,7 +391,7 @@ def test_a_failure_is_not_recorded(
     record = validate.PassRecord(tmp_path / "passes.json")
     item = validate.Reusable(failing("print"), lambda: "key", record)
     for _ in range(2):
-        assert validate.run_groups("heading", [[item]], machine_json=True) == 1
+        assert validate.run_phases("heading", one_phase([item]), machine_json=True) == 1
     assert ran == ["print", "print"]
     assert record.passed_at("key", "print") is None
 
@@ -369,12 +439,12 @@ def test_print_and_navigation_are_reusable_only_with_a_record(tmp_path: Path) ->
     (talk / "pyproject.toml").write_text('[tool.mypy]\nfiles = ["art"]\n')
     record = validate.PassRecord(tmp_path / "passes.json")
     for given, expected in ((record, True), (None, False)):
-        groups, exclusive = validate.talk_groups(
+        phases = validate.talk_phases(
             talk, tmp_path / "deck", tmp_path / "work", False, False, given
         )
         reusable = {
             item.label
-            for item in [*exclusive, *(item for group in groups for item in group)]
+            for item in items_of(phases)
             if isinstance(item, validate.Reusable)
         }
         assert reusable == ({"print", "navigation smoke"} if expected else set())
@@ -389,13 +459,12 @@ def test_full_validation_uses_smoke_and_never_exhaustive_navigation(
     (talk / "pyproject.toml").write_text('[tool.mypy]\nfiles = ["art"]\n')
     for record in (None, validate.PassRecord(tmp_path / "passes.json")):
         for quick in (False, True):
-            groups, exclusive = validate.talk_groups(
+            phases = validate.talk_phases(
                 talk, tmp_path / "deck", tmp_path / "work", False, quick, record
             )
-            items = [*exclusive, *(item for group in groups for item in group)]
             checks = [
                 item.check if isinstance(item, validate.Reusable) else item
-                for item in items
+                for item in items_of(phases)
                 if isinstance(item, Check | validate.Reusable)
             ]
             assert not any("navcheck" in check.command for check in checks)
@@ -468,10 +537,10 @@ def test_print_is_skipped_unless_asked_and_the_skip_passes_by_name(
     (talk / "package.json").write_text('{"scripts": {"art:print": "x"}}')
     (talk / "pyproject.toml").write_text('[tool.mypy]\nfiles = ["art"]\n')
     for run_print in (True, False):
-        groups, _ = validate.talk_groups(
+        phases = validate.talk_phases(
             talk, tmp_path / "deck", tmp_path / "work", False, False, None, run_print
         )
-        (item,) = [i for group in groups for i in group if i.label == "print"]
+        (item,) = [i for i in items_of(phases) if i.label == "print"]
         assert isinstance(item, validate.Skipped) != run_print
     assert run_all("heading", [item, passing("build")]) == 0
     output = capsys.readouterr().out

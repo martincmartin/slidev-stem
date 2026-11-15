@@ -567,13 +567,22 @@ Exhaustive navigation is a diagnostic tool for an actual or suspected problem.
 No validation mode runs it. Do not run it routinely, including before commits
 or after ordinary navigation changes. See [navigation.md](navigation.md).
 
-Full validation uses bounded parallel preparation. Smoke navigation runs after preparation.
-Use `--jobs 1` for serial preparation. `--fix` always uses one worker.
+Both modes use bounded parallel preparation. Each source check is a group of
+its own, so the source checks run in parallel, the longest first. Smoke
+navigation runs after preparation.
+Use `--jobs 1` for serial preparation.
+Lint runs without ESLint's `--cache`. This is not an oversight: the typed
+rules read the types of other files, and the cache does not see a change to
+them ([parallel-source-checks task](../tasks/2026-11-15-parallel-source-checks/PLAN.md)).
 `--fix` first runs ruff's fixes and `pnpm format` (in place of
-`pnpm format:check`), then checks the files that they wrote. So before a
-commit, it replaces a separate `pnpm format`.
+`pnpm format:check`), then checks the files that they wrote. They run at the
+same time, because ruff writes only Python, and Prettier has no parser for
+it. No other check starts until both end; then the other checks run in
+parallel, as without `--fix`. So before a commit, `--fix` replaces a
+separate `pnpm format`.
 Every check prints its elapsed time. `--json` gives machine-readable results.
-Timing measurements and their limits are in the validation-speed task.
+Timing measurements and their limits are in the validation-speed and
+parallel-source-checks tasks.
 
 ## Upgrade a talk's packages
 

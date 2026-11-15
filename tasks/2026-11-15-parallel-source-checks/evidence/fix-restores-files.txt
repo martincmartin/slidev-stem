@@ -1,0 +1,19 @@
+Does --quick --fix still fix, with ruff and Prettier in a phase of their own?
+2026-11-15, in watches/, with the phase change applied.
+
+1. Record shasum of art/favicon.py and docs/packages.md.
+2. Break their formatting (Python, in place):
+     art/favicon.py: "import argparse" -> "import   argparse"
+     docs/packages.md: three extra newlines at the end
+   git diff --stat: art/favicon.py 2 +-, docs/packages.md 3 +++
+3. uv run ../tools/validate.py --quick --fix:
+     ok    ruff format  (1 file reformatted, 8 files left unchanged)  [0.03 s]
+     ok    prettier  [2.19 s]
+     all 17 checks passed
+     total: 12.27 s
+4. shasum -c: art/favicon.py: OK, docs/packages.md: OK.
+   git status for the two files: clean.
+
+Prettier and Python files (prettier --file-info, in watches/ and stem/):
+  art/favicon.py, tools/lib.py, pyproject.toml: { "ignored": false, "inferredParser": null }
+  So `prettier --write` does not write them, and ruff writes only Python.

@@ -26,6 +26,8 @@ import subprocess
 import sys
 from collections.abc import Callable
 
+import lib
+
 SLIDEV_PARSER = "slidev"
 # Not deck files, even if one starts with `---`.
 SKIPPED_DIRECTORIES = frozenset({"node_modules", "dist", "docs", "tasks", ".venv"})
@@ -37,15 +39,12 @@ def deck_files(talk: pathlib.Path) -> list[pathlib.Path]:
     docs, the tasks and the READMEs."""
     return sorted(
         file
-        for file in talk.rglob("*.md")
+        for file in lib.walk_files(talk, SKIPPED_DIRECTORIES)
         # An editor's lock file, such as Emacs's `.#slides.md`, can be a symlink
         # to nothing.
-        if file.is_file()
+        if file.name.endswith(".md")
+        and file.is_file()
         and file.name not in SKIPPED_FILES
-        and not any(
-            part in SKIPPED_DIRECTORIES or part.startswith(".")
-            for part in file.relative_to(talk).parts[:-1]
-        )
         and file.read_text().startswith("---\n")
     )
 

@@ -18,7 +18,8 @@ Legibility checks calculate the design-venue gate. Full reports remain available
 through barroom.py. Motion checks retain every sample in their original plans.
 
 Independent preparation groups use the default worker limit below. Each group keeps
-its dependency order. Smoke navigation runs after preparation. It checks startup, page errors,
+its dependency order. Each source check is a group of its own (source_phases),
+and the longest groups start first. Smoke navigation runs after preparation. It checks startup, page errors,
 outside requests, and completion. Exhaustive navigation is diagnostic only.
 Neither full nor quick validation runs navcheck.ts.
 
@@ -34,8 +35,8 @@ record is <project>/.validate/passes.json. Only passes are reused.
 Use quick mode for routine feedback. Run full mode only after changes that
 could affect its results. Before a commit, require a successful full run unless
 the project and its relevant inputs are unchanged since that run.
---fix rewrites Python and formatted files,
-with one worker to prevent races. All other modes only report. Build and art
+--fix rewrites Python and formatted files first, in a phase of their own:
+no other check runs while they write. All other modes only report. Build and art
 outputs go to temporary directories. Python checks use uv run --locked.
 Every check runs after failures. The summary includes each check's elapsed time.
 See docs/talks.md, tasks/2026-10-06-validation-speed/PLAN.md and
@@ -80,9 +81,9 @@ def prettier(directory: Path, fix: bool) -> Check:
     return Check("prettier", directory, ("pnpm", "format" if fix else "format:check"))
 
 
-# One worker for each long sequence of a talk: the build and the checks of the
-# built deck; the source checks; the SVG and still checks.
-DEFAULT_WORKERS = 3
+# With more workers, the checks compete for the CPU, and the run is slower
+# (tasks/2026-11-15-parallel-source-checks/PLAN.md).
+DEFAULT_WORKERS = 4
 # The Markdown that doccheck reads in each project, if it is there. Not tasks/:
 # a finished task is frozen, and its links may point at what has moved since.
 DOC_PATHS = ("docs", "README.md", "AGENTS.md")
@@ -119,27 +120,39 @@ def spellcheck(directory: Path) -> Check:
     )
 
 
-def house_groups(fix: bool) -> list[list[Item]]:
-    """The checks of the shared files in stem/, in independent groups. The
-    source group comes first: with --fix, it rewrites files that the others
-    read, and --fix runs the groups one after another."""
-    return [
-        [
-            *python_checks(STEM, code_paths(STEM), fix),
-            prettier(STEM, fix),
-            doccheck(STEM, HOUSE_DOC_PATHS),
-            Check("palette", STEM, uv_run("tools/palette.py")),
-            vuecheck("themes"),
-        ],
-        [
-            Check(
-                "pytest",
-                STEM,
-                uv_run("pytest", "-q", "-p", "no:cacheprovider", "tools"),
-            )
-        ],
-        [*typescript_checks(STEM)],
+def source_phases(
+    directory: Path, fix: bool, others: Sequence[Sequence[Item]]
+) -> list[Phase]:
+    """The phases of the checks of the project in `directory`, before smoke
+    navigation: ruff, Prettier, and the groups `others`, which read the
+    project's files. With `fix`, ruff and Prettier rewrite files that `others`
+    read, so they are the first phase. They can run at the same time: ruff
+    writes only Python, and Prettier has no parser for Python or TOML. Without
+    `fix`, no check writes a file that another reads, so all are one phase.
+    The four Python checks are one group, because `ruff format` and
+    `ruff check` write the same cache."""
+    rewriting: list[Sequence[Item]] = [
+        python_checks(directory, code_paths(directory), fix),
+        [prettier(directory, fix)],
     ]
+    if fix:
+        return [Phase("ruff and Prettier", rewriting), Phase("preparation", others)]
+    return [Phase("preparation", [*rewriting, *others])]
+
+
+def house_phases(fix: bool) -> list[Phase]:
+    """The checks of the shared files in stem/, each a group of its own
+    (`source_phases`), the longest first."""
+    checks: list[Item] = [
+        *typescript_checks(STEM),
+        Check(
+            "pytest", STEM, uv_run("pytest", "-q", "-p", "no:cacheprovider", "tools")
+        ),
+        doccheck(STEM, HOUSE_DOC_PATHS),
+        Check("palette", STEM, uv_run("tools/palette.py")),
+        vuecheck("themes"),
+    ]
+    return source_phases(STEM, fix, [[check] for check in checks])
 
 
 @dataclass(frozen=True)
@@ -260,12 +273,13 @@ def scripts_of(directory: Path) -> set[str]:
 
 
 def typescript_checks(directory: Path) -> list[Check]:
-    """Types, lint and unit tests of the project's TypeScript: the scripts of
-    these names in its package.json, if it has them."""
+    """Lint, unit tests and types of the project's TypeScript: the scripts of
+    these names in its package.json, if it has them. The longest first, in
+    watches/, so that a worker starts them first."""
     scripts = scripts_of(directory)
     return [
         Check(name, directory, ("pnpm", name))
-        for name in ("typecheck", "lint", "test")
+        for name in ("lint", "test", "typecheck")
         if name in scripts
     ]
 
@@ -400,7 +414,16 @@ class Skipped:
 Item = Check | Later | Reusable | Skipped
 
 
-def talk_groups(
+@dataclass(frozen=True)
+class Phase:
+    """Groups that run at the same time, each in its own order. A phase starts
+    when the phase before it ends. The progress line shows `name`."""
+
+    name: str
+    groups: Sequence[Sequence[Item]]
+
+
+def talk_phases(
     directory: Path,
     deck: Path,
     work: Path,
@@ -408,11 +431,13 @@ def talk_groups(
     quick: bool,
     record: PassRecord | None = None,
     run_print: bool = True,
-) -> tuple[list[list[Item]], list[Item]]:
-    """Group independent work. Keep navigation outside the worker pool. With
-    `record`, a pass of print or smoke navigation is reused while the deck and its
-    checkers are unchanged. Without `run_print`, print is skipped
-    (docs/talks.md, "The print check")."""
+) -> list[Phase]:
+    """The phases of a talk's checks (`source_phases`). In full mode, smoke
+    navigation is the last phase, alone. In a phase, the longest groups come
+    first, so that no worker starts one late. With `record`, a pass of print
+    or smoke navigation is reused while the deck and its checkers are
+    unchanged. Without `run_print`, print is skipped (docs/talks.md, "The
+    print check")."""
 
     def reusable(check: Check) -> Check | Reusable:
         if record is None:
@@ -429,23 +454,22 @@ def talk_groups(
 
     talk = str(lib.display_path(directory))
     public = str(lib.display_path(directory / "public"))
-    source: list[Item] = [
-        *python_checks(directory, code_paths(directory), fix),
-        prettier(directory, fix),
-        doccheck(directory, DOC_PATHS),
+    checks: list[Item] = [
         *typescript_checks(directory),
-        Check("artcheck", STEM, uv_run("tools/artcheck.py", public)),
         *generation_checks(directory, work),
         Check("palette", STEM, uv_run("tools/palette.py", "--talk", talk)),
-        Check("talk setup", STEM, uv_run("tools/talkcheck.py", talk)),
-        vuecheck(talk),
         spellcheck(directory),
+        vuecheck(talk),
+        Check("talk setup", STEM, uv_run("tools/talkcheck.py", talk)),
+        doccheck(directory, DOC_PATHS),
+        Check("artcheck", STEM, uv_run("tools/artcheck.py", public)),
     ]
+    source = [[check] for check in checks]
     build: list[Item] = [
         Check("build", directory, ("pnpm", "build", "--out", str(deck)))
     ]
     if quick:
-        return [source, build], []
+        return source_phases(directory, fix, [build, *source])
     svg: list[Item] = [
         Check("barroom", STEM, uv_run("tools/barroom.py", public, "--gate-only")),
         Check("motion", STEM, uv_run("tools/motion.py", public)),
@@ -456,28 +480,25 @@ def talk_groups(
         *map(printing, print_checks(directory, deck)),
         *map(reusable, privacy_checks(directory, deck)),
     ]
-    # Start the longest preparation sequence first. With --fix, source
-    # rewrites must finish before any browser or build reads those files.
-    groups = (
-        [source, svg, stills, built_deck] if fix else [built_deck, source, svg, stills]
+    smoke = reusable(
+        Check(
+            "navigation smoke",
+            STEM,
+            (
+                "pnpm",
+                "--silent",
+                "smokecheck",
+                str(deck),
+                "--browser",
+                "all",
+                "--no-canvas-readback",
+            ),
+            shows_summary=True,
+        )
     )
-    return groups, [
-        reusable(
-            Check(
-                "navigation smoke",
-                STEM,
-                (
-                    "pnpm",
-                    "--silent",
-                    "smokecheck",
-                    str(deck),
-                    "--browser",
-                    "all",
-                    "--no-canvas-readback",
-                ),
-                shows_summary=True,
-            )
-        ),
+    return [
+        *source_phases(directory, fix, [built_deck, stills, *source, svg]),
+        Phase("smoke navigation alone", [[smoke]]),
     ]
 
 
@@ -596,31 +617,28 @@ def report(
     return 1 if failed else 0
 
 
-def run_groups(
+def run_phases(
     heading: str,
-    groups: Sequence[Sequence[Item]],
-    exclusive: Sequence[Item] = (),
+    phases: Sequence[Phase],
     jobs: int = DEFAULT_WORKERS,
     machine_json: bool = False,
 ) -> int:
-    """Buffer results in group order. Run frame sampling after workers stop."""
+    """Run each phase in turn, its groups on `jobs` workers. Buffer results in
+    group order."""
     if jobs < 1:
         raise ValueError("jobs must be at least 1")
     started = time.perf_counter()
     results: list[CheckResult] = []
     if not machine_json:
-        print(
-            f"running {heading}: {jobs} worker(s); smoke navigation runs alone",
-            flush=True,
-        )
-    with ThreadPoolExecutor(max_workers=jobs) as workers:
-        for group_results in workers.map(run_group, groups):
-            results.extend(group_results)
-            if not machine_json:
-                print(f"finished {len(results)} checks", flush=True)
-    if exclusive and not machine_json:
-        print("running smoke navigation alone", flush=True)
-    results.extend(run_group(exclusive))
+        print(f"running {heading}: {jobs} worker(s)", flush=True)
+    for phase in phases:
+        if not machine_json:
+            print(f"running {phase.name}: {len(phase.groups)} group(s)", flush=True)
+        with ThreadPoolExecutor(max_workers=jobs) as workers:
+            for group_results in workers.map(run_group, phase.groups):
+                results.extend(group_results)
+                if not machine_json:
+                    print(f"finished {len(results)} checks", flush=True)
     return report(heading, results, time.perf_counter() - started, machine_json)
 
 
@@ -665,11 +683,10 @@ def main() -> int:
     ):
         if project == STEM:
             heading = "stem/, the shared files"
-            groups: list[list[Item]] = house_groups(arguments.fix)
-            exclusive: list[Item] = []
+            phases = house_phases(arguments.fix)
         elif (project / "slides.md").is_file():
             heading = f"{lib.display_path(project)}/, a talk"
-            groups, exclusive = talk_groups(
+            phases = talk_phases(
                 project,
                 Path(deck),
                 Path(work),
@@ -682,13 +699,7 @@ def main() -> int:
             sys.exit(f"{project} is neither stem/ nor a talk (it has no slides.md)")
         if arguments.quick:
             heading += " (quick: browser and rendered-art checks omitted)"
-        return run_groups(
-            heading,
-            groups,
-            exclusive,
-            1 if arguments.fix else arguments.jobs,
-            arguments.json,
-        )
+        return run_phases(heading, phases, arguments.jobs, arguments.json)
 
 
 def run_all(heading: str, checks: Sequence[Item]) -> int:

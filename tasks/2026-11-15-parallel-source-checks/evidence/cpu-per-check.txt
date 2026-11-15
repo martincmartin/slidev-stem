@@ -1,0 +1,34 @@
+tools/quick_cpu.py, in watches/, at commit 2adf76c (before the change), 2026-11-15.
+Each quick check alone, one after another. cpu = user + sys of the check's processes.
+
+ruff format    wall   0.03  cpu   0.03  cores  0.9  exit 0
+ruff check     wall   0.03  cpu   0.02  cores  0.9  exit 0
+mypy --strict  wall   0.11  cpu   0.10  cores  0.9  exit 0
+pyright        wall   1.57  cpu   2.57  cores  1.6  exit 0
+prettier       wall   2.38  cpu   4.74  cores  2.0  exit 0
+doccheck       wall   0.10  cpu   0.10  cores  0.9  exit 0
+typecheck      wall   2.86  cpu   5.39  cores  1.9  exit 0
+lint           wall   7.57  cpu  13.23  cores  1.7  exit 0
+test           wall   5.95  cpu  33.94  cores  5.7  exit 0
+artcheck       wall   0.05  cpu   0.05  cores  0.9  exit 0
+scenecheck     wall   0.76  cpu   1.30  cores  1.7  exit 0
+generated      wall   2.50  cpu   2.49  cores  1.0  exit 0
+palette        wall   2.40  cpu   2.39  cores  1.0  exit 0
+talk setup     wall   1.19  cpu   1.19  cores  1.0  exit 0
+vue roots      wall   0.17  cpu   0.22  cores  1.3  exit 0
+spelling       wall   0.91  cpu   1.32  cores  1.5  exit 0
+build          wall   4.17  cpu  11.39  cores  2.7  exit 0
+TOTAL          wall  32.76  cpu  80.46
+
+ESLint alone (pnpm exec eslint --max-warnings 0 . --concurrency X):
+  off 7.54 s, 2: 6.57 s, 4: 6.76 s, auto: 6.44 s.
+TIMING=20: the typed rules take about 3.9 s; the rest is parsing and the TypeScript program.
+
+Profiles (cProfile):
+  talkcheck.py watches: 1.18 of 1.28 s in deck_files (called twice): Path.rglob
+    reads 45,036 directory entries, most in node_modules, and the filter drops them.
+  palette.py --talk watches: talk_source_files, the same rglob pattern, 1.36 s.
+  art/diving_board.py --check: 2.5 s in leader_contacts, 1.6 million cubic_point calls.
+
+Machine: Apple silicon, 12 cores (6 performance, 6 efficiency). Other apps were
+open (browsers): load average 5 to 19 during the measurements.

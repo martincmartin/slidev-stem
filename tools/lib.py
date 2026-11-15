@@ -22,7 +22,7 @@ they are read from each palette's CSS, so they exist in one place only.
 import math
 import pathlib
 import re
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Iterator
 from dataclasses import dataclass
 from enum import Enum
 
@@ -33,6 +33,24 @@ def display_path(file: str | pathlib.Path) -> pathlib.Path:
     """A path for printing: relative to stem/ when it is inside it."""
     path = pathlib.Path(file).resolve()
     return path.relative_to(ROOT) if ROOT in path.parents else path
+
+
+def walk_files(
+    root: pathlib.Path, skipped_directories: frozenset[str]
+) -> Iterator[pathlib.Path]:
+    """Each file under `root`, except in a directory that is in
+    `skipped_directories` or whose name starts with a dot, at any depth. The
+    walk does not go into those directories, so a talk's `node_modules` costs
+    nothing. It does not follow a symlink to a directory: it gives the symlink
+    as a file."""
+    for directory, names, files in root.walk():
+        names[:] = [
+            name
+            for name in names
+            if name not in skipped_directories and not name.startswith(".")
+        ]
+        for name in files:
+            yield directory / name
 
 
 # --------------------------------------------------------------------------
@@ -959,14 +977,10 @@ def talk_source_files(talk: pathlib.Path) -> list[pathlib.Path]:
     a file in a place that nobody thought of is still read."""
     return sorted(
         file
-        for file in talk.rglob("*")
+        for file in walk_files(talk, TALK_SKIPPED_DIRECTORIES)
         if file.is_file()
         and file.suffix in TALK_SOURCE_SUFFIXES
         and file.name not in TALK_SKIPPED_FILES
-        and not any(
-            part in TALK_SKIPPED_DIRECTORIES or part.startswith(".")
-            for part in file.relative_to(talk).parts[:-1]
-        )
     )
 
 

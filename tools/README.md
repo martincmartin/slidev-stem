@@ -148,8 +148,10 @@ Full mode runs print only with `--print` or after a change to a print input
 It omits rendered art, browser checks, print, and navigation.
 
 Independent preparation groups use the worker limit in `validate.py`.
-Each group keeps its dependency order. Navigation runs after preparation. Its three independent engine walks run together.
-`--jobs 1` selects serial preparation; `--fix` always uses one worker.
+Each group keeps its dependency order. Each source check is a group of its own,
+and the longest groups start first. Navigation runs after preparation. Its three independent engine walks run together.
+`--jobs 1` selects serial preparation. With `--fix`, ruff and Prettier run
+first, in a phase of their own; then the other checks run in parallel.
 Results stay in group order and include elapsed times.
 `--json` prints the same results as one JSON object.
 
