@@ -2458,14 +2458,15 @@ Greenwich](https://www.youtube.com/watch?v=_mRTMZ3pTtM).
 
 It had its sea trial in 1736, to Lisbon and back. It did poorly on the way out,
 but on the way home, the ship's master put the ship about 70 miles east of where
-it was, while Harrison's clock got the longitude right. That won him money for
-a better clock.
+it was, while Harrison's clock got the longitude right. That won him money to
+build a better clock.
 
 [click]
 
 [nofigure]
 
-After 2 years on his second, he realized a design flaw and abandoned it.  It never sailed.
+After 2 years on his second, he realized a design flaw and abandoned it.  It
+never sailed.
 
 He spent 19 years on his third clock, along the way inventing the _bimetallic
 strip_ to cancel the effects of temperature, and the _caged roller bearing_ to
@@ -2479,7 +2480,7 @@ regularly in all conditions.
 [click]
 
 Then he gave up on big clocks. His fourth attempt was an oversized pocket watch
-which took 4 years and weighs about 3 pounds.  In 1761, it went on a sea trial.
+which took 4 years and weighed about 3 pounds.  In 1761, it went on a sea trial.
 
 [figure: A timeline from 1730 to 1760, with a bar for each clock, and its photo at the
 start of its bar. H1's bar is 5 years long and H2's is 2. H3's is 19, the longest. H4's
@@ -2492,15 +2493,15 @@ is 4, and ends the same year as H3's.]
 
 [click] 5 years.
 
-[click] H2 and H3. In H2, he finds a design flaw: the ship's turning changes the swing. H3 has big, heavy balances, and the swings still vary. But on the way, he invents two things we still use today: the bimetallic strip, his fix for heat, now in thermostats, and the caged roller bearing, in nearly all machinery. The side effects of a failed project.
+[click] 2 years on second, realized design flaw.  Never sailed.
 
-[click] H2: 2 years, and it never sails. H3: 19 years, and it never sails either.
+[click] 19 years on 3rd.  Never sailed.
 
-[click] H4. It looks like a pocket watch, with a small, fast balance.
+bimetallic strip, caged roller bearing.
 
-[click] H4: 4 years. And it goes to sea, for its sea trial.
+[click] Oversized pocket watch.
 
-IF ASKED: H1 did poorly on the way to Lisbon, and I have no solid number for its seconds a day. On the way home, no one recorded H1's own error: only that it named the right headland, the Lizard. The sources' 60 miles are nautical: about 70 of ours. A 30-second clip of H1 moving is linked in the article.
+[click] 4 years.
 -->
 
 ---
@@ -2520,7 +2521,7 @@ clicks: 2
   </div>
   <div v-click="1">
     <div class="prize-number prize-result">5 sec slow over 81 days</div>
-    <div class="prize-caption">H4 at sea</div>
+    <div class="prize-caption">Harrison's at sea</div>
   </div>
   <div v-click="2">King George III:<br>“By God, Harrison, I will see you righted!”<br>Last payment 43 years after start. Age 80.</div>
 </div>
@@ -2547,8 +2548,8 @@ clicks: 2
 </style>
 
 <!-- narration
-To win the top prize, the Act asked for a clock that was right within 2
-minutes after 6 weeks at sea, or 3 seconds a day.
+
+To win, it needed to be within 2 minutes after 6 weeks, that's 3 seconds a day.
 
 [nofigure]
 
@@ -2572,18 +2573,20 @@ Over 36 years, John Harrison was paid £23,065 in all.  The last payment, £8,75
 came in 1773, 43 years after he started. He was 80 years old. He died three
 years later.
 
-But longitude at sea was solved.
+Longitude at sea was solved.
 
 -->
 
 <!--
-Did it win? The prize asked for this: plus or minus 2 minutes, over 6 weeks.
+[click] Jamaica, 1761.
 
-[click] H4, to Jamaica, 1761. 81 days. 5 seconds slow.
+[click] The Board still won't pay.
 
-[click] The Board still won't pay in full. He has to go to King George III. By God, Harrison, I will see you righted! And the King leans on Parliament. The last payment comes 43 years after he started. He's 80. He dies three years later. But longitude at sea is solved.
+He dies three years later.
 
-IF ASKED: The King's words are in Sobel, Longitude, p. 147. He said them to Harrison's son William, in about 1772, and they seem to go back to an account by William's son in 1835. Before sailing, H4 lost 24 seconds in 9 days, so the 5 seconds probably allows for that known rate. On the second trial, to Barbados, it kept within 39 seconds. The payments: 16 over 36 years, £23,065 in all, over 70% of it in the last two (Andrewes, The Quest for Longitude, p. 234). The last was £8,750 from Parliament in 1773. The Act's official prize was never given to anyone.
+Longitude at sea is solved.
+
+Prize was never given to anyone.
 -->
 
 ---
@@ -2683,10 +2686,11 @@ clicks: 4
 </style>
 
 <!-- narration
+
 On land, for the next eighty years, a minute here or there didn't matter.
 Then came the railroads.
 
-[figure 0-2: A map of southern New England, with Boston, Worcester and Providence, and the state lines dashed. A railroad runs from Uxbridge, Massachusetts, down the Blackstone River to Providence, Rhode Island. At the last step, a burst marks the crash, just south of Valley Falls.]
+[figure 2: A map of southern New England, with Boston, Worcester and Providence, and the state lines dashed. A railroad runs from Uxbridge, Massachusetts, down the Blackstone River to Providence, Rhode Island. A burst marks the crash, just south of Valley Falls.]
 
 On Friday, August 12, 1853, an excursion train of the Providence & Worcester
 Railroad left Uxbridge, Massachusetts, with about 475 people, bound for
