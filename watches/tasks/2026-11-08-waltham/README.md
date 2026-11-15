@@ -36,3 +36,7 @@ after the machines.
 at the user's request: easier to read and to reason about. By the same CPI,
 $150 and $25 are $4,694 and $782, so the rounding is 7% and 2%, inside the
 error of any price index for 1876.
+
+2026-11-14: the article's figure shows the photo alone, without the words
+beside it, at the user's request: the narration already says them. The photo
+is `in-figure` (`docs/article.md`, "What a figure shows").

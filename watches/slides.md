@@ -2739,7 +2739,9 @@ Train heads south.  Another train is heading north.
 ---
 # The photo on the left, about 60% of the width, and the words on the right
 # (../docs/slide-layout.md). Each click adds a paragraph, and the ones before
-# it dim. The facts and the choices are in tasks/2026-11-08-waltham/PLAN.md
+# it dim. The facts and the choices are in tasks/2026-11-08-waltham/PLAN.md.
+# The photo is `in-figure`: the article's figure shows it alone
+# (docs/article.md, "What a figure shows").
 layout: full
 class: watch-factory
 clicks: 3
@@ -2747,7 +2749,7 @@ clicks: 3
 
 # Waltham Watch Company, 1870s
 
-<img class="factory-photo" src="/waltham/machine-room.jpg" alt="A long factory room with tall windows, in the 1870s: rows of young women at small machines, each driven by a belt from a pulley under the ceiling.">
+<img class="factory-photo in-figure" src="/waltham/machine-room.jpg" alt="A long factory room with tall windows, in the 1870s: rows of young women at small machines, each driven by a belt from a pulley under the ceiling.">
 
 <div class="factory-words side-text">
   <div class="factory-paragraph text-dims">Mass produced</div>
@@ -2822,10 +2824,9 @@ public.
 
 [click:3]
 
-[figure: A long factory room in the 1870s: rows of young women at small
-machines, each driven by a belt from a pulley under the ceiling. Beside it:
-mass produced; ±10 to 15 seconds a day; $150 to $25, about $5,000 to $800
-today; steam-powered tools.]
+[figure: A long factory room in the 1870s, with tall windows: rows of young
+women at small machines, each driven by a belt from a pulley under the
+ceiling.]
 
 Steam engines turned long shafts under the ceilings, and belts from the shafts
 drove rows of machines that cut brass and steel finer than a hair. Waltham is
@@ -2960,7 +2961,8 @@ IF ASKED: The company began in 1914 as the Radium Luminous Material Corporation,
 ---
 # The photo on the left and the words on the right
 # (../docs/slide-layout.md). Each click adds a paragraph, and the ones
-# before it dim
+# before it dim. The photo is `in-figure`: the article's figure shows it
+# alone (docs/article.md, "What a figure shows")
 layout: full
 class: lip-dip-paint
 clicks: 2
@@ -2968,7 +2970,7 @@ clicks: 2
 
 # Lip, Dip, Paint
 
-<img class="painters-photo" src="/radium/painters.jpg" alt="Young women in a row at long wooden desks, in a bright factory room with tall windows, each bent over her work.">
+<img class="painters-photo in-figure" src="/radium/painters.jpg" alt="Young women in a row at long wooden desks, in a bright factory room with tall windows, each bent over her work.">
 
 <div class="painters-words side-text">
   <div class="painters-paragraph text-dims">4,000 women<br>painted dials</div>
@@ -3022,8 +3024,9 @@ their lips: _lip, dip, paint_. With every dial, they swallowed a little radium.
 
 [click]
 
-[figure: A photo of dial painters at work, about 1922. Beside it: 4,000 women
-painted dials; they shaped the brush with their lips; radium goes into bone.]
+[figure: Dial painters at work, about 1922: young women in a row at long
+wooden desks, in a bright factory room with tall windows, each bent over her
+work.]
 
 The body takes radium for calcium, and builds it into bone. There it stays,
 and its radiation works from inside, for years. First the teeth ached and came

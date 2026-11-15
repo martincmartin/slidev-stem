@@ -199,8 +199,9 @@ slide's two cards are in its middle.
 beside the picture only repeat the prose. Its figure is then of that
 picture: cropped to the `in-figure` elements, as measured on the page, with
 the slide's text hidden (`ArticleFigure.vue`). The John Harrison slide marks
-its painting so; the Waltham Watch Company slide does not, and its figure
-keeps the words beside the photo.
+its painting so, and the Waltham Watch Company and Lip, Dip, Paint slides
+their photos. The Too Weak to Raise a Hand slide does not: its two figures
+show the same portrait, and only the words beside it tell them apart.
 
 **The figures of one slide that share a camera share a crop** (`frameKey`
 in `watch/article.ts`, `cropGroups` in `addons/narration/plan.ts`): the box
