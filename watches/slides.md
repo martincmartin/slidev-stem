@@ -2572,6 +2572,8 @@ Over 36 years, John Harrison was paid £23,065 in all.  The last payment, £8,75
 came in 1773, 43 years after he started. He was 80 years old. He died three
 years later.
 
+But longitude at sea was solved.
+
 -->
 
 <!--
@@ -2579,7 +2581,7 @@ Did it win? The prize asked for this: plus or minus 2 minutes, over 6 weeks.
 
 [click] H4, to Jamaica, 1761. 81 days. 5 seconds slow.
 
-[click] The Board still won't pay in full. He has to go to King George III. By God, Harrison, I will see you righted! And the King leans on Parliament. The last payment comes 43 years after he started. He's 80. He dies three years later.
+[click] The Board still won't pay in full. He has to go to King George III. By God, Harrison, I will see you righted! And the King leans on Parliament. The last payment comes 43 years after he started. He's 80. He dies three years later. But longitude at sea is solved.
 
 IF ASKED: The King's words are in Sobel, Longitude, p. 147. He said them to Harrison's son William, in about 1772, and they seem to go back to an account by William's son in 1835. Before sailing, H4 lost 24 seconds in 9 days, so the 5 seconds probably allows for that known rate. On the second trial, to Barbados, it kept within 39 seconds. The payments: 16 over 36 years, £23,065 in all, over 70% of it in the last two (Andrewes, The Quest for Longitude, p. 234). The last was £8,750 from Parliament in 1773. The Act's official prize was never given to anyone.
 -->
@@ -2593,8 +2595,13 @@ IF ASKED: The King's words are in Sobel, Longitude, p. 147. He said them to Harr
 # click 3, the daguerreotype covers the slide, under the title and the words;
 # the toll comes at click 4, and the slide ends on it: the photo with the
 # toll is the punchline. The railroads' reforms are not on the slide (the
-# next slide shows that they took time seriously). The facts and the
-# choices are in tasks/2026-11-08-railroad/PLAN.md
+# next slide shows that they took time seriously). The title states the
+# slide's point, so that the audience does not take it for one more
+# longitude story, whose maps look like this one. The map names the towns,
+# and the railroad is drawn as track, rails and ties (docs/globe.md, "The
+# marks"). Not an oversight: no label says "Railroad", because a label there
+# reads as one more town. The facts and the choices are in
+# tasks/2026-11-08-railroad/PLAN.md
 class: story-map railroad
 art: [globe]
 artView: new england
@@ -2604,7 +2611,7 @@ artClicks:
 clicks: 4
 ---
 
-# Providence & Worcester Railroad Disaster, 1853
+# A Minute Was Life or Death, 1853
 
 <MapLabel view="new england" :on="[-71.059, 42.36]" :offset="[-92, -16]">Boston</MapLabel>
 
@@ -2676,6 +2683,9 @@ clicks: 4
 </style>
 
 <!-- narration
+On land, for the next eighty years, a minute here or there didn't matter.
+Then came the railroads.
+
 [figure 0-2: A map of southern New England, with Boston, Worcester and Providence, and the state lines dashed. A railroad runs from Uxbridge, Massachusetts, down the Blackstone River to Providence, Rhode Island. At the last step, a burst marks the crash, just south of Valley Falls.]
 
 On Friday, August 12, 1853, an excursion train of the Providence & Worcester
@@ -2739,6 +2749,8 @@ States.
 -->
 
 <!--
+On land, for the next 80 years, a minute here or there didn't matter. Then came the railroads.
+
 Friday, August 12, 1853. An excursion train leaves Uxbridge with about 475 people, bound for Providence and the beaches. One track. A regular train is coming north out of Providence. The rule: the excursion must reach the double track at Pawtucket first.
 
 [click] At Valley Falls, the conductor looks at his watch. He thinks he has time. His watch is two minutes slow.

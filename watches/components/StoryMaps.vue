@@ -351,7 +351,10 @@ onBeforeUnmount(() => leave?.());
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-/* A town, and a railroad: in ink, as a voyage's dots and track. */
+/* A town, and a railroad: in ink, as a voyage's dots and track. The
+   railroad is drawn as track, two rails and their ties, so that it does not
+   read as a voyage (globe/stories.ts, `TRACK`): the ladder's floor for the
+   rails, and its workhorse for the ties. */
 .story-maps .town {
   fill: var(--palette-ink);
   stroke: var(--palette-background);
@@ -360,9 +363,13 @@ onBeforeUnmount(() => leave?.());
 .story-maps .rail {
   fill: none;
   stroke: var(--palette-ink);
-  stroke-width: 4;
-  stroke-linecap: round;
+  stroke-width: 2;
   stroke-linejoin: round;
+}
+.story-maps .tie {
+  fill: none;
+  stroke: var(--palette-ink);
+  stroke-width: 3;
 }
 /* Where something struck: "look here", a mark in the second's colors. */
 .story-maps .burst {

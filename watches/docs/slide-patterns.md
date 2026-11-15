@@ -316,8 +316,8 @@ narration: the screen is not `in-figure`, so a figure shows the map and
 its labels ([article.md](article.md)). Part 2's three slides are the
 examples.
 
-**A photo can take a punchline's place.** On the Providence & Worcester
-Railroad Disaster, 1853 slide, the daguerreotype of the wreck covers the map
+**A photo can take a punchline's place.** On the A Minute Was Life
+or Death, 1853 slide (the railroad crash), the daguerreotype of the wreck covers the map
 at click 3, under the title and the slide's words. The words stay: each click
 adds a paragraph in the right 40%, in the paper's outline, and the ones
 before it dim. The toll comes last, and the slide ends on it. Its number is

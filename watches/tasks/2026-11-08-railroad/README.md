@@ -27,3 +27,39 @@ narration.
 slide. It stays in the column under the cause. The toll larger, on the
 left, over the photo was considered and rejected: it hides the wreck, and
 the juxtaposition of the toll and the carnage is the point.
+
+2026-11-14: the title is now "A Minute Was Life or Death, 1853", the
+user's choice. The map is in the same look as the longitude stories' maps,
+so the title states the slide's point: the audience must not take it for
+one more longitude story. "A minute", not "accurate time": it is concrete,
+and it is what is new (at sea, the prize allowed 2 minutes over 6 weeks).
+The map names Providence and Worcester, so the title does not. The Did
+Harrison Win the Prize? slide's notes and narration now end on "longitude
+at sea was solved", and this slide's start with the bridge: "On land, for
+the next eighty years, a minute here or there didn't matter. Then came the
+railroads." Also considered: "On Land:" before the old title (the audience
+knows that a railroad is on land), "When a Minute Mattered", "Accurate Time
+Was Life or Death", a subtitle (one wider than about 380 px needs a smaller
+map, to move Boston down from under the title), a card of words, and a
+slide of H4 with "Longitude: solved" between the two slides. Each says less,
+or adds text or a slide.
+
+2026-11-14: the map is 167 px further right and a little smaller, at the
+user's request (`NEW_ENGLAND` in `globe/maps.ts`: 456 px a degree, was
+467). The railroad was far to the left, and the Atlantic on the right says
+nothing. Its middle is now at x ≈ 294, the middle of the picture's 60% of
+the slide, and all of Cape Cod still shows. The bottom edge stays at
+41.38°, so Boston moves down to y = 105, clear of the title. The tip of
+Cape Cod now meets "Head-on collision" from click 2; the words keep their
+paper outline. The fit's gaps are unchanged: 0.6 / 1.1 / 2.3 px.
+
+2026-11-14: the railroad is drawn as track, two rails and their ties along
+a smooth curve, at the user's request (`track` and `TRACK` in
+`globe/stories.ts`). Drawn as one line, it looked like a voyage's track. A
+label, "Railroad", was tried and read as one more town, and a leader to the
+line, even in the accent, would look like the map's other lines. The curve
+passes through Uxbridge, Millville, Manville, Valley Falls, Pawtucket and
+Providence, and within 4.5 px of Blackstone, Woonsocket and Lonsdale; the
+crash is 1.2 px from it. Through all nine towns, it bent at a 9.6 px radius
+and the ties met on the inside of the bend; through these six, at 18.5 px,
+the most of any subset that keeps Pawtucket (a search of all 64).

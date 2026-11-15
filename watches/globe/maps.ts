@@ -263,16 +263,17 @@ export const SCILLY: StoryMap = {
 };
 
 /** Southern New England, for the railroad crash of 1853, zoomed out so that
- *  the coast is one that the audience knows: Worcester 24 px from the left
- *  edge, Boston at y = 95, where a subtitle would be, Massachusetts Bay
- *  north to Nahant, all of Narragansett Bay (41.38° at the bottom edge), and
- *  Cape Cod. The slide's words are in the right 40%, over the Atlantic and
- *  the tip of Cape Cod. */
+ *  the coast is one that the audience knows: Massachusetts Bay north to
+ *  Nahant, all of Narragansett Bay (41.38° at the bottom edge), and all of
+ *  Cape Cod. The railroad's middle is at x ≈ 294, the middle of the
+ *  picture's 60% of the slide, and Boston at y = 105, clear of the title.
+ *  The slide's words are in the right 40%, over the Atlantic and the tip of
+ *  Cape Cod. */
 export const NEW_ENGLAND: StoryMap = {
   name: "new england",
   centre: [-71.43, 41.95],
-  at: [153, 286],
-  pxPerDegree: 467,
+  at: [320, 292],
+  pxPerDegree: 456,
 };
 
 /** The story maps of Part 2. */

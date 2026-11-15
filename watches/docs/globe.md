@@ -184,8 +184,16 @@ what it is near. A story (`Story`) has:
   they were (`estimated`), the dashed parallel, the bracket over the gap,
   the scale in statute miles, the wind (gusts that loop, masked to the
   sea), and the islands that show when they are sighted. On the New
-  England map: the towns' dots, the railroad's route with a dot where it
-  starts, and a burst where the trains met. Each mark fades in and out.
+  England map: the towns' dots; the railroad, drawn as track, two rails
+  and their ties (`track`, `TRACK`), with a dot where the excursion
+  started; and a burst where the trains met. Each mark fades in and out.
+
+**The railroad is drawn as track.** Not an oversight: as one line, it read
+as a voyage's track, and a label "Railroad" read as one more town. The
+track follows a smooth curve (`smoothThrough`) through some of the towns
+that the line passed, and near the others: through all of them, it bent so
+tightly that the ties met on the inside of the bend. `globe/stories.test.ts`
+checks that the back row can see the gap between them.
 
 A mark can flash, to say "look here", on the step forward into a click
 (`globeFlash`). A flash recolors a part in the second's colors
@@ -250,6 +258,7 @@ stands, drawn.
 
 `globe/voyage.test.ts` checks the names, the order of the legs, the dots,
 the ship's place and heading, the marks' fades, and a mark's flash.
+`globe/stories.test.ts` checks the railroad's track.
 
 ## The words
 

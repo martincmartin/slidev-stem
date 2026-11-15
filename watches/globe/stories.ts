@@ -19,6 +19,8 @@ import {
   project,
 } from "./maps.ts";
 import type { PlacedMap, StoryMap } from "./maps.ts";
+import { along } from "./voyage.ts";
+import { at, check } from "../webgl/checked.ts";
 
 export type Point = readonly [number, number];
 
@@ -196,6 +198,157 @@ function dots(name: string, places: readonly Point[]): Mark {
       d: `M${number(x - radius)},${number(y)}a${String(radius)},${String(radius)} 0 1,0 ${String(2 * radius)},0a${String(radius)},${String(radius)} 0 1,0 ${String(-2 * radius)},0Z`,
     })),
   };
+}
+
+/** The look of a railroad's track, in slide px. The strokes' widths are in
+ *  StoryMaps.vue, on the house's ladder: rails 2 px, ties 3 px. */
+export interface TrackDesign {
+  /** Between the rails' centre lines. */
+  readonly gauge: number;
+  /** A tie's length, across the track. */
+  readonly tieLength: number;
+  /** Along the track, from one tie's centre line to the next. */
+  readonly tieStep: number;
+}
+
+/** A track that the back row can read as two rails and ties: the gap
+ *  between the rails (7 - 2 = 5 px) and the gap between the ties
+ *  (8 - 3 = 5 px) are three times the finest mark that it resolves, now
+ *  1.64 px (stem/docs/legibility.md). On a bend, the ties come closer on its
+ *  inside, so a track's curve must not bend tightly (stories.test.ts). */
+export const TRACK: TrackDesign = Object.freeze({
+  gauge: 7,
+  tieLength: 14,
+  tieStep: 8,
+});
+
+/** Points along a smooth curve through `places`, `steps` to each span after
+ *  the first place: a centripetal Catmull-Rom spline, which does not
+ *  overshoot or loop where places are close together (Yuksel, Schaefer and
+ *  Keyser, "Parameterization and applications of Catmull-Rom curves",
+ *  2011). Each end continues the line through its two places. */
+export function smoothThrough(
+  places: readonly Point[],
+  steps: number,
+): Point[] {
+  check(places.length >= 2, "a curve needs two places");
+  const distance = (from: Point, to: Point): number =>
+    Math.hypot(to[0] - from[0], to[1] - from[1]);
+  for (let index = 1; index < places.length; index += 1) {
+    check(
+      distance(at(places, index - 1), at(places, index)) > 0,
+      "a curve's places must differ",
+    );
+  }
+  const [first, second] = [at(places, 0), at(places, 1)];
+  const [beforeLast, last] = [
+    at(places, places.length - 2),
+    at(places, places.length - 1),
+  ];
+  const extended: Point[] = [
+    [2 * first[0] - second[0], 2 * first[1] - second[1]],
+    ...places,
+    [2 * last[0] - beforeLast[0], 2 * last[1] - beforeLast[1]],
+  ];
+  /** The point that moves from `from` at `start` to `to` at `end`. */
+  const blend = (
+    from: Point,
+    to: Point,
+    start: number,
+    end: number,
+    parameter: number,
+  ): Point => {
+    const share = (parameter - start) / (end - start);
+    return [
+      from[0] + (to[0] - from[0]) * share,
+      from[1] + (to[1] - from[1]) * share,
+    ];
+  };
+  const curve: Point[] = [first];
+  for (let index = 1; index < extended.length - 2; index += 1) {
+    const [before, from, to, after] = [
+      at(extended, index - 1),
+      at(extended, index),
+      at(extended, index + 1),
+      at(extended, index + 2),
+    ];
+    // centripetal: each knot is the square root of its span's length
+    const knotFrom = Math.sqrt(distance(before, from));
+    const knotTo = knotFrom + Math.sqrt(distance(from, to));
+    const knotAfter = knotTo + Math.sqrt(distance(to, after));
+    for (let step = 1; step <= steps; step += 1) {
+      const parameter = knotFrom + ((knotTo - knotFrom) * step) / steps;
+      // Barry and Goldman's pyramid: three blends, then two, then one
+      const onBefore = blend(before, from, 0, knotFrom, parameter);
+      const onSpan = blend(from, to, knotFrom, knotTo, parameter);
+      const onAfter = blend(to, after, knotTo, knotAfter, parameter);
+      curve.push(
+        blend(
+          blend(onBefore, onSpan, 0, knotTo, parameter),
+          blend(onSpan, onAfter, knotFrom, knotAfter, parameter),
+          knotFrom,
+          knotTo,
+          parameter,
+        ),
+      );
+    }
+  }
+  return curve;
+}
+
+/** A railroad's track along a smooth curve through `places`: its two rails,
+ *  and ties across them at even steps, centred on its length. */
+export function track(
+  places: readonly Point[],
+  design: TrackDesign,
+): Mark["parts"] {
+  const curve = smoothThrough(places, 16);
+  const length = curve
+    .slice(1)
+    .reduce(
+      (sum, point, index) =>
+        sum +
+        Math.hypot(
+          point[0] - at(curve, index)[0],
+          point[1] - at(curve, index)[1],
+        ),
+      0,
+    );
+  const pointAt = (distance: number): Point =>
+    along(curve, Math.min(1, Math.max(0, distance / length)));
+  /** The point `side` px across the track, to its left, at `distance`
+   *  along it. */
+  const offset = (distance: number, side: number): string => {
+    const [x, y] = pointAt(distance);
+    const [acrossX, acrossY] = normal(
+      pointAt(distance - 0.5),
+      pointAt(distance + 0.5),
+      side,
+    );
+    return `${number(x + acrossX)},${number(y + acrossY)}`;
+  };
+  // a rail's points are about 1 px apart
+  const count = Math.max(2, Math.round(length));
+  const rail = (side: number): string =>
+    `M${Array.from({ length: count + 1 }, (_, index) =>
+      offset((index / count) * length, side),
+    ).join("L")}`;
+  const ties = Math.floor(length / design.tieStep);
+  const firstTie = (length - (ties - 1) * design.tieStep) / 2;
+  const tieAt = (tie: number): string => {
+    const distance = firstTie + tie * design.tieStep;
+    return `M${offset(distance, -design.tieLength / 2)}L${offset(distance, design.tieLength / 2)}`;
+  };
+  return [
+    {
+      kind: "tie",
+      d: Array.from({ length: ties }, (_, tie) => tieAt(tie)).join(""),
+    },
+    {
+      kind: "rail",
+      d: `${rail(-design.gauge / 2)}${rail(design.gauge / 2)}`,
+    },
+  ];
 }
 
 /** A burst at a point: a star of `points` points, where something struck. */
@@ -404,21 +557,20 @@ function newEngland(placed: PlacedMap): Story {
   const providence: LonLat = [-71.413, 41.824];
   const boston: LonLat = [-71.059, 42.36];
   const worcester: LonLat = [-71.802, 42.263];
+  // The track's curve passes through these towns, and within 4.5 px of
+  // Blackstone (-71.541, 42.018), Woonsocket (-71.515, 42.003) and Lonsdale
+  // (-71.406, 41.917). Through all nine, it bends at a 9.6 px radius, and
+  // the ties meet on the inside of the bend; through these six, at 18.5 px
+  // (stories.test.ts checks the gap).
   const route: readonly LonLat[] = [
     [-71.63, 42.077], // Uxbridge
     [-71.58, 42.028], // Millville
-    [-71.541, 42.018], // Blackstone
-    [-71.515, 42.003], // Woonsocket
     [-71.471, 41.971], // Manville
-    [-71.406, 41.917], // Lonsdale
     [-71.391, 41.907], // Valley Falls
     [-71.383, 41.879], // Pawtucket
     providence,
   ];
   const routeOnMap = route.map((place) => project(map, place));
-  const path = routeOnMap
-    .map(([x, y]) => `${number(x)},${number(y)}`)
-    .join("L");
   return {
     placed,
     legs: [],
@@ -430,7 +582,7 @@ function newEngland(placed: PlacedMap): Story {
       {
         name: "route",
         parts: [
-          { kind: "rail", d: `M${path}` },
+          ...track(routeOnMap, TRACK),
           ...dots("start", routeOnMap.slice(0, 1)).parts,
         ],
       },
