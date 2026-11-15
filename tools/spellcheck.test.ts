@@ -30,8 +30,14 @@ test("each line and column stays where it was", () => {
 
 test("a frontmatter value shows only for a shown key", () => {
   const source =
-    '---\ntitle: Gears\nhistory: "c. 1675"\nwatchFlash: [centre wheel]\nclass: colour\n---\n';
-  assert.deepEqual(shownWords(source, 6), ["Gears", "c.", "1675"]);
+    '---\ntitle: Gears\nhistory: "c. 1675"\narticleTitle: "Gear Train"\nwatchFlash: [centre wheel]\nclass: colour\n---\n';
+  assert.deepEqual(shownWords(source, 7), [
+    "Gears",
+    "c.",
+    "1675",
+    "Gear",
+    "Train",
+  ]);
 });
 
 test("the narration shows, but not its markers; a figure's alt text shows", () => {

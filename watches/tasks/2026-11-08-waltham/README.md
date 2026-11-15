@@ -40,3 +40,11 @@ error of any price index for 1876.
 2026-11-14: the article's figure shows the photo alone, without the words
 beside it, at the user's request: the narration already says them. The photo
 is `in-figure` (`docs/article.md`, "What a figure shows").
+
+2026-11-14: the user shortened the narration and the speaker notes. The
+three asides ("Was Waltham first?", "How good were the best?" and "How
+interchangeable?"), the Swiss judge and the IF ASKED line are gone. So
+decisions 4 and 7 of `PLAN.md`, section 9, no longer hold, and the notes no
+longer say 2,200 a week (section 12). The notes are now cues. The narration
+keeps "first" in the Smithsonian's form ("pioneered"), and it does not say
+that the parts were fully interchangeable.

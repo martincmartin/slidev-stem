@@ -357,7 +357,7 @@ seconds a day" and nothing to say what it was
 ([the visual language task](../tasks/2026-10-30-part-2-visual-language/PLAN.md),
 section 21).
 
-**A timeline can be a slide's picture.** On the Same Time, Every Tick slide, each clock is a
+**A timeline can be a slide's picture.** On the Thirty Years, Four Tries slide, each clock is a
 `ClockBar`: a photo, and a bar on one scale of years that the slide sets. The bars are
 HTML, not SVG, because only their lengths are data. The clocks are an array in the slide's `<script setup>`, and a clock's row is its place in it. The newest clocks' bars have the slide's one accent, and a clock gets a grey bar and dimmed words at the click where the next clocks show large: the accent follows the audience's focus. Clocks that dock at the same click, as H2 and H3 do, keep the accent together and dim together. The length of H3's bar makes its point with no colour. Each clock's words give what happened, not how long it took, and not its name: the photo names it. Not an oversight: the bar shows the years, so the words do not repeat them.
 

@@ -3,12 +3,14 @@
 **Covers:** the article at `/article`: the talk for people who did not see it,
 as one long page of narration with live figures between the paragraphs, in
 the style of Bartosz Ciechanowski's "Mechanical Watch". How to write the
-narration and place the figures; pull quotes; what a figure shows, and why; the sliders,
+narration and place the figures; pull quotes; a slide's title for the
+article; what a figure shows, and why; the sliders,
 the button, the playing figure, and Part 2's story figures; how the code is split between the addon and the
 talk; how to build the static page, and where it can go; how to export
 its text.
 **Read before** you write or change a slide's narration, add a click to a
-slide that has narration, change `addons/narration/`, the figure layer
+slide that has narration, give a slide a title for the article, change
+`addons/narration/`, the figure layer
 (`components/FigureLayer.vue`, `webgl/shared.ts`, `watch/article.ts`), or
 build the article or export its text.
 **Tasks:**
@@ -28,7 +30,8 @@ Android).
   even if a figure's own pause goes: WCAG 2.2.2 ("Pause, Stop, Hide") asks
   for a way to pause motion that starts by itself and lasts more than 5 s,
   and the prerender pauses the page with it.
-- A table of contents: each part (a section slide) and each slide's title.
+- A table of contents: each part (a section slide) and each slide's title,
+  or its title for the article ("A title for the article", below).
 - Under a slide's heading, its history line, if it has one
   ([slide-patterns.md](slide-patterns.md), "The history line").
 - For each slide, its narration, its asides (in the right margin on a window
@@ -152,6 +155,19 @@ shows them in the accent, not slanted: the slide's punchline, marked as the
 slide marks it. A script is already slanted, so a slant would only fake a
 second style of it. All the lines show at once, so the accent, not a dim,
 marks the punchline.
+
+### A title for the article
+
+**A slide can have a title in the article that is not its title on the
+screen**: `articleTitle` in its frontmatter. The page uses it for the
+slide's heading, its line in the table of contents and its heading's
+fragment, and the text export uses it too (`slideInput` in
+`addons/narration/plan.ts`). Use it where the slide's title is for the room,
+not for a reader. For example, the Questions slide asks "Questions?" in the
+talk, but its narration is the credits, so its heading in the article names
+them. Quote the value, as for the history line: a value that is not text is
+an error (`frontmatterText` in `addons/narration/frontmatter.ts`), and the
+spell check reads it (`SHOWN_KEYS` in `../../tools/spellcheck.ts`).
 
 ## Which clicks get a figure
 

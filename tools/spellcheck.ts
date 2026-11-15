@@ -49,7 +49,13 @@ const STEM = fileURLToPath(new URL("..", import.meta.url));
 /** The talk's words that cspell does not know, one a line. */
 const WORDS_FILE = "spelling-words.txt";
 /** The frontmatter keys whose values show: on a slide, or in the article. */
-const SHOWN_KEYS = new Set(["title", "author", "eyebrow", "history"]);
+const SHOWN_KEYS = new Set([
+  "title",
+  "author",
+  "eyebrow",
+  "history",
+  "articleTitle",
+]);
 /** codespell's dictionaries: its common misspellings, its rare ones, and
  *  British spellings. */
 const CODESPELL_DICTIONARIES = "clear,rare,en-GB_to_en-US";

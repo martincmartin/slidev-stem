@@ -46,7 +46,7 @@ portable timepieces.  This page explains how a modern one works.  I personally
 think it's fascinating that a purely mechanical device can keep time with 99.99%
 accuracy for $100.  They also changed the world and look good on your wrist.
 
-This presentation was partially inspired by Bartosz Ciechanowski's [Mechanical
+This web page was partially inspired by Bartosz Ciechanowski's [Mechanical
 Watch](https://ciechanow.ski/mechanical-watch/) page.  You can think of this
 page as a simpler introduction or background.  When you're finished with this,
 that page gives more depth.
@@ -420,7 +420,7 @@ fork, the fork rocks, and the escape wheel moves on one tooth. "Tick" and
 pallet", "Wheel driven by hidden mechanism" and "Pallet blocks wheel".]
 
 So, at each swing, the balance lets the wheel take one small step.  The step
-ends when the next tooth lands on a stone, hard enough to make a sound, this is
+ends when the next tooth lands on a stone, hard enough to make a sound. This is
 the tick and the tock of a watch.
 
 -->
@@ -1616,7 +1616,8 @@ artMoveAlso: [hour hand, minute hand]
 
 <!-- narration
 
-Watches and clocks don't just look good on your wrist, they have also changed the world.
+The gears and springs we just explored aren't just clever engineering.  They
+shaped modern history, starting on the open ocean.
 
 -->
 
@@ -1714,8 +1715,10 @@ artView: south america
 
 Sailors during the Age of Sail could easily track their _latitude_ (north–south)
 by sighting the noon sun or the North Star. _Longitude_ (east–west), however,
-was a deadly blind spot. Without a reliable way to calculate it on the open
-ocean, ships routinely drifted 400 miles or more off course.
+was a deadly blind spot.  Because the Earth spins continuously, the sky above
+one meridian looks just like the sky above any other, only hours later.  Without
+a reliable way to calculate longitude on the open ocean, ships routinely drifted 400
+miles or more off course.
 
 
 -->
@@ -1786,16 +1789,16 @@ east or west.
 Fernández. Its route gains a dot for each day at sea. A scurvy death count rises
 as the ship sails.]
 
-When they reached it's latitude, they didn't know whether the island was east or
+When they reached its latitude, they didn't know whether the island was east or
 west of them.  After consulting with his officers, Commodore Anson sailed
 east. Two days later, when they saw land, it wasn't the island they desperately
-needed, it was Chile, enemy territory.
+needed---it was Chile, enemy territory.
 
 [click:3]
 
 They turned around. Headwinds and calms stretched the return journey to nine
-days, the same distance that had taken two days eastward, with 4 to 6 sailors
-dying every day.
+days, the same distance that had taken two days eastward, with four to six
+sailors dying every day.
 
 [click:2]
 
@@ -1938,13 +1941,13 @@ clicks: 2
 > between them is zero.  The Act measures the error in degrees of a great
 > circle, essentially at the equator.
 
-Prompted by catastrophic maritime disasters, in 1714 Britain's Parliament passed
-the Longitude Act. It offered a fortune to anyone who could find a ship's
-longitude at sea:
+Nearly thirty years before Anson's ordeal, a string of catastrophic maritime
+disasters pushed Britain's Parliament to pass the Longitude Act in 1714. It
+offered a fortune to anyone who could find a ship's longitude at sea:
 
-Within one degree (about 70 miles), the prize was £10,000, about $2.3 million
-in 2026.  If you could reduce the error by half, to half a degree or 35 miles,
-the prize became £20,000, about $4.6 million in 2026.
+Within one degree (about 70 miles), the prize was £10,000, or roughly $2.3
+million in 2026. Within half a degree (35 miles), it doubled to £20,000, about
+$4.6 million in 2026.
 
 [nofigure]
 
@@ -2006,6 +2009,11 @@ Noon comes later
 
 <!-- narration
 
+[figure: A globe from above the Equator, with the Atlantic in the middle and a
+meridian every 15 degrees. The Sun is under the globe, and a line runs from the
+pole down the meridian through Greenwich. It is noon in Greenwich, and a clock beside
+the globe says so. The ship is 30 degrees to the west.]
+
 > [!aside] The Sun in the picture
 >
 > The real Sun is behind you as you look at this globe, and over the
@@ -2016,16 +2024,8 @@ Noon comes later
 
 What does this have to do with watches?  Noon does not come to everyone at once,
 which is why we have time zones. The Earth turns toward the east.  When it is
-noon at the Royal Observatory in Greenwich, England, (the definition of 0°
+noon at the Royal Observatory in Greenwich, England (the definition of 0°
 longitude), a ship 30 degrees to the west has not reached noon yet.
-
-[figure: A globe from above the Equator, with the Atlantic in the middle and a
-meridian every 15 degrees. The Sun is under the globe, and a line runs from the
-pole down the meridian through Greenwich. It is noon in Greenwich, and a clock beside
-the globe says so. The ship is 30 degrees to the west.]
-
-The Earth turns a full 360° in 24 hours, that's 15° per hour, one line on this
-globe. Noon has moved 15 degrees west, and it has not reached the ship yet.
 
 [click]
 
@@ -2034,15 +2034,19 @@ meridian 15 degrees west of Greenwich. The clock says 1 p.m.]
 
 [click]
 
-A navigator can measure noon at sea: it is when the Sun stands highest. After a
-second hour, noon reaches the ship. If the ship carried a watch that keeps
-Greenwich's time, at the ship's noon, it reads 2 p.m. Two hours behind Greenwich
-means 30 degrees west of it.
+The Earth turns a full 360° in 24 hours.  That's 15° per hour, one meridian line
+on this globe. Noon has moved 15 degrees west, and it has not reached the ship
+yet.
 
 [click]
 
 [figure: The line runs through the ship, and Greenwich is 30 degrees to the east of
 it. The clock says 2:00.]
+
+A navigator can measure noon at sea: it is when the Sun stands highest. After a
+second hour, noon reaches the ship. If the ship carried a watch that keeps
+Greenwich's time, at the ship's noon, it reads 2 p.m. Two hours behind Greenwich
+means 30 degrees west of it.
 
 Take the hours behind Greenwich, multiply by 15, and that is how many degrees
 west the ship is.
@@ -2228,7 +2232,7 @@ keeps time exactly, he said, was one way to find longitude. But:
 
 On land, pendulum clocks were far more accurate, but a ship rolls and pitches,
 rendering them useless. A watch's balance swings on a spring instead, but each
-roll still torques it.
+roll still jostles it.
 
 Heat is worse. As a steel hairspring warms, it gets weaker, and the watch loses
 about 6 seconds a day for each degree Fahrenheit. Warm it by half a degree, and
@@ -2314,11 +2318,12 @@ him, in the shadows, a large clock in a glass case.]
 > watch in his hand is a watch of 1753, made to his design by John
 > Jefferys. That watch showed him that a small timekeeper could work.
 
-John Harrison was a village carpenter by trade, and he taught himself to make
-clocks.  His first clocks, from 1713, were made almost entirely of wood. The
-oils of his day were poor: they thickened, and a clock had to stop to be cleaned
-and oiled.  So he made clocks that need no oil. Their bearings are _lignum
-vitae_, a tropical hardwood that oils itself.
+John Harrison was a village carpenter by trade. He taught himself to build
+clocks.  His first clocks, from 1713,
+were made almost entirely of wood. The oils of his day were poor: they
+thickened, and a clock had to stop to be cleaned and oiled.  So he made clocks
+that need no oil. Their bearings are _lignum vitae_, a tropical hardwood that
+oils itself.
 
 In about 1722, for the tower at Brocklesby Park in Lincolnshire, he built a
 wooden clock with a new escapement, the _grasshopper_, which also needs no
@@ -2355,9 +2360,9 @@ class: four-clocks
 clicks: 5
 ---
 
-# Same Time, Every Tick
+# Thirty Years, Four Tries
 
-On a rolling ship, hot and cold, wet and dry
+Same time, every tick, on a rolling ship
 
 <script setup>
 // The clocks, from the top row down. A clock dims when the next clocks after it
@@ -2451,10 +2456,10 @@ function dimAt(clock) {
 
 [nofigure]
 
-In 1730, at about 37 years old, he began work on a clock for the Longitude prize
-at home in Lincolnshire. His first clock took 5 years, and runs with no oil at
-all. To see it move, watch this [30-second clip of H1 at
-Greenwich](https://www.youtube.com/watch?v=_mRTMZ3pTtM).
+In 1730, at about 37 years old, he took on Newton's obstacles: he began work on
+a clock for the Longitude prize at home in Lincolnshire. His first clock took 5 years, and runs with no oil at
+all. To see it move, watch this [30-second
+clip](https://www.youtube.com/watch?v=_mRTMZ3pTtM).
 
 It had its sea trial in 1736, to Lisbon and back. It did poorly on the way out,
 but on the way home, the ship's master put the ship about 70 miles east of where
@@ -2479,8 +2484,11 @@ regularly in all conditions.
 
 [click]
 
-Then he gave up on big clocks. His fourth attempt was an oversized pocket watch
-which took 4 years and weighed about 3 pounds.  In 1761, it went on a sea trial.
+Then, after twenty-five years of heavy, table-sized clocks, he changed course.
+He saw that a small, fast-beating balance wheel resisted a ship's motion far
+better than a large, slow one. So his fourth attempt was an oversized pocket
+watch, just five inches across and three pounds in weight. In 1761, it went to
+sea.
 
 [figure: A timeline from 1730 to 1760, with a bar for each clock, and its photo at the
 start of its bar. H1's bar is 5 years long and H2's is 2. H3's is 19, the longest. H4's
@@ -2549,7 +2557,7 @@ clicks: 2
 
 <!-- narration
 
-To win, it needed to be within 2 minutes after 6 weeks, that's 3 seconds a day.
+To win, it needed to be within 2 minutes after 6 weeks---that's 3 seconds a day.
 
 [nofigure]
 
@@ -2564,10 +2572,11 @@ _seconds_ slow, or 0.06 seconds per day.
 
 [nofigure]
 
-The Board was not convinced, and sent it on a second trial, to Barbados, where
-it kept time within 39 seconds. In 1765, the Board agreed that it had kept time
-within the strictest limit of the Act, but still wouldn't pay. He appealed to
-King George III, who said "By God, Harrison, I will see you righted!"
+But the Board of Longitude was not convinced, and sent the watch on a second
+trial, to Barbados in 1764, where it kept time within 39 seconds. In 1765, the
+Board agreed that it had kept time within the strictest limit of the Act, but
+still refused to pay. Harrison appealed to King George III, who declared, "By
+God, Harrison, I will see you righted!"
 
 Over 36 years, John Harrison was paid £23,065 in all.  The last payment, £8,750,
 came in 1773, 43 years after he started. He was 80 years old. He died three
@@ -2687,8 +2696,8 @@ clicks: 4
 
 <!-- narration
 
-On land, for the next eighty years, a minute here or there didn't matter.
-Then came the railroads.
+On land, for the next eighty years, a minute here or there didn't matter.  Then
+came the railroads.
 
 [figure 2: A map of southern New England, with Boston, Worcester and Providence, and the state lines dashed. A railroad runs from Uxbridge, Massachusetts, down the Blackstone River to Providence, Rhode Island. A burst marks the crash, just south of Valley Falls.]
 
@@ -2705,14 +2714,14 @@ Just past a blind curve, the two trains collided head-on.
 
 [figure: A daguerreotype of the wreck: one locomotive reared up over the other, the cars behind them broken, and a crowd beside the track.]
 
-A photographer from Pawtucket, L. Wright, made this daguerreotype 10 minutes
-later.  It may be the first photograph of a train wreck.
-
 [click]
 
 [nofigure]
 
 Fourteen people died, and seventeen were seriously injured.
+
+A photographer from Pawtucket, L. Wright, made this daguerreotype 10 minutes
+later.  It may be the first photograph of a train wreck.
 
 It was the second crash of its kind that week. Three days earlier, two trains of
 the Camden & Amboy Railroad collided in New Jersey. Four people died. The
@@ -2805,22 +2814,9 @@ clicks: 3
 
 <!-- narration
 
-A reliable watch, like the ones needed for railroads, cost $150 each, about
-$5,000 in 2026.  Around 1850, nearly every good watch was made by hand by a
-craftsman. If a part broke, a watchmaker had to make a new one, by hand.
-
-In the 1850s, Waltham Watch Company pioneered the mass production of precision
-watches using machines and standardized parts.  You could order replacement
-parts by number.  In 1876, the factory made 2,200 watches a week.
-
-And the watches were good. Waltham's everyday watch, the P.S. Bartlett, kept
-time to within 10 to 15 seconds a day. Before, only a watch fitted by hand
-kept time that well.
-
-A hand-fitted watch that good could cost $150, about $5,000 in today's
-dollars. A P.S. Bartlett cost about $25, about $800 today. An accurate watch
-became an everyday thing, for railroad workers, soldiers and the general
-public.
+A reliable watch, like the ones needed for railroads, cost $150, about $5,000
+in 2026.  Nearly every good watch was made by hand by a craftsman.  If a part
+broke, a watchmaker had to make a new one, by hand.
 
 [click:3]
 
@@ -2828,43 +2824,31 @@ public.
 women at small machines, each driven by a belt from a pulley under the
 ceiling.]
 
+In the 1850s, the Waltham Watch Company pioneered the mass production of
+precision watches using machines and standardized parts.  You could order
+replacement parts by number.  In 1876, the factory made 2,200 watches a week.
+
+And the watches were good. Waltham's everyday watch, the P.S. Bartlett, kept
+time to within 10 to 15 seconds a day. Before, only a watch fitted by hand kept
+time that well.  And the Bartlett was cheap, just $25, about $800
+in 2026. An accurate watch became an everyday thing, for railroad workers,
+soldiers and the general public.
+
 Steam engines turned long shafts under the ceilings, and belts from the shafts
 drove rows of machines that cut brass and steel finer than a hair. Waltham is
-still the Watch City, and every Mother's Day weekend it hosts the Watch City
-Steampunk Festival. In 1876, a Swiss judge saw Waltham's machines, went home
-and told Switzerland to buy machines too.
-
-> [!aside] Was Waltham first?
-> The Smithsonian calls it the first firm to mass-produce watches by machine.
-> Others made watch parts by machine earlier: Japy in France, Vacheron
-> Constantin in Geneva, and the Pitkin brothers in Hartford, who made fewer
-> than a thousand watches.
-
-> [!aside] How good were the best?
-> In 1876, judges at the Philadelphia exhibition tested seven of Waltham's
-> best watches, at $300 each. Five of them kept time within about 5 seconds a
-> day, near the 3 seconds a day that the Longitude Prize asked of a clock at
-> sea.
-
-> [!aside] How interchangeable?
-> Not fully, at first. In 1876, two Swiss visitors found that a watch with new
-> parts still needed some hand work. And Waltham's cheapest watches kept time
-> no better than Swiss ones at the same price.
+still known as Watch City, and every Mother's Day weekend it hosts the [Watch
+City Steampunk Festival](https://www.watchcityfestival.com/).
 
 -->
 
 <!--
-Those reliable watches came from London, made by hand: $150 each. In 1850, good watches were still finished that way: each part filed to fit its own watch. If a part broke, a watchmaker made a new one.
+Existing watches, each part made by hand.
 
-Aaron Dennison, a Boston watch repairer, saw the Springfield Armory make muskets by machine. Why not watches? In 1854 his factory opened in Waltham, six miles up the Charles from here. Every part checked against a gauge, so a broken part? Order it by number. By 1876: 2,200 watches a week.
+$150, $5,000 today.
 
-[click] And good. Their everyday watch, the P.S. Bartlett: 10 to 15 seconds a day. Before, only a hand-fitted watch kept time that well.
+[click:2] Railroad workers, soldiers, anyone could own one that kept good time.
 
-[click] And a hand-fitted watch that good could cost $150: about $5,000 today. A Bartlett: about $25, about $800 today. Railroad workers, soldiers, anyone could own one that kept good time.
-
-[click] Steam engines turned those belts, and the belts turned machines that cut parts finer than a hair. Waltham is still the Watch City: every Mother's Day weekend, it hosts the Watch City Steampunk Festival. A Swiss judge saw those machines in 1876, went home and told Switzerland to buy machines too.
-
-IF ASKED: First? The Smithsonian calls Waltham the first firm to mass-produce watches by machine; Japy, Vacheron Constantin and the Pitkin brothers made parts by machine earlier. Not fully interchangeable at first: in 1876, a watch with new parts still needed hand work. Waltham's best, 1876: a 5-day test of seven $300 watches, five within about 5 seconds a day; the cheap ones were ordinary. In the 1850s, a Waltham cost half as much as an import of the same quality (Smithsonian). The photo is the Wheel and Pinion Making Room, 1870s.
+[click] Watch City Steampunk Festival
 -->
 
 ---
@@ -2918,16 +2902,16 @@ clicks: 2
 </style>
 
 <!-- narration
-[figure: A wristwatch in the dark: its wheels, hands and case are faint shapes,
-barely lighter than the night around them.]
 
-In World War I, on the Western Front, soldiers lived in trenches, and much of
-the war happened at night. A soldier on watch needed the time, and in the dark he
-could not read his watch.
+[figure: A wristwatch in the dark: only its case, crown and strap show, faint
+shapes barely lighter than the night around them. Its face shows no hands and
+no hour marks.]
 
 [click]
 
-He could strike a match. But a light in a trench gave a sniper a target.
+World War I pioneered synchronized assaults, coining the phrase "synchronize
+watches," so reading a watch was crucial.  But in the trenches in the dark,
+striking a match invited a sniper's bullet.
 
 [click]
 
@@ -2935,27 +2919,16 @@ He could strike a match. But a light in a trench gave a sniper a target.
 hands glow a pale green, and they show the time.]
 
 The answer was a paint that glowed by itself. Its secret was _radium_, an
-element that Marie and Pierre Curie had found in 1898. Radium gives off
-radiation, and the radiation makes a crystal mixed with it, zinc sulfide, glow.
-The U.S. Radium Corporation sold its paint as _Undark_. On a watch's hands and
-hour marks, it showed the time all night, with no light to charge it first.
-Demand for luminous watches and instruments surged in the war.
-
-> [!aside] Who made it?
-> The company that made Undark began in 1914, as the Radium Luminous Material
-> Corporation, and took the name U.S. Radium in 1921. Ingersoll sold radium-dial
-> watches, its Radiolites, from 1916. Undark's glow was a faint blue-green.
+element that Marie and Pierre Curie had found in 1898.  In the paint, radium was
+mixed with zinc sulfide.  Its radiation made the zinc sulfide glow green.  A
+company later named U.S. Radium sold its paint as _Undark_. On a watch's hands
+and hour marks, it showed the time all night, without needing light to charge
+it first.  Demand for luminous watches and instruments surged in the war.
 
 -->
 
 <!--
-World War One, the Western Front. Night, in a trench. What time is it?
-
-[click] You could strike a match. And give a sniper something to aim at.
-
-[click] The answer: a paint that glows by itself. Radium, the element the Curies found in 1898, mixed with a crystal that its radiation makes glow. The U.S. Radium Corporation called it Undark. It glows all night.
-
-IF ASKED: The company began in 1914 as the Radium Luminous Material Corporation, and became U.S. Radium in 1921. Ingersoll's Radiolite watches had radium dials from 1916. Undark was radium mixed with zinc sulfide, and gave a faint blue-green light.
+[click:2] Radium found by the Curies in 1898
 -->
 
 ---
@@ -3354,6 +3327,9 @@ IF ASKED: Rome's first public sundial was war loot from Sicily; Pliny says Roman
 ---
 layout: full
 class: questions
+# The narration is the credits, so the article's heading names them
+# (docs/article.md, "A title for the article").
+articleTitle: "Credits & Sources"
 # The titles show only with no private file of song lines, as on the publish run
 # (components/SongLines.vue; docs/slide-patterns.md, "Words that run on their own").
 songTitles:
@@ -3424,6 +3400,11 @@ and
 are by Mike Prince, and the photo of
 [H3](https://commons.wikimedia.org/wiki/File:Harrison_H3_Clock_(35491292866).jpg) is by
 Tony Hisgett, all under [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
+The daguerreotype of the
+[train wreck](https://commons.wikimedia.org/wiki/File:L._Wright_-_Train_wreck_on_the_Providence_Worcester_Railroad_near_Pawtucket,_Rhode_Island_-_Google_Art_Project.jpg)
+near Valley Falls, 1853, is attributed to L. Wright. The photo of the
+[Waltham watch factory](<https://commons.wikimedia.org/wiki/File:Gezicht_op_een_ruimte_van_de_American_Watch_Company_in_Waltham,_Massachusetts,_waar_tandwielen_worden_gemaakt_Pinion_Finishing_Room,_Watch_Factory_(titel_op_object),_RP-F-2001-7-980-60.jpg>),
+from the 1870s, is by Thomas R. Lewis. Both are in the public domain.
 The photos of the
 [dial painters](<https://commons.wikimedia.org/wiki/File:All_women_or_girls_using_radium_paint_with_no_protection_or_warnings_in_1922,_from-_USRadiumGirls-Argonne1,ca1922-23-150dpi_(cropped).jpg>),
 about 1922, and of [Grace Fryer](https://commons.wikimedia.org/wiki/File:Grace_Fryer.jpg),

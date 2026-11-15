@@ -267,3 +267,9 @@ Run each tool from the talk's directory (`PLAN.md`, section 11).
   miles, so the slide and the narration say 70, and the notes' IF ASKED gives both units. No
   source gives H1's own error in miles: it named the Lizard, and Wills's certificate says that
   it was right.
+- 2026-11-15: the Same Time, Every Tick slide is now the Thirty Years, Four Tries slide, with
+  the subtitle "Same time, every tick, on a rolling ship". The title names what the timeline
+  shows: four tries on one 30-year axis. The subtitle keeps the real struggle, which the Isaac
+  Newton slide now also names, with its notes such as "±1 °F: ±6 sec/day". "Four Clocks" was
+  not used: the slide's last click shows that H4 is a pocket watch. Earlier lines keep the old
+  name.

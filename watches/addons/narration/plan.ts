@@ -15,8 +15,13 @@
 // on the slide before (`SlideInput.keyOf`).
 
 import type { ArticleHooks } from "./figure.ts";
+import { frontmatterText } from "./frontmatter.ts";
 import { historyOf } from "./history.ts";
 import type { FigureMarker, QuoteBlock } from "./narration.ts";
+
+/** The frontmatter key for a slide's title in the article, in place of its
+ *  title on the screen (../../docs/article.md, "A title for the article"). */
+const ARTICLE_TITLE_KEY = "articleTitle";
 
 /** A part of a slide's narration, rendered for the plan's output: as
  *  `NarrationPart`, with each block's `text` in the output's format. The plan
@@ -37,6 +42,7 @@ export type RenderedBlock =
 export interface SlideInput {
   /** The slide's number (1-based). */
   readonly no: number;
+  /** The slide's title in the article: its `articleTitle`, or its own. */
   readonly title: string | null;
   readonly layout: string | null;
   /** A section slide's small line above its title ("PART 1"). */
@@ -73,7 +79,7 @@ export function slideInput(
   const total = Number(frontmatter["clicks"] ?? 0);
   return {
     no,
-    title: slide.title,
+    title: frontmatterText(frontmatter, ARTICLE_TITLE_KEY) ?? slide.title,
     layout: text("layout"),
     eyebrow: text("eyebrow"),
     history: historyOf(frontmatter),

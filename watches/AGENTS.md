@@ -18,7 +18,8 @@ Before you…
   `globeMarks`):
   `docs/globe.md`, and
   `../docs/webgl.md`.
-- write or change a slide's narration, or change the article
+- write or change a slide's narration or its `articleTitle`, or change the
+  article
   (`addons/narration/`, `components/FigureLayer.vue`, `watch/article.ts`),
   build it or export its text: `docs/article.md`, and `../docs/export.md`.
 - change a drawing, or claim that one is legible: `docs/measurements.md`,

@@ -2,7 +2,8 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { cropGroups, pagePlan, slug } from "./plan.ts";
+import { DEFAULT_HOOKS } from "./figure.ts";
+import { cropGroups, pagePlan, slideInput, slug } from "./plan.ts";
 import type {
   FigureBlock,
   PageBlock,
@@ -72,6 +73,23 @@ test("the cover's title is the page's; a section is a part; others are headings"
     "heading Hairspring",
   ]);
   assert.equal(page[1]?.kind === "part" && page[1].eyebrow, "PART 1");
+});
+
+test("a slide's articleTitle is its title in the article", () => {
+  const titleOf = (frontmatter: Record<string, unknown>): string | null =>
+    slideInput(
+      { no: 9, title: "Questions?", frontmatter, parts: null },
+      DEFAULT_HOOKS,
+    ).title;
+  assert.equal(
+    titleOf({ articleTitle: " Credits & Sources " }),
+    "Credits & Sources",
+  );
+  assert.equal(titleOf({}), "Questions?");
+  assert.throws(
+    () => titleOf({ articleTitle: 2026 }),
+    /articleTitle: 2026 is not a line of text/,
+  );
 });
 
 test("a heading carries its slide's history line", () => {
