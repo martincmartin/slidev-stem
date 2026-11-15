@@ -2521,7 +2521,7 @@ clicks: 2
   </div>
   <div v-click="1">
     <div class="prize-number prize-result">5 sec slow over 81 days</div>
-    <div class="prize-caption">Harrison's at sea</div>
+    <div class="prize-caption">Harrison's watch at sea</div>
   </div>
   <div v-click="2">King George III:<br>“By God, Harrison, I will see you righted!”<br>Last payment 43 years after start. Age 80.</div>
 </div>
@@ -2692,30 +2692,21 @@ Then came the railroads.
 
 [figure 2: A map of southern New England, with Boston, Worcester and Providence, and the state lines dashed. A railroad runs from Uxbridge, Massachusetts, down the Blackstone River to Providence, Rhode Island. A burst marks the crash, just south of Valley Falls.]
 
-On Friday, August 12, 1853, an excursion train of the Providence & Worcester
-Railroad left Uxbridge, Massachusetts, with about 475 people, bound for
-Providence and the beaches of Narragansett Bay. The line had one track. A
-regular train was coming north out of Providence, and the excursion had to
-reach the double track at Pawtucket before that train left it.
-
-[click]
+A train of the Providence & Worcester Railroad left Uxbridge, Massachusetts,
+with about 475 people, heading south for Providence.
 
 At Valley Falls, the conductor, Frederick Putnam, looked at his watch. He
-thought he had time. But his watch was two minutes slow, although he had set
-it to the company's time the night before.
+thought he had time before the northbound train passed. But his watch was two
+minutes slow, although he had set it to the company's time the night before.
 
-[click]
+Just past a blind curve, the two trains collided head-on.
 
-Just past a blind curve, near a junction called Boston Switch, the two trains
-met head-on. The other train had left Pawtucket a minute late. A minute
-earlier, and it would have been past the curve, in sight of the station.
-
-[click]
+[click:3]
 
 [figure: A daguerreotype of the wreck: one locomotive reared up over the other, the cars behind them broken, and a crowd beside the track.]
 
-A photographer from Pawtucket, L. Wright, made this daguerreotype soon after.
-It may be the first photograph of a train wreck.
+A photographer from Pawtucket, L. Wright, made this daguerreotype 10 minutes
+later.  It may be the first photograph of a train wreck.
 
 [click]
 
@@ -2723,10 +2714,9 @@ It may be the first photograph of a train wreck.
 
 Fourteen people died, and seventeen were seriously injured.
 
-It was the second crash of its kind that week. Three days earlier, two
-trains of the Camden & Amboy Railroad had collided near Old Bridge, New
-Jersey. Four people died. The watches of the two crews were two and a half
-minutes apart.
+It was the second crash of its kind that week. Three days earlier, two trains of
+the Camden & Amboy Railroad collided in New Jersey. Four people died. The
+watches of the two crews were two and a half minutes apart.
 
 The public was outraged, and the railroads changed their rules. Within days,
 the Boston & Providence Railroad, whose line met this one at Boston Switch,
@@ -2734,38 +2724,16 @@ made each conductor have his watch certified as reliable by Bond & Sons of
 Boston. Bond repaired the watches at the railroad's cost, and lent a reliable
 one while a conductor's watch was in the shop. And the railroads of New
 England agreed on one time, sent by telegraph from the Harvard College
-Observatory, in Cambridge: in effect, the first time zone in the United
-States.
-
-> [!aside] Sources
-> The trains, the inquest and the toll are from
-> [Wikipedia](https://en.wikipedia.org/wiki/Valley_Falls_train_collision),
-> which cites the coroner's verdict. The Blackstone Valley Historical Society
-> counts 13 dead. The Boston & Providence's rules of August 1853 are quoted by
-> [Rails West](http://www.railswest.com/time/watches.html), from Ian Bartky's
-> _Selling the True Time_ (2000). The time zone is from the
-> [Harvard Gazette](https://news.harvard.edu/gazette/story/2011/11/americas-first-time-zone/).
-> The Old Bridge collision, its toll and the watches are from
-> [Scientific American](https://www.scientificamerican.com/article/railroad-accidentsthe-remedy/)
-> of August 20, 1853. Its date, August 9, is from later lists of wrecks.
-> The state lines on the map are today's.
+Observatory, in Cambridge.
 
 -->
 
 <!--
-On land, for the next 80 years, a minute here or there didn't matter. Then came the railroads.
+80 years later
 
-Friday, August 12, 1853. An excursion train leaves Uxbridge with about 475 people, bound for Providence and the beaches. One track. A regular train is coming north out of Providence. The rule: the excursion must reach the double track at Pawtucket first.
+Train heads south.  Another train is heading north.
 
-[click] At Valley Falls, the conductor looks at his watch. He thinks he has time. His watch is two minutes slow.
-
-[click] Just past a blind curve, the trains meet head-on. The other train had left a minute late. One minute either way, and they would have seen each other.
-
-[click] A photographer from Pawtucket took this. It may be the first photograph of a train wreck.
-
-[click] Fourteen people died. Seventeen were seriously injured. And it was the second crash like it that week. Three days earlier, in New Jersey, two trains collided near Old Bridge. Four died. The two crews' watches were two and a half minutes apart.
-
-IF ASKED: After the crash, railroads made their conductors carry watches certified as reliable, and paid to keep them that way. And they agreed to one time, sent by telegraph from the Harvard College Observatory, right here in Cambridge: in effect, the first time zone in America. Both trains were the Providence & Worcester's. The watch rules quoted are the Boston & Providence's, whose line met this one at Boston Switch. Putnam was charged with manslaughter; I found no record of the verdict. The railroad paid $43,876 to victims and families, and built a second track. 13 or 14 dead, depending on the source (Scientific American, a week later, said 12). Old Bridge: the Camden & Amboy, August 9, 1853, 4 killed, 7 wounded; the conductor had not compared his watch with the engineer's or the station clock.
+[click:3] First known photograph of a train wreck.
 -->
 
 ---
@@ -2834,31 +2802,25 @@ clicks: 3
 </style>
 
 <!-- narration
-After the crash, railroads bought reliable watches from London, made by hand.
-The Vermont Central paid $150 each. Around 1850, nearly every good watch was
-still finished that way: a craftsman filed each part to fit its own watch. If a part broke, a watchmaker had to make a new one, by hand.
 
-Aaron Dennison, a Boston watch repairer, had seen how the Springfield Armory
-made muskets: by machine, with every part checked against a gauge. Why not
-watches? With Edward Howard and others, he started a watch company in 1850,
-and in 1854 it moved to Waltham, six miles up the Charles River from
-Cambridge. Every part was measured against a master gauge, so a repairer could
-order a new part by number. In 1876, the factory made 2,200 watches a week.
+A reliable watch, like the ones needed for railroads, cost $150 each, about
+$5,000 in 2026.  Around 1850, nearly every good watch was made by hand by a
+craftsman. If a part broke, a watchmaker had to make a new one, by hand.
 
-[click]
+In the 1850s, Waltham Watch Company pioneered the mass production of precision
+watches using machines and standardized parts.  You could order replacement
+parts by number.  In 1876, the factory made 2,200 watches a week.
 
 And the watches were good. Waltham's everyday watch, the P.S. Bartlett, kept
 time to within 10 to 15 seconds a day. Before, only a watch fitted by hand
 kept time that well.
-
-[click]
 
 A hand-fitted watch that good could cost $150, about $5,000 in today's
 dollars. A P.S. Bartlett cost about $25, about $800 today. An accurate watch
 became an everyday thing, for railroad workers, soldiers and the general
 public.
 
-[click]
+[click:3]
 
 [figure: A long factory room in the 1870s: rows of young women at small
 machines, each driven by a belt from a pulley under the ceiling. Beside it:
@@ -3448,20 +3410,6 @@ secondsATitle: 4
 </style>
 
 <!-- narration
-Thank you for reading. Here are some great songs about time:
-
-- "Rock Around the Clock," by Max C. Freedman and James E. Myers
-- "My Grandfather's Clock," by Henry Clay Work
-- "The Windmills of Your Mind," by Michel Legrand, Alan Bergman and Marilyn Bergman
-- "Time," by Pink Floyd
-- "Clocks," by Coldplay
-- "Does Anybody Really Know What Time It Is?" by Chicago
-- "Time After Time," by Cyndi Lauper
-- "TiK ToK," by Kesha
-- "Stay," by Zedd and Alessia Cara
-- "In the End," by Linkin Park
-- "4 Minutes," by Madonna, with Justin Timberlake and Timbaland
-- "Lose Yourself," by Eminem
 
 The painting of John Harrison is by Thomas King, about 1767, and is in the
 [public domain](https://commons.wikimedia.org/wiki/File:John_Harrison_(Gem%C3%A4lde)_01.jpg).
