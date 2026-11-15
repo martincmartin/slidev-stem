@@ -13,6 +13,11 @@
 // no default figure: it is a heading. A slide's first default figure is
 // dropped if it would show the same picture as the page's figure before it,
 // on the slide before (`SlideInput.keyOf`).
+//
+// THE ASIDES. Each aside goes with one paragraph (a prose block): the next
+// one of its slide, or the slide's last one if none comes after it. The
+// paragraph holds it (`ProseBlock.asides`): the page and the text export show
+// it after the paragraph, or beside it in the margin.
 
 import type { ArticleHooks } from "./figure.ts";
 import { frontmatterText } from "./frontmatter.ts";
@@ -33,9 +38,15 @@ export interface RenderedPart {
   readonly noFigure: boolean;
 }
 
+/** An aside, in the output's format. */
+export interface Aside {
+  readonly title: string;
+  readonly text: string;
+}
+
 export type RenderedBlock =
   | { readonly kind: "prose"; readonly text: string }
-  | { readonly kind: "aside"; readonly title: string; readonly text: string }
+  | ({ readonly kind: "aside" } & Aside)
   | QuoteBlock
   | FigureMarker;
 
@@ -120,10 +131,48 @@ export type PageBlock =
       /** The slide's history line, under the heading. */
       readonly history: string | null;
     }
-  | { readonly kind: "prose"; readonly text: string }
-  | { readonly kind: "aside"; readonly title: string; readonly text: string }
+  | PageProse
   | QuoteBlock
   | FigureBlock;
+
+/** A paragraph (or a table, or a list), with the asides that go with it. */
+export interface PageProse {
+  readonly kind: "prose";
+  readonly text: string;
+  readonly asides: readonly Aside[];
+}
+
+/** A slide's blocks as the plan places them, before the asides join their
+ *  paragraphs. */
+type PlacedBlock = Exclude<RenderedBlock, FigureMarker> | FigureBlock;
+
+/** `placed` with each aside in its paragraph: the next one, or the slide's
+ *  last one if none comes after it. Throws on an aside in a slide with no
+ *  paragraph. */
+function withAsides(placed: readonly PlacedBlock[]): PageBlock[] {
+  const blocks: PageBlock[] = [];
+  let waiting: Aside[] = [];
+  for (const block of placed) {
+    if (block.kind === "aside") {
+      waiting.push({ title: block.title, text: block.text });
+    } else if (block.kind === "prose") {
+      blocks.push({ ...block, asides: waiting });
+      waiting = [];
+    } else {
+      blocks.push(block);
+    }
+  }
+  if (waiting.length === 0) return blocks;
+  const last = blocks.findLastIndex((block) => block.kind === "prose");
+  const paragraph = blocks[last];
+  if (paragraph?.kind !== "prose") {
+    throw new Error(
+      `narration: the aside "${waiting[0]?.title ?? ""}" has no paragraph in its slide`,
+    );
+  }
+  blocks[last] = { ...paragraph, asides: [...paragraph.asides, ...waiting] };
+  return blocks;
+}
 
 /** A name for a URL's fragment: lower case, words joined by `-`. */
 export function slug(text: string): string {
@@ -142,8 +191,8 @@ function range(from: number, to: number): number[] {
   return Array.from({ length: to - from + 1 }, (_, index) => from + index);
 }
 
-/** What one slide puts on the page after its heading: its prose, asides,
- *  quotes and figures, in order. `previousKey` is the key of the page's last figure. */
+/** What one slide puts on the page after its heading: its prose (with its
+ *  asides), quotes and figures, in order. `previousKey` is the key of the page's last figure. */
 function slideBlocks(
   slide: SlideInput,
   idOf: (base: string) => string,
@@ -206,7 +255,7 @@ function slideBlocks(
     }
   }
 
-  const blocks: PageBlock[] = [];
+  const placed: PlacedBlock[] = [];
   let lastKey = previousKey;
   const addFigure = (
     steps: readonly number[],
@@ -216,11 +265,11 @@ function slideBlocks(
   ): void => {
     const last = steps.at(-1) ?? 0;
     const key = slide.keyOf(last);
-    const first = !blocks.some((block) => block.kind === "figure");
+    const first = !placed.some((block) => block.kind === "figure");
     if (isDefault && first && key === lastKey) return;
     lastKey = key;
     let caption: string | null = null;
-    blocks.push({
+    placed.push({
       kind: "figure",
       id: idOf(`${name}-${String(steps[0] ?? 0)}`),
       slide: slide.no,
@@ -258,12 +307,12 @@ function slideBlocks(
         addFigure(steps, block.play, block.alt, false);
         playing = block.play;
       } else {
-        blocks.push(block);
+        placed.push(block);
       }
     }
   }
   flushBefore(Infinity);
-  return { blocks, lastKey };
+  return { blocks: withAsides(placed), lastKey };
 }
 
 /** The page: the cover's title, then each slide's heading and blocks. */

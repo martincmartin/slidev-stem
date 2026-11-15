@@ -7,6 +7,7 @@ import { cropGroups, pagePlan, slideInput, slug } from "./plan.ts";
 import type {
   FigureBlock,
   PageBlock,
+  RenderedBlock,
   RenderedPart,
   SlideInput,
 } from "./plan.ts";
@@ -31,20 +32,26 @@ function prose(clicks: number, text: string, noFigure = false): RenderedPart {
 
 /** Each block as a short string, to compare the order. */
 function outline(blocks: readonly PageBlock[]): string[] {
-  return blocks.map((block) => {
+  return blocks.flatMap((block) => {
     switch (block.kind) {
       case "figure":
-        return `figure ${block.steps.join(",")}`;
+        return [`figure ${block.steps.join(",")}`];
       case "prose":
-        return block.text;
-      case "aside":
-        return `aside ${block.title}`;
+        // each aside after its paragraph, as the text export shows it
+        return [
+          block.text,
+          ...block.asides.map(({ title }) => `aside ${title}`),
+        ];
       case "quote":
-        return `quote ${block.lines.join(" / ")}`;
+        return [`quote ${block.lines.join(" / ")}`];
       default:
-        return `${block.kind} ${block.text}`;
+        return [`${block.kind} ${block.text}`];
     }
   });
+}
+
+function aside(title: string): RenderedBlock {
+  return { kind: "aside", title, text: `${title}, answered.` };
 }
 
 function figures(blocks: readonly PageBlock[]): FigureBlock[] {
@@ -157,6 +164,69 @@ test("[nofigure] drops the default, and [figure] adds one where it stands", () =
     "after",
   ]);
   assert.equal(figures(page)[0]?.alt, "The wheel.");
+});
+
+test("an aside goes with the next paragraph of its slide, past a click and a figure", () => {
+  const page = pagePlan([
+    slide({
+      parts: [
+        {
+          clicks: 0,
+          blocks: [{ kind: "prose", text: "zero" }, aside("Why?")],
+          noFigure: false,
+        },
+        prose(1, "one"),
+      ],
+      defaults: [1],
+    }),
+  ]);
+  assert.deepEqual(outline(page).slice(1), [
+    "zero",
+    "figure 1",
+    "one",
+    "aside Why?",
+  ]);
+});
+
+test("an aside at the end of its slide goes with the slide's last paragraph", () => {
+  const page = pagePlan([
+    slide({
+      parts: [
+        {
+          clicks: 0,
+          blocks: [
+            { kind: "prose", text: "zero" },
+            aside("Why?"),
+            { kind: "prose", text: "last" },
+            aside("How?"),
+          ],
+          noFigure: false,
+        },
+      ],
+    }),
+    slide({ no: 3, title: "Gears", parts: [prose(0, "next")] }),
+  ]);
+  assert.deepEqual(outline(page), [
+    "heading Escapement",
+    "zero",
+    "last",
+    "aside Why?",
+    "aside How?",
+    "heading Gears",
+    "next",
+  ]);
+});
+
+test("an aside in a slide with no paragraph is an error", () => {
+  assert.throws(
+    () =>
+      pagePlan([
+        slide({
+          parts: [{ clicks: 0, blocks: [aside("Why?")], noFigure: false }],
+        }),
+      ]),
+    /the aside "Why\?" has no paragraph in its slide/,
+  );
 });
 
 test("a figure with steps takes the place of the defaults in its range", () => {

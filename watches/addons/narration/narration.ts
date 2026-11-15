@@ -14,9 +14,16 @@
 // A quote block whose first line is `> [!aside] Title` is an aside. One whose
 // first line is `> [!quote]` is a pull quote: each line after it is a line of
 // the quote. `> [!quote script-1714]` gives the quote the talk's classes too.
+// The rest is prose: a block for each paragraph, table or list, so that an
+// aside can sit beside one paragraph (plan.ts).
 //
 // No Slidev and no DOM here: the preparser (setup/preparser.ts) and the
 // tests use it.
+
+import MarkdownExit from "markdown-exit";
+
+/** The narration's Markdown, as Slidev renders notes: with smart quotes. */
+export const MARKDOWN = MarkdownExit({ html: true, typographer: true });
 
 /** A figure placed in the narration. */
 export interface FigureMarker {
@@ -80,13 +87,35 @@ export function noteIsNarration(note: string): boolean {
   return /^\s*narration\s*\n/.test(note);
 }
 
+/** The top-level blocks of `markdown`: each paragraph, table or list, as
+ *  Markdown. Throws on text outside every block, such as a link's reference
+ *  definition: a block rendered alone would lose it. */
+function paragraphs(markdown: string): string[] {
+  const lines = markdown.split("\n");
+  const ranges = MARKDOWN.parse(markdown).flatMap((token) =>
+    token.level === 0 && token.nesting !== -1 && token.map ? [token.map] : [],
+  );
+  const outside = lines.find(
+    (line, index) =>
+      line.trim() !== "" &&
+      !ranges.some(([start, end]) => index >= start && index < end),
+  );
+  if (outside !== undefined) {
+    throw new Error(`narration: not in a paragraph: ${outside}`);
+  }
+  return ranges.map(([start, end]) =>
+    lines.slice(start, end).join("\n").trim(),
+  );
+}
+
 /** The prose, the asides and the quotes of `text`, in order. */
 function textBlocks(text: string): (ProseBlock | AsideBlock | QuoteBlock)[] {
   const blocks: (ProseBlock | AsideBlock | QuoteBlock)[] = [];
   const prose: string[] = [];
   const flush = (): void => {
-    const markdown = prose.join("\n").trim();
-    if (markdown) blocks.push({ kind: "prose", markdown });
+    for (const markdown of paragraphs(prose.join("\n"))) {
+      blocks.push({ kind: "prose", markdown });
+    }
     prose.length = 0;
   };
   const lines = text.split("\n");

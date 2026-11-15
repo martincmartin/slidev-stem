@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // The article: the talk as one long page, for readers. The cover's title and
 // the author, the contents, then each slide's heading, its narration, its
-// asides (in the margin on a wide window), its pull quotes
+// asides (beside their paragraphs in the margin on a wide window, after them
+// on a narrow one), its pull quotes
 // (components/ArticleQuote.vue), and its figures: the slides themselves,
 // live (components/ArticleFigure.vue). What goes where is the
 // page model's (../plan.ts), with the talk's rules (`ARTICLE_HOOKS`,
@@ -255,14 +256,24 @@ onBeforeUnmount(() => {
         </p>
         <!-- eslint-disable vue/no-v-html -- the narration, rendered by setup/preparser.ts -->
         <div
+          v-else-if="block.kind === 'prose' && block.asides.length > 0"
+          class="article-with-asides"
+        >
+          <aside
+            v-for="(aside, asideIndex) in block.asides"
+            :key="asideIndex"
+            class="article-aside"
+          >
+            <p class="article-aside-title" v-html="aside.title" />
+            <div v-html="aside.text" />
+          </aside>
+          <div class="article-prose" v-html="block.text" />
+        </div>
+        <div
           v-else-if="block.kind === 'prose'"
           class="article-prose"
           v-html="block.text"
         />
-        <aside v-else-if="block.kind === 'aside'" class="article-aside">
-          <p class="article-aside-title" v-html="block.title" />
-          <div v-html="block.text" />
-        </aside>
         <!-- eslint-enable vue/no-v-html -->
         <ArticleQuote
           v-else-if="block.kind === 'quote'"
@@ -412,7 +423,23 @@ html.article-mode #app {
   color: var(--palette-muted);
 }
 /* An aside: a sidenote in the margin on a wide window, a box in the text on
-   a narrow one. */
+   a narrow one. Its paragraph holds it (../plan.ts). It comes before the
+   paragraph in the page, so that it floats beside it: a float can only go
+   down the page. A narrow window shows the paragraph first. */
+@media (width < 1280px) {
+  .article-with-asides {
+    display: flex;
+    flex-direction: column;
+    /* the margins of a flex item do not collapse: the last one moves here */
+    margin-bottom: 1em;
+  }
+  .article-with-asides > .article-prose {
+    order: -1;
+  }
+  .article-with-asides > .article-aside:last-of-type {
+    margin-bottom: 0;
+  }
+}
 .article-aside {
   margin: 0 0 1em;
   padding: 0.6em 0.9em;

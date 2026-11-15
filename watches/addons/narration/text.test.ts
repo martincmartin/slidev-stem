@@ -16,13 +16,20 @@ function figure(overrides: Partial<FigureBlock> = {}): FigureBlock {
   };
 }
 
-test("headings, history lines, prose and asides, in order", () => {
+test("headings, history lines, prose and asides, each after its paragraph", () => {
   const page: PageBlock[] = [
     { kind: "title", text: "Watches" },
     { kind: "part", id: "a", eyebrow: "PART 1", text: "Marvels" },
     { kind: "heading", id: "b", text: "Gears", history: "c. 1670" },
-    { kind: "prose", text: "A _pinion_ drives it.\n" },
-    { kind: "aside", title: "Why?", text: "Because.\n\nAnd so." },
+    {
+      kind: "prose",
+      text: "A _pinion_ drives it.\n",
+      asides: [
+        { title: "Why?", text: "Because.\n\nAnd so." },
+        { title: "How?", text: "So." },
+      ],
+    },
+    { kind: "prose", text: "Then the hand.", asides: [] },
   ];
   assert.equal(
     articleMarkdown(page, () => []),
@@ -33,6 +40,8 @@ test("headings, history lines, prose and asides, in order", () => {
       "_c. 1670_",
       "A _pinion_ drives it.",
       "> **Aside: Why?**\n>\n> Because.\n>\n> And so.",
+      "> **Aside: How?**\n>\n> So.",
+      "Then the hand.",
     ].join("\n\n") + "\n",
   );
 });

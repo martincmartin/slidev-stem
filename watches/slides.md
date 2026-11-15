@@ -2870,7 +2870,7 @@ artClicks:
 clicks: 2
 ---
 
-# World War I, Trenches at Night
+# World War I, Trenches at Night, 1917
 
 <div class="dark-words side-text">
   <div v-click="1" class="dark-paragraph text-dims">Strike a match,<br>draw a sniper’s fire</div>
@@ -2910,7 +2910,7 @@ no hour marks.]
 [click]
 
 World War I pioneered synchronized assaults, coining the phrase "synchronize
-watches," so reading a watch was crucial.  But in the trenches in the dark,
+watches," so reading a watch was crucial.  But in a dark trench at night,
 striking a match invited a sniper's bullet.
 
 [click]
@@ -2919,11 +2919,10 @@ striking a match invited a sniper's bullet.
 hands glow a pale green, and they show the time.]
 
 The answer was a paint that glowed by itself. Its secret was _radium_, an
-element that Marie and Pierre Curie had found in 1898.  In the paint, radium was
-mixed with zinc sulfide.  Its radiation made the zinc sulfide glow green.  A
-company later named U.S. Radium sold its paint as _Undark_. On a watch's hands
-and hour marks, it showed the time all night, without needing light to charge
-it first.  Demand for luminous watches and instruments surged in the war.
+element that Marie and Pierre Curie had discovered in 1898.  A company later
+named U.S. Radium sold its paint as _Undark_. On a watch's hands and hour marks,
+it showed the time all night, without needing light to charge it first.  Demand
+for luminous watches and instruments surged in the war.
 
 -->
 

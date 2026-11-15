@@ -81,6 +81,26 @@ test("[nofigure] marks the part, and keeps it with no text", () => {
   assert.equal(second.clicks, 1);
 });
 
+test("prose is a block for each paragraph; a table or a list stays whole", () => {
+  const [part] = parseNarration(
+    "One\nline.\n\nTwo.\n\n| a | b |\n| - | - |\n| 1 | 2 |\n\n- x\n\n- y\n\n  more",
+  );
+  assert.deepEqual(part?.blocks, [
+    { kind: "prose", markdown: "One\nline." },
+    { kind: "prose", markdown: "Two." },
+    { kind: "prose", markdown: "| a | b |\n| - | - |\n| 1 | 2 |" },
+    { kind: "prose", markdown: "- x\n\n- y\n\n  more" },
+  ]);
+});
+
+test("text outside every paragraph, such as a link's definition, is an error", () => {
+  assert.throws(
+    () =>
+      parseNarration("See [the wheel][wheel].\n\n[wheel]: https://example.com"),
+    /not in a paragraph: \[wheel\]:/,
+  );
+});
+
 test("a quote block that starts [!aside] is an aside, with its title", () => {
   const [part] = parseNarration(
     "Prose.\n\n> [!aside] Why a wheel?\n> Mass at the rim.\n> It counts most.\n\nMore prose.",

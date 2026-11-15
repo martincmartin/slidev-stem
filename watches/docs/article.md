@@ -3,8 +3,8 @@
 **Covers:** the article at `/article`: the talk for people who did not see it,
 as one long page of narration with live figures between the paragraphs, in
 the style of Bartosz Ciechanowski's "Mechanical Watch". How to write the
-narration and place the figures; pull quotes; a slide's title for the
-article; what a figure shows, and why; the sliders,
+narration and place the figures; asides; pull quotes; a slide's title
+for the article; what a figure shows, and why; the sliders,
 the button, the playing figure, and Part 2's story figures; how the code is split between the addon and the
 talk; how to build the static page, and where it can go; how to export
 its text.
@@ -34,9 +34,9 @@ Android).
   or its title for the article ("A title for the article", below).
 - Under a slide's heading, its history line, if it has one
   ([slide-patterns.md](slide-patterns.md), "The history line").
-- For each slide, its narration, its asides (in the right margin on a window
-  at least 1,280 px wide, in the text on a narrower one), its pull quotes and
-  its figures.
+- For each slide, its narration, its asides (each beside its paragraph, in
+  the right margin, on a window at least 1,280 px wide, and after it on a
+  narrower one: "An aside", below), its pull quotes and its figures.
 - **A figure is the slide itself, live**, at one click: the WebGL watch, the
   diving board, the labels. It runs while it is on the screen. Near the
   screen, it gets one picture, so that it is not blank when it comes on.
@@ -101,7 +101,7 @@ The speaker's cues, as before.
 | `[figure 2-3]`       | one figure with steps, from click 2 to click 3; it replaces the defaults in its range                          |
 | `[figure 0-8 play]`  | a figure that plays its steps by itself; the text after it, and the parts said at its clicks, are its captions |
 | `[nofigure]`         | no figure for the part's click, even by default                                                                |
-| `> [!aside] Title`   | a quote block that starts so is an aside; put the `IF ASKED` material here                                     |
+| `> [!aside] Title`   | a quote block that starts so is an aside, for the paragraph after it; put the `IF ASKED` material here         |
 | `> [!quote classes]` | a quote block that starts so is a pull quote, a line for each line; the classes are the talk's, and optional   |
 
 **Every figure has alt text.** A screen reader gets only that, and so does
@@ -124,6 +124,25 @@ here" colour, so two parts in one figure could not have two colours
 The markdown is rendered with `markdown-exit`, as Slidev renders notes, with
 smart quotes. A table is Markdown. There is no math yet: write "seven and a
 half times eight is sixty".
+
+### An aside
+
+**An aside goes with one paragraph: the next one in its slide.** So write
+it just before that paragraph. An aside at the end of a slide goes with the
+slide's last paragraph. A window at least 1,280 px wide shows the aside
+beside its paragraph, in the right margin. A narrower window and the text
+export show it after the paragraph. A paragraph here is one block of
+Markdown: a paragraph, a table or a list (`paragraphs` in
+`addons/narration/narration.ts`). The page model gives each paragraph its
+asides (`withAsides` in `addons/narration/plan.ts`), so the page and the
+text export agree. An aside in a slide with no paragraph is an error.
+
+**In the page, the aside comes before its paragraph.** Not an oversight: on
+a wide window the aside floats into the margin, and a float can only go
+down the page. So to float beside its paragraph, it must come first. On a
+narrow window, CSS shows the paragraph first (`order`, in
+`views/ArticlePage.vue`). But a screen reader, the Tab key and a copy of the
+page follow the page's order, so they get the aside first.
 
 ### A pull quote
 
@@ -499,7 +518,7 @@ pnpm article:text > article.md   # the article as Markdown, in under a second
 For a reader that takes text, such as a chatbot asked for feedback on the
 wording and the structure. It holds what the page holds, in its order: the
 headings, the history lines, the narration's Markdown as written, each aside
-as a quote, each pull quote as a quote with a line break at each line, and
+as a quote after its paragraph, each pull quote as a quote with a line break at each line, and
 each figure in its place, as
 `[Figure: <alt text> <its steps>. Controls: <its slider or button>.]`. A
 playing figure's captions follow it. The controls are in the words that the
