@@ -22,3 +22,7 @@ Watch in the Dark, World War I; Lip, Dip, Paint; Bones That Glow; and Too Weak t
   Prize? slide and this section, so the bridge from Harrison ("The next
   people to change the watch never were") is gone from the first slide's
   narration and notes ([the Waltham task](../2026-11-08-waltham/PLAN.md)).
+- 2026-11-15: on the user's request, the Lip, Dip, Paint slide shows a close-up
+  of a dial painter at a British clock factory, January 1932, not USRC's
+  painters of about 1922 ([the dial painter's photo task](../2026-11-15-dial-painter-photo/PLAN.md)).
+  The `evidence/` screenshot of that slide shows the earlier photo.

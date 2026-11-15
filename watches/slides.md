@@ -2939,7 +2939,7 @@ clicks: 2
 
 # Lip, Dip, Paint
 
-<img class="painters-photo in-figure" src="/radium/painters.jpg" alt="Young women in a row at long wooden desks, in a bright factory room with tall windows, each bent over her work.">
+<img class="painters-photo in-figure" src="/radium/painters.jpg" alt="A young woman in a work coat paints the numbers on an alarm clock's dial with a fine brush, at a bench with tins of dials and small vials of paint. Two more women work behind her.">
 
 <div class="painters-words side-text">
   <div class="painters-paragraph text-dims">4,000 women<br>painted dials</div>
@@ -2993,9 +2993,9 @@ their lips: _lip, dip, paint_. With every dial, they swallowed a little radium.
 
 [click]
 
-[figure: Dial painters at work, about 1922: young women in a row at long
-wooden desks, in a bright factory room with tall windows, each bent over her
-work.]
+[figure: A dial painter in Britain, 1932: a young woman paints the numbers on
+an alarm clock's dial with a fine brush, beside tins of dials and small vials
+of paint. Two more painters work behind her.]
 
 The body takes radium for calcium, and builds it into bone. There it stays,
 and its radiation works from inside, for years. First the teeth ached and came
@@ -3010,7 +3010,7 @@ Thousands of young women painted those dials, about 4,000 in the US and Canada. 
 
 [click] The body takes radium for calcium. It goes into the bone, and stays there. Teeth ache, then come loose. Then the jaw. Then cancer.
 
-IF ASKED: About a penny and a half a dial, 250 dials in a shift. USRC itself hired about 70 women to handle the radium; the 4,000 is for all the companies in the US and Canada. The photo is USRC's plant, about 1922.
+IF ASKED: About a penny and a half a dial, 250 dials in a shift. USRC itself hired about 70 women to handle the radium; the 4,000 is for all the companies in the US and Canada. The photo is not USRC: it is a British clock factory, January 1932, and the dial is an Ingersoll alarm clock's. In 1928 Britain had only eight full-time dial painters, and they did not point their brushes with their lips.
 -->
 
 ---
@@ -3354,7 +3354,8 @@ secondsATitle: 4
   <p>CC BY 2.0: creativecommons.org/licenses/by/2.0</p>
   <p>Train wreck near Valley Falls, attr. L. Wright, 1853. Public domain.</p>
   <p>Waltham watch factory, Thomas R. Lewis, 1870s. Public domain.</p>
-  <p>Dial painters, c. 1922, and Grace Fryer, 1925. Public domain.</p>
+  <p>Dial painter, Leslie Cardew, 1932. © Mirrorpix/SMG Images.</p>
+  <p>Grace Fryer, 1925. Public domain.</p>
 </div>
 
 <SongLines class="questions-songs" :titles="$frontmatter.songTitles" :seconds-a-title="$frontmatter.secondsATitle" />
@@ -3401,10 +3402,13 @@ The daguerreotype of the
 near Valley Falls, 1853, is attributed to L. Wright. The photo of the
 [Waltham watch factory](<https://commons.wikimedia.org/wiki/File:Gezicht_op_een_ruimte_van_de_American_Watch_Company_in_Waltham,_Massachusetts,_waar_tandwielen_worden_gemaakt_Pinion_Finishing_Room,_Watch_Factory_(titel_op_object),_RP-F-2001-7-980-60.jpg>),
 from the 1870s, is by Thomas R. Lewis. Both are in the public domain.
-The photos of the
-[dial painters](<https://commons.wikimedia.org/wiki/File:All_women_or_girls_using_radium_paint_with_no_protection_or_warnings_in_1922,_from-_USRadiumGirls-Argonne1,ca1922-23-150dpi_(cropped).jpg>),
-about 1922, and of [Grace Fryer](https://commons.wikimedia.org/wiki/File:Grace_Fryer.jpg),
-1925, are by unknown photographers, and are in the public domain.
+The photo of a
+[dial painter](https://collection.sciencemuseumgroup.org.uk/objects/co8801010/daily-herald-photograph-clock-making)
+at a British clock factory, January 14, 1932, is by Leslie Cardew for the
+_Daily Herald_. It is in the Daily Herald Archive of the Science Museum Group,
+© Mirrorpix/SMG Images. The photo of
+[Grace Fryer](https://commons.wikimedia.org/wiki/File:Grace_Fryer.jpg), 1925,
+is by an unknown photographer, and is in the public domain.
 
 [nofigure]
 
