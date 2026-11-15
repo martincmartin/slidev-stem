@@ -2263,7 +2263,7 @@ clicks: 1
 
 # John Harrison: A Carpenter's Side Project
 
-<img class="harrison-portrait in-figure" src="/harrison/portrait.jpg" alt="John Harrison, seated, in a brown coat and a white wig, holding a watch, with a large clock in a glass case behind him, in a painting of about 1767.">
+<img class="harrison-portrait bleed in-figure" src="/harrison/portrait.jpg" alt="John Harrison, seated, in a brown coat and a white wig, holding a watch, with a large clock in a glass case behind him, in a painting of about 1767.">
 
 <div class="harrison-words side-text">
   <div class="harrison-paragraph text-dims">Village carpenter<br>Self-taught in clocks</div>
@@ -2271,21 +2271,8 @@ clicks: 1
 </div>
 
 <style>
-/* The painting fills the slide's height, flush with its left edge, as the
-   photo on the Waltham Watch Company slide does. The title stands on it, with
-   an outline in the background colour so that it reads on the dark paint. */
-.slidev-layout.john-harrison .harrison-portrait {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-}
-.slidev-layout.john-harrison h1 {
-  position: relative;
-  z-index: 1;
-  -webkit-text-stroke: 6px var(--palette-background);
-  paint-order: stroke fill;
-}
+/* The painting bleeds (the house's `bleed`), at its own shape. The title
+   stands on the dark paint, in its outline. */
 .slidev-layout.john-harrison .harrison-words {
   left: 482px;
 }
@@ -2628,7 +2615,7 @@ clicks: 4
 
 <MapLabel view="new england" :on="[-71.413, 41.824]" :offset="[-136, -16]">Providence</MapLabel>
 
-<img v-click="3" class="crash-photo in-figure" src="/railroad/valley-falls-1853.jpg" alt="A daguerreotype of the wreck in 1853: one locomotive reared up over the other, the cars behind them broken, and a crowd beside the track.">
+<img v-click="3" class="crash-photo bleed in-figure" src="/railroad/valley-falls-1853.jpg" alt="A daguerreotype of the wreck in 1853: one locomotive reared up over the other, the cars behind them broken, and a crowd beside the track.">
 
 <div class="crash-words side-text">
   <div v-click="1" class="crash-paragraph text-dims">Conductor's watch<br>2 min slow</div>
@@ -2675,18 +2662,14 @@ clicks: 4
     var(--palette-background) var(--text-dim)
   );
 }
-/* The photo covers the slide, under the title and the words, which keep
-   the paper's outline of a story map's title. */
+/* The photo bleeds (the house's `bleed`) across the whole slide, under the
+   title and the words, which keep the paper's outline of a story map's
+   title. */
 .slidev-layout.railroad h1 {
-  position: relative;
   z-index: 2;
 }
 .slidev-layout.railroad .crash-photo {
-  position: absolute;
-  inset: 0;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
   z-index: 1;
 }
 </style>
@@ -2755,7 +2738,7 @@ clicks: 3
 
 # Waltham Watch Company, 1870s
 
-<img class="factory-photo in-figure" src="/waltham/machine-room.jpg" alt="A long factory room with tall windows, in the 1870s: rows of young women at small machines, each driven by a belt from a pulley under the ceiling.">
+<img class="factory-photo bleed in-figure" src="/waltham/machine-room.jpg" alt="A long factory room with tall windows, in the 1870s: rows of young women at small machines, each driven by a belt from a pulley under the ceiling.">
 
 <div class="factory-words side-text">
   <div class="factory-paragraph text-dims">Mass produced</div>
@@ -2765,23 +2748,10 @@ clicks: 3
 </div>
 
 <style>
-/* The photo bleeds off the top, the bottom and the left, 60% of the slide's
-   width; its sides are cropped to fit. The title is over it, with the
-   paper's outline, as on the story maps (style.css). */
+/* The photo bleeds (the house's `bleed`), 60% of the slide's width; its
+   sides are cropped to fit. */
 .slidev-layout.watch-factory .factory-photo {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
   width: 588px;
-  height: 100%;
-  object-fit: cover;
-}
-.slidev-layout.watch-factory h1 {
-  position: relative;
-  z-index: 1;
-  -webkit-text-stroke: 6px var(--palette-background);
-  paint-order: stroke fill;
 }
 /* The house's text beside a picture (side-text). Each click adds a
    paragraph, and the ones before it dim (style.css, "TEXT DIMS"). */
@@ -2928,9 +2898,9 @@ for luminous watches and instruments surged in the war.
 -->
 
 ---
-# The photo on the left and the words on the right
-# (../docs/slide-layout.md). Each click adds a paragraph, and the ones
-# before it dim. The photo is `in-figure`: the article's figure shows it
+# The photo on the left, as on the Waltham Watch Company slide, and the words
+# on the right (../docs/slide-layout.md). Each click adds a paragraph, and the
+# ones before it dim. The photo is `in-figure`: the article's figure shows it
 # alone (docs/article.md, "What a figure shows")
 layout: full
 class: lip-dip-paint
@@ -2939,26 +2909,26 @@ clicks: 2
 
 # Lip, Dip, Paint
 
-<img class="painters-photo in-figure" src="/radium/painters.jpg" alt="A young woman in a work coat paints the numbers on an alarm clock's dial with a fine brush, at a bench with tins of dials and small vials of paint. Two more women work behind her.">
+<img class="painters-photo bleed in-figure" src="/radium/painters.jpg" alt="A young woman in a work coat paints the numbers on an alarm clock's dial with a fine brush, at a bench with tins of dials and small vials of paint. Two more women work behind her.">
 
 <div class="painters-words side-text">
   <div class="painters-paragraph text-dims">4,000 women<br>painted dials</div>
-  <div v-click="1" class="painters-paragraph text-dims">Shaped brush <em>with lips</em></div>
-  <div v-click="2" class="painters-paragraph text-dims">Radium goes into bone</div>
+  <div v-click="1" class="painters-paragraph text-dims">Shaped brush<br><em>with lips</em></div>
+  <div v-click="2" class="painters-paragraph text-dims">Radium goes<br>into bone</div>
 </div>
 
 <style>
+/* The photo bleeds (the house's `bleed`), 60% of the slide's width, as on
+   the Waltham Watch Company slide. Its sides are cropped equally: the
+   painters behind her and the vials of paint are cut at the edges, and none
+   is lost. */
 .slidev-layout.lip-dip-paint .painters-photo {
-  position: absolute;
-  top: 110px;
-  left: 40px;
-  height: 380px;
-  border-radius: 4px;
+  width: 588px;
 }
 /* The house's text beside a picture (side-text). Each click adds a
    paragraph, and the ones before it dim (style.css, "TEXT DIMS"). */
 .slidev-layout.lip-dip-paint .painters-words {
-  left: 556px;
+  left: 626px;
 }
 .slidev-layout.lip-dip-paint .painters-paragraph + .painters-paragraph {
   margin-top: 0.7em;
@@ -2979,6 +2949,7 @@ clicks: 2
 </style>
 
 <!-- narration
+
 Thousands of young women were hired to paint those tiny dials by hand: about
 4,000 in the United States and Canada. It was a good job, in bright, clean
 rooms. They were paid by the dial, about a penny and a half each, and a fast

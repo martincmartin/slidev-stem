@@ -48,6 +48,25 @@
   top: 116px;
 }
 
+/* A PICTURE THAT BLEEDS (stem/docs/slide-layout.md): from the slide's top edge
+   to its bottom edge, flush with its left edge. Each slide sets the picture's
+   `width`: none keeps the picture's shape, a smaller one crops its sides, and
+   100% covers the slide. The title and the subtitle stand on the picture, with
+   the paper's outline. */
+.slidev-layout .bleed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  object-fit: cover;
+}
+.slidev-layout:has(.bleed) :is(h1, h1 + p) {
+  position: relative;
+  z-index: 1;
+  -webkit-text-stroke: 6px var(--palette-background);
+  paint-order: stroke fill;
+}
+
 /* The title slides, cover and section. Their layouts place the text by the
    slide's `side` (utils/side.ts): centred, or left, beside an illustration. */
 .slidev-layout.side-center {

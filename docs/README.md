@@ -19,8 +19,8 @@ lists in step. What is true of one talk only is in that talk's `docs/` (for
 - [legibility.md](legibility.md): the venue, the resolution and contrast floors,
   room light, how to read the metrics, text sizes
 - [slide-layout.md](slide-layout.md): the default place for a picture and its
-  text, the text's type, how clicks add to it, moving the border between them,
-  when to leave the default
+  text, a picture that bleeds, the text's type, how clicks add to it, moving the
+  border between them, when to leave the default
 - [talks.md](talks.md): each talk as its own project: set up a clone, why,
   adding a deck file, changing a house item, giving a talk, validation,
   upgrading a talk's packages, publishing a talk on GitHub Pages

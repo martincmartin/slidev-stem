@@ -14,8 +14,9 @@ its metadata is removed. The Questions slide in `slides.md` credits them.
   The file is from the scan of negative A4765 that the Science & Society Picture
   Library made in 2003, 3508 × 2662 px, at
   [the image host of a History.com article](https://res.cloudinary.com/aenetworks/image/upload/v1/102730389_r1mtgc).
-  It is a crop of the slide's box, 2526 × 2000 px at 235, 300, without the
-  plate's border, the negative's number and the broken emulsion at the bottom.
+  It is a crop, 2526 × 2000 px at 235, 300, without the plate's border, the
+  negative's number and the broken emulsion at the bottom. The slide crops its
+  sides further, to fit its box (the Lip, Dip, Paint slide's style).
   Then it is grey, scaled to 1080 px tall (JPEG quality 85).
   `tasks/2026-11-15-dial-painter-photo/evidence/crop.sh` makes it. Not an
   oversight: the Science Museum Group's own scan (6468 × 5214 px) is of the

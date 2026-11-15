@@ -1,8 +1,8 @@
 # Slide layout: a picture and its text
 
-**Covers:** the default place for a picture and its text on a slide, the type of
-that text, how clicks add to it, how to move the border between picture and text,
-and when to leave the default.
+**Covers:** the default place for a picture and its text on a slide, a picture
+that bleeds off the slide's edges, the type of that text, how clicks add to it,
+how to move the border between picture and text, and when to leave the default.
 **Read before** you place a picture or text on a slide, or choose the type of a
 slide's text.
 **Tasks:**
@@ -19,6 +19,15 @@ example.
 
 - **The picture is on the left, and the text is on the right.** Each takes the
   room that it needs.
+- **A photo or a painting bleeds,** if the title covers nothing that matters in
+  it. The picture runs from the slide's top edge to its bottom edge, flush with
+  its left edge, and the title and the subtitle stand on it, in the paper's
+  outline. The house theme's class `bleed` does this. Each slide sets the
+  picture's `width`: no width keeps the picture's shape (the John Harrison
+  slide), and a smaller width crops its sides (the Waltham Watch Company slide).
+- **A picture across the whole slide is better still,** if it has a place for the
+  title and for the text: `width: 100%`. Then the text stands on the picture too,
+  in the paper's outline. The A Minute Was Life or Death slide is an example.
 - **60/40 is a guideline, not a measure.** Move the border between them until the
   slide looks good.
 - **Centre the text vertically, under the title.** Use the space from the bottom
@@ -63,6 +72,9 @@ something else:
   last click. The callouts and the text are one stack, and the stack is centred.
 - **The picture is the whole slide:** on the Recap slide, the only text is a caption
   and a time scale.
+- **The title would cover something that matters in the picture:** on the Too Weak
+  to Raise a Hand slide, a bleed puts the title across Grace Fryer's head. So her
+  portrait stands inside the slide, with a margin.
 - **There is no picture:** on the Longitude Prize slide, the words are on two cards.
   On the How Good a Watch slide, a chain of steps leads to a number in big type, in
   one centred column.
