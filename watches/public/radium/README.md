@@ -18,7 +18,9 @@ its metadata is removed. The Questions slide in `slides.md` credits them.
   negative's number and the broken emulsion at the bottom. The slide crops its
   sides further, to fit its box (the Lip, Dip, Paint slide's style).
   Then it is grey, scaled to 1080 px tall (JPEG quality 85).
-  `tasks/2026-11-15-dial-painter-photo/evidence/crop.sh` makes it. Not an
+  `tasks/2026-11-15-dial-painter-photo/evidence/crop.sh` makes it. Then 14
+  specks of dust on the negative are filled from the pixels around them:
+  `tasks/2026-11-15-dial-painter-spots/evidence/retouch.py`. Not an
   oversight: the Science Museum Group's own scan (6468 × 5214 px) is of the
   newspaper's print, which was retouched in 1932. The two women behind her and
   the window are painted out, and an editor's marks cross her hair. The Commons

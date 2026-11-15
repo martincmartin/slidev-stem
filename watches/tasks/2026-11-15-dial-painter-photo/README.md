@@ -16,3 +16,7 @@ photo shows, the best scan of it, and its crop.
 588 px wide, as on the Waltham Watch Company slide. The file does not change:
 the slide crops 213 of its 1364 px from its sides (`object-fit: cover`), half
 from each, so the painters behind her and the vials are cut at the edges.
+
+2026-11-15: `crop.sh`'s output is no longer the final file: 14 specks of dust
+are removed from it
+([the dust task](../2026-11-15-dial-painter-spots/README.md)).
