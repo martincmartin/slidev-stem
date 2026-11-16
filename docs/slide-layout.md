@@ -27,7 +27,7 @@ example.
   slide), and a smaller width crops its sides (the Waltham Watch Company slide).
 - **A picture across the whole slide is better still,** if it has a place for the
   title and for the text: `width: 100%`. Then the text stands on the picture too,
-  in the paper's outline. The A Minute Was Life or Death slide is an example.
+  in the paper's outline. The A Minute Is Life or Death slide is an example.
 - **60/40 is a guideline, not a measure.** Move the border between them until the
   slide looks good.
 - **Centre the text vertically, under the title.** Use the space from the bottom

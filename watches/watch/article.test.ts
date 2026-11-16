@@ -160,7 +160,7 @@ test("a figure of the globe shows its disc, and a story map's the whole slide", 
   const [width, height] = watch.scene.slide;
   const whole = { left: 0, top: 0, right: width, bottom: height };
   // the parser leaves out hidden slides, so these are shown ones
-  const america = await slideFrontmatter("Age of Sail: Longitude Was a Guess");
+  const america = await slideFrontmatter("Age of Sail: Longitude Is a Guess");
   // South America: the globe whole, narrower than the slide
   const globe = pictureBox(watch, america, 0);
   assert.ok(globe && globe.left > 0 && globe.right < width);

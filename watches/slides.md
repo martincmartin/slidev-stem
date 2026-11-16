@@ -1642,7 +1642,7 @@ clicks: 5
 hide: true
 ---
 
-# Age of Sail: Longitude Was a Guess
+# Age of Sail: Longitude Is a Guess
 
 Around Cape Horn, then heading north, 1741
 
@@ -1702,7 +1702,7 @@ art: [globe]
 artView: south america
 ---
 
-# Age of Sail: Longitude Was a Guess
+# Age of Sail: Longitude Is a Guess
 
 <MapLabel view="south america" :on="[-58, -12]" centred>South America</MapLabel>
 
@@ -1761,7 +1761,7 @@ clicks: 5
 
 <MapLabel v-click="3" class="after-watch" view="juan fernandez" :offset="[340, 360]" :dimmed="$clicks >= 4">9 days back</MapLabel>
 
-<BigWords v-click="5">Not knowing longitude<br><em>cost 70–80 lives</em></BigWords>
+<BigWords v-click="5">Not knowing longitude<br><em>costs 70–80 lives</em></BigWords>
 
 <!-- narration
 
@@ -2356,7 +2356,7 @@ const clocks = [
   {
     picture: "harrison/h1.jpg", alt: "H1, a large brass machine.", from: 1730, to: 1735,
     dockAt: 1, big: { left: 218, top: 124, width: 544, height: 408 },
-    words: "Caught the navigator’s 70-mile error.",
+    words: "Catches the navigator’s 70-mile error.",
   },
   {
     picture: "harrison/h2.jpg", alt: "H2, a tall brass frame.", from: 1737, to: 1739,
@@ -2366,7 +2366,7 @@ const clocks = [
   {
     picture: "harrison/h3.jpg", alt: "H3, a brass machine with a large arc.", from: 1740, to: 1759,
     bigFrom: 2, dockAt: 3, big: { left: 498, top: 124, width: 314, height: 408 },
-    words: "Never sailed.",
+    words: "Never goes to sea.",
   },
   {
     picture: "harrison/h4.jpg", alt: "H4's movement, round and engraved, like a large pocket watch.",
@@ -2504,7 +2504,7 @@ class: h4-prize
 clicks: 2
 ---
 
-# Did Harrison Win the Prize?
+# Does Harrison Win the Prize?
 
 <div class="prize-words side-text">
   <div>
@@ -2607,7 +2607,7 @@ artClicks:
 clicks: 4
 ---
 
-# A Minute Was Life or Death, 1853
+# A Minute Is Life or Death, 1853
 
 <MapLabel view="new england" :on="[-71.059, 42.36]" :offset="[-92, -16]">Boston</MapLabel>
 
@@ -2620,7 +2620,7 @@ clicks: 4
 <div class="crash-words side-text">
   <div v-click="1" class="crash-paragraph text-dims">Conductor's watch<br>2 min slow</div>
   <div v-click="2" class="crash-paragraph text-dims after-watch">Head-on collision</div>
-  <div v-click="4" class="crash-paragraph text-dims"><em>14 died</em><br>17 seriously injured</div>
+  <div v-click="4" class="crash-paragraph text-dims"><em>14 dead</em><br>17 seriously injured</div>
 </div>
 
 <style>
