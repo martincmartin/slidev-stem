@@ -574,6 +574,9 @@ Use `--jobs 1` for serial preparation.
 Lint runs without ESLint's `--cache`. This is not an oversight: the typed
 rules read the types of other files, and the cache does not see a change to
 them ([parallel-source-checks task](../tasks/2026-11-15-parallel-source-checks/PLAN.md)).
+A talk's `.prettierignore` names the tool caches (`.mypy_cache/`,
+`.ruff_cache/`). Prettier runs at the same time as mypy and ruff, and it
+fails on a cache file that it lists and that is deleted before it reads it.
 `--fix` first runs ruff's fixes and `pnpm format` (in place of
 `pnpm format:check`), then checks the files that they wrote. They run at the
 same time, because ruff writes only Python, and Prettier has no parser for

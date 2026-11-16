@@ -115,3 +115,5 @@ To time the real command, run `uv run ../tools/validate.py --quick --json`
 and `uv run ../tools/validate.py --json` in `watches/`, and
 `uv run tools/validate.py --json` at the root. Run nothing else that uses
 the CPU at the same time.
+
+2026-11-16: the plan missed one shared state. Prettier (`prettier --check .`) lists every file in the talk, and mypy, which now runs at the same time, makes and deletes SQLite `-wal` and `-shm` files in `.mypy_cache/`. Prettier then failed with `ENOENT` on a file that it had listed, in 3 of 3 quick runs in `watches`, and passed when it ran alone. The talk's `.prettierignore` now names `.mypy_cache/` and `.ruff_cache/`. The phases and the worker count are unchanged.

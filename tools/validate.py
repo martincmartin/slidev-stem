@@ -128,7 +128,9 @@ def source_phases(
     project's files. With `fix`, ruff and Prettier rewrite files that `others`
     read, so they are the first phase. They can run at the same time: ruff
     writes only Python, and Prettier has no parser for Python or TOML. Without
-    `fix`, no check writes a file that another reads, so all are one phase.
+    `fix`, no check writes a file that another reads, except the tool caches,
+    so all are one phase. A talk's Prettier checks every file in the talk, so
+    its .prettierignore names those caches (docs/talks.md, "Check your work").
     The four Python checks are one group, because `ruff format` and
     `ruff check` write the same cache."""
     rewriting: list[Sequence[Item]] = [
