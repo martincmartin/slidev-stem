@@ -2982,24 +2982,34 @@ weight, and dozens died of severe anemia and bone cancer.
 [click]
 
 At first, U.S. Radium refused to believe its prized paint was to blame. It paid
-a Harvard team to study the plant, and the team found the link. So the company
-sent the state a doctored copy of the report, which said that every girl was in
-"perfect condition." It blamed the women's deaths on syphilis, even after its
-own chief chemist died of radium poisoning. (In 1928, _Undark_'s inventor, Sabin
-von Sochocky, also died from the radium he had worked with.)
+a Harvard team to study the plant, and the team found radium was the cause. So
+the company sent the state a doctored copy of the report, which said that every
+girl was in "perfect condition." It blamed the women's deaths on syphilis, even
+after its own chief chemist died of radium poisoning. (In 1928, _Undark_'s
+inventor, Sabin von Sochocky, also died from the radium he had worked with.)
 
 -->
 
 <!--
-Thousands of young women painted those dials. A good job: clean, and it paid well. And radium was supposed to be good for you: doctors prescribed it, people drank radium water. So they were told the paint was harmless. Some painted their nails and teeth with it, to glow after work.
+Elite factory job, clean and paid well
 
-[click] The brush lost its point after a few strokes. So the supervisors taught them: shape it with your lips. Lip, dip, paint. Every day, a little more radium.
+Doctors prescribed radium, "live to 100"
 
-[click] The body takes radium for calcium, and builds it into bone. The teeth ache and come loose. Then the jaws rot, hips and ankles break. Anemia, bone cancer.
+Painted nails & teeth, to glow after work
 
-[click] U.S. Radium wouldn't believe it. It paid Harvard to study the plant, and Harvard found the link. So the company sent the state a doctored copy: every girl in "perfect condition." It blamed syphilis, even after its own chief chemist died of radium. Even the man who invented Undark died of radium, in 1928.
+[click] Brush lost its point
 
-IF ASKED: About a penny and a half a dial, 250 dials in a shift. USRC itself hired about 70 women to handle the radium; the 4,000 is for all the companies in the US and Canada. The photo is not USRC: it is a British clock factory, January 1932, and the dial is an Ingersoll alarm clock's. In 1928 Britain had only eight full-time dial painters, and they did not point their brushes with their lips.
+Every day, a little more radium.
+
+[click] Body thinks radium is calcium.
+
+The teeth ache and come loose. Anemia, bone cancer.
+
+[click] U.S. Radium paid Harvard doctor.
+
+Every girl in "perfect condition," blamed syphilis
+
+Chief chemist & inventor of Undark died of radium
 -->
 
 ---
@@ -3057,9 +3067,9 @@ waved hair and a pearl necklace.]
 
 [click]
 
-By their first court appearance in 1928, none of the five could raise their
-arms to take the oath. Public outrage forced the company to settle, paying each
-woman $10,000 (about $190,000 in 2026), medical costs, and a pension.
+By their first court appearance in 1928, all five were too weak to even raise
+their arms to take the oath. Public outrage forced the company to settle, paying
+each woman $10,000 (about $190,000 in 2026), medical costs, and a pension.
 
 [click]
 
@@ -3068,6 +3078,7 @@ Grace Fryer died in 1933, age 34.
 [click]
 
 > [!aside] What their bodies taught
+>
 > For decades, hundreds of former dial painters let scientists at MIT, and
 > later at Argonne National Laboratory, measure the radium in their bodies and
 > study their bones after death. They are still the main human evidence for
@@ -3079,25 +3090,14 @@ helped change that. And the radium in their bones set the first safe limit for
 radiation inside the body. The Manhattan Project set its limit for plutonium
 from it.
 
-Radium was finally phased out of watches in the 1960s. _Tritium_ took its place:
-its weak radiation can't even pass through a watch's glass. Today, most dials
-use paint that simply stores light and gives it back with no radiation at
-all. Tonight, take a look at yours in the dark.
-
 -->
 
 <!--
-Grace Fryer fought back. In a steel back brace, she and four others take U.S. Radium to court in 1927. The papers call them the Radium Girls.
+Papers: the Radium Girls.
 
-[click] At the first hearing, in 1928, none of the five can raise an arm to take the oath. The company settles: $10,000 each, about $190,000 today, with medical bills and a pension.
+[click:3] Before, only immediate problems, like lost finger.
 
-[click] Grace Fryer dies in 1933, at 34.
-
-[click] Their fight changed both law and science. Until then, the law paid for a lost finger, not for a slow poison. Cases like theirs helped change that. And their bones set the first safe limit for radiation inside the body. The Manhattan Project set plutonium's limit from it.
-
-Radium was phased out of watches in the 1960s. Then tritium: its radiation can't get through the glass. Today, mostly a paint that just stores light. So tonight, look at your watch in the dark.
-
-IF ASKED: The five settled in 1928 for $10,000 each, $600 a year and their medical bills; Grace Fryer died in 1933. Their lawyer argued that the two-year limit to sue starts when you learn you are sick; they settled before a judge ruled on it. In Ottawa, Illinois, the Radium Dial Company's painters sued too: the Illinois Industrial Commission ruled for Catherine Donohue in 1938, and the US Supreme Court declined the appeal on October 23, 1939. At MIT, Robley Evans measured the radium in the painters' bodies; his 1941 limit was 0.1 microgram of radium, and later limits for plutonium were set from it. Swiss watches used tritium paint until 1998; tritium gas tubes are still made. Super-LumiNova, from 1993, is not radioactive. The 1960s are when radium left watch dials; the last radium paint factory closed in 1978.
+Studying their bones: safe limit for radiation in body.  Manhattan Project.
 -->
 
 ---
