@@ -2904,7 +2904,7 @@ for luminous watches and instruments surged in the war.
 # alone (docs/article.md, "What a figure shows")
 layout: full
 class: lip-dip-paint
-clicks: 2
+clicks: 3
 ---
 
 # Lip, Dip, Paint
@@ -2912,9 +2912,10 @@ clicks: 2
 <img class="painters-photo bleed in-figure" src="/radium/painters.jpg" alt="A young woman in a work coat paints the numbers on an alarm clock's dial with a fine brush, at a bench with tins of dials and small vials of paint. Two more women work behind her.">
 
 <div class="painters-words side-text">
-  <div class="painters-paragraph text-dims">Told it was<br>harmless</div>
-  <div v-click="1" class="painters-paragraph text-dims">Shaped brush<br><em>with lips</em></div>
-  <div v-click="2" class="painters-paragraph text-dims">Radium goes<br>into bone</div>
+  <div class="painters-paragraph text-dims">People drink radium<br>water for health</div>
+  <div v-click="1" class="painters-paragraph text-dims">Told to shape brush<br><em>with lips</em></div>
+  <div v-click="2" class="painters-paragraph text-dims">Radium into bone</div>
+  <div v-click="3" class="painters-paragraph text-dims">Company forges<br>Harvard's report</div>
 </div>
 
 <style>
@@ -2952,29 +2953,40 @@ clicks: 2
 
 Across the United States and Canada, thousands of young women were hired to
 paint those tiny dials by hand. It was considered an elite factory job. The work
-was clean, and it paid well.  At the time, people thought small doses of radium
-were actually good for you. Doctors prescribed it as a cure-all, and people
-drank radium water the way we drink mineral water today.
+was clean, and it paid well.
+
+[figure 3: A dial painter in Britain, 1932: a young woman paints the numbers on
+an alarm clock's dial with a fine brush, beside tins of dials and small vials
+of paint. Two more painters work behind her.]
+
+At the time, people thought small doses of radium were actually good for you.
+Doctors administered it, and people drank radium water for health the way we
+drink mineral water today.
 
 So the women were told the paint was harmless. Some even painted their nails and
 their teeth with it, for fun, to glow in the dark after work.
 
 [click]
 
-[figure 2: A dial painter in Britain, 1932: a young woman paints the numbers on
-an alarm clock's dial with a fine brush, beside tins of dials and small vials
-of paint. Two more painters work behind her.]
-
-The fine camel-hair brushes lost their point after a few strokes. Supervisors
-taught the women to wet and shape the bristles between their lips: _lip, dip,
-paint_. Every day, each worker swallowed a little more radium.
+Supervisors taught the women to reshape their brushes by wetting the bristles
+between their lips: _lip, dip, paint_. Every day, each worker swallowed a little
+more radium.
 
 [click]
 
 Within a few years, the women began to sicken. The human body mistakes radium
-for calcium and builds it straight into bone.  First the teeth ached and came
+for calcium and builds it straight into bone.  First their teeth ached and came
 loose.  Then their jaws rotted, their hips and ankles shattered under their own
 weight, and dozens died of severe anemia and bone cancer.
+
+[click]
+
+At first, U.S. Radium refused to believe its prized paint was to blame. It paid
+a Harvard team to study the plant, and the team found the link. So the company
+sent the state a doctored copy of the report, which said that every girl was in
+"perfect condition." It blamed the women's deaths on syphilis, even after its
+own chief chemist died of radium poisoning. (In 1928, _Undark_'s inventor, Sabin
+von Sochocky, also died from the radium he had worked with.)
 
 -->
 
@@ -2985,33 +2997,31 @@ Thousands of young women painted those dials. A good job: clean, and it paid wel
 
 [click] The body takes radium for calcium, and builds it into bone. The teeth ache and come loose. Then the jaws rot, hips and ankles break. Anemia, bone cancer.
 
+[click] U.S. Radium wouldn't believe it. It paid Harvard to study the plant, and Harvard found the link. So the company sent the state a doctored copy: every girl in "perfect condition." It blamed syphilis, even after its own chief chemist died of radium. Even the man who invented Undark died of radium, in 1928.
+
 IF ASKED: About a penny and a half a dial, 250 dials in a shift. USRC itself hired about 70 women to handle the radium; the 4,000 is for all the companies in the US and Canada. The photo is not USRC: it is a British clock factory, January 1932, and the dial is an Ingersoll alarm clock's. In 1928 Britain had only eight full-time dial painters, and they did not point their brushes with their lips.
 -->
 
 ---
 # The photo on the left and the words on the right
-# (../docs/slide-layout.md): the court cases, and then what came of them,
-# each a group of its own, centered by itself. The second group fades in when
-# the first has faded out. The portrait is `in-figure`: the article's figure
-# shows it alone (docs/article.md, "What a figure shows")
+# (../docs/slide-layout.md): one list, a line more at each click. The
+# portrait is `in-figure`: the article's figure shows it alone
+# (docs/article.md, "What a figure shows")
 layout: full
 class: radium-girls
-clicks: 4
+clicks: 3
 ---
 
 # The Radium Girls
 
 <img class="fryer-photo in-figure" src="/radium/fryer.jpg" alt="Grace Fryer, a young woman with short dark waved hair and a pearl necklace, in a studio portrait.">
 
-<div v-click.hide="3" class="fryer-words side-text">
-  <div class="fryer-paragraph text-dims">U.S. Radium blamed<br>“syphilis”</div>
-  <div v-click="1" class="fryer-paragraph text-dims">1927: Grace Fryer<br>and four others sue</div>
-  <div v-click="2" class="fryer-paragraph text-dims">Too weak to raise<br>an arm for the oath</div>
-</div>
-
-<div v-click="3" class="fryer-words side-text">
-  <div class="fryer-paragraph text-dims">Safety rules,<br>labor laws, <em>OSHA</em></div>
-  <div v-click="4" class="fryer-paragraph text-dims">Today: tritium, or<br>paint that stores light</div>
+<div class="fryer-words side-text">
+  <div class="fryer-paragraph text-dims">1927: Grace Fryer and<br>four others sue</div>
+  <div v-click="1" class="fryer-paragraph text-dims">1928: too weak to take oath;<br>settle out of court</div>
+  <div v-click="2" class="fryer-paragraph text-dims">1933: Grace Fryer dies, age 34</div>
+  <div v-click="3" class="fryer-paragraph text-dims">Legacy: workers' comp<br>for slow poisoning;<br>radiation limits</div>
+  <!--  <div v-click="3" class="fryer-paragraph text-dims">Today: tritium, or<br>paint that stores light</div> -->
 </div>
 
 <style>
@@ -3023,17 +3033,9 @@ clicks: 4
   border-radius: 4px;
 }
 /* The house's text beside a picture (side-text). Each click adds a
-   paragraph, and the ones before it dim (style.css, "TEXT DIMS"). A group
-   that comes in waits for the other to fade out (style.css, "TEXT FADES"). */
+   paragraph, and the ones before it dim (style.css, "TEXT DIMS"). */
 .slidev-layout.radium-girls .fryer-words {
   left: 440px;
-}
-.slidev-layout.radium-girls .fryer-words.slidev-vclick-target {
-  transition: opacity var(--text-fade);
-}
-.slidev-layout.radium-girls
-  .fryer-words.slidev-vclick-target:not(.slidev-vclick-hidden) {
-  transition-delay: var(--text-fade);
 }
 .slidev-layout.radium-girls .fryer-paragraph + .fryer-paragraph {
   margin-top: 0.7em;
@@ -3042,50 +3044,40 @@ clicks: 4
   .fryer-paragraph:has(~ .fryer-paragraph:not(.slidev-vclick-hidden)) {
   --text-dim: var(--text-dimmed);
 }
-/* What came of it is the slide's one accent. */
-.slidev-layout.radium-girls .fryer-paragraph em {
-  font-style: normal;
-  color: color-mix(
-    in srgb,
-    var(--palette-accent),
-    var(--palette-background) var(--text-dim)
-  );
-}
 </style>
 
 <!-- narration
-
-At first, U.S. Radium refused to believe its prized paint was to blame. Even
-after its own chief chemist died of radium poisoning and independent doctors
-proved the link, the company buried the medical reports and blamed the women's
-deaths on syphilis. (In 1928, _Undark_'s inventor, Sabin von Sochocky, also
-died from the radium he had worked with.)
-
-[click]
 
 Former dial painter Grace Fryer fought back. Wearing a steel brace because
 radium had crushed her spine, she and four co-workers, called the "Radium
 Girls" by the press, sued U.S. Radium in 1927.
 
-[figure 4: Grace Fryer in a studio portrait: a young woman with short, dark,
+[figure 3: Grace Fryer in a studio portrait: a young woman with short, dark,
 waved hair and a pearl necklace.]
 
 [click]
 
 By their first court appearance in 1928, none of the five could raise their
 arms to take the oath. Public outrage forced the company to settle, paying each
-woman $10,000 (about $190,000 in 2026), medical costs, and a pension. Grace
-Fryer died five years later, at 34.
+woman $10,000 (about $190,000 in 2026), medical costs, and a pension.
 
 [click]
 
-Their lawsuit established the right to sue employers for on-the-job illness, and
-forced radiation safety rules that later saved thousands of lives on the
-Manhattan Project. Corporate abuses like these paved the way for modern labor
-laws and the creation of OSHA, the Occupational Safety and Health
-Administration, in 1970.
+Grace Fryer died in 1933, age 34.
 
 [click]
+
+> [!aside] What their bodies taught
+> For decades, hundreds of former dial painters let scientists at MIT, and
+> later at Argonne National Laboratory, measure the radium in their bodies and
+> study their bones after death. They are still the main human evidence for
+> how radioactive metals in bone cause cancer.
+
+Their fight changed both law and science. Until then, the law paid workers for a
+lost finger, but not for a poison that took years to strike. Cases like theirs
+helped change that. And the radium in their bones set the first safe limit for
+radiation inside the body. The Manhattan Project set its limit for plutonium
+from it.
 
 Radium was finally phased out of watches in the 1960s. _Tritium_ took its place:
 its weak radiation can't even pass through a watch's glass. Today, most dials
@@ -3095,17 +3087,17 @@ all. Tonight, take a look at yours in the dark.
 -->
 
 <!--
-U.S. Radium wouldn't believe it. Its own chief chemist died of radium, and doctors proved the link. The company buried the reports and blamed syphilis. Even the man who invented Undark died of radium, in 1928.
+Grace Fryer fought back. In a steel back brace, she and four others take U.S. Radium to court in 1927. The papers call them the Radium Girls.
 
-[click] Grace Fryer fought back. In a steel back brace, she and four others take U.S. Radium to court in 1927. The papers call them the Radium Girls.
+[click] At the first hearing, in 1928, none of the five can raise an arm to take the oath. The company settles: $10,000 each, about $190,000 today, with medical bills and a pension.
 
-[click] At the first hearing, in 1928, none of the five can raise an arm to take the oath. The company settles: $10,000 each, about $190,000 today, with medical bills and a pension. Grace Fryer dies five years later, at 34.
+[click] Grace Fryer dies in 1933, at 34.
 
-[click] Their case set the right to sue your employer for an illness from work, and the radiation safety rules that the Manhattan Project used. Abuses like these led to modern labor laws, and to OSHA in 1970.
+[click] Their fight changed both law and science. Until then, the law paid for a lost finger, not for a slow poison. Cases like theirs helped change that. And their bones set the first safe limit for radiation inside the body. The Manhattan Project set plutonium's limit from it.
 
-[click] Radium was phased out of watches in the 1960s. Then tritium: its radiation can't get through the glass. Today, mostly a paint that just stores light. So tonight, look at your watch in the dark.
+Radium was phased out of watches in the 1960s. Then tritium: its radiation can't get through the glass. Today, mostly a paint that just stores light. So tonight, look at your watch in the dark.
 
-IF ASKED: The five settled in 1928 for $10,000 each, $600 a year and their medical bills; Grace Fryer died in 1933. In Ottawa, Illinois, the Radium Dial Company's painters sued too: the Illinois Industrial Commission ruled for Catherine Donohue in 1938, and the US Supreme Court declined the appeal on October 23, 1939. At MIT, Robley Evans measured the radium in the painters' bodies; his 1941 limit was 0.1 microgram of radium, and later limits for plutonium were set from it. Swiss watches used tritium paint until 1998; tritium gas tubes are still made. Super-LumiNova, from 1993, is not radioactive. The 1960s are when radium left watch dials; the last radium paint factory closed in 1978.
+IF ASKED: The five settled in 1928 for $10,000 each, $600 a year and their medical bills; Grace Fryer died in 1933. Their lawyer argued that the two-year limit to sue starts when you learn you are sick; they settled before a judge ruled on it. In Ottawa, Illinois, the Radium Dial Company's painters sued too: the Illinois Industrial Commission ruled for Catherine Donohue in 1938, and the US Supreme Court declined the appeal on October 23, 1939. At MIT, Robley Evans measured the radium in the painters' bodies; his 1941 limit was 0.1 microgram of radium, and later limits for plutonium were set from it. Swiss watches used tritium paint until 1998; tritium gas tubes are still made. Super-LumiNova, from 1993, is not radioactive. The 1960s are when radium left watch dials; the last radium paint factory closed in 1978.
 -->
 
 ---

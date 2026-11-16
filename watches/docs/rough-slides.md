@@ -82,7 +82,7 @@
 ## Slide 9: Making the Dark Readable — Radium, Tritium, and Modern Lume
 
 - **Radium** (discovered by Marie Curie in 1898) was mixed into dial paint starting in the early 20th century — it glowed constantly, no "charging" needed.
-- The human cost: the **"Radium Girls,"** women employed to hand-paint dials, were taught to point their brushes with their lips, ingesting radioactive paint. Their resulting lawsuits in the 1920s became a landmark case for workplace safety law.
+- The human cost: the **"Radium Girls,"** women employed to hand-paint dials, were taught to point their brushes with their lips, ingesting radioactive paint. Their lawsuits in the 1920s helped make a slow poisoning at work something an employer pays for, and their bones set the first limits for radiation inside the body.
 - **Tritium** replaced radium starting in the **1960s** — a much lower-energy form of radiation, safer to be near, but still radioactive, with a roughly 12-year half-life, so tritium lume visibly dims over time. Look for "T Swiss T" printed on a dial.
 - Since the **1990s**, **Super-LumiNova / LumiNova** — a non-radioactive strontium-aluminate compound — has become the standard. It doesn't decay or emit radiation; instead it "charges" by absorbing ambient light and re-emitting it in the dark.
 
