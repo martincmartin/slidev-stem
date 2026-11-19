@@ -52,7 +52,7 @@ height attributes: the size a slide shows it at):
     p90     the same at the 90th percentile: whether the strongest marks survive.
            Thin styles score far apart on these two and the gap IS the finding
     Fmax   the ambient flare at which the typical mark falls through 3:1. A
-           property of the drawing in units of room light. 0.30 is the physical
+           property of the drawing in units of room light. 0.45 is the physical
            ceiling for any design whatsoever, so an Fmax of 0.09 means roughly
            "fine in a dim room, gone under the lights"
 
@@ -165,7 +165,7 @@ def fmax(ink: Mask, blurred: Linear, floor: float = lib.CONTRAST_FLOOR) -> float
     return lib.bisect(
         lambda flare: hold(ink, blurred, flare) >= floor,
         passing=0.0,
-        failing=0.30,
+        failing=lib.flare_limit(floor),
         steps=24,
     )
 
@@ -476,7 +476,7 @@ def print_table(scores: list[DrawingScore]) -> None:
             "all clear the gate. Above it, headroom stops deciding and taste takes over."
         )
     print(
-        "\nRead `hold` with `p90`, never alone. Fmax is room light tolerated; 0.30 is "
+        "\nRead `hold` with `p90`, never alone. Fmax is room light tolerated; 0.45 is "
         "the\nceiling for any design. watches/docs/measurements.md has the timekeepers' numbers."
     )
 

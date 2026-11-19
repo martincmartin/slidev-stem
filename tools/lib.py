@@ -743,8 +743,8 @@ def contrast(first: Colour, second: Colour, flare: float = 0.0) -> float:
     not clipped at white -- reflected ambient really does push the screen's white
     above its nominal white, and the eye adapts to that new maximum. Clipping
     invents a penalty for every light design. Because contrast is a ratio, flare
-    caps what ANY content can reach: 1.05/(F+0.05), so F=0.29 makes 3:1
-    unreachable by any design whatsoever.
+    caps what ANY content can reach: flare_ceiling(F), so above
+    flare_limit() = 0.45, 3:1 is unreachable by any design whatsoever.
     """
     first_luminance = first.luminance + flare
     second_luminance = second.luminance + flare
@@ -754,22 +754,30 @@ def contrast(first: Colour, second: Colour, flare: float = 0.0) -> float:
 
 
 def flare_ceiling(flare: float) -> float:
-    """The best contrast any design can reach at this flare level."""
-    return 1.05 / (flare + 0.05)
+    """The best contrast any design can reach at this flare level: black on
+    white, (1 + F + 0.05) / (0 + F + 0.05)."""
+    return (1.05 + flare) / (0.05 + flare)
+
+
+def flare_limit(floor: float = CONTRAST_FLOOR) -> float:
+    """The flare at which even black on white falls to `floor`: above it, no
+    design holds the floor. The inverse of flare_ceiling; 0.45 for 3:1."""
+    return (1.05 - 0.05 * floor) / (floor - 1)
 
 
 def max_flare(first: Colour, second: Colour, floor: float = CONTRAST_FLOOR) -> float:
     """Fmax: the ambient flare at which this pair falls through the floor.
 
     A property of the colours, in units of how much room light they can take.
-    0.30 is the physical ceiling. This is the number to shop venues with.
+    flare_limit(floor) is the physical ceiling. This is the number to shop
+    venues with.
     """
     if contrast(first, second) < floor:
         return 0.0
     return bisect(
         lambda flare: contrast(first, second, flare) >= floor,
         passing=0.0,
-        failing=0.30,
+        failing=flare_limit(floor),
         steps=40,
     )
 

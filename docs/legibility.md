@@ -81,21 +81,23 @@ and shifts edge luminance. In linear light, blur and flare commute, so the order
 is not a hidden assumption.
 
 **Flare caps what _any_ design can reach.** Because contrast is a ratio, a perfect
-black-and-white image tops out at `1.05 / (F + 0.05)`:
+black-and-white image tops out at `(1.05 + F) / (0.05 + F)` (`flare_ceiling` in
+`tools/lib.py`):
 
 ```
-F = 0.05 -> 10.5:1        F = 0.20 -> 4.2:1
-F = 0.10 ->  7.0:1        F = 0.29 -> 3.0:1  <- the floor is now unreachable
-F = 0.15 ->  5.3:1        F = 0.35 -> 2.6:1     BY ANY DESIGN WHATSOEVER
+F = 0.05 -> 11.0:1        F = 0.30 -> 3.9:1
+F = 0.10 ->  7.7:1        F = 0.45 -> 3.0:1  <- the floor is now unreachable
+F = 0.15 ->  6.0:1        F = 0.60 -> 2.5:1     BY ANY DESIGN WHATSOEVER
+F = 0.20 ->  5.0:1
 ```
 
-So "how does this do at 35% flare" is not a design question; it is a question about
-a room in which nobody can present anything. **The useful number runs the other
+So "how does this do at 50% flare" is not a design question; it is a question about
+the room. **The useful number runs the other
 way:**
 
 > **Fmax — the ambient flare at which this mark falls through 3:1, with the
 > venue's acuity blur already applied.** A property of the design, in units of how
-> much room light it can take. 0.30 is the physical ceiling.
+> much room light it can take. 0.45 is the physical ceiling (`flare_limit`).
 
 Fmax is the number to shop venues with, and the one to quote when someone asks
 whether a choice is safe.

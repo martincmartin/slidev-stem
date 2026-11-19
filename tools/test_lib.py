@@ -43,8 +43,13 @@ def test_contrast_of_black_on_white_is_21() -> None:
 
 def test_flare_lowers_contrast_and_has_a_ceiling() -> None:
     assert lib.contrast(BLACK, WHITE, flare=0.1) < lib.contrast(BLACK, WHITE)
-    assert lib.flare_ceiling(0.3) == pytest.approx(3.0)
+    assert lib.flare_ceiling(0.3) == pytest.approx(1.35 / 0.35)
     assert lib.flare_ceiling(0.0) == pytest.approx(21.0)
+    assert lib.flare_ceiling(lib.flare_limit(3.0)) == pytest.approx(3.0)
+    assert lib.flare_limit(3.0) == pytest.approx(0.45)
+    assert lib.contrast(BLACK, WHITE, flare=0.3) == pytest.approx(
+        lib.flare_ceiling(0.3)
+    )
     assert lib.flare_ceiling(0.1) < lib.flare_ceiling(0.05)
 
 

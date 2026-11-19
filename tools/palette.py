@@ -94,7 +94,7 @@ def show_house_palette(name: str) -> bool:
     print(
         f"  {'ceiling for ANY design':<24}"
         + "".join(f"{lib.flare_ceiling(flare):>8.2f}" for flare in FLARES)
-        + f"{0.30:>8.3f}"
+        + f"{lib.flare_limit():>8.3f}"
     )
     return passed
 
