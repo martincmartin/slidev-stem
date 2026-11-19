@@ -1712,9 +1712,7 @@ artView: south america
 
 Sailors during the Age of Sail could easily track their _latitude_ (north–south)
 by sighting the noon sun or the North Star. _Longitude_ (east–west), however,
-was a deadly blind spot.  Because the Earth spins continuously, the sky above
-one meridian looks just like the sky above any other, only hours later.  Without
-a reliable way to calculate longitude on the open ocean, ships routinely drifted 400
+was a deadly blind spot.  Without a reliable way to calculate longitude on the open ocean, ships routinely drifted 400
 miles or more off course.
 
 
@@ -1770,10 +1768,8 @@ north to a horizontal dashed line, with a label "Sail to latitude. Then east or
 west?"]
 
 > [!aside] What the count means
-> The figure uses six deaths a day to show the cost of time. Its final
-> count is 72. These daily numbers are illustrative, not a recorded list
-> of deaths. [Walter's account](https://www.gutenberg.org/cache/epub/47130/pg47130-images.html),
-> Book I, chapter X, reports four to six deaths a day and a total of 70 to 80.
+> The figure's daily count is illustrative. [Walter's account](https://www.gutenberg.org/cache/epub/47130/pg47130-images.html),
+> Book I, chapter X, reports four to six deaths a day, and 70 to 80 in all.
 
 
 In May 1741, Commodore George Anson's three ships were low on fresh water and
@@ -1787,8 +1783,7 @@ Fernández. Its route gains a dot for each day at sea. A scurvy death count rise
 as the ship sails.]
 
 When they reached its latitude, they didn't know whether the island was east or
-west of them.  After consulting with his officers, Commodore Anson sailed
-east. Two days later, when they saw land, it wasn't the island they desperately
+west of them.  Commodore Anson sailed east. Two days later, when they saw land, it wasn't the island they desperately
 needed---it was Chile, enemy territory.
 
 [click:3]
@@ -1931,13 +1926,6 @@ clicks: 2
 
 <!-- narration
 
-> [!aside] Which degree?
->
-> A degree of longitude is a smaller distance as you move away from the equator.
-> At the north and south poles, all lines of longitude meet and the distance
-> between them is zero.  The Act measures the error in degrees of a great
-> circle, essentially at the equator.
-
 Nearly thirty years before Anson's ordeal, a string of catastrophic maritime
 disasters pushed Britain's Parliament to pass the Longitude Act in 1714. It
 offered a fortune to anyone who could find a ship's longitude at sea:
@@ -2011,14 +1999,6 @@ meridian every 15 degrees. The Sun is under the globe, and a line runs from the
 pole down the meridian through Greenwich. It is noon in Greenwich, and a clock beside
 the globe says so. The ship is 30 degrees to the west.]
 
-> [!aside] The Sun in the picture
->
-> The real Sun is behind you as you look at this globe, and over the
-> Equator. The picture puts it under the globe so that it fits, and leaves the
-> night where the real Sun would put it. The real noon also runs up to about 16
-> minutes ahead of or behind a steady clock through the year. Navigators
-> corrected for that with a table, the _equation of time_.
-
 What does this have to do with watches?  Noon does not come to everyone at once,
 which is why we have time zones. The Earth turns toward the east.  When it is
 noon at the Royal Observatory in Greenwich, England (the definition of 0°
@@ -2042,11 +2022,8 @@ it. The clock says 2:00.]
 
 A navigator can measure noon at sea: it is when the Sun stands highest. After a
 second hour, noon reaches the ship. If the ship carried a watch that keeps
-Greenwich's time, at the ship's noon, it reads 2 p.m. Two hours behind Greenwich
-means 30 degrees west of it.
-
-Take the hours behind Greenwich, multiply by 15, and that is how many degrees
-west the ship is.
+Greenwich's time, at the ship's noon, it reads 2 p.m. Each hour behind Greenwich
+is 15 degrees west, so the ship is 30 degrees west.
 
 -->
 
@@ -2112,12 +2089,6 @@ clicks: 1
 </style>
 
 <!-- narration
-
-> [!aside] A steady error is not the problem
->
-> A clock that gains exactly 6 seconds every day is as good as a perfect one, if
-> the navigator knows it, since they can just subtract 6 seconds a day. What the
-> prize really needs is a clock whose rate does not change.
 
 How good must that watch be?  Sixty minutes divided by 15 degrees is 4 minutes a
 degree.  To find it within half a degree, the Act's top prize, the clock must be
@@ -2299,33 +2270,20 @@ him, in the shadows, a large clock in a glass case.]
 > [!aside] What is in the painting?
 >
 > Behind him is his third attempt at a marine clock, in its traveling case. The
-> watch in his hand is a watch of 1753, made to his design by John
-> Jefferys. That watch showed him that a small timekeeper could work.
+> watch in his hand is a watch of 1753, made to his design by John Jefferys.
 
 John Harrison was a village carpenter by trade. He taught himself to build
-clocks.  His first clocks, from 1713,
-were made almost entirely of wood. The oils of his day were poor: they
-thickened, and a clock had to stop to be cleaned and oiled.  So he made clocks
-that need no oil. Their bearings are _lignum vitae_, a tropical hardwood that
-oils itself.
+clocks.  His first clocks, from 1713, were made almost entirely of wood.  A
+metal clock had to stop to be cleaned and oiled.  So he made clocks that need no
+oil. Their bearings are _lignum vitae_, a tropical hardwood that oils itself.
 
-In about 1722, for the tower at Brocklesby Park in Lincolnshire, he built a
-wooden clock with a new escapement, the _grasshopper_, which also needs no
-oil. That clock still runs, over 300 years later, without ever being oiled.
-
-> [!aside] What else did he invent before the sea clocks?
->
-> From 1725, he and his brother James made precision pendulum clocks. For them,
-> he invented the _gridiron pendulum_, in about 1726: rods of brass and of steel.
-> Heat lengthens both, but the brass raises the weight as much as the steel
-> lowers it. So the pendulum keeps its length, and its swing keeps its time.
-> The grasshopper escapement and the gridiron both came before he started on
-> his first marine clock, in 1730.
+In about 1722, he built a wooden clock for the tower at Brocklesby Park, in
+Lincolnshire. It still runs, over 300 years later, and it has never been oiled.
 
 -->
 
 <!--
-The side project that changed the world.
+It started as a side project, and it changed the world.
 
 [click] over 300 years later.
 
@@ -2441,14 +2399,15 @@ function dimAt(clock) {
 [nofigure]
 
 In 1730, at about 37 years old, he took on Newton's obstacles: he began work on
-a clock for the Longitude prize at home in Lincolnshire. His first clock took 5 years, and runs with no oil at
-all. To see it move, watch this [30-second
+a clock for the Longitude prize. His first took 5 years and, like his wooden
+clocks, needs no oil. To see it move, watch this [30-second
 clip](https://www.youtube.com/watch?v=_mRTMZ3pTtM).
 
 It had its sea trial in 1736, to Lisbon and back. It did poorly on the way out,
 but on the way home, the ship's master put the ship about 70 miles east of where
-it was, while Harrison's clock got the longitude right. That won him money to
-build a better clock.
+it was, while Harrison's clock got the longitude right. It had started as a
+side project. Now it worked, and from 1737 the Board of Longitude paid him to
+build a better one.
 
 [click]
 
@@ -2457,9 +2416,9 @@ build a better clock.
 After 2 years on his second, he realized a design flaw and abandoned it.  It
 never sailed.
 
-He spent 19 years on his third clock, along the way inventing the _bimetallic
-strip_ to cancel the effects of temperature, and the _caged roller bearing_ to
-cut friction, both still in wide use today.  But he couldn't get it to keep time
+He spent 19 years on his third clock. Along the way, he invented the
+_bimetallic strip_, his answer to Newton's heat and cold, and the _caged roller
+bearing_, to cut friction. Both are still in wide use today.  But he couldn't get it to keep time
 regularly in all conditions.
 
 [click:2]
@@ -2468,15 +2427,17 @@ regularly in all conditions.
 
 [click]
 
-Then, after twenty-five years of heavy, table-sized clocks, he changed course.
-He saw that a small, fast-beating balance wheel resisted a ship's motion far
-better than a large, slow one. So his fourth attempt was an oversized pocket
-watch, just five inches across and three pounds in weight. In 1761, it went to
-sea.
+By 1755, after twenty-five years of heavy, table-sized clocks, the third was
+still not right. But a watch that John Jefferys made to his design, in 1753,
+had shown him that a small timekeeper could work. And a small, fast-beating balance wheel resisted a ship's
+motion, Newton's first obstacle, far better than a large, slow one. So he began a
+fourth, and kept working on the third alongside it. The fourth was an oversized
+pocket watch, just five inches across and three pounds in weight. He finished
+both in 1759. In 1761, the watch went to sea.
 
 [figure: A timeline from 1730 to 1760, with a bar for each clock, and its photo at the
 start of its bar. H1's bar is 5 years long and H2's is 2. H3's is 19, the longest. H4's
-is 4, and ends the same year as H3's.]
+is 4, the same 4 years as the end of H3's.]
 
 -->
 
@@ -2491,9 +2452,11 @@ is 4, and ends the same year as H3's.]
 
 bimetallic strip, caged roller bearing.
 
-[click] Oversized pocket watch.
+[click] 1755, alongside H3: oversized pocket watch.
 
-[click] 4 years.
+1753 Jefferys watch: small can work.
+
+[click] 4 years. Finished with H3, 1759.
 -->
 
 ---
@@ -2541,7 +2504,7 @@ clicks: 2
 
 <!-- narration
 
-To win, it needed to be within 2 minutes after 6 weeks---that's 3 seconds a day.
+The prize needed 2 minutes in 6 weeks: 3 seconds a day.
 
 [nofigure]
 
@@ -2556,15 +2519,13 @@ _seconds_ slow, or 0.06 seconds per day.
 
 [nofigure]
 
-But the Board of Longitude was not convinced, and sent the watch on a second
-trial, to Barbados in 1764, where it kept time within 39 seconds. In 1765, the
-Board agreed that it had kept time within the strictest limit of the Act, but
-still refused to pay. Harrison appealed to King George III, who declared, "By
-God, Harrison, I will see you righted!"
+But the Board was not convinced, and sent the watch on a second trial. In 1765,
+it agreed that the watch had kept time within the strictest limit of the Act.
+But it paid only half the prize.  Harrison appealed to King George III, who
+declared, "By God, Harrison, I will see you righted!"
 
-Over 36 years, John Harrison was paid £23,065 in all.  The last payment, £8,750,
-came in 1773, 43 years after he started. He was 80 years old. He died three
-years later.
+The last payment came in 1773, 43 years after he started, from Parliament, not
+the Board. He was 80 years old. He died three years later.
 
 Longitude at sea was solved.
 
@@ -2573,7 +2534,7 @@ Longitude at sea was solved.
 <!--
 [click] Jamaica, 1761.
 
-[click] The Board still won't pay.
+[click] The Board pays only half.
 
 He dies three years later.
 
