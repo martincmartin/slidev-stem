@@ -73,7 +73,10 @@ Use `layout: section`, an `eyebrow` frontmatter label, and a Markdown title.
 The theme sets the type and placement in `themes/house/styles/house.css` at the repo root.
 For a section with the cover's picture, use `art: all` and `artView: cover`.
 Mechanical Marvels uses this state, so the watch stays in place when the cover text changes.
-Changed The World uses it too: the Recap slide's tour ends there.
+Changed The World uses it too: the Recap slide's tour ends there. So does Look
+Good on Your Wrist (Part 3): the Radium Girls slide before it shows no watch, so
+the watch fades in at the cover's view.
+Each section slide starts a page of the article ([article.md](article.md), "The pages").
 
 ## The history line
 

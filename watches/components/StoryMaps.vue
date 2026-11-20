@@ -32,7 +32,12 @@ import { dayDots, voyageAt } from "../globe/voyage.ts";
 import type { VoyageStep } from "../globe/voyage.ts";
 import type { CameraPose } from "../webgl/scene.ts";
 import type { FrameListener } from "../webgl/stage.ts";
-import { ART, GLOBE } from "../watch/instance.ts";
+import { loadedArt, loadedGlobe } from "../watch/instance.ts";
+
+/** The page's art (watch/instance.ts), and the story maps of its globe:
+ *  none on a page that does not show the globe. */
+const art = loadedArt();
+const stories = loadedGlobe()?.stories ?? [];
 
 const props = defineProps<{
   /** A still's pose. */
@@ -46,7 +51,7 @@ const props = defineProps<{
   paused?: boolean;
 }>();
 
-const [width, height] = ART.scene.slide;
+const [width, height] = art.scene.slide;
 /** Each story's group: its map and its marks. */
 const groups = new Map<Story, SVGGElement>();
 /** A group's template ref: kept while it is mounted. */
@@ -134,7 +139,7 @@ const noonShip = useTemplateRef<SVGGElement>("noonShip");
 function drawNoonLabels(pose: CameraPose): void {
   const group = noonGroup.value;
   if (!group) return;
-  const marks = noonMarksAt(pose, ART.scene.slide);
+  const marks = noonMarksAt(pose, art.scene.slide);
   fade(group, marks ? 1 : 0);
   // for watch/slide-state.ts: where they are, however it was reached
   group.dataset["places"] = marks
@@ -158,10 +163,10 @@ function drawNoonLabels(pose: CameraPose): void {
 /** Place each map for a frame drawn at `pose`, and its marks at `now`. */
 function draw(pose: CameraPose, now: number): void {
   drawNoonLabels(pose);
-  for (const story of GLOBE.stories) {
+  for (const story of stories) {
     const group = groups.get(story);
     if (!group) continue;
-    const { matrix, opacity } = mapOnSlide(story.placed, pose, ART.scene.slide);
+    const { matrix, opacity } = mapOnSlide(story.placed, pose, art.scene.slide);
     fade(group, opacity);
     if (opacity > 0) {
       group.setAttribute("transform", `matrix(${matrix.join(" ")})`);
@@ -213,7 +218,7 @@ onBeforeUnmount(() => leave?.());
       />
     </clipPath>
     <g
-      v-for="(story, index) in GLOBE.stories"
+      v-for="(story, index) in stories"
       :key="story.placed.map.name"
       :ref="(element) => keep(story, element)"
       :data-map="story.placed.map.name"

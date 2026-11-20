@@ -1,15 +1,14 @@
-// The globe of the talk, made once at load from globe/earth.json, and the
-// matrices that each frame needs: the disc turns to face the camera
-// (docs/globe.md, "The globe"), and the Longitude From Time slide's noon line and
-// clock follow it.
+// The globe of the talk, made from globe/earth.json when this module loads.
+// It is the only module that imports the Earth's data, so a page loads it
+// with `import()`, and only if it shows the globe (watch/instance.ts,
+// docs/globe.md, "The globe in the deck"). The matrices that each frame
+// needs are in matrices.ts.
 
-import { towardCamera } from "../webgl/renderer.ts";
-import type { CameraAngles, Group, Mesh, Piece, View } from "../webgl/scene.ts";
-import type { Matrix4 } from "../webgl/math.ts";
+import type { Group, Mesh, Piece, View } from "../webgl/scene.ts";
 import earthFile from "./earth.json" with { type: "json" };
 import { parseEarth } from "./earth.ts";
 import type { Polygon } from "./earth.ts";
-import { DISC_GROUP, discMatrix, globeMeshes } from "./globe.ts";
+import { DISC_GROUP, globeMeshes } from "./globe.ts";
 import { STORY_MAPS, placeMap } from "./maps.ts";
 import { globePicture, landOf, mapPicture } from "./labels.ts";
 import type { Picture } from "./labels.ts";
@@ -18,10 +17,8 @@ import {
   HOUR_GROUP,
   MINUTE_GROUP,
   NOON_GROUP,
-  noonMatrices,
   noonPiece,
 } from "./noon.ts";
-import type { SlidePoint } from "./noon.ts";
 import { makeStories } from "./stories.ts";
 import type { Story } from "./stories.ts";
 import { globeCameras } from "./views.ts";
@@ -69,17 +66,4 @@ export function makeGlobe(slide: readonly [number, number]): Globe {
     stories,
     pictures,
   };
-}
-
-/** The matrix of each of the globe's groups, for a frame whose camera is at
- *  `angles`, with the Longitude From Time slide's clock at `clockAt`
- *  (`noonMatrices`). */
-export function globeMatrices(
-  angles: CameraAngles,
-  clockAt: SlidePoint,
-): Map<Group, Matrix4> {
-  return new Map([
-    [DISC_GROUP, discMatrix(towardCamera(angles))],
-    ...noonMatrices(angles, clockAt),
-  ]);
 }

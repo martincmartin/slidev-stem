@@ -1,0 +1,12 @@
+{"label": "after", "engine": "chromium", "page": "article/1/", "kB": 3357, "js_kB": 811, "first_canvas_ms": 1703, "elements": 1754, "heap_MB": 22.0}
+{"label": "after", "engine": "chromium", "page": "article/2/", "kB": 4301, "js_kB": 2136, "first_canvas_ms": 698, "elements": 3835, "heap_MB": 29.6}
+{"label": "after", "engine": "chromium", "page": "article/3/", "kB": 2254, "js_kB": 777, "first_canvas_ms": 281, "elements": 121, "heap_MB": 16.8}
+{"label": "after", "engine": "chromium", "page": "1", "kB": 4709, "js_kB": 2262, "first_canvas_ms": 1081, "elements": 854, "heap_MB": 31.0}
+{"label": "after", "engine": "firefox", "page": "article/1/", "kB": 3051, "js_kB": 811, "first_canvas_ms": 679, "elements": 1754, "heap_MB": null}
+{"label": "after", "engine": "firefox", "page": "article/2/", "kB": 4205, "js_kB": 2136, "first_canvas_ms": 1148, "elements": 3835, "heap_MB": null}
+{"label": "after", "engine": "firefox", "page": "article/3/", "kB": 2255, "js_kB": 777, "first_canvas_ms": 373, "elements": 121, "heap_MB": null}
+{"label": "after", "engine": "firefox", "page": "1", "kB": 4712, "js_kB": 2262, "first_canvas_ms": 907, "elements": 854, "heap_MB": null}
+{"label": "after", "engine": "webkit", "page": "article/1/", "kB": 2727, "js_kB": 811, "first_canvas_ms": 610, "elements": 1754, "heap_MB": null}
+{"label": "after", "engine": "webkit", "page": "article/2/", "kB": 3882, "js_kB": 2136, "first_canvas_ms": 953, "elements": 3835, "heap_MB": null}
+{"label": "after", "engine": "webkit", "page": "article/3/", "kB": 1931, "js_kB": 777, "first_canvas_ms": 457, "elements": 121, "heap_MB": null}
+{"label": "after", "engine": "webkit", "page": "1", "kB": 4709, "js_kB": 2262, "first_canvas_ms": 882, "elements": 854, "heap_MB": null}

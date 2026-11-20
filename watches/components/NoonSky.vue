@@ -9,9 +9,11 @@
 import { inject } from "vue";
 import { FIGURE } from "../addons/narration/figure.ts";
 import { FIGURE_CLOCK_AT, NOON_CLOCK, NOON_GLOBE } from "../globe/noon.ts";
-import { ART } from "../watch/instance.ts";
+import { loadedArt } from "../watch/instance.ts";
 
-const [width, height] = ART.scene.slide;
+const art = loadedArt();
+
+const [width, height] = art.scene.slide;
 const [clockX, clockY] =
   inject(FIGURE, null) === null ? NOON_CLOCK.at : FIGURE_CLOCK_AT;
 /** Under the pivot, above the 6. */

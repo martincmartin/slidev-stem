@@ -1,3 +1,20 @@
+<script lang="ts">
+let markupFetch: Promise<string> | undefined;
+
+/** The board's SVG, fetched once for the page: the article's figures that
+ *  show the board share it. Under the deck's base, which is not the host's
+ *  root if the deck is built with Slidev's --base. */
+function boardMarkup(): Promise<string> {
+  markupFetch ??= (async () => {
+    const source = `${import.meta.env.BASE_URL}diving-board.svg`;
+    const response = await fetch(source);
+    if (!response.ok) throw new Error(`${source}: ${String(response.status)}`);
+    return response.text();
+  })();
+  return markupFetch;
+}
+</script>
+
 <script setup lang="ts">
 // The diving board of public/diving-board.svg. The SVG is a SMIL animation with
 // one timeline (art/diving_board.py writes it). This component owns the clock:
@@ -214,12 +231,7 @@ function apply(target: BoardTarget): void {
 }
 
 onMounted(async () => {
-  // under the deck's base, which is not the host's root if the deck is
-  // built with Slidev's --base
-  const source = `${import.meta.env.BASE_URL}diving-board.svg`;
-  const response = await fetch(source);
-  if (!response.ok) throw new Error(`${source}: ${String(response.status)}`);
-  markup.value = await response.text();
+  markup.value = await boardMarkup();
   await nextTick(); // v-html puts the SVG in the page
   const board = svg();
   if (board) placeSentence(board);

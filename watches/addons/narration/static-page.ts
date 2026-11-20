@@ -71,3 +71,24 @@ export function parseErrors(html: string): ParserError[] {
   });
   return errors;
 }
+
+/** A page that sends its reader to `target`, a URL relative to the page:
+ *  the article's address with no part (`article/`) goes to the first part.
+ *  A static host has no redirect rules, so the page does it: a refresh, and
+ *  a link for a browser that does not follow it. */
+export function redirectPage(target: string): string {
+  const href = target.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="refresh" content="0; url=${href}">
+<meta name="robots" content="noindex">
+<title>The article</title>
+</head>
+<body>
+<p><a href="${href}">Go to the article.</a></p>
+</body>
+</html>
+`;
+}

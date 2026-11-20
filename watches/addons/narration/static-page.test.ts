@@ -2,7 +2,7 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { parseErrors, staticPage } from "./static-page.ts";
+import { parseErrors, redirectPage, staticPage } from "./static-page.ts";
 
 const PARTS = {
   article: "<main>The article</main>",
@@ -65,4 +65,12 @@ test("an index.html with no app element is an error", () => {
     () => staticPage("<html><head></head><body></body></html>", PARTS),
     /no <div id="app">/,
   );
+});
+
+test("the redirect page sends its reader on, and is valid HTML", () => {
+  const page = redirectPage("1/");
+  assert.match(page, /<meta http-equiv="refresh" content="0; url=1\/">/);
+  assert.match(page, /<a href="1\/">/);
+  assert.deepEqual(parseErrors(page), []);
+  assert.match(redirectPage('a"b&c'), /url=a&quot;b&amp;c"/);
 });

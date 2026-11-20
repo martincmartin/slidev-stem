@@ -45,7 +45,8 @@ async function checkEngine(deck: string, engine: Engine): Promise<string[]> {
         undefined,
         { timeout: CHECK_TIMEOUT_MS },
       );
-      await page.goto(`${ORIGIN}/article`);
+      // the voyage is on Part 2's page
+      await page.goto(`${ORIGIN}/article/2`);
       await page.locator(".article-motion button").click();
       const voyage = page.locator("#hunt-for-juan-fernandez-island-1741-1");
       await voyage.scrollIntoViewIfNeeded();

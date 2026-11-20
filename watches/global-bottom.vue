@@ -75,7 +75,12 @@ import { WatchModel } from "./watch/model.ts";
 import type { WatchModelState } from "./watch/model.ts";
 import { nextVoyage, settled, voyageEndAt } from "./globe/voyage.ts";
 import type { VoyageStep } from "./globe/voyage.ts";
-import { ART, GLOBE, artModel, watchStills } from "./watch/instance.ts";
+import {
+  artModel,
+  loadedArt,
+  loadedGlobe,
+  watchStills,
+} from "./watch/instance.ts";
 import { moveOf } from "./watch/navigation.ts";
 import type { Move, Place } from "./watch/navigation.ts";
 import { slidePalette } from "./watch/palette.ts";
@@ -93,6 +98,11 @@ import {
   watchState,
 } from "./watch/state.ts";
 import type { StepMoveWith, WatchState } from "./watch/state.ts";
+
+/** The page's art (watch/instance.ts), and the story maps of its globe:
+ *  none on a page that does not show the globe. */
+const art = loadedArt();
+const stories = loadedGlobe()?.stories ?? [];
 
 /** ms: a step this soon after a press that jumped jumps too. A jump leaves
  *  nothing that runs, so without this, every other press of a burst would
@@ -129,7 +139,7 @@ const model = shallowRef<WatchModel>();
  *  at the strikes. */
 const tickTock = computed(() =>
   tickTockState(frontmatter.value, slidev.nav.clicks) && !hidden.value
-    ? { strikes: stoneStrikes(ART, frontmatter.value) }
+    ? { strikes: stoneStrikes(art, frontmatter.value) }
     : undefined,
 );
 /** The time-lapse's speed-up at the click, while the slide shows the time
@@ -199,7 +209,7 @@ function showWatch(
   // a slide reached from a slide without the watch starts at its state
   stage.show(
     stageState(
-      ART,
+      art,
       { ...now, flash, ...(cameraMove ? { move: cameraMove } : {}) },
       moveWith,
     ),
@@ -263,7 +273,7 @@ function goOutOfSight(): void {
   clearTimeout(hideTimer);
   hideTimer = undefined;
   if (stageTarget && stage) {
-    stage.show(stageState(ART, stageTarget), modelState(stageTarget), true);
+    stage.show(stageState(art, stageTarget), modelState(stageTarget), true);
     showRestDelay();
   }
   stage?.stop();
@@ -286,8 +296,8 @@ function frontmatterOf(slide: number): Record<string, unknown> {
  *  at once on a jump. After `showWatch`, which moves the camera. */
 function showVoyage(clicks: number, move: Move): void {
   const to = voyageFor(
-    ART,
-    GLOBE.stories,
+    art,
+    stories,
     state.value,
     voyageState(frontmatter.value, clicks),
   );
@@ -313,10 +323,10 @@ function showBoard(clicks: number, move: Move): void {
 
 onMounted(() => {
   if (!live || !canvas.value) return;
-  model.value = new WatchModel(ART);
+  model.value = new WatchModel(art);
   stage = new Stage(
     canvas.value,
-    ART.scene,
+    art.scene,
     palette.value.palette,
     artModel(model.value),
   );
@@ -382,8 +392,8 @@ onMounted(() => {
   if (!live || lazy || !location.pathname.startsWith("/presenter")) return;
   const ratio = window.devicePixelRatio || 1;
   const size: [number, number] = [
-    Math.round(ART.scene.slide[0] * ratio),
-    Math.round(ART.scene.slide[1] * ratio),
+    Math.round(art.scene.slide[0] * ratio),
+    Math.round(art.scene.slide[1] * ratio),
   ];
   const pending = nav.slides.value.flatMap((route) => {
     const slide = route.meta.slide?.frontmatter ?? {};

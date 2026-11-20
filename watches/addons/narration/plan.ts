@@ -27,6 +27,11 @@ import type { FigureMarker, QuoteBlock } from "./narration.ts";
 /** The frontmatter key for a slide's title in the article, in place of its
  *  title on the screen (../../docs/article.md, "A title for the article"). */
 const ARTICLE_TITLE_KEY = "articleTitle";
+/** The frontmatter key that puts a slide at the end of every page (the
+ *  credits), and the one that keeps a section's page unlinked
+ *  (../../docs/article.md, "The pages"). */
+const EVERY_PAGE_KEY = "articleEveryPage";
+const LINKED_KEY = "articleLinked";
 
 /** A part of a slide's narration, rendered for the plan's output: as
  *  `NarrationPart`, with each block's `text` in the output's format. The plan
@@ -50,12 +55,23 @@ export type RenderedBlock =
   | QuoteBlock
   | FigureMarker;
 
-export interface SlideInput {
+/** What the split into pages reads of a slide: its frontmatter's keys, and
+ *  no talk's rules (`SlideInput` has them too). So a page can find its
+ *  slides before it makes anything that the talk's rules need. */
+export interface PagedSlide {
   /** The slide's number (1-based). */
   readonly no: number;
   /** The slide's title in the article: its `articleTitle`, or its own. */
   readonly title: string | null;
   readonly layout: string | null;
+  /** `true`: the slide goes at the end of every page (`articleEveryPage`). */
+  readonly everyPage: boolean;
+  /** `false` on a section whose page no other page links to yet
+   *  (`articleLinked: false`). */
+  readonly linked: boolean;
+}
+
+export interface SlideInput extends PagedSlide {
   /** A section slide's small line above its title ("PART 1"). */
   readonly eyebrow: string | null;
   /** The slide's history line (history.ts), or `null`. */
@@ -66,6 +82,23 @@ export interface SlideInput {
   readonly defaults: readonly number[];
   /** A key for the picture at a click: two equal keys draw the same picture. */
   readonly keyOf: (clicks: number) => string;
+}
+
+/** A slide as the split into pages reads it, from its frontmatter. */
+export function pagedSlide(slide: {
+  readonly no: number;
+  readonly title: string | null;
+  readonly frontmatter: Record<string, unknown>;
+}): PagedSlide {
+  const { frontmatter } = slide;
+  const layout = frontmatter["layout"];
+  return {
+    no: slide.no,
+    title: frontmatterText(frontmatter, ARTICLE_TITLE_KEY) ?? slide.title,
+    layout: typeof layout === "string" ? layout : null,
+    everyPage: frontmatter[EVERY_PAGE_KEY] === true,
+    linked: frontmatter[LINKED_KEY] !== false,
+  };
 }
 
 /** A slide as the page reads it, from its number, its title, its
@@ -89,9 +122,7 @@ export function slideInput(
   // the slide's clicks, as its frontmatter says; 0 if it does not
   const total = Number(frontmatter["clicks"] ?? 0);
   return {
-    no,
-    title: frontmatterText(frontmatter, ARTICLE_TITLE_KEY) ?? slide.title,
-    layout: text("layout"),
+    ...pagedSlide(slide),
     eyebrow: text("eyebrow"),
     history: historyOf(frontmatter),
     parts: slide.parts,
@@ -100,6 +131,68 @@ export function slideInput(
       hooks.pictureKey(frontmatter, clicks) ??
       `slide ${String(no)} @${String(clicks)}`,
   };
+}
+
+/** One page of the article: a part of the talk. */
+export interface ArticlePage<S extends PagedSlide = PagedSlide> {
+  /** The part's number, from 1: the page is at `article/<number>/`. */
+  readonly number: number;
+  /** The part's section slide, or `null` for a talk with no section. */
+  readonly section: S | null;
+  /** What the page plans, in order: the cover, for its title only on a
+   *  page after the first (`titleOnly`), whole on page 1; the part's slides;
+   *  then the slides that go on every page. */
+  readonly slides: readonly PageSlide<S>[];
+}
+
+/** A slide on a page; the cover, on a page after the first, for its title
+ *  only. */
+export interface PageSlide<S extends PagedSlide = PagedSlide> {
+  readonly slide: S;
+  readonly titleOnly: boolean;
+}
+
+/** The article's pages: one for each section slide, which starts a part,
+ *  from the section up to the next one. The slides before the first section
+ *  (the cover) are on page 1. A page after the first starts with the cover's
+ *  title only. A slide with `articleEveryPage` is at the end of every page,
+ *  and nowhere else. */
+export function articlePages<S extends PagedSlide>(
+  slides: readonly S[],
+): ArticlePage<S>[] {
+  const whole = (slide: S): PageSlide<S> => ({ slide, titleOnly: false });
+  const everyPage = slides.filter((slide) => slide.everyPage).map(whole);
+  const [cover] = slides;
+  const titleOnly: PageSlide<S>[] =
+    cover?.layout === "cover" ? [{ slide: cover, titleOnly: true }] : [];
+  interface Building {
+    section: S | null;
+    slides: PageSlide<S>[];
+  }
+  const pages: Building[] = [];
+  let current: Building = { section: null, slides: [] };
+  for (const slide of slides) {
+    if (slide.everyPage) continue;
+    if (slide.layout === "section" && current.section !== null) {
+      pages.push(current);
+      current = { section: slide, slides: [...titleOnly, whole(slide)] };
+    } else {
+      if (slide.layout === "section") current.section = slide;
+      current.slides.push(whole(slide));
+    }
+  }
+  pages.push(current);
+  return pages.map((page, index) => ({
+    number: index + 1,
+    section: page.section,
+    slides: [...page.slides, ...everyPage],
+  }));
+}
+
+/** What `pagePlan` plans for one of a page's slides: the slide, or the
+ *  cover with its title only. */
+export function pageInput(input: SlideInput, titleOnly: boolean): SlideInput {
+  return titleOnly ? { ...input, parts: null, defaults: [] } : input;
 }
 
 export interface FigureBlock {

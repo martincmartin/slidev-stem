@@ -1,15 +1,18 @@
 # The article: the talk as a web page
 
-**Covers:** the article at `/article`: the talk for people who did not see it,
-as one long page of narration with live figures between the paragraphs, in
-the style of Bartosz Ciechanowski's "Mechanical Watch". How to write the
-narration and place the figures; asides; pull quotes; a slide's title
+**Covers:** the article at `/article/1`, `/article/2` and so on: the talk for
+people who did not see it, as a page for each part, of narration with live
+figures between the paragraphs, in the style of Bartosz Ciechanowski's
+"Mechanical Watch". The pages, the keys that place a slide on them, and
+what each page loads; how
+to write the narration and place the figures; asides; pull quotes; a slide's title
 for the article; what a figure shows, and why; the sliders,
 the button, the playing figure, and Part 2's story figures; how the code is split between the addon and the
 talk; how to build the static page, and where it can go; how to export
 its text.
 **Read before** you write or change a slide's narration, add a click to a
-slide that has narration, give a slide a title for the article, change
+slide that has narration, add a part or a slide for every page, give a
+slide a title for the article, change
 `addons/narration/`, the figure layer
 (`components/FigureLayer.vue`, `webgl/shared.ts`, `watch/article.ts`), or
 build the article or export its text.
@@ -22,7 +25,35 @@ build the article or export its text.
 (steps in a paused figure, and the figure's own time),
 [`tasks/2026-10-27-firefox-figure-copies/`](../tasks/2026-10-27-firefox-figure-copies/PLAN.md)
 (the figures' sheets and crops: a blink and a slow spring in Firefox for
-Android).
+Android),
+[`tasks/2026-11-20-article-parts/`](../tasks/2026-11-20-article-parts/PLAN.md)
+(a page for each part, and what each page loads).
+
+## The pages
+
+**Each part of the talk is a page**, at `article/<part>/`: a section slide
+starts a part, and its page holds the slides up to the next section
+(`articlePages` in `addons/narration/plan.ts`). The slides before the first
+section, the cover, are on page 1. `/article` goes to `/article/1`: the
+router redirects it, and the prerender writes a static page that does. Why:
+one page for the whole talk was too long, and each page loads only what its
+figures need (the task's `PLAN.md`).
+
+- **A page after the first** starts with the cover's title, and not the
+  cover's narration or figure. Its section slide gets no figure by default,
+  as on any page: its narration's `[figure: …]` gives it one. The Part 2 and
+  Part 3 sections show the watch so, centred (`article: 0: view: centred
+cover`).
+- **A slide with `articleEveryPage: true`** is at the end of every page, and
+  nowhere else: the Questions slide, whose narration is the credits. A
+  photo's credit goes where the photo shows, and every page has the credits,
+  so a part that gets a photo needs no change.
+- **A section with `articleLinked: false`** has its page, but no other page
+  links to it: a part that is not done yet. Part 3, now. Remove the key to
+  launch the part.
+- **Each page links to the other parts** under the byline, and to the next
+  part at its end. The links load the page anew, so it starts with only its
+  own figures.
 
 ## What a reader gets
 
@@ -30,8 +61,9 @@ Android).
   even if a figure's own pause goes: WCAG 2.2.2 ("Pause, Stop, Hide") asks
   for a way to pause motion that starts by itself and lasts more than 5 s,
   and the prerender pauses the page with it.
-- A table of contents: each part (a section slide) and each slide's title,
-  or its title for the article ("A title for the article", below).
+- Links to the other parts ("The pages", above).
+- A table of contents: the page's part (its section slide) and each slide's
+  title, or its title for the article ("A title for the article", below).
 - Under a slide's heading, its history line, if it has one
   ([slide-patterns.md](slide-patterns.md), "The history line").
 - For each slide, its narration, its asides (each beside its paragraph, in
@@ -410,18 +442,44 @@ The gusts loop while that figure runs. A pause stops them. The page's
 pause control still lets readers step the voyage; reduced motion makes
 those steps show their targets at once.
 
+## What a page loads
+
+A page loads only what its figures need. The numbers before and after are in
+[the task](../tasks/2026-11-20-article-parts/PLAN.md), section 7.
+
+- **The art.** The app's setup (`setup/main.ts`) makes the page's art before
+  the app mounts, so the static page shows until the live one can take its
+  place. An article page makes the globe only if one of its slides shows it
+  ([globe.md](globe.md), "The globe in the deck"): Part 2. So the talk's
+  rules (`ARTICLE_HOOKS`) must run only for the page's own slides: the page
+  finds them from the frontmatter alone (`pagedSlide`, `articlePages`), and
+  a slide of another page may name a piece that the page's art does not
+  have.
+- **The diving board.** A figure mounts the board only if its slide has a
+  `board` key, and the page fetches `diving-board.svg` once
+  (`boardMarkup` in `components/DivingBoard.vue`): 751 KB, and an element
+  for each of its parts in the page.
+- **The stills.** The static page's stills load lazily (`loading="lazy"`):
+  a reader with JavaScript gets the live figures, so a still loads only near
+  the screen, before they take its place.
+- **The watch** is whole on every page: the cover's figure, the World War I
+  slide's case. Its unused marks (the one-step wheel, 36,713 triangles) cost
+  about 2 MB of GPU buffers. Not an oversight: a renderer that uploads a
+  mesh at its first draw would upload the one-step wheel in the middle of
+  the live talk (the task, section 3).
+
 ## How the code is split
 
-| Where                                                           | What                                                                                                                                                                                            |
-| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `addons/narration/` (a Slidev addon; the headmatter's `addons`) | the narration's parser, the preparser, the page model, the `/article` route and its line in `pnpm dev`, the page, its figures and its pull quotes, the prerender. It knows nothing of the watch |
-| `addons/narration/figure.ts`                                    | what the addon and the talk say to each other: `FIGURE` (a figure's click, its time, controls, stillness) and `ARTICLE_HOOKS` (the talk's rules)                                                |
-| `setup/main.ts`                                                 | gives the article the talk's rules (`ARTICLE_HOOKS`)                                                                                                                                            |
-| `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, the camera's key, marks, the `article` settings, the controls' words                                                                |
-| `addons/narration/text.ts`                                      | the page plan as Markdown, for the text export                                                                                                                                                  |
-| `watch/article-text.ts`                                         | the text export (`pnpm article:text`), and the page that the talk's tests check, from `slides.md`                                                                                               |
-| `global-bottom.vue`, `components/FigureLayer.vue`               | in a figure, the layer is the figure's: the watch at the figure's click, the board, "tick" and "tock", the time scale                                                                           |
-| `webgl/shared.ts`, `watch/instance.ts`                          | one renderer, one WebGL context, for all the figures (`sharedStage`)                                                                                                                            |
+| Where                                                           | What                                                                                                                                                                                                      |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `addons/narration/` (a Slidev addon; the headmatter's `addons`) | the narration's parser, the preparser, the page model, the `/article/<part>` routes and their line in `pnpm dev`, the page, its figures and its pull quotes, the prerender. It knows nothing of the watch |
+| `addons/narration/figure.ts`                                    | what the addon and the talk say to each other: `FIGURE` (a figure's click, its time, controls, stillness) and `ARTICLE_HOOKS` (the talk's rules)                                                          |
+| `setup/main.ts`                                                 | makes the page's art before the app mounts, with the globe only where the page shows it ("What a page loads"), and gives the article the talk's rules (`ARTICLE_HOOKS`)                                   |
+| `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, the camera's key, marks, the `article` settings, the controls' words                                                                          |
+| `addons/narration/text.ts`                                      | the page plan as Markdown, for the text export                                                                                                                                                            |
+| `watch/article-text.ts`                                         | the text export (`pnpm article:text`), and the page that the talk's tests check, from `slides.md`                                                                                                         |
+| `global-bottom.vue`, `components/FigureLayer.vue`               | in a figure, the layer is the figure's: the watch at the figure's click, the board, "tick" and "tock", the time scale                                                                                     |
+| `webgl/shared.ts`, `watch/instance.ts`                          | one renderer, one WebGL context, for all the figures (`sharedStage`)                                                                                                                                      |
 
 **One renderer for the page.** A browser keeps about 16 WebGL contexts on a
 page. Each figure is a 2D canvas, with its own timeline and model, and the
@@ -452,10 +510,12 @@ Slidev's types (`types/`). Move it to the house when a second talk uses it.
 
 **The addon uses Slidev internals** (`types/slidev-internals.d.ts`):
 `PrintSlideClick`, `useFixedNav`, `createFixedClicks`, `slideWidth`,
-`slideHeight` and `configs`. An upgrade of Slidev can change them. After an
-upgrade, open `/article` and look.
+`slideHeight` and `configs`; and the talk's `setup/main.ts` uses `slides`
+(`logic/slides.ts`), to find a page's slides before the app mounts. An
+upgrade of Slidev can change them. After an upgrade, open `/article/1` and
+`/article/2` and look.
 
-**The addon's route is `/article`, a route of the deck.** The slides keep
+**The addon's routes are `/article/<part>`, routes of the deck.** The slides keep
 their own routes. A page at `/narrated/3` would not work (`docs/export.md`,
 "Use no separate route").
 
@@ -465,22 +525,27 @@ their own routes. A page at `/narrated/3` would not work (`docs/export.md`,
 pnpm article   # slidev build, then pnpm prerender: node addons/narration/prerender.ts dist
 ```
 
-`prerender.ts` serves the built deck, opens `/article` in Chromium, and takes
-a still of each figure, as it shows when it has settled. It takes each still,
+`prerender.ts` serves the built deck, opens each page (`/article/1`,
+`/article/2`, ...) in Chromium, and takes a still of each figure, as it
+shows when it has settled. The page says how many parts there are
+(`data-article-pages`). It takes each still,
 and scrolls, with the page paused ("Pause them all"): with no GPU, a frame
 takes up to 0.4 s, and a screenshot or a scroll waits for frames. This made
 it 3.7× faster (64 s here); the settles are most of what is left
 ([the task](../tasks/2026-10-22-article-prerender-speed/PLAN.md)). It writes
-`dist/article/index.html`: the deck's `index.html`, with the article's text
-in it as HTML and each figure a still (`dist/article/figures/`, about 6 MB at
-twice the pixel density). A figure with steps is a still of its first step:
+`dist/article/<part>/index.html`: the deck's `index.html`, with the page's
+text in it as HTML and each figure a still (`dist/article/<part>/figures/`,
+about 6 MB in all at twice the pixel density). `dist/article/index.html`
+sends a reader to `1/` (`redirectPage` in
+`addons/narration/static-page.ts`): a static host has no redirect rules. A figure with steps is a still of its first step:
 the live figure shows that step too when it takes the still's place, so the
 page does not jump. So:
 
 - the page reads with no JavaScript, and a search engine sees its text;
-- with JavaScript, the deck's code starts at `/article/`, and the live article
-  takes the static one's place;
-- `dist/` works on any static host, at `/article/`, with no rewrite rules. If
+- with JavaScript, the deck's code starts at `/article/<part>/`, and the live
+  article takes the static one's place;
+- `dist/` works on any static host, at `/article/<part>/`, with no rewrite
+  rules. If
   the deck is not at the host's root, build it with Slidev's `--base`
   (`pnpm exec slidev build --base /talks/watches/`, then the prerender). The
   prerender reads the base from `index.html`. GitHub Pages builds it this
@@ -511,7 +576,8 @@ in Playwright Chromium, Firefox, Firefox with private browsing, and WebKit.
 ## Export the text
 
 ```bash
-pnpm article:text > article.md   # the article as Markdown, in under a second
+pnpm article:text > article.md            # the whole article, as one page, in under a second
+pnpm article:text --part 2 > part-2.md    # one page, as the reader gets it
 ```
 
 For a reader that takes text, such as a chatbot asked for feedback on the
@@ -524,8 +590,10 @@ playing figure's captions follow it. The controls are in the words that the
 figure shows (`SLIDER_WORDS` and `BUTTON_WORDS` in `watch/article.ts`).
 
 It reads `slides.md` as the tests do, with no build and no browser, and
-plans the page with the page's own code (`slideInput` and `pagePlan` in
-`addons/narration/plan.ts`), so it has the page's figures. A copy of the
+plans the page with the page's own code (`slideInput`, `articlePages` and
+`pagePlan` in `addons/narration/plan.ts`), so it has the page's figures.
+The whole article is one page with every part, and the slides for every
+page once, at their place in the talk. A copy of the
 page is not the same: it has no figures, because alt text is not copied, and
 it loses the headings' levels, the italics and the asides' marks. A print of
 the live page has blank figures (below).

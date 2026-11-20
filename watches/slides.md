@@ -6,9 +6,9 @@ theme: house
 colorSchema: light
 title: What Everyone Should Know About Watches
 author: Martin C. Martin
-# The article, at /article: the talk for readers, with its narration and live
-# figures (docs/article.md). "@/" is this talk's directory: a relative path
-# would start at its parent.
+# The article, a page for each part at /article/1, /article/2 and so on: the
+# talk for readers, with its narration and live figures (docs/article.md).
+# "@/" is this talk's directory: a relative path would start at its parent.
 addons:
   - palette-ledger
   - "@/addons/narration"
@@ -325,9 +325,9 @@ From back-and-forth to turning in one direction
 <script setup>
 import { useSlideContext } from "@slidev/client";
 import { escapementMarks, LEADER_GAP } from "./watch/callouts.ts";
-import { ART } from "./watch/instance.ts";
+import { loadedArt } from "./watch/instance.ts";
 // where the leaders end: points of the watch, in this slide's view
-const marks = escapementMarks(ART, useSlideContext().$frontmatter);
+const marks = escapementMarks(loadedArt(), useSlideContext().$frontmatter);
 </script>
 
 <!-- The newest callout is the focus: while the pallet's (click 2) and then the
@@ -627,9 +627,9 @@ Fast gear, meet slow gear
 <script setup>
 import { useSlideContext } from "@slidev/client";
 import { gearsMarks, LEADER_GAP } from "./watch/callouts.ts";
-import { ART } from "./watch/instance.ts";
+import { loadedArt } from "./watch/instance.ts";
 // where the leaders end: outside the gears' tip circles, in this slide's view
-const marks = gearsMarks(ART, useSlideContext().$frontmatter);
+const marks = gearsMarks(loadedArt(), useSlideContext().$frontmatter);
 </script>
 
 <!-- Each callout's leader points at the gear that the whole label names, so
@@ -870,8 +870,8 @@ From once a minute to once an hour
 <script setup>
 import { useSlideContext } from "@slidev/client";
 import { gearTrainMarks, LEADER_GAP } from "./watch/callouts.ts";
-import { ART } from "./watch/instance.ts";
-const marks = gearTrainMarks(ART, useSlideContext().$frontmatter);
+import { loadedArt } from "./watch/instance.ts";
+const marks = gearTrainMarks(loadedArt(), useSlideContext().$frontmatter);
 </script>
 
 <!-- Click 1's text fades in at the click, as the camera starts to move: it
@@ -1607,11 +1607,19 @@ eyebrow: PART 2
 art: all
 artView: cover
 artMoveAlso: [hour hand, minute hand]
+# the page of Part 2 starts with the watch, whole, as the cover's figure
+# does (docs/article.md, "The pages")
+article:
+  0:
+    view: centred cover
 ---
 
 # Changed The World
 
 <!-- narration
+
+[figure: The whole watch, running: its wheels, its balance wheel and its
+hands, inside the case.]
 
 The gears and springs we just explored aren't just clever engineering.  They
 shaped modern history, starting on the open ocean.
@@ -2018,7 +2026,7 @@ yet.
 [click]
 
 [figure: The line runs through the ship, and Greenwich is 30 degrees to the east of
-it. The clock says 2:00.]
+it. The clock says 2 p.m.]
 
 A navigator can measure noon at sea: it is when the Sun stands highest. After a
 second hour, noon reaches the ship. If the ship carried a watch that keeps
@@ -2051,7 +2059,7 @@ class: seconds-a-day
 clicks: 1
 ---
 
-# How Good a Watch Wins the Prize?
+# How Accurate Did the Watch Need to Be?
 
 <div class="seconds-sum side-text">
   <div>Clock ±2 min for ½°</div>
@@ -2123,7 +2131,7 @@ class: newton-1714
 clicks: 3
 ---
 
-# Isaac Newton, 1714
+# Isaac Newton's Doubts, 1714
 
 <div class="newton-words side-text">
   <div class="newton-row text-dims">
@@ -2400,7 +2408,7 @@ function dimAt(clock) {
 
 In 1730, at about 37 years old, he took on Newton's obstacles: he began work on
 a clock for the Longitude prize. His first took 5 years and, like his wooden
-clocks, needs no oil. To see it move, watch this [30-second
+clocks, needed no oil. To see it move, watch this [30-second
 clip](https://www.youtube.com/watch?v=_mRTMZ3pTtM).
 
 It had its sea trial in 1736, to Lisbon and back. It did poorly on the way out,
@@ -2521,8 +2529,9 @@ _seconds_ slow, or 0.06 seconds per day.
 
 But the Board was not convinced, and sent the watch on a second trial. In 1765,
 it agreed that the watch had kept time within the strictest limit of the Act.
-But it paid only half the prize.  Harrison appealed to King George III, who
-declared, "By God, Harrison, I will see you righted!"
+But it paid only half the prize, holding the rest until Harrison proved his
+watch could be copied.  Harrison appealed to King George III, who declared, "By
+God, Harrison, I will see you righted!"
 
 The last payment came in 1773, 43 years after he started, from Parliament, not
 the Board. He was 80 years old. He died three years later.
@@ -2697,7 +2706,7 @@ class: watch-factory
 clicks: 3
 ---
 
-# Waltham Watch Company, 1870s
+# Waltham Watch Company, 1850s-1870s
 
 <img class="factory-photo bleed in-figure" src="/waltham/machine-room.jpg" alt="A long factory room with tall windows, in the 1870s: rows of young women at small machines, each driven by a belt from a pulley under the ceiling.">
 
@@ -2742,9 +2751,9 @@ clicks: 3
 
 <!-- narration
 
-A reliable watch, like the ones needed for railroads, cost $150, about $5,000
-in 2026.  Nearly every good watch was made by hand by a craftsman.  If a part
-broke, a watchmaker had to make a new one, by hand.
+A reliable watch, the kind railroads needed, cost $150, about $5,000 in 2026.
+Nearly every good watch was made by hand by a craftsman.  If a part broke, a
+watchmaker had to make a new one, by hand.
 
 [click:3]
 
@@ -2753,8 +2762,10 @@ women at small machines, each driven by a belt from a pulley under the
 ceiling.]
 
 In the 1850s, the Waltham Watch Company pioneered the mass production of
-precision watches using machines and standardized parts.  You could order
-replacement parts by number.  In 1876, the factory made 2,200 watches a week.
+precision watches using machines and standardized parts. Steam engines turned
+long shafts under the ceilings, and belts from the shafts drove rows of machines
+that cut brass and steel finer than a hair. You could order replacement parts by
+number.  In 1876, the factory made 2,200 watches a week.
 
 And the watches were good. Waltham's everyday watch, the P.S. Bartlett, kept
 time to within 10 to 15 seconds a day. Before, only a watch fitted by hand kept
@@ -2762,10 +2773,10 @@ time that well.  And the Bartlett was cheap, just $25, about $800
 in 2026. An accurate watch became an everyday thing, for railroad workers,
 soldiers and the general public.
 
-Steam engines turned long shafts under the ceilings, and belts from the shafts
-drove rows of machines that cut brass and steel finer than a hair. Waltham is
-still known as Watch City, and every Mother's Day weekend it hosts the [Watch
-City Steampunk Festival](https://www.watchcityfestival.com/).
+> [!aside] Watch City
+>
+> Waltham is still known as Watch City, and every Mother's Day weekend it hosts
+> the [Watch City Steampunk Festival](https://www.watchcityfestival.com/).
 
 -->
 
@@ -2838,8 +2849,9 @@ no hour marks.]
 [click]
 
 World War I pioneered synchronized assaults, coining the phrase "synchronize
-watches," so reading a watch was crucial.  But in a dark trench at night,
-striking a match invited a sniper's bullet.
+watches." Soldiers need time at a glance, pushing watches out of pockets
+and onto wrists.  But in a dark trench at night, striking a match invited a
+sniper's bullet.
 
 [click]
 
@@ -3062,6 +3074,48 @@ Studying their bones: safe limit for radiation in body.  Manhattan Project.
 -->
 
 ---
+# The cover's picture, as on Mechanical Marvels and Changed The World. The
+# Radium Girls slide before it shows no watch, so the camera jumps to the
+# cover's view and the watch fades in (docs/watch.md, "The one rule").
+# Its article page is not linked from the others until Part 3 is done
+# (docs/article.md, "The pages")
+layout: section
+side: left
+eyebrow: PART 3
+art: all
+artView: cover
+article:
+  0:
+    view: centred cover
+articleLinked: false
+---
+
+# Look Good on Your Wrist
+
+<!-- narration
+
+[figure: The whole watch, running: its wheels, its balance wheel and its
+hands, inside the case.]
+
+For two centuries, watches were tools, and lives depended on them. They found
+ships at sea, kept trains from colliding, and told soldiers the time in the
+dark. They also poisoned the women who painted their dials.
+
+Today, nobody's life depends on a watch. The phone in your pocket gets its time
+from atomic clocks. Yet people still wear mechanical watches, and pay more for
+them than for quartz. Why?
+
+-->
+
+<!--
+Lives depended on them.
+
+Now? Your phone.
+
+So why wear one?
+-->
+
+---
 layout: full
 class: tk-timekeepers
 # Hidden: not in the talk. It stays as the example of every slide pattern
@@ -3154,8 +3208,10 @@ IF ASKED: Rome's first public sundial was war loot from Sicily; Pliny says Roman
 layout: full
 class: questions
 # The narration is the credits, so the article's heading names them
-# (docs/article.md, "A title for the article").
+# (docs/article.md, "A title for the article"). They are at the end of
+# every page of the article: a photo's credit goes where it shows.
 articleTitle: "Credits & Sources"
+articleEveryPage: true
 # The titles show only with no private file of song lines, as on the publish run
 # (components/SongLines.vue; docs/slide-patterns.md, "Words that run on their own").
 songTitles:

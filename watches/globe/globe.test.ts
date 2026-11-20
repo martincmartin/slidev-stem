@@ -21,7 +21,8 @@ import {
   scaleRanges,
   toSphere,
 } from "./globe.ts";
-import { globeMatrices, makeGlobe } from "./model.ts";
+import { globeMatrices } from "./matrices.ts";
+import { makeGlobe } from "./model.ts";
 import {
   FIGURE_CLOCK_AT,
   GREENWICH,

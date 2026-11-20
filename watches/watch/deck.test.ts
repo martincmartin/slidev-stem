@@ -5,7 +5,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { deckSlides } from "./deck.ts";
-import { makeArt } from "./art.ts";
+import { makeGlobe } from "../globe/model.ts";
+import { makeArt, showsGlobe } from "./art.ts";
 import { AtRest, discOutline } from "./at-rest.ts";
 import {
   MOVE_WITH_COMMON,
@@ -23,7 +24,9 @@ import type { Mesh, Piece } from "../webgl/scene.ts";
 import { Timeline } from "../webgl/timeline.ts";
 
 /** The deck's art: the watch and the globe. */
-const { art: watch, globe } = makeArt();
+const made = makeArt(makeGlobe);
+const { art: watch } = made;
+const globe = made.globe ?? assert.fail("the deck's art has no globe");
 const slides = await deckSlides();
 
 /** The watch's piece called `name`. */
@@ -399,4 +402,24 @@ test("the Recap slide hides the hour hand from the centre wheel's stop and the m
     assert.ok(has(forward.start, hand), `${hand.name}: forward`);
     assert.ok(has(back.end, hand) && !has(back.after, hand), hand.name);
   }
+});
+
+test("showsGlobe says which slides show the globe, from their frontmatter", () => {
+  const globeMeshes = new Set(
+    globe.pieces.flatMap((piece) => [...piece.meshes]),
+  );
+  let shown = 0;
+  for (const slide of slides) {
+    const total = Number(slide.frontmatter["clicks"] ?? 0);
+    let drawsGlobe = false;
+    for (let clicks = 0; clicks <= total; clicks++) {
+      const state = watchState(slide.frontmatter, clicks);
+      if (!state) continue;
+      const meshes = stageState(watch, state).shown;
+      if ([...meshes].some((mesh) => globeMeshes.has(mesh))) drawsGlobe = true;
+    }
+    assert.equal(showsGlobe(slide.frontmatter), drawsGlobe, slide.title);
+    if (drawsGlobe) shown += 1;
+  }
+  assert.ok(shown > 0, "no slide shows the globe");
 });

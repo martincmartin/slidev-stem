@@ -7,6 +7,7 @@
 
 import { INKS } from "../webgl/scene.ts";
 import type { InkName, LineStyle, Mesh, Scene } from "../webgl/scene.ts";
+import { makeGlobe } from "../globe/model.ts";
 import { makeArt } from "./art.ts";
 import { INK_VARIABLES } from "./palette.ts";
 
@@ -77,7 +78,10 @@ export function sceneData(
 
 if (import.meta.main) {
   process.stdout.write(
-    JSON.stringify(sceneData(makeArt().art.scene, INK_VARIABLES), null, 1) +
-      "\n",
+    JSON.stringify(
+      sceneData(makeArt(makeGlobe).art.scene, INK_VARIABLES),
+      null,
+      1,
+    ) + "\n",
   );
 }

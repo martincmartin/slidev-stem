@@ -27,7 +27,7 @@ import TimeScale from "./components/TimeScale.vue";
 import { boardState } from "./watch/board.ts";
 import { slidePalette } from "./watch/palette.ts";
 import { settled } from "./globe/voyage.ts";
-import { ART, GLOBE, watchStills } from "./watch/instance.ts";
+import { loadedArt, loadedGlobe, watchStills } from "./watch/instance.ts";
 import {
   stageState,
   timeScaleState,
@@ -35,6 +35,11 @@ import {
   voyageFor,
   watchState,
 } from "./watch/state.ts";
+
+/** The page's art (watch/instance.ts), and the story maps of its globe:
+ *  none on a page that does not show the globe. */
+const art = loadedArt();
+const stories = loadedGlobe()?.stories ?? [];
 
 const { $frontmatter, $renderContext, $clicks, $page } = useSlideContext();
 const LIVE = ["slide", "presenter"];
@@ -68,7 +73,7 @@ const source = ref<string>();
 /** The still's camera: the story maps over the globe take it. */
 const pose = computed(() => {
   if (!needsStill.value || !state.value) return undefined;
-  const { view, tilt, turn } = stageState(ART, state.value);
+  const { view, tilt, turn } = stageState(art, state.value);
   return { view, tilt, turn };
 });
 /** The story map's marks at the click, settled. */
@@ -76,8 +81,8 @@ const voyage = computed(() =>
   settled(
     pose.value
       ? voyageFor(
-          ART,
-          GLOBE.stories,
+          art,
+          stories,
           state.value,
           voyageState($frontmatter, $clicks.value),
         )
@@ -93,7 +98,7 @@ onChange(
   async (shown) => {
     if (!shown) return;
     const ratio = window.devicePixelRatio || 1;
-    const [width, height] = ART.scene.slide;
+    const [width, height] = art.scene.slide;
     const picture = await watchStills().of(
       shown,
       [Math.round(width * ratio), Math.round(height * ratio)],

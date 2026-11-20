@@ -15,7 +15,7 @@ the two lists in step.
 - [globe.md](globe.md): Part 2's globe and story maps: the land data, the
   globe's meshes and levels, its views, the story maps' marks and their
   keys, the labels on them, the flight, and how it joins the watch's scene
-- [article.md](article.md): the article at `/article`: the narration, its figure
+- [article.md](article.md): the article, a page for each part at `/article/<part>`: the pages and what each loads, the narration, its figure
   markers, asides, pull quotes, a slide's title for the article, what a figure shows, the sliders and the button, the code, the
   Part 2 story figures, the static page, the text export
 - [measurements.md](measurements.md): what the timekeepers, the cover watch,

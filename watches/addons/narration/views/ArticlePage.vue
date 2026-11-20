@@ -1,12 +1,14 @@
 <script setup lang="ts">
-// The article: the talk as one long page, for readers. The cover's title and
-// the author, the contents, then each slide's heading, its narration, its
+// The article: the talk as a page for each part, for readers (`part`, from
+// the route: setup/routes.ts). The cover's title and the author, links to
+// the other parts, the contents, then each slide's heading, its narration, its
 // asides (beside their paragraphs in the margin on a wide window, after them
 // on a narrow one), its pull quotes
 // (components/ArticleQuote.vue), and its figures: the slides themselves,
 // live (components/ArticleFigure.vue). What goes where is the
 // page model's (../plan.ts), with the talk's rules (`ARTICLE_HOOKS`,
-// ../figure.ts). docs/article.md has the rules and the reasons.
+// ../figure.ts). The page ends with a link to the next part, if that part
+// is linked. docs/article.md has the rules and the reasons.
 //
 // "Pause all" stops every figure. A reader who asks for reduced motion
 // starts with it on.
@@ -27,13 +29,26 @@ import ArticleFigure from "../components/ArticleFigure.vue";
 import ArticleQuote from "../components/ArticleQuote.vue";
 import { ARTICLE_HOOKS, DEFAULT_HOOKS } from "../figure.ts";
 import type { Box } from "../figure.ts";
-import { cropGroups, pagePlan, slideInput } from "../plan.ts";
+import {
+  articlePages,
+  cropGroups,
+  pagedSlide,
+  pageInput,
+  pagePlan,
+  slideInput,
+} from "../plan.ts";
 import type {
+  ArticlePage,
   FigureBlock,
   PageBlock,
   RenderedPart,
   SlideInput,
 } from "../plan.ts";
+
+const props = defineProps<{
+  /** The part that the page shows, from 1. */
+  part: number;
+}>();
 
 const hooks = inject(ARTICLE_HOOKS, DEFAULT_HOOKS);
 const { slides } = useNav();
@@ -65,11 +80,67 @@ function inputOf(route: SlideRoute): SlideInput {
 const routeOf = computed(
   () => new Map(slides.value.map((route) => [route.no, route])),
 );
-const page = computed<PageBlock[]>(() => pagePlan(slides.value.map(inputOf)));
+/** The article's pages. The split reads only the frontmatter: the talk's
+ *  rules (`hooks`) run only for the page's own slides, whose art the page
+ *  has made (setup/main.ts in the talk). */
+const pages = computed(() =>
+  articlePages(
+    slides.value.map((route) =>
+      pagedSlide({
+        no: route.no,
+        title: route.meta.slide?.title ?? null,
+        frontmatter: frontmatterOf(route),
+      }),
+    ),
+  ),
+);
+/** The page's part, or `null` if the talk has no such part. */
+const current = computed(() => pages.value[props.part - 1] ?? null);
+const page = computed<PageBlock[]>(() =>
+  current.value
+    ? pagePlan(
+        current.value.slides.map(({ slide, titleOnly }) =>
+          pageInput(inputOf(routeOfSlide(slide.no)), titleOnly),
+        ),
+      )
+    : [],
+);
 const title = computed(
   () =>
     page.value.find((block) => block.kind === "title")?.text ?? configs.title,
 );
+
+/** A part's name: "Part 2: Changed The World". */
+function partName(each: ArticlePage): string {
+  const name = each.section?.title;
+  return name
+    ? `Part ${String(each.number)}: ${name}`
+    : `Part ${String(each.number)}`;
+}
+
+/** The deck's base (Slidev's --base): the article's pages are under it. */
+const baseUrl = import.meta.env.BASE_URL;
+
+/** A part's page. */
+function partHref(each: ArticlePage): string {
+  return `${baseUrl}article/${String(each.number)}/`;
+}
+
+/** The parts that the page links to, and its own: a part that is not
+ *  linked yet (`articleLinked: false`) only on its own page. With one part,
+ *  none. */
+const partLinks = computed(() =>
+  pages.value.length < 2
+    ? []
+    : pages.value.filter(
+        (each) => each === current.value || (each.section?.linked ?? true),
+      ),
+);
+/** The next part, if it is linked. */
+const nextPart = computed(() => {
+  const next = current.value ? pages.value[current.value.number] : undefined;
+  return next && (next.section?.linked ?? true) ? next : null;
+});
 const contents = computed(() =>
   page.value.flatMap((block) =>
     block.kind === "part" || block.kind === "heading" ? [block] : [],
@@ -82,10 +153,14 @@ const contentsAt = computed(() =>
   ),
 );
 
-function routeOfFigure(figure: FigureBlock): SlideRoute {
-  const route = routeOf.value.get(figure.slide);
-  if (!route) throw new Error(`no slide ${String(figure.slide)}`);
+function routeOfSlide(no: number): SlideRoute {
+  const route = routeOf.value.get(no);
+  if (!route) throw new Error(`no slide ${String(no)}`);
   return route;
+}
+
+function routeOfFigure(figure: FigureBlock): SlideRoute {
+  return routeOfSlide(figure.slide);
 }
 
 /** A figure's steps. A slide that does not say how many clicks it has, and
@@ -182,7 +257,10 @@ const pausedAll = ref(reducedMotion);
 
 onMounted(() => {
   document.documentElement.classList.add("article-mode");
-  document.title = title.value;
+  document.title =
+    current.value && pages.value.length > 1
+      ? `${partName(current.value)} · ${title.value}`
+      : title.value;
   // the page is made by script: go to the fragment once it is there
   const target = location.hash
     ? document.getElementById(location.hash.slice(1))
@@ -195,8 +273,12 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <main class="slidev-layout article-page">
+  <main class="slidev-layout article-page" :data-article-pages="pages.length">
     <article class="article-column">
+      <p v-if="!current" class="article-prose">
+        This talk has no Part {{ part }}.
+        <a :href="`${baseUrl}article/1/`">Go to the start.</a>
+      </p>
       <template v-for="(block, index) of page" :key="index">
         <nav
           v-if="index === contentsAt"
@@ -230,6 +312,20 @@ onBeforeUnmount(() => {
               {{ pausedAll ? "Play them all" : "Pause them all" }}
             </button>
           </p>
+          <nav
+            v-if="partLinks.length > 0"
+            class="article-parts"
+            aria-label="Parts"
+          >
+            <ol>
+              <li v-for="each of partLinks" :key="each.number">
+                <span v-if="each === current" aria-current="page">{{
+                  partName(each)
+                }}</span>
+                <a v-else :href="partHref(each)">{{ partName(each) }}</a>
+              </li>
+            </ol>
+          </nav>
         </header>
         <h2
           v-else-if="block.kind === 'part'"
@@ -294,6 +390,9 @@ onBeforeUnmount(() => {
           @labels="(box: Box | null) => setLabels(block, box)"
         />
       </template>
+      <nav v-if="nextPart" class="article-next" aria-label="Next part">
+        <a :href="partHref(nextPart)">Next: {{ partName(nextPart) }}</a>
+      </nav>
     </article>
   </main>
 </template>
@@ -377,6 +476,33 @@ html.article-mode #app {
   margin-top: 0.4em;
 }
 .article-contents a {
+  color: var(--palette-ink);
+}
+/* The parts, on one line under the byline: the page's own is not a link. */
+.article-parts ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2em 1.4em;
+  margin: 1em 0 1.6em;
+  padding: 0;
+  font-size: 0.9em;
+  list-style: none;
+}
+/* Slidev's lists indent each item */
+.article-parts li {
+  margin: 0;
+}
+.article-parts a {
+  color: var(--palette-ink);
+}
+.article-parts [aria-current="page"] {
+  font-weight: 600;
+}
+.article-next {
+  margin: 3em 0 0;
+  font-size: 1.1em;
+}
+.article-next a {
   color: var(--palette-ink);
 }
 .article-page h2.article-part {

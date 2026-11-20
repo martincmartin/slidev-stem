@@ -29,6 +29,15 @@ declare module "@slidev/client/composables/useNav.ts" {
   ): SlidevContextNav;
 }
 
+declare module "@slidev/client/logic/slides.ts" {
+  import type { Ref } from "vue";
+  import type { SlideRoute } from "@slidev/client";
+  /** Every slide's route, with its frontmatter: what `useNav().slides`
+   *  gives, outside a component (setup/main.ts reads it before the app
+   *  mounts). */
+  export const slides: Ref<SlideRoute[]>;
+}
+
 declare module "@slidev/client/env.ts" {
   import type { Ref } from "vue";
   export const slideWidth: Ref<number>;

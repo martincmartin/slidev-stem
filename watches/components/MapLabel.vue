@@ -21,7 +21,10 @@ import { onLaidOut } from "./laid-out.ts";
 import { anchorPoint, overSea } from "../globe/labels.ts";
 import type { WordsBox } from "../globe/labels.ts";
 import { LEADER_GAP, straightStart, toward } from "../watch/callouts.ts";
-import { GLOBE } from "../watch/instance.ts";
+import { loadedGlobe } from "../watch/instance.ts";
+
+const globe = loadedGlobe();
+if (!globe) throw new Error("a label of the globe, on a page without it");
 
 const props = withDefaults(
   defineProps<{
@@ -51,7 +54,7 @@ const props = withDefaults(
 );
 
 const picture = computed(() => {
-  const found = GLOBE.pictures.find(({ view }) => view.name === props.view);
+  const found = globe.pictures.find(({ view }) => view.name === props.view);
   if (!found) throw new Error(`a label: no view "${props.view}" of the globe`);
   return found;
 });

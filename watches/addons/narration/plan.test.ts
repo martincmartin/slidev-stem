@@ -3,7 +3,14 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { DEFAULT_HOOKS } from "./figure.ts";
-import { cropGroups, pagePlan, slideInput, slug } from "./plan.ts";
+import {
+  articlePages,
+  cropGroups,
+  pageInput,
+  pagePlan,
+  slideInput,
+  slug,
+} from "./plan.ts";
 import type {
   FigureBlock,
   PageBlock,
@@ -22,6 +29,8 @@ function slide(overrides: Partial<SlideInput>): SlideInput {
     parts: null,
     defaults: [],
     keyOf: (clicks) => `escapement ${String(clicks)}`,
+    everyPage: false,
+    linked: true,
     ...overrides,
   };
 }
@@ -361,4 +370,93 @@ test("the figures of a slide that share a camera share a crop", () => {
   assert.deepEqual(groups.get(four), [zero, twoToThree, four]);
   assert.deepEqual(groups.get(one), [one]);
   assert.deepEqual(groups.get(other), [other]);
+});
+
+/** Each page's slides, by title. */
+function pageTitles(slides: readonly SlideInput[]): (string | null)[][] {
+  return articlePages(slides).map((page) =>
+    page.slides.map((each) => each.slide.title),
+  );
+}
+
+test("each section starts a page; the cover is on page 1, whole", () => {
+  const cover = slide({
+    no: 1,
+    title: "Watches",
+    layout: "cover",
+    parts: [prose(0, "Why watches.")],
+    defaults: [0],
+  });
+  const slides = [
+    cover,
+    slide({ no: 2, title: "Part One", layout: "section" }),
+    slide({ no: 3, title: "Hairspring" }),
+    slide({ no: 4, title: "Part Two", layout: "section" }),
+    slide({ no: 5, title: "Longitude" }),
+  ];
+  assert.deepEqual(pageTitles(slides), [
+    ["Watches", "Part One", "Hairspring"],
+    ["Watches", "Part Two", "Longitude"],
+  ]);
+  const [first, second] = articlePages(slides);
+  assert.deepEqual(
+    [first?.number, first?.section?.title, second?.section?.title],
+    [1, "Part One", "Part Two"],
+  );
+  // a later page has the cover's title, and not its narration or figure
+  const plan = (page: typeof second) =>
+    pagePlan(
+      (page?.slides ?? []).map(({ slide, titleOnly }) =>
+        pageInput(slide, titleOnly),
+      ),
+    );
+  const later = plan(second);
+  assert.deepEqual(outline(later), [
+    "title Watches",
+    "part Part Two",
+    "heading Longitude",
+  ]);
+  assert.deepEqual(outline(plan(first)).slice(0, 3), [
+    "title Watches",
+    "figure 0",
+    "Why watches.",
+  ]);
+});
+
+test("a slide for every page is at the end of each page, once", () => {
+  const credits = slide({ no: 6, title: "Credits", everyPage: true });
+  const slides = [
+    slide({ no: 1, title: "Part One", layout: "section" }),
+    slide({ no: 2, title: "Part Two", layout: "section" }),
+    slide({ no: 3, title: "Longitude" }),
+    credits,
+    slide({ no: 4, title: "Part Three", layout: "section", linked: false }),
+  ];
+  assert.deepEqual(pageTitles(slides), [
+    ["Part One", "Credits"],
+    ["Part Two", "Longitude", "Credits"],
+    ["Part Three", "Credits"],
+  ]);
+  assert.deepEqual(
+    articlePages(slides).map((page) => page.section?.linked),
+    [true, true, false],
+  );
+});
+
+test("a talk with no section is one page", () => {
+  assert.deepEqual(
+    pageTitles([slide({ title: "Hairspring" }), slide({ title: "Gears" })]),
+    [["Hairspring", "Gears"]],
+  );
+});
+
+test("slideInput reads the keys for every page and for links", () => {
+  const read = (frontmatter: Record<string, unknown>) =>
+    slideInput(
+      { no: 1, title: "Credits", frontmatter, parts: null },
+      DEFAULT_HOOKS,
+    );
+  assert.deepEqual([read({}).everyPage, read({}).linked], [false, true]);
+  assert.equal(read({ articleEveryPage: true }).everyPage, true);
+  assert.equal(read({ articleLinked: false }).linked, false);
 });

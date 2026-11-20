@@ -67,7 +67,7 @@ England's.
 
 - **The sea** is a disc through the globe's center, in the water's wash. Its
   group (`DISC_GROUP`) turns it to face the camera at each frame
-  (`globeMatrices` in `globe/model.ts`, from the frame's pose). The camera is
+  (`globeMatrices` in `globe/matrices.ts`, from the frame's pose). The camera is
   orthographic, so the disc hides exactly the far half of the globe, and
   its rim is the true limb. Its rim is the limb's line.
 - **The land** is in the paper, over the sea. Each level's polygons are cut
@@ -95,9 +95,12 @@ them. 1:50m is two meshes for this: the part in the boxes, drawn at 1:50m's
 zooms only, and the part outside them, drawn from 1:50m's zooms on. A level
 change pops.
 
-**The cost.** The globe is about 162,000 triangles, and Node makes it in
-130–220 ms at each load of the deck or the article. The browsers' times are
-not yet measured (the production task, phase 8).
+**The cost.** The globe is about 166,000 triangles, and Node makes it in
+240–270 ms (2026-11-20), at each load of the slides or of an article page
+that shows it. Its data and code are a chunk of their own, 1.3 MB, 0.43 MB
+compressed: a page that does not show the globe does not load them ("The
+globe in the deck", below). The browsers' times are not yet measured (the
+production task, phase 8).
 
 **The far place.** The globe's center (`CENTRE`) is far from the watch, so
 that neither is in the other's views. Its radius is 500 world units.
@@ -331,10 +334,24 @@ between its ends.
 
 The globe is in the watch's scene, seen by the one camera (the globe task,
 section 11): `withGlobe` (`watch/art.ts`) adds its meshes, its group, its
-views and its piece, `globe`. The deck's instance, `ART`
+views and its piece, `globe`. The page's art, `loadedArt()`
 (`watch/instance.ts`), is that scene. `artModel` gives the stage and the
 article's views a model that adds the disc's matrix to each frame
-(`withPoseGroups`), and the stills add it too. A slide shows the globe as
+(`withPoseGroups`), and the stills add it too.
+
+**A page loads the globe only if it shows it.** `globe/model.ts` is the only
+module that imports `earth.json`, and the page imports it with `import()`
+(`loadArt` in `watch/instance.ts`), so Vite makes the two a chunk of their
+own. The app's setup (`setup/main.ts`) makes the art before the app mounts:
+the slides ask for the globe; an article page asks for it only if one of its
+slides names a piece of the globe at some click (`showsGlobe` in
+`watch/art.ts`, from the frontmatter alone; `watch/deck.test.ts` checks it
+against what the stage draws). Without the globe, `loadedGlobe()` is `null`,
+and the story maps have no stories. A page keeps the art it started with:
+the router loads the page anew to go from a page without the globe to one
+with it. Keep every other import of `globe/model.ts` a type import, or the
+globe is in every page again: the build's largest chunk is then `index-*.js`,
+not `model-*.js`. A slide shows the globe as
 it shows a part of the watch:
 
 ```yaml

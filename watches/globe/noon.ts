@@ -208,6 +208,8 @@ const PIVOT_RADIUS = 5;
 
 /** The noon line's group: its matrix keeps the line under the camera. */
 export const NOON_GROUP: Group = { name: "the noon line", parent: null };
+/** The noon line's piece, a mark on the globe for one slide. */
+export const NOON_PIECE = "noon";
 /** The clock's groups: the dial stays on the slide, and each hand turns on it. */
 export const DIAL_GROUP: Group = { name: "the clock's dial", parent: null };
 export const HOUR_GROUP: Group = {
@@ -545,6 +547,6 @@ export function noonPiece(): { meshes: Mesh[]; piece: Piece } {
   ];
   return {
     meshes,
-    piece: { name: "noon", meshes: new Set(meshes), inAll: false },
+    piece: { name: NOON_PIECE, meshes: new Set(meshes), inAll: false },
   };
 }

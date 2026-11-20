@@ -80,7 +80,12 @@ import {
 import { boardState } from "../watch/board.ts";
 import type { BoardTarget } from "../watch/board.ts";
 import { stoneStrikes } from "../watch/callouts.ts";
-import { ART, GLOBE, figureModel, sharedStage } from "../watch/instance.ts";
+import {
+  figureModel,
+  loadedArt,
+  loadedGlobe,
+  sharedStage,
+} from "../watch/instance.ts";
 import { storyRuns, windSliderTime } from "../watch/mainspring.ts";
 import { twistAngle, WatchModel } from "../watch/model.ts";
 import type { WatchModelState } from "../watch/model.ts";
@@ -96,6 +101,12 @@ import {
   voyageFor,
 } from "../watch/state.ts";
 import type { WatchState } from "../watch/state.ts";
+
+/** The page's art (watch/instance.ts), and its globe's pieces and story
+ *  maps: none on a page that does not show the globe. */
+const art = loadedArt();
+const globePieces = loadedGlobe()?.pieces ?? [];
+const stories = loadedGlobe()?.stories ?? [];
 
 const slidev = inject(injectionSlidevContext);
 const injected = inject(FIGURE);
@@ -120,7 +131,7 @@ const released = ref(false);
 /** Degrees: the balance's angle at the `twist` slider's value. Negative: the
  *  coils draw in (`springPoints`). */
 function twistDegrees(value: number): number {
-  return -value * ART.design.timing.amplitude;
+  return -value * art.design.timing.amplitude;
 }
 
 /** The thumb's way back to rest after a let-go: the value that it last
@@ -140,7 +151,7 @@ function letGo(): void {
   const from = twist.value;
   const start = figure.now();
   model.value?.twist(twistDegrees(from), start, true);
-  const { period } = ART.design.timing;
+  const { period } = art.design.timing;
   setEnd("watch", start + (period / 4) * 1000);
   const follow = (): void => {
     const now = figure.now();
@@ -208,6 +219,9 @@ function setEnd(part: keyof typeof ends, at: number): void {
   figure.busyUntil.value = Math.max(ends.watch, ends.board);
 }
 
+/** Whether the slide shows the board at all (its `board` key): a figure of
+ *  a slide without one mounts no board, and fetches no SVG. */
+const hasBoard = computed(() => boardState(frontmatter.value, 0) !== undefined);
 /** Set when the click changes, which says if the board jumps. */
 const board = shallowRef<BoardTarget>({
   state: boardState(frontmatter.value, clicks.value),
@@ -218,7 +232,7 @@ const boardScrub = computed(() =>
 );
 const tickTock = computed(() =>
   tickTockState(frontmatter.value, clicks.value) && !hidden.value
-    ? { strikes: stoneStrikes(ART, frontmatter.value) }
+    ? { strikes: stoneStrikes(art, frontmatter.value) }
     : undefined,
 );
 const timeScale = computed(() =>
@@ -257,15 +271,15 @@ const still = computed(() => {
 
 /** Whether `now` shows a piece of the watch, not only the globe. */
 function showsWatch(now: WatchState): boolean {
-  return [...stageState(ART, now).shown].some(
-    (mesh) => !GLOBE.pieces.some((piece) => piece.meshes.has(mesh)),
+  return [...stageState(art, now).shown].some(
+    (mesh) => !globePieces.some((piece) => piece.meshes.has(mesh)),
   );
 }
 
 /** The meshes of the pieces named. */
 function meshesOf(names: readonly string[]): Set<Mesh> {
   return new Set(
-    ART.scene.pieces
+    art.scene.pieces
       .filter((piece) => names.includes(piece.name))
       .flatMap((piece) => [...piece.meshes]),
   );
@@ -289,7 +303,7 @@ function show(to: number, atOnce: boolean): void {
   const move = moveTo(to, atOnce);
   const flash = move === "forward" ? now.flash : undefined;
   view.show(
-    stageState(ART, {
+    stageState(art, {
       ...now,
       flash,
       move: stepMove(shown?.state, now, move),
@@ -297,11 +311,11 @@ function show(to: number, atOnce: boolean): void {
     modelState(now),
     move === "jump",
   );
-  view.marked = meshesOf(figureMarks(ART, frontmatter.value, to));
+  view.marked = meshesOf(figureMarks(art, frontmatter.value, to));
   shown = { clicks: to, state: now };
   const target = voyageFor(
-    ART,
-    GLOBE.stories,
+    art,
+    stories,
     now,
     voyageState(frontmatter.value, to),
   );
@@ -317,13 +331,13 @@ function show(to: number, atOnce: boolean): void {
 
 onMounted(() => {
   if (!canvas.value || !state.value) return;
-  model.value = new WatchModel(ART, figure.now());
+  model.value = new WatchModel(art, figure.now());
   view = new SharedView(
     canvas.value,
     figureModel(model.value),
     palette.value.palette,
     figure.now,
-    ART.scene.slide,
+    art.scene.slide,
   );
   view.crop = crop.value;
   const made = view;
@@ -436,6 +450,7 @@ onChange(
       :paused="!figure.moving.value || !figure.near.value"
     />
     <DivingBoard
+      v-if="hasBoard"
       :target="board"
       :live="true"
       :scrub="boardScrub"

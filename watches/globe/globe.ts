@@ -63,6 +63,8 @@ const LAND: Colour = { ink: INKS.paper, opacity: 1 };
 
 /** The disc's group: its matrix turns the disc to face the camera. */
 export const DISC_GROUP: Group = { name: "the globe's disc", parent: null };
+/** The globe's piece: what a slide names to show it (`art: [globe]`). */
+export const GLOBE_PIECE = "globe";
 
 /** The view's scale (slide px for a world unit) at `kmPerPx` km to a px. */
 function scaleOf(kmPerPx: number): number {
@@ -514,6 +516,6 @@ export function globeMeshes(earth: Earth): { meshes: Mesh[]; piece: Piece } {
   });
   return {
     meshes,
-    piece: { name: "globe", meshes: new Set(meshes), inAll: false },
+    piece: { name: GLOBE_PIECE, meshes: new Set(meshes), inAll: false },
   };
 }
