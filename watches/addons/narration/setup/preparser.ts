@@ -22,6 +22,11 @@ function rendered(part: NarrationPart): RenderedPart {
             title: MARKDOWN.renderInline(block.title),
             text: MARKDOWN.render(block.markdown),
           };
+        case "credit":
+          return {
+            kind: "credit",
+            text: MARKDOWN.renderInline(block.markdown),
+          };
         case "quote":
           return {
             ...block,

@@ -73,6 +73,9 @@ export function articleMarkdown(
           );
         }
         break;
+      case "credit":
+        chunks.push(`**Credit:** ${block.text.trim()}`);
+        break;
       case "quote":
         // a backslash at a line's end is Markdown's line break
         chunks.push(quote(block.lines.join("\\\n")));

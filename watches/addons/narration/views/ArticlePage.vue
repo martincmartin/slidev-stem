@@ -302,30 +302,15 @@ onBeforeUnmount(() => {
             {{ configs.author }}
           </p>
           <p class="article-motion">
-            The figures are the talk's slides, live.
             <button
               type="button"
               class="article-link-button"
               :aria-pressed="pausedAll"
               @click="pausedAll = !pausedAll"
             >
-              {{ pausedAll ? "Play them all" : "Pause them all" }}
+              {{ pausedAll ? "Play all figures" : "Pause all figures" }}
             </button>
           </p>
-          <nav
-            v-if="partLinks.length > 0"
-            class="article-parts"
-            aria-label="Parts"
-          >
-            <ol>
-              <li v-for="each of partLinks" :key="each.number">
-                <span v-if="each === current" aria-current="page">{{
-                  partName(each)
-                }}</span>
-                <a v-else :href="partHref(each)">{{ partName(each) }}</a>
-              </li>
-            </ol>
-          </nav>
         </header>
         <h2
           v-else-if="block.kind === 'part'"
@@ -370,6 +355,11 @@ onBeforeUnmount(() => {
           class="article-prose"
           v-html="block.text"
         />
+        <p
+          v-else-if="block.kind === 'credit'"
+          class="article-credit"
+          v-html="block.text"
+        />
         <!-- eslint-enable vue/no-v-html -->
         <ArticleQuote
           v-else-if="block.kind === 'quote'"
@@ -392,6 +382,16 @@ onBeforeUnmount(() => {
       </template>
       <nav v-if="nextPart" class="article-next" aria-label="Next part">
         <a :href="partHref(nextPart)">Next: {{ partName(nextPart) }}</a>
+      </nav>
+      <nav v-if="partLinks.length > 0" class="article-parts" aria-label="Parts">
+        <ol>
+          <li v-for="each of partLinks" :key="each.number">
+            <span v-if="each === current" aria-current="page">{{
+              partName(each)
+            }}</span>
+            <a v-else :href="partHref(each)">{{ partName(each) }}</a>
+          </li>
+        </ol>
       </nav>
     </article>
   </main>
@@ -478,12 +478,12 @@ html.article-mode #app {
 .article-contents a {
   color: var(--palette-ink);
 }
-/* The parts, on one line under the byline: the page's own is not a link. */
+/* The parts, on one line at the page's end: the page's own is not a link. */
 .article-parts ol {
   display: flex;
   flex-wrap: wrap;
   gap: 0.2em 1.4em;
-  margin: 1em 0 1.6em;
+  margin: 2em 0 0;
   padding: 0;
   font-size: 0.9em;
   list-style: none;
@@ -497,6 +497,17 @@ html.article-mode #app {
 }
 .article-parts [aria-current="page"] {
   font-weight: 600;
+}
+/* A photo's credit, small, close under its figure. */
+.article-column > .article-credit {
+  margin: -1.2em 0 1.6em;
+  font-size: 0.75em;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--palette-muted);
+}
+.article-credit a {
+  color: inherit;
 }
 .article-next {
   margin: 3em 0 0;

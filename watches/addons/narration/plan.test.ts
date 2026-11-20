@@ -29,7 +29,7 @@ function slide(overrides: Partial<SlideInput>): SlideInput {
     parts: null,
     defaults: [],
     keyOf: (clicks) => `escapement ${String(clicks)}`,
-    everyPage: false,
+    hidden: false,
     linked: true,
     ...overrides,
   };
@@ -423,23 +423,27 @@ test("each section starts a page; the cover is on page 1, whole", () => {
   ]);
 });
 
-test("a slide for every page is at the end of each page, once", () => {
-  const credits = slide({ no: 6, title: "Credits", everyPage: true });
+test("a hidden slide is on no page; an unlinked part has its page", () => {
   const slides = [
     slide({ no: 1, title: "Part One", layout: "section" }),
     slide({ no: 2, title: "Part Two", layout: "section" }),
     slide({ no: 3, title: "Longitude" }),
-    credits,
     slide({ no: 4, title: "Part Three", layout: "section", linked: false }),
+    slide({ no: 5, title: "Questions?", hidden: true }),
   ];
   assert.deepEqual(pageTitles(slides), [
-    ["Part One", "Credits"],
-    ["Part Two", "Longitude", "Credits"],
-    ["Part Three", "Credits"],
+    ["Part One"],
+    ["Part Two", "Longitude"],
+    ["Part Three"],
   ]);
   assert.deepEqual(
     articlePages(slides).map((page) => page.section?.linked),
     [true, true, false],
+  );
+  // and the whole article as one page leaves it out too
+  assert.ok(
+    !outline(pagePlan(slides)).includes("heading Questions?"),
+    "the hidden slide is in the plan",
   );
 });
 
@@ -450,13 +454,45 @@ test("a talk with no section is one page", () => {
   );
 });
 
-test("slideInput reads the keys for every page and for links", () => {
+test("slideInput reads the keys for hidden slides and for links", () => {
   const read = (frontmatter: Record<string, unknown>) =>
     slideInput(
       { no: 1, title: "Credits", frontmatter, parts: null },
       DEFAULT_HOOKS,
     );
-  assert.deepEqual([read({}).everyPage, read({}).linked], [false, true]);
-  assert.equal(read({ articleEveryPage: true }).everyPage, true);
+  assert.deepEqual([read({}).hidden, read({}).linked], [false, true]);
+  assert.equal(read({ articleHidden: true }).hidden, true);
   assert.equal(read({ articleLinked: false }).linked, false);
+});
+
+test("a credit goes where the narration puts it, and takes no aside", () => {
+  const page = pagePlan([
+    slide({
+      parts: [
+        {
+          clicks: 0,
+          noFigure: false,
+          blocks: [
+            {
+              kind: "figure",
+              from: null,
+              to: null,
+              play: false,
+              alt: "A photo.",
+            },
+            { kind: "credit", text: "Photo by someone." },
+            { kind: "aside", title: "Why?", text: "Because." },
+            { kind: "prose", text: "The story." },
+          ],
+        },
+      ],
+    }),
+  ]);
+  assert.deepEqual(outline(page), [
+    "heading Escapement",
+    "figure 0",
+    "credit Photo by someone.",
+    "The story.",
+    "aside Why?",
+  ]);
 });

@@ -141,3 +141,13 @@ test("an ordinary quote block stays prose", () => {
     { kind: "prose", markdown: "> A quotation." },
   ]);
 });
+
+test("a quote block that starts [!credit] is a photo's credit", () => {
+  const [part] = parseNarration(
+    "[figure: A photo.]\n\n> [!credit]\n> Photo by [someone](https://example.org).\n\nProse.",
+  );
+  assert.deepEqual(part?.blocks.slice(1), [
+    { kind: "credit", markdown: "Photo by [someone](https://example.org)." },
+    { kind: "prose", markdown: "Prose." },
+  ]);
+});

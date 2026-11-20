@@ -44,24 +44,23 @@ figures need (the task's `PLAN.md`).
   as on any page: its narration's `[figure: …]` gives it one. The Part 2 and
   Part 3 sections show the watch so, centred (`article: 0: view: centred
 cover`).
-- **A slide with `articleEveryPage: true`** is at the end of every page, and
-  nowhere else: the Questions slide, whose narration is the credits. A
-  photo's credit goes where the photo shows, and every page has the credits,
-  so a part that gets a photo needs no change.
+- **A slide with `articleHidden: true`** is in the talk, but on no page: the
+  Questions slide. The article has no list of credits: each photo's credit
+  is under its figure ("A photo's credit", below), so each page has the
+  credits of its own photos.
 - **A section with `articleLinked: false`** has its page, but no other page
   links to it: a part that is not done yet. Part 3, now. Remove the key to
   launch the part.
-- **Each page links to the other parts** under the byline, and to the next
-  part at its end. The links load the page anew, so it starts with only its
+- **Each page links to the next part, and then to every part,** at its end. The links load the page anew, so it starts with only its
   own figures.
 
 ## What a reader gets
 
-- The cover's title, the author, and "pause them all". Keep this one button
+- The cover's title, the author, and "Pause all figures". It does not call
+  the figures slides: a reader may not know the talk. Keep this one button
   even if a figure's own pause goes: WCAG 2.2.2 ("Pause, Stop, Hide") asks
   for a way to pause motion that starts by itself and lasts more than 5 s,
   and the prerender pauses the page with it.
-- Links to the other parts ("The pages", above).
 - A table of contents: the page's part (its section slide) and each slide's
   title, or its title for the article ("A title for the article", below).
 - Under a slide's heading, its history line, if it has one
@@ -76,6 +75,8 @@ cover`).
   plays by itself, with captions. A figure that moves by itself, or plays, has a
   pause button; a still one has none (`still` in
   `addons/narration/figure.ts`).
+- At the end, a link to the next part and links to every part ("The pages",
+  above).
 - **A copy of the page is its prose**: the headings, the narration, the
   asides, the pull quotes and the captions. A figure's words (its labels, the diving board's
   sentence also where it has faded out, its controls) and the "Pause them
@@ -134,6 +135,7 @@ The speaker's cues, as before.
 | `[figure 0-8 play]`  | a figure that plays its steps by itself; the text after it, and the parts said at its clicks, are its captions |
 | `[nofigure]`         | no figure for the part's click, even by default                                                                |
 | `> [!aside] Title`   | a quote block that starts so is an aside, for the paragraph after it; put the `IF ASKED` material here         |
+| `> [!credit]`        | a quote block that starts so is a photo's credit: small, under the figure before it                            |
 | `> [!quote classes]` | a quote block that starts so is a pull quote, a line for each line; the classes are the talk's, and optional   |
 
 **Every figure has alt text.** A screen reader gets only that, and so does
@@ -207,6 +209,16 @@ slide marks it. A script is already slanted, so a slant would only fake a
 second style of it. All the lines show at once, so the accent, not a dim,
 marks the punchline.
 
+### A photo's credit
+
+**A photo that the talk did not make has its credit under its figure:** a
+`> [!credit]` block right after the figure's marker, or first in the part
+whose default figure it is. The page shows it small and centred under the
+figure; the text export, as a line that starts "**Credit:**". Write who
+made the photo, when, and its licence, with a link to its source: the
+source and the licence are also in the README of the photo's directory
+([`../../README.md`](../../README.md), "License").
+
 ### A title for the article
 
 **A slide can have a title in the article that is not its title on the
@@ -214,9 +226,7 @@ screen**: `articleTitle` in its frontmatter. The page uses it for the
 slide's heading, its line in the table of contents and its heading's
 fragment, and the text export uses it too (`slideInput` in
 `addons/narration/plan.ts`). Use it where the slide's title is for the room,
-not for a reader. For example, the Questions slide asks "Questions?" in the
-talk, but its narration is the credits, so its heading in the article names
-them. Quote the value, as for the history line: a value that is not text is
+not for a reader. No slide uses it now. Quote the value, as for the history line: a value that is not text is
 an error (`frontmatterText` in `addons/narration/frontmatter.ts`), and the
 spell check reads it (`SHOWN_KEYS` in `../../tools/spellcheck.ts`).
 
@@ -529,7 +539,7 @@ pnpm article   # slidev build, then pnpm prerender: node addons/narration/preren
 `/article/2`, ...) in Chromium, and takes a still of each figure, as it
 shows when it has settled. The page says how many parts there are
 (`data-article-pages`). It takes each still,
-and scrolls, with the page paused ("Pause them all"): with no GPU, a frame
+and scrolls, with the page paused ("Pause all figures"): with no GPU, a frame
 takes up to 0.4 s, and a screenshot or a scroll waits for frames. This made
 it 3.7× faster (64 s here); the settles are most of what is left
 ([the task](../tasks/2026-10-22-article-prerender-speed/PLAN.md)). It writes

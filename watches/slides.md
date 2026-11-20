@@ -2275,6 +2275,9 @@ clicks: 1
 [figure: A painting of John Harrison, seated, with a watch in his hand. Behind
 him, in the shadows, a large clock in a glass case.]
 
+> [!credit]
+> Painting by Thomas King, about 1767. [Public domain](https://commons.wikimedia.org/wiki/File:John_Harrison_(Gem%C3%A4lde)_01.jpg).
+
 > [!aside] What is in the painting?
 >
 > Behind him is his third attempt at a marine clock, in its traveling case. The
@@ -2446,6 +2449,9 @@ both in 1759. In 1761, the watch went to sea.
 [figure: A timeline from 1730 to 1760, with a bar for each clock, and its photo at the
 start of its bar. H1's bar is 5 years long and H2's is 2. H3's is 19, the longest. H4's
 is 4, the same 4 years as the end of H3's.]
+
+> [!credit]
+> Photos of [H1](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(32416544837).jpg), [H2](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(46635402754).jpg) and [H4](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(32416554787).jpg) by Mike Prince, and of [H3](https://commons.wikimedia.org/wiki/File:Harrison_H3_Clock_(35491292866).jpg) by Tony Hisgett, under [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
 
 -->
 
@@ -2664,6 +2670,9 @@ Just past a blind curve, the two trains collided head-on.
 
 [figure: A daguerreotype of the wreck: one locomotive reared up over the other, the cars behind them broken, and a crowd beside the track.]
 
+> [!credit]
+> Daguerreotype attributed to L. Wright, 1853. [Public domain](https://commons.wikimedia.org/wiki/File:L._Wright_-_Train_wreck_on_the_Providence_Worcester_Railroad_near_Pawtucket,_Rhode_Island_-_Google_Art_Project.jpg).
+
 [click]
 
 [nofigure]
@@ -2760,6 +2769,9 @@ watchmaker had to make a new one, by hand.
 [figure: A long factory room in the 1870s, with tall windows: rows of young
 women at small machines, each driven by a belt from a pulley under the
 ceiling.]
+
+> [!credit]
+> Photo by Thomas R. Lewis, 1870s. [Public domain](<https://commons.wikimedia.org/wiki/File:Gezicht_op_een_ruimte_van_de_American_Watch_Company_in_Waltham,_Massachusetts,_waar_tandwielen_worden_gemaakt_Pinion_Finishing_Room,_Watch_Factory_(titel_op_object),_RP-F-2001-7-980-60.jpg>).
 
 In the 1850s, the Waltham Watch Company pioneered the mass production of
 precision watches using machines and standardized parts. Steam engines turned
@@ -2932,6 +2944,9 @@ was clean, and it paid well.
 an alarm clock's dial with a fine brush, beside tins of dials and small vials
 of paint. Two more painters work behind her.]
 
+> [!credit]
+> Photo by Leslie Cardew for the _Daily Herald_, January 14, 1932. Daily Herald Archive, Science Museum Group, [© Mirrorpix/SMG Images](https://collection.sciencemuseumgroup.org.uk/objects/co8801010/daily-herald-photograph-clock-making).
+
 At the time, people thought small doses of radium were actually good for you.
 Doctors administered it, and people drank radium water for health the way we
 drink mineral water today.
@@ -3037,6 +3052,9 @@ Girls" by the press, sued U.S. Radium in 1927.
 
 [figure 3: Grace Fryer in a studio portrait: a young woman with short, dark,
 waved hair and a pearl necklace.]
+
+> [!credit]
+> Photo by an unknown photographer, 1925. [Public domain](https://commons.wikimedia.org/wiki/File:Grace_Fryer.jpg).
 
 [click]
 
@@ -3207,11 +3225,9 @@ IF ASKED: Rome's first public sundial was war loot from Sicily; Pliny says Roman
 ---
 layout: full
 class: questions
-# The narration is the credits, so the article's heading names them
-# (docs/article.md, "A title for the article"). They are at the end of
-# every page of the article: a photo's credit goes where it shows.
-articleTitle: "Credits & Sources"
-articleEveryPage: true
+# Not in the article: there, each photo's credit is under its figure
+# (docs/article.md, "The pages")
+articleHidden: true
 # The titles show only with no private file of song lines, as on the publish run
 # (components/SongLines.vue; docs/slide-patterns.md, "Words that run on their own").
 songTitles:
@@ -3270,35 +3286,6 @@ secondsATitle: 4
   left: 0;
 }
 </style>
-
-<!-- narration
-
-The painting of John Harrison is by Thomas King, about 1767, and is in the
-[public domain](https://commons.wikimedia.org/wiki/File:John_Harrison_(Gem%C3%A4lde)_01.jpg).
-The photos of
-[H1](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(32416544837).jpg),
-[H2](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(46635402754).jpg)
-and
-[H4](https://commons.wikimedia.org/wiki/File:Clock_at_Royal_Observatory_Greenwich_(32416554787).jpg)
-are by Mike Prince, and the photo of
-[H3](https://commons.wikimedia.org/wiki/File:Harrison_H3_Clock_(35491292866).jpg) is by
-Tony Hisgett, all under [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/).
-The daguerreotype of the
-[train wreck](https://commons.wikimedia.org/wiki/File:L._Wright_-_Train_wreck_on_the_Providence_Worcester_Railroad_near_Pawtucket,_Rhode_Island_-_Google_Art_Project.jpg)
-near Valley Falls, 1853, is attributed to L. Wright. The photo of the
-[Waltham watch factory](<https://commons.wikimedia.org/wiki/File:Gezicht_op_een_ruimte_van_de_American_Watch_Company_in_Waltham,_Massachusetts,_waar_tandwielen_worden_gemaakt_Pinion_Finishing_Room,_Watch_Factory_(titel_op_object),_RP-F-2001-7-980-60.jpg>),
-from the 1870s, is by Thomas R. Lewis. Both are in the public domain.
-The photo of a
-[dial painter](https://collection.sciencemuseumgroup.org.uk/objects/co8801010/daily-herald-photograph-clock-making)
-at a British clock factory, January 14, 1932, is by Leslie Cardew for the
-_Daily Herald_. It is in the Daily Herald Archive of the Science Museum Group,
-© Mirrorpix/SMG Images. The photo of
-[Grace Fryer](https://commons.wikimedia.org/wiki/File:Grace_Fryer.jpg), 1925,
-is by an unknown photographer, and is in the public domain.
-
-[nofigure]
-
--->
 
 <!--
 Thank you. Questions? The song lines run by themselves, so this slide can stay up for the rest of the evening.

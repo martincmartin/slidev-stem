@@ -27,10 +27,10 @@ import type { FigureMarker, QuoteBlock } from "./narration.ts";
 /** The frontmatter key for a slide's title in the article, in place of its
  *  title on the screen (../../docs/article.md, "A title for the article"). */
 const ARTICLE_TITLE_KEY = "articleTitle";
-/** The frontmatter key that puts a slide at the end of every page (the
- *  credits), and the one that keeps a section's page unlinked
- *  (../../docs/article.md, "The pages"). */
-const EVERY_PAGE_KEY = "articleEveryPage";
+/** The frontmatter key that leaves a slide out of the article, and the one
+ *  that keeps a section's page unlinked (../../docs/article.md, "The
+ *  pages"). */
+const HIDDEN_KEY = "articleHidden";
 const LINKED_KEY = "articleLinked";
 
 /** A part of a slide's narration, rendered for the plan's output: as
@@ -51,6 +51,7 @@ export interface Aside {
 
 export type RenderedBlock =
   | { readonly kind: "prose"; readonly text: string }
+  | { readonly kind: "credit"; readonly text: string }
   | ({ readonly kind: "aside" } & Aside)
   | QuoteBlock
   | FigureMarker;
@@ -64,8 +65,9 @@ export interface PagedSlide {
   /** The slide's title in the article: its `articleTitle`, or its own. */
   readonly title: string | null;
   readonly layout: string | null;
-  /** `true`: the slide goes at the end of every page (`articleEveryPage`). */
-  readonly everyPage: boolean;
+  /** `true`: the slide is in the talk, but not in the article
+   *  (`articleHidden`). */
+  readonly hidden: boolean;
   /** `false` on a section whose page no other page links to yet
    *  (`articleLinked: false`). */
   readonly linked: boolean;
@@ -96,7 +98,7 @@ export function pagedSlide(slide: {
     no: slide.no,
     title: frontmatterText(frontmatter, ARTICLE_TITLE_KEY) ?? slide.title,
     layout: typeof layout === "string" ? layout : null,
-    everyPage: frontmatter[EVERY_PAGE_KEY] === true,
+    hidden: frontmatter[HIDDEN_KEY] === true,
     linked: frontmatter[LINKED_KEY] !== false,
   };
 }
@@ -140,8 +142,8 @@ export interface ArticlePage<S extends PagedSlide = PagedSlide> {
   /** The part's section slide, or `null` for a talk with no section. */
   readonly section: S | null;
   /** What the page plans, in order: the cover, for its title only on a
-   *  page after the first (`titleOnly`), whole on page 1; the part's slides;
-   *  then the slides that go on every page. */
+   *  page after the first (`titleOnly`), whole on page 1; then the part's
+   *  slides. */
   readonly slides: readonly PageSlide<S>[];
 }
 
@@ -155,13 +157,12 @@ export interface PageSlide<S extends PagedSlide = PagedSlide> {
 /** The article's pages: one for each section slide, which starts a part,
  *  from the section up to the next one. The slides before the first section
  *  (the cover) are on page 1. A page after the first starts with the cover's
- *  title only. A slide with `articleEveryPage` is at the end of every page,
- *  and nowhere else. */
+ *  title only. A slide with `articleHidden` is on no page. */
 export function articlePages<S extends PagedSlide>(
-  slides: readonly S[],
+  all: readonly S[],
 ): ArticlePage<S>[] {
+  const slides = all.filter((slide) => !slide.hidden);
   const whole = (slide: S): PageSlide<S> => ({ slide, titleOnly: false });
-  const everyPage = slides.filter((slide) => slide.everyPage).map(whole);
   const [cover] = slides;
   const titleOnly: PageSlide<S>[] =
     cover?.layout === "cover" ? [{ slide: cover, titleOnly: true }] : [];
@@ -172,7 +173,6 @@ export function articlePages<S extends PagedSlide>(
   const pages: Building[] = [];
   let current: Building = { section: null, slides: [] };
   for (const slide of slides) {
-    if (slide.everyPage) continue;
     if (slide.layout === "section" && current.section !== null) {
       pages.push(current);
       current = { section: slide, slides: [...titleOnly, whole(slide)] };
@@ -185,7 +185,7 @@ export function articlePages<S extends PagedSlide>(
   return pages.map((page, index) => ({
     number: index + 1,
     section: page.section,
-    slides: [...page.slides, ...everyPage],
+    slides: page.slides,
   }));
 }
 
@@ -225,6 +225,7 @@ export type PageBlock =
       readonly history: string | null;
     }
   | PageProse
+  | { readonly kind: "credit"; readonly text: string }
   | QuoteBlock
   | FigureBlock;
 
@@ -419,6 +420,7 @@ export function pagePlan(slides: readonly SlideInput[]): PageBlock[] {
   const page: PageBlock[] = [];
   let lastKey: string | null = null;
   for (const [index, slide] of slides.entries()) {
+    if (slide.hidden) continue;
     const title = slide.title;
     if (index === 0 && slide.layout === "cover" && title) {
       page.push({ kind: "title", text: title });

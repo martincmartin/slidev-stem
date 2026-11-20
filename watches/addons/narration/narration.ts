@@ -14,6 +14,8 @@
 // A quote block whose first line is `> [!aside] Title` is an aside. One whose
 // first line is `> [!quote]` is a pull quote: each line after it is a line of
 // the quote. `> [!quote script-1714]` gives the quote the talk's classes too.
+// One whose first line is `> [!credit]` is a photo's credit: the page shows
+// it small, under the figure before it.
 // The rest is prose: a block for each paragraph, table or list, so that an
 // aside can sit beside one paragraph (plan.ts).
 //
@@ -48,6 +50,12 @@ export interface AsideBlock {
   readonly markdown: string;
 }
 
+/** A photo's credit, under the figure before it. */
+export interface CreditBlock {
+  readonly kind: "credit";
+  readonly markdown: string;
+}
+
 /** A pull quote: words that the page shows large, a line for each line. */
 export interface QuoteBlock {
   readonly kind: "quote";
@@ -58,7 +66,7 @@ export interface QuoteBlock {
 }
 
 export type NarrationBlock =
-  ProseBlock | AsideBlock | QuoteBlock | FigureMarker;
+  ProseBlock | AsideBlock | QuoteBlock | CreditBlock | FigureMarker;
 
 export interface NarrationPart {
   /** The click from which the part is said. */
@@ -74,6 +82,7 @@ const FIGURE =
   /\[figure(?:\s+(\d+)(?:-(\d+))?)?(?:\s+(play))?(?::\s*([^\]]*?))?\s*\]|\[nofigure\]/g;
 const ASIDE = /^>\s*\[!aside\]\s*(.*)$/i;
 const QUOTE = /^>\s*\[!quote((?:\s+[\w-]+)*)\]\s*$/i;
+const CREDIT = /^>\s*\[!credit\]\s*$/i;
 
 /** The narration comment's text, or `null` if the slide has none. */
 export function narrationText(content: string): string | null {
@@ -108,9 +117,11 @@ function paragraphs(markdown: string): string[] {
   );
 }
 
-/** The prose, the asides and the quotes of `text`, in order. */
-function textBlocks(text: string): (ProseBlock | AsideBlock | QuoteBlock)[] {
-  const blocks: (ProseBlock | AsideBlock | QuoteBlock)[] = [];
+/** The prose, the asides, the quotes and the credits of `text`, in order. */
+function textBlocks(
+  text: string,
+): (ProseBlock | AsideBlock | QuoteBlock | CreditBlock)[] {
+  const blocks: (ProseBlock | AsideBlock | QuoteBlock | CreditBlock)[] = [];
   const prose: string[] = [];
   const flush = (): void => {
     for (const markdown of paragraphs(prose.join("\n"))) {
@@ -123,7 +134,8 @@ function textBlocks(text: string): (ProseBlock | AsideBlock | QuoteBlock)[] {
     const line = lines[index] ?? "";
     const aside = ASIDE.exec(line.trim());
     const quote = QUOTE.exec(line.trim());
-    if (!aside && !quote) {
+    const credit = CREDIT.test(line.trim());
+    if (!aside && !quote && !credit) {
       prose.push(line);
       continue;
     }
@@ -132,6 +144,10 @@ function textBlocks(text: string): (ProseBlock | AsideBlock | QuoteBlock)[] {
     while (index + 1 < lines.length && /^\s*>/.test(lines[index + 1] ?? "")) {
       index++;
       body.push((lines[index] ?? "").replace(/^\s*>\s?/, ""));
+    }
+    if (credit) {
+      blocks.push({ kind: "credit", markdown: body.join("\n").trim() });
+      continue;
     }
     if (quote) {
       blocks.push({

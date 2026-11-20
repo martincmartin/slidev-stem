@@ -103,7 +103,7 @@ async function prerenderPart(browser: Browser, part: number): Promise<number> {
     await page.evaluate(() => document.fonts.ready);
     const figures = page.locator("figure.article-figure");
     const count = await figures.count();
-    // The page's "Pause them all": a paused figure is not drawn and keeps its
+    // The page's "Pause all figures": a paused figure is not drawn and keeps its
     // picture. Without a GPU each frame of a figure takes up to 0.4 s, and a
     // scroll or a screenshot waits for frames, so both are done paused. Sent
     // as an event: a click would wait for frames too. It reads the button's
@@ -158,9 +158,8 @@ async function prerenderPart(browser: Browser, part: number): Promise<number> {
         frame.removeAttribute("aria-label");
         figure.querySelector(".article-figure-controls")?.remove();
       }
-      for (const button of copy.querySelectorAll(".article-motion button")) {
-        button.remove();
-      }
+      // the pause button, with its line: it is all that the line holds
+      copy.querySelector(".article-motion")?.remove();
       // the styles that the article's route loaded, as paths: a link that the
       // deck's code adds holds this server's address
       const styles = [
