@@ -63,6 +63,14 @@ Prettier corrupts it. `tools/talkcheck.py` fails if a Markdown file of a talk
 that starts with frontmatter (other than the docs, the tasks and the READMEs)
 does not get the Slidev parser.
 
+`.prettierrc` also loads `tools/prettier-math.ts`, at the top level and in the
+deck override: an override's `plugins` replace the top-level list, so the
+override names it again, after `prettier-plugin-slidev`. It refuses a file with
+`*` in its math, before Prettier changes it: Prettier reads two `*` in one
+paragraph as emphasis, also inside `$…$`, and writes them as `_`, with no
+error. Write `\ast` instead. If you add an override with its own `plugins`,
+name it there too.
+
 ## Set up a clone
 
 The steps for a new clone or worktree, on macOS or Linux. Windows is

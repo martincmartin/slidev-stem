@@ -53,6 +53,10 @@ Each tool, with what it needs in brackets, and what it answers:
   its declared positions, and work offline
 - `navcheck.ts` (Playwright): diagnostic for suspected navigation problems:
   continuity and direct-load equality ([navigation.md](../docs/navigation.md))
+- `prettier-math.ts` (Prettier's Markdown parser, prettier-plugin-slidev): a
+  Prettier plugin, not a script. `.prettierrc` loads it, so that each run of
+  Prettier first refuses a Markdown file or a deck with `*` in its math
+  (write `\ast`)
 - `talkcheck.py` (stdlib, pnpm): does a talk have its own `pnpm-workspace.yaml`,
   and does Prettier read each of its deck files with the Slidev parser
 - `vuecheck.ts` (@vue/compiler-sfc): does each Vue component keep the class and
