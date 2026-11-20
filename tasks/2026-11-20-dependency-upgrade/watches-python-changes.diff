@@ -1,0 +1,18 @@
+5c5
+< librt==0.16.0 ; platform_python_implementation != 'PyPy'
+---
+> librt==0.17.0 ; platform_python_implementation != 'PyPy'
+9c9,11
+<     # via mypy
+---
+>     # via
+>     #   librt
+>     #   mypy
+12c14
+< numpy==2.5.4
+---
+> numpy==2.5.5
+19c21
+< ruff==0.17.4
+---
+> ruff==0.17.6

@@ -1,0 +1,142 @@
+1c1
+< @babel/helper-string-parser@7.29.13
+---
+> @babel/helper-string-parser@7.29.14
+3,4c3,4
+< @babel/parser@7.29.13
+< @babel/types@7.29.11
+---
+> @babel/parser@7.29.14
+> @babel/types@7.29.14
+7,14c7,14
+< @cspell/cspell-bundled-dicts@10.4.1
+< @cspell/cspell-json-reporter@10.4.1
+< @cspell/cspell-performance-monitor@10.4.1
+< @cspell/cspell-pipe@10.4.1
+< @cspell/cspell-resolver@10.4.1
+< @cspell/cspell-service-bus@10.4.1
+< @cspell/cspell-types@10.4.1
+< @cspell/cspell-worker@10.4.1
+---
+> @cspell/cspell-bundled-dicts@10.5.2
+> @cspell/cspell-json-reporter@10.5.2
+> @cspell/cspell-performance-monitor@10.5.2
+> @cspell/cspell-pipe@10.5.2
+> @cspell/cspell-resolver@10.5.2
+> @cspell/cspell-service-bus@10.5.2
+> @cspell/cspell-types@10.5.2
+> @cspell/cspell-worker@10.5.2
+74,78c74,78
+< @cspell/dynamic-import@10.4.1
+< @cspell/filetypes@10.4.1
+< @cspell/rpc@10.4.1
+< @cspell/strong-weak-map@10.4.1
+< @cspell/url@10.4.1
+---
+> @cspell/dynamic-import@10.5.2
+> @cspell/filetypes@10.5.2
+> @cspell/rpc@10.5.2
+> @cspell/strong-weak-map@10.5.2
+> @cspell/url@10.5.2
+81,82c81,82
+< @eslint-community/regexpp@4.12.2
+< @eslint/config-array@0.23.5
+---
+> @eslint-community/regexpp@4.12.3
+> @eslint/config-array@0.23.6
+95a96
+> @isaacs/nonrecursive-glob-match@1.1.0
+106,115c107,116
+< @typescript-eslint/eslint-plugin@8.72.1
+< @typescript-eslint/parser@8.72.1
+< @typescript-eslint/project-service@8.72.1
+< @typescript-eslint/scope-manager@8.72.1
+< @typescript-eslint/tsconfig-utils@8.72.1
+< @typescript-eslint/type-utils@8.72.1
+< @typescript-eslint/types@8.72.1
+< @typescript-eslint/typescript-estree@8.72.1
+< @typescript-eslint/utils@8.72.1
+< @typescript-eslint/visitor-keys@8.72.1
+---
+> @typescript-eslint/eslint-plugin@8.73.0
+> @typescript-eslint/parser@8.73.0
+> @typescript-eslint/project-service@8.73.0
+> @typescript-eslint/scope-manager@8.73.0
+> @typescript-eslint/tsconfig-utils@8.73.0
+> @typescript-eslint/type-utils@8.73.0
+> @typescript-eslint/types@8.73.0
+> @typescript-eslint/typescript-estree@8.73.0
+> @typescript-eslint/utils@8.73.0
+> @typescript-eslint/visitor-keys@8.73.0
+124c125
+< ansi-regex@6.5.0
+---
+> ansi-regex@6.6.0
+128c129
+< brace-expansion@5.0.12
+---
+> brace-expansion@5.0.13
+136,144c137,145
+< cspell-config-lib@10.4.1
+< cspell-dictionary@10.4.1
+< cspell-gitignore@10.4.1
+< cspell-glob@10.4.1
+< cspell-grammar@10.4.1
+< cspell-io@10.4.1
+< cspell-lib@10.4.1
+< cspell-trie-lib@10.4.1
+< cspell@10.4.1
+---
+> cspell-config-lib@10.5.2
+> cspell-dictionary@10.5.2
+> cspell-gitignore@10.5.2
+> cspell-glob@10.5.2
+> cspell-grammar@10.5.2
+> cspell-io@10.5.2
+> cspell-lib@10.5.2
+> cspell-trie-lib@10.5.2
+> cspell@10.5.2
+154c155
+< eslint@10.14.0
+---
+> eslint@10.15.0
+163c164
+< fast-equals@6.2.2
+---
+> fast-equals@6.4.0
+178c179
+< ignore@7.0.14
+---
+> ignore@7.0.16
+194c195
+< minimatch@10.2.6
+---
+> minimatch@11.0.9
+198c199
+< node@26.13.0
+---
+> node@26.13.1
+206,210c207,211
+< playwright-chromium@1.64.1
+< playwright-core@1.64.1
+< playwright-firefox@1.64.1
+< playwright-webkit@1.64.1
+< postcss@8.5.32
+---
+> playwright-chromium@1.65.1
+> playwright-core@1.65.1
+> playwright-firefox@1.65.1
+> playwright-webkit@1.65.1
+> postcss@8.5.33
+213c214
+< prettier@3.9.10
+---
+> prettier@3.10.1
+221c222
+< source-map-js@1.2.2
+---
+> source-map-js@1.2.4
+225c226
+< typescript-eslint@8.72.1
+---
+> typescript-eslint@8.73.0

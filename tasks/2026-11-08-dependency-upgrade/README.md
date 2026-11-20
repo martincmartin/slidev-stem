@@ -38,3 +38,7 @@ WebKit checks the Safari engine. Installed Safari was not tested.
 `inputs/` holds the manifests, lockfiles and `.python-version` files before the
 upgrade. `flatten_pnpm_list.py` and `compare_dist.py` are copies of the house
 tools that made the lists and the comparison.
+
+2026-11-20: Playwright is now paired by its driver, not its release number:
+Python 1.65.2 contains the driver of JS 1.65.1. See
+[the 2026-11-20 upgrade](../2026-11-20-dependency-upgrade/PLAN.md).

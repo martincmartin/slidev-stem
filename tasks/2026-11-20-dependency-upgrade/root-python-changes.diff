@@ -1,0 +1,27 @@
+12c12
+< librt==0.16.0 ; platform_python_implementation != 'PyPy'
+---
+> librt==0.17.0 ; platform_python_implementation != 'PyPy'
+16c16,18
+<     # via mypy
+---
+>     # via
+>     #   librt
+>     #   mypy
+19c21
+< numpy==2.5.4
+---
+> numpy==2.5.5
+27c29
+< playwright==1.64.1
+---
+> playwright==1.65.2
+31,32d32
+< pyee==14.0.0
+<     # via playwright
+37c37
+< ruff==0.17.4
+---
+> ruff==0.17.6
+41d40
+<     #   pyee

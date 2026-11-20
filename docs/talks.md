@@ -626,8 +626,18 @@ Upgrade only a talk in progress. In the talk's directory:
 
    Keep the house's Python `playwright` (the root's `uv.lock`) and the
    talk's JS `playwright-chromium` (and its `playwright-firefox` and
-   `playwright-webkit`) at the same version (`package.json`). Then `slidev export` and the tools that
-   render use the same browser builds, and the cache holds one copy.
+   `playwright-webkit`, in `package.json`) on the same Playwright driver. Then
+   `slidev export` and the tools that render use the same browser builds, and
+   the cache holds one copy. The Python release number can differ from the JS
+   release number of its driver: for example, Python 1.65.2 contains the
+   driver of JS 1.65.1. Compare the driver, not the release number:
+
+   ```bash
+   uv run --project .. python -c "import json, pathlib, playwright; print(json.loads((pathlib.Path(playwright.__file__).parent / 'driver/package/package.json').read_text())['version'])"
+   node -p "require('playwright-core/package.json').version"
+   ```
+
+   Pin the JS packages to the version that the first command prints.
 
    To move Node or pnpm, change the versions in `devEngines` in
    `package.json`. To move Python, run `uv python pin <version>`. Use stable
