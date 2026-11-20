@@ -1542,8 +1542,8 @@ at load with the key's name.
 
 ## The explorer
 
-`pnpm explore` opens a page (`watch/explorer/`) that shows the live watch with
-a camera that you move. Use it to choose a slide's view and tilt before you
+`pnpm explore` serves a page (`watch/explorer/`) that shows the live watch
+with a camera that you move. Open the address that it prints. Use it to choose a slide's view and tilt before you
 write its frontmatter or a named view.
 
 - **The keys:** W, A, S and D move the picture, Q and E tilt it, the left
