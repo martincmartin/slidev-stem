@@ -163,15 +163,14 @@ function partHref(each: ArticlePage): string {
 }
 
 /** The parts that the page links to, and its own: a part that is not
- *  linked yet (`articleLinked: false`) only on its own page. With one part,
- *  none. */
-const partLinks = computed(() =>
-  pages.value.length < 2
-    ? []
-    : pages.value.filter(
-        (each) => each === current.value || (each.section?.linked ?? true),
-      ),
-);
+ *  linked yet (`articleLinked: false`) only on its own page. None if the
+ *  page links to no other part. */
+const partLinks = computed(() => {
+  const shown = pages.value.filter(
+    (each) => each === current.value || (each.section?.linked ?? true),
+  );
+  return shown.length < 2 ? [] : shown;
+});
 /** The next part, if it is linked. */
 const nextPart = computed(() => {
   const next = current.value ? pages.value[current.value.number] : undefined;

@@ -2,7 +2,8 @@
 // asked for feedback. The headings, the history lines, the prose, the asides
 // (each after its paragraph) and the pull quotes, in order, and each figure in
 // its place, as its alt
-// text and what a reader can do with it. No Slidev and no DOM here: the talk's script gives
+// text and what a reader can do with it. Also the count of the words that a
+// reader reads (`pageWords`). No Slidev and no DOM here: the talk's script gives
 // the page, with its text in Markdown, and the words for a figure's controls
 // (../../docs/article.md, "Export the text").
 
@@ -92,4 +93,75 @@ export function articleMarkdown(
     }
   }
   return `${chunks.join("\n\n")}\n`;
+}
+
+/** Words a minute: adults' silent reading of English non-fiction, the
+ *  average of a meta-analysis of 190 studies (Brysbaert, "How many words do
+ *  we read per minute?", Journal of Memory and Language 109, 2019). */
+export const READING_WORDS_PER_MINUTE = 238;
+
+/** Words a minute, the slow and the fast end: the usual range of a speaker
+ *  who explains to a room, from slides. An estimate: a talk's real time
+ *  comes from a rehearsal with a clock. */
+export const SPEAKING_WORDS_PER_MINUTE = { slow: 130, fast: 160 } as const;
+
+/** The words of a page that a reader reads, by where they are. */
+export interface PageWords {
+  /** The titles, headings, history lines, prose, pull quotes and a playing
+   *  figure's captions. */
+  readonly body: number;
+  /** The asides' titles and text. */
+  readonly asides: number;
+}
+
+/** The words in Markdown `text`: a link counts as its text, and an HTML
+ *  tag as nothing; a word is a run with a letter or a digit in it. */
+export function wordCount(text: string): number {
+  const plain = text
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/<[^>]*>/g, " ");
+  return plain.split(/\s+/).filter((token) => /[\p{L}\p{N}]/u.test(token))
+    .length;
+}
+
+/** The words of `page` that a reader reads. Not the figures' alt text, which
+ *  only a screen reader reads, their controls' words, or the photo credits. */
+export function pageWords(page: readonly PageBlock[]): PageWords {
+  let body = 0;
+  let asides = 0;
+  for (const block of page) {
+    switch (block.kind) {
+      case "title":
+        for (const text of [block.text, block.subtitle ?? ""]) {
+          body += wordCount(text);
+        }
+        break;
+      case "part":
+        body += wordCount(block.text);
+        break;
+      case "heading":
+        body += wordCount(block.text) + wordCount(block.history ?? "");
+        break;
+      case "prose":
+        body += wordCount(block.text);
+        for (const aside of block.asides) {
+          asides += wordCount(aside.title) + wordCount(aside.text);
+        }
+        break;
+      case "quote":
+        body += wordCount(block.lines.join("\n"));
+        break;
+      case "figure":
+        // a caption that stays from one step to the next is read once
+        block.captions.forEach((caption, step) => {
+          if (caption !== block.captions[step - 1]) {
+            body += wordCount(caption ?? "");
+          }
+        });
+        break;
+      case "credit":
+        break;
+    }
+  }
+  return { body, asides };
 }

@@ -52,10 +52,10 @@ export const SLIDER_WORDS: Readonly<
   wind: { label: "Wind the mainspring", start: "Bare", end: "Wound" },
 };
 
-/** What a figure's button does: `release` shows the click before the
- *  figure's, and plays the step to the figure's click when pressed (the
- *  mainspring's release). */
-export const BUTTONS = ["release"] as const;
+/** What a figure's button plays. Each shows the click before the figure's,
+ *  and plays the step to the figure's click when pressed: `release`, the
+ *  mainspring's release; `run down`, its time-lapse. */
+export const BUTTONS = ["release", "run down"] as const;
 export type ButtonKind = (typeof BUTTONS)[number];
 
 /** What a button says: what a press does, and what a second press does. */
@@ -63,6 +63,7 @@ export const BUTTON_WORDS: Readonly<
   Record<ButtonKind, { label: string; undo: string }>
 > = {
   release: { label: "Let go of the outer end", undo: "Start again" },
+  "run down": { label: "Speed up: 6 hours in 6 seconds", undo: "Start again" },
 };
 
 /** s: the time over which a figure's speed-up button says what it does:

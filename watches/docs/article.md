@@ -10,14 +10,14 @@ for the article; what a figure shows, and why; the sliders,
 the button, the playing figure, and Part 2's story figures; how a page is
 checked on a phone; how the code is split between the addon and the
 talk; how a reader turns a figure of the watch; how to build the static
-page, and where it can go; how to export its text.
+page, and where it can go; how to export its text, and count its words.
 **Read before** you write or change a slide's narration, add a click to a
 slide that has narration, add a part or a slide for every page, give a
 slide a title for the article, change
 `addons/narration/`, the figure layer
 (`components/FigureLayer.vue`, `webgl/shared.ts`, `watch/article.ts`) or
 the phone check (`art/phone-check.ts`, `art/phone.ts`), or
-build the article or export its text.
+build the article, export its text or count its words.
 **Tasks:**
 [`tasks/2026-10-03-narrated-export/`](../../tasks/2026-10-03-narrated-export/README.md)
 (the forms, the measurements, and the page's design in its `page-design.md`),
@@ -67,10 +67,10 @@ cover`).
   The preview's image is the page's first figure's still ("Build the static
   page", below).
 - **A section with `articleLinked: false`** has its page, but no other page
-  links to it: a part that is not done yet. Part 3, now. Remove the key to
+  links to it: a part that is not done yet. Parts 2 and 3, now. Remove the key to
   launch the part.
 - **Each page links to the next part, and then to every part,** at its end. The links load the page anew, so it starts with only its
-  own figures.
+  own figures. A page that links to no other part has no list of parts.
 
 ## What a reader gets
 
@@ -399,7 +399,7 @@ article:
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `mark`    | a list of pieces, or `false`                                                                                                                                                                                                                                                           |
 | `slider`  | `curl`: the diving board's curl, to the hairspring at rest (the Hairspring slide); `twist`: the hairspring's wind from rest, and a swing from there when the reader lets go (the Hairspring slide); `wind`: the Mainspring slide's story, from the bare spring through the key's turns |
-| `button`  | `release`: the figure shows the click before its own; the button plays the step to its own click (the Mainspring slide's release)                                                                                                                                                      |
+| `button`  | the figure shows the click before its own; the button plays the step to its own click. Its words: `release`, the Mainspring slide's release; `run down`, its time-lapse                                                                                                                |
 | `speedUp` | a button that runs the whole mechanism this much faster, in step (`watchLapse`'s scale): `120` runs an hour in 30 s. An even whole number above 1                                                                                                                                      |
 | `view`    | the figure's camera, in place of the slide's, with the values of `artView`: a named view, or the pieces that a fitted view fits                                                                                                                                                        |
 
@@ -450,7 +450,12 @@ watches a thing happen, so it plays at the talk's speed; a slider would let
 the reader drag the uncoil instead of seeing the fling. A second press puts
 the wound spring back at once, as a step back in the talk does. The button
 is a `FigureButton` (`addons/narration/figure.ts`): it says what it does,
-and what a second press does.
+and what a second press does. The Mainspring slide's last figure plays its
+time-lapse with a button too (`run down`): "Speed up: 6 hours in 6
+seconds", as the speed-up buttons below say their speed. It is not a
+`speedUp`: the time-lapse lets the spring down and stops the watch, so it
+plays once, as the talk's step does, and a second press winds the spring
+again ("Start again").
 
 **A speed-up is a button** (`speedUp`), for a part too slow to see move:
 at real speed, the center wheel's rim moves about 0.17 px a second, and
@@ -624,7 +629,7 @@ it: `../../docs/talks.md`, "Browser support".
 | `setup/main.ts`                                                 | makes the page's art before the app mounts, with the globe only where the page shows it ("What a page loads"), and gives the article the talk's rules (`ARTICLE_HOOKS`)                                   |
 | `watch/article.ts`                                              | the talk's rules: default figures, a picture's key and box, the camera's key, marks, the `article` settings, the controls' words                                                                          |
 | `addons/narration/text.ts`                                      | the page plan as Markdown, for the text export                                                                                                                                                            |
-| `watch/article-text.ts`                                         | the text export (`pnpm article:text`), and the page that the talk's tests check, from `slides.md`                                                                                                         |
+| `watch/article-text.ts`                                         | the text export (`pnpm article:text`) and the word count (`--count`), and the page that the talk's tests check, from `slides.md`                                                                          |
 | `global-bottom.vue`, `components/FigureLayer.vue`               | in a figure, the layer is the figure's: the watch at the figure's click, the board, "tick" and "tock", the time scale                                                                                     |
 | `webgl/shared.ts`, `watch/instance.ts`                          | one renderer, one WebGL context, for all the figures (`sharedStage`)                                                                                                                                      |
 
@@ -735,6 +740,7 @@ in Playwright Chromium, Firefox, Firefox with private browsing, and WebKit.
 ```bash
 pnpm article:text > article.md            # the whole article, as one page, in under a second
 pnpm article:text --part 2 > part-2.md    # one page, as the reader gets it
+pnpm article:text --count                 # each part's words, and the time to read and to say them
 ```
 
 For a reader that takes text, such as a chatbot asked for feedback on the
@@ -754,6 +760,22 @@ page once, at their place in the talk. A copy of the
 page is not the same: it has no figures, because alt text is not copied, and
 it loses the headings' levels, the italics and the asides' marks. A print of
 the live page has blank figures (below).
+
+**The word count** (`--count`) gives each part's words and the time to read
+them, without and with the asides: a reader who skips the asides reads the
+first; and the time to say them in the talk. It counts what a reader reads: the titles, headings, history lines,
+prose, pull quotes and a playing figure's captions (`pageWords` in
+`addons/narration/text.ts`). It leaves out the figures' alt text, which
+only a screen reader reads, their controls' words and the photo credits.
+The time is at 238 words a minute (`READING_WORDS_PER_MINUTE`): the mean
+of adults' silent reading of English non-fiction (Brysbaert, 2019). It
+leaves out the time that a reader spends on the figures. The speaking time
+is an estimate of the talk's: the words without the asides, which the talk
+does not say, at 130 to 160 words a minute (`SPEAKING_WORDS_PER_MINUTE`),
+the usual range of a speaker who explains from slides. The narration is
+close to what the talk says, not the same: it has the article's own lines
+("Drag the slider"), and the talk has pauses for its animations. A
+rehearsal with a clock gives the real time.
 
 ## Not done yet
 

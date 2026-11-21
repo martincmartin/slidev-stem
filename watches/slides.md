@@ -1046,12 +1046,15 @@ artView: *spring
 artTilt: 20
 watchMainspring: free
 # In the article, the figure at click 1 has a slider that winds the spring,
-# and the figure at click 2 a button that lets it go (docs/article.md)
+# the figure at click 2 a button that lets it go, and the figure at click 4
+# a button that plays the time-lapse (docs/article.md)
 article:
   1:
     slider: wind
   2:
     button: release
+  4:
+    button: run down
 # The centre wheel, arbor, pivot and drive arrow remain for one second.
 # Then the mechanism fades, leaving the arrow alone for one more second.
 # The arrow fades before the camera changes to the spring's view.
@@ -1208,15 +1211,15 @@ drum called the _barrel_, invented by Jean-Antoine Lépine around 1760.
 
 [click]
 
-[figure 3-4: The mainspring in its barrel, driving the whole movement. Then six
+[figure 4: The mainspring in its barrel, driving the whole movement. Then six
 hours pass in six seconds.]
 
 As the mainspring pushes the barrel, the barrel's teeth drive the gear train we
 just built.  This is the "hidden mechanism" we mentioned earlier.
 
 [click] Because the ratchet stops the arbor from turning backwards, the spring
-has only one way to unwind: by its outer end turning the barrel. Step the figure
-forward using the controls under it, and six hours pass in six seconds. The
+has only one way to unwind: by its outer end turning the barrel. Press the
+button under the figure, and six hours pass in six seconds. The
 barrel turns once, the minute hand six times, and the coils move back out to the
 wall. When the spring is completely unwound, the watch stops.
 
@@ -1643,6 +1646,9 @@ art: all
 artView: cover
 artMoveAlso: [hour hand, minute hand]
 articleDescription: "How watches changed the world: longitude at sea and John Harrison's thirty-year quest, a deadly train wreck, the first watch factory, and the Radium Girls."
+# not ready: the page is built, but no other page links to it
+# (docs/article.md, "The pages")
+articleLinked: false
 # the page of Part 2 starts with the watch, whole, as the cover's figure
 # does (docs/article.md, "The pages")
 article:

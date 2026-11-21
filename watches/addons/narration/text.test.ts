@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { FigureBlock, PageBlock } from "./plan.ts";
-import { articleMarkdown } from "./text.ts";
+import { articleMarkdown, pageWords, wordCount } from "./text.ts";
 
 function figure(overrides: Partial<FigureBlock> = {}): FigureBlock {
   return {
@@ -102,4 +102,40 @@ test("a playing figure's captions follow it, once each", () => {
       "> **Caption, step 3:** The wheel.",
     ].join("\n\n") + "\n",
   );
+});
+
+test("a word has a letter or a digit; a link counts as its text", () => {
+  assert.equal(
+    wordCount("It's 99.99% — _so_ [Bartosz's page](https://x.y/a b)."),
+    5,
+  );
+  assert.equal(wordCount("<br> | --- |\n"), 0);
+});
+
+test("the words a reader reads, with the asides apart", () => {
+  const page: PageBlock[] = [
+    {
+      kind: "title",
+      text: "Marvels",
+      series: "Watches",
+      eyebrow: "PART 1",
+      subtitle: "Piece by piece",
+    },
+    { kind: "heading", id: "b", text: "Gears", history: "c. 1670" },
+    {
+      kind: "prose",
+      text: "A pinion drives it.",
+      asides: [{ title: "Why?", text: "Because it does." }],
+    },
+    { kind: "quote", classes: [], lines: ["Tick,", "tock."] },
+    { kind: "credit", text: "Photo: someone, CC BY" },
+    figure({
+      steps: [0, 1, 2],
+      play: true,
+      captions: ["The barrel.", "The barrel.", "The wheel."],
+    }),
+  ];
+  // the title and subtitle 4, the heading and history 3, the prose 4, the
+  // quote 2, the captions 4; not the series, the credit or the alt text
+  assert.deepEqual(pageWords(page), { body: 17, asides: 4 });
 });

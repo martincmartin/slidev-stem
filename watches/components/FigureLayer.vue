@@ -47,10 +47,11 @@
 // through the key's turns; the spring winds at an even rate with the slider,
 // with no rests (`windSliderTime`).
 //
-// THE BUTTON. `release` shows the click before the figure's until the
-// reader presses it; then it plays the step to the figure's click, as the
-// talk does (on the Mainspring slide: the stud flashes and goes, and the
-// spring uncoils). A second press shows the click before again, at once.
+// THE BUTTON. A figure's `button` shows the click before the figure's until
+// the reader presses it; then it plays the step to the figure's click, as
+// the talk does (on the Mainspring slide: `release`, the stud flashes and
+// goes, and the spring uncoils; `run down`, the time-lapse). A second press
+// shows the click before again, at once.
 //
 // THE SPEED-UP. A figure with `speedUp` has a button that runs the whole
 // mechanism at that speed-up, in step, as the Recap slide's stops do
@@ -148,8 +149,8 @@ const palette = computed(() => slidePalette(frontmatter.value["class"]));
 const curl = ref(0);
 const twist = ref(0);
 const wind = ref(0);
-/** Whether the reader has pressed the `release` button. */
-const released = ref(false);
+/** Whether the reader has pressed the figure's `button`. */
+const played = ref(false);
 /** Whether the reader has pressed the speed-up button. */
 const spedUp = ref(false);
 
@@ -198,10 +199,10 @@ function letGo(): void {
 /** Story time (s) on the Mainspring slide's line, for `wind`: from the bare
  *  spring to the end of the key's turns, with no rests. */
 const windTime = computed(() => windSliderTime(wind.value));
-/** The click whose state shows: the figure's, or, with the `release`
- *  button, the click before it until the reader presses the button. */
+/** The click whose state shows: the figure's, or, with a `button`, the
+ *  click before it until the reader presses the button. */
 const clicks = computed(() =>
-  settings.value.button === "release" && !released.value
+  settings.value.button !== null && !played.value
     ? figure.clicks.value - 1
     : figure.clicks.value,
 );
@@ -441,11 +442,10 @@ onBeforeUnmount(() => {
   if (view) sharedStage().remove(view);
 });
 
-// the press that undoes `release` is no step: the state changes at once
+// the press that undoes a `button` is no step: the state changes at once
 onChange(clicks, (to) => {
   const atOnce =
-    (settings.value.button === "release" && !released.value) ||
-    figure.jumps.value;
+    (settings.value.button !== null && !played.value) || figure.jumps.value;
   board.value = { state: boardState(frontmatter.value, to), atOnce };
   show(to, atOnce);
 });
@@ -533,11 +533,11 @@ onChange(
     } else if (slider === "wind") {
       controls.push({ kind: "slider", ...SLIDER_WORDS.wind, value: wind });
     }
-    if (button === "release") {
+    if (button !== null) {
       controls.push({
         kind: "button",
-        ...BUTTON_WORDS.release,
-        pressed: released,
+        ...BUTTON_WORDS[button],
+        pressed: played,
       });
     }
     if (speedUp !== null) {

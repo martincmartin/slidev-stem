@@ -1,7 +1,9 @@
 // The article as Markdown, on standard output: `pnpm article:text`, all of
 // it, or `pnpm article:text --part 2`, one of its pages. For a reader that
 // takes text, such as a chatbot asked for feedback (docs/article.md, "Export
-// the text"). It reads slides.md as the tests do: no build and no browser.
+// the text"). `pnpm article:text --count`: the words of each part, and the
+// time to read them, with and without the asides. It reads slides.md as the
+// tests do: no build and no browser.
 
 import { parseArgs } from "node:util";
 import {
@@ -20,7 +22,13 @@ import type {
   RenderedBlock,
   SlideInput,
 } from "../addons/narration/plan.ts";
-import { articleMarkdown } from "../addons/narration/text.ts";
+import {
+  articleMarkdown,
+  pageWords,
+  READING_WORDS_PER_MINUTE,
+  SPEAKING_WORDS_PER_MINUTE,
+} from "../addons/narration/text.ts";
+import type { PageWords } from "../addons/narration/text.ts";
 import {
   BUTTON_WORDS,
   speedUpWords,
@@ -123,17 +131,104 @@ export function articleText(
   return articleMarkdown(markdownPage(slides, watch, part), controlsOf);
 }
 
-const USAGE = "usage: node watch/article-text.ts [--part N]";
+/** The words of each part's page that a reader reads (`pageWords`), in
+ *  order, with the part's title. */
+export function articleWords(
+  slides: readonly DeckSlide[],
+  watch: Watch,
+): { readonly title: string; readonly words: PageWords }[] {
+  const parts = articlePages(slideInputs(slides, watch)).length;
+  return Array.from({ length: parts }, (_, index) => {
+    const page = markdownPage(slides, watch, index + 1);
+    const title = page.find((block) => block.kind === "title");
+    return {
+      title: title?.kind === "title" ? title.text : "",
+      words: pageWords(page),
+    };
+  });
+}
+
+/** `articleWords` as a table: words and minutes to read them, without and
+ *  with the asides, and minutes to say them without the asides, a row for
+ *  each part and one for all. */
+function wordTable(
+  parts: readonly { readonly title: string; readonly words: PageWords }[],
+): string {
+  const number = new Intl.NumberFormat("en-US");
+  const minutes = (words: number): string =>
+    `${String(Math.round(words / READING_WORDS_PER_MINUTE))} min`;
+  const { slow, fast } = SPEAKING_WORDS_PER_MINUTE;
+  const speaking = (words: number): string =>
+    `${String(Math.round(words / fast))}–${String(Math.round(words / slow))} min`;
+  const row = (name: string, words: PageWords, title: string): string[] => {
+    const all = words.body + words.asides;
+    return [
+      name,
+      number.format(words.body),
+      minutes(words.body),
+      number.format(all),
+      minutes(all),
+      speaking(words.body),
+      title,
+    ];
+  };
+  const total = parts.reduce(
+    (sum, { words }) => ({
+      body: sum.body + words.body,
+      asides: sum.asides + words.asides,
+    }),
+    { body: 0, asides: 0 },
+  );
+  const rows = [
+    ["", "Words", "Reading", "With asides", "Reading", "Speaking", ""],
+    ...parts.map(({ title, words }, index) =>
+      row(`Part ${String(index + 1)}`, words, title),
+    ),
+    row("All", total, ""),
+  ];
+  const widths = rows[0]?.map((_, column) =>
+    Math.max(...rows.map((cells) => (cells[column] ?? "").length)),
+  );
+  const lines = rows.map((cells) =>
+    cells
+      .map((cell, column) => {
+        const width = widths?.[column] ?? 0;
+        // the name and the title go left; the numbers right
+        return column === 0 || column === cells.length - 1
+          ? cell.padEnd(width)
+          : cell.padStart(width);
+      })
+      .join("  ")
+      .trimEnd(),
+  );
+  return [
+    lines.join("\n"),
+    "",
+    `Reading: at ${String(READING_WORDS_PER_MINUTE)} words a minute. Speaking: the words without the asides, at ${String(slow)} to ${String(fast)} words a minute; the narration is close to what the talk says, but a rehearsal with a clock gives the real time.`,
+    "Not counted: the figures' alt text, their controls and the photo credits.",
+    "",
+  ].join("\n");
+}
+
+const USAGE = "usage: node watch/article-text.ts [--part N | --count]";
 
 if (import.meta.main) {
   const { values, positionals } = parseArgs({
-    options: { part: { type: "string" } },
+    options: { part: { type: "string" }, count: { type: "boolean" } },
     allowPositionals: true,
   });
   const part = values.part === undefined ? null : Number(values.part);
-  if (positionals.length > 0 || (part !== null && !(part >= 1))) {
+  if (
+    positionals.length > 0 ||
+    (part !== null && !(part >= 1)) ||
+    (part !== null && values.count === true)
+  ) {
     console.error(USAGE);
     process.exitCode = 2;
+  } else if (values.count === true) {
+    process.stdout.write(
+      wordTable(articleWords(await deckSlides(), makeArt(makeGlobe).art)),
+    );
   } else {
     process.stdout.write(
       articleText(await deckSlides(), makeArt(makeGlobe).art, part),
