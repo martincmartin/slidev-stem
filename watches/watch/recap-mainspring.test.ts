@@ -11,7 +11,7 @@ import { modelState, watchState } from "./state.ts";
 
 const watch = generate();
 const barrel =
-  watch.groups.wheels.get(at(watch.design.wheels, 0)) ?? assert.fail();
+  watch.groups.wheels.get(watch.design.train.barrel) ?? assert.fail();
 const recap = await slideFrontmatter("Recap");
 
 test("the running spring lets down one turn, with a fixed arbor and no key", () => {

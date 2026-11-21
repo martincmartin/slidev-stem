@@ -2,7 +2,7 @@
 // not check JSON, so `readDesign` checks each value at load, and turns each
 // name into a reference to its object, once.
 
-import { isRecord } from "../webgl/checked.ts";
+import { at, isRecord } from "../webgl/checked.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import designFile from "./design.json" with { type: "json" };
 
@@ -115,12 +115,26 @@ export interface ForkDesign {
   readonly outline: readonly Point2[];
 }
 
+/** The going train's wheels, by their place in it. */
+export interface Train {
+  readonly barrel: Wheel;
+  readonly centre: Wheel;
+  readonly third: Wheel;
+  readonly fourth: Wheel;
+  readonly escape: Wheel;
+}
+
+/** The wheels' names, in train order: design.json lists them so. */
+const TRAIN_ORDER = ["barrel", "centre", "third", "fourth", "escape"] as const;
+
 export interface Design {
   readonly canvas: { readonly width: number; readonly height: number };
   readonly watchCentre: Point2;
   readonly timing: Timing;
   /** In train order: barrel, centre, third, fourth, escape. */
   readonly wheels: readonly Wheel[];
+  /** The same wheels, by name. */
+  readonly train: Train;
   readonly escapeSolid: boolean;
   readonly escapePhase: number;
   readonly balance: BalanceDesign;
@@ -379,9 +393,14 @@ export function readDesign(json: Json): Design {
     drivenNames.set(made, driven);
     return made;
   });
-  if (new Set(wheels.map((wheel) => wheel.name)).size !== wheels.length) {
-    return fail("wheels", "wheels with different names");
+  const names = wheels.map((wheel) => wheel.name).join(", ");
+  if (names !== TRAIN_ORDER.join(", ")) {
+    return fail(
+      "wheels",
+      `the wheels ${TRAIN_ORDER.join(", ")}, in that order`,
+    );
   }
+
   for (const wheel of wheels) {
     const name = drivenNames.get(wheel);
     if (name === null || name === undefined) continue;
@@ -404,6 +423,13 @@ export function readDesign(json: Json): Design {
     watchCentre: point(field(root, "watchCentre", "the file"), "watchCentre"),
     timing: readTiming(timing),
     wheels,
+    train: {
+      barrel: at(wheels, 0),
+      centre: at(wheels, 1),
+      third: at(wheels, 2),
+      fourth: at(wheels, 3),
+      escape: at(wheels, 4),
+    },
     escapeSolid: flag(root, "escapeSolid", "the file"),
     escapePhase: num(root, "escapePhase", "the file"),
     balance: {

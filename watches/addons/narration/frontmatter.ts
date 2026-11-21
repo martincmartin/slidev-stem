@@ -1,5 +1,6 @@
 // A line of text from a slide's frontmatter that a reader sees: the history
-// line (history.ts), or the slide's title in the article (plan.ts).
+// line (history.ts), or the slide's title, eyebrow and the like in the
+// article (plan.ts).
 
 /** The text of the frontmatter's `key`, trimmed, or `null` if the slide does
  *  not set it. Throws if the value is not a string with text: YAML reads a

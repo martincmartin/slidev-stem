@@ -24,7 +24,7 @@ export const INK_VARIABLES: Readonly<Record<InkName, string>> = {
 export const PAPER_VARIABLE = INK_VARIABLES.paper;
 
 /** The start of the name of each of the theme's variables. */
-export const ROLE_PREFIX = "--palette-";
+const ROLE_PREFIX = "--palette-";
 
 /** What `getComputedStyle` gives. */
 export interface Variables {

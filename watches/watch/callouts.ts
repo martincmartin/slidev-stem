@@ -8,14 +8,14 @@ import type { Point2 } from "../webgl/mesh.ts";
 import { limitedOrbit, NO_ORBIT } from "../webgl/orbit.ts";
 import type { Orbit } from "../webgl/orbit.ts";
 import { slidePoint } from "../webgl/renderer.ts";
-import type { Design, Wheel } from "./design.ts";
+import type { Design } from "./design.ts";
 import {
   forkOutlineLocal,
   JEWEL_FLAT_OFFSET,
   JEWEL_RADIUS,
 } from "./generate.ts";
 import type { Watch } from "./generate.ts";
-import { radians } from "../webgl/math.ts";
+import { clamp, degrees, radians } from "../webgl/math.ts";
 import { polar } from "./shapes.ts";
 import { stageState, tickTockState, watchState } from "./state.ts";
 import { pinionTip, turned } from "./teeth.ts";
@@ -128,13 +128,19 @@ export function firstCrossing(
   return found.length > 0 ? Math.min(...found) : undefined;
 }
 
-/** The fork's outline in the world at each end of its swing. */
-export function forkAtBanks(design: Design): [Point2[], Point2[]] {
+/** The fork's pivot, and its outline at rest, in the world's plan. */
+function forkInWorld(design: Design): { pivot: Point2; outline: Point2[] } {
   const pivot = worldOf(design, design.fork.pivot);
   const outline = forkOutlineLocal(
     design.fork.outline,
     design.fork.heading,
   ).map(([x, y]): Point2 => [pivot[0] + x, pivot[1] + y]);
+  return { pivot, outline };
+}
+
+/** The fork's outline in the world at each end of its swing. */
+export function forkAtBanks(design: Design): [Point2[], Point2[]] {
+  const { pivot, outline } = forkInWorld(design);
   const turned = (bank: number): Point2[] =>
     outline.map((corner) => turnedAbout(corner, bank, pivot));
   return [turned(design.timing.bank), turned(-design.timing.bank)];
@@ -146,12 +152,8 @@ export function forkAtBanks(design: Design): [Point2[], Point2[]] {
  *  after the lowest where the outline turns inward, sharply: where the lower
  *  stone meets the arm. The aim is halfway between A at its leftmost and B
  *  at its rightmost, over the fork's swing. */
-export function palletAim(design: Design): Point2 {
-  const pivot = worldOf(design, design.fork.pivot);
-  const outline = forkOutlineLocal(
-    design.fork.outline,
-    design.fork.heading,
-  ).map(([x, y]): Point2 => [pivot[0] + x, pivot[1] + y]);
+function palletAim(design: Design): Point2 {
+  const { pivot, outline } = forkInWorld(design);
   const count = outline.length;
   const corner = (index: number): Point2 =>
     at(outline, (index + count) % count);
@@ -164,13 +166,11 @@ export function palletAim(design: Design): Point2 {
     ];
     const into = [here[0] - before[0], here[1] - before[1]];
     const out = [after[0] - here[0], after[1] - here[1]];
-    return (
-      (Math.atan2(
+    return degrees(
+      Math.atan2(
         at(into, 0) * at(out, 1) - at(into, 1) * at(out, 0),
         at(into, 0) * at(out, 0) + at(into, 1) * at(out, 1),
-      ) *
-        180) /
-      Math.PI
+      ),
     );
   };
   const lowest = outline.reduce(
@@ -247,13 +247,9 @@ export function distanceToOutline(
   return Math.min(
     ...edgesOf(outline).map(([start, end]) => {
       const [dx, dy] = [end[0] - start[0], end[1] - start[1]];
-      const along = Math.max(
-        0,
-        Math.min(
-          1,
-          ((point[0] - start[0]) * dx + (point[1] - start[1]) * dy) /
-            (dx * dx + dy * dy),
-        ),
+      const along = clamp(
+        ((point[0] - start[0]) * dx + (point[1] - start[1]) * dy) /
+          (dx * dx + dy * dy),
       );
       return Math.hypot(
         point[0] - (start[0] + along * dx),
@@ -269,7 +265,7 @@ export function distanceToOutline(
  *  (`forkAtBanks`), and the train has stepped one beat in each window: the
  *  tooth tip on the fork's outline is the one that has landed. */
 export function toothDrops(design: Design): [Point2, Point2] {
-  const [, , , , escape] = design.wheels as [Wheel, Wheel, Wheel, Wheel, Wheel];
+  const { escape } = design.train;
   const arbor = worldOf(design, escape.arbor);
   const banks = forkAtBanks(design);
   const drop = (window: number): Point2 => {
@@ -321,7 +317,7 @@ export function stoneStrikes(
 ): [Strike, Strike] {
   const shown = slideProjection(watch, frontmatter, orbit);
   const { design, escapementTops: tops } = watch;
-  const [, , , , escape] = design.wheels as [Wheel, Wheel, Wheel, Wheel, Wheel];
+  const { escape } = design.train;
   const arbor = shown(worldOf(design, escape.arbor), tops.escape);
   const strike = (drop: Point2): Strike => {
     const at = shown(drop, tops.escape);
@@ -344,7 +340,7 @@ export function escapementMarks(
   const shown = slideProjection(watch, frontmatter);
   const { design, escapementTops: tops } = watch;
   const world = (point: Point2): Point2 => worldOf(design, point);
-  const [, , , , escape] = design.wheels as [Wheel, Wheel, Wheel, Wheel, Wheel];
+  const { escape } = design.train;
   const escapeArbor = world(escape.arbor);
 
   return {
@@ -379,13 +375,7 @@ export function gearsMarks(
 ): GearsMarks {
   const shown = slideProjection(watch, frontmatter);
   const { design, gearsTop: top } = watch;
-  const [, , , fourth, escape] = design.wheels as [
-    Wheel,
-    Wheel,
-    Wheel,
-    Wheel,
-    Wheel,
-  ];
+  const { fourth, escape } = design.train;
   const pinionArbor = worldOf(design, escape.arbor);
   const wheelArbor = worldOf(design, fourth.arbor);
   return {
@@ -403,7 +393,7 @@ export function gearTrainMarks(
   frontmatter: Record<string, unknown>,
 ): Pick<GearsMarks, "wheel" | "wheelTips"> {
   const shown = slideProjection(watch, frontmatter);
-  const centre = at(watch.design.wheels, 1);
+  const { centre } = watch.design.train;
   const arbor = worldOf(watch.design, centre.arbor);
   return {
     wheel: shown(arbor, watch.centreTop),

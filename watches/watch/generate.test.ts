@@ -144,11 +144,10 @@ test("the hands sit under the chapter ring's top and the ring is flush with the 
   assert.equal(minuteBottom, ringTop);
 });
 
-test("the spring is a ribbon on the balance, and the stud is not in the drawing", () => {
+test("the spring is a ribbon on the balance, and the stud spans its height", () => {
   const spring = watch.spring;
   assert.equal(spring.dynamic, true);
   const stud = at(partMeshes("hairspring stud"), 0);
-  assert.equal(stud.inDrawing, false);
   const [springBottom, springTop] = [
     watch.springHeights.bottom,
     watch.springHeights.top,
@@ -399,7 +398,6 @@ test("the Gears slide's spans are whole teeth of their gears, in the flash's col
       assert.equal(meshes.length, 1, name);
       const span = at(meshes, 0);
       assert.equal(span.group, gear.group, name);
-      assert.equal(span.inDrawing, false, name);
       const [bottom, top] = heights(span);
       // the whole tooth, drawn over the gear's faces
       assert.equal(span.overlay, true, name);
@@ -641,13 +639,7 @@ test("at a tilt, a fitted view fills its band on the screen, as the camera shows
 });
 
 test("each drive arrow is on its wheel, centred toward the wheel that drives it, and turns the way its wheel turns", () => {
-  const [, centre, third, fourth, escape] = design.wheels as [
-    Wheel,
-    Wheel,
-    Wheel,
-    Wheel,
-    Wheel,
-  ];
+  const { centre, third, fourth, escape } = design.train;
   for (const wheel of [escape, fourth, third, centre]) {
     const driver = design.wheels.find((each) => each.driven === wheel);
     assert.ok(driver, wheel.name);

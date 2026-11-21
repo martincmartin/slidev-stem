@@ -59,7 +59,7 @@ export const SLIDER_WORDS: Readonly<
 /** What a figure's button plays. Each shows the click before the figure's,
  *  and plays the step to the figure's click when pressed: `release`, the
  *  mainspring's release; `run down`, its time-lapse. */
-export const BUTTONS = ["release", "run down"] as const;
+const BUTTONS = ["release", "run down"] as const;
 export type ButtonKind = (typeof BUTTONS)[number];
 
 /** What a button says: what a press does, and what a second press does. */
@@ -121,7 +121,7 @@ export interface FigureSettings {
 
 /** px: room around the picture, for the lines' width and the words that
  *  show beside it ("tick", "tock"). */
-export const BOX_MARGIN = 16;
+const BOX_MARGIN = 16;
 
 /** The board's drawing on the slide: 452 px tall, to the slide's bottom
  *  (`SLIDE_ORIGIN` in art/diving_board.py). */
@@ -508,7 +508,7 @@ export function pictureBox(
     fitBox =
       fit === "all" || fit.includes("all")
         ? shownBox
-        : piecesBox(watch, stage, piecesNamed(watch, "artFit", fit));
+        : piecesBox(watch, stage, piecesNamed(watch, "artView", fit));
   }
   if (!box) return null;
   // the board is drawn to the slide's edges: centre on it, it is the picture

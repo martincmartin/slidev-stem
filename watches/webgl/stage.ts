@@ -108,7 +108,7 @@ export function deviceSize(element: Element): [number, number] {
 /** The frames that the log keeps: 10 minutes at 60 frames a second. When it
  *  has twice this many, it drops the oldest half, so that a long run does
  *  not grow without end. */
-export const FRAME_LOG_LIMIT = 36_000;
+const FRAME_LOG_LIMIT = 36_000;
 
 /** What the measurement scripts read: each frame's start, JS time and phase,
  *  for the last FRAME_LOG_LIMIT frames or more. */

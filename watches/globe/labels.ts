@@ -6,6 +6,7 @@
 // offset in px, and its words are in the paper where only the sea is under
 // them. No DOM: the tests run it in Node.
 
+import { degrees, radians } from "../webgl/math.ts";
 import type { View } from "../webgl/scene.ts";
 import { inBox } from "./earth.ts";
 import type { LonLat, LonLatBox, Polygon, Ring } from "./earth.ts";
@@ -82,8 +83,7 @@ export function offGlobe(camera: GlobeCamera, [x, y]: Point): LonLat | null {
   const north = -(y - camera.at[1]) * camera.kmPerPx;
   const far = Math.hypot(east, north);
   if (far > EARTH_RADIUS) return null;
-  const radians = Math.PI / 180;
-  const [lon0, lat0] = [camera.centre[0] * radians, camera.centre[1] * radians];
+  const [lon0, lat0] = [radians(camera.centre[0]), radians(camera.centre[1])];
   if (far === 0) return camera.centre;
   const angle = Math.asin(far / EARTH_RADIUS);
   const lat = Math.asin(
@@ -97,20 +97,19 @@ export function offGlobe(camera: GlobeCamera, [x, y]: Point): LonLat | null {
       far * Math.cos(angle) * Math.cos(lat0) -
         north * Math.sin(angle) * Math.sin(lat0),
     );
-  return [lon / radians, lat / radians];
+  return [degrees(lon), degrees(lat)];
 }
 
 /** A globe camera's view as a picture. */
 export function globePicture(camera: GlobeCamera, land: Land): Picture {
-  const radians = Math.PI / 180;
   return {
     view: globeView(camera),
     point: (place) => {
       // the far side does not show
-      const [lon, lat] = [place[0] * radians, place[1] * radians];
+      const [lon, lat] = [radians(place[0]), radians(place[1])];
       const [lon0, lat0] = [
-        camera.centre[0] * radians,
-        camera.centre[1] * radians,
+        radians(camera.centre[0]),
+        radians(camera.centre[1]),
       ];
       const facing =
         Math.sin(lat0) * Math.sin(lat) +

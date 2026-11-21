@@ -328,7 +328,6 @@ function holdoutScene(): {
     lines: [],
     silhouetteEdges: [],
     lineOrder: height,
-    inDrawing: false,
     overlay: false,
     dynamic: false,
   };

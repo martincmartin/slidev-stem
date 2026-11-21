@@ -30,7 +30,7 @@ import { settled } from "./globe/voyage.ts";
 import { loadedArt, loadedGlobe, watchStills } from "./watch/instance.ts";
 import {
   stageState,
-  timeScaleState,
+  timeScaleAt,
   voyageState,
   voyageFor,
   watchState,
@@ -58,9 +58,7 @@ const needsStill = computed(
 const posed = computed(() => boardState($frontmatter, $clicks.value));
 /** The click's speed-up, where the still shows the time scale. */
 const timeScale = computed(() =>
-  needsStill.value && state.value && timeScaleState($frontmatter, $clicks.value)
-    ? state.value.lapse
-    : undefined,
+  timeScaleAt($frontmatter, $clicks.value, state.value, needsStill.value),
 );
 /** Read only where a still or a posed board needs it. */
 const palette = computed(() => slidePalette($frontmatter["class"]));

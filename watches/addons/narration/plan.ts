@@ -122,7 +122,7 @@ export interface SlideInput extends PagedSlide {
 }
 
 /** A slide as the split into pages reads it, from its frontmatter. */
-export function pagedSlide(slide: {
+function pagedSlide(slide: {
   readonly no: number;
   readonly title: string | null;
   readonly frontmatter: Record<string, unknown>;
@@ -154,15 +154,11 @@ export function slideInput(
   hooks: Pick<ArticleHooks, "defaultFigures" | "pictureKey">,
 ): SlideInput {
   const { no, frontmatter } = slide;
-  const text = (key: string): string | null => {
-    const value = frontmatter[key];
-    return typeof value === "string" ? value : null;
-  };
   // the slide's clicks, as its frontmatter says; 0 if it does not
   const total = Number(frontmatter["clicks"] ?? 0);
   return {
     ...pagedSlide(slide),
-    eyebrow: text("eyebrow"),
+    eyebrow: frontmatterText(frontmatter, "eyebrow"),
     subtitle: frontmatterText(frontmatter, SUBTITLE_KEY),
     history: historyOf(frontmatter),
     parts: slide.parts,

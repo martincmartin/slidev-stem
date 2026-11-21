@@ -179,7 +179,7 @@ export function ease(fraction: number): number {
 }
 
 /** An eased mix of two views, as a view of its own. */
-export function mixView(first: View, second: View, fraction: number): View {
+function mixView(first: View, second: View, fraction: number): View {
   return {
     name: `${first.name} to ${second.name}`,
     scale: mix(first.scale, second.scale, fraction),

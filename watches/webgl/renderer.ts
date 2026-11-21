@@ -119,7 +119,7 @@ export const HIDDEN_LINE_TOLERANCE = 0.25;
 export const HOLDOUT_TOLERANCE = 1 / 32;
 /** The most holdouts a scene may have: the length of the line shader's
  *  `holdoutPlanes`. The numbers picture could hold 255. */
-export const MAX_HOLDOUTS = 32;
+const MAX_HOLDOUTS = 32;
 /** The polygon offset of an overlay's faces (`Mesh.overlay`): toward the
  *  camera by its slope and by two steps of the depth buffer, more than the
  *  rounding between two triangulations of one face. */
@@ -1430,9 +1430,8 @@ export class Renderer {
     const { scale } = frame.view;
     const shown = this.drawn.filter(
       ({ mesh }) =>
-        (!(frame.drawingOnly ?? false) || mesh.inDrawing) &&
-        (mesh.scales === undefined ||
-          (mesh.scales[0] <= scale && scale < mesh.scales[1])),
+        mesh.scales === undefined ||
+        (mesh.scales[0] <= scale && scale < mesh.scales[1]),
     );
     const picture = this.picture(frame, shown);
     const gl = this.gl;

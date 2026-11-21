@@ -36,7 +36,7 @@ export const SPRING_TURNS = 3.25;
  *  its length with the coils drawn in (`springPoints`' spread, MAX_SPREAD). */
 export const MAINSPRING_TURNS = 5;
 /** At most 0.011 px from the curve at the cover's scale. */
-export const SPRING_POINTS = 480;
+const SPRING_POINTS = 480;
 /** The spread's limit: its coils cross or double back beyond it. */
 const MAX_SPREAD = 0.95;
 
@@ -251,7 +251,7 @@ export function stepper(
 }
 
 /** The fork flips at each beat, between the two ends of its bank. */
-export function forkFlips(timing: Timing): Keyframes {
+function forkFlips(timing: Timing): Keyframes {
   const [[firstStart, firstEnd], [secondStart, secondEnd]] =
     tickWindows(timing);
   return {
@@ -348,7 +348,7 @@ export class Motion {
       this.steps.set(wheelGroup(groups, wheel), wheel.step);
     }
     this.steps.set(groups.oneStep, watch.oneStep.step);
-    const [, centre, , fourth] = design.wheels as [Wheel, Wheel, Wheel, Wheel];
+    const { centre, fourth } = design.train;
     // the seconds hand is on the fourth wheel's arbor
     this.steps.set(groups.seconds, fourth.step);
     // the hour wheel carries the hour hand
@@ -392,13 +392,13 @@ export class Motion {
       place(group, wheel.arbor, turned(group));
     }
     place(groups.oneStep, this.watch.oneStep.arbor, turned(groups.oneStep));
-    const [barrel] = design.wheels as [Wheel];
+    const { barrel } = design.train;
     place(groups.barrelArbor, barrel.arbor, arbor);
     place(groups.mainspring, barrel.arbor, 0);
     place(groups.balance, design.balance.arbor, swing);
     place(groups.springBase, design.balance.arbor, 0);
     place(groups.fork, design.fork.pivot, angleAt(this.forkTurning, time));
-    const [, centre, , fourth] = design.wheels as [Wheel, Wheel, Wheel, Wheel];
+    const { centre, fourth } = design.train;
     place(groups.seconds, fourth.arbor, turned(groups.seconds));
     place(groups.hour, centre.arbor, turned(groups.hour));
     place(groups.hourWheel, centre.arbor, turned(groups.hourWheel));
@@ -414,6 +414,11 @@ export class Motion {
     );
     place(groups.minute, centre.arbor, turned(groups.minute));
     return result;
+  }
+
+  /** The barrel's angle, in degrees, after `beats` of the train. */
+  barrelAngle(beats: number): number {
+    return this.watch.design.train.barrel.step * beats;
   }
 
   /** The spring's geometry with the balance at `swing` degrees. */
@@ -849,7 +854,7 @@ export const SPIN_UP_SECONDS = 0.6;
 
 /** How far a spin has gone `seconds` after it started: its speed rises from 0
  *  to `speed` as a smoothstep in SPIN_UP_SECONDS, then holds. */
-export function spinDistance(speed: number, seconds: number): number {
+function spinDistance(speed: number, seconds: number): number {
   if (seconds <= 0) return 0;
   if (seconds >= SPIN_UP_SECONDS) {
     return speed * (seconds - SPIN_UP_SECONDS / 2);
@@ -978,7 +983,7 @@ export interface WatchModelState {
 
 /** The train's beats in one turn of the barrel: one time-lapse. */
 function barrelTurnBeats(watch: Watch): number {
-  const [barrel] = watch.design.wheels as [Wheel];
+  const { barrel } = watch.design.train;
   return Math.round(Math.abs(WOUND / barrel.step));
 }
 
@@ -1124,16 +1129,13 @@ export class WatchModel implements Model<WatchModelState> {
 
   /** Degrees: the barrel at the train's position. */
   private barrelAngle(beats: number): number {
-    return at(this.watch.design.wheels, 0).step * beats;
+    return this.motion.barrelAngle(beats);
   }
 
   frame(now: number, renderer: Renderer): Map<Group, Float32Array> {
     // the time-lapse's beats at this frame's instant in its shutter: before
     // anything at `now`, so that the story has not yet moved on past it
-    const shutter = Math.min(
-      Math.max(0, now - (this.lastFrame ?? now)),
-      SHUTTER_LIMIT_MS,
-    );
+    const shutter = clamp(now - (this.lastFrame ?? now), 0, SHUTTER_LIMIT_MS);
     this.lastFrame = now;
     this.frames += 1;
     this.endLapse(now);
@@ -1259,7 +1261,7 @@ export class WatchModel implements Model<WatchModelState> {
  *  be faster than the mechanism's, or the next tooth would never catch up
  *  with the pallet: the mechanism makes a beat each half period. */
 export function spinBeats(watch: Watch, degrees: number): number {
-  const escape = at(watch.design.wheels, watch.design.wheels.length - 1);
+  const { escape } = watch.design.train;
   const beats = degrees / Math.abs(escape.step);
   const mechanism = 2 / watch.design.timing.period;
   check(

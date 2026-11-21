@@ -43,7 +43,7 @@ export type MainspringStage = (typeof MAINSPRING_STAGES)[number];
 /** s: each turn of the key, and the pause after it. */
 export const KEY_TURN_SECONDS = 0.5;
 export const KEY_REST_SECONDS = 0.5;
-export const KEY_TURNS = 3;
+const KEY_TURNS = 3;
 /** Degrees: each turn of the key. Three make one turn of the arbor: the
  *  wind that the barrel lets down in one turn. */
 export const KEY_TURN_DEGREES = 120;
@@ -86,7 +86,7 @@ export function runningSpringPose(
 ): MainspringPose {
   return {
     arbor: woundAt - WOUND,
-    wind: Math.max(0, Math.min(WOUND, WOUND + barrelAngle - woundAt)),
+    wind: clamp(WOUND + barrelAngle - woundAt, 0, WOUND),
     key: 0,
   };
 }
@@ -135,7 +135,7 @@ const RUNS_FROM: readonly number[] = LINE.flatMap((segment, index) =>
 /** The place of a stage on the line (story time, s). `run down` is a
  *  time-lapse from the end of the line, where the key has wound the spring
  *  in the barrel. */
-export function placeFor(stage: MainspringStage): number {
+function placeFor(stage: MainspringStage): number {
   if (stage === "run down") return placeOf(PLACES.length - 1);
   const place = STAGE_PLACES.get(stage);
   if (place === undefined) throw new Error(`no place for ${stage}`);
@@ -179,7 +179,7 @@ export function linePose(time: number): MainspringPose {
   let wind = 0;
   let start = 0;
   for (const segment of LINE) {
-    const local = Math.min(Math.max(time - start, 0), segment.seconds);
+    const local = clamp(time - start, 0, segment.seconds);
     if (segment.kind === "uncoil") {
       const left = wind * (1 - uncoiled(local / segment.seconds));
       if (time < start + segment.seconds) return { arbor, wind: left, key: 0 };
@@ -230,7 +230,7 @@ export function windSliderTime(fraction: number): number {
 export function lapseProgress(seconds: number): number {
   const ramp = LAPSE_RAMP_SECONDS;
   const total = LAPSE_SECONDS;
-  const clamped = Math.min(Math.max(seconds, 0), total);
+  const clamped = clamp(seconds, 0, total);
   // the distance at full speed 1, with a smoothstep ramp at each end
   const rampDistance = (into: number): number => {
     const share = into / ramp;

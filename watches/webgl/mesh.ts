@@ -58,7 +58,6 @@ export interface MeshInfo {
   group: Group | null;
   fill: Colour | null;
   lineOrder?: number;
-  inDrawing?: boolean;
   overlay?: boolean;
   dynamic?: boolean;
 }
@@ -295,7 +294,6 @@ function makeMesh(info: MeshInfo, triangles: number[], lines: Lines): Mesh {
     silhouetteEdges: lines.silhouetteEdges,
     holdout: false,
     lineOrder: info.lineOrder ?? 0,
-    inDrawing: info.inDrawing ?? true,
     overlay: info.overlay ?? false,
     dynamic: info.dynamic ?? false,
   };

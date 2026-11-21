@@ -79,6 +79,11 @@ export function radians(degrees: number): number {
   return (degrees * Math.PI) / 180;
 }
 
+/** Radians to degrees. */
+export function degrees(angle: number): number {
+  return (angle * 180) / Math.PI;
+}
+
 /** `value`, held between `low` and `high`. */
 export function clamp(value: number, low = 0, high = 1): number {
   return Math.min(Math.max(value, low), high);

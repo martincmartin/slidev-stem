@@ -64,7 +64,6 @@ export function sceneData(
       silhouetteEdges: mesh.silhouetteEdges.length,
       holdout: mesh.holdout,
       lineOrder: mesh.lineOrder,
-      inDrawing: mesh.inDrawing,
       overlay: mesh.overlay,
       dynamic: mesh.dynamic,
     })),

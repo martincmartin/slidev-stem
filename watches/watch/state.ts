@@ -736,21 +736,28 @@ export function stageState(
 ): StageState {
   const { scene } = watch;
   const all = scene.pieces.filter((piece) => piece.inAll);
-  const listed = (names: readonly string[] | "all"): readonly Piece[] =>
+  /** `key`: the setting that names them, for an error. */
+  const listed = (
+    key: string,
+    names: readonly string[] | "all",
+  ): readonly Piece[] =>
     names === "all"
       ? all
       : names.flatMap((name) =>
-          name === "all" ? all : piecesNamed(watch, "art", [name]),
+          name === "all" ? all : piecesNamed(watch, key, [name]),
         );
   const hidden = new Set(piecesNamed(watch, "artHide", state.hide ?? []));
-  const shown = listed(state.show);
+  const shown = listed("art", state.show);
   for (const piece of hidden) {
     if (!shown.includes(piece)) {
       throw new Error(`artHide: "${piece.name}" is not in art`);
     }
   }
-  const piecesOf = (names: readonly string[] | "all"): readonly Piece[] =>
-    listed(names).filter((piece) => !hidden.has(piece));
+  const piecesOf = (
+    key: string,
+    names: readonly string[] | "all",
+  ): readonly Piece[] =>
+    listed(key, names).filter((piece) => !hidden.has(piece));
   const namedView = (name: string): View => {
     const found = scene.views.find((candidate) => candidate.name === name);
     if (!found) throw new Error(`artView: no watch view "${name}"`);
@@ -760,7 +767,7 @@ export function stageState(
     state.view === null
       ? fittedView(
           watch,
-          piecesOf(state.fit),
+          piecesOf("artView", state.fit),
           state.right,
           state.band,
           state.tilt ?? 0,
@@ -771,7 +778,7 @@ export function stageState(
     tilt: state.tilt ?? view.angles?.tilt ?? 0,
     turn: state.turn ?? view.angles?.turn ?? 0,
     move: state.move,
-    shown: meshesOf(piecesOf(state.show)),
+    shown: meshesOf(piecesOf("art", state.show)),
     flash: state.flash
       ? meshesOf(piecesNamed(watch, "artFlash", state.flash))
       : null,

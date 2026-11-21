@@ -135,8 +135,6 @@ export interface Mesh extends MeshGeometry {
   readonly holdout: boolean;
   /** The order of the lines: a later mesh's lines cover an earlier one's. */
   readonly lineOrder: number;
-  /** `false` for a part that the 2D drawing did not have. */
-  readonly inDrawing: boolean;
   /** `true` for a mark on another mesh's surface: where its faces are at
    *  the same place as the other mesh's, its own show. The renderer moves
    *  its faces' depth a little toward the camera (a polygon offset). */
@@ -232,8 +230,6 @@ export interface Frame extends CameraPose {
    *  `size` (an article figure draws only its crop). Default: the whole
    *  slide. */
   readonly crop?: SlideRect;
-  /** Leave out the meshes with `inDrawing` false. */
-  readonly drawingOnly?: boolean;
   /** Draw these meshes with other inks: each ink that `inks` has goes to its
    *  value (a flash: `FLASH_INKS`). Default: every mesh in its own inks. */
   readonly recolour?: Recolour;

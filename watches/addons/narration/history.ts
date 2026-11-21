@@ -6,7 +6,7 @@
 import { frontmatterText } from "./frontmatter.ts";
 
 /** The frontmatter key. */
-export const HISTORY_KEY = "history";
+const HISTORY_KEY = "history";
 
 /** The slide's history line, or `null` if it has none. Throws if the value is
  *  not a string with text: YAML reads `history: 1675` as a number, and the

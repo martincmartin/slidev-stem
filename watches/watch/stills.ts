@@ -3,7 +3,6 @@
 // all (webgl/stills.ts).
 
 import { Stills } from "../webgl/stills.ts";
-import { at } from "../webgl/checked.ts";
 import type { PoseGroups } from "../webgl/stage.ts";
 import type { Palette } from "../webgl/scene.ts";
 import type { Watch } from "./generate.ts";
@@ -13,7 +12,7 @@ import { stageState } from "./state.ts";
 import type { WatchState } from "./state.ts";
 
 /** s: a pose with nothing at a keyframe. */
-export const STILL_TIME = 0.37;
+const STILL_TIME = 0.37;
 
 export class WatchStills {
   private readonly watch: Watch;
@@ -68,7 +67,7 @@ export class WatchStills {
       );
       const stage = stageState(this.watch, state);
       const beats = this.motion.beats(time);
-      const barrelAngle = at(design.wheels, 0).step * beats;
+      const barrelAngle = this.motion.barrelAngle(beats);
       // A running spring is wound at the posed barrel position.
       const spring = state.unwind
         ? runningSpringPose(barrelAngle, barrelAngle)

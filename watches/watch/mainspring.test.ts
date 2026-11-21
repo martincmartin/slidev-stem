@@ -6,7 +6,6 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import { FADE_SECONDS } from "../webgl/timeline.ts";
-import type { Wheel } from "./design.ts";
 import { generate } from "./generate.ts";
 import {
   KEY_REST_SECONDS,
@@ -143,7 +142,7 @@ test("a step back during a play cuts to its stage", () => {
 });
 
 test("the time-lapse turns the train one turn of the barrel, lets the spring down, and stops the watch", () => {
-  const [barrel] = watch.design.wheels as [Wheel];
+  const { barrel } = watch.design.train;
   assert.ok(Math.abs(Math.abs(barrel.step) * BEATS - WOUND) < 1e-9);
   const clock = new MainspringClock(BEATS);
   clock.show("barrel", 0, true);

@@ -54,17 +54,22 @@ test("a point that is not finite throws", () => {
   );
 });
 
-test("two wheels with one name throw", () => {
-  assert.throws(
-    () =>
-      readDesign(
-        changed((design) => {
-          const [first] = design.wheels;
-          if (first) design.wheels.push(first);
-        }),
-      ),
-    /different names/,
-  );
+test("wheels that are not the train, in its order, throw", () => {
+  const bad: ((design: typeof designFile) => void)[] = [
+    // a sixth wheel, with the name of the first
+    (design) => {
+      const [first] = design.wheels;
+      if (first) design.wheels.push(first);
+    },
+    // the third and the fourth swapped
+    (design) => {
+      const [third, fourth] = design.wheels.splice(2, 2);
+      if (third && fourth) design.wheels.splice(2, 0, fourth, third);
+    },
+  ];
+  for (const edit of bad) {
+    assert.throws(() => readDesign(changed(edit)), /in that order/);
+  }
 });
 
 test("stepper refuses a duration that is not a whole number of periods", () => {

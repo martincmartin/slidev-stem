@@ -98,9 +98,8 @@ export function onGlobe(
   [lon, lat]: LonLat,
   [centreLon, centreLat]: LonLat,
 ): [number, number] {
-  const radians = Math.PI / 180;
-  const across = (lon - centreLon) * radians;
-  const [phi, phiCentre] = [lat * radians, centreLat * radians];
+  const across = radians(lon - centreLon);
+  const [phi, phiCentre] = [radians(lat), radians(centreLat)];
   return [
     EARTH_RADIUS * Math.cos(phi) * Math.sin(across),
     -EARTH_RADIUS *
@@ -433,7 +432,6 @@ function landMesh(
     fill: LAND,
     holdout: false,
     lineOrder: 1,
-    inDrawing: false,
     overlay: false,
     dynamic: false,
     scales,
@@ -459,7 +457,6 @@ export function globeMeshes(earth: Earth): { meshes: Mesh[]; piece: Piece } {
     fill: SEA,
     holdout: false,
     lineOrder: 0,
-    inDrawing: false,
     overlay: false,
     dynamic: false,
     triangles: new Float32Array(discTriangles),

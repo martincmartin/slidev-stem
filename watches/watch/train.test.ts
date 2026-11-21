@@ -6,7 +6,6 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { at } from "../webgl/checked.ts";
 import { FADE_SECONDS, Timeline } from "../webgl/timeline.ts";
-import type { Wheel } from "./design.ts";
 import { slideFrontmatter } from "./deck.ts";
 import { generate } from "./generate.ts";
 import {
@@ -48,13 +47,7 @@ const ESCAPEMENT_SPIN = (() => {
 })();
 const motion = new Motion(watch);
 const TIMING = design.timing;
-const [, , , fourth, escape] = design.wheels as [
-  Wheel,
-  Wheel,
-  Wheel,
-  Wheel,
-  Wheel,
-];
+const { fourth, escape } = design.train;
 /** Beats a second: 90 degrees a second of the escape wheel. */
 const SPEED = spinBeats(watch, 90);
 const FRAME = 1000 / 60; // ms

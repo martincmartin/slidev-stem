@@ -21,7 +21,12 @@ has the review that found them, and the evidence.
   at its click. Find out on the slides that set these keys, before you
   change the list. If it is a bug, write the list of what shows, not
   of what does not (a `pictureOf(state)` in `watch/state.ts`), so that a new
-  key does not show by default.
+  key does not show by default. Two more lists of the picture's keys are
+  written by hand: the stills' cache key (`WatchStills.of` in
+  `watch/stills.ts`) and `pictureKey` (`watch/article.ts`, which says when
+  two figures show the same picture). The three lists differ, and each can
+  be right for its use. A `pictureOf(state)` would serve all three, so it
+  is worth more than one list's fix.
 
 ## Larger refactors
 
@@ -45,8 +50,10 @@ has the review that found them, and the evidence.
   (`pressJumps` in `global-bottom.vue`), so it needs a check of the
   Hairspring slide's clicks in each direction.
 - **`BOARD_BOX`** (`watch/article.ts`) is the diving board's box, measured
-  by hand. Made from the drawing (`art/diving_board.py`), it would follow a
-  change of the drawing. Cost: the drawing's script must export the box.
+  by hand. `DivingBoard.vue`'s CSS gives the drawing's place again (`top`,
+  `width` and `height` of `.diving-board`). Made from the drawing
+  (`art/diving_board.py`), both would follow a change of the drawing. Cost:
+  the drawing's script must export the box.
 - **The globe's land data** (1.3 MB of JSON) is in the JavaScript as an
   object literal. A fetch at run time would load it only on a page that
   shows the globe, and parse it faster. Cost: an asynchronous load of the

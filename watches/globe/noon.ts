@@ -409,7 +409,6 @@ function noonMesh(
     fill,
     holdout: false,
     lineOrder,
-    inDrawing: false,
     overlay: false,
     dynamic: false,
     triangles: new Float32Array(triangles),

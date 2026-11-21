@@ -9,6 +9,7 @@
 // from the layout in design.json. Geometry is in the frame of each part's own
 // group: about its arbor if it turns.
 
+import { clipEdge } from "../globe/clip.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import {
   extrude,
@@ -31,7 +32,7 @@ import type {
 import { INKS } from "../webgl/scene.ts";
 import { at } from "../webgl/checked.ts";
 import { HIDDEN_LINE_TOLERANCE, HOLDOUT_TOLERANCE } from "../webgl/renderer.ts";
-import type { Design, DrivenWheel, Wheel } from "./design.ts";
+import type { Design, DrivenWheel, Train, Wheel } from "./design.ts";
 import { DESIGN, hourRatio } from "./design.ts";
 import {
   MAINSPRING_TURNS,
@@ -53,7 +54,7 @@ import {
   polar,
   polygon,
 } from "./shapes.ts";
-import { radians } from "../webgl/math.ts";
+import { degrees, radians } from "../webgl/math.ts";
 import type { DaggerOptions } from "./shapes.ts";
 import {
   drivenWheelTeeth,
@@ -127,7 +128,7 @@ export const JEWEL_RADIUS = 6;
  *  this far from its centre. */
 export const JEWEL_FLAT_OFFSET = JEWEL_RADIUS / 3;
 /** The circle on the pallet fork's pivot. */
-export const FORK_PIVOT_RADIUS = 4;
+const FORK_PIVOT_RADIUS = 4;
 /** The stud: a block around the spring's outer end. */
 const STUD_REACH: [number, number] = [-2, 5];
 const STUD_WIDTH = 5;
@@ -246,7 +247,6 @@ interface Solid {
   /** How far it reaches from `pivot`, at any time. */
   reach: number;
   ribbon: boolean;
-  inDrawing: boolean;
 }
 
 export interface Heights {
@@ -418,26 +418,6 @@ function paintOf(): Paint {
   };
 }
 
-// ---- the train --------------------------------------------------------------
-interface Train {
-  barrel: Wheel;
-  centre: Wheel;
-  third: Wheel;
-  fourth: Wheel;
-  escape: Wheel;
-}
-
-function trainOf(design: Design): Train {
-  const [barrel, centre, third, fourth, escape] = design.wheels as [
-    Wheel,
-    Wheel,
-    Wheel,
-    Wheel,
-    Wheel,
-  ];
-  return { barrel, centre, third, fourth, escape };
-}
-
 // ---- the one-step wheel -----------------------------------------------------
 /** For the Gear Train slide (docs/watch.md): one wheel that turns the fourth
  *  pinion this many times slower, where the third and the centre wheels take
@@ -452,7 +432,7 @@ const ONE_STEP_DRAWING = { spokes: 6, rim: 10, hub: 20, spokeWidth: 10 };
  *  Train slide", says why there). It has a tooth in a gap of
  *  the pinion at the train's start, as the third wheel has. */
 export function oneStepWheel(design: Design): Wheel {
-  const { escape, third, fourth } = trainOf(design);
+  const { escape, third, fourth } = design.train;
   const { pinionRadius, pinionPhase, leaves } = fourth;
   if (pinionRadius === null || pinionPhase === null) {
     throw new Error("the fourth wheel has no pinion");
@@ -461,13 +441,12 @@ export function oneStepWheel(design: Design): Wheel {
   const teeth = leaves * ONE_STEP_RATIO;
   const centres = pitchRadius + pinionRadius;
   // the screen angle (degrees, y down) from the fourth arbor to its arbor
-  const angle =
-    (Math.atan2(
+  const angle = degrees(
+    Math.atan2(
       fourth.arbor[1] - escape.arbor[1],
       fourth.arbor[0] - escape.arbor[0],
-    ) *
-      180) /
-    Math.PI;
+    ),
+  );
   // the pinion's leaves are at pinionPhase, every leafAngle, with gaps
   // between. The wheel's tooth is as far from the line of centres, on the
   // wheel's pitch circle, as the pinion's nearest gap is
@@ -520,7 +499,6 @@ function oneStepMeshes(
     group,
     fill: subjectWash,
     lineOrder: top,
-    inDrawing: false,
   });
   const { body, circle } = heights;
   return [
@@ -739,7 +717,6 @@ function oneStepHourMeshes(
     group,
     fill,
     lineOrder: top,
-    inDrawing: false,
   });
   const { body, hand: handHeights } = heights;
   const arbor = circlePath(0, 0, 4);
@@ -791,7 +768,7 @@ function makeGroups(
   oneStep: Wheel,
   oneStepHour: DrivenWheel,
 ): GroupTree {
-  const { barrel, centre, fourth } = trainOf(design);
+  const { barrel, centre, fourth } = design.train;
   const root: Group = { name: "watch", parent: null };
   const origins = new Map<Group, Point2>([[root, [0, 0]]]);
   const all: Group[] = [root];
@@ -1060,24 +1037,17 @@ function clipConvex(subject: Point2[], clip: Point2[]): Point2[] {
   for (const [index, [ax, ay]] of clip.entries()) {
     const [bx, by] = at(clip, (index + 1) % clip.length);
     const [ex, ey] = [bx - ax, by - ay];
-    const inside = ([x, y]: Point2): boolean =>
+    const inside = ([x, y]: Readonly<Point2>): boolean =>
       ex * (y - ay) - ey * (x - ax) >= 0;
-    const crossing = ([px, py]: Point2, [qx, qy]: Point2): Point2 => {
+    const crossing = (
+      [px, py]: Readonly<Point2>,
+      [qx, qy]: Readonly<Point2>,
+    ): Point2 => {
       const along =
         (ex * (ay - py) - ey * (ax - px)) / (ex * (qy - py) - ey * (qx - px));
       return [px + along * (qx - px), py + along * (qy - py)];
     };
-    const input = result;
-    result = [];
-    for (const [step, current] of input.entries()) {
-      const previous = at(input, (step + input.length - 1) % input.length);
-      if (inside(current)) {
-        if (!inside(previous)) result.push(crossing(previous, current));
-        result.push(current);
-      } else if (inside(previous)) {
-        result.push(crossing(previous, current));
-      }
-    }
+    result = clipEdge(result, inside, crossing);
   }
   return result;
 }
@@ -1130,7 +1100,6 @@ function paperDiscMesh(
     lines: [],
     silhouetteEdges: [],
     lineOrder: height,
-    inDrawing: false,
     overlay: false,
     dynamic: false,
   };
@@ -1152,7 +1121,6 @@ function solidMeshes(
         group: each.group,
         fill: each.fill,
         lineOrder: top,
-        inDrawing: each.inDrawing,
         dynamic: dynamic.has(each),
       };
       return [
@@ -1370,7 +1338,6 @@ function studMesh(
       group: root,
       fill: paint.subjectWash,
       lineOrder: top,
-      inDrawing: false,
     }),
     top,
   };
@@ -1422,7 +1389,6 @@ function arborSquareMesh(arborTop: number, group: Group, paint: Paint): Mesh {
       group,
       fill: null,
       lineOrder: arborTop,
-      inDrawing: false,
     },
     { decal: true },
   );
@@ -1445,7 +1411,6 @@ function seamMesh(seam: Seam, { bottom, top }: Heights, paint: Paint): Mesh {
       group: face.group,
       fill: null,
       lineOrder: top,
-      inDrawing: false,
     },
     { decal: true, endLines: true },
   );
@@ -1512,7 +1477,6 @@ function keyMeshes(arborTop: number, group: Group, paint: Paint): Mesh[] {
     group,
     fill: mutedWash,
     lineOrder: top,
-    inDrawing: false,
   });
   const pipe = extrude(
     ringsOf([disc(KEY.pipeRadius), mutedLine(2.5)]),
@@ -1616,7 +1580,6 @@ function restDashMesh(
       group,
       fill: null,
       lineOrder: top + 0.5,
-      inDrawing: false,
     },
     { decal: true },
   );
@@ -1735,9 +1698,7 @@ class SolidList {
     group: Group,
     rings: Ring[],
     fill: Colour | null,
-    extra: Partial<
-      Pick<Solid, "pivot" | "reach" | "ribbon" | "inDrawing">
-    > = {},
+    extra: Partial<Pick<Solid, "pivot" | "reach" | "ribbon">> = {},
   ): Solid {
     const { watchCentre } = this;
     const origin = this.origins.get(group) ?? [0, 0];
@@ -1765,7 +1726,6 @@ class SolidList {
             : [0, 0],
         ),
       ribbon: extra.ribbon ?? false,
-      inDrawing: extra.inDrawing ?? true,
     };
     this.solids.push(made);
     return made;
@@ -1963,7 +1923,6 @@ function spanMeshes(
       group: solid.group,
       fill: style.fill,
       lineOrder: top,
-      inDrawing: false,
       overlay: true,
     });
   };
@@ -2002,10 +1961,9 @@ export function driveArrowShape(
 ): { shaft: Point2[]; head: [Point2, Point2, Point2] } {
   const centre = wheel.arbor;
   const radius = DRIVE_ARROW.radius * wheel.inner;
-  const toDriver =
-    (Math.atan2(driver.arbor[1] - centre[1], driver.arbor[0] - centre[0]) *
-      180) /
-    Math.PI;
+  const toDriver = degrees(
+    Math.atan2(driver.arbor[1] - centre[1], driver.arbor[0] - centre[0]),
+  );
   const turn = Math.sign(wheel.step);
   if (turn === 0) throw new Error(`the ${wheel.name} wheel does not turn`);
   const headLength = DRIVE_ARROW.headLength * radius;
@@ -2022,8 +1980,7 @@ export function driveArrowShape(
   // the shaft runs from the tail to the middle of the head, so that the
   // line's round end does not show past the tip
   const tailAngle = tipAngle - turn * DRIVE_ARROW.arc;
-  const endAngle =
-    tipAngle - turn * ((headLength / 2 / radius) * (180 / Math.PI));
+  const endAngle = tipAngle - turn * degrees(headLength / 2 / radius);
   const shaft = Array.from({ length: DRIVE_ARROW.points + 1 }, (_, index) =>
     polar(
       radius,
@@ -2058,7 +2015,6 @@ function driveArrowMeshes(
     group: root,
     fill,
     lineOrder: top + 0.5,
-    inDrawing: false,
   });
   // above the wheel's face, so that the head hides the face's lines
   const height = top + DRIVE_ARROW.rise;
@@ -2162,7 +2118,6 @@ function balanceSolids(kit: Kit): BalanceSolids {
     balanceGroup,
     ringsOf([disc(at(SPRING_RADII, 0)), line(2)]),
     subjectWash,
-    { inDrawing: false },
   );
   // the balance staff comes up through it
   seams.push({ face: collet, outline: circlePath(0, 0, STAFF_RADIUS) });
@@ -2223,7 +2178,6 @@ function balanceScrewMeshes(
       group,
       fill: paint.subjectWash,
       lineOrder: rimHeights.top,
-      inDrawing: false,
     };
     const head = extrude(
       ringsOf([disc(screws.radius), paint.line(2.5)]),
@@ -2492,7 +2446,6 @@ function lumeMeshes(
       group: solid.group,
       fill: paint.subjectFill,
       lineOrder: top,
-      inDrawing: false,
       overlay: true,
     });
   };
@@ -2539,7 +2492,7 @@ function staffSolid(kit: Kit): Solid {
 export function generate(design: Design = DESIGN): Watch {
   const { watchCentre } = design;
   const paint = paintOf();
-  const train = trainOf(design);
+  const train = design.train;
   const oneStep = oneStepWheel(design);
   const oneStepHour = oneStepHourWheel(design);
   const tree = makeGroups(design, oneStep, oneStepHour);

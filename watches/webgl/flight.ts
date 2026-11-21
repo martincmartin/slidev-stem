@@ -7,7 +7,7 @@
 // after a ramp up and before a ramp down of `FLIGHT.ramp` seconds (`paced`).
 // No DOM: the tests run it in Node.
 
-import { angleBetween, axesAcross, clamp, mix } from "./math.ts";
+import { angleBetween, axesAcross, clamp, degrees, mix } from "./math.ts";
 import {
   pivotOnSlide,
   planeOnSlide,
@@ -75,7 +75,7 @@ export function pacedShare(time: number, seconds: number): number {
   if (seconds <= 0) return 1;
   const ramp = Math.min(FLIGHT.ramp, seconds / 2);
   const speed = 1 / (seconds - ramp);
-  const clamped = Math.min(seconds, Math.max(0, time));
+  const clamped = clamp(time, 0, seconds);
   if (clamped < ramp) return (speed * clamped * clamped) / (2 * ramp);
   if (clamped > seconds - ramp) {
     const left = seconds - clamped;
@@ -134,8 +134,6 @@ function paced(
   };
 }
 
-const DEGREES = 180 / Math.PI;
-
 /** `degrees` moved by whole turns into the half-open turn about `about`. */
 function near(degrees: number, about: number): number {
   return about + ((((degrees - about + 180) % 360) + 360) % 360) - 180;
@@ -193,7 +191,7 @@ export function flight(
       fromA * a[2] + fromB * b[2],
     ];
     const length = Math.hypot(x, y, z);
-    const tilt = Math.acos(Math.max(-1, Math.min(1, z / length))) * DEGREES;
+    const tilt = degrees(Math.acos(clamp(z / length, -1, 1)));
     const linear = mix(from.turn, to.turn, along);
     const scale = width / across;
     const [slideX, slideY] = [
@@ -213,7 +211,7 @@ export function flight(
       turn:
         Math.hypot(x, y) < 1e-9
           ? linear
-          : near(Math.atan2(x, y) * DEGREES, linear),
+          : near(degrees(Math.atan2(x, y)), linear),
     };
   };
   if (distance < 1e-6 * Math.max(w0, w1)) {

@@ -6,8 +6,11 @@
 
 type Point = [number, number];
 
-/** The part of a closed ring inside one half-plane. */
-function clipEdge(
+/** The part of a closed ring inside one half-plane: `inside` says which side
+ *  a point is on, and `cross` where an edge crosses the line. One pass of
+ *  the clip: `clipToRect` makes four, and a convex clip one for each of its
+ *  edges (watch/generate.ts). */
+export function clipEdge(
   points: readonly (readonly [number, number])[],
   inside: (point: readonly [number, number]) => boolean,
   cross: (

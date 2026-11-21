@@ -9,7 +9,7 @@ import type { Point2 } from "../webgl/mesh.ts";
 import { at } from "../webgl/checked.ts";
 import type { DrivenWheel, DrivingPinion, Wheel } from "./design.ts";
 import { circlePath, Path } from "./path.ts";
-import { radians } from "../webgl/math.ts";
+import { degrees, radians } from "../webgl/math.ts";
 import { polar } from "./shapes.ts";
 
 /** What a wheel's teeth are made from: a train wheel or a wheel of the
@@ -341,7 +341,7 @@ function backLead(
   if (!(backlash / 2 > form.contactSlack)) {
     throw new Error(`the ${name} pinion's leaves leave no backlash`);
   }
-  const lead = ((backlash / 2 - form.contactSlack) / radius) * (180 / Math.PI);
+  const lead = degrees((backlash / 2 - form.contactSlack) / radius);
   return -Math.sign(step) * lead;
 }
 
@@ -391,7 +391,7 @@ function pinionLeaf(pinion: Leaved, form: ToothForm): LeafShape {
       `the ${pinion.name} pinion's leaves are wider than their pitch`,
     );
   }
-  const halfDegrees = (halfAngle * 180) / Math.PI;
+  const halfDegrees = degrees(halfAngle);
   return {
     rootRadius,
     endRadius: radius * Math.sin(halfAngle),

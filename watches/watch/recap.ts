@@ -49,13 +49,7 @@ function middle(layer: Layer): number {
 
 /** The Recap slide's views, in the order of its stops. */
 export function recapViews(design: Design, layers: RecapLayers): View[] {
-  const [barrel, centre, third, fourth, escape] = design.wheels as [
-    Wheel,
-    Wheel,
-    Wheel,
-    Wheel,
-    Wheel,
-  ];
+  const { barrel, centre, third, fourth, escape } = design.train;
   const { hour, minute } = design.motionWorks;
   const { balance, fork } = design;
   const wheelTouch = (driver: Wheel, driven: Wheel): [Point2, number] => [
