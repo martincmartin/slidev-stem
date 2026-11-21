@@ -25,6 +25,15 @@ example.
   outline. The house theme's class `bleed` does this. Each slide sets the
   picture's `width`: no width keeps the picture's shape (the John Harrison
   slide), and a smaller width crops its sides (the Waltham Watch Company slide).
+- **Corners:** a picture with its four corners free, inset on the slide,
+  has rounded corners, 4 slide px (`--picture-radius` in the house theme's
+  `house.css`); a bleed keeps square corners at the slide's edges, where a
+  rounded one would show slivers of paper. In a talk's article, every
+  picture is inset on the page, so every one is rounded, 6 px on the page
+  at any size. Why: a rounded corner softens a scan's hard edge, and old
+  photos and paintings were seldom crisp rectangles (the daguerreotype on
+  the A Minute Is Life or Death slide sat in an oval mat). Keep the radius
+  small: a large one makes a document look like an app's thumbnail.
 - **A picture across the whole slide is better still,** if it has a place for the
   title and for the text: `width: 100%`. Then the text stands on the picture too,
   in the paper's outline. The A Minute Is Life or Death slide is an example.

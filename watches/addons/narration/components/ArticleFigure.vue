@@ -186,6 +186,8 @@ const frameStyle = computed(() => ({
 }));
 const slideStyle = computed(() => ({
   transform: `scale(${String(scale.value)}) translate(${String(-crop.value.left)}px, ${String(-crop.value.top)}px)`,
+  // for a size in the page's px inside the scaled slide (a picture's corners)
+  "--figure-scale": String(scale.value),
 }));
 const caption = computed(() => props.figure.captions[step.value] ?? null);
 
@@ -549,8 +551,16 @@ watch(picture, measureSoon);
   user-select: none;
 }
 .article-figure-frame {
+  /* On the page, every picture is inset, a bleed too: its corners are
+     rounded, by this much on the page at any scale. So is the frame, where
+     it crops a picture (../../../../docs/slide-layout.md, "Corners"). */
+  --article-picture-radius: 6px;
   position: relative;
   overflow: hidden;
+  border-radius: var(--article-picture-radius);
+}
+.article-figure-frame .slidev-layout img {
+  border-radius: calc(var(--article-picture-radius) / var(--figure-scale));
 }
 .article-figure-slide {
   position: absolute;

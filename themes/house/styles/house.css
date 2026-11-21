@@ -60,6 +60,16 @@
   height: 100%;
   object-fit: cover;
 }
+/* A picture with its four corners free (inset on the slide) has rounded
+   corners; a bleed keeps its square corners at the slide's edges
+   (docs/slide-layout.md, "Corners"). Low specificity (`:where`), so that a
+   page that shows the slide another way (the article) sets its own. */
+:where(.slidev-layout) {
+  --picture-radius: 4px;
+}
+:where(.slidev-layout) img:not(.bleed) {
+  border-radius: var(--picture-radius);
+}
 .slidev-layout:has(.bleed) :is(h1, h1 + p) {
   position: relative;
   z-index: 1;
