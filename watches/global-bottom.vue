@@ -47,6 +47,7 @@
 // the slide, so a slide class that changes the palette (a palette class,
 // ../docs/theme.md) does not reach it: the layer sets the slide's palette
 // variables on itself, and gives the stage the slide's colours.
+import { frontmatterOf } from "./addons/narration/plan.ts";
 import { useNav } from "@slidev/client";
 import { injectionSlidevContext } from "@slidev/client/constants.ts";
 import {
@@ -68,13 +69,12 @@ import TimeScale from "./components/TimeScale.vue";
 import { Stage } from "./webgl/stage.ts";
 import type { FrameListener } from "./webgl/stage.ts";
 import { FADE_SECONDS, HIDE_SECONDS, HIDE_STYLE } from "./webgl/timeline.ts";
-import type { CameraMove } from "./webgl/timeline.ts";
 import { boardState } from "./watch/board.ts";
-import { stoneStrikes } from "./watch/callouts.ts";
+import { tickTockAt } from "./watch/callouts.ts";
 import type { BoardTarget } from "./watch/board.ts";
 import { WatchModel } from "./watch/model.ts";
 import type { WatchModelState } from "./watch/model.ts";
-import { nextVoyage, settled, voyageEndAt } from "./globe/voyage.ts";
+import { settled, voyageEndAt } from "./globe/voyage.ts";
 import type { VoyageStep } from "./globe/voyage.ts";
 import {
   artModel,
@@ -92,10 +92,8 @@ import {
   moveWithBefore,
   stageState,
   stepMove,
-  tickTockState,
-  timeScaleState,
-  voyageState,
-  voyageFor,
+  timeScaleAt,
+  voyageStepTo,
   watchState,
 } from "./watch/state.ts";
 import type { StepMoveWith, WatchState } from "./watch/state.ts";
@@ -115,9 +113,7 @@ if (!slidev) throw new Error("no Slidev context");
 const nav = useNav();
 const figure = inject(FIGURE, null);
 const live = !nav.isPrintMode.value && !figure;
-const frontmatter = computed(
-  () => slidev.nav.currentSlideRoute.meta.slide?.frontmatter ?? {},
-);
+const frontmatter = computed(() => frontmatterOf(slidev.nav.currentSlideRoute));
 const state = computed(() => watchState(frontmatter.value, slidev.nav.clicks));
 /** The current slide's palette: the theme's, as the slide's classes change
  *  it. */
@@ -140,18 +136,12 @@ const model = shallowRef<WatchModel>();
 /** Where the teeth strike the pallet stones, while the slide shows the words
  *  at the strikes. */
 const tickTock = computed(() =>
-  tickTockState(frontmatter.value, slidev.nav.clicks) && !hidden.value
-    ? { strikes: stoneStrikes(art, frontmatter.value) }
-    : undefined,
+  tickTockAt(art, frontmatter.value, slidev.nav.clicks, !hidden.value),
 );
 /** The time-lapse's speed-up at the click, while the slide shows the time
  *  scale. */
 const timeScale = computed(() =>
-  state.value &&
-  timeScaleState(frontmatter.value, slidev.nav.clicks) &&
-  !hidden.value
-    ? state.value.lapse
-    : undefined,
+  timeScaleAt(frontmatter.value, slidev.nav.clicks, state.value, !hidden.value),
 );
 /** Set while the canvas fades out: then the stage goes out of sight. */
 let hideTimer: ReturnType<typeof setTimeout> | undefined;
@@ -170,8 +160,8 @@ function showWatch(
   now: WatchState | undefined,
   move: Move,
   moveWith: StepMoveWith,
-  /** How the camera moves on this step (`stepMove`). */
-  cameraMove: CameraMove | undefined,
+  /** The state that the step leaves, for the camera's move (`stepMove`). */
+  from: WatchState | undefined,
 ): void {
   // a flash points to where the camera goes, or to what fades in: only on
   // the step forward into the slide or the click that names it. It is not
@@ -212,7 +202,7 @@ function showWatch(
   stage.show(
     stageState(
       art,
-      { ...now, flash, ...(cameraMove ? { move: cameraMove } : {}) },
+      { ...now, flash, move: stepMove(from, now, move) },
       moveWith,
     ),
     modelState(now),
@@ -296,27 +286,29 @@ function pressJumps(at: number): boolean {
 }
 
 /** The frontmatter of the slide numbered `slide` (1-based). */
-function frontmatterOf(slide: number): Record<string, unknown> {
+function slideFrontmatter(slide: number): Record<string, unknown> {
   const route = nav.slides.value.find((each) => each.no === slide);
-  return route?.meta.slide?.frontmatter ?? {};
+  return route ? frontmatterOf(route) : {};
 }
 
 /** Step the story map's marks to the click's: after the camera's move, or
  *  at once on a jump. After `showWatch`, which moves the camera. */
 function showVoyage(clicks: number, move: Move): void {
-  const to = voyageFor(
+  const at = performance.now();
+  voyage.value = voyageStepTo(
+    voyage.value,
     art,
     stories,
     state.value,
-    voyageState(frontmatter.value, clicks),
+    frontmatter.value,
+    clicks,
+    {
+      at,
+      cameraEnd: stage?.viewEndAt(at) ?? at,
+      jump: move === "jump" || !stage,
+      forward: move === "forward",
+    },
   );
-  const at = performance.now();
-  voyage.value = nextVoyage(voyage.value, to, {
-    at,
-    cameraEnd: stage?.viewEndAt(at) ?? at,
-    jump: move === "jump" || !stage,
-    forward: move === "forward",
-  });
   showEndDelay();
 }
 
@@ -362,18 +354,13 @@ onMounted(() => {
       const intoSlide = place?.slide !== to.slide;
       const moveWith =
         place && intoSlide
-          ? moveWithBefore(frontmatterOf(Math.max(place.slide, to.slide)))
+          ? moveWithBefore(slideFrontmatter(Math.max(place.slide, to.slide)))
           : MOVE_WITH_COMMON;
       const from = place
-        ? watchState(frontmatterOf(place.slide), place.clicks)
+        ? watchState(slideFrontmatter(place.slide), place.clicks)
         : undefined;
       place = to;
-      showWatch(
-        state.value,
-        move,
-        moveWith,
-        state.value && stepMove(from, state.value, move),
-      );
+      showWatch(state.value, move, moveWith, from);
       showVoyage(to.clicks, move);
       showBoard(to.clicks, move);
     },
@@ -404,13 +391,8 @@ onMounted(() => {
     if ("requestIdleCallback" in window) requestIdleCallback(run);
     else setTimeout(run, 1);
   };
-  const ratio = window.devicePixelRatio || 1;
-  const size: [number, number] = [
-    Math.round(art.scene.slide[0] * ratio),
-    Math.round(art.scene.slide[1] * ratio),
-  ];
   const pending = nav.slides.value.flatMap((route) => {
-    const slide = route.meta.slide?.frontmatter ?? {};
+    const slide = frontmatterOf(route);
     const shown = watchState(slide, 0);
     return shown
       ? [{ shown, palette: slidePalette(slide["class"]).palette }]
@@ -419,7 +401,7 @@ onMounted(() => {
   const next = (): void => {
     const slide = pending.shift();
     if (!slide || unmounted) return;
-    void watchStills().of(slide.shown, size, slide.palette);
+    void watchStills().of(slide.shown, slide.palette);
     idle(next);
   };
   setTimeout(() => {
@@ -458,7 +440,6 @@ onMounted(() => {
   position: absolute;
   inset: 0;
   padding: 0;
-  transition: opacity var(--watch-hide);
 }
 /* Only the canvas fades. The layer keeps painting the paper: a slide with a
    `art:` is see-through (see .watch-marker below), and when the diving board

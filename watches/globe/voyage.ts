@@ -13,6 +13,7 @@
 // flash's rhythm (../../docs/illustrations.md, "Flash"). No DOM: the tests
 // run it in Node.
 
+import { clamp, mixPoint } from "../webgl/math.ts";
 import type { View } from "../webgl/scene.ts";
 import { FLASH_SECONDS, flashIsOn } from "../webgl/timeline.ts";
 import type { Leg, Mark, Point, Story } from "./stories.ts";
@@ -158,23 +159,27 @@ export interface VoyageFrame {
   readonly days: number;
 }
 
-/** The point at `share` of the way along `route`, by length. */
-export function along(route: readonly Point[], share: number): Point {
-  const lengths = route.slice(1).map((point, index) => {
+/** The length of each of `route`'s segments. */
+function segmentLengths(route: readonly Point[]): number[] {
+  return route.slice(1).map((point, index) => {
     const before = route[index] ?? point;
     return Math.hypot(point[0] - before[0], point[1] - before[1]);
   });
+}
+
+/** The length of `route`. */
+export function routeLength(route: readonly Point[]): number {
+  return segmentLengths(route).reduce((sum, length) => sum + length, 0);
+}
+
+/** The point at `share` of the way along `route`, by length. */
+export function along(route: readonly Point[], share: number): Point {
+  const lengths = segmentLengths(route);
   let left = share * lengths.reduce((sum, length) => sum + length, 0);
   for (const [index, length] of lengths.entries()) {
     const [from, to] = [route[index], route[index + 1]];
     if (!from || !to) break;
-    if (left <= length && length > 0) {
-      const part = left / length;
-      return [
-        from[0] + (to[0] - from[0]) * part,
-        from[1] + (to[1] - from[1]) * part,
-      ];
-    }
+    if (left <= length && length > 0) return mixPoint(from, to, left / length);
     left -= length;
   }
   const last = route.at(-1);
@@ -190,8 +195,6 @@ export function dayDots(leg: Leg): Point[] {
     along(leg.route, day / leg.days),
   );
 }
-
-const clamp = (value: number): number => Math.min(1, Math.max(0, value));
 
 /** The legs that `step` sails, in the order it sails them, and which
  *  way: on a step forward within a story, those that were not on the

@@ -9,6 +9,7 @@
 // language task (`tasks/2026-10-30-part-2-visual-language/PLAN.md`, "The
 // facts"). No DOM: the tests run it in Node.
 
+import { clamp, mixPoint, radians } from "../webgl/math.ts";
 import type { LonLat } from "./earth.ts";
 import {
   CAPE_NOIR,
@@ -19,7 +20,7 @@ import {
   project,
 } from "./maps.ts";
 import type { PlacedMap, StoryMap } from "./maps.ts";
-import { along } from "./voyage.ts";
+import { along, routeLength } from "./voyage.ts";
 import { at, check } from "../webgl/checked.ts";
 
 export type Point = readonly [number, number];
@@ -73,10 +74,10 @@ const STATUTE_MILES_PER_NAUTICAL = 1.15078;
 /** The place a run of nautical miles from a place, on a bearing in degrees
  *  east of north, on a flat chart: near enough over a few dozen miles. */
 function sail([lon, lat]: LonLat, bearing: number, miles: number): LonLat {
-  const radians = (bearing * Math.PI) / 180;
-  const to = lat + (miles * Math.cos(radians)) / 60;
-  const shorten = Math.cos((to * Math.PI) / 180);
-  return [lon + (miles * Math.sin(radians)) / 60 / shorten, to];
+  const heading = radians(bearing);
+  const to = lat + (miles * Math.cos(heading)) / 60;
+  const shorten = Math.cos(radians(to));
+  return [lon + (miles * Math.sin(heading)) / 60 / shorten, to];
 }
 
 const number = (value: number): string => String(Math.round(value * 10) / 10);
@@ -258,11 +259,7 @@ export function smoothThrough(
     end: number,
     parameter: number,
   ): Point => {
-    const share = (parameter - start) / (end - start);
-    return [
-      from[0] + (to[0] - from[0]) * share,
-      from[1] + (to[1] - from[1]) * share,
-    ];
+    return mixPoint(from, to, (parameter - start) / (end - start));
   };
   const curve: Point[] = [first];
   for (let index = 1; index < extended.length - 2; index += 1) {
@@ -303,19 +300,9 @@ export function track(
   design: TrackDesign,
 ): Mark["parts"] {
   const curve = smoothThrough(places, 16);
-  const length = curve
-    .slice(1)
-    .reduce(
-      (sum, point, index) =>
-        sum +
-        Math.hypot(
-          point[0] - at(curve, index)[0],
-          point[1] - at(curve, index)[1],
-        ),
-      0,
-    );
+  const length = routeLength(curve);
   const pointAt = (distance: number): Point =>
-    along(curve, Math.min(1, Math.max(0, distance / length)));
+    along(curve, clamp(distance / length));
   /** The point `side` px across the track, to its left, at `distance`
    *  along it. */
   const offset = (distance: number, side: number): string => {

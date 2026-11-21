@@ -239,6 +239,11 @@ export interface RoutedSlide {
   };
 }
 
+/** A routed slide's frontmatter: none if it has no slide. */
+export function frontmatterOf(route: RoutedSlide): Record<string, unknown> {
+  return route.meta.slide?.frontmatter ?? {};
+}
+
 /** The article's pages, from Slidev's routes. The split reads only the
  *  frontmatter, so it needs none of the talk's rules: the page and the
  *  talk's setup (which loads what a page needs) split alike. */
@@ -248,7 +253,7 @@ export function routePages(routes: readonly RoutedSlide[]): ArticlePage[] {
       pagedSlide({
         no: route.no,
         title: route.meta.slide?.title ?? null,
-        frontmatter: route.meta.slide?.frontmatter ?? {},
+        frontmatter: frontmatterOf(route),
       }),
     ),
   );

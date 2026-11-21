@@ -426,10 +426,11 @@ How a run works, and why:
   licences,** in `licenses.txt` beside `index.html`: the minifier removes
   their licence comments, and MIT, the SIL Open Font License and the like
   ask for the notice in each copy. Vite lists the packages that the
-  JavaScript bundles (`build.license`); `themes/house/vite-licenses.mts`
-  adds the files that the build copies from `node_modules`, such as the
-  fonts, and drops the talk's own entry. An article links to the list at
-  its end.
+  JavaScript bundles (`build.license`, as JSON);
+  `themes/house/vite-licenses.mts` adds the files that the build copies
+  from `node_modules`, such as the fonts, drops the talk's own entry, and
+  writes the list in Vite's Markdown format. An article links to the list
+  at its end.
 - **Links to one slide work,** for example `<talk>/5`. GitHub Pages serves the
   site's `404.html` for a path that has no file, and that page loads the
   talk's `index.html` in its place. GitHub Pages uses only the `404.html` at

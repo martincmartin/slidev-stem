@@ -22,6 +22,8 @@ the two lists in step.
   balance rim motion, and the diving board measure at the back row
 - [rough-slides.md](rough-slides.md): the talk's outline, as working notes.
   Check each claim before it goes on a slide
+- [cleanups.md](cleanups.md): the cleanups, refactors and speed-ups that a
+  review found and nobody has done yet, with their costs
 - [packages.md](packages.md): dependency constraints and the UnoCSS build
   override
 - [watchlist.md](watchlist.md): the last milestone, and the corrections that

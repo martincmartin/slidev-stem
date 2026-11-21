@@ -15,9 +15,10 @@ import {
   JEWEL_RADIUS,
 } from "./generate.ts";
 import type { Watch } from "./generate.ts";
-import { polar, radians } from "./shapes.ts";
-import { stageState, watchState } from "./state.ts";
-import { pinionTip } from "./teeth.ts";
+import { radians } from "../webgl/math.ts";
+import { polar } from "./shapes.ts";
+import { stageState, tickTockState, watchState } from "./state.ts";
+import { pinionTip, turned } from "./teeth.ts";
 
 /** Points on a tip circle (the escape wheel's, or a gear's on the Gears
  *  slide), for a leader that ends outside. */
@@ -28,18 +29,17 @@ export const LEADER_GAP = 10;
 /** In px: the gap between a label's word and the start of its leader. */
 export const WORD_GAP = 4;
 
-/** The point `distance` along the line from `from` to `to`. */
-export function toward(
-  from: Readonly<Point2>,
-  to: Readonly<Point2>,
-  distance: number,
-): Point2 {
-  const length = Math.hypot(to[0] - from[0], to[1] - from[1]);
-  const fraction = length > 0 ? distance / length : 0;
-  return [
-    from[0] + (to[0] - from[0]) * fraction,
-    from[1] + (to[1] - from[1]) * fraction,
-  ];
+/** A tip circle of `radius` about `centre` (world xy), at height `z`, as
+ *  `shown` projects it to the slide. */
+function tipCircle(
+  shown: (point: Point2, z: number) => Point2,
+  radius: number,
+  centre: Point2,
+  z: number,
+): Point2[] {
+  return Array.from({ length: TIP_POINTS }, (_, index) =>
+    shown(polar(radius, (360 * index) / TIP_POINTS, centre), z),
+  );
 }
 
 /** Where a straight leader from the centre of a box (`width` by `height`)
@@ -77,10 +77,11 @@ export interface EscapementMarks {
 
 /** A point turned by `degrees` about `pivot`, as the model turns a group. */
 function turnedAbout(point: Point2, degrees: number, pivot: Point2): Point2 {
-  const cosine = Math.cos(radians(degrees));
-  const sine = Math.sin(radians(degrees));
-  const [x, y] = [point[0] - pivot[0], point[1] - pivot[1]];
-  return [pivot[0] + x * cosine - y * sine, pivot[1] + x * sine + y * cosine];
+  const [x, y] = turned(
+    [point[0] - pivot[0], point[1] - pivot[1]],
+    radians(degrees),
+  );
+  return [pivot[0] + x, pivot[1] + y];
 }
 
 /** The edges of a closed polygon. */
@@ -292,6 +293,21 @@ export function toothDrops(design: Design): [Point2, Point2] {
   return [drop(0), drop(1)];
 }
 
+/** Where "tick" and "tock" strike at `clicks`, while the slide shows the
+ *  words (`watchTickTock`) and the watch shows (`shown`); else `undefined`.
+ *  With `orbit`, as `stoneStrikes`. */
+export function tickTockAt(
+  watch: Watch,
+  frontmatter: Record<string, unknown>,
+  clicks: number,
+  shown: boolean,
+  orbit: Orbit = NO_ORBIT,
+): { strikes: [Strike, Strike] } | undefined {
+  return tickTockState(frontmatter, clicks) && shown
+    ? { strikes: stoneStrikes(watch, frontmatter, orbit) }
+    : undefined;
+}
+
 /** The strikes on the slide whose frontmatter is `frontmatter`, one for each
  *  tick window (`StrikeTime.window` in model.ts): where a tooth of the
  *  escape wheel lands on a pallet stone (`toothDrops`), on the wheel's top.
@@ -338,12 +354,7 @@ export function escapementMarks(
     forkOutlines: forkAtBanks(design).map((outline) =>
       outline.map((point) => shown(point, tops.fork)),
     ),
-    escapeTips: Array.from({ length: TIP_POINTS }, (_, index) =>
-      shown(
-        polar(escape.outer, (360 * index) / TIP_POINTS, escapeArbor),
-        tops.escape,
-      ),
-    ),
+    escapeTips: tipCircle(shown, escape.outer, escapeArbor, tops.escape),
   };
 }
 
@@ -375,17 +386,13 @@ export function gearsMarks(
     Wheel,
     Wheel,
   ];
-  const circle = (radius: number, centre: Point2): Point2[] =>
-    Array.from({ length: TIP_POINTS }, (_, index) =>
-      shown(polar(radius, (360 * index) / TIP_POINTS, centre), top),
-    );
   const pinionArbor = worldOf(design, escape.arbor);
   const wheelArbor = worldOf(design, fourth.arbor);
   return {
     pinion: shown(pinionArbor, top),
     wheel: shown(wheelArbor, top),
-    pinionTips: circle(pinionTip(escape), pinionArbor),
-    wheelTips: circle(fourth.outer, wheelArbor),
+    pinionTips: tipCircle(shown, pinionTip(escape), pinionArbor, top),
+    wheelTips: tipCircle(shown, fourth.outer, wheelArbor, top),
   };
 }
 
@@ -400,11 +407,6 @@ export function gearTrainMarks(
   const arbor = worldOf(watch.design, centre.arbor);
   return {
     wheel: shown(arbor, watch.centreTop),
-    wheelTips: Array.from({ length: TIP_POINTS }, (_, index) =>
-      shown(
-        polar(centre.outer, (360 * index) / TIP_POINTS, arbor),
-        watch.centreTop,
-      ),
-    ),
+    wheelTips: tipCircle(shown, centre.outer, arbor, watch.centreTop),
   };
 }

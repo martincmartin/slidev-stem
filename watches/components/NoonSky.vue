@@ -7,6 +7,7 @@
 // word on the clock's dial, whose hands are on the canvas: the clock keeps
 // Greenwich's time. In an article's figure, the clock is beside the globe
 // (`FIGURE_CLOCK_AT`).
+import { radians } from "../webgl/math.ts";
 import { inject } from "vue";
 import { FIGURE } from "../addons/narration/figure.ts";
 import { FIGURE_CLOCK_AT, NOON_CLOCK, NOON_GLOBE } from "../globe/noon.ts";
@@ -21,7 +22,7 @@ const [clockX, clockY] =
 const wordY = clockY + 24;
 const [x, y] = NOON_GLOBE.at;
 const { radius, lat } = NOON_GLOBE;
-const toPole = radius * Math.cos((lat * Math.PI) / 180);
+const toPole = radius * Math.cos(radians(lat));
 const night = [
   `M${String(x - radius)} ${String(y)}`,
   `A${String(radius)} ${String(radius)} 0 0 1 ${String(x + radius)} ${String(y)}`,

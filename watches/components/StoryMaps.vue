@@ -78,10 +78,22 @@ const ShipParts: FunctionalComponent = () =>
     h("path", { class: "ship-flag", d: SHIP_FLAG }),
   ]);
 
+/** Set an attribute only if it changes: a frame sets each of the marks', and
+ *  most stay as they are, so the browser does not restyle them. */
+function setAttribute(
+  element: Element | null | undefined,
+  name: string,
+  value: string,
+): void {
+  if (element && element.getAttribute(name) !== value) {
+    element.setAttribute(name, value);
+  }
+}
+
 /** Show a mark at `opacity`, or hide it at 0. */
-function fade(element: Element | undefined, opacity: number): void {
-  element?.setAttribute("opacity", String(opacity));
-  element?.setAttribute("visibility", opacity > 0 ? "visible" : "hidden");
+function fade(element: Element | null | undefined, opacity: number): void {
+  setAttribute(element, "opacity", String(opacity));
+  setAttribute(element, "visibility", opacity > 0 ? "visible" : "hidden");
 }
 
 /** Draw the marks of `story`, in its `group`, at `now`. */
@@ -104,16 +116,16 @@ function drawMarks(group: SVGGElement, story: Story, now: number): void {
   story.legs.forEach((_, leg) => {
     const share = voyage?.tracks[leg];
     fade(tracks[leg], share == null ? 0 : 1);
-    tracks[leg]?.setAttribute("stroke-dashoffset", String(1 - (share ?? 0)));
+    setAttribute(tracks[leg], "stroke-dashoffset", String(1 - (share ?? 0)));
     const shown = voyage?.dots[leg] ?? 0;
     [...(dots[leg]?.children ?? [])].forEach((dot, day) => {
       fade(dot, day < shown ? 1 : 0);
     });
   });
   const at = voyage?.ship;
-  fade(ship ?? undefined, at ? 1 : 0);
+  fade(ship, at ? 1 : 0);
   if (at) {
-    ship?.setAttribute("transform", shipAt(at.at));
+    setAttribute(ship, "transform", shipAt(at.at));
     ship?.classList.toggle("west", at.heading === "west");
   }
   // for watch/slide-state.ts: what the voyage shows, however it was reached
@@ -147,7 +159,8 @@ function drawNoonLabels(pose: CameraPose): void {
         .map(([x, y]) => point([Math.round(x), Math.round(y)]))
         .join(" ")
     : "";
-  noonShip.value?.setAttribute(
+  setAttribute(
+    noonShip.value,
     "transform",
     marks
       ? `translate(${point(marks.ship)}) scale(${String(NOON_SHIP_SCALE)})`
@@ -155,8 +168,8 @@ function drawNoonLabels(pose: CameraPose): void {
   );
   marks?.labels.forEach(([x, y], index) => {
     const label = noonLabels.get(index);
-    label?.setAttribute("x", String(x + (NOON_LABELS[index]?.offset ?? 0)));
-    label?.setAttribute("y", String(y));
+    setAttribute(label, "x", String(x + (NOON_LABELS[index]?.offset ?? 0)));
+    setAttribute(label, "y", String(y));
   });
 }
 
@@ -169,7 +182,7 @@ function draw(pose: CameraPose, now: number): void {
     const { matrix, opacity } = mapOnSlide(story.placed, pose, art.scene.slide);
     fade(group, opacity);
     if (opacity > 0) {
-      group.setAttribute("transform", `matrix(${matrix.join(" ")})`);
+      setAttribute(group, "transform", `matrix(${matrix.join(" ")})`);
       drawMarks(group, story, now);
     }
   }

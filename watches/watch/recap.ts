@@ -7,7 +7,7 @@
 import type { Point2 } from "../webgl/mesh.ts";
 import type { View } from "../webgl/scene.ts";
 import type { Design, Wheel } from "./design.ts";
-import { polar } from "./shapes.ts";
+import { polar, toward } from "./shapes.ts";
 
 /** The lowest and highest heights of a part. */
 export interface Layer {
@@ -40,12 +40,7 @@ const RECAP_ZOOM = {
 /** The point on `driver`'s pitch circle, toward `driven`'s arbor: where
  *  its teeth meet the other's leaves (or the pallet's stones). */
 function touch(driver: Point2, radius: number, driven: Point2): Point2 {
-  const across = [driven[0] - driver[0], driven[1] - driver[1]] as const;
-  const length = Math.hypot(...across);
-  return [
-    driver[0] + (across[0] * radius) / length,
-    driver[1] + (across[1] * radius) / length,
-  ];
+  return toward(driver, driven, radius);
 }
 
 function middle(layer: Layer): number {

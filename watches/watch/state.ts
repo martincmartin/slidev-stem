@@ -73,8 +73,8 @@
 //   artClicks: for a click, the keys that change from that click on
 //     ({1: {art: [*gears, pallet fork], watchSpin: false}})
 
-import { voyageTarget } from "../globe/voyage.ts";
-import type { VoyageNames, VoyageTarget } from "../globe/voyage.ts";
+import { nextVoyage, voyageTarget } from "../globe/voyage.ts";
+import type { VoyageNames, VoyageStep, VoyageTarget } from "../globe/voyage.ts";
 import type { Story } from "../globe/stories.ts";
 import type { Mesh, Piece, View } from "../webgl/scene.ts";
 import { CAMERA_MOVES } from "../webgl/timeline.ts";
@@ -460,10 +460,7 @@ function atClick(
     return wrong("artClicks", blocks, "a map from a click to keys");
   }
   const changes = Object.entries(blocks).map(([key, block]) => {
-    const click = Number(key);
-    if (!Number.isInteger(click) || click < 0 || String(click) !== key) {
-      return wrong("artClicks", key, "a click number");
-    }
+    const click = clickOfKey("artClicks", key);
     if (!isRecord(block) || Object.keys(block).length === 0) {
       return wrong(`artClicks.${key}`, block, "a map of keys");
     }
@@ -509,6 +506,17 @@ export function moveWithBefore(
     }
   }
   return { rule, also };
+}
+
+/** The click that a frontmatter map's `key` names (`artClicks`,
+ *  `article`). Throws, naming the map (`where`), if it is not a click
+ *  number. */
+export function clickOfKey(where: string, key: string): number {
+  const click = Number(key);
+  if (!Number.isInteger(click) || click < 0 || String(click) !== key) {
+    return wrong(where, key, "a click number");
+  }
+  return click;
 }
 
 /** The slide's watch state at `clicks`, or `undefined` if the slide has
@@ -655,6 +663,34 @@ export function voyageFor(
     : null;
 }
 
+/** The story map's step to its marks at `clicks` (`nextVoyage`), from
+ *  `previous`: the watch's layer and a figure each make it so. */
+export function voyageStepTo(
+  previous: VoyageStep,
+  watch: Watch,
+  stories: readonly Story[],
+  state: WatchState | undefined,
+  frontmatter: Record<string, unknown>,
+  clicks: number,
+  timing: Parameters<typeof nextVoyage>[2],
+): VoyageStep {
+  const names = voyageState(frontmatter, clicks);
+  return nextVoyage(previous, voyageFor(watch, stories, state, names), timing);
+}
+
+/** The time scale's speed-up at `clicks`, while the slide shows it
+ *  (`watchTimeScale`) and the watch shows (`shown`); else `undefined`. */
+export function timeScaleAt(
+  frontmatter: Record<string, unknown>,
+  clicks: number,
+  state: WatchState | undefined,
+  shown: boolean,
+): number | undefined {
+  return state && timeScaleState(frontmatter, clicks) && shown
+    ? state.lapse
+    : undefined;
+}
+
 /** Whether the time scale shows, at `clicks` (`watchTimeScale`). Throws as
  *  `watchState` does. */
 export function timeScaleState(
@@ -662,6 +698,32 @@ export function timeScaleState(
   clicks: number,
 ): boolean {
   return atClick(frontmatter, clicks).watchTimeScale ?? false;
+}
+
+/** The watch's pieces named `names`, in order. Throws if one is not a
+ *  piece, naming the setting (`key`) that names it. */
+export function piecesNamed(
+  watch: Watch,
+  key: string,
+  names: readonly string[],
+): Piece[] {
+  return names.map((name) => {
+    const found = watch.scene.pieces.find((piece) => piece.name === name);
+    if (!found) throw new Error(`${key}: no watch piece "${name}"`);
+    return found;
+  });
+}
+
+/** The meshes of `pieces`. */
+export function meshesOf(pieces: readonly Piece[]): ReadonlySet<Mesh> {
+  return new Set(pieces.flatMap((piece) => [...piece.meshes]));
+}
+
+/** The pieces that `stage` shows: each with a mesh that shows. */
+export function shownPieces(watch: Watch, stage: StageState): Piece[] {
+  return watch.scene.pieces.filter((piece) =>
+    [...piece.meshes].some((mesh) => stage.shown.has(mesh)),
+  );
 }
 
 /** The camera's and the fade's state, with the names turned into objects.
@@ -673,22 +735,14 @@ export function stageState(
   moveWith: StepMoveWith = MOVE_WITH_COMMON,
 ): StageState {
   const { scene } = watch;
-  const piecesNamed = (key: string, names: readonly string[]): Piece[] =>
-    names.map((name) => {
-      const found = scene.pieces.find((candidate) => candidate.name === name);
-      if (!found) throw new Error(`${key}: no watch piece "${name}"`);
-      return found;
-    });
-  const meshesOf = (pieces: readonly Piece[]): ReadonlySet<Mesh> =>
-    new Set(pieces.flatMap((piece) => [...piece.meshes]));
   const all = scene.pieces.filter((piece) => piece.inAll);
   const listed = (names: readonly string[] | "all"): readonly Piece[] =>
     names === "all"
       ? all
       : names.flatMap((name) =>
-          name === "all" ? all : piecesNamed("art", [name]),
+          name === "all" ? all : piecesNamed(watch, "art", [name]),
         );
-  const hidden = new Set(piecesNamed("artHide", state.hide ?? []));
+  const hidden = new Set(piecesNamed(watch, "artHide", state.hide ?? []));
   const shown = listed(state.show);
   for (const piece of hidden) {
     if (!shown.includes(piece)) {
@@ -718,21 +772,25 @@ export function stageState(
     turn: state.turn ?? view.angles?.turn ?? 0,
     move: state.move,
     shown: meshesOf(piecesOf(state.show)),
-    flash: state.flash ? meshesOf(piecesNamed("artFlash", state.flash)) : null,
+    flash: state.flash
+      ? meshesOf(piecesNamed(watch, "artFlash", state.flash))
+      : null,
     flashAfterMove: state.flashAfterMove,
     later: state.later
-      ? meshesOf(piecesNamed("artLater", state.later))
+      ? meshesOf(piecesNamed(watch, "artLater", state.later))
       : new Set(),
-    cut: state.cut ? meshesOf(piecesNamed("artCut", state.cut)) : new Set(),
+    cut: state.cut
+      ? meshesOf(piecesNamed(watch, "artCut", state.cut))
+      : new Set(),
     goLater: state.goLater
-      ? meshesOf(piecesNamed("artGoLater", state.goLater))
+      ? meshesOf(piecesNamed(watch, "artGoLater", state.goLater))
       : new Set(),
     moveWith: moveWith.rule,
-    moveAlso: meshesOf(piecesNamed("artMoveAlso", moveWith.also)),
+    moveAlso: meshesOf(piecesNamed(watch, "artMoveAlso", moveWith.also)),
     ...(state.linger
       ? {
           linger: state.linger.map((group) => ({
-            meshes: meshesOf(piecesNamed("artLinger", group.pieces)),
+            meshes: meshesOf(piecesNamed(watch, "artLinger", group.pieces)),
             seconds: group.seconds,
           })),
         }
@@ -740,7 +798,7 @@ export function stageState(
     ...(state.dim
       ? {
           dim: new Map(
-            [...meshesOf(piecesNamed("artDim", state.dim))].map(
+            [...meshesOf(piecesNamed(watch, "artDim", state.dim))].map(
               (mesh): [Mesh, number] => [mesh, WATCH_DIM],
             ),
           ),

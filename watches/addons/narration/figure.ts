@@ -50,6 +50,21 @@ export function union(first: Box | null, second: Box): Box {
   };
 }
 
+/** The box that covers each item's box (`boxOf`), or `null`, the whole
+ *  slide: if an item's box is the whole slide, or there are no items. */
+export function coveringBox<Item>(
+  items: Iterable<Item>,
+  boxOf: (item: Item) => Box | null,
+): Box | null {
+  let box: Box | null = null;
+  for (const item of items) {
+    const each = boxOf(item);
+    if (!each) return null;
+    box = union(box, each);
+  }
+  return box;
+}
+
 /** A slider under a figure: `value` runs from 0 to 1, from the `start`
  *  label to the `end` label. `release`, if given, is called when the reader
  *  lets go of the thumb (the input's `change`: a pointer's release, or a

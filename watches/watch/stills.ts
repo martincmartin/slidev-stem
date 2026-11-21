@@ -36,13 +36,14 @@ export class WatchStills {
   }
 
   /** A slide's state as a picture (an object URL) in the slide's palette, at
-   *  the still time, or at rest. `size` is in device px. */
-  of(
-    state: WatchState,
-    size: [number, number],
-    palette: Palette,
-  ): Promise<string> {
-    const { design } = this.watch;
+   *  the still time, or at rest: the slide's size in device px. */
+  of(state: WatchState, palette: Palette): Promise<string> {
+    const { design, scene } = this.watch;
+    const ratio = window.devicePixelRatio || 1;
+    const size: [number, number] = [
+      Math.round(scene.slide[0] * ratio),
+      Math.round(scene.slide[1] * ratio),
+    ];
     const key = JSON.stringify([
       state.view,
       state.tilt,

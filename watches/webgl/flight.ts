@@ -7,7 +7,7 @@
 // after a ramp up and before a ramp down of `FLIGHT.ramp` seconds (`paced`).
 // No DOM: the tests run it in Node.
 
-import { axesAcross, mix } from "./math.ts";
+import { angleBetween, axesAcross, clamp, mix } from "./math.ts";
 import {
   pivotOnSlide,
   planeOnSlide,
@@ -124,7 +124,7 @@ function paced(
     const [before, after] = [lengths[low] ?? 0, lengths[high] ?? 0];
     const part =
       after > before ? (seen * total - before) / (after - before) : 0;
-    return (low + Math.min(1, Math.max(0, part))) / PACE_SAMPLES;
+    return (low + clamp(part)) / PACE_SAMPLES;
   };
   const seconds = FLIGHT.ramp + total / FLIGHT.speed;
   return {
@@ -159,8 +159,7 @@ export function flight(
   }
   const { rho } = FLIGHT;
   const [a, b] = [towardCamera(from), towardCamera(to)];
-  const cosTurn = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-  const turn = Math.acos(Math.max(-1, Math.min(1, cosTurn)));
+  const turn = angleBetween(a, b);
   const distance = radius * turn;
   // world units across the slide. The short names from here on are the
   // paper's symbols (w0, w1, rho, b0, r0, r1, s; r is its r(b)), so that

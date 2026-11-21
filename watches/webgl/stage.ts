@@ -154,6 +154,34 @@ export interface ViewDrawing {
  *  with it (`planeOnSlide` in renderer.ts), in the same animation frame. */
 export type FrameListener = (pose: CameraPose, now: number) => void;
 
+/** Go to a slide's state on `timeline` and `model` at `now`: at once (a
+ *  jump, or the first state), or by the timeline's moves, with the model's
+ *  story after them. The stage and each shared view (shared.ts) do this.
+ *  Returns the seconds until the flash ends, or 0 if there is none. */
+export function showState<ModelState>(
+  timeline: Timeline,
+  model: Model<ModelState>,
+  state: StageState,
+  modelState: ModelState,
+  now: number,
+  instantly: boolean,
+): number {
+  const atOnce = instantly || !timeline.hasState;
+  const flashSeconds = timeline.show(state, now, atOnce);
+  model.show(modelState, now, atOnce, timeline.endAt(now));
+  return flashSeconds;
+}
+
+/** When a change on `timeline` and `model` ends (ms), with its flash and
+ *  the model's story, or `now` if it has. */
+export function changeEndAt<ModelState>(
+  timeline: Timeline,
+  model: Model<ModelState>,
+  now: number,
+): number {
+  return Math.max(timeline.endAt(now), model.endAt?.(now) ?? now);
+}
+
 /** Draw one frame of a timeline and a model at `now`, `size` device px,
  *  with the renderer: the stage's frame, and each view's on a shared
  *  renderer (shared.ts), with `drawing`. Returns the camera it drew with. */
@@ -228,11 +256,14 @@ export class Stage<ModelState> {
    *  Returns the seconds until the flash ends, or 0 if there is none. */
   show(state: StageState, modelState: ModelState, instantly = false): number {
     check(!this.disposed, "the stage is disposed");
-    const now = performance.now();
-    const atOnce = instantly || !this.timeline.hasState;
-    const flashSeconds = this.timeline.show(state, now, atOnce);
-    this.model.show(modelState, now, atOnce, this.timeline.endAt(now));
-    return flashSeconds;
+    return showState(
+      this.timeline,
+      this.model,
+      state,
+      modelState,
+      performance.now(),
+      instantly,
+    );
   }
 
   /** The flashed meshes, if the flash is on at `now`. */
@@ -266,7 +297,7 @@ export class Stage<ModelState> {
   /** When the change ends (ms), with its flash and the model's story, or
    *  `now` if it has. */
   endAt(now: number): number {
-    return Math.max(this.timeline.endAt(now), this.model.endAt?.(now) ?? now);
+    return changeEndAt(this.timeline, this.model, now);
   }
 
   /** The flight that runs at `now`, and the share of its time gone, or

@@ -19,6 +19,7 @@
 // A jump (a reload, a slide that is not a neighbour) goes to the target at
 // once: the start, the bottom of the swing, or the end of the edit.
 
+import { smoothstep } from "../webgl/math.ts";
 import { clickOf, wrong } from "./state.ts";
 
 /** The root's `data-` times, in seconds. */
@@ -57,23 +58,30 @@ export function editStep(
   }
   const length = timing.editDuration / EDIT_STEPS;
   const start = curlEnd(timing) + index * length;
-  const fraction = Math.min(Math.max((time - start) / length, 0), 1);
-  return fraction * fraction * (3 - 2 * fraction);
+  return smoothstep((time - start) / length);
 }
 
 export type BoardPlace = "start" | "swing" | "curled";
 
 /** What the board shows at a slide's click. */
 export interface BoardState {
-  /** The dashed rest outline and its callout; the picture (the board, the
-   *  pool and the stand) too, until the curl ends (`pictureShown`). */
-  rest: boolean;
-  /** The pool and the stand fade, and the board curls. */
-  curling: boolean;
   /** This click is the one at which the board curls: a page that does not
    *  run the clock shows it part way through the curl. */
   curlsHere: boolean;
   place: BoardPlace;
+}
+
+/** Whether the dashed rest outline and its callout show: from the board's
+ *  click on. The picture (the board, the pool and the stand) shows too,
+ *  until the curl ends (`pictureShown`). */
+export function restShows(state: BoardState): boolean {
+  return state.place !== "start";
+}
+
+/** Whether the pool and the stand fade, and the board curls: from the
+ *  curl's click on. */
+export function boardCurls(state: BoardState): boolean {
+  return state.place === "curled";
 }
 
 /** A target for the live board, and whether to show it at once (a jump). A
@@ -102,8 +110,6 @@ export function boardState(
   const shown = clicks >= showAt;
   const curling = curlAt !== undefined && clicks >= curlAt;
   return {
-    rest: shown,
-    curling,
     curlsHere: clicks === curlAt,
     place: !shown ? "start" : curling ? "curled" : "swing",
   };
@@ -119,7 +125,7 @@ export function pictureShown(
   state: BoardState,
   time: number,
 ): boolean {
-  return state.rest && time < curlEnd(timing);
+  return restShows(state) && time < curlEnd(timing);
 }
 
 /** How far through the curl a page shows it: the board is a spiral that has
@@ -140,7 +146,7 @@ export function storyEnd(timing: BoardTiming): number {
  *  shows. */
 export function boardPoseTime(timing: BoardTiming, state: BoardState): number {
   if (state.place === "start") return 0;
-  if (!state.curling) return timing.swingStart;
+  if (!boardCurls(state)) return timing.swingStart;
   return state.curlsHere
     ? timing.curlStart + CURL_SHOWN * timing.curlDuration
     : storyEnd(timing);

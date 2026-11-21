@@ -28,12 +28,8 @@ import { computed, ref, useTemplateRef } from "vue";
 import { onLaidOut } from "./laid-out.ts";
 import { at } from "../webgl/checked.ts";
 import type { Point2 } from "../webgl/mesh.ts";
-import {
-  firstCrossing,
-  straightStart,
-  toward,
-  WORD_GAP,
-} from "../watch/callouts.ts";
+import { firstCrossing, straightStart, WORD_GAP } from "../watch/callouts.ts";
+import { toward } from "../watch/shapes.ts";
 
 const props = withDefaults(
   defineProps<{

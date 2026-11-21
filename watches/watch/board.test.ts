@@ -40,26 +40,18 @@ test("a slide without `board` has no board", () => {
 
 test("the Hairspring slide's targets: off, swinging, curling, then curled", () => {
   assert.deepEqual(stateAt(0), {
-    rest: false,
-    curling: false,
     curlsHere: false,
     place: "start",
   });
   assert.deepEqual(stateAt(1), {
-    rest: true,
-    curling: false,
     curlsHere: false,
     place: "swing",
   });
   assert.deepEqual(stateAt(2), {
-    rest: true,
-    curling: true,
     curlsHere: true,
     place: "curled",
   });
   assert.deepEqual(stateAt(3), {
-    rest: true,
-    curling: true,
     curlsHere: false,
     place: "curled",
   });

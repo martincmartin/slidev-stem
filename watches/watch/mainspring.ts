@@ -28,7 +28,7 @@
 // how far the arbor has turned against the spring's outer end; 0 is at rest.
 
 import { check } from "../webgl/checked.ts";
-import { smoothstep } from "../webgl/math.ts";
+import { clamp, smoothstep } from "../webgl/math.ts";
 import { ease, FADE_SECONDS } from "../webgl/timeline.ts";
 
 export const MAINSPRING_STAGES = [
@@ -59,7 +59,10 @@ export const UNCOIL_SECONDS = 2;
 const UNCOIL_RATE = 7;
 /** s: before the time-lapse starts, while its words fade in. */
 export const LAPSE_WAIT_SECONDS = 0.5;
-/** s: "6 hours in 6 seconds": one turn of the barrel. */
+/** Hours of the watch's time that the time-lapse runs: one turn of the
+ *  barrel. */
+export const LAPSE_HOURS = 6;
+/** s: the time-lapse runs LAPSE_HOURS in this time. */
 export const LAPSE_SECONDS = 6;
 /** s: the time-lapse speeds up and slows down in this time, at each end. */
 const LAPSE_RAMP_SECONDS = 0.5;
@@ -148,14 +151,14 @@ export function storyRuns(stage: MainspringStage): boolean {
 
 /** The fraction whose smoothstep is `value`, both 0 to 1. */
 function smoothstepInverse(value: number): number {
-  const clamped = Math.min(Math.max(value, 0), 1);
+  const clamped = clamp(value);
   return 0.5 - Math.sin(Math.asin(1 - 2 * clamped) / 3);
 }
 
 /** A critically damped spring's return, from 0 to 1, with no speed at the
  *  start or the end, scaled to reach 1 at `fraction` 1. */
 function uncoiled(fraction: number): number {
-  const clamped = Math.min(Math.max(fraction, 0), 1);
+  const clamped = clamp(fraction);
   const back = (at: number): number =>
     1 - (1 + UNCOIL_RATE * at) * Math.exp(-UNCOIL_RATE * at);
   return back(clamped) / back(1);
@@ -212,7 +215,7 @@ export function linePose(time: number): MainspringPose {
  *  with the slider. The talk's rests and each turn's ease show a hand that
  *  stops turning the key, and on the slider, the reader's hand turns it. */
 export function windSliderTime(fraction: number): number {
-  const turns = KEY_TURNS * Math.min(Math.max(fraction, 0), 1);
+  const turns = KEY_TURNS * clamp(fraction);
   const done = Math.min(Math.floor(turns), KEY_TURNS - 1);
   return (
     FADE_SECONDS +

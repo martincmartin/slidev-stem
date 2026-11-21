@@ -96,7 +96,13 @@ import {
 import { at, check, checkFinite } from "./checked.ts";
 import { compose, isNoOrbit, orbitRotation, viewRotation } from "./orbit.ts";
 import type { Orbit } from "./orbit.ts";
-import { IDENTITY, checkAffine, normalMatrix, transformPoint } from "./math.ts";
+import {
+  IDENTITY,
+  checkAffine,
+  normalMatrix,
+  radians,
+  transformPoint,
+} from "./math.ts";
 import type { Matrix4 } from "./math.ts";
 
 const DEPTH_RANGE = 2000; // slide px: world depth maps to clip z = -depth / range
@@ -366,17 +372,11 @@ export interface Camera {
 /** The unit direction to the camera, in world space, at `angles`: the
  *  gradient of the depth in `viewProjection`. */
 export function towardCamera(angles: CameraAngles): Vec3 {
-  if (angles.orbit && !isNoOrbit(angles.orbit)) {
-    // the direction to the reader in the view's axes, in the world's
-    return compose(viewRotation(angles), orbitRotation(angles.orbit))[2];
-  }
-  const tilt = (angles.tilt * Math.PI) / 180;
-  const turn = (angles.turn * Math.PI) / 180;
-  return [
-    Math.sin(tilt) * Math.sin(turn),
-    Math.sin(tilt) * Math.cos(turn),
-    Math.cos(tilt),
-  ];
+  // the direction to the reader in the view's axes, in the world's
+  const rotation = viewRotation(angles);
+  return angles.orbit && !isNoOrbit(angles.orbit)
+    ? compose(rotation, orbitRotation(angles.orbit))[2]
+    : rotation[2];
 }
 
 /** The rows of a camera's matrix (clip x, clip y, depth) turned by `orbit`
@@ -426,10 +426,10 @@ export function viewProjection(
   slide: readonly [number, number],
 ): Camera {
   const [width, height] = slide;
-  const tilt = (angles.tilt * Math.PI) / 180;
+  const tilt = radians(angles.tilt);
   const cosine = Math.cos(tilt);
   const sine = Math.sin(tilt);
-  const turn = (angles.turn * Math.PI) / 180;
+  const turn = radians(angles.turn);
   const turnCosine = Math.cos(turn);
   const turnSine = Math.sin(turn);
   const [pivotX, pivotY, pivotZ] = view.pivot;
@@ -588,7 +588,14 @@ interface MeshResources {
   lineCount: number;
 }
 
+/** Sizes of picture kept: the views near the screen at once (shared.ts)
+ *  draw at their own sizes, and a picture made again for each frame waits
+ *  for the GPU (checkFramebufferStatus). */
+const TARGET_SIZES = 4;
+
 interface Target {
+  /** 0, or 1 for a fade's second picture. */
+  index: number;
   size: [number, number];
   colour: WebGLTexture;
   /** R8: the number of the holdout at each pixel / 255, or 0. */
@@ -606,8 +613,9 @@ interface Resources {
   /** No attributes: the mix makes its triangle from gl_VertexID. */
   empty: WebGLVertexArrayObject;
   meshes: Map<Mesh, MeshResources>;
-  /** Picture 0, and picture 1 for a fade. */
-  targets: (Target | undefined)[];
+  /** Picture 0, and picture 1 for a fade, at each size drawn lately: the
+   *  most recent first, at most TARGET_SIZES of each. */
+  targets: Target[];
 }
 
 /** What the renderer computes once for each mesh, from the scene. */
@@ -689,12 +697,20 @@ function windowPoint(
   ];
 }
 
-function appendInstance(values: number[], instance: Instance): void {
+/** Write `instance` into `values` at `offset`; returns the offset after it. */
+function writeInstance(
+  values: Float32Array,
+  offset: number,
+  instance: Instance,
+): number {
+  let cursor = offset;
   for (const [name, size] of INSTANCE_LAYOUT) {
     const part = instance[name];
     check(part.length === size, `${name} has ${String(part.length)} values`);
-    for (const value of part) values.push(value);
+    values.set(part, cursor);
+    cursor += size;
   }
+  return cursor;
 }
 
 function inkIndex(ink: Ink): number {
@@ -704,13 +720,14 @@ function inkIndex(ink: Ink): number {
 }
 
 function lineInstances(geometry: MeshGeometry): Float32Array {
-  const values: number[] = [];
+  const values = new Float32Array(segmentCount(geometry) * INSTANCE_FLOATS);
+  let offset = 0;
   const none = [0, 0, 0];
   for (const line of geometry.lines) {
     const { ink, opacity, width } = line.style;
     const count = line.points.length;
     for (let index = 0; index < (line.closed ? count : count - 1); index++) {
-      appendInstance(values, {
+      offset = writeInstance(values, offset, {
         start: at(line.points, index),
         end: at(line.points, (index + 1) % count),
         normalBefore: none,
@@ -724,7 +741,7 @@ function lineInstances(geometry: MeshGeometry): Float32Array {
   }
   for (const edge of geometry.silhouetteEdges) {
     const { ink, opacity, width } = edge.style;
-    appendInstance(values, {
+    offset = writeInstance(values, offset, {
       start: edge.start,
       end: edge.end,
       normalBefore: edge.normalBefore,
@@ -735,7 +752,7 @@ function lineInstances(geometry: MeshGeometry): Float32Array {
       width: [width],
     });
   }
-  return new Float32Array(values);
+  return values;
 }
 
 function segmentCount(geometry: MeshGeometry): number {
@@ -1199,23 +1216,42 @@ export class Renderer {
   }
 
   /** The picture `index` (0, or 1 for a fade's second picture), at this
-   *  size. */
+   *  size: the one kept, or a new one. */
   private target(
     resources: Resources,
     index: number,
     width: number,
     height: number,
   ): Target {
-    const gl = this.gl;
-    const old = resources.targets[index];
-    if (old?.size[0] === width && old.size[1] === height) return old;
-    if (old) {
+    const { targets } = resources;
+    const kept = targets.findIndex(
+      (each) =>
+        each.index === index &&
+        each.size[0] === width &&
+        each.size[1] === height,
+    );
+    const found = targets[kept];
+    if (found) {
+      targets.splice(kept, 1);
+      targets.unshift(found);
+      return found;
+    }
+    const made = this.makeTarget(index, width, height);
+    targets.unshift(made);
+    const ofIndex = targets.filter((each) => each.index === index);
+    for (const old of ofIndex.slice(TARGET_SIZES)) {
+      targets.splice(targets.indexOf(old), 1);
       this.free(old.colour);
       this.free(old.holdouts);
       this.free(old.depth);
       this.free(old.framebuffer);
-      resources.targets[index] = undefined;
     }
+    return made;
+  }
+
+  /** A new, complete picture `index` at this size. */
+  private makeTarget(index: number, width: number, height: number): Target {
+    const gl = this.gl;
     const texture = (format: number): WebGLTexture => {
       const made = this.makeTexture();
       gl.bindTexture(gl.TEXTURE_2D, made);
@@ -1242,6 +1278,7 @@ export class Renderer {
       const depth = texture(gl.DEPTH_COMPONENT24);
       made.push(depth);
       const target: Target = {
+        index,
         size: [width, height],
         colour,
         holdouts,
@@ -1264,7 +1301,6 @@ export class Renderer {
         status === gl.FRAMEBUFFER_COMPLETE,
         `a ${String(width)} x ${String(height)} picture is not complete (status ${String(status)})`,
       );
-      resources.targets[index] = target;
       return target;
     } catch (error) {
       for (const object of made) this.free(object);

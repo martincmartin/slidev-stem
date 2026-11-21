@@ -43,7 +43,7 @@ import { Renderer } from "./renderer.ts";
 import type { Place } from "./renderer.ts";
 import type { Orbit } from "./orbit.ts";
 import type { Mesh, Palette, Scene, SlideRect } from "./scene.ts";
-import { deviceSize, drawFrame } from "./stage.ts";
+import { changeEndAt, deviceSize, drawFrame, showState } from "./stage.ts";
 import type { FrameListener, Model } from "./stage.ts";
 import { Timeline } from "./timeline.ts";
 import type { StageState } from "./timeline.ts";
@@ -101,10 +101,14 @@ export class SharedView<ModelState> {
 
   /** As `Stage.show`: go to a state, at once or by the timeline's moves. */
   show(state: StageState, modelState: ModelState, instantly = false): void {
-    const now = this.now();
-    const atOnce = instantly || !this.timeline.hasState;
-    this.timeline.show(state, now, atOnce);
-    this.model.show(modelState, now, atOnce, this.timeline.endAt(now));
+    showState(
+      this.timeline,
+      this.model,
+      state,
+      modelState,
+      this.now(),
+      instantly,
+    );
     this.redraw();
   }
 
@@ -132,8 +136,7 @@ export class SharedView<ModelState> {
   /** When the change ends (ms, the view's time), with its flash and the
    *  model's story, or now if it has. */
   endAt(): number {
-    const now = this.now();
-    return Math.max(this.timeline.endAt(now), this.model.endAt?.(now) ?? now);
+    return changeEndAt(this.timeline, this.model, this.now());
   }
 
   /** The canvas's size in device px. */

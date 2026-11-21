@@ -8,6 +8,7 @@
 // camera is orthographic").
 // No DOM here: the renderer and the tests use it.
 
+import { radians } from "./math.ts";
 import type { CameraAngles, Vec3 } from "./scene.ts";
 
 /** In degrees: a yaw (+: the near side goes right), then a pitch (+: the
@@ -27,10 +28,6 @@ export type Rotation = readonly [Vec3, Vec3, Vec3];
  *  depths tie; at 89° the picture is the same
  *  (tasks/2026-11-20-article-turning/PLAN.md, "Edge-on"). */
 export const ORBIT_LIMIT = 89;
-
-function radians(degrees: number): number {
-  return (degrees * Math.PI) / 180;
-}
 
 export function isNoOrbit(orbit: Orbit): boolean {
   return orbit.yaw === 0 && orbit.pitch === 0;

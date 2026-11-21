@@ -18,7 +18,7 @@ import type {
   Vec3,
   View,
 } from "../webgl/scene.ts";
-import { axesAcross, unit } from "../webgl/math.ts";
+import { axesAcross, mixPoint, radians, unit } from "../webgl/math.ts";
 import type { Matrix4 } from "../webgl/math.ts";
 import { inBox } from "./earth.ts";
 import type {
@@ -74,8 +74,8 @@ function scaleOf(kmPerPx: number): number {
 /** A point on the globe. East is counterclockwise seen from above the North
  *  Pole, as on the Earth: the slide's y goes down. */
 export function toSphere([lon, lat]: LonLat): Vec3 {
-  const lambda = (lon * Math.PI) / 180;
-  const phi = (lat * Math.PI) / 180;
+  const lambda = radians(lon);
+  const phi = radians(lat);
   return [
     CENTRE[0] + RADIUS * Math.cos(phi) * Math.cos(lambda),
     CENTRE[1] - RADIUS * Math.cos(phi) * Math.sin(lambda),
@@ -208,10 +208,8 @@ export function coastLines(polygons: readonly Polygon[]): CoastLine[] {
 const inBoxes = (point: LonLat, boxes: readonly LonLatBox[]): boolean =>
   boxes.some((box) => inBox(point, box));
 
-const between = (from: LonLat, to: LonLat, along: number): LonLat => [
-  from[0] + (to[0] - from[0]) * along,
-  from[1] + (to[1] - from[1]) * along,
-];
+const between = (from: LonLat, to: LonLat, along: number): LonLat =>
+  mixPoint(from, to, along);
 
 /** The parts of the coast inside the boxes (`inside`), or outside them all.
  *  Each segment is split where it crosses a box's edge, and each part is

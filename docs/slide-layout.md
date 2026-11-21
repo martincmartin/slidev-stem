@@ -37,6 +37,11 @@ example.
 - **A picture across the whole slide is better still,** if it has a place for the
   title and for the text: `width: 100%`. Then the text stands on the picture too,
   in the paper's outline. The A Minute Is Life or Death slide is an example.
+  Each rule writes the outline out (`-webkit-text-stroke` in
+  `var(--palette-background)`). This is not an oversight: a variable that
+  holds the background takes it where the variable is declared, so a dark
+  slide would get the light paper's outline
+  ([the task](../watches/tasks/2026-11-21-simplify-served-code/PLAN.md)).
 - **60/40 is a guideline, not a measure.** Move the border between them until the
   slide looks good.
 - **Centre the text vertically, under the title.** Use the space from the bottom

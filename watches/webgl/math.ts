@@ -51,10 +51,43 @@ export function mix(first: number, second: number, fraction: number): number {
   return first + (second - first) * fraction;
 }
 
+/** The point `fraction` of the way from `first` to `second`, in 2D. */
+export function mixPoint(
+  first: readonly [number, number],
+  second: readonly [number, number],
+  fraction: number,
+): [number, number] {
+  return [
+    mix(first[0], second[0], fraction),
+    mix(first[1], second[1], fraction),
+  ];
+}
+
+export function dot(a: Vec3, b: Vec3): number {
+  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+/** The angle between two directions, in radians, by atan2: acos of a dot
+ *  product near 1 turns its rounding into an angle. */
+export function angleBetween(a: Vec3, b: Vec3): number {
+  const [x, y, z] = cross(a, b);
+  return Math.atan2(Math.hypot(x, y, z), dot(a, b));
+}
+
+/** Degrees to radians. */
+export function radians(degrees: number): number {
+  return (degrees * Math.PI) / 180;
+}
+
+/** `value`, held between `low` and `high`. */
+export function clamp(value: number, low = 0, high = 1): number {
+  return Math.min(Math.max(value, low), high);
+}
+
 /** An ease in and out from 0 to 1, as `fraction` goes from 0 to 1: the
  *  cubic 3f² - 2f³, with no speed at either end. Outside 0 to 1, the end. */
 export function smoothstep(fraction: number): number {
-  const clamped = Math.min(Math.max(fraction, 0), 1);
+  const clamped = clamp(fraction);
   return clamped * clamped * (3 - 2 * clamped);
 }
 

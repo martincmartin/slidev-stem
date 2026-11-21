@@ -26,6 +26,8 @@ Before you…
 - change a drawing, or claim that one is legible: `docs/measurements.md`,
   `../docs/legibility.md`.
 - choose what the next slide says: `docs/rough-slides.md`.
+- simplify, refactor or speed up the talk's code, or review it for any of
+  these: `docs/cleanups.md`.
 - update packages or remove a dependency override: `docs/packages.md`, and
   `../docs/talks.md`.
 - sort a correction, or tag the talk: `docs/watchlist.md`, with the

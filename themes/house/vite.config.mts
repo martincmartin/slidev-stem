@@ -27,6 +27,8 @@ const THEME = dirname(fileURLToPath(import.meta.url));
 const REPO = join(THEME, "..", "..");
 /** The build's list of third-party licences, beside index.html. */
 const LICENSES = "licenses.txt";
+/** Vite's own list, which `completeLicenses` reads and replaces. */
+const VITE_LICENSES = "vite-licenses.json";
 const PALETTES = join(THEME, "..", "palettes");
 const { dependencies } = JSON.parse(
   readFileSync(join(THEME, "package.json"), "utf8"),
@@ -42,26 +44,27 @@ function installed(name: string): string {
   return realpathSync(link);
 }
 
-/** Slidev 53 writes the headmatter's `author` (and `info`, `keywords`) in
- *  a `<meta>` tag as a JSON string, in quotes, inside the attribute's own:
- *  `content="&quot;Ada&quot;"`. This takes the inner quotes off. */
+/** Slidev 53 writes some of the headmatter's values (`author`, `info`,
+ *  `keywords`) in a `<meta>` tag as a JSON string, in quotes, inside the
+ *  attribute's own: `content="&quot;Ada&quot;"`. This takes the inner
+ *  quotes off, from any `<meta>`. */
 const metaQuotes = {
   name: "house:meta-quotes",
   transformIndexHtml: {
     order: "post" as const,
     handler: (html: string): string =>
       html.replace(
-        /(<meta name="(?:author|description|keywords)" content=")&quot;(.*?)&quot;"/g,
+        /(<meta name="[^"]*" content=")&quot;(.*?)&quot;"/g,
         '$1$2"',
       ),
   },
 };
 
 export default {
-  plugins: [metaQuotes, completeLicenses(LICENSES)],
+  plugins: [metaQuotes, completeLicenses(VITE_LICENSES, LICENSES)],
   build: {
     sourcemap: true,
-    license: { fileName: LICENSES },
+    license: { fileName: VITE_LICENSES },
     rolldownOptions: {
       output: {
         // A map's source is relative to the map, in <talk>/assets/. Name it

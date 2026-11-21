@@ -20,7 +20,8 @@ import { computed, ref, useTemplateRef } from "vue";
 import { onLaidOut } from "./laid-out.ts";
 import { anchorPoint, overSea } from "../globe/labels.ts";
 import type { WordsBox } from "../globe/labels.ts";
-import { LEADER_GAP, straightStart, toward } from "../watch/callouts.ts";
+import { LEADER_GAP, straightStart } from "../watch/callouts.ts";
+import { toward } from "../watch/shapes.ts";
 import { loadedGlobe } from "../watch/instance.ts";
 
 const globe = loadedGlobe();

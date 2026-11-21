@@ -2,7 +2,7 @@
 // the springs. The springs' formula exists once, here.
 
 import { at, check } from "../webgl/checked.ts";
-import { smoothstep } from "../webgl/math.ts";
+import { clamp, radians, smoothstep } from "../webgl/math.ts";
 import { ribbonGeometry, smoothRing } from "../webgl/mesh.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import type { Renderer } from "../webgl/renderer.ts";
@@ -14,7 +14,7 @@ import type { Watch, WatchGroups } from "./generate.ts";
 import { LapseClock } from "./lapse.ts";
 import { MainspringClock, runningSpringPose, WOUND } from "./mainspring.ts";
 import type { MainspringPose, MainspringStage } from "./mainspring.ts";
-import { polar, radians } from "./shapes.ts";
+import { polar } from "./shapes.ts";
 
 /** The hairspring. Its inner end is on the collet, at `radii[0]`, and turns
  *  with the balance; its outer end is held by the stud at `radii[1]` and
@@ -48,28 +48,28 @@ const MAX_SPREAD = 0.95;
  *  length. */
 export function springPoints(spring: Spring, swing: number): Point2[] {
   const innerAngle = spring.outerAngle - 360 * spring.turns + swing;
-  const curve = (spread: number): Point2[] =>
-    spiralPoints(spring, innerAngle, spread);
-  const target = polylineLength(
-    spiralPoints(spring, spring.outerAngle - 360 * spring.turns, 0),
+  const turns = spiralTurns(spring, innerAngle);
+  const length = (spread: number): number =>
+    spiralLength(spring, turns, spread);
+  const target = spiralLength(
+    spring,
+    spiralTurns(spring, spring.outerAngle - 360 * spring.turns),
+    0,
   );
   // the length grows with the spread: bisect
   let low = -MAX_SPREAD;
   let high = MAX_SPREAD;
-  if (
-    polylineLength(curve(low)) > target ||
-    polylineLength(curve(high)) < target
-  ) {
+  if (length(low) > target || length(high) < target) {
     throw new Error(
       `the spring cannot keep its length at swing ${String(swing)}`,
     );
   }
   for (let step = 0; step < 40; step++) {
     const middle = (low + high) / 2;
-    if (polylineLength(curve(middle)) < target) low = middle;
+    if (length(middle) < target) low = middle;
     else high = middle;
   }
-  return curve((low + high) / 2);
+  return spiralPoints(spring, innerAngle, (low + high) / 2);
 }
 
 /** The mainspring's points about the barrel arbor, with the arbor at
@@ -87,28 +87,72 @@ export function mainspringPoints(
   );
 }
 
+/** The spiral's point `index` of SPRING_POINTS. */
+function spiralPoint(
+  spring: Spring,
+  innerAngle: number,
+  spread: number,
+  index: number,
+): Point2 {
+  const [innerRadius, outerRadius] = spring.radii;
+  const fraction = index / (SPRING_POINTS - 1);
+  const shaped = fraction + spread * fraction * (1 - fraction);
+  return polar(
+    innerRadius + shaped * (outerRadius - innerRadius),
+    innerAngle + fraction * (spring.outerAngle - innerAngle),
+  );
+}
+
 function spiralPoints(
   spring: Spring,
   innerAngle: number,
   spread: number,
 ): Point2[] {
-  const [innerRadius, outerRadius] = spring.radii;
-  return Array.from({ length: SPRING_POINTS }, (_, index) => {
-    const fraction = index / (SPRING_POINTS - 1);
-    const shaped = fraction + spread * fraction * (1 - fraction);
-    return polar(
-      innerRadius + shaped * (outerRadius - innerRadius),
-      innerAngle + fraction * (spring.outerAngle - innerAngle),
-    );
-  });
+  return Array.from({ length: SPRING_POINTS }, (_, index) =>
+    spiralPoint(spring, innerAngle, spread, index),
+  );
 }
 
-function polylineLength(points: Point2[]): number {
+/** The cosine and the sine of each of the spiral's points' angles, as
+ *  `polar` turns them: the spread changes only the radii. */
+interface SpiralTurns {
+  readonly cosines: Float64Array;
+  readonly sines: Float64Array;
+}
+
+function spiralTurns(spring: Spring, innerAngle: number): SpiralTurns {
+  const cosines = new Float64Array(SPRING_POINTS);
+  const sines = new Float64Array(SPRING_POINTS);
+  for (let index = 0; index < SPRING_POINTS; index++) {
+    const fraction = index / (SPRING_POINTS - 1);
+    const theta = radians(
+      innerAngle + fraction * (spring.outerAngle - innerAngle),
+    );
+    cosines[index] = Math.cos(theta);
+    sines[index] = Math.sin(theta);
+  }
+  return { cosines, sines };
+}
+
+/** The length of `spiralPoints`' polyline, with no points made: the
+ *  bisection measures it 43 times for each spring drawn. */
+function spiralLength(
+  spring: Spring,
+  { cosines, sines }: SpiralTurns,
+  spread: number,
+): number {
+  const [innerRadius, outerRadius] = spring.radii;
   let length = 0;
-  for (let index = 1; index < points.length; index++) {
-    const [x0, y0] = at(points, index - 1);
-    const [x1, y1] = at(points, index);
-    length += Math.hypot(x1 - x0, y1 - y0);
+  let [x0, y0] = [0, 0];
+  for (let index = 0; index < SPRING_POINTS; index++) {
+    const fraction = index / (SPRING_POINTS - 1);
+    const shaped = fraction + spread * fraction * (1 - fraction);
+    const radius = innerRadius + shaped * (outerRadius - innerRadius);
+    // as `polar`, about the origin
+    const x = 0 + radius * (cosines[index] ?? 0);
+    const y = 0 + radius * (sines[index] ?? 0);
+    if (index > 0) length += Math.hypot(x - x0, y - y0);
+    [x0, y0] = [x, y];
   }
   return length;
 }
@@ -235,8 +279,7 @@ export function angleAt(keyframes: Keyframes, time: number): number {
     span > 0 ? (fraction - at(keyframes.keyTimes, index)) / span : 1;
   const start = at(keyframes.values, index);
   const value =
-    start +
-    (at(keyframes.values, index + 1) - start) * Math.min(Math.max(along, 0), 1);
+    start + (at(keyframes.values, index + 1) - start) * clamp(along);
   return keyframes.accumulate
     ? repeat * at(keyframes.values, keyframes.values.length - 1) + value
     : value;
@@ -285,6 +328,16 @@ export class Motion {
   /** Degrees a beat, of each group that the train turns. */
   private readonly steps = new Map<Group, number>();
   private readonly forkTurning: Keyframes;
+  /** The springs' geometry at the last few swings and poses, the most
+   *  recent first, so that one that comes again is not computed again, and
+   *  gives the renderer the same object, which it does not upload again
+   *  (`Renderer.updateMesh`). */
+  private readonly springs: { swing: number; geometry: MeshGeometry }[] = [];
+  private readonly mainsprings: {
+    arbor: number;
+    wind: number;
+    geometry: MeshGeometry;
+  }[] = [];
 
   constructor(watch: Watch) {
     this.watch = watch;
@@ -365,28 +418,74 @@ export class Motion {
 
   /** The spring's geometry with the balance at `swing` degrees. */
   springGeometry(swing: number): MeshGeometry {
+    const kept = recent(this.springs, (each) => each.swing === swing);
+    if (kept) return kept.geometry;
     const style = at(this.watch.spring.lines, 0).style;
-    return ribbonGeometry(
+    const geometry = ribbonGeometry(
       smoothRing(springPoints(this.watch.springShape, swing), style, false),
       this.watch.springHeights.bottom,
       this.watch.springHeights.top,
     );
+    remember(this.springs, { swing, geometry });
+    return geometry;
   }
 
   /** The mainspring's geometry in a pose of the Mainspring slide's story. */
   mainspringGeometry(pose: MainspringPose): MeshGeometry {
+    const { arbor, wind } = pose;
+    const kept = recent(
+      this.mainsprings,
+      (each) => each.arbor === arbor && each.wind === wind,
+    );
+    if (kept) return kept.geometry;
     const { mainspring, mainspringShape, mainspringHeights } = this.watch;
     const style = at(mainspring.lines, 0).style;
-    return ribbonGeometry(
-      smoothRing(
-        mainspringPoints(mainspringShape, pose.arbor, pose.wind),
-        style,
-        false,
-      ),
+    const geometry = ribbonGeometry(
+      smoothRing(mainspringPoints(mainspringShape, arbor, wind), style, false),
       mainspringHeights.bottom,
       mainspringHeights.top,
     );
+    remember(this.mainsprings, { arbor, wind, geometry });
+    return geometry;
   }
+}
+
+/** Swings and poses whose springs a Motion keeps: one for each view near the
+ *  screen at once (webgl/shared.ts), and some to spare. */
+const RECENT_SPRINGS = 4;
+
+/** The entry of `list` that `matches`, moved to the front; or undefined. */
+function recent<Entry>(
+  list: Entry[],
+  matches: (entry: Entry) => boolean,
+): Entry | undefined {
+  const index = list.findIndex(matches);
+  const found = list[index];
+  if (found === undefined) return undefined;
+  list.splice(index, 1);
+  list.unshift(found);
+  return found;
+}
+
+/** Put `entry` at the front of `list`, and drop the oldest past
+ *  RECENT_SPRINGS. */
+function remember<Entry>(list: Entry[], entry: Entry): void {
+  list.unshift(entry);
+  list.length = Math.min(list.length, RECENT_SPRINGS);
+}
+
+/** One Motion for each watch: the models of the views that share a renderer
+ *  (webgl/shared.ts) then share its springs' geometry, and a view at rest
+ *  does not upload the springs again for each other view. */
+const motions = new WeakMap<Watch, Motion>();
+
+function motionOf(watch: Watch): Motion {
+  let motion = motions.get(watch);
+  if (!motion) {
+    motion = new Motion(watch);
+    motions.set(watch, motion);
+  }
+  return motion;
 }
 
 function wheelGroup(groups: WatchGroups, wheel: Wheel): Group {
@@ -914,12 +1013,6 @@ export class WatchModel implements Model<WatchModelState> {
   /** A settle that waits for the time-lapse's hand-over: it was asked for
    *  while the balance resumed with time ahead (`settle`). */
   private settleAfterLapse = false;
-  /** The mainspring's last pose drawn, and its geometry, so that an
-   *  unchanged pose is not computed again. The geometry is given to the
-   *  renderer at every frame: views that share a renderer share the mesh
-   *  (webgl/shared.ts), and another view's model may have drawn its own
-   *  pose since. */
-  private drawn: { pose: MainspringPose; geometry: MeshGeometry } | null = null;
   /** The article's twist, in place of the balance's clock; `null` off it. */
   private twisted: Twist | null = null;
   /** The barrel's angle when the running spring was wound, or null off
@@ -932,7 +1025,7 @@ export class WatchModel implements Model<WatchModelState> {
 
   constructor(watch: Watch, now = performance.now()) {
     this.watch = watch;
-    this.motion = new Motion(watch);
+    this.motion = motionOf(watch);
     this.clock = new BalanceClock(watch.design.timing, now);
     this.story = new MainspringClock(barrelTurnBeats(watch));
     this.lapse = new LapseClock(now);
@@ -1062,12 +1155,13 @@ export class WatchModel implements Model<WatchModelState> {
       this.woundAt === null
         ? this.story.pose(now)
         : runningSpringPose(this.woundAt, this.barrelAngle(beats));
-    let drawn = this.drawn;
-    if (drawn?.pose.arbor !== pose.arbor || drawn.pose.wind !== pose.wind) {
-      drawn = { pose, geometry: this.motion.mainspringGeometry(pose) };
-      this.drawn = drawn;
-    }
-    renderer.updateMesh(this.watch.mainspring, drawn.geometry);
+    // given at every frame: views that share a renderer share the mesh
+    // (webgl/shared.ts), and another view's model may have drawn its own
+    // pose since
+    renderer.updateMesh(
+      this.watch.mainspring,
+      this.motion.mainspringGeometry(pose),
+    );
     return this.motion.matrices(time, swing, beats, pose.arbor);
   }
 

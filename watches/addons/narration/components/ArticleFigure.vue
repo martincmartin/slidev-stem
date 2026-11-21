@@ -296,53 +296,56 @@ function endReturn(): void {
 /** The pointer that turns the picture, and where it was last. A touch
  *  turns nothing until it has moved `TOUCH_SLOP` px (`turning`): until
  *  then, the browser can still take it as a vertical swipe, and scroll. */
-let drag: { id: number; x: number; y: number; turning: boolean } | null = null;
-const dragging = ref(false);
+const drag = shallowRef<{
+  readonly id: number;
+  readonly x: number;
+  readonly y: number;
+  readonly turning: boolean;
+} | null>(null);
+const dragging = computed(() => drag.value !== null);
 
 function startTurn(event: PointerEvent): void {
   if (!turnable.value || !event.isPrimary || event.button !== 0) return;
   if (!frame.value) return;
-  drag = {
+  drag.value = {
     id: event.pointerId,
     x: event.clientX,
     y: event.clientY,
     turning: event.pointerType === "mouse",
   };
-  dragging.value = true;
   frame.value.setPointerCapture(event.pointerId);
 }
 
 function moveTurn(event: PointerEvent): void {
-  if (drag?.id !== event.pointerId) return;
-  if (!drag.turning) {
-    const [across, down] = [event.clientX - drag.x, event.clientY - drag.y];
+  let now = drag.value;
+  if (now?.id !== event.pointerId) return;
+  if (!now.turning) {
+    const [across, down] = [event.clientX - now.x, event.clientY - now.y];
     if (Math.hypot(across, down) < TOUCH_SLOP) return;
     // a swipe up or down is the page's: the browser scrolls it
     if (Math.abs(down) > Math.abs(across)) {
-      drag = null;
-      dragging.value = false;
+      drag.value = null;
       return;
     }
-    drag = { ...drag, turning: true };
+    now = { ...now, turning: true };
   }
   const width = frame.value?.getBoundingClientRect().width ?? 0;
   if (width > 0) {
     const degrees = DRAG_DEGREES / width;
     turner.value?.turn(
-      (event.clientX - drag.x) * degrees,
-      (event.clientY - drag.y) * degrees,
+      (event.clientX - now.x) * degrees,
+      (event.clientY - now.y) * degrees,
     );
     if (props.figure.play) held.value = true;
   }
-  drag = { ...drag, x: event.clientX, y: event.clientY };
+  drag.value = { ...now, x: event.clientX, y: event.clientY };
 }
 
 /** The drag ends: the pointer lets go, or the browser takes it (a swipe
  *  that scrolls). */
 function endTurn(event: PointerEvent): void {
-  if (drag?.id !== event.pointerId) return;
-  drag = null;
-  dragging.value = false;
+  if (drag.value?.id !== event.pointerId) return;
+  drag.value = null;
 }
 
 onMounted(() => {

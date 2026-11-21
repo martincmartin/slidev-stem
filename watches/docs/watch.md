@@ -316,7 +316,11 @@ shape of the Hairspring slide (the dashed line, the callout and its leader) fade
 The Balance Wheel slide has no code for this. It has no `board` key, so the live board's
 target there is "off", and the board's layer fades its rest shape out in
 `FADE_SECONDS`, as long as the watch's fade (`--watch-fade`, set by
-`global-bottom.vue`). Going back from 3 to 2 fades it in again while the wheel
+`global-bottom.vue`). The article has no watch layer, so there the board
+uses its own fallback, the same 0.8 s. This is not an oversight: set on
+every page, `--watch-fade` would make the article's `after-watch-fade` text
+wait 0.8 s ([the task](../tasks/2026-11-21-simplify-served-code/PLAN.md)).
+Going back from 3 to 2 fades it in again while the wheel
 fades out, and from 4 to 3 nothing changes
 ([`navigation.md`](../../docs/navigation.md)). A printed page of the Balance Wheel slide has
 no board.

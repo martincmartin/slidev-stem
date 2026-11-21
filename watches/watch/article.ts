@@ -16,10 +16,19 @@
 // colours, for as long as it shows (a steady flash). Not when the mark would
 // be everything that shows: that marks nothing.
 
-import { boardState } from "./board.ts";
+import { LAPSE_HOURS, LAPSE_SECONDS } from "./mainspring.ts";
+import { boardCurls, boardState, restShows } from "./board.ts";
 import type { BoardState } from "./board.ts";
 import type { Watch } from "./generate.ts";
-import { stageState, viewOf, watchState, wrong } from "./state.ts";
+import {
+  clickOfKey,
+  piecesNamed,
+  shownPieces,
+  stageState,
+  viewOf,
+  watchState,
+  wrong,
+} from "./state.ts";
 import type { WatchState } from "./state.ts";
 import type { Piece, View } from "../webgl/scene.ts";
 import { pivotOnSlide, slidePoint } from "../webgl/renderer.ts";
@@ -58,7 +67,10 @@ export const BUTTON_WORDS: Readonly<
   Record<ButtonKind, { label: string; undo: string }>
 > = {
   release: { label: "Let go of the outer end", undo: "Start again" },
-  "run down": { label: "Speed up: 6 hours in 6 seconds", undo: "Start again" },
+  "run down": {
+    label: speedUpLabel(LAPSE_HOURS * 60, LAPSE_SECONDS),
+    undo: "Start again",
+  },
 };
 
 /** s: the time over which a figure's speed-up button says what it does:
@@ -73,17 +85,22 @@ export function speedUpWords(speedUp: number): {
   label: string;
   undo: string;
 } {
-  const minutes = (speedUp * SPEED_UP_SECONDS) / 60;
+  return {
+    label: speedUpLabel((speedUp * SPEED_UP_SECONDS) / 60, SPEED_UP_SECONDS),
+    undo: "Back to real time",
+  };
+}
+
+/** A button's words for a speed-up that runs `minutes` of the watch's time
+ *  in `seconds`: "Speed up: an hour in 30 seconds". */
+function speedUpLabel(minutes: number, seconds: number): string {
   const hours = minutes / 60;
   const span = !Number.isInteger(hours)
     ? `${String(minutes)} minutes`
     : hours === 1
       ? "an hour"
       : `${String(hours)} hours`;
-  return {
-    label: `Speed up: ${span} in ${String(SPEED_UP_SECONDS)} seconds`,
-    undo: "Back to real time",
-  };
+  return `Speed up: ${span} in ${String(seconds)} seconds`;
 }
 
 /** A figure's settings at a click, from the slide's `article` block. */
@@ -132,8 +149,8 @@ const CURLING_BOARD_BOX: Box = { ...BOARD_BOX, top: 0 };
  *  gone. What it leaves then (the rest shape, over the hairspring, and its
  *  sentence, a label the figure measures) is no picture of its own. */
 function boardBoxOf(board: BoardState | undefined): Box | null {
-  if (!board?.rest) return null;
-  if (!board.curling) return BOARD_BOX;
+  if (!board || !restShows(board)) return null;
+  if (!boardCurls(board)) return BOARD_BOX;
   return board.curlsHere ? CURLING_BOARD_BOX : null;
 }
 
@@ -157,12 +174,7 @@ export function figureSettings(
   if (!isRecord(article)) {
     return wrong("article", article, "a map from a click to settings");
   }
-  for (const key of Object.keys(article)) {
-    const click = Number(key);
-    if (!Number.isInteger(click) || click < 0 || String(click) !== key) {
-      return wrong("article", key, "a click number");
-    }
-  }
+  for (const key of Object.keys(article)) clickOfKey("article", key);
   const block = article[String(clicks)];
   if (block === undefined) return NO_SETTINGS;
   if (!isRecord(block)) {
@@ -286,11 +298,8 @@ function frameOf(state: WatchState | undefined): string {
 /** The pieces that show, by name, with `all` resolved. */
 function shownNames(watch: Watch, state: WatchState | undefined): Set<string> {
   if (!state) return new Set();
-  const { shown } = stageState(watch, state);
   return new Set(
-    watch.scene.pieces
-      .filter((piece) => [...piece.meshes].some((mesh) => shown.has(mesh)))
-      .map((piece) => piece.name),
+    shownPieces(watch, stageState(watch, state)).map((piece) => piece.name),
   );
 }
 
@@ -383,7 +392,10 @@ export function figureMarks(
   clicks: number,
 ): string[] {
   const setting = figureSettings(frontmatter, clicks).mark;
-  if (setting !== null) return [...setting];
+  if (setting !== null) {
+    piecesNamed(watch, `article.${String(clicks)}.mark`, setting);
+    return [...setting];
+  }
   const state = watchState(frontmatter, clicks);
   if (!state) return [];
   const flashed = new Set<string>();
@@ -488,10 +500,7 @@ export function pictureBox(
   // pieces are not in the picture
   if (state && !boardBox) {
     const stage = stageState(watch, state);
-    const shown = watch.scene.pieces.filter((piece) =>
-      [...piece.meshes].some((mesh) => stage.shown.has(mesh)),
-    );
-    const shownBox = piecesBox(watch, stage, shown);
+    const shownBox = piecesBox(watch, stage, shownPieces(watch, stage));
     if (shownBox) box = union(box, shownBox);
     const ball = ballBox(stage.view);
     if (ball) box = union(box, ball);
@@ -499,11 +508,7 @@ export function pictureBox(
     fitBox =
       fit === "all" || fit.includes("all")
         ? shownBox
-        : piecesBox(
-            watch,
-            stage,
-            watch.scene.pieces.filter((piece) => fit.includes(piece.name)),
-          );
+        : piecesBox(watch, stage, piecesNamed(watch, "artFit", fit));
   }
   if (!box) return null;
   // the board is drawn to the slide's edges: centre on it, it is the picture

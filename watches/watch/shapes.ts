@@ -4,10 +4,17 @@
 // 3 o'clock, increasing clockwise, because y points down.
 
 import type { Point2 } from "../webgl/mesh.ts";
+import { mixPoint, radians } from "../webgl/math.ts";
 import { Path, circlePath } from "./path.ts";
 
-export function radians(degrees: number): number {
-  return (degrees * Math.PI) / 180;
+/** The point `distance` along the line from `from` to `to`. */
+export function toward(
+  from: Readonly<Point2>,
+  to: Readonly<Point2>,
+  distance: number,
+): Point2 {
+  const length = Math.hypot(to[0] - from[0], to[1] - from[1]);
+  return mixPoint(from, to, length > 0 ? distance / length : 0);
 }
 
 /** Polar to xy, from `origin`. */

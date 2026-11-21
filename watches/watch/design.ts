@@ -2,6 +2,7 @@
 // not check JSON, so `readDesign` checks each value at load, and turns each
 // name into a reference to its object, once.
 
+import { isRecord } from "../webgl/checked.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import designFile from "./design.json" with { type: "json" };
 
@@ -147,10 +148,8 @@ function fail(where: string, wanted: string): never {
 }
 
 function record(value: Json, where: string): Record<string, Json> {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return fail(where, "an object");
-  }
-  return value as Record<string, Json>;
+  if (!isRecord(value)) return fail(where, "an object");
+  return value;
 }
 
 function field(

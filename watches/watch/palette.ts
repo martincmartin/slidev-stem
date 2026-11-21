@@ -3,6 +3,7 @@
 // watch knows a colour's value, so a theme change reaches the watch with no
 // other step.
 
+import { clamp } from "../webgl/math.ts";
 import { check } from "../webgl/checked.ts";
 import type { InkName, Palette } from "../webgl/scene.ts";
 
@@ -153,7 +154,7 @@ export function srgbHex(computedColour: string): string {
   );
   return `#${channels
     .map((channel) =>
-      Math.round(Math.max(0, Math.min(1, channel)) * 255)
+      Math.round(clamp(channel) * 255)
         .toString(16)
         .padStart(2, "0"),
     )

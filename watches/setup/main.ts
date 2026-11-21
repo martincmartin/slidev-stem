@@ -14,7 +14,7 @@
 import { slides } from "@slidev/client/logic/slides.ts";
 import { defineAppSetup } from "@slidev/types";
 import { ARTICLE_HOOKS } from "../addons/narration/figure.ts";
-import { routePages } from "../addons/narration/plan.ts";
+import { frontmatterOf, routePages } from "../addons/narration/plan.ts";
 import { showsGlobe } from "../watch/art.ts";
 import {
   defaultFigures,
@@ -42,8 +42,7 @@ function pageShowsGlobe(route: PageRoute): boolean {
       [],
   );
   return slides.value.some(
-    (each) =>
-      shown.has(each.no) && showsGlobe(each.meta.slide?.frontmatter ?? {}),
+    (each) => shown.has(each.no) && showsGlobe(frontmatterOf(each)),
   );
 }
 

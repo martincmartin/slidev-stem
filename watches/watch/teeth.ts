@@ -9,7 +9,8 @@ import type { Point2 } from "../webgl/mesh.ts";
 import { at } from "../webgl/checked.ts";
 import type { DrivenWheel, DrivingPinion, Wheel } from "./design.ts";
 import { circlePath, Path } from "./path.ts";
-import { polar, radians } from "./shapes.ts";
+import { radians } from "../webgl/math.ts";
+import { polar } from "./shapes.ts";
 
 /** What a wheel's teeth are made from: a train wheel or a wheel of the
  *  motion works. */

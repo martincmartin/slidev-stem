@@ -130,10 +130,8 @@ export function boardProblems(
   if (!shown(printed)) return problems;
   // The pose of its click: what slide-bottom.vue sets the clock to. The
   // picture shows with the curl only at the curl's click.
-  const { picture, rest, curling, time, timing } = printed;
+  const { picture, curling, time, timing } = printed;
   const pose = boardPoseTime(timing, {
-    rest,
-    curling,
     curlsHere: curling && picture,
     place: curling ? "curled" : "swing",
   });

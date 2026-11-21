@@ -56,6 +56,7 @@
 // (`watchLapse`, watch/lapse.ts), for a part too slow to see move: the
 // centre wheel, the hour hand. It eases up and back down; it starts at real
 // speed, and goes back to it at a click with no speed-up.
+import { frontmatterOf } from "../addons/narration/plan.ts";
 import { injectionSlidevContext } from "@slidev/client/constants.ts";
 import {
   computed,
@@ -72,16 +73,12 @@ import type {
   Box,
   FigureContext,
   FigureControl,
+  FigureSlider,
   FigureTurner,
 } from "../addons/narration/figure.ts";
 import DivingBoard from "./DivingBoard.vue";
 import StoryMaps from "./StoryMaps.vue";
-import {
-  movesByItself,
-  settled,
-  voyageEndAt,
-  nextVoyage,
-} from "../globe/voyage.ts";
+import { movesByItself, settled, voyageEndAt } from "../globe/voyage.ts";
 import type { VoyageStep } from "../globe/voyage.ts";
 import TickTock from "./TickTock.vue";
 import TimeScale from "./TimeScale.vue";
@@ -90,7 +87,7 @@ import type { Orbit } from "../webgl/orbit.ts";
 import { SharedView } from "../webgl/shared.ts";
 import { ease, HIDE_STYLE } from "../webgl/timeline.ts";
 import type { FrameListener } from "../webgl/stage.ts";
-import type { Mesh, SlideRect } from "../webgl/scene.ts";
+import type { SlideRect } from "../webgl/scene.ts";
 import {
   BUTTON_WORDS,
   figureMarks,
@@ -99,9 +96,10 @@ import {
   figureState,
   SLIDER_WORDS,
 } from "../watch/article.ts";
+import type { SliderKind } from "../watch/article.ts";
 import { boardState } from "../watch/board.ts";
 import type { BoardTarget } from "../watch/board.ts";
-import { stoneStrikes } from "../watch/callouts.ts";
+import { tickTockAt } from "../watch/callouts.ts";
 import {
   figureModel,
   loadedArt,
@@ -117,10 +115,10 @@ import {
   modelState,
   stageState,
   stepMove,
-  tickTockState,
-  timeScaleState,
-  voyageState,
-  voyageFor,
+  meshesOf,
+  piecesNamed,
+  timeScaleAt,
+  voyageStepTo,
 } from "../watch/state.ts";
 import type { WatchState } from "../watch/state.ts";
 
@@ -134,9 +132,7 @@ const slidev = inject(injectionSlidevContext);
 const injected = inject(FIGURE);
 if (!slidev || !injected) throw new Error("FigureLayer is for a figure");
 const figure: FigureContext = injected;
-const frontmatter = computed(
-  () => slidev.nav.currentSlideRoute.meta.slide?.frontmatter ?? {},
-);
+const frontmatter = computed(() => frontmatterOf(slidev.nav.currentSlideRoute));
 const settings = computed(() =>
   figureSettings(frontmatter.value, figure.clicks.value),
 );
@@ -147,6 +143,15 @@ const palette = computed(() => slidePalette(frontmatter.value["class"]));
 const curl = ref(0);
 const twist = ref(0);
 const wind = ref(0);
+/** Each slider's value, and what happens when the reader lets go. */
+const sliderControls: Record<
+  SliderKind,
+  Pick<FigureSlider, "value"> & Partial<Pick<FigureSlider, "release">>
+> = {
+  curl: { value: curl },
+  twist: { value: twist, release: letGo },
+  wind: { value: wind },
+};
 /** Whether the reader has pressed the figure's `button`. */
 const played = ref(false);
 /** Whether the reader has pressed the speed-up button. */
@@ -266,16 +271,10 @@ const boardScrub = computed(() =>
 /** The reader's turn of the watch (THE TURN). */
 const orbit = shallowRef<Orbit>(NO_ORBIT);
 const tickTock = computed(() =>
-  tickTockState(frontmatter.value, clicks.value) && !hidden.value
-    ? { strikes: stoneStrikes(art, frontmatter.value, orbit.value) }
-    : undefined,
+  tickTockAt(art, frontmatter.value, clicks.value, !hidden.value, orbit.value),
 );
 const timeScale = computed(() =>
-  state.value &&
-  timeScaleState(frontmatter.value, clicks.value) &&
-  !hidden.value
-    ? state.value.lapse
-    : undefined,
+  timeScaleAt(frontmatter.value, clicks.value, state.value, !hidden.value),
 );
 
 /** Whether nothing moves by itself at the figure's click, so that the
@@ -361,15 +360,6 @@ function showsWatch(now: WatchState): boolean {
   );
 }
 
-/** The meshes of the pieces named. */
-function meshesOf(names: readonly string[]): Set<Mesh> {
-  return new Set(
-    art.scene.pieces
-      .filter((piece) => names.includes(piece.name))
-      .flatMap((piece) => [...piece.meshes]),
-  );
-}
-
 /** The move to `to` from the click that shows: forward or back by the
  *  clicks' order, past the neighbours too (the reader asked for it); a jump
  *  at once, or from nothing. */
@@ -396,21 +386,24 @@ function show(to: number, atOnce: boolean): void {
     modelState(now),
     move === "jump",
   );
-  view.marked = meshesOf(figureMarks(art, frontmatter.value, to));
+  view.marked = meshesOf(
+    piecesNamed(art, "marks", figureMarks(art, frontmatter.value, to)),
+  );
   shown = { clicks: to, state: now };
-  const target = voyageFor(
+  voyage.value = voyageStepTo(
+    voyage.value,
     art,
     stories,
     now,
-    voyageState(frontmatter.value, to),
+    frontmatter.value,
+    to,
+    {
+      at: figure.now(),
+      cameraEnd: view.viewEndAt(),
+      jump: move === "jump",
+      forward: move === "forward",
+    },
   );
-  const at = figure.now();
-  voyage.value = nextVoyage(voyage.value, target, {
-    at,
-    cameraEnd: view.viewEndAt(),
-    jump: move === "jump",
-    forward: move === "forward",
-  });
   setEnd("watch", Math.max(view.endAt(), voyageEndAt(voyage.value)));
 }
 
@@ -522,17 +515,12 @@ onChange(
   settings,
   ({ slider, button, speedUp }) => {
     const controls: FigureControl[] = [];
-    if (slider === "curl") {
-      controls.push({ kind: "slider", ...SLIDER_WORDS.curl, value: curl });
-    } else if (slider === "twist") {
+    if (slider !== null) {
       controls.push({
         kind: "slider",
-        ...SLIDER_WORDS.twist,
-        value: twist,
-        release: letGo,
+        ...SLIDER_WORDS[slider],
+        ...sliderControls[slider],
       });
-    } else if (slider === "wind") {
-      controls.push({ kind: "slider", ...SLIDER_WORDS.wind, value: wind });
     }
     if (button !== null) {
       controls.push({

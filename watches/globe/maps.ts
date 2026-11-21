@@ -7,6 +7,7 @@
 // for it is the camera, north up, that fits its coast best (`fitCamera`).
 // No DOM: the tests run it in Node.
 
+import { angleBetween, radians, smoothstep } from "../webgl/math.ts";
 import { planeOnSlide, towardCamera } from "../webgl/renderer.ts";
 import type { Affine2, CameraPose, Plane, Vec3, View } from "../webgl/scene.ts";
 import { clipToRect } from "./clip.ts";
@@ -41,7 +42,7 @@ export const MARGIN = 20;
 
 /** Slide px for a longitude difference at the map's centre. */
 export function longitudeOffset(map: StoryMap, degrees: number): number {
-  return degrees * map.pxPerDegree * Math.cos((map.centre[1] * Math.PI) / 180);
+  return degrees * map.pxPerDegree * Math.cos(radians(map.centre[1]));
 }
 
 /** Where a place is on the map, in slide px. */
@@ -304,10 +305,7 @@ export function placeMap(
 ): PlacedMap {
   const { camera } = fitCamera(map, polygons.flat(), slide);
   const view = globeView(camera);
-  const [lon, lat] = [
-    (camera.centre[0] * Math.PI) / 180,
-    (camera.centre[1] * Math.PI) / 180,
-  ];
+  const [lon, lat] = [radians(camera.centre[0]), radians(camera.centre[1])];
   const step = 1 / view.scale;
   // east and south, as `toSphere` turns them, a slide px long
   const u: Vec3 = [-Math.sin(lon) * step, -Math.cos(lon) * step, 0];
@@ -354,20 +352,13 @@ export function mapOnSlide(
   const { view, plane } = placed;
   const toward = towardCamera(pose);
   const own = towardCamera(view.angles ?? { tilt: 0, turn: 0 });
-  // the angle between the two, by atan2: acos of a dot product near 1
-  // turns its rounding into a pan, so that a map at its own view is not
-  // whole
-  const cosine = toward[0] * own[0] + toward[1] * own[1] + toward[2] * own[2];
-  const sine = Math.hypot(
-    toward[1] * own[2] - toward[2] * own[1],
-    toward[2] * own[0] - toward[0] * own[2],
-    toward[0] * own[1] - toward[1] * own[0],
-  );
-  const pan = Math.atan2(sine, cosine) * RADIUS * view.scale;
+  // by atan2 (`angleBetween`): acos would turn its rounding into a pan,
+  // so that a map at its own view is not whole
+  const pan = angleBetween(toward, own) * RADIUS * view.scale;
   const zoom = Math.abs(Math.log(pose.view.scale / view.scale));
   const far = Math.min(1, Math.max(zoom / Math.log(NEAR.zoom), pan / NEAR.pan));
   return {
     matrix: planeOnSlide(pose, slide, plane),
-    opacity: 1 - far * far * (3 - 2 * far),
+    opacity: 1 - smoothstep(far),
   };
 }

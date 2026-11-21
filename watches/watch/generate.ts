@@ -52,8 +52,8 @@ import {
   openings,
   polar,
   polygon,
-  radians,
 } from "./shapes.ts";
+import { radians } from "../webgl/math.ts";
 import type { DaggerOptions } from "./shapes.ts";
 import {
   drivenWheelTeeth,
@@ -63,6 +63,7 @@ import {
   pinionLeafShapes,
   pinionLeaves,
   pinionSeam,
+  turned,
   wheelTeeth,
   wheelToothShapes,
 } from "./teeth.ts";
@@ -295,14 +296,12 @@ function maxDistance(rings: Ring[], from: Point2): number {
   );
 }
 
-function turned(path: Path, degrees: number): Path {
-  // A path's points, turned about the origin as SVG's rotate() does.
-  const cosine = Math.cos(radians(degrees));
-  const sine = Math.sin(radians(degrees));
+/** A path's points, turned about the origin as SVG's rotate() does. */
+function turnedPath(path: Path, degrees: number): Path {
   const result = new Path();
   for (const contour of path.contours()) {
-    contour.points.forEach(([x, y], index) => {
-      const at2: Point2 = [x * cosine - y * sine, x * sine + y * cosine];
+    contour.points.forEach((point, index) => {
+      const at2 = turned(point, radians(degrees));
       if (index === 0) result.moveTo(...at2);
       else result.lineTo(...at2);
     });
@@ -2425,12 +2424,12 @@ function minuteHandAngle(design: Design): number {
 
 /** The hour hand about its arbor, at the design's time. */
 function hourHandPath(design: Design): Path {
-  return turned(dagger(HOUR_HAND), hourHandAngle(design));
+  return turnedPath(dagger(HOUR_HAND), hourHandAngle(design));
 }
 
 /** The minute hand about its arbor, at the design's time. */
 function minuteHandPath(design: Design): Path {
-  return turned(dagger(MINUTE_HAND), minuteHandAngle(design));
+  return turnedPath(dagger(MINUTE_HAND), minuteHandAngle(design));
 }
 
 // ---- the lume (docs/watch.md, "The Reading a Watch in the Dark, World War I slide") ----
@@ -2467,7 +2466,8 @@ function hourPlotsPath(): Path {
     [-half, -LUME_PLOT.from],
   ]);
   const plots = new Path();
-  for (let hour = 0; hour < 12; hour++) plots.append(turned(plot, hour * 30));
+  for (let hour = 0; hour < 12; hour++)
+    plots.append(turnedPath(plot, hour * 30));
   return plots;
 }
 
@@ -2498,10 +2498,10 @@ function lumeMeshes(
   };
   return [
     lying(on.ring, hourPlotsPath()),
-    lying(on.hour, turned(handLumePath(HOUR_HAND), hourHandAngle(design))),
+    lying(on.hour, turnedPath(handLumePath(HOUR_HAND), hourHandAngle(design))),
     lying(
       on.minute,
-      turned(handLumePath(MINUTE_HAND), minuteHandAngle(design)),
+      turnedPath(handLumePath(MINUTE_HAND), minuteHandAngle(design)),
     ),
   ];
 }

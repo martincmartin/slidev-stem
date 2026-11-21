@@ -97,13 +97,7 @@ onChange(
   () => (needsStill.value ? state.value : undefined),
   async (shown) => {
     if (!shown) return;
-    const ratio = window.devicePixelRatio || 1;
-    const [width, height] = art.scene.slide;
-    const picture = await watchStills().of(
-      shown,
-      [Math.round(width * ratio), Math.round(height * ratio)],
-      palette.value.palette,
-    );
+    const picture = await watchStills().of(shown, palette.value.palette);
     if (state.value === shown) source.value = picture; // not a click that has passed
   },
   { immediate: true },

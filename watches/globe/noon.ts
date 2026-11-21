@@ -9,9 +9,10 @@
 // StoryMaps.vue moves them after each frame (`noonMarksAt`). No DOM: the tests
 // run it in Node.
 
-import { axesAcross } from "../webgl/math.ts";
+import { axesAcross, radians } from "../webgl/math.ts";
 import type { Matrix4 } from "../webgl/math.ts";
-import { slidePoint, towardCamera } from "../webgl/renderer.ts";
+import { viewRotation } from "../webgl/orbit.ts";
+import { slidePoint } from "../webgl/renderer.ts";
 import { INKS } from "../webgl/scene.ts";
 import type {
   CameraAngles,
@@ -57,8 +58,7 @@ export const NOON_CLOCK = {
 export const FIGURE_CLOCK_AT: SlidePoint = [
   80,
   NOON_GLOBE.at[1] -
-    NOON_GLOBE.radius *
-      Math.sin(((GREENWICH[1] - NOON_GLOBE.lat) * Math.PI) / 180),
+    NOON_GLOBE.radius * Math.sin(radians(GREENWICH[1] - NOON_GLOBE.lat)),
 ];
 
 /** The Earth has turned by this many degrees from one view to the other. */
@@ -240,18 +240,12 @@ function clockMatrix(
   clockAt: SlidePoint,
   clockwise: number,
 ): Matrix4 {
-  const radians = Math.PI / 180;
-  const [tilt, turn] = [angles.tilt * radians, angles.turn * radians];
-  const right: Vec3 = [Math.cos(turn), -Math.sin(turn), 0];
-  const up: Vec3 = [
-    -Math.cos(tilt) * Math.sin(turn),
-    -Math.cos(tilt) * Math.cos(turn),
-    Math.sin(tilt),
-  ];
-  const toward = towardCamera(angles);
+  // the view's right and up (minus its down), in the world
+  const [right, down, toward] = viewRotation(angles);
+  const up: Vec3 = [-down[0], -down[1], -down[2]];
   const [cos, sin] = [
-    Math.cos(clockwise * radians),
-    Math.sin(clockwise * radians),
+    Math.cos(radians(clockwise)),
+    Math.sin(radians(clockwise)),
   ];
   const [across, above] = [
     clockAt[0] - NOON_GLOBE.at[0],
@@ -295,7 +289,7 @@ export function noonMatrices(
  *  takes the line, drawn at longitude 0 about the origin, to the longitude
  *  that the camera faces (`facing` in globe.ts). */
 export function noonMatrix(turn: number): Matrix4 {
-  const lon = ((turn - 90) * Math.PI) / 180;
+  const lon = radians(turn - 90);
   const [cos, sin] = [Math.cos(lon), Math.sin(lon)];
   return Float32Array.from([
     cos,
@@ -362,7 +356,7 @@ function meridians(): Line[] {
 function noonLine(): Line[] {
   return aroundLabel(90).map((run) => ({
     points: run.map((lat): Vec3 => {
-      const phi = (lat * Math.PI) / 180;
+      const phi = radians(lat);
       return [LINE_RADIUS * Math.cos(phi), 0, LINE_RADIUS * Math.sin(phi)];
     }),
     closed: false,

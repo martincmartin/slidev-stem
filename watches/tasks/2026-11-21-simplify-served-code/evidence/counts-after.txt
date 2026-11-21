@@ -1,0 +1,7 @@
+ / blits 980x423@0,129 980x552@980,0 980x423@0,129 980x552@980,0 980x423@0,129 980x552@980,0 980x423@0,129 980x552@980,0
+{"y":3000,"visibleCanvases":["980x423","980x552"],"perSecond":{"frames":50,"gBCR":50,"bufferData":100,"uniformMatrix4fv":450,"drawArrays":150,"drawArraysInstanced":200,"blitFramebuffer":50,"drawImage":50,"setProp":100}}
+ / blits 956x454@0,222 704x676@956,0 956x454@0,222 704x676@956,0 956x454@0,222 704x676@956,0 956x454@0,222 704x676@956,0
+{"y":4500,"visibleCanvases":["956x454","704x676"],"perSecond":{"frames":17.6,"gBCR":35.3,"bufferData":70.5,"uniformMatrix4fv":599.3,"drawArrays":211.5,"drawArraysInstanced":317.3,"blitFramebuffer":35.3,"drawImage":35.3}}
+ / blits 980x450@0,87 567x537@980,0 980x450@0,87 567x537@980,0 980x450@0,87 567x537@980,0 980x450@0,87 567x537@980,0
+{"y":9000,"visibleCanvases":["980x450","567x537"],"perSecond":{"frames":35.2,"gBCR":35.2,"bufferData":70.3,"uniformMatrix4fv":844.1,"drawArrays":351.7,"drawArraysInstanced":422.1,"blitFramebuffer":35.2,"drawImage":35.2,"setAttr":1,"setProp":3.8}}
+errors: []

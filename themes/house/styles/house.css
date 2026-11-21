@@ -70,6 +70,10 @@
 :where(.slidev-layout) img:not(.bleed) {
   border-radius: var(--picture-radius);
 }
+/* The paper's outline is written out in each rule that uses it. Not an
+   oversight: a custom property that holds var(--palette-background) takes
+   the value of the element that declares it, so one on :root would give a
+   dark slide the light paper's outline (stem/docs/slide-layout.md). */
 .slidev-layout:has(.bleed) :is(h1, h1 + p) {
   position: relative;
   z-index: 1;

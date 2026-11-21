@@ -47,7 +47,7 @@ import {
 } from "./address.ts";
 import type { ExplorerMotion } from "./address.ts";
 import { slidePalette } from "../palette.ts";
-import { radians } from "../shapes.ts";
+import { radians } from "../../webgl/math.ts";
 
 /** The page's camera: the world point at the focus, the zoom (slide px a
  *  world unit), and its angles. */

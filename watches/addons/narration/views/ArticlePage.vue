@@ -28,11 +28,12 @@ import {
 } from "vue";
 import ArticleFigure from "../components/ArticleFigure.vue";
 import ArticleQuote from "../components/ArticleQuote.vue";
-import { ARTICLE_HOOKS, DEFAULT_HOOKS, union } from "../figure.ts";
+import { ARTICLE_HOOKS, coveringBox, DEFAULT_HOOKS, union } from "../figure.ts";
 import type { Box } from "../figure.ts";
 import {
   cropGroups,
   isRenderedParts,
+  frontmatterOf,
   pageInput,
   pagePlan,
   routePages,
@@ -63,10 +64,6 @@ const LAYOUT_STYLE = {
 };
 /** The part of the window's height that a figure may take. */
 const FIGURE_HEIGHT_SHARE = 0.8;
-
-function frontmatterOf(route: SlideRoute): Record<string, unknown> {
-  return route.meta.slide?.frontmatter ?? {};
-}
 
 function inputOf(route: SlideRoute): SlideInput {
   const frontmatter = frontmatterOf(route);
@@ -203,13 +200,9 @@ function routeOfFigure(figure: FigureBlock): SlideRoute {
  *  slide. */
 function ownBoxOf(figure: FigureBlock): Box | null {
   const frontmatter = frontmatterOf(routeOfFigure(figure));
-  let box: Box | null = null;
-  for (const clicks of figure.steps) {
-    const each = hooks.pictureBox(frontmatter, clicks);
-    if (!each) return null;
-    box = union(box, each);
-  }
-  return box;
+  return coveringBox(figure.steps, (clicks) =>
+    hooks.pictureBox(frontmatter, clicks),
+  );
 }
 
 /** A slide's heading: under the page's title, or under a part's heading on
@@ -244,16 +237,12 @@ const boxOf = computed(() => {
   const own = new Map(
     figures.value.map((figure) => [figure, ownBoxOf(figure)]),
   );
-  const crop = (figure: FigureBlock): Box | null => {
-    let box: Box | null = null;
-    for (const each of groupOf(figure)) {
-      const ownBox = own.get(each) ?? null;
-      if (!ownBox) return null;
-      box = union(box, ownBox);
-    }
-    return box;
-  };
-  return new Map(figures.value.map((figure) => [figure, crop(figure)]));
+  return new Map(
+    figures.value.map((figure) => [
+      figure,
+      coveringBox(groupOf(figure), (each) => own.get(each) ?? null),
+    ]),
+  );
 });
 
 /** Each figure's steps. A slide that does not say how many clicks it has,

@@ -75,10 +75,12 @@ import {
 } from "vue";
 import {
   BoardClock,
+  boardCurls,
   boardPoseTime,
   EDIT_STEPS,
   editStep,
   pictureShown,
+  restShows,
 } from "../watch/board.ts";
 import type { BoardState, BoardTarget, BoardTiming } from "../watch/board.ts";
 
@@ -123,7 +125,19 @@ function svg(): SVGSVGElement | null {
   return host.value?.querySelector("svg") ?? null;
 }
 
+/** The SVG's timing, read once for each SVG element: it is in the file. */
+const timings = new WeakMap<SVGSVGElement, BoardTiming>();
+
 function timingOf(board: SVGSVGElement): BoardTiming {
+  let timing = timings.get(board);
+  if (!timing) {
+    timing = readTiming(board);
+    timings.set(board, timing);
+  }
+  return timing;
+}
+
+function readTiming(board: SVGSVGElement): BoardTiming {
   const read = (name: string): number => {
     const seconds = Number(board.dataset[name]);
     if (!Number.isFinite(seconds))
@@ -198,7 +212,7 @@ function apply(target: BoardTarget): void {
   if (!board) return; // onMounted applies the target when the SVG is in
   board.pauseAnimations();
   const state = target.state;
-  board.classList.toggle(CURLING_CLASS, state?.curling ?? false);
+  board.classList.toggle(CURLING_CLASS, state ? boardCurls(state) : false);
   if (props.scrub !== null) {
     cancelAnimationFrame(frame);
     shown.value = state;
@@ -279,7 +293,7 @@ onBeforeUnmount(() => {
 const classes = computed(() => ({
   "diving-board-on": shown.value !== undefined,
   "diving-board-picture-on": picture.value,
-  "diving-board-rest-on": shown.value?.rest ?? false,
+  "diving-board-rest-on": shown.value ? restShows(shown.value) : false,
   "diving-board-instant": instant.value,
 }));
 </script>
@@ -299,7 +313,7 @@ const classes = computed(() => ({
     <div
       v-if="markup"
       class="diving-board-sentence"
-      :class="{ 'in-figure': target.state?.rest }"
+      :class="{ 'in-figure': target.state && restShows(target.state) }"
       data-layer="rest-callout"
     >
       <!-- no space inside a struck word's span: the strike is the span's width -->
@@ -335,7 +349,10 @@ const classes = computed(() => ({
 /* Each layer fades on its own. The picture fades in 0.4 s, with the watch's
    0.3 s fade at the clicks where one takes the other's place. The rest shape
    fades with the watch's fade, when the balance wheel joins (`--watch-fade`,
-   which global-bottom.vue sets from FADE_SECONDS in webgl/timeline.ts). The
+   which global-bottom.vue sets from FADE_SECONDS in webgl/timeline.ts; the
+   0.8s fallback is FADE_SECONDS for a page with no watch layer, the
+   article. Not an oversight: set on every page, the variable would delay
+   the article's after-watch-fade text, docs/watch.md). The
    callout is text: it fades as text does (--text-fade, in style.css), and
    fades in only after the text that it replaces has faded out. */
 .diving-board [data-layer="board"],
