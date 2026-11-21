@@ -156,6 +156,11 @@ const description = computed(() => current.value?.section?.description);
 
 /** The deck's base (Slidev's --base): the article's pages are under it. */
 const baseUrl = import.meta.env.BASE_URL;
+/** The talk's source code (the headmatter's `articleSource`, a URL), or
+ *  `null`: the page's end links to it. Slidev puts each headmatter key in
+ *  `configs`, but its type names only Slidev's own. */
+const sourceUrl: unknown = Reflect.get(configs, "articleSource");
+const source = typeof sourceUrl === "string" ? sourceUrl : null;
 
 /** A part's page. */
 function partHref(each: ArticlePage): string {
@@ -348,7 +353,7 @@ onBeforeUnmount(() => {
             <button
               type="button"
               class="article-link-button"
-              :aria-pressed="pausedAll"
+              :data-paused="pausedAll"
               @click="pausedAll = !pausedAll"
             >
               {{ pausedAll ? "Play all figures" : "Pause all figures" }}
@@ -436,6 +441,10 @@ onBeforeUnmount(() => {
           </li>
         </ol>
       </nav>
+      <footer class="article-colophon">
+        <a v-if="source" :href="source">Source code</a>
+        <a :href="`${baseUrl}licenses.txt`">Third-party licenses</a>
+      </footer>
     </article>
   </main>
 </template>
@@ -560,6 +569,17 @@ html.article-mode #app {
 }
 .article-parts [aria-current="page"] {
   font-weight: 600;
+}
+/* The links to the source and the licences, small, last on the page. */
+.article-colophon {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2em 1.4em;
+  margin: 3em 0 0;
+  font-size: 0.75em;
+}
+.article-colophon a {
+  color: var(--palette-muted);
 }
 /* A photo's credit, small, close under its figure. */
 .article-column > .article-credit {

@@ -3,14 +3,18 @@ let markupFetch: Promise<string> | undefined;
 
 /** The board's SVG, fetched once for the page: the article's figures that
  *  show the board share it. Under the deck's base, which is not the host's
- *  root if the deck is built with Slidev's --base. */
+ *  root if the deck is built with Slidev's --base. A fetch that fails is
+ *  forgotten, so the next board tries again. */
 function boardMarkup(): Promise<string> {
   markupFetch ??= (async () => {
     const source = `${import.meta.env.BASE_URL}diving-board.svg`;
     const response = await fetch(source);
     if (!response.ok) throw new Error(`${source}: ${String(response.status)}`);
     return response.text();
-  })();
+  })().catch((error: unknown) => {
+    markupFetch = undefined;
+    throw error;
+  });
   return markupFetch;
 }
 </script>

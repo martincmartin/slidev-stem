@@ -234,8 +234,8 @@ export function lapseProgress(seconds: number): number {
   const clamped = Math.min(Math.max(seconds, 0), total);
   // the distance at full speed 1, with a smoothstep ramp at each end
   const rampDistance = (into: number): number => {
-    const u = into / ramp;
-    return ramp * (u * u * u - (u * u * u * u) / 2);
+    const share = into / ramp;
+    return ramp * (share * share * share - (share * share * share * share) / 2);
   };
   const full = total - ramp;
   const distance =

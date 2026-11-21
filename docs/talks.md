@@ -412,6 +412,17 @@ How a run works, and why:
   version can be built again from its ref.
 - **The speaker notes are published,** in the presenter view of the slides.
   The article is the version for readers.
+- **The code is minified, with source maps beside it** (`build.sourcemap` in
+  `themes/house/vite.config.mts`). A reader downloads only the minified
+  code, and a map only when the browser's developer tools are open; they
+  then show each file of the talk as written, with its comments. The maps
+  hold the source, which is public in this repository anyway. Slidev's own
+  plugins drop the maps of the slides' chunks (`md-*.js`), so those stay
+  minified, and a build prints a `SOURCEMAP_BROKEN` warning for each.
+- **A build lists the packages that it bundles, with their licences,** in
+  `licenses.txt` beside `index.html` (`build.license`): the minifier removes
+  their licence comments, and MIT and the like ask for the notice in each
+  copy. An article links to it at its end.
 - **Links to one slide work,** for example `<talk>/5`. GitHub Pages serves the
   site's `404.html` for a path that has no file, and that page loads the
   talk's `index.html` in its place. GitHub Pages uses only the `404.html` at
@@ -687,6 +698,8 @@ Upgrade only a talk in progress. In the talk's directory:
    file names. Both change when the path of `node_modules` changes, so a build
    that differs only in them is the same deck. Without the hash, many files
    have one name (one `md` chunk for each slide): it compares them as a group.
+   It skips the source maps, which name their sources by their paths in
+   `node_modules`.
 
 Some advisories from `pnpm audit` cannot be fixed by an upgrade. On 2026-09-28,
 all 8 of them were in packages that Slidev's own dependencies pin or limit:

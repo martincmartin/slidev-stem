@@ -345,7 +345,11 @@ Renderer(canvas, scene, palette)` takes a `Palette` (one `#rrggbb` for
 - **Stills:** the export, the overview and the presenter's "next" pane show a
   picture of each slide's art, drawn by one hidden renderer for the page. The
   PDF export is a bitmap at twice the slide's size: good for a projector, not
-  for a zoomed-in PDF.
+  for a zoomed-in PDF. The presenter view draws every slide's still while the
+  page is idle after it loads, so that a slide change finds its still ready
+  (a talk's `global-bottom.vue`). It knows the presenter view by Slidev's
+  `isPresenter`, not by the path, which starts with the deck's base in a
+  build.
 - **Make a PDF before each talk** (`pnpm export`) as the fallback if the live
   art fails. It has one page for each click, not for each slide
   (`--with-clicks`): the audience cannot tell a click from a new slide, so the

@@ -391,22 +391,23 @@ function orbited(
   centre: Vec3,
 ): number[][] {
   const rotation = orbitRotation(orbit);
-  const inClip = rotation.map((row, i) =>
-    row.map((value, j) => (at(axes, i) * value) / at(axes, j)),
+  const inClip = rotation.map((entries, row) =>
+    entries.map((value, column) => (at(axes, row) * value) / at(axes, column)),
   );
-  return [0, 1, 2].map((i) => {
+  return [0, 1, 2].map((row) => {
     const turned = [0, 1, 2, 3].map((column) =>
       [0, 1, 2].reduce(
-        (sum, k) => sum + at(at(inClip, i), k) * at(at(rows, k), column),
+        (sum, inner) =>
+          sum + at(at(inClip, row), inner) * at(at(rows, inner), column),
         0,
       ),
     );
     // keep the pivot: c - L c + L t, with t the old translation
     const kept = [0, 1, 2].reduce(
-      (sum, k) => sum + at(at(inClip, i), k) * at(centre, k),
+      (sum, inner) => sum + at(at(inClip, row), inner) * at(centre, inner),
       0,
     );
-    turned[3] = at(centre, i) - kept + at(turned, 3);
+    turned[3] = at(centre, row) - kept + at(turned, 3);
     return turned;
   });
 }

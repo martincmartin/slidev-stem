@@ -189,13 +189,13 @@ export function palletAim(design: Design): Point2 {
   const banks = [design.timing.bank, -design.timing.bank];
   const swung = (index: number): Point2[] =>
     banks.map((bank) => turnedAbout(corner(index), bank, pivot));
-  const a = swung(aIndex).reduce((best, point) =>
+  const leftmost = swung(aIndex).reduce((best, point) =>
     point[0] < best[0] ? point : best,
   );
-  const b = swung(bIndex).reduce((best, point) =>
+  const rightmost = swung(bIndex).reduce((best, point) =>
     point[0] > best[0] ? point : best,
   );
-  return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  return [(leftmost[0] + rightmost[0]) / 2, (leftmost[1] + rightmost[1]) / 2];
 }
 
 /** A point of the design (from the watch centre) in the world. */

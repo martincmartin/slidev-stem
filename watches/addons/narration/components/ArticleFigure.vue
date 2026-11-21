@@ -343,8 +343,9 @@ function endTurn(event: PointerEvent): void {
 
 onMounted(() => {
   observer = new IntersectionObserver(
-    ([entry]) => {
-      near.value = entry?.isIntersecting ?? false;
+    // one call can hold more than one change of the frame: the last is now
+    (entries) => {
+      near.value = entries.at(-1)?.isIntersecting ?? false;
     },
     { rootMargin: "200px" },
   );
@@ -506,12 +507,13 @@ watch(picture, measureSoon);
         v-if="pausable"
         type="button"
         class="article-button article-pause"
-        :aria-pressed="paused"
         :disabled="pausedByPage"
         @click="pausedByReader = !pausedByReader"
       >
         <!-- both words in one cell: the button is as wide as the wider, so
-             nothing beside it moves when it changes -->
+             nothing beside it moves when it changes. The hidden word is not
+             in its accessible name, so the name says what a press does; no
+             aria-pressed as well, or a screen reader says "Play, pressed" -->
         <span :class="{ 'article-word-hidden': !paused }">Play</span>
         <span :class="{ 'article-word-hidden': paused }">Pause</span>
       </button>

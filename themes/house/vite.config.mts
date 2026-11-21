@@ -9,6 +9,13 @@
 // The theme also loads every palette's rule, from ../palettes/. Slidev serves
 // only the roots (this theme, the addons, the talk), and a talk loads one
 // palette addon, so this file also allows the other palettes' directory.
+//
+// A build is minified, with source maps beside it: a reader who opens the
+// browser's developer tools sees each file of the talk as written, with its
+// comments; other readers download only the minified code
+// (docs/talks.md, "Publish a talk"). The build also lists the third-party
+// packages that it bundles, and their licences, in `licenses.txt`: the
+// minifier removes their licence comments.
 import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -29,7 +36,27 @@ function installed(name: string): string {
   return realpathSync(link);
 }
 
+/** Slidev 53 writes the headmatter's `author` (and `info`, `keywords`) in
+ *  a `<meta>` tag as a JSON string, in quotes, inside the attribute's own:
+ *  `content="&quot;Ada&quot;"`. This takes the inner quotes off. */
+const metaQuotes = {
+  name: "house:meta-quotes",
+  transformIndexHtml: {
+    order: "post" as const,
+    handler: (html: string): string =>
+      html.replace(
+        /(<meta name="(?:author|description|keywords)" content=")&quot;(.*?)&quot;"/g,
+        '$1$2"',
+      ),
+  },
+};
+
 export default {
+  plugins: [metaQuotes],
+  build: {
+    sourcemap: true,
+    license: { fileName: "licenses.txt" },
+  },
   server: {
     fs: {
       allow: [THEME, PALETTES, ...Object.keys(dependencies).map(installed)],

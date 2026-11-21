@@ -15,6 +15,10 @@ Without its hash, a name can belong to many files: Slidev makes one
 name as a multiset of normalized contents. It does not see two files of one
 name that swap their contents, and a reference to such a file no longer says
 which one it is.
+
+It skips the source maps (`.map`): each one names its sources by their paths
+in node_modules, which change when node_modules moves, and it maps a file
+that the script compares.
 """
 
 import argparse
@@ -42,7 +46,7 @@ def normalized_files(dist: Path) -> dict[Path, Counter[bytes]]:
     """The normalized contents of `dist`'s files, by path without a hash."""
     files: dict[Path, Counter[bytes]] = {}
     for file in sorted(dist.rglob("*")):
-        if not file.is_file():
+        if not file.is_file() or file.suffix == ".map":
             continue
         relative = file.relative_to(dist)
         unhashed = relative.with_name(HASHED_NAME.sub("", relative.name))

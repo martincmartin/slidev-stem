@@ -71,6 +71,11 @@ cover`).
   launch the part.
 - **Each page links to the next part, and then to every part,** at its end. The links load the page anew, so it starts with only its
   own figures. A page that links to no other part has no list of parts.
+- **Last, small: "Source code" and "Third-party licenses".** The first goes
+  to the headmatter's `articleSource`, the talk's directory on GitHub; the
+  second to the build's `licenses.txt` (`../docs/talks.md`, "Publish a
+  talk"). A reader of Hacker News looks for the code; the browser's
+  developer tools show it too, from the source maps.
 
 ## What a reader gets
 

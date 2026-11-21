@@ -148,10 +148,10 @@ async function prerenderPart(browser: Browser, part: number): Promise<number> {
     const pauseAll = page.locator(".article-motion button");
     const setPaused = async (paused: boolean) => {
       const pressed = String(paused);
-      if ((await pauseAll.getAttribute("aria-pressed")) === pressed) return;
+      if ((await pauseAll.getAttribute("data-paused")) === pressed) return;
       await pauseAll.dispatchEvent("click");
       await page
-        .locator(`.article-motion button[aria-pressed="${pressed}"]`)
+        .locator(`.article-motion button[data-paused="${pressed}"]`)
         .waitFor({ state: "attached" });
     };
     await setPaused(true);

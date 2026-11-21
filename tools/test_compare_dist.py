@@ -46,3 +46,20 @@ def test_a_changed_file_of_a_shared_name_is_found(tmp_path: Path) -> None:
         Difference(Path("assets/md.css"), 2, 2),
         Difference(Path("index.html"), 0, 1),
     ]
+
+
+def test_source_maps_are_skipped(tmp_path: Path) -> None:
+    write(
+        tmp_path / "a/assets/entry-AAAAAAAA.js",
+        "x\n//# sourceMappingURL=entry-AAAAAAAA.js.map",
+    )
+    write(tmp_path / "a/assets/entry-AAAAAAAA.js.map", '{"sources":["/a/x.ts"]}')
+    write(
+        tmp_path / "b/assets/entry-CCCCCCCC.js",
+        "x\n//# sourceMappingURL=entry-CCCCCCCC.js.map",
+    )
+    write(tmp_path / "b/assets/entry-CCCCCCCC.js.map", '{"sources":["/b/x.ts"]}')
+    assert (
+        differences(normalized_files(tmp_path / "a"), normalized_files(tmp_path / "b"))
+        == []
+    )

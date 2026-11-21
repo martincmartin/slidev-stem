@@ -1063,9 +1063,9 @@ function clipConvex(subject: Point2[], clip: Point2[]): Point2[] {
     const inside = ([x, y]: Point2): boolean =>
       ex * (y - ay) - ey * (x - ax) >= 0;
     const crossing = ([px, py]: Point2, [qx, qy]: Point2): Point2 => {
-      const t =
+      const along =
         (ex * (ay - py) - ey * (ax - px)) / (ex * (qy - py) - ey * (qx - px));
-      return [px + t * (qx - px), py + t * (qy - py)];
+      return [px + along * (qx - px), py + along * (qy - py)];
     };
     const input = result;
     result = [];

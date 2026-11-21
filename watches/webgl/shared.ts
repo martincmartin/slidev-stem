@@ -114,9 +114,13 @@ export class SharedView<ModelState> {
     this.changed = true;
   }
 
-  /** Whether the next frame draws the view, if it is near the screen. */
+  /** Whether the next frame draws the view, if it is near the screen: it
+   *  runs, it changed, or its size changed (a resize, a phone's turn, a
+   *  zoom), which would leave a paused view's picture stretched. */
   get due(): boolean {
-    return !this.paused || this.changed;
+    if (!this.paused || this.changed) return true;
+    const [width, height] = this.size();
+    return this.canvas.width !== width || this.canvas.height !== height;
   }
 
   /** As `Stage.viewEndAt`: when the camera's last move ends (ms, the

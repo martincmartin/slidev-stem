@@ -567,11 +567,11 @@ export class BalanceClock {
    *  resume can start in). */
   private settlingSpeed(now: number): number {
     if (this.mode.kind !== "settling") return 0;
-    const u = Math.min(
+    const share = Math.min(
       1,
       (now - this.mode.start) / (this.settleSeconds * 1000),
     );
-    return (-this.mode.from * 6 * u * (1 - u)) / this.settleSeconds;
+    return (-this.mode.from * 6 * share * (1 - share)) / this.settleSeconds;
   }
 
   /** The mechanism's time (s) of the first extreme at or after `time`:
@@ -757,8 +757,12 @@ export function spinDistance(speed: number, seconds: number): number {
   if (seconds >= SPIN_UP_SECONDS) {
     return speed * (seconds - SPIN_UP_SECONDS / 2);
   }
-  const u = seconds / SPIN_UP_SECONDS;
-  return speed * SPIN_UP_SECONDS * (u * u * u - (u * u * u * u) / 2);
+  const share = seconds / SPIN_UP_SECONDS;
+  return (
+    speed *
+    SPIN_UP_SECONDS *
+    (share * share * share - (share * share * share * share) / 2)
+  );
 }
 
 interface Locked {

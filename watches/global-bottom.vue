@@ -387,9 +387,14 @@ onBeforeUnmount(() => {
 // The presenter view draws the next slide's still in its "next" pane. Draw
 // them all once, while the page is idle after it loads, so that a slide
 // change finds its still ready (?stills=lazy turns this off, to compare).
+// Safari has no requestIdleCallback: there a still waits for a timer.
 onMounted(() => {
   const lazy = new URLSearchParams(location.search).get("stills") === "lazy";
-  if (!live || lazy || !location.pathname.startsWith("/presenter")) return;
+  if (!live || lazy || !nav.isPresenter.value) return;
+  const idle = (run: () => void): void => {
+    if ("requestIdleCallback" in window) requestIdleCallback(run);
+    else setTimeout(run, 1);
+  };
   const ratio = window.devicePixelRatio || 1;
   const size: [number, number] = [
     Math.round(art.scene.slide[0] * ratio),
@@ -406,10 +411,10 @@ onMounted(() => {
     const slide = pending.shift();
     if (!slide || unmounted) return;
     void watchStills().of(slide.shown, size, slide.palette);
-    requestIdleCallback(next);
+    idle(next);
   };
   setTimeout(() => {
-    requestIdleCallback(next);
+    idle(next);
   }, 1000);
 });
 </script>

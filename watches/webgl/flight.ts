@@ -75,13 +75,13 @@ export function pacedShare(time: number, seconds: number): number {
   if (seconds <= 0) return 1;
   const ramp = Math.min(FLIGHT.ramp, seconds / 2);
   const speed = 1 / (seconds - ramp);
-  const t = Math.min(seconds, Math.max(0, time));
-  if (t < ramp) return (speed * t * t) / (2 * ramp);
-  if (t > seconds - ramp) {
-    const left = seconds - t;
+  const clamped = Math.min(seconds, Math.max(0, time));
+  if (clamped < ramp) return (speed * clamped * clamped) / (2 * ramp);
+  if (clamped > seconds - ramp) {
+    const left = seconds - clamped;
     return 1 - (speed * left * left) / (2 * ramp);
   }
-  return (speed * ramp) / 2 + speed * (t - ramp);
+  return (speed * ramp) / 2 + speed * (clamped - ramp);
 }
 
 /** A path paced by what the eye sees, in widths of the slide: how far the
@@ -162,7 +162,9 @@ export function flight(
   const cosTurn = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
   const turn = Math.acos(Math.max(-1, Math.min(1, cosTurn)));
   const distance = radius * turn;
-  // world units across the slide
+  // world units across the slide. The short names from here on are the
+  // paper's symbols (w0, w1, rho, b0, r0, r1, s; r is its r(b)), so that
+  // each line can be checked against its equations
   const [w0, w1] = [width / from.view.scale, width / to.view.scale];
   // where the pivot shows, from the slide's middle, in world units: so the
   // place at the middle moves from one view's to the other's as the camera

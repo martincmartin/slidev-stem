@@ -13,6 +13,8 @@ export interface SlideRoute {
 
 export function useNav(): {
   isPrintMode: Ref<boolean>;
+  /** The presenter view, under the deck's base. */
+  isPresenter: Ref<boolean>;
   currentSlideNo: Ref<number>;
   slides: Ref<SlideRoute[]>;
 };
