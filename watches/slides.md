@@ -15,6 +15,10 @@ addons:
 # The favicon is in index.html, under the deck's base. Without this line
 # Slidev links its own icon, on a CDN.
 favicon: false
+# Slidev's default puts a preload of every slide's images in index.html,
+# so every article page loaded Part 2's photos (docs/article.md, "What a
+# page loads"). The slides mount the next slide early, which loads its photo.
+preloadImages: false
 # Keep deck metadata in a hidden block, separate from the visible cover.
 # transition sets the default for all slides. Mechanical Marvels overrides it.
 # text-fade: the old text fades out before the new text fades in (style.css).

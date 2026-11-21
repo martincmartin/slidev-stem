@@ -19,3 +19,9 @@ its own. The Questions slide is in the talk but not in the article
 are at the end of each page, not under the byline, and "The figures are the
 talk's slides, live. Pause them all" is now "Pause all figures": a reader
 may not know the talk.
+
+2026-11-20: Slidev's `preloadImages` (on by default) put a preload of
+every slide's photos in each page's head, so Parts 1 and 3 loaded Part 2's
+five photos. The headmatter turns it off. Part 1 now transfers 2,450 kB
+in Chromium (2,162 in Firefox), not 3,357; Part 3, 1,365 kB, not 2,254;
+Part 2 is unchanged (`evidence/measure.py`, the same way as section 7).

@@ -473,6 +473,11 @@ A page loads only what its figures need. The numbers before and after are in
 - **The stills.** The static page's stills load lazily (`loading="lazy"`):
   a reader with JavaScript gets the live figures, so a still loads only near
   the screen, before they take its place.
+- **The photos.** A page loads only the photos that it shows.
+  `preloadImages: false` in the headmatter turns off Slidev's preload of
+  every slide's images, which it puts in `index.html`, and so in each
+  page's head. With it on, Parts 1 and 3 loaded Part 2's five photos, about
+  0.9 MB.
 - **The watch** is whole on every page: the cover's figure, the World War I
   slide's case. Its unused marks (the one-step wheel, 36,713 triangles) cost
   about 2 MB of GPU buffers. Not an oversight: a renderer that uploads a
