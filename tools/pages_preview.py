@@ -98,12 +98,15 @@ class PagesHandler(http.server.SimpleHTTPRequestHandler):
         pass
 
 
-def build(talk: pathlib.Path, base: str, article: bool) -> None:
-    """The publish workflow's build commands, in the talk."""
+def build(talk: pathlib.Path, base: str, article: bool, origin: str) -> None:
+    """The publish workflow's build commands, in the talk. `origin` is the
+    site's, for the article's absolute URLs (its preview image)."""
     subprocess.run(["pnpm", "build", "--base", base], cwd=talk, check=True)
     if article:
         subprocess.run(
-            ["pnpm", "run", "--if-present", "prerender"], cwd=talk, check=True
+            ["pnpm", "run", "--if-present", "prerender", "--origin", origin],
+            cwd=talk,
+            check=True,
         )
 
 
@@ -121,7 +124,12 @@ def main() -> int:
     if not (talk / "package.json").is_file():
         sys.exit(f"{arguments.talk} is not a talk: it has no package.json")
     repo = repo_name()
-    build(talk, f"/{repo}/{talk.name}/", arguments.article)
+    build(
+        talk,
+        f"/{repo}/{talk.name}/",
+        arguments.article,
+        f"http://127.0.0.1:{arguments.port}",
+    )
     with tempfile.TemporaryDirectory() as directory:
         site = pathlib.Path(directory)
         # the gh-pages branch is the site at /<repo>/

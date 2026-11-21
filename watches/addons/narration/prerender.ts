@@ -1,8 +1,11 @@
 // The article as static pages: run after `slidev build`.
 //
-//     node addons/narration/prerender.ts [DIST]
+//     node addons/narration/prerender.ts [DIST] [--origin URL]
 //
-// DIST (default dist/) is the built deck. The script serves it on a free port,
+// DIST (default dist/) is the built deck. URL is the site's origin, such as
+// https://martincmartin.github.io: with it, each page's head has its own
+// address and its first figure's still as a link's preview image, which
+// need absolute URLs; without it, they are left out. The script serves it on a free port,
 // opens each of the article's pages (/article/1, /article/2, ...) in
 // Chromium, and takes a still of each figure, as it shows when it has
 // settled. It writes DIST/article/<part>/index.html: the deck's index.html,
@@ -20,11 +23,31 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, join, resolve, sep } from "node:path";
+import { parseArgs } from "node:util";
 import { chromium } from "playwright-chromium";
 import type { Browser } from "playwright-chromium";
 import { redirectPage, staticPage } from "./static-page.ts";
+import type { PreviewImage } from "./static-page.ts";
 
-const dist = resolve(process.argv[2] ?? "dist");
+const { positionals, values } = parseArgs({
+  allowPositionals: true,
+  options: { origin: { type: "string" } },
+});
+if (positionals.length > 1) {
+  console.error(
+    "usage: node addons/narration/prerender.ts [DIST] [--origin URL]",
+  );
+  process.exit(2);
+}
+/** The site's origin, with no slash at its end, or `null`. */
+const origin = values.origin?.replace(/\/+$/, "") ?? null;
+if (origin !== null && !/^https?:\/\/[^/]+$/.test(origin)) {
+  console.error(
+    `--origin: ${origin} is not an origin, such as https://example.org`,
+  );
+  process.exit(2);
+}
+const dist = resolve(positionals[0] ?? "dist");
 const out = join(dist, "article");
 /** ms: after a figure scrolls into view, before its still: it draws, and a
  *  step's moves end. */
@@ -43,6 +66,17 @@ const TYPES: Readonly<Record<string, string>> = {
   ".woff": "font/woff",
   ".woff2": "font/woff2",
 };
+
+/** A PNG's width and height, from its header (its IHDR chunk). */
+async function pngSize(
+  path: string,
+): Promise<{ width: number; height: number }> {
+  const header = await readFile(path);
+  if (header.toString("latin1", 12, 16) !== "IHDR") {
+    throw new Error(`${path} is not a PNG`);
+  }
+  return { width: header.readUInt32BE(16), height: header.readUInt32BE(20) };
+}
 
 const index = await readFile(join(dist, "index.html"), "utf8");
 /** The deck's base URL (Slidev's --base): where its entry script is. */
@@ -76,6 +110,8 @@ if (address === null || typeof address === "string") {
 }
 /** The article's address on the server: its pages are under it. */
 const articleUrl = `http://127.0.0.1:${String(address.port)}${base}article/`;
+/** The article's address on the site, or `null` without its origin. */
+const siteArticleUrl = origin === null ? null : `${origin}${base}article/`;
 
 /** Writes the static page of the article's part `part` (from 1), and
  *  returns how many parts the article has. */
@@ -133,40 +169,49 @@ async function prerenderPart(browser: Browser, part: number): Promise<number> {
     }
     // the page as it shows, with a still in place of each figure, and no
     // controls: without the deck's code they do nothing
-    const { article, styles, title } = await page.evaluate(() => {
-      const main = document.querySelector("main.article-page");
-      if (!main) throw new Error("no article");
-      const copy = main.cloneNode(true) as HTMLElement;
-      for (const figure of copy.querySelectorAll("figure.article-figure")) {
-        const frame = figure.querySelector<HTMLElement>(
-          ".article-figure-frame",
-        );
-        if (!frame) continue;
-        const still = document.createElement("img");
-        still.src = `figures/${figure.id}.png`;
-        still.alt = frame.getAttribute("aria-label") ?? "";
-        // the copy is not in the page, so its size is its style's
-        still.width = Math.round(parseFloat(frame.style.width));
-        still.height = Math.round(parseFloat(frame.style.height));
-        still.className = "article-figure-still";
-        // a reader with JavaScript gets the live figures, so a still loads
-        // only near the screen, before they take its place
-        still.loading = "lazy";
-        still.decoding = "async";
-        frame.replaceChildren(still);
-        frame.removeAttribute("role");
-        frame.removeAttribute("aria-label");
-        figure.querySelector(".article-figure-controls")?.remove();
-      }
-      // the pause button, with its line: it is all that the line holds
-      copy.querySelector(".article-motion")?.remove();
-      // the styles that the article's route loaded, as paths: a link that the
-      // deck's code adds holds this server's address
-      const styles = [
-        ...document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]'),
-      ].map((link) => new URL(link.href).pathname);
-      return { article: copy.outerHTML, styles, title: document.title };
-    });
+    const { article, styles, title, description, firstFigure } =
+      await page.evaluate(() => {
+        const main = document.querySelector("main.article-page");
+        if (!main) throw new Error("no article");
+        const copy = main.cloneNode(true) as HTMLElement;
+        for (const figure of copy.querySelectorAll("figure.article-figure")) {
+          const frame = figure.querySelector<HTMLElement>(
+            ".article-figure-frame",
+          );
+          if (!frame) continue;
+          const still = document.createElement("img");
+          still.src = `figures/${figure.id}.png`;
+          still.alt = frame.getAttribute("aria-label") ?? "";
+          // the copy is not in the page, so its size is its style's
+          still.width = Math.round(parseFloat(frame.style.width));
+          still.height = Math.round(parseFloat(frame.style.height));
+          still.className = "article-figure-still";
+          // a reader with JavaScript gets the live figures, so a still loads
+          // only near the screen, before they take its place
+          still.loading = "lazy";
+          still.decoding = "async";
+          frame.replaceChildren(still);
+          frame.removeAttribute("role");
+          frame.removeAttribute("aria-label");
+          figure.querySelector(".article-figure-controls")?.remove();
+        }
+        // the pause button, with its line: it is all that the line holds
+        copy.querySelector(".article-motion")?.remove();
+        // the styles that the article's route loaded, as paths: a link that the
+        // deck's code adds holds this server's address
+        const styles = [
+          ...document.querySelectorAll<HTMLLinkElement>(
+            'link[rel="stylesheet"]',
+          ),
+        ].map((link) => new URL(link.href).pathname);
+        return {
+          article: copy.outerHTML,
+          styles,
+          title: main.getAttribute("data-article-title") ?? document.title,
+          description: main.getAttribute("data-article-description"),
+          firstFigure: copy.querySelector("figure.article-figure")?.id ?? null,
+        };
+      });
     if (errors.length > 0) {
       throw new Error(
         `the article's part ${String(part)} failed: ${errors.join("; ")}`,
@@ -176,9 +221,24 @@ async function prerenderPart(browser: Browser, part: number): Promise<number> {
       .filter((path) => !index.includes(`href="${path}"`))
       .map((path) => `<link rel="stylesheet" href="${path}">`)
       .join("\n");
+    const pageUrl =
+      siteArticleUrl === null ? null : `${siteArticleUrl}${String(part)}/`;
+    let image: PreviewImage | null = null;
+    if (pageUrl !== null && firstFigure !== null) {
+      const still = join("figures", `${firstFigure}.png`);
+      image = {
+        url: `${pageUrl}${still}`,
+        ...(await pngSize(join(partOut, still))),
+      };
+    }
     await writeFile(
       join(partOut, "index.html"),
-      staticPage(index, { article, head, title }),
+      staticPage(index, {
+        article,
+        head,
+        title,
+        meta: { description, url: pageUrl, image },
+      }),
     );
     console.log(`${String(count)} figures; ${join(partOut, "index.html")}`);
     return parts;

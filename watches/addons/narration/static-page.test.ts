@@ -8,6 +8,7 @@ const PARTS = {
   article: "<main>The article</main>",
   head: '<link rel="stylesheet" href="/a.css">',
   title: "The talk",
+  meta: { description: null, url: null, image: null },
 };
 
 function index(htmlTag: string): string {
@@ -73,4 +74,41 @@ test("the redirect page sends its reader on, and is valid HTML", () => {
   assert.match(page, /<a href="1\/">/);
   assert.deepEqual(parseErrors(page), []);
   assert.match(redirectPage('a"b&c'), /url=a&quot;b&amp;c"/);
+});
+
+test("the page's meta tags replace the deck's, with their text escaped", () => {
+  const deck = index("<html>").replace(
+    "</head>",
+    '<meta property="og:title" content="Talk - Slidev">\n<meta name="description" content="old"></head>',
+  );
+  const page = staticPage(deck, {
+    ...PARTS,
+    title: "Part 1 · Gears & springs",
+    meta: {
+      description: 'How it "ticks"',
+      url: "https://example.org/talk/article/1/",
+      image: {
+        url: "https://example.org/talk/article/1/figures/cover.png",
+        width: 1400,
+        height: 1300,
+      },
+    },
+  });
+  assert.equal(parseErrors(page).length, 0);
+  assert.ok(!page.includes("Slidev") && !page.includes('"old"'));
+  for (const tag of [
+    "<title>Part 1 · Gears &amp; springs</title>",
+    '<meta property="og:title" content="Part 1 · Gears &amp; springs">',
+    '<meta name="description" content="How it &quot;ticks&quot;">',
+    '<meta property="og:url" content="https://example.org/talk/article/1/">',
+    '<meta property="og:image:width" content="1400">',
+  ]) {
+    assert.ok(page.includes(tag), tag);
+  }
+});
+
+test("a page with no description and no origin has no such tags", () => {
+  const page = staticPage(index("<html>"), PARTS);
+  assert.ok(page.includes('<meta property="og:title" content="The talk">'));
+  assert.ok(!/description|og:url|og:image/.test(page));
 });

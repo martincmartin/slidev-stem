@@ -495,20 +495,30 @@ watch(picture, measureSoon);
   opacity: 0.45;
   cursor: default;
 }
+/* Each dot is a 1.5em (25 px) button, so that a finger can hit it: WCAG
+   2.5.8's 24 px target. The dot itself is drawn smaller, inside it. */
 .article-steps {
   display: inline-flex;
-  gap: 0.45em;
 }
 .article-step {
-  width: 0.7em;
-  height: 0.7em;
+  display: inline-grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
   padding: 0;
-  border: 1px solid var(--palette-muted);
-  border-radius: 50%;
+  border: 0;
   background: transparent;
   cursor: pointer;
 }
-.article-step-current {
+.article-step::before {
+  content: "";
+  box-sizing: border-box;
+  width: 0.7em;
+  height: 0.7em;
+  border: 1px solid var(--palette-muted);
+  border-radius: 50%;
+}
+.article-step-current::before {
   background: var(--palette-ink);
   border-color: var(--palette-ink);
 }

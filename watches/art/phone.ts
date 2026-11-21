@@ -16,11 +16,8 @@ export interface Placed {
   readonly box: Box;
 }
 
-/** A control that a reader taps. `equivalent`: another control on the page,
- *  big enough, does the same (a figure's step dots: its ‹ › buttons). */
-export interface Target extends Placed {
-  readonly equivalent: boolean;
-}
+/** A control that a reader taps. */
+export type Target = Placed;
 
 /** What phone-check.ts measures on a page, at one scroll position. */
 export interface PhonePage {
@@ -60,13 +57,11 @@ function isUndersized(target: Target): boolean {
 }
 
 /** The targets that fail WCAG 2.5.8: smaller than 24 px, and a 24 px circle
- *  on their centre meets another target, or another small target's circle.
- *  A target with an equivalent passes. */
+ *  on their centre meets another target, or another small target's circle. */
 export function smallTargets(targets: readonly Target[]): Target[] {
   const radius = TARGET_PX / 2;
   const undersized = new Set(targets.filter(isUndersized));
   return [...undersized].filter((target) => {
-    if (target.equivalent) return false;
     const { x, y } = centre(target.box);
     return targets.some((other) => {
       if (other === target) return false;

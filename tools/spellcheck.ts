@@ -55,6 +55,8 @@ const SHOWN_KEYS = new Set([
   "eyebrow",
   "history",
   "articleTitle",
+  "articleDescription",
+  "articleSubtitle",
 ]);
 /** codespell's dictionaries: its common misspellings, its rare ones, and
  *  British spellings. */

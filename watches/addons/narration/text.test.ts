@@ -18,8 +18,14 @@ function figure(overrides: Partial<FigureBlock> = {}): FigureBlock {
 
 test("headings, history lines, prose and asides, each after its paragraph", () => {
   const page: PageBlock[] = [
-    { kind: "title", text: "Watches" },
-    { kind: "part", id: "a", eyebrow: "PART 1", text: "Marvels" },
+    {
+      kind: "title",
+      text: "Marvels",
+      series: "Watches",
+      eyebrow: "PART 1",
+      subtitle: "Piece by piece",
+    },
+    { kind: "part", id: "a", eyebrow: "PART 2", text: "The World" },
     { kind: "heading", id: "b", text: "Gears", history: "c. 1670" },
     {
       kind: "prose",
@@ -34,8 +40,10 @@ test("headings, history lines, prose and asides, each after its paragraph", () =
   assert.equal(
     articleMarkdown(page, () => []),
     [
-      "# Watches",
-      "## PART 1: Marvels",
+      "_Watches · PART 1_",
+      "# Marvels",
+      "_Piece by piece_",
+      "## PART 2: The World",
       "### Gears",
       "_c. 1670_",
       "A _pinion_ drives it.",

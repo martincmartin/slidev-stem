@@ -27,6 +27,12 @@ import type { FigureMarker, QuoteBlock } from "./narration.ts";
 /** The frontmatter key for a slide's title in the article, in place of its
  *  title on the screen (../../docs/article.md, "A title for the article"). */
 const ARTICLE_TITLE_KEY = "articleTitle";
+/** The frontmatter key for a section's page's description: what a link's
+ *  preview and a search engine show (../../docs/article.md, "The pages"). */
+const DESCRIPTION_KEY = "articleDescription";
+/** The frontmatter key for a section's line under its page's title
+ *  (../../docs/article.md, "The pages"). */
+const SUBTITLE_KEY = "articleSubtitle";
 /** The frontmatter key that leaves a slide out of the article, and the one
  *  that keeps a section's page unlinked (../../docs/article.md, "The
  *  pages"). */
@@ -71,11 +77,16 @@ export interface PagedSlide {
   /** `false` on a section whose page no other page links to yet
    *  (`articleLinked: false`). */
   readonly linked: boolean;
+  /** A section's page's description (`articleDescription`), or `null`. */
+  readonly description: string | null;
 }
 
 export interface SlideInput extends PagedSlide {
   /** A section slide's small line above its title ("PART 1"). */
   readonly eyebrow: string | null;
+  /** A section's line under its page's title (`articleSubtitle`), or
+   *  `null`. */
+  readonly subtitle: string | null;
   /** The slide's history line (history.ts), or `null`. */
   readonly history: string | null;
   /** The narration, or `null` if the slide has none. */
@@ -100,6 +111,7 @@ export function pagedSlide(slide: {
     layout: typeof layout === "string" ? layout : null,
     hidden: frontmatter[HIDDEN_KEY] === true,
     linked: frontmatter[LINKED_KEY] !== false,
+    description: frontmatterText(frontmatter, DESCRIPTION_KEY),
   };
 }
 
@@ -126,6 +138,7 @@ export function slideInput(
   return {
     ...pagedSlide(slide),
     eyebrow: text("eyebrow"),
+    subtitle: frontmatterText(frontmatter, SUBTITLE_KEY),
     history: historyOf(frontmatter),
     parts: slide.parts,
     defaults: hooks.defaultFigures(frontmatter, total),
@@ -210,7 +223,17 @@ export interface FigureBlock {
 }
 
 export type PageBlock =
-  | { readonly kind: "title"; readonly text: string }
+  | {
+      /** The page's title: its part's, or the cover's on a page with no
+       *  part. */
+      readonly kind: "title";
+      readonly text: string;
+      /** The talk's title, over a part's: the series that the page is in. */
+      readonly series: string | null;
+      /** The part's eyebrow ("PART 1"), with the series. */
+      readonly eyebrow: string | null;
+      readonly subtitle: string | null;
+    }
   | {
       readonly kind: "part";
       readonly id: string;
@@ -409,7 +432,10 @@ function slideBlocks(
   return { blocks: withAsides(placed), lastKey };
 }
 
-/** The page: the cover's title, then each slide's heading and blocks. */
+/** The page: its title, then each slide's heading and blocks. On a page
+ *  with the cover and a section, the section's title is the page's, under
+ *  the cover's as the series, and the section has no heading of its own: a
+ *  reader comes to the page for the part. */
 export function pagePlan(slides: readonly SlideInput[]): PageBlock[] {
   const used = new Map<string, number>();
   const idOf = (base: string): string => {
@@ -419,11 +445,37 @@ export function pagePlan(slides: readonly SlideInput[]): PageBlock[] {
   };
   const page: PageBlock[] = [];
   let lastKey: string | null = null;
-  for (const [index, slide] of slides.entries()) {
-    if (slide.hidden) continue;
+  const shown = slides.filter((slide) => !slide.hidden);
+  const cover =
+    shown[0]?.layout === "cover" && shown[0].title ? shown[0] : null;
+  // the page's part: its first section, if it has a title
+  const part =
+    cover === null
+      ? null
+      : (shown.find((slide) => slide.layout === "section" && slide.title) ??
+        null);
+  for (const slide of shown) {
     const title = slide.title;
-    if (index === 0 && slide.layout === "cover" && title) {
-      page.push({ kind: "title", text: title });
+    if (slide === cover && title) {
+      page.push(
+        part?.title
+          ? {
+              kind: "title",
+              text: part.title,
+              series: title,
+              eyebrow: part.eyebrow,
+              subtitle: part.subtitle,
+            }
+          : {
+              kind: "title",
+              text: title,
+              series: null,
+              eyebrow: null,
+              subtitle: slide.subtitle,
+            },
+      );
+    } else if (slide === part) {
+      // its title is the page's
     } else if (slide.layout === "section" && title) {
       page.push({
         kind: "part",

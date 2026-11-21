@@ -392,7 +392,8 @@ How a run works, and why:
 - **It builds each talk from the files of its ref.** The house theme, the
   tools and the lockfiles come from the ref. For each talk it runs
   `pnpm build --base /<repo>/<talk>/`, then the talk's `prerender` script if
-  it has one, and publishes the talk's `dist/`. Each talk builds in a shell of
+  it has one, with the site's origin (`--origin`), and publishes the talk's
+  `dist/`. Each talk builds in a shell of
   its own: a talk that fails does not stop the others, and the run fails after
   it publishes the rest.
 - **It changes only the directories of the talks that it builds.** The site

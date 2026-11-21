@@ -41,8 +41,17 @@ router redirects it, and the prerender writes a static page that does. Why:
 one page for the whole talk was too long, and each page loads only what its
 figures need (the task's `PLAN.md`).
 
-- **A page after the first** starts with the cover's title, and not the
-  cover's narration or figure. Its section slide gets no figure by default,
+- **A page's title is its part's**: the section slide's title in the
+  article (its `articleTitle`, or its own), as the page's `<h1>`, the
+  browser's tab and a link's preview (`og:title`). Above it, small, is the
+  talk's title, the cover's, with the section's eyebrow ("PART 1"): the
+  series that the page is in. Under it is the section's `articleSubtitle`,
+  if it has one. The section has no heading of its own on its page.
+  Why: a link to a part, such as a post on Hacker News, shows the title
+  that the page shows, and a reader comes to the page for the part. A page
+  with no section has the cover's title.
+- **A page after the first** starts with the cover's title, as the series,
+  and not the cover's narration or figure. Its section slide gets no figure by default,
   as on any page: its narration's `[figure: …]` gives it one. The Part 2 and
   Part 3 sections show the watch so, centred (`article: 0: view: centred
 cover`).
@@ -50,6 +59,11 @@ cover`).
   Questions slide. The article has no list of credits: each photo's credit
   is under its figure ("A photo's credit", below), so each page has the
   credits of its own photos.
+- **A section's `articleDescription`** is its page's description: what a
+  link's preview (Slack, Mastodon, a chat) and a search engine show under
+  the title. One or two sentences, in quotes; the spell check reads it.
+  The preview's image is the page's first figure's still ("Build the static
+  page", below).
 - **A section with `articleLinked: false`** has its page, but no other page
   links to it: a part that is not done yet. Part 3, now. Remove the key to
   launch the part.
@@ -496,9 +510,8 @@ Chromium, and at the Android phone's size in Firefox. It fails on a page
 error, an error that the page logs, a request outside the deck, a page that
 scrolls sideways, an element past the screen's edge (a figure's slide runs
 past its crop by design: the check skips a figure's contents), and a touch
-target that fails WCAG 2.5.8 (`art/phone.ts`). A figure's step dots are 12
-px, too small and too close; they pass because its ‹ › buttons do the same
-(the "equivalent" exception). `--shots DIR` writes the top of each page
+target that fails WCAG 2.5.8 (`art/phone.ts`): a step dot is a 25 px
+button, with a smaller dot drawn in it. `--shots DIR` writes the top of each page
 and each figure as a PNG, for a person to look at: the check cannot tell
 whether a figure reads well.
 
@@ -553,7 +566,10 @@ Slidev's types (`types/`). Move it to the house when a second talk uses it.
 **The addon uses Slidev internals** (`types/slidev-internals.d.ts`):
 `PrintSlideClick`, `useFixedNav`, `createFixedClicks`, `slideWidth`,
 `slideHeight` and `configs`; and the talk's `setup/main.ts` uses `slides`
-(`logic/slides.ts`), to find a page's slides before the app mounts. An
+(`logic/slides.ts`), to find a page's slides before the app mounts. The
+page sets its `<title>` through Slidev's head manager, unhead, which it
+injects by unhead's key (`"usehead"`): unhead writes the title, and
+overwrites one set on `document`. An
 upgrade of Slidev can change them. After an upgrade, open `/article/1` and
 `/article/2` and look.
 
@@ -579,7 +595,14 @@ it 3.7× faster (64 s here); the settles are most of what is left
 text in it as HTML and each figure a still (`dist/article/<part>/figures/`,
 about 6 MB in all at twice the pixel density). `dist/article/index.html`
 sends a reader to `1/` (`redirectPage` in
-`addons/narration/static-page.ts`): a static host has no redirect rules. A figure with steps is a still of its first step:
+`addons/narration/static-page.ts`): a static host has no redirect rules.
+**Each page's head is its own:** its title, its description, and the Open
+Graph tags of a link's preview, in place of the deck's (`metaTags`). With
+`--origin URL` (the site's origin), it also has its own address and its
+first figure's still as the preview's image: they need absolute URLs, so a
+build without an origin leaves them out. The publish workflow and
+`tools/pages_preview.py` pass one. The page gives the prerender its title
+and description as data on `<main>`. A figure with steps is a still of its first step:
 the live figure shows that step too when it takes the still's place, so the
 page does not jump. So:
 
@@ -591,7 +614,7 @@ page does not jump. So:
   the deck is not at the host's root, build it with Slidev's `--base`
   (`pnpm exec slidev build --base /talks/watches/`, then the prerender). The
   prerender reads the base from `index.html`. GitHub Pages builds it this
-  way, with `pnpm build --base …` and `pnpm prerender`
+  way, with `pnpm build --base …` and `pnpm prerender --origin …`
   ([`docs/talks.md`](../../docs/talks.md), "Publish a talk").
 
 A file that the talk's code fetches must be under the base:
@@ -647,7 +670,5 @@ the live page has blank figures (below).
   only the figures near the screen; the others are blank, with their labels
   (Chromium, 2026-10-27).
 - Labels that grow on a phone.
-- Bigger step dots on a phone: 24 px apart, so that each passes WCAG 2.5.8
-  on its own ("On a phone").
 - A figure that comes into view on a slow GPU (the Android emulator in
   software) shows a black box until the shared renderer draws it.

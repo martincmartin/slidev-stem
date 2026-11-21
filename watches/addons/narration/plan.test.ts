@@ -31,6 +31,8 @@ function slide(overrides: Partial<SlideInput>): SlideInput {
     keyOf: (clicks) => `escapement ${String(clicks)}`,
     hidden: false,
     linked: true,
+    description: null,
+    subtitle: null,
     ...overrides,
   };
 }
@@ -72,7 +74,7 @@ test("slug makes a fragment from a title", () => {
   assert.equal(slug("Gear Train!"), "gear-train");
 });
 
-test("the cover's title is the page's; a section is a part; others are headings", () => {
+test("the part's title is the page's, under the cover's; others are headings", () => {
   const page = pagePlan([
     slide({ no: 1, title: "Watches", layout: "cover" }),
     slide({
@@ -80,15 +82,38 @@ test("the cover's title is the page's; a section is a part; others are headings"
       title: "Mechanical Marvels",
       layout: "section",
       eyebrow: "PART 1",
+      subtitle: "Piece by piece",
     }),
     slide({ no: 3, title: "Hairspring" }),
+    slide({ no: 4, title: "Part Two", layout: "section" }),
   ]);
   assert.deepEqual(outline(page), [
-    "title Watches",
-    "part Mechanical Marvels",
+    "title Mechanical Marvels",
     "heading Hairspring",
+    "part Part Two",
   ]);
-  assert.equal(page[1]?.kind === "part" && page[1].eyebrow, "PART 1");
+  assert.deepEqual(page[0], {
+    kind: "title",
+    text: "Mechanical Marvels",
+    series: "Watches",
+    eyebrow: "PART 1",
+    subtitle: "Piece by piece",
+  });
+});
+
+test("a page with no part has the cover's title; with no cover, a part", () => {
+  const cover = slide({ no: 1, title: "Watches", layout: "cover" });
+  assert.deepEqual(pagePlan([cover, slide({ no: 2, title: "Gears" })])[0], {
+    kind: "title",
+    text: "Watches",
+    series: null,
+    eyebrow: null,
+    subtitle: null,
+  });
+  assert.deepEqual(
+    outline(pagePlan([slide({ no: 2, title: "Part", layout: "section" })])),
+    ["part Part"],
+  );
 });
 
 test("a slide's articleTitle is its title in the article", () => {
@@ -411,13 +436,9 @@ test("each section starts a page; the cover is on page 1, whole", () => {
       ),
     );
   const later = plan(second);
-  assert.deepEqual(outline(later), [
-    "title Watches",
-    "part Part Two",
-    "heading Longitude",
-  ]);
+  assert.deepEqual(outline(later), ["title Part Two", "heading Longitude"]);
   assert.deepEqual(outline(plan(first)).slice(0, 3), [
-    "title Watches",
+    "title Part One",
     "figure 0",
     "Why watches.",
   ]);
@@ -463,6 +484,12 @@ test("slideInput reads the keys for hidden slides and for links", () => {
   assert.deepEqual([read({}).hidden, read({}).linked], [false, true]);
   assert.equal(read({ articleHidden: true }).hidden, true);
   assert.equal(read({ articleLinked: false }).linked, false);
+  assert.equal(read({}).description, null);
+  assert.equal(
+    read({ articleDescription: " How it ticks. " }).description,
+    "How it ticks.",
+  );
+  assert.throws(() => read({ articleDescription: 1675 }), /articleDescription/);
 });
 
 test("a credit goes where the narration puts it, and takes no aside", () => {

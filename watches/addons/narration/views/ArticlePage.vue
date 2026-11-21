@@ -24,6 +24,7 @@ import {
   onMounted,
   reactive,
   ref,
+  watch,
 } from "vue";
 import ArticleFigure from "../components/ArticleFigure.vue";
 import ArticleQuote from "../components/ArticleQuote.vue";
@@ -105,6 +106,10 @@ const page = computed<PageBlock[]>(() =>
       )
     : [],
 );
+/** The page's title, its <h1>, for the browser's tab and a link's preview:
+ *  a link to the page shows the title that the page shows. The prerender
+ *  reads it, and the description, from <main>'s data, for the static page's
+ *  head. */
 const title = computed(
   () =>
     page.value.find((block) => block.kind === "title")?.text ?? configs.title,
@@ -117,6 +122,37 @@ function partName(each: ArticlePage): string {
     ? `Part ${String(each.number)}: ${name}`
     : `Part ${String(each.number)}`;
 }
+
+/** What the page needs of Slidev's head manager (unhead), which writes the
+ *  page's <title>, and would overwrite one set on `document`. */
+interface HeadManager {
+  push(input: { title: string }): {
+    patch(input: { title: string }): void;
+    dispose(): void;
+  };
+}
+function isHeadManager(value: unknown): value is HeadManager {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "push" in value &&
+    typeof value.push === "function"
+  );
+}
+// unhead provides itself under this key: not a public API of Slidev's
+// (../../docs/article.md, "How the code is split")
+const head: unknown = inject("usehead", null);
+if (!isHeadManager(head)) throw new Error("no head manager (unhead) to inject");
+const titleEntry = head.push({ title: title.value });
+watch(title, (text) => {
+  titleEntry.patch({ title: text });
+});
+onBeforeUnmount(() => {
+  titleEntry.dispose();
+});
+/** The page's description, for a link's preview: its part's
+ *  `articleDescription`. */
+const description = computed(() => current.value?.section?.description);
 
 /** The deck's base (Slidev's --base): the article's pages are under it. */
 const baseUrl = import.meta.env.BASE_URL;
@@ -257,10 +293,6 @@ const pausedAll = ref(reducedMotion);
 
 onMounted(() => {
   document.documentElement.classList.add("article-mode");
-  document.title =
-    current.value && pages.value.length > 1
-      ? `${partName(current.value)} · ${title.value}`
-      : title.value;
   // the page is made by script: go to the fragment once it is there
   const target = location.hash
     ? document.getElementById(location.hash.slice(1))
@@ -273,7 +305,12 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <main class="slidev-layout article-page" :data-article-pages="pages.length">
+  <main
+    class="slidev-layout article-page"
+    :data-article-pages="pages.length"
+    :data-article-title="title"
+    :data-article-description="description ?? undefined"
+  >
     <article class="article-column">
       <p v-if="!current" class="article-prose">
         This talk has no Part {{ part }}.
@@ -297,7 +334,14 @@ onBeforeUnmount(() => {
           </ol>
         </nav>
         <header v-if="block.kind === 'title'" class="article-header">
+          <p v-if="block.series" class="article-series">
+            {{ block.series
+            }}<template v-if="block.eyebrow"> · {{ block.eyebrow }}</template>
+          </p>
           <h1 class="font-serif">{{ block.text }}</h1>
+          <p v-if="block.subtitle" class="article-subtitle font-serif">
+            {{ block.subtitle }}
+          </p>
           <p v-if="configs.author" class="article-byline">
             {{ configs.author }}
           </p>
@@ -436,8 +480,28 @@ html.article-mode #app {
   line-height: 1.15;
   margin: 0 0 0.3em;
 }
-.article-byline {
+/* The talk's title over the part's: small, as a section slide's eyebrow. */
+.article-series {
+  margin: 0 0 0.5em;
+  font-size: 0.8em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--palette-muted);
+}
+/* Two classes: a slide's subtitle rule (`.slidev-layout h1 + p`, in the
+   theme and the talk) centres the line after a title, and sets its size. */
+.article-header .article-subtitle {
+  margin: -0.1em 0 0.6em;
+  text-align: left;
+  font-size: 1.35em;
+  font-style: italic;
+  line-height: 1.25;
+}
+.article-header .article-byline {
   margin: 0;
+  text-align: left;
+  font-size: 1em;
+  line-height: inherit;
   color: var(--palette-muted);
 }
 .article-motion {

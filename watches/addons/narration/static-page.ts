@@ -8,6 +8,23 @@ import type { ParserError } from "parse5";
 /** The class that ArticlePage.vue puts on <html>, here before any code runs. */
 const ARTICLE_CLASS = "article-mode";
 
+/** A page's preview image: a still, at its absolute URL, and its size in
+ *  px. */
+export interface PreviewImage {
+  readonly url: string;
+  readonly width: number;
+  readonly height: number;
+}
+
+/** What a link's preview and a search engine read of a page, apart from its
+ *  title. A URL is absolute, so it needs the site's origin; without one, it
+ *  is `null`, and the page has no such tag. */
+export interface PageMeta {
+  readonly description: string | null;
+  readonly url: string | null;
+  readonly image: PreviewImage | null;
+}
+
 /** What the prerender puts in the deck's index.html. */
 export interface ArticleParts {
   /** The article's HTML: the page's `<main>`, with stills for figures. */
@@ -15,6 +32,39 @@ export interface ArticleParts {
   /** The `<link>` elements of the styles that index.html does not load. */
   readonly head: string;
   readonly title: string;
+  readonly meta: PageMeta;
+}
+
+/** `text` safe in an attribute's quotes, or in an element's text. */
+function escaped(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/** The page's `<meta>` tags: its description, and the Open Graph tags of a
+ *  link's preview (https://ogp.me). */
+function metaTags(title: string, meta: PageMeta): string {
+  const tags: [string, string, string][] = [["property", "og:type", "article"]];
+  tags.push(["property", "og:title", title]);
+  if (meta.description !== null) {
+    tags.push(["name", "description", meta.description]);
+    tags.push(["property", "og:description", meta.description]);
+  }
+  if (meta.url !== null) tags.push(["property", "og:url", meta.url]);
+  if (meta.image !== null) {
+    tags.push(["property", "og:image", meta.image.url]);
+    tags.push(["property", "og:image:width", String(meta.image.width)]);
+    tags.push(["property", "og:image:height", String(meta.image.height)]);
+  }
+  return tags
+    .map(
+      ([kind, name, content]) =>
+        `<meta ${kind}="${name}" content="${escaped(content)}">`,
+    )
+    .join("\n");
 }
 
 /** `tag` (`<html …>`) with `name` added to its classes. A palette addon puts
@@ -29,8 +79,9 @@ function withClass(tag: string, name: string): string {
 }
 
 /** The static article: `index` (the deck's index.html) with the article in
- *  `<div id="app">`, its title, its styles, and the article's class on
- *  <html>. */
+ *  `<div id="app">`, its title, its `<meta>` tags in place of the deck's
+ *  (Slidev writes an `og:title` of its own), its styles, and the article's
+ *  class on <html>. */
 export function staticPage(index: string, parts: ArticleParts): string {
   const tag = /<html\b[^>]*>/.exec(index)?.[0];
   if (tag === undefined) throw new Error("the deck's index.html has no <html>");
@@ -38,8 +89,15 @@ export function staticPage(index: string, parts: ArticleParts): string {
   // and the article has dollars in it
   const html = index
     .replace(tag, () => withClass(tag, ARTICLE_CLASS))
-    .replace(/<title>[^<]*<\/title>/, () => `<title>${parts.title}</title>`)
-    .replace("</head>", () => `${parts.head}\n</head>`)
+    .replace(
+      /<title>[^<]*<\/title>/,
+      () => `<title>${escaped(parts.title)}</title>`,
+    )
+    .replace(/<meta (?:property="og:|name="description")[^>]*>\n?/g, "")
+    .replace(
+      "</head>",
+      () => `${metaTags(parts.title, parts.meta)}\n${parts.head}\n</head>`,
+    )
     .replace(
       '<div id="app"></div>',
       () => `<div id="app">${parts.article}</div>`,

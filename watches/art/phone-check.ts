@@ -78,12 +78,7 @@ async function measure(page: Page): Promise<PhonePage> {
     const targets = [
       ...(main?.querySelectorAll("button, input, select, nav a") ?? []),
     ]
-      .map((element) => ({
-        name: name(element),
-        box: box(element),
-        // its figure's ‹ › buttons do the same
-        equivalent: element.classList.contains("article-step"),
-      }))
+      .map((element) => ({ name: name(element), box: box(element) }))
       .filter(({ box }) => box.right > box.left && box.bottom > box.top);
     return {
       width: window.innerWidth,

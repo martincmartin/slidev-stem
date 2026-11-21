@@ -19,6 +19,8 @@ favicon: false
 # so every article page loaded Part 2's photos (docs/article.md, "What a
 # page loads"). The slides mount the next slide early, which loads its photo.
 preloadImages: false
+# The browser's tab shows the title alone: Slidev's default adds " - Slidev"
+titleTemplate: "%s"
 # Keep deck metadata in a hidden block, separate from the visible cover.
 # transition sets the default for all slides. Mechanical Marvels overrides it.
 # text-fade: the old text fades out before the new text fades in (style.css).
@@ -73,6 +75,12 @@ eyebrow: PART 1
 art: all
 artView: cover
 transition: watch-zoom
+# The article's page for the part: its title (an <h1>, and what a link to it
+# shows), the line under it, and what a link's preview shows under the
+# title (docs/article.md, "The pages")
+articleTitle: "How a Mechanical Watch Keeps Time"
+articleSubtitle: "Piece by piece, in interactive 3D"
+articleDescription: "How a mechanical watch keeps time, piece by piece: the hairspring, the balance wheel, the escapement and the gears, in live figures you can step through."
 ---
 
 # Mechanical Marvels
@@ -1611,6 +1619,7 @@ eyebrow: PART 2
 art: all
 artView: cover
 artMoveAlso: [hour hand, minute hand]
+articleDescription: "How watches changed the world: longitude at sea and John Harrison's thirty-year quest, a deadly train wreck, the first watch factory, and the Radium Girls."
 # the page of Part 2 starts with the watch, whole, as the cover's figure
 # does (docs/article.md, "The pages")
 article:
@@ -3110,6 +3119,7 @@ article:
   0:
     view: centred cover
 articleLinked: false
+articleDescription: "Why wear a mechanical watch today, when your phone keeps better time?"
 ---
 
 # Look Good on Your Wrist

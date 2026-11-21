@@ -18,8 +18,8 @@ Before you…
   `globeMarks`):
   `docs/globe.md`, and
   `../docs/webgl.md`.
-- write or change a slide's narration, its `articleTitle` or a photo's
-  credit, add a part, hide a slide from the article (`articleHidden`,
+- write or change a slide's narration, its `articleTitle`, a page's
+  `articleSubtitle` or `articleDescription`, or a photo's credit, add a part, hide a slide from the article (`articleHidden`,
   `articleLinked`), or change the article
   (`addons/narration/`, `components/FigureLayer.vue`, `watch/article.ts`),
   build it or export its text: `docs/article.md`, and `../docs/export.md`.

@@ -54,7 +54,13 @@ export function articleMarkdown(
   for (const block of page) {
     switch (block.kind) {
       case "title":
+        if (block.series) {
+          chunks.push(
+            `_${block.series}${block.eyebrow ? ` · ${block.eyebrow}` : ""}_`,
+          );
+        }
         chunks.push(`# ${block.text}`);
+        if (block.subtitle) chunks.push(`_${block.subtitle}_`);
         break;
       case "part":
         chunks.push(

@@ -7,8 +7,8 @@ function box(left: number, top: number, width: number, height: number): Box {
   return { left, top, right: left + width, bottom: top + height };
 }
 
-function target(name: string, place: Box, equivalent = false): Target {
-  return { name, box: place, equivalent };
+function target(name: string, place: Box): Target {
+  return { name, box: place };
 }
 
 const PAGE: PhonePage = {
@@ -64,12 +64,4 @@ test("a small target next to a big one fails if its circle meets it", () => {
   assert.deepEqual(smallTargets([button, dot]), [dot]);
   const far = target("dot", box(60, 16, 12, 12));
   assert.deepEqual(smallTargets([button, far]), []);
-});
-
-test("a small target with an equivalent control passes", () => {
-  const dots = [
-    target("dot 1", box(100, 300, 12, 12), true),
-    target("dot 2", box(120, 300, 12, 12), true),
-  ];
-  assert.deepEqual(smallTargets(dots), []);
 });
