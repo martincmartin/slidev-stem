@@ -26,12 +26,12 @@
 // pan-y`), so a thumb on a figure still scrolls, and only a sideways drag
 // turns it; and the layer clamps the turn short of edge-on.
 //
-// "Reset view" eases the picture back (the layer's `reset`: with the
-// camera's move, if a step moves it); until it is back, a drag turns
-// nothing (`returning`). The rest of the step's change (a fade, a flash)
-// does not wait: it does not move the view. A step keeps the turn, but in a playing figure: there, a
-// turn holds the tour at its step (`held`), and a press of a step's button
-// or of "Reset view" goes back to the tour. The picture eases back while
+// "Reset view" eases the picture back (the layer's `reset`: with the camera's
+// move, if a step moves it); until it is back, a drag turns nothing
+// (`returning`). The rest of the step's change (a fade, a flash) does not wait:
+// it does not move the view. A step keeps the turn, but in a playing figure:
+// there, a turn holds the tour at its step (`held`), and a press of a step's
+// button or of "Reset view" goes back to the tour. The picture eases back while
 // the camera moves to the step, and the tour goes on from there.
 //
 // THE CROP. A figure of a picture is cropped to the picture's box (the
@@ -59,8 +59,13 @@ import {
   watch,
 } from "vue";
 import { FigureClock } from "../clock.ts";
-import { FIGURE } from "../figure.ts";
-import type { Box, FigureControl, FigureTurner } from "../figure.ts";
+import { FIGURE, union } from "../figure.ts";
+import type {
+  Box,
+  FigureControl,
+  FigureSlider,
+  FigureTurner,
+} from "../figure.ts";
 import type { FigureBlock } from "../plan.ts";
 
 const props = defineProps<{
@@ -125,18 +130,15 @@ const moving = ref(true);
 const jumps = computed(() => paused.value && props.reducedMotion);
 const pausable = computed(() => props.figure.play || !still.value);
 
+/** What a screen reader says of a slider's value: "40%, from Bare to
+ *  Wound". */
+function sliderText(control: FigureSlider): string {
+  const percent = Math.round(control.value.value * 100);
+  return `${String(percent)}%, from ${control.start} to ${control.end}`;
+}
+
 /** px: room around a label. */
 const LABEL_MARGIN = 8;
-
-function union(first: Box | null, second: Box): Box {
-  if (!first) return second;
-  return {
-    left: Math.min(first.left, second.left),
-    top: Math.min(first.top, second.top),
-    right: Math.max(first.right, second.right),
-    bottom: Math.max(first.bottom, second.bottom),
-  };
-}
 
 /** Whether the figure is of a picture (the talk's box, or the labels where
  *  the talk gives none), not of the whole slide with its text. */
@@ -351,7 +353,8 @@ onMounted(() => {
   );
   if (frame.value) observer.observe(frame.value);
   // the slide's component loads after the figure mounts, and a callout
-  // draws its leader after it mounts; the words' widths wait for the fonts
+  // draws its leader after it mounts; the words' widths wait for the fonts,
+  // and an image's for its file (`@load.capture` on the frame)
   if (frame.value) {
     mutations = new MutationObserver(measureSoon);
     mutations.observe(frame.value, { childList: true, subtree: true });
@@ -402,6 +405,7 @@ watch(picture, measureSoon);
         }"
         :role="figure.alt ? 'img' : undefined"
         :aria-label="figure.alt ?? undefined"
+        @load.capture="measureSoon"
         @pointerdown="startTurn"
         @pointermove="moveTurn"
         @pointerup="endTurn"
@@ -429,10 +433,12 @@ watch(picture, measureSoon);
       </button>
     </div>
     <!-- eslint-disable vue/no-v-html -- the narration, rendered by setup/preparser.ts -->
+    <!-- a caption is read out when the reader steps to it, but not while
+         the figure plays by itself, as a carousel that rotates (WAI-ARIA) -->
     <div
       v-if="caption"
       class="article-figure-caption"
-      aria-live="polite"
+      :aria-live="figure.play && !paused ? 'off' : 'polite'"
       v-html="caption"
     />
     <!-- eslint-enable vue/no-v-html -->
@@ -473,19 +479,26 @@ watch(picture, measureSoon);
         </button>
       </template>
       <template v-for="control of controls" :key="control.label">
+        <!-- a screen reader names the slider by its label alone, and says
+             its value as the way from one end word to the other -->
         <label v-if="control.kind === 'slider'" class="article-slider">
           <span class="article-slider-label">{{ control.label }}</span>
           <span class="article-slider-row">
-            <span class="article-slider-end">{{ control.start }}</span>
+            <span class="article-slider-end" aria-hidden="true">{{
+              control.start
+            }}</span>
             <input
               v-model.number="control.value.value"
               type="range"
               min="0"
               max="1"
-              step="0.001"
+              step="0.01"
+              :aria-valuetext="sliderText(control)"
               @change="control.release?.()"
             />
-            <span class="article-slider-end">{{ control.end }}</span>
+            <span class="article-slider-end" aria-hidden="true">{{
+              control.end
+            }}</span>
           </span>
         </label>
         <button

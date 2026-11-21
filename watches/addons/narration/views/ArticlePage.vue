@@ -28,21 +28,20 @@ import {
 } from "vue";
 import ArticleFigure from "../components/ArticleFigure.vue";
 import ArticleQuote from "../components/ArticleQuote.vue";
-import { ARTICLE_HOOKS, DEFAULT_HOOKS } from "../figure.ts";
+import { ARTICLE_HOOKS, DEFAULT_HOOKS, union } from "../figure.ts";
 import type { Box } from "../figure.ts";
 import {
-  articlePages,
   cropGroups,
-  pagedSlide,
+  isRenderedParts,
   pageInput,
   pagePlan,
+  routePages,
   slideInput,
 } from "../plan.ts";
 import type {
   ArticlePage,
   FigureBlock,
   PageBlock,
-  RenderedPart,
   SlideInput,
 } from "../plan.ts";
 
@@ -57,6 +56,11 @@ const { slides } = useNav();
 /** px: the widest a figure may be, and the room around the page. */
 const FIGURE_MAX_WIDTH = 980;
 const GUTTER = 16;
+/** The two, for the page's CSS. */
+const LAYOUT_STYLE = {
+  "--figure-max-width": `${String(FIGURE_MAX_WIDTH)}px`,
+  "--gutter": `${String(GUTTER)}px`,
+};
 /** The part of the window's height that a figure may take. */
 const FIGURE_HEIGHT_SHARE = 0.8;
 
@@ -72,7 +76,7 @@ function inputOf(route: SlideRoute): SlideInput {
       no: route.no,
       title: route.meta.slide?.title ?? null,
       frontmatter,
-      parts: Array.isArray(narration) ? (narration as RenderedPart[]) : null,
+      parts: isRenderedParts(narration) ? narration : null,
     },
     hooks,
   );
@@ -84,17 +88,7 @@ const routeOf = computed(
 /** The article's pages. The split reads only the frontmatter: the talk's
  *  rules (`hooks`) run only for the page's own slides, whose art the page
  *  has made (setup/main.ts in the talk). */
-const pages = computed(() =>
-  articlePages(
-    slides.value.map((route) =>
-      pagedSlide({
-        no: route.no,
-        title: route.meta.slide?.title ?? null,
-        frontmatter: frontmatterOf(route),
-      }),
-    ),
-  ),
-);
+const pages = computed(() => routePages(slides.value));
 /** The page's part, or `null` if the talk has no such part. */
 const current = computed(() => pages.value[props.part - 1] ?? null);
 const page = computed<PageBlock[]>(() =>
@@ -203,26 +197,6 @@ function routeOfFigure(figure: FigureBlock): SlideRoute {
   return routeOfSlide(figure.slide);
 }
 
-/** A figure's steps. A slide that does not say how many clicks it has, and
- *  is shown whole, shows all its text: its last click. */
-function stepsOf(figure: FigureBlock): number[] {
-  const route = routeOfFigure(figure);
-  const unknown = frontmatterOf(route)["clicks"] === undefined;
-  return figure.steps.map((clicks) =>
-    unknown && boxOf(figure) === null ? CLICKS_MAX : clicks,
-  );
-}
-
-function union(first: Box | null, second: Box): Box {
-  if (!first) return second;
-  return {
-    left: Math.min(first.left, second.left),
-    top: Math.min(first.top, second.top),
-    right: Math.max(first.right, second.right),
-    bottom: Math.max(first.bottom, second.bottom),
-  };
-}
-
 /** The picture's box over all of a figure's steps, or `null`: the whole
  *  slide. */
 function ownBoxOf(figure: FigureBlock): Box | null {
@@ -236,46 +210,87 @@ function ownBoxOf(figure: FigureBlock): Box | null {
   return box;
 }
 
+/** A slide's heading: under the page's title, or under a part's heading on
+ *  a page with more than one part. So the levels go down one at a time. */
+const headingTag = computed(() =>
+  page.value.some((block) => block.kind === "part") ? "h3" : "h2",
+);
+
+/** The page's figures, in order. */
+const figures = computed(() =>
+  page.value.flatMap((block) => (block.kind === "figure" ? [block] : [])),
+);
+
 /** The figures that share each figure's crop (`cropGroups`). */
 const cropGroupOf = computed(() =>
-  cropGroups(
-    page.value.flatMap((block) => (block.kind === "figure" ? [block] : [])),
-    (figure) => {
-      const frontmatter = frontmatterOf(routeOfFigure(figure));
-      return figure.steps.flatMap(
-        (clicks) => hooks.frameKey(frontmatter, clicks) ?? [],
-      );
-    },
-  ),
+  cropGroups(figures.value, (figure) => {
+    const frontmatter = frontmatterOf(routeOfFigure(figure));
+    return figure.steps.flatMap(
+      (clicks) => hooks.frameKey(frontmatter, clicks) ?? [],
+    );
+  }),
 );
 
 function groupOf(figure: FigureBlock): readonly FigureBlock[] {
   return cropGroupOf.value.get(figure) ?? [figure];
 }
 
-/** The crop of a figure: the picture's box over its crop group's steps. */
-function boxOf(figure: FigureBlock): Box | null {
-  let box: Box | null = null;
-  for (const each of groupOf(figure)) {
-    const own = ownBoxOf(each);
-    if (!own) return null;
-    box = union(box, own);
-  }
-  return box;
-}
+/** The crop of each figure: the picture's box over its crop group's steps,
+ *  or `null`: the whole slide. Made once for the page, so that a render
+ *  gives each figure the same box, and a figure is not drawn again. */
+const boxOf = computed(() => {
+  const own = new Map(
+    figures.value.map((figure) => [figure, ownBoxOf(figure)]),
+  );
+  const crop = (figure: FigureBlock): Box | null => {
+    let box: Box | null = null;
+    for (const each of groupOf(figure)) {
+      const ownBox = own.get(each) ?? null;
+      if (!ownBox) return null;
+      box = union(box, ownBox);
+    }
+    return box;
+  };
+  return new Map(figures.value.map((figure) => [figure, crop(figure)]));
+});
+
+/** Each figure's steps. A slide that does not say how many clicks it has,
+ *  and is shown whole, shows all its text: its last click. */
+const stepsOf = computed(
+  () =>
+    new Map(
+      figures.value.map((figure) => {
+        const clicksUnset =
+          frontmatterOf(routeOfFigure(figure))["clicks"] === undefined;
+        const whole = boxOf.value.get(figure) === null;
+        return [
+          figure,
+          figure.steps.map((clicks) =>
+            clicksUnset && whole ? CLICKS_MAX : clicks,
+          ),
+        ];
+      }),
+    ),
+);
 
 /** The labels' box of each figure, in slide px, once it has measured them. */
 const labelsOf = reactive(new Map<string, Box>());
 
-/** The labels' box over a figure's crop group. */
-function labelsBoxOf(figure: FigureBlock): Box | null {
-  let box: Box | null = null;
-  for (const each of groupOf(figure)) {
-    const labels = labelsOf.get(each.id);
-    if (labels) box = union(box, labels);
-  }
-  return box;
-}
+/** The labels' box over each figure's crop group: made again only when a
+ *  figure measures its labels. */
+const labelsBoxOf = computed(
+  () =>
+    new Map(
+      figures.value.map((figure) => {
+        let box: Box | null = null;
+        for (const each of groupOf(figure)) {
+          const labels = labelsOf.get(each.id);
+          if (labels) box = union(box, labels);
+        }
+        return [figure, box];
+      }),
+    ),
+);
 
 function setLabels(figure: FigureBlock, box: Box | null): void {
   if (box) labelsOf.set(figure.id, box);
@@ -311,6 +326,7 @@ onBeforeUnmount(() => {
 <template>
   <main
     class="slidev-layout article-page"
+    :style="LAYOUT_STYLE"
     :data-article-pages="pages.length"
     :data-article-title="title"
     :data-article-description="description ?? undefined"
@@ -370,19 +386,18 @@ onBeforeUnmount(() => {
           }}</span>
           {{ block.text }}
         </h2>
-        <h3
-          v-else-if="block.kind === 'heading'"
-          :id="block.id"
-          class="font-serif"
-        >
-          {{ block.text }}
-        </h3>
-        <p
-          v-if="block.kind === 'heading' && block.history"
-          class="article-history"
-        >
-          {{ block.history }}
-        </p>
+        <template v-else-if="block.kind === 'heading'">
+          <component
+            :is="headingTag"
+            :id="block.id"
+            class="article-heading font-serif"
+          >
+            {{ block.text }}
+          </component>
+          <p v-if="block.history" class="article-history">
+            {{ block.history }}
+          </p>
+        </template>
         <!-- eslint-disable vue/no-v-html -- the narration, rendered by setup/preparser.ts -->
         <div
           v-else-if="block.kind === 'prose' && block.asides.length > 0"
@@ -418,9 +433,9 @@ onBeforeUnmount(() => {
           v-else-if="block.kind === 'figure'"
           :figure="block"
           :route="routeOfFigure(block)"
-          :steps="stepsOf(block)"
-          :box="boxOf(block)"
-          :labels="labelsBoxOf(block)"
+          :steps="stepsOf.get(block) ?? block.steps"
+          :box="boxOf.get(block) ?? null"
+          :labels="labelsBoxOf.get(block) ?? null"
           :width="figureWidth"
           :height="figureHeight"
           :paused-by-page="pausedAll"
@@ -462,7 +477,7 @@ html.article-mode #app {
 .slidev-layout.article-page {
   height: auto;
   min-height: 100vh;
-  padding: 56px 16px 120px;
+  padding: 56px var(--gutter) 120px;
   font-size: 20px;
   line-height: 1.6;
   color: var(--palette-ink);
@@ -476,8 +491,10 @@ html.article-mode #app {
    pull quote: its type is large, so even a wide line has few words, and the
    eye finds the next line (docs/article.md, "A pull quote"). */
 .article-column > :is(.article-figure, .article-quote) {
-  width: min(980px, 100vw - 32px);
-  margin-left: calc((100% - min(980px, 100vw - 32px)) / 2);
+  width: min(var(--figure-max-width), 100vw - 2 * var(--gutter));
+  margin-left: calc(
+    (100% - min(var(--figure-max-width), 100vw - 2 * var(--gutter))) / 2
+  );
 }
 .article-header {
   text-align: left;
@@ -612,14 +629,14 @@ html.article-mode #app {
   letter-spacing: 0.12em;
   color: var(--palette-muted);
 }
-.article-page h3 {
+.article-page .article-heading {
   margin: 2em 0 0.5em;
   font-size: 1.45em;
   font-weight: 600;
   line-height: 1.25;
 }
 /* A slide's history line, close under its heading: a dateline. */
-.article-page h3:has(+ .article-history) {
+.article-page .article-heading:has(+ .article-history) {
   margin-bottom: 0.15em;
 }
 .article-history {

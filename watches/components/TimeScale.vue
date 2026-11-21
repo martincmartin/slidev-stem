@@ -10,7 +10,8 @@
 // it eases from one click's to the next, the number goes through the speed-ups
 // between. Without one (a printed page, slide-bottom.vue), it is the click's.
 // In a figure, `now` gives the figure's time, which stands while the figure is
-// paused; without it, the frame's time.
+// paused; without it, the frame's time. While `paused` (a figure that is
+// paused or far from the screen), no frame runs, and the number stays.
 //
 // Not an oversight: the number changes at once, where all other text fades
 // (docs/slide-patterns.md, "Text fades"). It is a gauge, and the user chose
@@ -26,6 +27,8 @@ const props = defineProps<{
   shown: number | undefined;
   /** The time (ms); the frame's without it. */
   now?: (() => number) | undefined;
+  /** No frames: a figure that is paused or far from the screen. */
+  paused?: boolean;
 }>();
 
 const speedUp = ref(props.shown ?? 1);
@@ -34,17 +37,17 @@ let request: number | undefined;
 function frame(stamp: number): void {
   request = undefined;
   const { model, shown } = props;
-  if (!model || shown === undefined) return;
+  if (!model || shown === undefined || props.paused) return;
   speedUp.value = Math.round(model.speedUp(props.now?.() ?? stamp));
   request = requestAnimationFrame(frame);
 }
 
 onChange(
-  () => [props.model, props.shown] as const,
-  ([model, shown]) => {
+  () => [props.model, props.shown, props.paused] as const,
+  ([model, shown, paused]) => {
     if (shown === undefined) return;
-    if (model) request ??= requestAnimationFrame(frame);
-    else speedUp.value = shown;
+    if (!model) speedUp.value = shown;
+    else if (!paused) request ??= requestAnimationFrame(frame);
   },
   { immediate: true },
 );

@@ -24,14 +24,9 @@ import type { WatchState } from "./state.ts";
 import type { Piece, View } from "../webgl/scene.ts";
 import { pivotOnSlide, slidePoint } from "../webgl/renderer.ts";
 import type { StageState } from "../webgl/timeline.ts";
-
-/** A box on the slide, in px. */
-export interface SlideBox {
-  readonly left: number;
-  readonly top: number;
-  readonly right: number;
-  readonly bottom: number;
-}
+import { isRecord } from "../webgl/checked.ts";
+import { union } from "../addons/narration/figure.ts";
+import type { Box } from "../addons/narration/figure.ts";
 
 /** What a figure can scrub with a slider: the diving board's curl, the
  *  hairspring's twist (let go, it swings), or the mainspring's winding. */
@@ -123,20 +118,20 @@ export const BOARD_SWING_TOP = 46.9;
  *  top of the board's swing to the slide's bottom. Its sentence, beside the
  *  board, is a label: the figure widens its crop to hold it. While the
  *  board curls, it rises into the title's space, to the slide's top. */
-const BOARD_BOX: SlideBox = {
+const BOARD_BOX: Box = {
   left: 0,
   top: BOARD_DRAWING_TOP + BOARD_SWING_TOP,
   right: 980,
   bottom: 552,
 };
-const CURLING_BOARD_BOX: SlideBox = { ...BOARD_BOX, top: 0 };
+const CURLING_BOARD_BOX: Box = { ...BOARD_BOX, top: 0 };
 
 /** Where the board's picture is at a click: the board over the pool
  *  (`BOARD_BOX`), the curl at its own click (`CURLING_BOARD_BOX`), or
  *  none: before the board shows, and after the curl, where its picture has
  *  gone. What it leaves then (the rest shape, over the hairspring, and its
  *  sentence, a label the figure measures) is no picture of its own. */
-function boardBoxOf(board: BoardState | undefined): SlideBox | null {
+function boardBoxOf(board: BoardState | undefined): Box | null {
   if (!board?.rest) return null;
   if (!board.curling) return BOARD_BOX;
   return board.curlsHere ? CURLING_BOARD_BOX : null;
@@ -151,10 +146,6 @@ const NO_SETTINGS: FigureSettings = {
 };
 const SETTING_KEYS = ["mark", "slider", "button", "speedUp", "view"];
 
-function isMap(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
 /** The slide's `article` settings at `clicks`: the block whose key is that
  *  click. Throws on a key or a value of the wrong kind. */
 export function figureSettings(
@@ -163,7 +154,7 @@ export function figureSettings(
 ): FigureSettings {
   const article = frontmatter["article"];
   if (article === undefined) return NO_SETTINGS;
-  if (!isMap(article)) {
+  if (!isRecord(article)) {
     return wrong("article", article, "a map from a click to settings");
   }
   for (const key of Object.keys(article)) {
@@ -174,7 +165,7 @@ export function figureSettings(
   }
   const block = article[String(clicks)];
   if (block === undefined) return NO_SETTINGS;
-  if (!isMap(block)) {
+  if (!isRecord(block)) {
     return wrong(`article.${String(clicks)}`, block, "a map of settings");
   }
   for (const key of Object.keys(block)) {
@@ -410,24 +401,14 @@ export function figureMarks(
   return marked.length === shown.size ? [] : marked;
 }
 
-function union(first: SlideBox | null, second: SlideBox): SlideBox {
-  if (!first) return second;
-  return {
-    left: Math.min(first.left, second.left),
-    top: Math.min(first.top, second.top),
-    right: Math.max(first.right, second.right),
-    bottom: Math.max(first.bottom, second.bottom),
-  };
-}
-
 /** The box of `pieces` on the slide, in px, as the stage shows them: each
  *  extent's corners, projected. `null` if none has an extent. */
 function piecesBox(
   watch: Watch,
   stage: StageState,
   pieces: readonly Piece[],
-): SlideBox | null {
-  let box: SlideBox | null = null;
+): Box | null {
+  let box: Box | null = null;
   for (const piece of pieces) {
     const extent = watch.extents.get(piece);
     // a piece that the model draws (the mainspring's rest shape) has no
@@ -448,7 +429,7 @@ function piecesBox(
 /** Where a view of a ball (`View.ball`: the globe) shows the ball: the box
  *  of its disc about the pivot, or null for a view of no ball. The ball has
  *  no box extent: a box's corners would show it wider than its disc. */
-function ballBox(view: View): SlideBox | null {
+function ballBox(view: View): Box | null {
   if (view.ball === undefined) return null;
   const [x, y] = pivotOnSlide(view);
   const radius = view.ball * view.scale;
@@ -498,11 +479,11 @@ export function pictureBox(
   watch: Watch,
   frontmatter: Record<string, unknown>,
   clicks: number,
-): SlideBox | null {
+): Box | null {
   const { watch: state, board } = pictureAt(frontmatter, clicks, true);
   const boardBox = boardBoxOf(board);
   let box = boardBox;
-  let fitBox: SlideBox | null = null;
+  let fitBox: Box | null = null;
   // where the board's picture shows, it covers the watch: the watch's
   // pieces are not in the picture
   if (state && !boardBox) {

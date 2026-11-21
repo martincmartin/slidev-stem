@@ -79,6 +79,7 @@ import type { Story } from "../globe/stories.ts";
 import type { Mesh, Piece, View } from "../webgl/scene.ts";
 import { CAMERA_MOVES } from "../webgl/timeline.ts";
 import type { CameraMove, MoveWith, StageState } from "../webgl/timeline.ts";
+import { isRecord } from "../webgl/checked.ts";
 import { FIT_BANDS, fittedView } from "./generate.ts";
 import type { FitBand, Watch } from "./generate.ts";
 import { MAINSPRING_STAGES } from "./mainspring.ts";
@@ -167,7 +168,8 @@ export function wrong(name: string, value: unknown, wanted: string): never {
   throw new Error(`${name}: ${JSON.stringify(value)} should be ${wanted}`);
 }
 
-/** A click number in the frontmatter, or `undefined` if the field is not there. */
+/** A click number in the frontmatter, or `undefined` if the field is not
+ *  there. */
 export function clickOf(
   frontmatter: Record<string, unknown>,
   name: string,
@@ -274,16 +276,12 @@ function nameOrNoneOf(name: string, value: unknown): string | null {
   return value;
 }
 
-function isMap(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
 function lingerOf(
   name: string,
   value: unknown,
 ): NonNullable<WatchState["linger"]>[number] {
   if (
-    !isMap(value) ||
+    !isRecord(value) ||
     Object.keys(value).some((key) => !["pieces", "seconds"].includes(key))
   ) {
     return wrong(name, value, "a map with pieces and seconds");
@@ -458,7 +456,7 @@ function atClick(
   if (blocks === undefined) {
     return clicks === 0 ? { ...state, ...slideStep } : state;
   }
-  if (!isMap(blocks)) {
+  if (!isRecord(blocks)) {
     return wrong("artClicks", blocks, "a map from a click to keys");
   }
   const changes = Object.entries(blocks).map(([key, block]) => {
@@ -466,7 +464,7 @@ function atClick(
     if (!Number.isInteger(click) || click < 0 || String(click) !== key) {
       return wrong("artClicks", key, "a click number");
     }
-    if (!isMap(block) || Object.keys(block).length === 0) {
+    if (!isRecord(block) || Object.keys(block).length === 0) {
       return wrong(`artClicks.${key}`, block, "a map of keys");
     }
     return {

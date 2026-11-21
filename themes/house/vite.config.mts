@@ -14,13 +14,19 @@
 // browser's developer tools sees each file of the talk as written, with its
 // comments; other readers download only the minified code
 // (docs/talks.md, "Publish a talk"). The build also lists the third-party
-// packages that it bundles, and their licences, in `licenses.txt`: the
-// minifier removes their licence comments.
+// packages that it serves, and their licences, in `licenses.txt`: the
+// minifier removes their licence comments. Vite lists the JavaScript's;
+// vite-licenses.mts adds the rest, such as the fonts.
 import { existsSync, readFileSync, realpathSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { completeLicenses } from "./vite-licenses.mts";
 
 const THEME = dirname(fileURLToPath(import.meta.url));
+/** The repository: a source map names each file by its path in it. */
+const REPO = join(THEME, "..", "..");
+/** The build's list of third-party licences, beside index.html. */
+const LICENSES = "licenses.txt";
 const PALETTES = join(THEME, "..", "palettes");
 const { dependencies } = JSON.parse(
   readFileSync(join(THEME, "package.json"), "utf8"),
@@ -52,10 +58,24 @@ const metaQuotes = {
 };
 
 export default {
-  plugins: [metaQuotes],
+  plugins: [metaQuotes, completeLicenses(LICENSES)],
   build: {
     sourcemap: true,
-    license: { fileName: "licenses.txt" },
+    license: { fileName: LICENSES },
+    rolldownOptions: {
+      output: {
+        // A map's source is relative to the map, in <talk>/assets/. Name it
+        // by its path in the repository, two folders up: under the site's
+        // base, /<repo>/<talk>/, the browser's developer tools then show
+        // the files as the repository has them, under /<repo>/.
+        sourcemapPathTransform: (source: string, map: string): string => {
+          const inRepo = relative(REPO, resolve(dirname(map), source));
+          return inRepo.startsWith("..")
+            ? source
+            : `../../${inRepo.split(sep).join("/")}`;
+        },
+      },
+    },
   },
   server: {
     fs: {

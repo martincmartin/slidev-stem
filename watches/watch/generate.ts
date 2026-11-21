@@ -1,6 +1,6 @@
 // The design becomes a scene: the parts as meshes, with heights where they
-// touch, the 2D art's line styles, the paper discs, the pieces that slides name,
-// and the views.
+// touch, the 2D art's line styles, the paper discs, the pieces that slides
+// name, and the views.
 //
 // Ported from the spike of watches/tasks/2026-09-28-webgl-planning/
 // (depth_order.py: build_solids; cover_model.py: movement, frame, stud_for;
@@ -67,7 +67,7 @@ import {
   wheelToothShapes,
 } from "./teeth.ts";
 
-// ---- what the art says (the 2D drawing's numbers) ------------------------------------
+// ---- what the art says (the 2D drawing's numbers) ---------------------------
 /** Heights of the train's meshing: a pinion is level with the wheel that
  *  drives it, and an arbor's end rises this far above its pinion. The arbor
  *  runs up from its wheel, through the pinion, so that a view without the
@@ -86,7 +86,8 @@ const STRAP_THICKNESS = 4;
 const STRAP_LENGTH = 450;
 const LUG_LENGTH = 300;
 const CROWN_CLEARANCE = 1;
-/** The 2D crown is a rectangle 22 by 34 px: a cylinder of this radius along x. */
+/** The 2D crown is a rectangle 22 by 34 px: a cylinder of this radius along
+ *  x. */
 const CROWN_RADIUS = 17;
 const CROWN_LENGTH = 22;
 /** The fork's height offset from the escape wheel's teeth. */
@@ -170,7 +171,7 @@ function bandOf(
     : { top: margin, height: slideHeight - 2 * margin };
 }
 
-// ---- parts and recipes ---------------------------------------------------------------
+// ---- parts and recipes ------------------------------------------------------
 type Stacking = "touch" | "everything" | "body";
 
 interface Recipe {
@@ -228,7 +229,7 @@ const WHEEL_RECIPES = {
   other: recipe(4),
 };
 
-// ---- solids ----------------------------------------------------------------------------
+// ---- solids -----------------------------------------------------------------
 /** A solid before it has heights: an outline in its group's frame. */
 interface Solid {
   /** The piece that a slide names to show it (`Scene.pieces`). */
@@ -310,7 +311,7 @@ function turned(path: Path, degrees: number): Path {
   return result;
 }
 
-// ---- the result --------------------------------------------------------------------------
+// ---- the result -------------------------------------------------------------
 /** The groups that turn or move, for the model. Every mesh is in one. */
 export interface WatchGroups {
   /** Static: the watch centre on the slide. */
@@ -382,7 +383,7 @@ export interface Watch {
   readonly oneStepHour: DrivenWheel;
 }
 
-// ---- paint ------------------------------------------------------------------------------
+// ---- paint ------------------------------------------------------------------
 /** The inks as the fills and line styles that the shapes use. */
 interface Paint {
   /** The subject's faces. */
@@ -418,7 +419,7 @@ function paintOf(): Paint {
   };
 }
 
-// ---- the train -------------------------------------------------------------------------
+// ---- the train --------------------------------------------------------------
 interface Train {
   barrel: Wheel;
   centre: Wheel;
@@ -438,7 +439,7 @@ function trainOf(design: Design): Train {
   return { barrel, centre, third, fourth, escape };
 }
 
-// ---- the one-step wheel ---------------------------------------------------------------
+// ---- the one-step wheel -----------------------------------------------------
 /** For the Gear Train slide (docs/watch.md): one wheel that turns the fourth
  *  pinion this many times slower, where the third and the centre wheels take
  *  two steps. It drives the fourth pinion as the third wheel does, at the
@@ -539,7 +540,7 @@ function oneStepMeshes(
   ];
 }
 
-// ---- the motion works ------------------------------------------------------------------
+// ---- the motion works -------------------------------------------------------
 /** Screen degrees from the centre arbor to its arbor: 8 o'clock, where it
  *  covers only the barrel, and its hand's pivot is clear of the minute hand
  *  (the motion-works task, out/scan_one_step_hour.txt). Any angle would do
@@ -777,7 +778,7 @@ function oneStepHourMeshes(
   };
 }
 
-// ---- groups ----------------------------------------------------------------------------
+// ---- groups -----------------------------------------------------------------
 interface GroupTree {
   groups: WatchGroups;
   /** Every group, the root first. */
@@ -829,7 +830,7 @@ function makeGroups(
   };
 }
 
-// ---- parts -----------------------------------------------------------------------------
+// ---- parts ------------------------------------------------------------------
 interface Parts {
   /** The parts of the train's wheels, with their drivers linked. */
   wheels: Map<Wheel, Part>;
@@ -930,7 +931,7 @@ function makeParts({ barrel, centre, third, fourth, escape }: Train): Parts {
   };
 }
 
-// ---- paper discs ----------------------------------------------------------------------
+// ---- paper discs ------------------------------------------------------------
 // A wheel over other wheels must look solid: through its spoke openings, the
 // paper, not the wheel under it. A paper disc at its bottom (a holdout,
 // `Mesh.holdout`) hides what is under it by the depth test, at any view.
@@ -1093,11 +1094,12 @@ function meshBottom(mesh: Mesh): number {
   return bottom;
 }
 
-/** The mesh of a paper disc at `height`, inside the case (the bezel's
- *  radius, less FLATNESS: the case's wall is flattened, so its sides are up
- *  to FLATNESS inside the circle): the one-step wheel reaches past the case,
- *  and its disc must not hide the case or the crown. It is in `root`, the group about the watch's
- *  centre, which does not move: a disc that the case cuts is not round. */
+/** The mesh of a paper disc at `height`, inside the case (the bezel's radius,
+ *  less FLATNESS: the case's wall is flattened, so its sides are up to FLATNESS
+ *  inside the circle): the one-step wheel reaches past the case, and its disc
+ *  must not hide the case or the crown. It is in `root`, the group about the
+ *  watch's centre, which does not move: a disc that the case cuts is not
+ *  round. */
 function paperDiscMesh(
   design: Design,
   disc: PaperDisc,
@@ -1135,7 +1137,7 @@ function paperDiscMesh(
   };
 }
 
-// ---- meshes ----------------------------------------------------------------------------
+// ---- meshes -----------------------------------------------------------------
 /** The mesh of each solid, in the drawing's order. */
 function solidMeshes(
   solids: Solid[],
@@ -1375,7 +1377,7 @@ function studMesh(
   };
 }
 
-// ---- the Mainspring slide's props ----------------------------------------------------
+// ---- the Mainspring slide's props -------------------------------------------
 /** The side of the square on the barrel arbor's top, which the key fits. It
  *  shows the arbor turn. */
 const ARBOR_SQUARE_SIDE = 12;
@@ -1675,7 +1677,7 @@ function lookup<Key, Value>(
   return found;
 }
 
-// ---- solids ----------------------------------------------------------------------------
+// ---- solids -----------------------------------------------------------------
 /** What the functions that make solids share. */
 interface Kit {
   design: Design;
@@ -2533,7 +2535,7 @@ function staffSolid(kit: Kit): Solid {
   );
 }
 
-// ---- the generator -------------------------------------------------------------------------
+// ---- the generator ----------------------------------------------------------
 export function generate(design: Design = DESIGN): Watch {
   const { watchCentre } = design;
   const paint = paintOf();
@@ -3124,7 +3126,7 @@ function meshExtent(
   };
 }
 
-// ---- heights ---------------------------------------------------------------------------------
+// ---- heights ----------------------------------------------------------------
 interface HeightParts {
   springSolid: Solid;
   staff: Solid;

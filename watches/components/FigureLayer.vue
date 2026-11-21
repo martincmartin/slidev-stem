@@ -15,23 +15,21 @@
 // figure is paused. So a step in a paused figure starts from the picture
 // that shows; the figure's time runs to the end of the step's change
 // (`busyUntil`: the watch's, the voyage's and the board's), and stands
-// again. While
-// `figure.jumps`, a step is a jump. A slider's change is drawn at once. At
-// every click, the figure marks the pieces that its run flashed
+// again. While `figure.jumps`, a step is a jump. A slider's change is drawn
+// at once. At every click, the figure marks the pieces that its run flashed
 // (`figureMarks`, watch/article.ts): a steady flash, for a reader whose eyes
 // are on the words.
 //
-// THE TURN. Where the figure shows the watch (not the globe, a story map,
-// or the diving board's picture over it), the reader can turn it (`FigureTurner`,
+// THE TURN. Where the figure shows the watch (not the globe, a story map, or
+// the diving board's picture over it), the reader can turn it (`FigureTurner`,
 // addons/narration/figure.ts): an orbit after the step's camera
-// (webgl/orbit.ts), clamped short of edge-on from the camera's angles at
-// the time. `reset` eases it back on the page's clock. A step, or the
-// `release` button, keeps the turn: it changes
-// what the watch does, not where the reader looks from, and the orbit
-// follows the step's camera. A click where the watch cannot turn ends it.
-// While the watch is turned, what the board still draws over it (the rest
-// shape and its sentence, after the curl) fades out, as the labels do: it
-// is drawn flat, for the step's view.
+// (webgl/orbit.ts), clamped short of edge-on from the camera's angles at the
+// time. `reset` eases it back on the page's clock. A step, or the `release`
+// button, keeps the turn: it changes what the watch does, not where the reader
+// looks from, and the orbit follows the step's camera. A click where the watch
+// cannot turn ends it. While the watch is turned, what the board still draws
+// over it (the rest shape and its sentence, after the curl) fades out, as the
+// labels do: it is drawn flat, for the step's view.
 //
 // THE CROP. The canvas covers only the part of the slide that the figure
 // shows (`figure.crop`), and the view draws only that part
@@ -90,7 +88,7 @@ import TimeScale from "./TimeScale.vue";
 import { isNoOrbit, movedOrbit, NO_ORBIT } from "../webgl/orbit.ts";
 import type { Orbit } from "../webgl/orbit.ts";
 import { SharedView } from "../webgl/shared.ts";
-import { ease } from "../webgl/timeline.ts";
+import { ease, HIDE_STYLE } from "../webgl/timeline.ts";
 import type { FrameListener } from "../webgl/stage.ts";
 import type { Mesh, SlideRect } from "../webgl/scene.ts";
 import {
@@ -254,6 +252,9 @@ function setEnd(part: keyof typeof ends, at: number): void {
 /** Whether the slide shows the board at all (its `board` key): a figure of
  *  a slide without one mounts no board, and fetches no SVG. */
 const hasBoard = computed(() => boardState(frontmatter.value, 0) !== undefined);
+/** The layers over the canvas draw nothing while the figure is paused or far
+ *  from the screen (the contract: addons/narration/figure.ts). */
+const layersStill = computed(() => !figure.moving.value || !figure.near.value);
 /** Set when the click changes, which says if the board jumps. */
 const board = shallowRef<BoardTarget>({
   state: boardState(frontmatter.value, clicks.value),
@@ -557,26 +558,32 @@ onChange(
   <div
     class="slidev-layout watch-layer"
     :class="{ 'watch-off': hidden }"
-    :style="palette.variables"
+    :style="[palette.variables, HIDE_STYLE]"
   >
     <canvas ref="canvas" class="watch-canvas" :style="canvasStyle" />
-    <StoryMaps
-      :frames="frames"
-      :voyage="voyage"
-      :paused="!figure.moving.value || !figure.near.value"
-    />
+    <StoryMaps :frames="frames" :voyage="voyage" :paused="layersStill" />
     <DivingBoard
       v-if="hasBoard"
       :target="board"
       :live="true"
       :scrub="boardScrub"
-      :paused="!figure.moving.value || !figure.near.value"
+      :paused="layersStill"
       :now="figure.now"
       :class="{ 'diving-board-turned': turned }"
       @cover="(covers: boolean) => (covered = covers)"
       @ends="(at: number) => setEnd('board', at)"
     />
-    <TickTock :model="model" :shown="tickTock" :now="figure.now" />
-    <TimeScale :model="model" :shown="timeScale" :now="figure.now" />
+    <TickTock
+      :model="model"
+      :shown="tickTock"
+      :now="figure.now"
+      :paused="layersStill"
+    />
+    <TimeScale
+      :model="model"
+      :shown="timeScale"
+      :now="figure.now"
+      :paused="layersStill"
+    />
   </div>
 </template>

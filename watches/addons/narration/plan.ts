@@ -49,6 +49,26 @@ export interface RenderedPart {
   readonly noFigure: boolean;
 }
 
+/** Whether `value` is a slide's parts as the preparser writes them in its
+ *  frontmatter (`narration`): each with its clicks, its blocks and its
+ *  `noFigure`. */
+export function isRenderedParts(value: unknown): value is RenderedPart[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (part: unknown) =>
+        typeof part === "object" &&
+        part !== null &&
+        "clicks" in part &&
+        typeof part.clicks === "number" &&
+        "blocks" in part &&
+        Array.isArray(part.blocks) &&
+        "noFigure" in part &&
+        typeof part.noFigure === "boolean",
+    )
+  );
+}
+
 /** An aside, in the output's format. */
 export interface Aside {
   readonly title: string;
@@ -202,6 +222,33 @@ export function articlePages<S extends PagedSlide>(
   }));
 }
 
+/** A slide as Slidev's routes give it: the part of a route that the split
+ *  into pages reads. */
+export interface RoutedSlide {
+  readonly no: number;
+  readonly meta: {
+    readonly slide?: {
+      readonly title?: string;
+      readonly frontmatter?: Record<string, unknown>;
+    };
+  };
+}
+
+/** The article's pages, from Slidev's routes. The split reads only the
+ *  frontmatter, so it needs none of the talk's rules: the page and the
+ *  talk's setup (which loads what a page needs) split alike. */
+export function routePages(routes: readonly RoutedSlide[]): ArticlePage[] {
+  return articlePages(
+    routes.map((route) =>
+      pagedSlide({
+        no: route.no,
+        title: route.meta.slide?.title ?? null,
+        frontmatter: route.meta.slide?.frontmatter ?? {},
+      }),
+    ),
+  );
+}
+
 /** What `pagePlan` plans for one of a page's slides: the slide, or the
  *  cover with its title only. */
 export function pageInput(input: SlideInput, titleOnly: boolean): SlideInput {
@@ -309,7 +356,8 @@ function range(from: number, to: number): number[] {
 }
 
 /** What one slide puts on the page after its heading: its prose (with its
- *  asides), quotes and figures, in order. `previousKey` is the key of the page's last figure. */
+ *  asides), quotes and figures, in order. `previousKey` is the key of the
+ *  page's last figure. */
 function slideBlocks(
   slide: SlideInput,
   idOf: (base: string) => string,

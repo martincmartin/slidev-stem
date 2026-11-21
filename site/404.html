@@ -21,7 +21,9 @@
             document.open();
             document.write(html);
             document.close();
-          });
+          })
+          // offline, or the talk has no page: this page stays
+          .catch(() => {});
       }
     </script>
     <style>

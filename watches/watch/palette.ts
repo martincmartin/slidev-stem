@@ -75,10 +75,10 @@ export function readPalette(variables: Variables, toHex: ToHex): Palette {
   ) as Record<InkName, string>;
 }
 
-/** The name of each ROLE_PREFIX variable that a rule of `sheets` declares.
- *  A computed style does not list its custom properties in every browser:
- *  Chrome before about 142 lists none, and a figure had no colours
- *  (../docs/watch.md, "Theme colours in older browsers"). A sheet that the page may not read
+/** The name of each ROLE_PREFIX variable that a rule of `sheets` declares. A
+ *  computed style does not list its custom properties in every browser: Chrome
+ *  before about 142 lists none, and a figure had no colours (../docs/watch.md,
+ *  "Theme colours in older browsers"). A sheet that the page may not read
  *  (another origin) is skipped. */
 export function declaredRoles(sheets: Iterable<RuleGroup>): Set<string> {
   const names = new Set<string>();

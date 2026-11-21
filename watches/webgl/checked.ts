@@ -1,5 +1,5 @@
-/** The item at `index`. `noUncheckedIndexedAccess` makes `items[index]` possibly
- *  undefined; this says that it is a bug if it is. */
+/** The item at `index`. `noUncheckedIndexedAccess` makes `items[index]`
+ *  possibly undefined; this says that it is a bug if it is. */
 export function at<Item>(items: ArrayLike<Item>, index: number): Item {
   if (!Number.isInteger(index) || index < 0 || index >= items.length) {
     throw new RangeError(
@@ -10,6 +10,12 @@ export function at<Item>(items: ArrayLike<Item>, index: number): Item {
     throw new RangeError(`index ${String(index)} is an empty slot`);
   }
   return items[index] as Item;
+}
+
+/** Whether `value` is a plain object of keys (from JSON or YAML), not an
+ *  array or null: data from outside, to check key by key. */
+export function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /** Throw if `condition` is false: a broken contract, not a user error. */

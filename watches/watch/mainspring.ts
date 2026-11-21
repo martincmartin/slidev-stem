@@ -28,6 +28,7 @@
 // how far the arbor has turned against the spring's outer end; 0 is at rest.
 
 import { check } from "../webgl/checked.ts";
+import { smoothstep } from "../webgl/math.ts";
 import { ease, FADE_SECONDS } from "../webgl/timeline.ts";
 
 export const MAINSPRING_STAGES = [
@@ -143,11 +144,6 @@ export function placeFor(stage: MainspringStage): number {
  *  but a step's change. */
 export function storyRuns(stage: MainspringStage): boolean {
   return RUNS_FROM.some((from) => placeFor(stage) >= from);
-}
-
-function smoothstep(fraction: number): number {
-  const clamped = Math.min(Math.max(fraction, 0), 1);
-  return clamped * clamped * (3 - 2 * clamped);
 }
 
 /** The fraction whose smoothstep is `value`, both 0 to 1. */

@@ -416,13 +416,20 @@ How a run works, and why:
   `themes/house/vite.config.mts`). A reader downloads only the minified
   code, and a map only when the browser's developer tools are open; they
   then show each file of the talk as written, with its comments. The maps
-  hold the source, which is public in this repository anyway. Slidev's own
-  plugins drop the maps of the slides' chunks (`md-*.js`), so those stay
-  minified, and a build prints a `SOURCEMAP_BROKEN` warning for each.
-- **A build lists the packages that it bundles, with their licences,** in
-  `licenses.txt` beside `index.html` (`build.license`): the minifier removes
-  their licence comments, and MIT and the like ask for the notice in each
-  copy. An article links to it at its end.
+  hold the source, which is public in this repository anyway. Each map
+  names a file by its path in the repository, so that under the site's
+  base the developer tools show the files as GitHub does
+  (`sourcemapPathTransform`). Slidev's own plugins drop the maps of the
+  slides' chunks (`md-*.js`), so those stay minified, and a build prints a
+  `SOURCEMAP_BROKEN` warning for each.
+- **A build lists the third-party packages that it serves, with their
+  licences,** in `licenses.txt` beside `index.html`: the minifier removes
+  their licence comments, and MIT, the SIL Open Font License and the like
+  ask for the notice in each copy. Vite lists the packages that the
+  JavaScript bundles (`build.license`); `themes/house/vite-licenses.mts`
+  adds the files that the build copies from `node_modules`, such as the
+  fonts, and drops the talk's own entry. An article links to the list at
+  its end.
 - **Links to one slide work,** for example `<talk>/5`. GitHub Pages serves the
   site's `404.html` for a path that has no file, and that page loads the
   talk's `index.html` in its place. GitHub Pages uses only the `404.html` at

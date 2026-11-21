@@ -51,6 +51,13 @@ export function mix(first: number, second: number, fraction: number): number {
   return first + (second - first) * fraction;
 }
 
+/** An ease in and out from 0 to 1, as `fraction` goes from 0 to 1: the
+ *  cubic 3f² - 2f³, with no speed at either end. Outside 0 to 1, the end. */
+export function smoothstep(fraction: number): number {
+  const clamped = Math.min(Math.max(fraction, 0), 1);
+  return clamped * clamped * (3 - 2 * clamped);
+}
+
 export function transformPoint(matrix: Matrix4, [x, y, z]: Vec3): Vec3 {
   const output = (row: number): number =>
     at(matrix, row) * x +

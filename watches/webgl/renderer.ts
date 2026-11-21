@@ -356,7 +356,7 @@ function inkColour(inks: InkColours, ink: Ink): Rgba {
   return colour;
 }
 
-// ---- the camera --------------------------------------------------------------------
+// ---- the camera -------------------------------------------------------------
 export interface Camera {
   matrix: Float32Array;
   /** The direction to the camera, in world space. */
@@ -562,7 +562,7 @@ export function planeOnSlide(
   return [uX - e, uY - f, vX - e, vY - f, e, f];
 }
 
-// ---- the renderer --------------------------------------------------------------------
+// ---- the renderer -----------------------------------------------------------
 /** Where `render` puts its picture: its top left at `at`, in device px from
  *  the top left of the canvas, which the renderer makes `canvas` device px.
  *  Frames that share the canvas each take a place of their own on it (the
@@ -1198,7 +1198,8 @@ export class Renderer {
     if (made && !this.gl.isContextLost()) this.upload(made, mesh, geometry);
   }
 
-  /** The picture `index` (0, or 1 for a fade's second picture), at this size. */
+  /** The picture `index` (0, or 1 for a fade's second picture), at this
+   *  size. */
   private target(
     resources: Resources,
     index: number,

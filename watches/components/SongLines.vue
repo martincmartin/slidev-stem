@@ -1,10 +1,11 @@
 <script setup lang="ts">
-// Words that run on their own while the slide is the current one (docs/slide-patterns.md,
-// "Words that run on their own"). A screen's animation is its timer: when it finishes,
-// the next screen starts. They start again from the first screen each time the slide
-// starts. Off the current slide (a printed page, a preview), the first screen stands
-// still. The song lines are in a file beside the worktrees, not in this repo: with no
-// such file, as on the publish run, the glob finds nothing, and the titles show.
+// Words that run on their own while the slide is the current one
+// (docs/slide-patterns.md, "Words that run on their own"). A screen's animation
+// is its timer: when it finishes, the next screen starts. They start again from
+// the first screen each time the slide starts. Off the current slide (a printed
+// page, a preview), the first screen stands still. The song lines are in a file
+// beside the worktrees, not in this repo: with no such file, as on the publish
+// run, the glob finds nothing, and the titles show.
 import { useNav, useSlideContext } from "@slidev/client";
 import {
   computed,
@@ -52,7 +53,8 @@ function stop(): void {
   shown.value = 0;
 }
 
-/** The house's fade (style.css), or none for a viewer who asks for less motion. */
+/** The house's fade (style.css), or none for a viewer who asks for less
+ *  motion. */
 function fadeSeconds(element: HTMLElement): number {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return 0;
   return Number.parseFloat(
@@ -71,8 +73,8 @@ async function play(index: number): Promise<void> {
     duration: seconds * 1000,
     fill: "both",
   });
-  // A finished animation holds its last frame until it is cancelled: the old screen
-  // stays faded out until this one has taken over.
+  // A finished animation holds its last frame until it is cancelled: the old
+  // screen stays faded out until this one has taken over.
   playing?.cancel();
   playing = next;
   next.onfinish = () => {

@@ -6,19 +6,18 @@
 // `ARTICLE_HOOKS` (in its setup/main.ts); without them, each slide is one
 // figure, the whole slide at its last click.
 //
-// CONTRACT for a talk's layer in a figure: draw the slide's state at
-// `clicks`, and follow it when it changes (a step: the step's moves; any
-// other change: at once). Take the time from `now`, never from the page's
-// clock or a frame's time: it stands while the figure is paused. Set
-// `busyUntil` when a change ends: a playing figure waits for it, and a paused
-// figure's time runs to it, so that a step plays and then stands. While
-// `jumps` is true, a step is a jump. Draw only while `moving` is true, and
-// once after any other change (a control's), and nothing while `near` is
-// false. A layer may add controls (a slider, a button) to `controls`; the
-// article draws them under the figure. Set `still` while nothing in the figure moves
-// by itself: the article then shows no pause button. A layer that draws a
-// 3D picture may let the reader turn it by a drag: it sets `turner` while
-// its picture can turn (see `FigureTurner`).
+// CONTRACT for a talk's layer in a figure: draw the slide's state at `clicks`,
+// and follow it when it changes (a step: the step's moves; any other change: at
+// once). Take the time from `now`, never from the page's clock or a frame's
+// time: it stands while the figure is paused. Set `busyUntil` when a change
+// ends: a playing figure waits for it, and a paused figure's time runs to it,
+// so that a step plays and then stands. While `jumps` is true, a step is a
+// jump. Draw only while `moving` is true, and once after any other change (a
+// control's), and nothing while `near` is false. A layer may add controls (a
+// slider, a button) to `controls`; the article draws them under the figure. Set
+// `still` while nothing in the figure moves by itself: the article then shows
+// no pause button. A layer that draws a 3D picture may let the reader turn it
+// by a drag: it sets `turner` while its picture can turn (see `FigureTurner`).
 //
 // IN A FIGURE OF A PICTURE (the talk's `pictureBox` gives a box), the slide's
 // text is hidden: only elements with the class `in-figure` (a callout's
@@ -37,6 +36,18 @@ export interface Box {
   readonly top: number;
   readonly right: number;
   readonly bottom: number;
+}
+
+/** The smallest box around `first` and `second`; `second` if there is no
+ *  `first`. */
+export function union(first: Box | null, second: Box): Box {
+  if (!first) return second;
+  return {
+    left: Math.min(first.left, second.left),
+    top: Math.min(first.top, second.top),
+    right: Math.max(first.right, second.right),
+    bottom: Math.max(first.bottom, second.bottom),
+  };
 }
 
 /** A slider under a figure: `value` runs from 0 to 1, from the `start`

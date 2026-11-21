@@ -3,6 +3,8 @@
 // art/earth-data.ts writes. Its types, and a parser
 // that checks the file where the globe reads it (docs/globe.md, "The data").
 
+import { isRecord } from "../webgl/checked.ts";
+
 export type LonLat = readonly [number, number];
 /** A closed ring of points, without the first point again at its end. */
 export type Ring = readonly LonLat[];
@@ -47,10 +49,6 @@ export interface Earth {
 
 function fail(what: string): never {
   throw new Error(`globe/earth.json: ${what}`);
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function finite(value: unknown, what: string): number {

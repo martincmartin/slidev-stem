@@ -1,12 +1,13 @@
-// The Longitude From Time slide on the globe (docs/globe.md, "The Longitude From Time
-// slide"): the camera stays with the Sun, and the Earth turns under both. So
-// the turn is a move of the camera between three views, an hour of longitude
-// apart. The meridians and the two places are on the globe, and turn with it.
-// The noon line stays with the camera: its group turns as the camera does. So
-// does a clock, on Greenwich's time: the camera's turn sets its hands, so they
-// cannot leave the Earth, on a step, a jump or a printed page. The labels of the
-// places and the meridians, and the ship, ride the globe too: StoryMaps.vue moves
-// them after each frame (`noonMarksAt`). No DOM: the tests run it in Node.
+// The Longitude From Time slide on the globe (docs/globe.md, "The Longitude
+// From Time slide"): the camera stays with the Sun, and the Earth turns under
+// both. So the turn is a move of the camera between three views, an hour of
+// longitude apart. The meridians and the two places are on the globe, and turn
+// with it. The noon line stays with the camera: its group turns as the camera
+// does. So does a clock, on Greenwich's time: the camera's turn sets its hands,
+// so they cannot leave the Earth, on a step, a jump or a printed page. The
+// labels of the places and the meridians, and the ship, ride the globe too:
+// StoryMaps.vue moves them after each frame (`noonMarksAt`). No DOM: the tests
+// run it in Node.
 
 import { axesAcross } from "../webgl/math.ts";
 import type { Matrix4 } from "../webgl/math.ts";
@@ -42,8 +43,9 @@ export const NOON_GLOBE = {
 /** A point on the slide, in slide px. */
 export type SlidePoint = readonly [number, number];
 
-/** Where the clock is on the slide, in slide px: in the room at the globe's upper
- *  left, near the ship and Greenwich. The title is short enough to clear it. */
+/** Where the clock is on the slide, in slide px: in the room at the globe's
+ *  upper left, near the ship and Greenwich. The title is short enough to clear
+ *  it. */
 export const NOON_CLOCK = {
   at: [92, 92] as SlidePoint,
   radius: 64,
@@ -90,7 +92,8 @@ const camera = (name: string, lon: number): GlobeCamera => ({
   at: NOON_GLOBE.at,
   kmPerPx: EARTH_RADIUS / NOON_GLOBE.radius,
 });
-/** The views, an hour apart: it is noon on the meridian at the middle of each. */
+/** The views, an hour apart: it is noon on the meridian at the middle of
+ *  each. */
 const NOON_IN_GREENWICH = camera("noon in greenwich", 0);
 const NOON_AT_SHIP = camera("noon at the ship", -TURNED);
 export const NOON_CAMERAS: readonly GlobeCamera[] = [
@@ -210,7 +213,8 @@ const PIVOT_RADIUS = 5;
 export const NOON_GROUP: Group = { name: "the noon line", parent: null };
 /** The noon line's piece, a mark on the globe for one slide. */
 export const NOON_PIECE = "noon";
-/** The clock's groups: the dial stays on the slide, and each hand turns on it. */
+/** The clock's groups: the dial stays on the slide, and each hand turns on
+ *  it. */
 export const DIAL_GROUP: Group = { name: "the clock's dial", parent: null };
 export const HOUR_GROUP: Group = {
   name: "the clock's hour hand",
@@ -433,8 +437,8 @@ function clockDisc(radius: number, z: number): number[] {
   return triangles;
 }
 
-/** A hand pointing up (to 12), as triangles: it narrows to its tip, with a short
- *  tail past the centre, at height `z`. */
+/** A hand pointing up (to 12), as triangles: it narrows to its tip, with a
+ *  short tail past the centre, at height `z`. */
 function handShape(length: number, width: number, z: number): number[] {
   const half = width / 2;
   const tail = -HAND_TAIL;

@@ -211,9 +211,9 @@ function sailing({ from, to }: VoyageStep): {
   return { legs: back ? legs.reverse() : legs, back };
 }
 
-/** When `step`'s change ends (ms): its legs have sailed, its marks have
- *  faded, and its flash has ended. A step that changes nothing ends when it happens (`at`): a jump,
- *  and every step of a slide with no story map. */
+/** When `step`'s change ends (ms): its legs have sailed, its marks have faded,
+ *  and its flash has ended. A step that changes nothing ends when it happens
+ *  (`at`): a jump, and every step of a slide with no story map. */
 export function voyageEndAt(step: VoyageStep): number {
   const { from, to, at, start } = step;
   const fade = MARK_FADE_SECONDS * 1000;

@@ -1,22 +1,22 @@
 <script setup lang="ts">
 // Under each slide that shows the watch or the diving board, a marker, so one
-// sibling rule can make the slide see-through. Where the slide is not the live one (print and export,
-// the overview, the presenter's "next" pane), a still of its view, from one
-// renderer shared by the page. The still shows the slide's state at the click
-// of this page (`$clicks`): an export has one page for each click. The global
-// nav is not that click: a printed page gets a fixed nav of its own. `data-waitfor`
-// makes `slidev export` wait until the still is drawn. A printed page's render
-// context is "slide", so print mode comes from the page's nav. `data-watch` is
-// the state that the still shows, for art/print-check.ts. The diving board is
-// posed the same way, at its pose for this page's click (components/
-// DivingBoard.vue with `live` false); the live board is in global-bottom.vue.
-// While the posed board's picture shows, it covers the still, as the live
-// board covers the live watch. This layer is outside the slide's
-// `.slidev-layout`, so it takes the slide's palette as global-bottom.vue does:
-// the still is drawn in its colours, and the board gets its variables.
-// With the still, the time scale at the page's click (components/
-// TimeScale.vue), where the slide shows it (`watchTimeScale`).
-// A printed page of one slide (`/N?print=clicks`) mounts every slide but shows
+// sibling rule can make the slide see-through. Where the slide is not the live
+// one (print and export, the overview, the presenter's "next" pane), a still of
+// its view, from one renderer shared by the page. The still shows the slide's
+// state at the click of this page (`$clicks`): an export has one page for each
+// click. The global nav is not that click: a printed page gets a fixed nav of
+// its own. `data-waitfor` makes `slidev export` wait until the still is drawn.
+// A printed page's render context is "slide", so print mode comes from the
+// page's nav. `data-watch` is the state that the still shows, for
+// art/print-check.ts. The diving board is posed the same way, at its pose for
+// this page's click (components/ DivingBoard.vue with `live` false); the live
+// board is in global-bottom.vue. While the posed board's picture shows, it
+// covers the still, as the live board covers the live watch. This layer is
+// outside the slide's `.slidev-layout`, so it takes the slide's palette as
+// global-bottom.vue does: the still is drawn in its colours, and the board gets
+// its variables. With the still, the time scale at the page's click
+// (components/ TimeScale.vue), where the slide shows it (`watchTimeScale`). A
+// printed page of one slide (`/N?print=clicks`) mounts every slide but shows
 // only its own: the others draw no still. Each page of the PDF has a nav of its
 // own, whose slide is the page's, so every page draws its still.
 import { useNav, useSlideContext } from "@slidev/client";

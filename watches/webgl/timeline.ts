@@ -51,6 +51,11 @@ import type { Flight } from "./flight.ts";
 
 export const MOVE_SECONDS = 1.8;
 export const FADE_SECONDS = 0.8;
+/** s: the canvas fades out in this time when a slide shows no watch, and
+ *  back in when one does (`--watch-hide` in global-bottom.vue's CSS). */
+export const HIDE_SECONDS = 0.3;
+/** The `--watch-hide` CSS variable that the watch's layers set. */
+export const HIDE_STYLE = { "--watch-hide": `${String(HIDE_SECONDS)}s` };
 /** A dim, or its end, eases in this time. */
 export const DIM_SECONDS = FADE_SECONDS;
 /** A change of the camera's angles: its tilt and its turn. */
@@ -167,6 +172,8 @@ type Phase = {
     }
 );
 
+/** The ease of a camera move: a cubic ease in and out, slow at each end and
+ *  fastest at the middle, from 0 to 1 as `fraction` goes from 0 to 1. */
 export function ease(fraction: number): number {
   return fraction < 0.5 ? 4 * fraction ** 3 : 1 - (-2 * fraction + 2) ** 3 / 2;
 }

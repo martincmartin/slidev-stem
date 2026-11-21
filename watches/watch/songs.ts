@@ -1,6 +1,8 @@
-// The words on the Questions slide (docs/slide-patterns.md, "Words that run on their
-// own"). This makes the screens: two lines of a song, as long as they take in the song,
-// or one song title, when there are no lines to show.
+// The words on the Questions slide (docs/slide-patterns.md, "Words that run on
+// their own"). This makes the screens: two lines of a song, as long as they
+// take in the song, or one song title, when there are no lines to show.
+
+import { isRecord } from "../webgl/checked.ts";
 
 export interface SongLine {
   readonly text: string;
@@ -20,10 +22,6 @@ export interface SongScreen {
 
 const LINES_ON_A_SCREEN = 2;
 const SECONDS_A_MINUTE = 60;
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
 
 function isPositive(value: unknown): value is number {
   return typeof value === "number" && value > 0;
@@ -56,8 +54,9 @@ function song(value: unknown): Song {
   };
 }
 
-/** The screens of all the songs, in order. A song with an odd number of lines ends on
- *  a screen of one line. This data is from outside, so this checks it. */
+/** The screens of all the songs, in order. A song with an odd number of lines
+ *  ends on a screen of one line. This data is from outside, so this checks
+ *  it. */
 export function songScreens(songs: unknown): SongScreen[] {
   if (!Array.isArray(songs)) throw new Error("songs must be a list");
   if (songs.length === 0) throw new Error("there must be at least one song");
@@ -80,8 +79,8 @@ export function songScreens(songs: unknown): SongScreen[] {
   });
 }
 
-/** One screen for each title, each for the same time. This data is from outside, so
- *  this checks it. */
+/** One screen for each title, each for the same time. This data is from
+ *  outside, so this checks it. */
 export function titleScreens(titles: unknown, seconds: unknown): SongScreen[] {
   if (!Array.isArray(titles) || titles.length === 0)
     throw new Error("titles must be a list with at least one title");
@@ -93,8 +92,8 @@ export function titleScreens(titles: unknown, seconds: unknown): SongScreen[] {
   });
 }
 
-/** A screen's opacity over its time. It fades in from its start and has faded out by
- *  its end, so that the next screen starts as it ends. */
+/** A screen's opacity over its time. It fades in from its start and has faded
+ *  out by its end, so that the next screen starts as it ends. */
 export function fadeFrames(seconds: number, fade: number): Keyframe[] {
   if (seconds < 2 * fade)
     throw new Error(

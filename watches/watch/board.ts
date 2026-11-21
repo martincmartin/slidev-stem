@@ -83,11 +83,12 @@ export interface BoardTarget {
   atOnce: boolean;
 }
 
-/** The board's state at `clicks`, or `undefined` if the slide has no `board`.
- *  The keys are click numbers:
+/** The board's state at `clicks`, or `undefined` if the slide has no
+ *  `board`. The keys are click numbers:
  *    board: the board and the rest shape fade in, and the board plays
  *    boardCurl: the pool and the stand fade, and the board curls; at the
- *      curl's end the board fades, and the rest shape stays to the slide's end */
+ *      curl's end the board fades, and the rest shape stays to the slide's
+ *      end */
 export function boardState(
   frontmatter: Record<string, unknown>,
   clicks: number,

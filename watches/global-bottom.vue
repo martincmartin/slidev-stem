@@ -2,18 +2,19 @@
 // One live watch under every slide, for the whole talk, drawn with WebGL by the
 // stage of webgl/stage.ts. Each slide names the pieces that it shows in its
 // frontmatter (`art: [hairspring, collet, stud]`, `artTilt: 20`, and see
-// watch/state.ts); a slide without `art` hides the layer. A click can change the state (`artClicks`).
-// Above the watch, the one live diving board (components/DivingBoard.vue),
-// which the Hairspring slide's frontmatter shows (`board`, and see watch/board.ts). While
-// the board's picture shows, it covers the watch: the canvas fades out, and the
-// stage stops. The board's clock decides when (its `cover` event), so the
-// hairspring takes the board's place when the curl ends, with no click.
-// Above the canvas, the story maps over the globe (components/StoryMaps.vue),
-// which ride the stage's camera after each frame.
-// Above both, the words "tick" and "tock" at each strike of a tooth on a pallet
-// stone (components/TickTock.vue), where a slide's `watchTickTock` shows them: they follow
-// the model's clock. And the time scale (components/TimeScale.vue), where a
-// slide's `watchTimeScale` shows it: it reads the model's speed-up.
+// watch/state.ts); a slide without `art` hides the layer. A click can change
+// the state (`artClicks`). Above the watch, the one live diving board
+// (components/DivingBoard.vue), which the Hairspring slide's frontmatter shows
+// (`board`, and see watch/board.ts). While the board's picture shows, it covers
+// the watch: the canvas fades out, and the stage stops. The board's clock
+// decides when (its `cover` event), so the hairspring takes the board's place
+// when the curl ends, with no click. Above the canvas, the story maps over the
+// globe (components/StoryMaps.vue), which ride the stage's camera after each
+// frame. Above both, the words "tick" and "tock" at each strike of a tooth on a
+// pallet stone (components/TickTock.vue), where a slide's `watchTickTock` shows
+// them: they follow the model's clock. And the time scale
+// (components/TimeScale.vue), where a slide's `watchTimeScale` shows it: it
+// reads the model's speed-up.
 //
 // A slide names targets, not moves (../docs/navigation.md). At each change of
 // slide or click, this decides the kind of move (watch/navigation.ts): a step
@@ -66,7 +67,7 @@ import TickTock from "./components/TickTock.vue";
 import TimeScale from "./components/TimeScale.vue";
 import { Stage } from "./webgl/stage.ts";
 import type { FrameListener } from "./webgl/stage.ts";
-import { FADE_SECONDS } from "./webgl/timeline.ts";
+import { FADE_SECONDS, HIDE_SECONDS, HIDE_STYLE } from "./webgl/timeline.ts";
 import type { CameraMove } from "./webgl/timeline.ts";
 import { boardState } from "./watch/board.ts";
 import { stoneStrikes } from "./watch/callouts.ts";
@@ -118,7 +119,8 @@ const frontmatter = computed(
   () => slidev.nav.currentSlideRoute.meta.slide?.frontmatter ?? {},
 );
 const state = computed(() => watchState(frontmatter.value, slidev.nav.clicks));
-/** The current slide's palette: the theme's, as the slide's classes change it. */
+/** The current slide's palette: the theme's, as the slide's classes change
+ *  it. */
 const palette = computed(() => slidePalette(frontmatter.value["class"]));
 /** The diving board's picture covers the watch. */
 const covered = ref(false);
@@ -252,12 +254,19 @@ function showRestDelay(): void {
   );
 }
 
+/** ms: after the canvas's fade, before the watch goes out of sight: the
+ *  fade's last frame has painted. */
+const HIDE_MARGIN_MS = 100;
+
 /** Draw while the watch shows. Once it hides, after the canvas's fade, go
  *  out of sight. */
 function run(): void {
   if (hidden.value) {
     // a click while it fades does not restart the fade's timer
-    hideTimer ??= setTimeout(goOutOfSight, 400); // after the canvas's fade
+    hideTimer ??= setTimeout(
+      goOutOfSight,
+      HIDE_SECONDS * 1000 + HIDE_MARGIN_MS,
+    );
   } else {
     clearTimeout(hideTimer);
     hideTimer = undefined;
@@ -425,7 +434,7 @@ onMounted(() => {
     v-else-if="live"
     class="slidev-layout watch-layer"
     :class="{ 'watch-off': hidden }"
-    :style="palette.variables"
+    :style="[palette.variables, HIDE_STYLE]"
   >
     <canvas
       ref="canvas"
@@ -449,7 +458,7 @@ onMounted(() => {
   position: absolute;
   inset: 0;
   padding: 0;
-  transition: opacity 0.3s;
+  transition: opacity var(--watch-hide);
 }
 /* Only the canvas fades. The layer keeps painting the paper: a slide with a
    `art:` is see-through (see .watch-marker below), and when the diving board
@@ -460,17 +469,18 @@ onMounted(() => {
   inset: 0;
   width: 100%;
   height: 100%;
-  transition: opacity 0.3s;
+  transition: opacity var(--watch-hide);
 }
 .watch-layer.watch-off .watch-canvas,
 .watch-layer.watch-off .story-maps {
   opacity: 0;
   visibility: hidden;
   transition:
-    opacity 0.3s,
-    visibility 0s 0.3s;
+    opacity var(--watch-hide),
+    visibility 0s var(--watch-hide);
 }
-/* see-through, and positioned, so it paints above a still (which is positioned) */
+/* see-through, and positioned, so it paints above a still (which is
+   positioned) */
 .watch-marker ~ .slidev-layout {
   background: transparent;
   position: relative;

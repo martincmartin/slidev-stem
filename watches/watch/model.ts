@@ -2,6 +2,7 @@
 // the springs. The springs' formula exists once, here.
 
 import { at, check } from "../webgl/checked.ts";
+import { smoothstep } from "../webgl/math.ts";
 import { ribbonGeometry, smoothRing } from "../webgl/mesh.ts";
 import type { Point2 } from "../webgl/mesh.ts";
 import type { Renderer } from "../webgl/renderer.ts";
@@ -112,7 +113,7 @@ function polylineLength(points: Point2[]): number {
   return length;
 }
 
-// ---- the mechanism's keyframes ---------------------------------------------------------
+// ---- the mechanism's keyframes ----------------------------------------------
 // The 2D drawing played SMIL: each part's angle is linear between keyframes,
 // repeated for ever, with each repeat starting where the last one ended (if
 // `accumulate`). The escapement moves at a beat a second, tick and tock.
@@ -247,7 +248,7 @@ export function balanceAngle(timing: Timing, time: number): number {
   return timing.amplitude * Math.cos((2 * Math.PI * time) / timing.period);
 }
 
-// ---- the matrices ---------------------------------------------------------------------------
+// ---- the matrices -----------------------------------------------------------
 /** A 4 x 4 matrix, column-major, for a turn by `degrees` about z, after a
  *  move to (x, y). */
 function turnAt(x: number, y: number, degrees: number): Float32Array {
@@ -394,7 +395,7 @@ function wheelGroup(groups: WatchGroups, wheel: Wheel): Group {
   return found;
 }
 
-// ---- the balance's clock --------------------------------------------------------------------
+// ---- the balance's clock ----------------------------------------------------
 // The balance swings as q = A cos(2 pi t / T). To settle, it waits for the
 // next extreme (|q| = A, where it is still), then goes to rest (q = 0) as
 //   q = q_e (1 - s(u)),  s(u) = 3u^2 - 2u^3,  u = (t - t_e) / D,
@@ -413,11 +414,8 @@ function wheelGroup(groups: WatchGroups, wheel: Wheel): Group {
 //
 // Times: `now` in ms (performance.now()); mechanism time in s.
 
-function smoothstep(fraction: number): number {
-  return fraction * fraction * (3 - 2 * fraction);
-}
-
-/** The cubic from `from` at `speed` (per unit of u) to `to`, still, at u = 1. */
+/** The cubic from `from` at `speed` (per unit of u) to `to`, still, at u =
+ *  1. */
 function hermite(from: number, speed: number, to: number, u: number): number {
   const cube = u * u * u;
   const square = u * u;
@@ -688,7 +686,7 @@ export function stillPose(
   };
 }
 
-// ---- the time-lapse's mechanism ----------------------------------------------------------------
+// ---- the time-lapse's mechanism ---------------------------------------------
 // The time-lapse (watch/mainspring.ts) moves the whole mechanism on, not only
 // the train: its beats move the mechanism's time on, a beat a half period, so
 // the balance, the fork and the train stay in step. At its full speed the
@@ -731,7 +729,7 @@ export function mechanismAt(
   return { time, swing };
 }
 
-// ---- the train's clock: the free spin -----------------------------------------------------------
+// ---- the train's clock: the free spin ---------------------------------------
 // The train's position, in beats (`Motion.beats`). Normally it follows the
 // mechanism, a whole number of teeth ahead: `lead` is an even number of beats
 // (a tooth of the escape wheel is two beats), so the pallet stones meet the
@@ -860,7 +858,7 @@ export class TrainClock {
   }
 }
 
-// ---- the watch's model for the stage ----------------------------------------------------------
+// ---- the watch's model for the stage ----------------------------------------
 /** What a slide asks of the watch's motion. */
 export interface WatchModelState {
   /** The balance stops at rest. On the Mainspring slide, the story says
@@ -1125,12 +1123,12 @@ export class WatchModel implements Model<WatchModelState> {
     );
   }
 
-  /** The teeth's strikes on the pallet stones from `from` to `now` (ms), and the
-   *  mechanism's time at `now`, to pass as `from` next time. The strikes are
-   *  in order, each with the moment it happened (ms), found from the
-   *  mechanism's time at `from` and at `now`. None if `from` is `undefined`,
-   *  or if the mechanism's time went back (a jump to a slide). Call it with
-   *  `now` that only goes forward. */
+  /** The teeth's strikes on the pallet stones from `from` to `now` (ms), and
+   *  the mechanism's time at `now`, to pass as `from` next time. The strikes
+   *  are in order, each with the moment it happened (ms), found from the
+   *  mechanism's time at `from` and at `now`. None if `from` is `undefined`, or
+   *  if the mechanism's time went back (a jump to a slide). Call it with `now`
+   *  that only goes forward. */
   strikes(
     from: { now: number; time: number } | undefined,
     now: number,

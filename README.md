@@ -70,9 +70,9 @@ How the talks, their versions and their checks work:
   does not let you do this.
 - **Lines from songs in copyright** are not in this repository. A talk shows them from a
   private file (`watches/docs/slide-patterns.md`, "Words that run on their own").
-- **The published talks** bundle third-party code. Each lists the packages
-  and their licences in its `licenses.txt` (`docs/talks.md`, "Publish a
-  talk").
+- **The published talks** serve third-party code and fonts. Each lists the
+  packages and their licences in its `licenses.txt` (`docs/talks.md`,
+  "Publish a talk").
 - **The built decks in `tasks/`** contain third-party code and fonts under their
   own licences: for example Vue and Slidev (MIT), and the house fonts Fraunces
   and IBM Plex (SIL Open Font License).

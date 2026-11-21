@@ -172,6 +172,20 @@ default figure has no marker, so give it one where it shows:
 click, for a click that has no part of its own. `watch/article.test.ts`
 fails on a figure with no alt text.
 
+**The page for a screen reader** (`views/ArticlePage.vue`,
+`components/ArticleFigure.vue`):
+
+- A slide's heading is an `<h2>` under the page's `<h1>`, or an `<h3>`
+  under a part's `<h2>` on a page with more than one part: the levels go
+  down one at a time.
+- A caption is read out when the reader steps to it, but not while a
+  figure plays by itself (`aria-live` off), as for a carousel that rotates.
+- A slider is named by its label, and says its value as "40%, from Bare to
+  Wound" (`aria-valuetext`); its end words are hidden from it.
+- A play or pause button says what a press does ("Play", "Pause"), and has
+  no `aria-pressed`. Not an oversight: with both, a screen reader says
+  "Play, pressed", and the reader cannot tell whether the figure plays.
+
 **Name a new term in italics where it first comes** (`_impulse jewel_`), as a
 textbook does. The figure beside it marks the part (below). Not an
 oversight: coloured part names, as on Bartosz's page, do not fit the house

@@ -11,8 +11,11 @@
 // each. A word starts at that moment: CSS fades it and moves it along its
 // strike's `away`, with a negative delay for the part of a frame that has
 // passed. In a figure, `now` gives the figure's time, which stands while the
-// figure is paused; without it, the frame's time. A word that has started ends its fade, in its own style, even if
-// the words stop (a click, another slide): the sound has been made.
+// figure is paused; without it, the frame's time. While `paused` (a figure
+// that is paused or far from the screen), no frame runs, and the strikes in
+// the gap make no words. A word that has started ends its fade, in its own
+// style, even if the words stop (a click, another slide): the sound has been
+// made.
 //
 // Not an oversight: a word appears at once, where all other text fades in
 // (docs/slide-patterns.md, "Text fades"). It is a sound.
@@ -26,6 +29,8 @@ const props = defineProps<{
   shown: { strikes: readonly [Strike, Strike] } | undefined;
   /** The time (ms); the frame's without it. */
   now?: (() => number) | undefined;
+  /** No frames: a figure that is paused or far from the screen. */
+  paused?: boolean;
 }>();
 
 /** s: from a strike until its word is gone. */
@@ -62,7 +67,7 @@ function frame(stamp: number): void {
   request = undefined;
   const { model, shown } = props;
   const now = props.now?.() ?? stamp;
-  if (!model || !shown) {
+  if (!model || !shown || props.paused) {
     last = undefined;
     return;
   }
@@ -91,9 +96,9 @@ function remove(key: number): void {
 }
 
 onChange(
-  () => [props.model, props.shown] as const,
-  ([model, shown]) => {
-    if (model && shown) request ??= requestAnimationFrame(frame);
+  () => [props.model, props.shown, props.paused] as const,
+  ([model, shown, paused]) => {
+    if (model && shown && !paused) request ??= requestAnimationFrame(frame);
   },
   { immediate: true },
 );

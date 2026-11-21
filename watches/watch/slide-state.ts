@@ -1,10 +1,11 @@
 // What the screen shows now, for tools/navcheck.ts: the contract is in
-// ../docs/navigation.md, "Diagnostic: exhaustive navigation". `settled` must be the same however a
-// (slide, click) is reached; each `continuous` number must move without a cut;
-// `busy` is true while a story animation (the board's bend or curl, a story
-// map's voyage) or a camera move still runs, so the check waits for it; and while a press would
-// jump (`pressJumps`: ../docs/navigation.md, "A press during a move"), so that
-// a check that waits for it presses a step.
+// ../docs/navigation.md, "Diagnostic: exhaustive navigation". `settled` must be
+// the same however a (slide, click) is reached; each `continuous` number must
+// move without a cut; `busy` is true while a story animation (the board's bend
+// or curl, a story map's voyage) or a camera move still runs, so the check
+// waits for it; and while a press would jump (`pressJumps`:
+// ../docs/navigation.md, "A press during a move"), so that a check that waits
+// for it presses a step.
 
 import type { Flight } from "../webgl/flight.ts";
 import { mix } from "../webgl/math.ts";
@@ -168,7 +169,8 @@ export function slideState(
     )?.textContent;
     if (count) settled[`${name} count`] = count;
   }
-  // the labels that ride the globe on the Longitude From Time slide: where they are
+  // the labels that ride the globe on the Longitude From Time slide: where they
+  // are
   const noonPlaces = document.querySelector<SVGGElement>(
     ".watch-layer .story-maps .noon-labels",
   )?.dataset["places"];

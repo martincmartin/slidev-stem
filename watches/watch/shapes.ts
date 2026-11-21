@@ -153,24 +153,3 @@ export function dagger(options: DaggerOptions): Path {
     .reverse();
   return polygon([[0, -length], ...side, ...mirrored]);
 }
-
-/** A rectangle with rounded corners, as lines and quarter arcs. */
-export function roundedRectangle(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  corner: number,
-): Path {
-  return new Path()
-    .moveTo(x + corner, y)
-    .lineTo(x + width - corner, y)
-    .arcTo(corner, false, true, x + width, y + corner)
-    .lineTo(x + width, y + height - corner)
-    .arcTo(corner, false, true, x + width - corner, y + height)
-    .lineTo(x + corner, y + height)
-    .arcTo(corner, false, true, x, y + height - corner)
-    .lineTo(x, y + corner)
-    .arcTo(corner, false, true, x + corner, y)
-    .close();
-}

@@ -1,13 +1,14 @@
 <script setup lang="ts">
-// One clock on a timeline: its photo, and a bar from the year it began to the year
-// it was done (docs/slide-patterns.md, "A timeline can be a slide's picture").
-// The photo shows large at `bigFrom` (`big`, in the slide's px), and at `dockAt`
-// it moves to the start of its bar, at its row; then the bar and the words under
-// it (`words`) fade in. The slide sets, on a parent that covers the slide: the
-// scale (--first-year, --px-a-year), where the rows start (--rows-left,
-// --rows-top), the photo's docked size and gap, the row pitch, and the move's
-// length (--clock-move). A docked clock has the accent until `dimAt`, when the
-// focus moves to a later clock; then its bar is grey and its words dim.
+// One clock on a timeline: its photo, and a bar from the year it began to the
+// year it was done (docs/slide-patterns.md, "A timeline can be a slide's
+// picture"). The photo shows large at `bigFrom` (`big`, in the slide's px), and
+// at `dockAt` it moves to the start of its bar, at its row; then the bar and
+// the words under it (`words`) fade in. The slide sets, on a parent that covers
+// the slide: the scale (--first-year, --px-a-year), where the rows start
+// (--rows-left, --rows-top), the photo's docked size and gap, the row pitch,
+// and the move's length (--clock-move). A docked clock has the accent until
+// `dimAt`, when the focus moves to a later clock; then its bar is grey and its
+// words dim.
 import { useSlideContext } from "@slidev/client";
 import { computed } from "vue";
 

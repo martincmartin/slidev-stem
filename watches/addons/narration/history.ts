@@ -1,6 +1,7 @@
-// A slide's history line: when its subject became practical ("c. 1430").
-// The speaker does not say it. The slide shows it in a corner (the talk's slide-top.vue), and the article under the slide's
-// heading (docs/slide-patterns.md, "The history line").
+// A slide's history line: when its subject became practical ("c. 1430"). The
+// speaker does not say it. The slide shows it in a corner (the talk's
+// slide-top.vue), and the article under the slide's heading
+// (docs/slide-patterns.md, "The history line").
 
 import { frontmatterText } from "./frontmatter.ts";
 

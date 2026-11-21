@@ -209,7 +209,8 @@ function wallTriangles(
   return values;
 }
 
-/** The outline's normal (in plan, z = 0) on the edge from point `from` to `to`. */
+/** The outline's normal (in plan, z = 0) on the edge from point `from` to
+ *  `to`. */
 function edgeNormal(ring: Ring, from: number, to: number): Vec3 {
   const [x0, y0] = at(ring.points, from);
   const [x1, y1] = at(ring.points, to);

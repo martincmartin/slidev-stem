@@ -1,11 +1,12 @@
 <script setup lang="ts">
 // The Longitude From Time slide's Sun and night (docs/globe.md, "The Longitude
-// From Time slide"): an SVG over the canvas, which stays as the Earth turns under
-// it. The Sun is on the Equator on the noon line. It is under the globe on the
-// slide, so it fits, and the night is where it would be: a crescent whose inner
-// edge is the half ellipse through the North Pole. It also has the word on the
-// clock's dial, whose hands are on the canvas: the clock keeps Greenwich's time.
-// In an article's figure, the clock is beside the globe (`FIGURE_CLOCK_AT`).
+// From Time slide"): an SVG over the canvas, which stays as the Earth turns
+// under it. The Sun is on the Equator on the noon line. It is under the globe
+// on the slide, so it fits, and the night is where it would be: a crescent
+// whose inner edge is the half ellipse through the North Pole. It also has the
+// word on the clock's dial, whose hands are on the canvas: the clock keeps
+// Greenwich's time. In an article's figure, the clock is beside the globe
+// (`FIGURE_CLOCK_AT`).
 import { inject } from "vue";
 import { FIGURE } from "../addons/narration/figure.ts";
 import { FIGURE_CLOCK_AT, NOON_CLOCK, NOON_GLOBE } from "../globe/noon.ts";

@@ -1,23 +1,23 @@
 <script setup lang="ts">
-// A callout over the watch: a label, and a straight leader from one word of
-// the label to a point of the picture. The leader and the label are ink. With
-// `keyword`, the word and its leader are in the second instead: the leader
-// then points at what that word names ("Pallet"), not at the whole label
-// ("Pallet blocks wheel"). stem/docs/illustrations.md, "Leaders". The slide places the label (`left`,
-// `top`, its top left corner in slide px) and marks the word with
-// `<span class="callout-word">`; the leader leaves the word's box on the side
-// that faces `to`, and stops `stop` px short of it. With `clear` (closed
-// outlines, in slide px), it stops `stop` px short of where it first meets
-// one of them instead, so it ends outside them. A `bent` leader leaves the word's side that faces `to`, runs level for ELBOW_RUN
-// px, and turns there to `to`: for a word with another line of the label
-// under or over it, which a straight leader would cross. A `fromEnd` leader
-// is for a one-line label with its part to the left or below: it aims at a
-// point half the cap height in from the label's left edge and up from its
-// baseline, and starts WORD_GAP outside the quarter-plane that the left edge and
-// the baseline bound. So, followed back, it runs into the first letter, and
-// its start does not depend on the words. With `showLeader`
-// false, the leader fades out and the label stays: for a part that moves
-// away from where the leader ends.
+// A callout over the watch: a label, and a straight leader from one word of the
+// label to a point of the picture. The leader and the label are ink. With
+// `keyword`, the word and its leader are in the second instead: the leader then
+// points at what that word names ("Pallet"), not at the whole label ("Pallet
+// blocks wheel"). stem/docs/illustrations.md, "Leaders". The slide places the
+// label (`left`, `top`, its top left corner in slide px) and marks the word
+// with `<span class="callout-word">`; the leader leaves the word's box on the
+// side that faces `to`, and stops `stop` px short of it. With `clear` (closed
+// outlines, in slide px), it stops `stop` px short of where it first meets one
+// of them instead, so it ends outside them. A `bent` leader leaves the word's
+// side that faces `to`, runs level for ELBOW_RUN px, and turns there to `to`:
+// for a word with another line of the label under or over it, which a straight
+// leader would cross. A `fromEnd` leader is for a one-line label with its part
+// to the left or below: it aims at a point half the cap height in from the
+// label's left edge and up from its baseline, and starts WORD_GAP outside the
+// quarter-plane that the left edge and the baseline bound. So, followed back,
+// it runs into the first letter, and its start does not depend on the words.
+// With `showLeader` false, the leader fades out and the label stays: for a part
+// that moves away from where the leader ends.
 //
 // The leader starts where the browser lays the word out, so the component
 // measures it, and again when the label's size changes (a font loads, or the
@@ -57,8 +57,8 @@ const props = withDefaults(
   },
 );
 
-/** A bent leader's level run, in px: the Hairspring slide's (`LeaderDesign`, from `start`
- *  to `elbow`, in art/diving_board.py). Keep them equal. */
+/** A bent leader's level run, in px: the Hairspring slide's (`LeaderDesign`,
+ *  from `start` to `elbow`, in art/diving_board.py). Keep them equal. */
 const ELBOW_RUN = 40;
 /** The label's type: the theme's sans, IBM Plex Sans, at this size (px) and
  *  line height. Set here, not in a stylesheet, as a `fromEnd` leader is

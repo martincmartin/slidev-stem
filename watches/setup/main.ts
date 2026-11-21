@@ -14,7 +14,7 @@
 import { slides } from "@slidev/client/logic/slides.ts";
 import { defineAppSetup } from "@slidev/types";
 import { ARTICLE_HOOKS } from "../addons/narration/figure.ts";
-import { articlePages, pagedSlide } from "../addons/narration/plan.ts";
+import { routePages } from "../addons/narration/plan.ts";
 import { showsGlobe } from "../watch/art.ts";
 import {
   defaultFigures,
@@ -31,21 +31,15 @@ interface PageRoute {
   readonly params: Readonly<Record<string, unknown>>;
 }
 
-/** Whether the page at `route` shows the globe: an article page if one of
- *  its slides does; any other page (the slides, the presenter, a print) does. */
+/** Whether the page at `route` shows the globe: an article page if one of its
+ *  slides does; any other page (the slides, the presenter, a print) does. */
 function pageShowsGlobe(route: PageRoute): boolean {
   if (route.name !== "article") return true;
   const part = Number(route.params["part"]);
-  // the page's slides: the split into pages needs no art (`pagedSlide`)
-  const paged = slides.value.map((each) =>
-    pagedSlide({
-      no: each.no,
-      title: each.meta.slide?.title ?? null,
-      frontmatter: each.meta.slide?.frontmatter ?? {},
-    }),
-  );
+  // the page's slides: the split into pages needs no art
   const shown = new Set(
-    articlePages(paged)[part - 1]?.slides.map((each) => each.slide.no) ?? [],
+    routePages(slides.value)[part - 1]?.slides.map((each) => each.slide.no) ??
+      [],
   );
   return slides.value.some(
     (each) =>
