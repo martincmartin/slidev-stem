@@ -153,8 +153,9 @@ Before each commit, require successful full validation for each changed project.
 If the project has not changed since its last successful full run, reuse that result.
 Relevant changes include shared tools, themes, dependencies, and configuration that the project uses.
 If all changes since that run are to docs only (`docs/`, `tasks/`, a README or an
-`AGENTS.md`), a successful quick run is enough: only `doccheck` and Prettier read
-them, and quick mode runs both.
+`AGENTS.md`), or to the prose of a slide's narration or speaker notes, a
+successful quick run is enough. What counts as prose is in `docs/talks.md`,
+"Check your work".
 See `docs/talks.md`, "Check your work", for what each run checks and its options.
 
 Run full mode in the project that you changed:
