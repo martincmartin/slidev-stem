@@ -80,7 +80,8 @@ cover`).
 
 ## What a reader gets
 
-- The cover's title, the author, and "Pause all figures". It does not call
+- The cover's title, the author, and "Pause all figures". The author's name
+  links to the headmatter's `articleAuthorUrl`, if it has one. It does not call
   the figures slides: a reader may not know the talk. Keep this one button
   even if a figure's own pause goes: WCAG 2.2.2 ("Pause, Stop, Hide") asks
   for a way to pause motion that starts by itself and lasts more than 5 s,

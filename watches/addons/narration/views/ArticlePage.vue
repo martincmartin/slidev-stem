@@ -149,11 +149,16 @@ const description = computed(() => current.value?.section?.description);
 
 /** The deck's base (Slidev's --base): the article's pages are under it. */
 const baseUrl = import.meta.env.BASE_URL;
-/** The talk's source code (the headmatter's `articleSource`, a URL), or
- *  `null`: the page's end links to it. Slidev puts each headmatter key in
- *  `configs`, but its type names only Slidev's own. */
-const sourceUrl: unknown = Reflect.get(configs, "articleSource");
-const source = typeof sourceUrl === "string" ? sourceUrl : null;
+/** A URL that the headmatter's `key` gives, or `null`. Slidev puts each
+ *  headmatter key in `configs`, but its type names only Slidev's own. */
+function configUrl(key: string): string | null {
+  const value: unknown = Reflect.get(configs, key);
+  return typeof value === "string" ? value : null;
+}
+/** The talk's source code (`articleSource`): the page's end links to it. */
+const source = configUrl("articleSource");
+/** The author's page (`articleAuthorUrl`): the byline links to it. */
+const authorUrl = configUrl("articleAuthorUrl");
 
 /** A part's page. */
 function partHref(each: ArticlePage): string {
@@ -354,7 +359,8 @@ onBeforeUnmount(() => {
             {{ block.subtitle }}
           </p>
           <p v-if="configs.author" class="article-byline">
-            {{ configs.author }}
+            <a v-if="authorUrl" :href="authorUrl">{{ configs.author }}</a>
+            <template v-else>{{ configs.author }}</template>
           </p>
           <p class="article-motion">
             <button
@@ -519,6 +525,9 @@ html.article-mode #app {
   font-size: 1em;
   line-height: inherit;
   color: var(--palette-muted);
+}
+.article-byline a {
+  color: inherit;
 }
 .article-motion {
   margin: 0.4em 0 1.6em;

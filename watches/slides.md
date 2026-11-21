@@ -8,6 +8,8 @@ title: What Everyone Should Know About Watches
 author: Martin C. Martin
 # The article's last line links to the talk's source (docs/article.md)
 articleSource: https://github.com/martincmartin/slidev-stem/tree/main/watches
+# The article's byline links to the author's page (docs/article.md)
+articleAuthorUrl: https://martincmartin.com/
 # The article, a page for each part at /article/1, /article/2 and so on: the
 # talk for readers, with its narration and live figures (docs/article.md).
 # "@/" is this talk's directory: a relative path would start at its parent.
