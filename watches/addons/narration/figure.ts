@@ -16,11 +16,15 @@
 // once after any other change (a control's), and nothing while `near` is
 // false. A layer may add controls (a slider, a button) to `controls`; the
 // article draws them under the figure. Set `still` while nothing in the figure moves
-// by itself: the article then shows no pause button.
+// by itself: the article then shows no pause button. A layer that draws a
+// 3D picture may let the reader turn it by a drag: it sets `turner` while
+// its picture can turn (see `FigureTurner`).
 //
 // IN A FIGURE OF A PICTURE (the talk's `pictureBox` gives a box), the slide's
 // text is hidden: only elements with the class `in-figure` (a callout's
-// label) show over the picture. Where the talk gives no box, a slide's
+// label) show over the picture. The crop widens to hold the `in-figure`
+// elements, the slide's and those of the talk's global layers (which are
+// never hidden). Where the talk gives no box, a slide's
 // `in-figure` elements are its picture (a painting): the figure is cropped
 // to them. IN A FIGURE OF THE WHOLE SLIDE (no box, and nothing `in-figure`),
 // the slide's text shows, but not its title. docs/article.md has the reasons.
@@ -61,6 +65,27 @@ export interface FigureButton {
 
 export type FigureControl = FigureSlider | FigureButton;
 
+/** The reader's turn of a figure's 3D picture, which the talk's layer gives.
+ *  The article owns the drag: on a drag over the figure, it calls `turn`,
+ *  with a drag across the whole figure as 180°. It shows a "Reset view"
+ *  button while `turned`, and hides the slide's own content (the labels,
+ *  whose leaders would point at nothing). The layer clamps the turn and
+ *  draws it. A step keeps the turn, after the step's own camera; the layer
+ *  ends it where its picture cannot turn. In a figure that plays its steps,
+ *  a turn holds the tour, and a press of a step's button ends the turn
+ *  (`reset`). docs/article.md, "Turning a figure". */
+export interface FigureTurner {
+  /** Turn by `yaw` and `pitch` degrees (+: the near side goes right, and
+   *  down: the way the reader drags), as far as the picture lets it. */
+  turn(yaw: number, pitch: number): void;
+  /** Go back to the step's own view: an ease, or at once with `atOnce`
+   *  (a reader who asks for reduced motion). `turned` is false once the
+   *  picture is back. */
+  reset(atOnce: boolean): void;
+  /** Whether the picture is turned from the step's own view. */
+  readonly turned: Readonly<Ref<boolean>>;
+}
+
 export interface FigureContext {
   /** The click that the figure shows now. */
   readonly clicks: Readonly<Ref<number>>;
@@ -85,6 +110,9 @@ export interface FigureContext {
   /** Whether nothing in the figure moves by itself (false until the talk's
    *  layer says so). */
   readonly still: Ref<boolean>;
+  /** The reader's turn of the picture, while the talk's layer lets the
+   *  reader turn it; `null` while it does not. */
+  readonly turner: Ref<FigureTurner | null>;
 }
 
 export const FIGURE: InjectionKey<FigureContext> = Symbol("narration:figure");

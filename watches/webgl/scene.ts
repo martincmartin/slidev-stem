@@ -8,6 +8,7 @@
 // do not write into a mesh's `triangles` either. `checkScene` checks what the
 // renderer assumes.
 
+import type { Orbit } from "./orbit.ts";
 import { check, checkFinite } from "./checked.ts";
 
 export type Vec3 = readonly [number, number, number];
@@ -188,6 +189,9 @@ export interface CameraAngles {
   /** Clockwise on the slide, before the tilt. At 90, the world's +x (3
    *  o'clock, on a watch) is at the bottom, nearest when the camera tilts. */
   readonly turn: number;
+  /** A reader's turn of an article's figure, after the tilt, in the view's
+   *  own axes (orbit.ts). None: the camera's tilt and turn alone. */
+  readonly orbit?: Orbit;
 }
 
 /** Where the camera is: a view and its angles. A frame has one, and so does

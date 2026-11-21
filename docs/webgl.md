@@ -20,7 +20,9 @@ frontmatter keys and measurements), read
 [`watches/tasks/2026-10-11-paper-discs/`](../watches/tasks/2026-10-11-paper-discs/PLAN.md)
 (holdouts, the exact line test next to them),
 [`watches/tasks/2026-10-27-firefox-figure-copies/`](../watches/tasks/2026-10-27-firefox-figure-copies/PLAN.md)
-(a frame's crop, and a place on a shared canvas).
+(a frame's crop, and a place on a shared canvas),
+[`watches/tasks/2026-11-20-article-turning/`](../watches/tasks/2026-11-20-article-turning/PLAN.md)
+(a reader's turn of a figure: the orbit, and the limit short of edge-on).
 
 ## When to use it
 
@@ -146,6 +148,15 @@ Renderer(canvas, scene, palette)` takes a `Palette` (one `#rrggbb` for
   table from one side. The turn came for the recap, which looks at the train
   from several sides
   ([`watches/tasks/2026-10-12-victory-lap/`](../watches/tasks/2026-10-12-victory-lap/PLAN.md)).
+  **A reader's turn** of an article's figure is a third rotation, after the
+  tilt, in the view's own axes (`Orbit` in `webgl/orbit.ts`, the pose's
+  `orbit`): a yaw about the screen's vertical axis, then a pitch about its
+  horizontal one. A turn of the camera would spin the watch flat on the
+  screen; the orbit shows its side. With no orbit the camera's matrix is the
+  one without it, to the bit. `drawFrame` clamps the orbit at each frame,
+  so that the dial stays within `ORBIT_LIMIT` of face-on as the camera's own
+  tilt moves
+  ([`watches/tasks/2026-11-20-article-turning/`](../watches/tasks/2026-11-20-article-turning/PLAN.md)).
   The orthographic camera and the order of the angles are choices of look,
   not limits. They come from the plan to draw the 3D watch in SVG
   ([`watches/tasks/2026-09-27-canvas-2d-planning/`](../watches/tasks/2026-09-27-canvas-2d-planning/PLAN.md)),

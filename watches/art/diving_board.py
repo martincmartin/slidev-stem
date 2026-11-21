@@ -560,6 +560,13 @@ class Board:
     top: list[list[Point]]
     end: list[Point]  # the right end, which faces right
 
+    @property
+    def highest(self) -> float:
+        """The y of the board's highest point (y grows down)."""
+        return min(
+            y for points in [*self.front, *self.top, self.end] for _, y in points
+        )
+
     def paths(self) -> tuple[str, str, str]:
         return (
             smooth_data(self.front, closed=True),
@@ -1231,7 +1238,8 @@ def build(
             f'viewBox="{design.view_left} 0 {design.width} {design.height}" data-swing-start="{number(timeline.swing_start)}" '
             f'data-swing-period="{number(timeline.period)}" data-curl-start="{number(timeline.curl_start)}" '
             f'data-curl-duration="{number(timeline.curl)}" data-edit-duration="{number(timeline.edit)}" '
-            f'data-label-x="{number(leader_design.label[0])}" data-label-y="{number(leader_design.label[1])}">'
+            f'data-label-x="{number(leader_design.label[0])}" data-label-y="{number(leader_design.label[1])}" '
+            f'data-swing-top="{number(min(board.highest for board in swing))}">'
         ),
         inks.style(),
         "<title>A diving board over the edge of a pool: it bends down, swings up and down, then curls into the hairspring</title>",

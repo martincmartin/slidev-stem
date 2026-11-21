@@ -5,6 +5,8 @@
 
 import { at } from "../webgl/checked.ts";
 import type { Point2 } from "../webgl/mesh.ts";
+import { limitedOrbit, NO_ORBIT } from "../webgl/orbit.ts";
+import type { Orbit } from "../webgl/orbit.ts";
 import { slidePoint } from "../webgl/renderer.ts";
 import type { Design, Wheel } from "./design.ts";
 import {
@@ -207,12 +209,14 @@ function worldOf(design: Design, [x, y]: Point2): Point2 {
 function slideProjection(
   watch: Watch,
   frontmatter: Record<string, unknown>,
+  orbit: Orbit = NO_ORBIT,
 ): (point: Point2, z: number) => Point2 {
   const state = watchState(frontmatter, 0);
   if (!state) throw new Error("a slide's callouts need an `art:`");
   const stage = stageState(watch, state);
+  const pose = { ...stage, orbit: limitedOrbit(stage, orbit) };
   return (point, z) =>
-    slidePoint(stage, watch.scene.slide, [point[0], point[1], z]);
+    slidePoint(pose, watch.scene.slide, [point[0], point[1], z]);
 }
 
 /** The impulse jewel's deepest point in the world's plan, with the balance
@@ -292,12 +296,14 @@ export function toothDrops(design: Design): [Point2, Point2] {
  *  tick window (`StrikeTime.window` in model.ts): where a tooth of the
  *  escape wheel lands on a pallet stone (`toothDrops`), on the wheel's top.
  *  Each sound goes straight out from the wheel's arbor, through its strike:
- *  the tooth makes it. */
+ *  the tooth makes it. With `orbit`, a reader's turn of an article's figure
+ *  (webgl/orbit.ts): the strikes where the turned watch shows them. */
 export function stoneStrikes(
   watch: Watch,
   frontmatter: Record<string, unknown>,
+  orbit: Orbit = NO_ORBIT,
 ): [Strike, Strike] {
-  const shown = slideProjection(watch, frontmatter);
+  const shown = slideProjection(watch, frontmatter, orbit);
   const { design, escapementTops: tops } = watch;
   const [, , , , escape] = design.wheels as [Wheel, Wheel, Wheel, Wheel, Wheel];
   const arbor = shown(worldOf(design, escape.arbor), tops.escape);
@@ -305,6 +311,8 @@ export function stoneStrikes(
     const at = shown(drop, tops.escape);
     const [x, y] = [at[0] - arbor[0], at[1] - arbor[1]];
     const length = Math.hypot(x, y);
+    // edge-on, a strike can be in line with the arbor: the sound goes up
+    if (length < 1e-6) return { at, away: [0, -1] };
     return { at, away: [x / length, y / length] };
   };
   const [first, second] = toothDrops(design);

@@ -148,3 +148,29 @@ test("each window's strike is where a tooth lands on the stone that the window s
     assert.ok(distanceToOutline(drop, at(banks, 1 - window)) > 0.5, name);
   });
 });
+
+test("with a reader's turn, the strikes are where the turned camera draws them", () => {
+  const stage = stageState(
+    watch,
+    watchState(ESCAPEMENT_SLIDE, 0) ?? assert.fail("no watch"),
+  );
+  const orbit = { yaw: 50, pitch: -20 };
+  const drops = toothDrops(design);
+  const turned = stoneStrikes(watch, ESCAPEMENT_SLIDE, orbit);
+  const level = stoneStrikes(watch, ESCAPEMENT_SLIDE);
+  for (const [index, strike] of turned.entries()) {
+    const drop = at(drops, index);
+    const expected = slidePoint({ ...stage, orbit }, scene.slide, [
+      drop[0],
+      drop[1],
+      watch.escapementTops.escape,
+    ]);
+    assert.ok(
+      Math.hypot(strike.at[0] - expected[0], strike.at[1] - expected[1]) < 1e-6,
+    );
+    // and not where the slide's own view puts it
+    const own = at(level, index).at;
+    assert.ok(Math.hypot(strike.at[0] - own[0], strike.at[1] - own[1]) > 10);
+    assert.ok(Math.abs(Math.hypot(...strike.away) - 1) < 1e-9);
+  }
+});

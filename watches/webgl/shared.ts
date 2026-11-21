@@ -41,6 +41,7 @@ import { pack } from "./atlas.ts";
 import { at, check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
 import type { Place } from "./renderer.ts";
+import type { Orbit } from "./orbit.ts";
 import type { Mesh, Palette, Scene, SlideRect } from "./scene.ts";
 import { deviceSize, drawFrame } from "./stage.ts";
 import type { FrameListener, Model } from "./stage.ts";
@@ -66,6 +67,9 @@ export class SharedView<ModelState> {
   /** The part of the slide that the view shows, which its canvas covers.
    *  `null`: the whole slide. */
   crop: SlideRect | null = null;
+  /** A reader's turn of the view (orbit.ts), or `null`. Call `redraw`
+   *  after a change. */
+  orbit: Orbit | null = null;
   /** The view's time (ms). */
   readonly now: () => number;
   private readonly context: CanvasRenderingContext2D;
@@ -150,6 +154,7 @@ export class SharedView<ModelState> {
       marked: this.marked,
       place,
       ...(this.crop ? { crop: this.crop } : {}),
+      ...(this.orbit ? { orbit: this.orbit } : {}),
     });
     for (const listener of this.listeners) listener(pose, now);
     this.changed = false;

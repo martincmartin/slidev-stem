@@ -78,8 +78,12 @@ const ARBOR_CAP = 3;
  *  out of it, thick enough to show as a ring when the view is small. */
 export const ARBOR_RADIUS = 2.5;
 const STRAP_THICKNESS = 4;
-/** From the watch centre: off the slide up to a tilt of about 75 degrees. */
-const STRAP_LENGTH = 1100;
+/** From the watch centre: short enough that a reader who turns an article's
+ *  figure sees a strap, not a plank; long enough that its ends are off the
+ *  slide in each view of the talk and each article figure, and on the
+ *  camera's way between them (watch/strap.test.ts). The Gear Train slide's
+ *  first click and the trenches slide need 423. */
+const STRAP_LENGTH = 450;
 const LUG_LENGTH = 300;
 const CROWN_CLEARANCE = 1;
 /** The 2D crown is a rectangle 22 by 34 px: a cylinder of this radius along x. */

@@ -81,12 +81,36 @@ export interface FigureSettings {
  *  show beside it ("tick", "tock"). */
 export const BOX_MARGIN = 16;
 
-/** Where the diving board draws, in slide px: the slide's width, from above
- *  the board's raised end to the slide's bottom (art/diving_board.py: the
- *  drawing is 452 px tall). While it curls, it rises into the title's
- *  space, to the slide's top. */
-const BOARD_BOX: SlideBox = { left: 0, top: 70, right: 980, bottom: 552 };
+/** The board's drawing on the slide: 452 px tall, to the slide's bottom
+ *  (`SLIDE_ORIGIN` in art/diving_board.py). */
+const BOARD_DRAWING_TOP = 100;
+/** In the drawing's px: the top of the board's swing, its highest point
+ *  (the SVG's `data-swing-top`; watch/article.test.ts checks that they
+ *  agree). */
+export const BOARD_SWING_TOP = 46.9;
+
+/** Where the diving board draws, in slide px: the slide's width, from the
+ *  top of the board's swing to the slide's bottom. Its sentence, beside the
+ *  board, is a label: the figure widens its crop to hold it. While the
+ *  board curls, it rises into the title's space, to the slide's top. */
+const BOARD_BOX: SlideBox = {
+  left: 0,
+  top: BOARD_DRAWING_TOP + BOARD_SWING_TOP,
+  right: 980,
+  bottom: 552,
+};
 const CURLING_BOARD_BOX: SlideBox = { ...BOARD_BOX, top: 0 };
+
+/** Where the board's picture is at a click: the board over the pool
+ *  (`BOARD_BOX`), the curl at its own click (`CURLING_BOARD_BOX`), or
+ *  none: before the board shows, and after the curl, where its picture has
+ *  gone. What it leaves then (the rest shape, over the hairspring, and its
+ *  sentence, a label the figure measures) is no picture of its own. */
+function boardBoxOf(board: BoardState | undefined): SlideBox | null {
+  if (!board?.rest) return null;
+  if (!board.curling) return BOARD_BOX;
+  return board.curlsHere ? CURLING_BOARD_BOX : null;
+}
 
 const NO_SETTINGS: FigureSettings = {
   mark: null,
@@ -273,16 +297,21 @@ export function defaultFigures(
   return figures;
 }
 
-/** A key for the camera at `clicks`, as the figure shows it: the figures of
- *  one slide with the same key get one crop. `null` for a slide with no
- *  watch and no board. */
+/** A key for the camera at `clicks`, as the figure shows it, and for the
+ *  diving board's picture (`boardBoxOf`): the figures of one slide with the
+ *  same key get one crop. A hairspring, the board over the pool and the
+ *  curl are three pictures, so the room that the curl needs is not kept in
+ *  the others. `null` for a slide with no watch and no board. */
 export function frameKey(
   frontmatter: Record<string, unknown>,
   clicks: number,
 ): string | null {
   const { watch: state, board } = pictureAt(frontmatter, clicks, true);
   if (!state && !board) return null;
-  return frameOf(state);
+  return JSON.stringify({
+    camera: frameOf(state),
+    board: boardBoxOf(board),
+  });
 }
 
 /** A key for the picture at `clicks`: two clicks, of any slides, with the
@@ -408,7 +437,8 @@ function cropTopBottom(
 /** Where the picture at `clicks` is on the slide, in px, with BOX_MARGIN
  *  around it and inside the slide: the shown pieces' extents as the view
  *  shows them, the ball of a view of a ball (the globe, and so its story
- *  maps, which fill the slide), and the diving board where it shows. Where the slide's top
+ *  maps, which fill the slide), or the diving board's picture where it
+ *  shows, which covers the watch. Where the slide's top
  *  or bottom cuts the watch, the crop centres the pieces that the view fits,
  *  up and down (`cropTopBottom`): the title's space above a watch that the
  *  slide's bottom cuts is not kept. Not across: there, what the slide cuts
@@ -421,14 +451,12 @@ export function pictureBox(
   clicks: number,
 ): SlideBox | null {
   const { watch: state, board } = pictureAt(frontmatter, clicks, true);
-  const boardBox = !board?.rest
-    ? null
-    : board.curling
-      ? CURLING_BOARD_BOX
-      : BOARD_BOX;
+  const boardBox = boardBoxOf(board);
   let box = boardBox;
   let fitBox: SlideBox | null = null;
-  if (state) {
+  // where the board's picture shows, it covers the watch: the watch's
+  // pieces are not in the picture
+  if (state && !boardBox) {
     const stage = stageState(watch, state);
     const shown = watch.scene.pieces.filter((piece) =>
       [...piece.meshes].some((mesh) => stage.shown.has(mesh)),

@@ -5,10 +5,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { transformPoint } from "./math.ts";
+import { compose, orbitRotation, viewRotation } from "./orbit.ts";
+import type { Orbit } from "./orbit.ts";
 import {
   cropCamera,
   planeOnSlide,
   slidePoint,
+  towardCamera,
   viewProjection,
 } from "./renderer.ts";
 import type { Plane, CameraPose, Vec3, View } from "./scene.ts";
@@ -186,4 +189,84 @@ test("planeOnSlide puts each point of a plane where slidePoint puts it, at any t
       );
     }
   }
+});
+
+/** Where the camera puts `point` in clip space, from its definition: the
+ *  camera's rotation and then the orbit, in the view's axes (right, down,
+ *  toward the reader) about the pivot; then the zoom and the shift on the
+ *  slide, and depth toward the reader out of the screen. */
+function byDefinition(
+  point: Vec3,
+  angles: { tilt: number; turn: number },
+  orbit: Orbit,
+): Vec3 {
+  const rotation = compose(viewRotation(angles), orbitRotation(orbit));
+  const from = point.map((value, index) => value - (VIEW.pivot[index] ?? 0));
+  const [right, down, toward] = rotation.map(
+    ([a, b, c]) => a * (from[0] ?? 0) + b * (from[1] ?? 0) + c * (from[2] ?? 0),
+  );
+  const slideX = VIEW.shift[0] + VIEW.scale * (VIEW.pivot[0] + (right ?? 0));
+  const slideY = VIEW.shift[1] + VIEW.scale * (VIEW.pivot[1] + (down ?? 0));
+  return [
+    (2 * slideX) / SLIDE[0] - 1,
+    1 - (2 * slideY) / SLIDE[1],
+    -(toward ?? 0) / 2000,
+  ];
+}
+
+test("the camera is its definition, with no orbit and with one", () => {
+  for (const tilt of [0, 20, 75]) {
+    for (const turn of [0, -60, 90]) {
+      for (const orbit of [
+        { yaw: 0, pitch: 0 },
+        { yaw: 40, pitch: 0 },
+        { yaw: 0, pitch: -30 },
+        { yaw: -70, pitch: 50 },
+      ]) {
+        const camera = viewProjection(VIEW, { tilt, turn, orbit }, SLIDE);
+        for (const point of POINTS) {
+          close(
+            transformPoint(camera.matrix, point),
+            byDefinition(point, { tilt, turn }, orbit),
+            `tilt ${String(tilt)}, turn ${String(turn)}, ${JSON.stringify(orbit)}`,
+          );
+        }
+      }
+    }
+  }
+});
+
+test("no orbit is the camera of today, to the bit", () => {
+  const angles = { tilt: 20, turn: 30 };
+  const plain = viewProjection(VIEW, angles, SLIDE).matrix;
+  const none = viewProjection(
+    VIEW,
+    { ...angles, orbit: { yaw: 0, pitch: 0 } },
+    SLIDE,
+  ).matrix;
+  assert.deepEqual([...none], [...plain]);
+});
+
+test("with an orbit, the pivot stays, and the camera looks along towardCamera", () => {
+  const angles = { tilt: 20, turn: 30, orbit: { yaw: 50, pitch: -25 } };
+  const camera = viewProjection(VIEW, angles, SLIDE);
+  const level = viewProjection(VIEW, { tilt: 20, turn: 30 }, SLIDE);
+  close(
+    transformPoint(camera.matrix, VIEW.pivot),
+    transformPoint(level.matrix, VIEW.pivot),
+    "the pivot",
+  );
+  const toward = towardCamera(angles);
+  assert.deepEqual(camera.toCamera, toward);
+  // a step toward the camera is nearer (clip z smaller), and does not move
+  // on the slide
+  const [x, y, z] = VIEW.pivot;
+  const near = transformPoint(camera.matrix, [
+    x + toward[0] * 10,
+    y + toward[1] * 10,
+    z + toward[2] * 10,
+  ]);
+  const at = transformPoint(camera.matrix, VIEW.pivot);
+  assert.ok(near[2] < at[2], "nearer");
+  close([near[0], near[1], 0], [at[0], at[1], 0], "on the slide");
 });

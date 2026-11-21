@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="980" height="452" viewBox="50 0 980 452" data-swing-start="2.4" data-swing-period="1" data-curl-start="3.4" data-curl-duration="2.4" data-edit-duration="1.2" data-label-x="660" data-label-y="160">
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="452" viewBox="50 0 980 452" data-swing-start="2.4" data-swing-period="1" data-curl-start="3.4" data-curl-duration="2.4" data-edit-duration="1.2" data-label-x="660" data-label-y="160" data-swing-top="46.9">
 <style>
 .diving-board-fill-subject-wash { fill: var(--palette-subject-wash, #D3DCE3); }
 .diving-board-stroke-subject-wash { stroke: var(--palette-subject-wash, #D3DCE3); }

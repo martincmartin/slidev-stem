@@ -94,6 +94,8 @@ import {
   hexRgb,
 } from "./scene.ts";
 import { at, check, checkFinite } from "./checked.ts";
+import { compose, isNoOrbit, orbitRotation, viewRotation } from "./orbit.ts";
+import type { Orbit } from "./orbit.ts";
 import { IDENTITY, checkAffine, normalMatrix, transformPoint } from "./math.ts";
 import type { Matrix4 } from "./math.ts";
 
@@ -364,6 +366,10 @@ export interface Camera {
 /** The unit direction to the camera, in world space, at `angles`: the
  *  gradient of the depth in `viewProjection`. */
 export function towardCamera(angles: CameraAngles): Vec3 {
+  if (angles.orbit && !isNoOrbit(angles.orbit)) {
+    // the direction to the reader in the view's axes, in the world's
+    return compose(viewRotation(angles), orbitRotation(angles.orbit))[2];
+  }
   const tilt = (angles.tilt * Math.PI) / 180;
   const turn = (angles.turn * Math.PI) / 180;
   return [
@@ -371,6 +377,38 @@ export function towardCamera(angles: CameraAngles): Vec3 {
     Math.sin(tilt) * Math.cos(turn),
     Math.cos(tilt),
   ];
+}
+
+/** The rows of a camera's matrix (clip x, clip y, depth) turned by `orbit`
+ *  in the view's axes, about the clip point `centre` (the pivot's). A view
+ *  axis maps to clip by `axes`: x by its scale, y (down) by minus its
+ *  scale, toward the reader by minus 1 / DEPTH_RANGE. So the orbit in clip
+ *  is axes x orbit x axes^-1, and the pivot stays where it is. */
+function orbited(
+  rows: readonly (readonly number[])[],
+  orbit: Orbit,
+  axes: Vec3,
+  centre: Vec3,
+): number[][] {
+  const rotation = orbitRotation(orbit);
+  const inClip = rotation.map((row, i) =>
+    row.map((value, j) => (at(axes, i) * value) / at(axes, j)),
+  );
+  return [0, 1, 2].map((i) => {
+    const turned = [0, 1, 2, 3].map((column) =>
+      [0, 1, 2].reduce(
+        (sum, k) => sum + at(at(inClip, i), k) * at(at(rows, k), column),
+        0,
+      ),
+    );
+    // keep the pivot: c - L c + L t, with t the old translation
+    const kept = [0, 1, 2].reduce(
+      (sum, k) => sum + at(at(inClip, i), k) * at(centre, k),
+      0,
+    );
+    turned[3] = at(centre, i) - kept + at(turned, 3);
+    return turned;
+  });
 }
 
 /** A view is a turn about the z axis through its pivot (clockwise on the
@@ -399,7 +437,7 @@ export function viewProjection(
   const turnedY = pivotY - turnSine * pivotX - turnCosine * pivotY;
   const scaleX = (2 * view.scale) / width;
   const scaleY = (2 * view.scale) / height;
-  const rows = [
+  const base = [
     [
       scaleX * turnCosine,
       -scaleX * turnSine,
@@ -422,10 +460,21 @@ export function viewProjection(
       -cosine / DEPTH_RANGE,
       (pivotY * sine + pivotZ * cosine - sine * turnedY) / DEPTH_RANGE,
     ],
-    [0, 0, 0, 1],
   ] as const;
+  const orbit = angles.orbit;
+  const rows =
+    orbit && !isNoOrbit(orbit)
+      ? orbited(base, orbit, [scaleX, -scaleY, -1 / DEPTH_RANGE], pivotClip())
+      : base;
+  /** Where the pivot is in clip space, before the orbit. */
+  function pivotClip(): Vec3 {
+    const [first, second, third] = base.map(
+      (row) => row[0] * pivotX + row[1] * pivotY + row[2] * pivotZ + row[3],
+    );
+    return [first ?? 0, second ?? 0, third ?? 0];
+  }
   const matrix = new Float32Array(16);
-  for (const [row, values] of rows.entries()) {
+  for (const [row, values] of [...rows, [0, 0, 0, 1]].entries()) {
     for (const [column, value] of values.entries()) {
       matrix[column * 4 + row] = value;
     }

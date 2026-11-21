@@ -18,6 +18,22 @@
 // stands there. For a reader who asks for reduced motion, a step in a paused
 // figure is a jump (`jumps`).
 //
+// THE TURN. Where the talk's layer gives a `turner` (../figure.ts), a drag
+// on the figure turns its picture, and a "Reset view" button shows once it
+// is turned. Three traps of 3D on a page, and how the figure avoids them:
+// it does not listen to the wheel, so the wheel always scrolls the page; on
+// a touch screen it lets the browser take a vertical swipe (`touch-action:
+// pan-y`), so a thumb on a figure still scrolls, and only a sideways drag
+// turns it; and the layer clamps the turn short of edge-on.
+//
+// "Reset view" eases the picture back (the layer's `reset`: with the
+// camera's move, if a step moves it); until it is back, a drag turns
+// nothing (`returning`). The rest of the step's change (a fade, a flash)
+// does not wait: it does not move the view. A step keeps the turn, but in a playing figure: there, a
+// turn holds the tour at its step (`held`), and a press of a step's button
+// or of "Reset view" goes back to the tour. The picture eases back while
+// the camera moves to the step, and the tour goes on from there.
+//
 // THE CROP. A figure of a picture is cropped to the picture's box (the
 // talk's), widened to hold the labels: the elements with `in-figure` that
 // show at its steps, measured on the page once they are drawn. The figure
@@ -33,6 +49,7 @@ import PrintSlideClick from "@slidev/client/internals/PrintSlideClick.vue";
 import type { SlideRoute } from "@slidev/client";
 import {
   computed,
+  nextTick,
   onBeforeUnmount,
   onMounted,
   provide,
@@ -43,7 +60,7 @@ import {
 } from "vue";
 import { FigureClock } from "../clock.ts";
 import { FIGURE } from "../figure.ts";
-import type { Box, FigureControl } from "../figure.ts";
+import type { Box, FigureControl, FigureTurner } from "../figure.ts";
 import type { FigureBlock } from "../plan.ts";
 
 const props = defineProps<{
@@ -77,6 +94,10 @@ const emit = defineEmits<{
 const MAX_SCALE = 1.25;
 /** ms: how long a playing figure stays at a step after its change ends. */
 const DWELL_MS = 4500;
+/** Degrees that a drag across the whole figure turns its picture. */
+const DRAG_DEGREES = 180;
+/** px: how far a touch moves before the figure knows its direction. */
+const TOUCH_SLOP = 10;
 
 const step = ref(0);
 const clicks = computed(() => props.steps[step.value] ?? 0);
@@ -87,6 +108,15 @@ const paused = computed(() => props.pausedByPage || pausedByReader.value);
 const busyUntil = ref(0);
 const controls = shallowRef<readonly FigureControl[]>([]);
 const still = ref(false);
+const turner = shallowRef<FigureTurner | null>(null);
+/** Whether the picture is on its way back to the step's view, after
+ *  "Reset view" or a step that ends a playing figure's turn. */
+const returning = ref(false);
+/** Whether a turn holds a playing figure at its step. */
+const held = ref(false);
+/** Whether a drag turns the picture. */
+const turnable = computed(() => turner.value !== null && !returning.value);
+const turned = computed(() => turner.value?.turned.value ?? false);
 const clock = new FigureClock();
 const now = (): number => clock.time(performance.now());
 /** Whether the figure's time runs: while it plays, and in a run to
@@ -137,6 +167,7 @@ provide(FIGURE, {
   busyUntil,
   controls,
   still,
+  turner,
 });
 const cropWidth = computed(() => crop.value.right - crop.value.left);
 const cropHeight = computed(() => crop.value.bottom - crop.value.top);
@@ -180,7 +211,9 @@ function measureLabels(): void {
   const layer = (rect: DOMRect): boolean =>
     rect.width >= 0.9 * origin.width && rect.height >= 0.9 * origin.height;
   let box: Box | null = null;
-  for (const label of slide.querySelectorAll(".slidev-page .in-figure")) {
+  // the slide's own labels, and those of the talk's global layers (the
+  // diving board's sentence)
+  for (const label of slide.querySelectorAll(".in-figure")) {
     if (props.steps.length === 1 && label.closest(".slidev-vclick-hidden")) {
       continue;
     }
@@ -188,6 +221,10 @@ function measureLabels(): void {
       // an <svg>'s box is its viewport (a callout's is 1 px at the slide's
       // corner, with `overflow: visible`): its shapes say where it draws
       if (element instanceof SVGSVGElement) continue;
+      // with one step, a part that does not show at it needs no room (the
+      // diving board's words that its edit writes in, after the curl)
+      if (props.steps.length === 1 && getComputedStyle(element).opacity === "0")
+        continue;
       const rect = element.getBoundingClientRect();
       if ((rect.width === 0 && rect.height === 0) || layer(rect)) continue;
       box = union(box, {
@@ -220,7 +257,8 @@ function trackClock(): void {
 /** A playing figure's next step: after the change at its click ends. */
 function schedule(): void {
   clearTimeout(timer);
-  if (!props.figure.play || !near.value || paused.value) return;
+  if (!props.figure.play || !near.value || paused.value || held.value) return;
+  if (returning.value) return;
   const wait = Math.max(0, busyUntil.value - now()) + DWELL_MS;
   timer = setTimeout(() => {
     step.value = (step.value + 1) % props.steps.length;
@@ -229,6 +267,78 @@ function schedule(): void {
 
 function go(index: number): void {
   step.value = Math.min(Math.max(index, 0), props.steps.length - 1);
+  // after the talk's layer has taken the step, so that `busyUntil` is the
+  // step's: the picture eases back while the camera moves
+  if (held.value) void nextTick(resetView);
+}
+
+/** Ease the picture back to the step's view; a drag turns nothing until it
+ *  is there. */
+function resetView(): void {
+  if (!turner.value) return;
+  returning.value = true;
+  turner.value.reset(props.reducedMotion);
+  endReturn();
+}
+
+/** End `returning` once the picture is back (with the camera, if a step
+ *  moves it); then a held tour goes on, after its dwell. */
+function endReturn(): void {
+  if (!returning.value || turned.value) return;
+  returning.value = false;
+  held.value = false;
+}
+
+/** The pointer that turns the picture, and where it was last. A touch
+ *  turns nothing until it has moved `TOUCH_SLOP` px (`turning`): until
+ *  then, the browser can still take it as a vertical swipe, and scroll. */
+let drag: { id: number; x: number; y: number; turning: boolean } | null = null;
+const dragging = ref(false);
+
+function startTurn(event: PointerEvent): void {
+  if (!turnable.value || !event.isPrimary || event.button !== 0) return;
+  if (!frame.value) return;
+  drag = {
+    id: event.pointerId,
+    x: event.clientX,
+    y: event.clientY,
+    turning: event.pointerType === "mouse",
+  };
+  dragging.value = true;
+  frame.value.setPointerCapture(event.pointerId);
+}
+
+function moveTurn(event: PointerEvent): void {
+  if (drag?.id !== event.pointerId) return;
+  if (!drag.turning) {
+    const [across, down] = [event.clientX - drag.x, event.clientY - drag.y];
+    if (Math.hypot(across, down) < TOUCH_SLOP) return;
+    // a swipe up or down is the page's: the browser scrolls it
+    if (Math.abs(down) > Math.abs(across)) {
+      drag = null;
+      dragging.value = false;
+      return;
+    }
+    drag = { ...drag, turning: true };
+  }
+  const width = frame.value?.getBoundingClientRect().width ?? 0;
+  if (width > 0) {
+    const degrees = DRAG_DEGREES / width;
+    turner.value?.turn(
+      (event.clientX - drag.x) * degrees,
+      (event.clientY - drag.y) * degrees,
+    );
+    if (props.figure.play) held.value = true;
+  }
+  drag = { ...drag, x: event.clientX, y: event.clientY };
+}
+
+/** The drag ends: the pointer lets go, or the browser takes it (a swipe
+ *  that scrolls). */
+function endTurn(event: PointerEvent): void {
+  if (drag?.id !== event.pointerId) return;
+  drag = null;
+  dragging.value = false;
 }
 
 onMounted(() => {
@@ -270,7 +380,8 @@ watch(busyUntil, (end) => {
   clock.runTo(performance.now(), end);
   trackClock();
 });
-watch([step, near, paused, busyUntil], schedule);
+watch([step, near, paused, busyUntil, held, returning], schedule);
+watch(turned, endReturn);
 // a figure of the whole slide hides its title, and one of a picture keeps
 // the title's room: the labels can move when it turns into one
 watch(picture, measureSoon);
@@ -278,20 +389,43 @@ watch(picture, measureSoon);
 
 <template>
   <figure :id="figure.id" class="article-figure">
-    <div
-      ref="frame"
-      class="article-figure-frame"
-      :style="frameStyle"
-      :role="figure.alt ? 'img' : undefined"
-      :aria-label="figure.alt ?? undefined"
-    >
+    <div class="article-figure-view">
       <div
-        class="article-figure-slide"
-        :class="{ 'article-figure-picture': picture }"
-        :style="slideStyle"
+        ref="frame"
+        class="article-figure-frame"
+        :style="frameStyle"
+        :class="{
+          'article-figure-turnable': turnable,
+          'article-figure-dragging': dragging,
+          'article-figure-turned': turned,
+        }"
+        :role="figure.alt ? 'img' : undefined"
+        :aria-label="figure.alt ?? undefined"
+        @pointerdown="startTurn"
+        @pointermove="moveTurn"
+        @pointerup="endTurn"
+        @pointercancel="endTurn"
+        @lostpointercapture="endTurn"
       >
-        <PrintSlideClick :nav="nav" />
+        <div
+          class="article-figure-slide"
+          :class="{ 'article-figure-picture': picture }"
+          :style="slideStyle"
+        >
+          <PrintSlideClick :nav="nav" />
+        </div>
       </div>
+      <!-- over the picture's corner, where the labels were: they hide
+           while the picture is turned -->
+      <button
+        v-if="turner"
+        type="button"
+        class="article-button article-reset"
+        :class="{ 'article-reset-shown': turned && !returning }"
+        @click="resetView"
+      >
+        Reset view
+      </button>
     </div>
     <!-- eslint-disable vue/no-v-html -- the narration, rendered by setup/preparser.ts -->
     <div
@@ -408,6 +542,48 @@ watch(picture, measureSoon);
   left: 0;
   top: 0;
   transform-origin: 0 0;
+}
+/* A figure that turns (THE TURN): the wheel and a vertical swipe scroll the
+   page; a sideways drag turns the picture. */
+.article-figure-turnable {
+  touch-action: pan-y;
+  cursor: grab;
+}
+.article-figure-dragging {
+  cursor: grabbing;
+}
+/* While the picture is turned, the slide's own content (the labels and
+   their leaders) fades out: it is drawn for the step's view. The canvas is
+   in the talk's global layer, outside .slidev-page. */
+.article-figure-slide .slidev-page {
+  transition: opacity 0.25s ease;
+}
+.article-figure-turned .slidev-page {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .article-figure-slide .slidev-page {
+    transition: none;
+  }
+}
+.article-figure-view {
+  position: relative;
+}
+.article-reset {
+  position: absolute;
+  right: 0.5em;
+  top: 0.5em;
+  font-size: 0.8em;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.25s ease,
+    visibility 0s 0.25s;
+}
+.article-reset-shown {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s ease;
 }
 /* the caption is narration */
 .article-figure-caption {

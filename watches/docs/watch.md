@@ -416,7 +416,9 @@ lands on a pallet stone, a word appears beside the stone: "tick" at the upper
 stone, "tock" at the lower one. This drop makes the sound of a real watch, not
 the jewel's strike on the fork. It appears at once, and fades out as it
 drifts away from the escape wheel: the sound goes out from the tooth.
-`components/TickTock.vue` holds the type, the times and the distances.
+`components/TickTock.vue` holds the type, the times and the distances. In
+an article's figure that a reader turns, a word comes out where the turned
+watch shows its stone (`stoneStrikes` with the figure's orbit).
 
 - **Not an oversight: the words cut in.** All other text fades in
   ([slide-patterns.md](slide-patterns.md#text-fades)). These are a sound.
@@ -1710,7 +1712,10 @@ dashed outline has become. Each step is a quarter of `Timeline.edit` in
 - **The leader points to the line "from straight,".** Its baseline starts at
   `LeaderDesign.label`, which the SVG's root gives the page (`data-label-x`,
   `data-label-y`). The leader joins "straight" to the straight outline, and,
-  after the edit, "rest" to the spiral.
+  after the edit, "rest" to the spiral. The root also gives the top of the
+  board's swing (`data-swing-top`): an article's figure of the board is
+  cropped there (`BOARD_SWING_TOP` in `watch/article.ts`, which a test
+  keeps equal to it).
 - **Not an oversight: the lines are 2.1 em apart from the start.** That is
   room for a written-in word, so the edit moves no line. Lines that spread
   apart during the curl were judged too much motion.

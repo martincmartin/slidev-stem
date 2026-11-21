@@ -191,6 +191,9 @@ async function prerenderPart(browser: Browser, part: number): Promise<number> {
           still.loading = "lazy";
           still.decoding = "async";
           frame.replaceChildren(still);
+          // a still does not turn
+          frame.className = "article-figure-frame";
+          figure.querySelector(".article-reset")?.remove();
           frame.removeAttribute("role");
           frame.removeAttribute("aria-label");
           figure.querySelector(".article-figure-controls")?.remove();

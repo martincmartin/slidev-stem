@@ -20,6 +20,8 @@
 // frame that it could not finish. The error goes to the browser's console;
 // `start()` runs the loop again.
 
+import { limitedOrbit } from "./orbit.ts";
+import type { Orbit } from "./orbit.ts";
 import { check } from "./checked.ts";
 import { Renderer } from "./renderer.ts";
 import type { Place } from "./renderer.ts";
@@ -142,6 +144,9 @@ export interface ViewDrawing {
   readonly crop?: SlideRect;
   /** Where the picture goes on the renderer's canvas (`Renderer.render`). */
   readonly place?: Place;
+  /** A reader's turn of the view, after the timeline's camera (orbit.ts):
+   *  the pose that the layers get has it too, so they turn with it. */
+  readonly orbit?: Orbit;
 }
 
 /** Called after each frame that a stage or a view draws, with the camera
@@ -167,14 +172,18 @@ export function drawFrame<ModelState>(
     flashing && marked.size > 0
       ? new Set([...flashing, ...marked])
       : (flashing ?? (marked.size > 0 ? marked : null));
-  const pose = { view: values.view, tilt: values.tilt, turn: values.turn };
+  const pose: CameraPose = {
+    view: values.view,
+    tilt: values.tilt,
+    turn: values.turn,
+    // clamped again at each frame: the camera's own tilt can move under it
+    ...(drawing.orbit ? { orbit: limitedOrbit(values, drawing.orbit) } : {}),
+  };
   const groupMatrices = model.frame(now, renderer, pose);
   const { keep, fade, rest } = withExtra(values, model.extra?.(now));
   renderer.render(
     {
-      view: values.view,
-      tilt: values.tilt,
-      turn: values.turn,
+      ...pose,
       groupMatrices,
       keep,
       fade,

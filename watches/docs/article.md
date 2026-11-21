@@ -9,8 +9,8 @@ to write the narration and place the figures; asides; pull quotes; a slide's tit
 for the article; what a figure shows, and why; the sliders,
 the button, the playing figure, and Part 2's story figures; how a page is
 checked on a phone; how the code is split between the addon and the
-talk; how to build the static page, and where it can go; how to export
-its text.
+talk; how a reader turns a figure of the watch; how to build the static
+page, and where it can go; how to export its text.
 **Read before** you write or change a slide's narration, add a click to a
 slide that has narration, add a part or a slide for every page, give a
 slide a title for the article, change
@@ -29,7 +29,9 @@ build the article or export its text.
 (the figures' sheets and crops: a blink and a slow spring in Firefox for
 Android),
 [`tasks/2026-11-20-article-parts/`](../tasks/2026-11-20-article-parts/PLAN.md)
-(a page for each part, and what each page loads).
+(a page for each part, and what each page loads),
+[`tasks/2026-11-20-article-turning/`](../tasks/2026-11-20-article-turning/PLAN.md)
+(turning a figure: the rotation, the limit, the traps).
 
 ## The pages
 
@@ -91,6 +93,8 @@ cover`).
   plays by itself, with captions. A figure that moves by itself, or plays, has a
   pause button; a still one has none (`still` in
   `addons/narration/figure.ts`).
+- A figure of the watch turns when the reader drags it ("Turning a
+  figure", below).
 - At the end, a link to the next part and links to every part ("The pages",
   above).
 - **A copy of the page is its prose**: the headings, the narration, the
@@ -296,7 +300,16 @@ slides their photos.
 
 **The figures of one slide that share a camera share a crop** (`frameKey`
 in `watch/article.ts`, `cropGroups` in `addons/narration/plan.ts`): the box
-over all their pictures and all their labels. So a piece keeps its place
+over all their pictures and all their labels. The diving board's picture
+counts as part of the camera: the Hairspring slide's hairspring, its board
+over the pool and its curl are three pictures, so only the curl's figure
+keeps the room that the curl rises into. The board over the pool is
+cropped at the top of its swing, and the watch that it covers is not part
+of its picture. After the curl, the board's picture has gone, and its
+sentence is a label that the figure measures (it is `in-figure` while the
+board shows). In a figure of one step, a part of a label that does not
+show (opacity 0: the words that the edit writes in, before it) takes no
+room. So a piece keeps its place
 and size from one figure to the next, as on the slide, and the reader sees
 that it is the same piece with new ones beside it. An earlier figure keeps
 empty room for what comes later. A figure after the camera moves (the Gear
@@ -443,6 +456,68 @@ is the point and the words are captions. It steps by itself while it is on
 the screen: each step waits for the change at its click to end, then for
 4.5 s (`DWELL_MS` in `ArticleFigure.vue`). After the last stop it starts
 again. The flash after each move stays: the reader is watching the figure.
+A reader who turns it holds the tour ("Turning a figure", below).
+
+## Turning a figure
+
+**A reader drags a figure of the watch to turn it**, as on Bartosz
+Ciechanowski's pages: a drag sideways swings the watch to show its side,
+and a drag up or down tips it. A drag across the whole figure turns it
+180° (`DRAG_DEGREES` in `ArticleFigure.vue`). The turn is an orbit after
+the step's own camera (`../../docs/webgl.md`, "The camera is
+orthographic"), so 12 o'clock stays near the top.
+
+- **Which figures turn:** those that show the watch. Not the globe or a
+  story map, not while the diving board's picture covers the watch (a flat
+  drawing). So the Hairspring slide's first figure turns, and so does its last (the
+  twist), where the board's rest shape and sentence fade out with the
+  labels.
+- **The limit:** 89° from face-on, in any direction (`ORBIT_LIMIT` in
+  `webgl/orbit.ts`). It counts the step's own tilt: a figure at a tilt of
+  20° turns farther one way than the other. A drag past the limit slides
+  along it. Not an oversight that it is not 90°: at 89° the watch looks as
+  it does edge-on, and edge-on the dial's faces lie along the line of sight,
+  where their depths tie.
+- **The wheel always scrolls the page.** The figure does not listen to it:
+  a reader who scrolls past a figure must not zoom into a gear.
+- **On a touch screen, only a sideways drag turns the figure**
+  (`touch-action: pan-y`): the browser takes a vertical swipe and scrolls
+  the page, also on a figure. A touch turns nothing until it has moved
+  10 px (`TOUCH_SLOP`), and then only if it moved more sideways than up or
+  down: the browser sends a few moves before it starts to scroll. A
+  sideways drag tips the watch a little too, by its vertical part.
+- **"Reset view"** shows over the figure's upper right corner once the
+  figure is turned (not the lower right: the Recap's time scale is there).
+  It eases the picture back in 0.6 s (`RESET_MS` in `FigureLayer.vue`), on
+  the page's clock, so also in a paused figure; for a reader who asks for
+  reduced motion, at once. When a step ends the turn (in the Recap), the
+  turn eases back with the camera's move to the step, on its clock and its
+  curve: one motion from the turned picture to the step's view. A drag
+  turns nothing until the picture is back: when the camera arrives. It
+  does not wait for the rest of the step (a fade, a flash), which does not
+  move the view.
+- **A step keeps the turn**, as do a slider and the Mainspring slide's
+  button. They change what the watch does, not where the reader looks
+  from, and the turn follows the step's own camera, so a step that moves
+  the camera still moves it. A step to a picture that cannot turn ends the
+  turn.
+- **The Recap's playing figure turns too.** A turn holds its tour at the
+  step: the watch runs, but the tour does not go on. A press of a step's
+  button or of "Reset view" ends the turn: the picture eases back with
+  the camera's move to the step, as one motion, a drag turns nothing until
+  the camera arrives, and then the tour goes on, with its dwell after the
+  step's change.
+- **The labels fade out while the figure is turned**: their leaders are
+  drawn for the step's view, and would point at nothing. So does what the
+  diving board draws over the watch. What rides the camera turns with the
+  watch: the drive arrow, and "tick" and "tock", which come out where the
+  turned watch shows its pallet stones. A new layer over the watch must do
+  one or the other.
+
+The article owns the drag, the button and the fade (`ArticleFigure.vue`);
+the talk's layer owns the turn and its limit (`FigureTurner` in
+`addons/narration/figure.ts`, and `FigureLayer.vue`). A still in the static
+page does not turn.
 
 ## Part 2's story figures
 

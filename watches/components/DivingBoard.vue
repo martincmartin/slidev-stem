@@ -290,7 +290,14 @@ const classes = computed(() => ({
   >
     <!-- eslint-disable-next-line vue/no-v-html -- our own file, public/diving-board.svg -->
     <div class="diving-board-art" v-html="markup" />
-    <div v-if="markup" class="diving-board-sentence" data-layer="rest-callout">
+    <!-- in-figure while the board shows: an article's figure measures it
+         as a label, and crops to hold it (watch/article.ts, `boardBoxOf`) -->
+    <div
+      v-if="markup"
+      class="diving-board-sentence"
+      :class="{ 'in-figure': target.state?.rest }"
+      data-layer="rest-callout"
+    >
       <!-- no space inside a struck word's span: the strike is the span's width -->
       <!-- prettier-ignore -->
       <div><span class="diving-board-edit" style="--strike: var(--edit-0)">Bend<span class="diving-board-insert" style="--insert: var(--edit-1)">Wind</span></span> it away</div>
@@ -302,7 +309,12 @@ const classes = computed(() => ({
 </template>
 
 <style>
+/* while a reader turns the watch under it (FigureLayer.vue, "THE TURN") */
+.diving-board.diving-board-turned {
+  opacity: 0;
+}
 .diving-board {
+  transition: opacity 0.25s ease;
   position: absolute;
   /* the drawing is the whole slide's width, 980 x 452, from its left edge to
      its bottom: its x 0 is the slide's x -50 (its viewBox starts at 50), so its

@@ -3,6 +3,7 @@
 // `article` settings; and every slide's narration.
 
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import {
   noteIsNarration,
@@ -10,10 +11,12 @@ import {
   parseNarration,
 } from "../addons/narration/narration.ts";
 import {
+  BOARD_SWING_TOP,
   BUTTON_WORDS,
   defaultFigures,
   figureMarks,
   figureSettings,
+  frameKey,
   pictureBox,
   pictureKey,
   SLIDER_WORDS,
@@ -293,4 +296,30 @@ test("a reader can step to each leg of a voyage, and no voyage plays by itself",
   });
   // the Hunt for Juan Fernández slide, at least
   assert.ok(voyages > 0, "no shown slide has a voyage");
+});
+
+test("the Hairspring slide's crops: the curl's room is the curl's alone", async () => {
+  // the hairspring (clicks 0 and 3) keeps one crop, so it keeps its place
+  // and size; the board over the pool and the curl have crops of their own
+  const hairspring = await slideFrontmatter("Hairspring");
+  const keys = [0, 1, 2, 3].map((clicks) => frameKey(hairspring, clicks));
+  assert.equal(keys[0], keys[3]);
+  assert.equal(new Set(keys).size, 3);
+  const top = (clicks: number): number =>
+    pictureBox(watch, hairspring, clicks)?.top ?? Number.NaN;
+  // only the curl rises to the slide's top; the board over the pool starts
+  // at the top of its swing, not at the hairspring that it covers
+  assert.equal(top(2), 0);
+  assert.ok(top(1) > 120, String(top(1)));
+  for (const clicks of [0, 1, 3]) assert.ok(top(clicks) > 50, String(clicks));
+});
+
+test("the board's crop starts at the top of its swing, as the drawing says", async () => {
+  const svg = await readFile(
+    new URL("../public/diving-board.svg", import.meta.url),
+    "utf8",
+  );
+  const found = /data-swing-top="([^"]+)"/.exec(svg.slice(0, 2000));
+  assert.ok(found?.[1], "no data-swing-top on the SVG's root");
+  assert.equal(Number(found[1]), BOARD_SWING_TOP);
 });

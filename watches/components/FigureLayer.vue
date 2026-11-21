@@ -21,6 +21,18 @@
 // (`figureMarks`, watch/article.ts): a steady flash, for a reader whose eyes
 // are on the words.
 //
+// THE TURN. Where the figure shows the watch (not the globe, a story map,
+// or the diving board's picture over it), the reader can turn it (`FigureTurner`,
+// addons/narration/figure.ts): an orbit after the step's camera
+// (webgl/orbit.ts), clamped short of edge-on from the camera's angles at
+// the time. `reset` eases it back on the page's clock. A step, or the
+// `release` button, keeps the turn: it changes
+// what the watch does, not where the reader looks from, and the orbit
+// follows the step's camera. A click where the watch cannot turn ends it.
+// While the watch is turned, what the board still draws over it (the rest
+// shape and its sentence, after the curl) fades out, as the labels do: it
+// is drawn flat, for the step's view.
+//
 // THE CROP. The canvas covers only the part of the slide that the figure
 // shows (`figure.crop`), and the view draws only that part
 // (webgl/shared.ts, "A VIEW DRAWS ITS CROP").
@@ -55,6 +67,7 @@ import type {
   Box,
   FigureContext,
   FigureControl,
+  FigureTurner,
 } from "../addons/narration/figure.ts";
 import DivingBoard from "./DivingBoard.vue";
 import StoryMaps from "./StoryMaps.vue";
@@ -67,7 +80,10 @@ import {
 import type { VoyageStep } from "../globe/voyage.ts";
 import TickTock from "./TickTock.vue";
 import TimeScale from "./TimeScale.vue";
+import { isNoOrbit, movedOrbit, NO_ORBIT } from "../webgl/orbit.ts";
+import type { Orbit } from "../webgl/orbit.ts";
 import { SharedView } from "../webgl/shared.ts";
+import { ease } from "../webgl/timeline.ts";
 import type { FrameListener } from "../webgl/stage.ts";
 import type { Mesh, SlideRect } from "../webgl/scene.ts";
 import {
@@ -230,9 +246,11 @@ const board = shallowRef<BoardTarget>({
 const boardScrub = computed(() =>
   settings.value.slider === "curl" ? curl.value : null,
 );
+/** The reader's turn of the watch (THE TURN). */
+const orbit = shallowRef<Orbit>(NO_ORBIT);
 const tickTock = computed(() =>
   tickTockState(frontmatter.value, clicks.value) && !hidden.value
-    ? { strikes: stoneStrikes(art, frontmatter.value) }
+    ? { strikes: stoneStrikes(art, frontmatter.value, orbit.value) }
     : undefined,
 );
 const timeScale = computed(() =>
@@ -268,6 +286,56 @@ const still = computed(() => {
     settings.value.slider !== "twist"
   );
 });
+
+/** Whether the watch shows: not only the globe, and not under the diving
+ *  board's picture (`hidden`). */
+const turnable = computed(
+  () => !hidden.value && !!state.value && showsWatch(state.value),
+);
+const turned = computed(() => !isNoOrbit(orbit.value));
+/** ms: how long the turn takes to ease back to the step's view. */
+const RESET_MS = 600;
+/** The frame of the ease back, while it runs. */
+let resetFrame = 0;
+
+/** Set the turn, and end an ease back. */
+function setOrbit(to: Orbit): void {
+  cancelAnimationFrame(resetFrame);
+  orbit.value = to;
+}
+
+const turner: FigureTurner = {
+  turn(yaw, pitch) {
+    if (!view) return;
+    const angles = view.timeline.valuesAt(figure.now());
+    setOrbit(movedOrbit(angles, orbit.value, yaw, pitch));
+  },
+  // While the camera moves to a step (the reset comes with a step), the
+  // turn eases back with it, on its clock and its curve: one motion from
+  // the turned picture to the step's view. With no move, it eases back in
+  // RESET_MS on the page's clock, which also runs in a paused figure.
+  reset(atOnce) {
+    const from = orbit.value;
+    setOrbit(atOnce ? NO_ORBIT : from);
+    if (atOnce || isNoOrbit(from) || !view) return;
+    const moveEnd = view.viewEndAt();
+    const withMove = moveEnd > figure.now();
+    const clock = withMove ? figure.now : () => performance.now();
+    const start = clock();
+    const length = withMove ? moveEnd - start : RESET_MS;
+    const frame = (): void => {
+      const part = Math.min(1, (clock() - start) / length);
+      const left = 1 - ease(part);
+      orbit.value =
+        part === 1
+          ? NO_ORBIT
+          : { yaw: from.yaw * left, pitch: from.pitch * left };
+      if (part < 1) resetFrame = requestAnimationFrame(frame);
+    };
+    frame();
+  },
+  turned,
+};
 
 /** Whether `now` shows a piece of the watch, not only the globe. */
 function showsWatch(now: WatchState): boolean {
@@ -354,6 +422,7 @@ onMounted(() => {
 });
 onBeforeUnmount(() => {
   stopThumbReturn();
+  cancelAnimationFrame(resetFrame);
   if (view) sharedStage().remove(view);
 });
 
@@ -400,6 +469,19 @@ onChange(
   },
   { immediate: true },
 );
+onChange(
+  turnable,
+  (now) => {
+    figure.turner.value = now ? turner : null;
+    if (!now) setOrbit(NO_ORBIT);
+  },
+  { immediate: true },
+);
+onChange(orbit, (now) => {
+  if (!view) return;
+  view.orbit = isNoOrbit(now) ? null : now;
+  view.redraw();
+});
 onChange(palette, (now) => {
   if (view) view.palette = now.palette;
 });
@@ -456,6 +538,7 @@ onChange(
       :scrub="boardScrub"
       :paused="!figure.moving.value || !figure.near.value"
       :now="figure.now"
+      :class="{ 'diving-board-turned': turned }"
       @cover="(covers: boolean) => (covered = covers)"
       @ends="(at: number) => setEnd('board', at)"
     />
