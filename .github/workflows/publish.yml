@@ -127,8 +127,10 @@ jobs:
                 # Chromium, and the system libraries that it needs.
                 pnpm exec playwright install --with-deps chromium
                 pnpm build --base "/$REPO/$TALK/"
-                # the site's origin: the article's preview image needs an
-                # absolute URL. A Pages host is the owner's name, in lower case.
+                # The origin of the site: the preview image of the article
+                # needs an absolute URL. A Pages host is the name of the
+                # owner, in lower case. No apostrophe here: this script is
+                # in single quotes.
                 pnpm run --if-present prerender --origin "https://${GITHUB_REPOSITORY_OWNER,,}.github.io"
               '; then
               built+=("$talk")
