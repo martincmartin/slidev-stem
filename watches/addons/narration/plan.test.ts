@@ -23,6 +23,7 @@ function slide(overrides: Partial<SlideInput>): SlideInput {
   return {
     no: 2,
     title: "Escapement",
+    documentTitle: null,
     layout: null,
     eyebrow: null,
     history: null,
@@ -130,6 +131,32 @@ test("a slide's articleTitle is its title in the article", () => {
   assert.throws(
     () => titleOf({ articleTitle: 2026 }),
     /articleTitle: 2026 is not a line of text/,
+  );
+});
+
+test("a document title leaves the article's heading and subtitle separate", () => {
+  const input = (frontmatter: Record<string, unknown>): SlideInput =>
+    slideInput(
+      { no: 2, title: "Short title", frontmatter, parts: null },
+      DEFAULT_HOOKS,
+    );
+  const section = input({
+    layout: "section",
+    articleTitle: "Article heading",
+    articleSubtitle: "Article subtitle",
+    articleDocumentTitle: " Subtitle: Article heading ",
+  });
+  assert.equal(section.documentTitle, "Subtitle: Article heading");
+  const [header] = pagePlan([
+    slide({ no: 1, title: "Watches", layout: "cover" }),
+    section,
+  ]);
+  assert.equal(header?.kind === "title" && header.text, "Article heading");
+  assert.equal(header?.kind === "title" && header.subtitle, "Article subtitle");
+  assert.equal(input({}).documentTitle, null);
+  assert.throws(
+    () => input({ articleDocumentTitle: 2026 }),
+    /articleDocumentTitle: 2026 is not a line of text/,
   );
 });
 

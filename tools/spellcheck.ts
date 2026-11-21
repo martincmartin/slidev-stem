@@ -55,6 +55,7 @@ const SHOWN_KEYS = new Set([
   "eyebrow",
   "history",
   "articleTitle",
+  "articleDocumentTitle",
   "articleDescription",
   "articleSubtitle",
 ]);

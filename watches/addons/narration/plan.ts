@@ -27,6 +27,8 @@ import type { FigureMarker, QuoteBlock } from "./narration.ts";
 /** The frontmatter key for a slide's title in the article, in place of its
  *  title on the screen (../../docs/article.md, "A title for the article"). */
 const ARTICLE_TITLE_KEY = "articleTitle";
+/** An optional title for the browser's tab and the static page's preview. */
+const DOCUMENT_TITLE_KEY = "articleDocumentTitle";
 /** The frontmatter key for a section's page's description: what a link's
  *  preview and a search engine show (../../docs/article.md, "The pages"). */
 const DESCRIPTION_KEY = "articleDescription";
@@ -91,6 +93,8 @@ export interface PagedSlide {
   /** The slide's title in the article: its `articleTitle`, or its own. */
   readonly title: string | null;
   readonly layout: string | null;
+  /** A section's browser tab title (`articleDocumentTitle`), or `null`. */
+  readonly documentTitle: string | null;
   /** `true`: the slide is in the talk, but not in the article
    *  (`articleHidden`). */
   readonly hidden: boolean;
@@ -128,6 +132,7 @@ export function pagedSlide(slide: {
   return {
     no: slide.no,
     title: frontmatterText(frontmatter, ARTICLE_TITLE_KEY) ?? slide.title,
+    documentTitle: frontmatterText(frontmatter, DOCUMENT_TITLE_KEY),
     layout: typeof layout === "string" ? layout : null,
     hidden: frontmatter[HIDDEN_KEY] === true,
     linked: frontmatter[LINKED_KEY] !== false,

@@ -19,7 +19,7 @@ Before you…
   `docs/globe.md`, and
   `../docs/webgl.md`.
 - write or change a slide's narration, its `articleTitle`, a page's
-  `articleSubtitle` or `articleDescription`, or a photo's credit, add a part, hide a slide from the article (`articleHidden`,
+  `articleSubtitle`, `articleDocumentTitle` or `articleDescription`, or a photo's credit, add a part, hide a slide from the article (`articleHidden`,
   `articleLinked`), or change the article
   (`addons/narration/`, `components/FigureLayer.vue`, `watch/article.ts`),
   build it, export its text or count its words: `docs/article.md`, and `../docs/export.md`.

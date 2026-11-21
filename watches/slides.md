@@ -85,6 +85,7 @@ transition: watch-zoom
 # title (docs/article.md, "The pages")
 articleTitle: "How a Mechanical Watch Keeps Time"
 articleSubtitle: "Piece by piece, in interactive 3D"
+articleDocumentTitle: "How a Mechanical Watch Keeps Time (Interactive 3D)"
 articleDescription: "How a mechanical watch keeps time, piece by piece: the hairspring, the balance wheel, the escapement and the gears, in live figures you can step through."
 ---
 
@@ -1647,6 +1648,9 @@ eyebrow: PART 2
 art: all
 artView: cover
 artMoveAlso: [hour hand, minute hand]
+articleTitle: "When Watches Meant Life or Death"
+articleSubtitle: "A carpenter, train wrecks, and radium"
+articleDocumentTitle: "A Carpenter, Train Wrecks, and Radium: When Watches Meant Life or Death"
 articleDescription: "How watches changed the world: longitude at sea and John Harrison's thirty-year quest, a deadly train wreck, the first watch factory, and the Radium Girls."
 # not ready: the page is built, but no other page links to it
 # (docs/article.md, "The pages")

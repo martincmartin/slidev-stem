@@ -25,3 +25,8 @@ every slide's photos in each page's head, so Parts 1 and 3 loaded Part 2's
 five photos. The headmatter turns it off. Part 1 now transfers 2,450 kB
 in Chromium (2,162 in Firefox), not 3,357; Part 3, 1,365 kB, not 2,254;
 Part 2 is unchanged (`evidence/measure.py`, the same way as section 7).
+
+2026-11-21: Part 2 uses its own article heading and subtitle, as Part 1 does.
+The section's optional `articleDocumentTitle` sets the browser tab and link
+preview title. Without it, both use the article heading. Parts 1 and 2 set
+their document titles explicitly.

@@ -44,14 +44,15 @@ one page for the whole talk was too long, and each page loads only what its
 figures need (the task's `PLAN.md`).
 
 - **A page's title is its part's**: the section slide's title in the
-  article (its `articleTitle`, or its own), as the page's `<h1>`, the
-  browser's tab and a link's preview (`og:title`). Above it, small, is the
+  article (its `articleTitle`, or its own), as the page's `<h1>`.
+  The browser's tab and a link's preview (`og:title`) use this title by default.
+  Set `articleDocumentTitle` on the section to give them a different title.
+  Above the `<h1>`, small, is the
   talk's title, the cover's, with the section's eyebrow ("PART 1"): the
   series that the page is in. Under it is the section's `articleSubtitle`,
   if it has one. The section has no heading of its own on its page.
-  Why: a link to a part, such as a post on Hacker News, shows the title
-  that the page shows, and a reader comes to the page for the part. A page
-  with no section has the cover's title.
+  Why: a reader follows a link for the part, so its title identifies the page.
+  A page with no section has the cover's title.
 - **A page after the first** starts with the cover's title, as the series,
   and not the cover's narration or figure. Its section slide gets no figure by default,
   as on any page: its narration's `[figure: …]` gives it one. The Part 2 and
@@ -264,7 +265,8 @@ screen**: `articleTitle` in its frontmatter. The page uses it for the
 slide's heading, its line in the table of contents and its heading's
 fragment, and the text export uses it too (`slideInput` in
 `addons/narration/plan.ts`). Use it where the slide's title is for the room,
-not for a reader. No slide uses it now. Quote the value, as for the history line: a value that is not text is
+not for a reader. For a section, it sets the page title ("The pages", above).
+Quote the value, as for the history line: a value that is not text is
 an error (`frontmatterText` in `addons/narration/frontmatter.ts`), and the
 spell check reads it (`SHOWN_KEYS` in `../../tools/spellcheck.ts`).
 

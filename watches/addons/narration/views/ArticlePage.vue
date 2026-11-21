@@ -100,13 +100,15 @@ const page = computed<PageBlock[]>(() =>
       )
     : [],
 );
-/** The page's title, its <h1>, for the browser's tab and a link's preview:
- *  a link to the page shows the title that the page shows. The prerender
+/** The browser's tab title and a link's preview: the section's
+ *  `articleDocumentTitle`, or the page's <h1>. The prerender
  *  reads it, and the description, from <main>'s data, for the static page's
  *  head. */
 const title = computed(
   () =>
-    page.value.find((block) => block.kind === "title")?.text ?? configs.title,
+    current.value?.section?.documentTitle ??
+    page.value.find((block) => block.kind === "title")?.text ??
+    configs.title,
 );
 
 /** A part's name: "Part 2: Changed The World". */
