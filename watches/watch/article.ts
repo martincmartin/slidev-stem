@@ -65,6 +65,31 @@ export const BUTTON_WORDS: Readonly<
   release: { label: "Let go of the outer end", undo: "Start again" },
 };
 
+/** s: the time over which a figure's speed-up button says what it does:
+ *  "an hour in 30 seconds". The Recap slide's stops run their slowest part
+ *  once in 30 s too (docs/watch.md, "The Recap slide"). */
+const SPEED_UP_SECONDS = 30;
+
+/** What a figure's speed-up button says, at `speedUp` (`watchLapse`'s
+ *  scale: 120 runs an hour in 30 s): what a press does, and what a second
+ *  press does. */
+export function speedUpWords(speedUp: number): {
+  label: string;
+  undo: string;
+} {
+  const minutes = (speedUp * SPEED_UP_SECONDS) / 60;
+  const hours = minutes / 60;
+  const span = !Number.isInteger(hours)
+    ? `${String(minutes)} minutes`
+    : hours === 1
+      ? "an hour"
+      : `${String(hours)} hours`;
+  return {
+    label: `Speed up: ${span} in ${String(SPEED_UP_SECONDS)} seconds`,
+    undo: "Back to real time",
+  };
+}
+
 /** A figure's settings at a click, from the slide's `article` block. */
 export interface FigureSettings {
   /** The pieces that the figure marks, in place of the default; `[]`:
@@ -72,6 +97,10 @@ export interface FigureSettings {
   readonly mark: readonly string[] | null;
   readonly slider: SliderKind | null;
   readonly button: ButtonKind | null;
+  /** The speed-up of a button that runs the whole mechanism faster, in
+   *  step (`watchLapse`'s scale), for a part too slow to see move: the
+   *  figure starts at real speed. `null`: no such button. */
+  readonly speedUp: number | null;
   /** The figure's camera, in place of the slide's: a named view, or the
    *  pieces that a fitted view fits (as `artView`). `null`: the slide's. */
   readonly view: { view: string } | { fit: readonly string[] } | null;
@@ -116,9 +145,10 @@ const NO_SETTINGS: FigureSettings = {
   mark: null,
   slider: null,
   button: null,
+  speedUp: null,
   view: null,
 };
-const SETTING_KEYS = ["mark", "slider", "button", "view"];
+const SETTING_KEYS = ["mark", "slider", "button", "speedUp", "view"];
 
 function isMap(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -158,6 +188,7 @@ export function figureSettings(
   const mark = block["mark"];
   const slider = block["slider"];
   const button = block["button"];
+  const speedUp = block["speedUp"];
   const view = block["view"];
   if (
     mark !== undefined &&
@@ -184,6 +215,22 @@ export function figureSettings(
       BUTTONS.join(" or "),
     );
   }
+  // the button's words say whole minutes (`speedUpWords`)
+  if (
+    speedUp !== undefined &&
+    !(
+      typeof speedUp === "number" &&
+      Number.isInteger(speedUp) &&
+      speedUp > 1 &&
+      Number.isInteger((speedUp * SPEED_UP_SECONDS) / 60)
+    )
+  ) {
+    return wrong(
+      `article.${String(clicks)}.speedUp`,
+      speedUp,
+      "an even whole number above 1",
+    );
+  }
   if (button !== undefined && clicks === 0) {
     return wrong(
       "article.0.button",
@@ -195,6 +242,7 @@ export function figureSettings(
     mark: mark === undefined ? null : mark === false ? [] : mark,
     slider: (slider as SliderKind | undefined) ?? null,
     button: (button as ButtonKind | undefined) ?? null,
+    speedUp: typeof speedUp === "number" ? speedUp : null,
     view:
       view === undefined
         ? null

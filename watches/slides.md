@@ -57,6 +57,9 @@ Watch](https://ciechanow.ski/mechanical-watch/) page.  You can think of this
 page as a simpler introduction or background.  When you're finished with this,
 that page gives more depth.
 
+You can drag any of the 3D figures to turn them and see the parts from the
+side; on a phone, drag sideways.
+
 [figure: The whole watch, running: its wheels, its balance wheel and its
 hands, inside the case.]
 -->
@@ -872,6 +875,16 @@ artClicks:
   5:
     artDim: [*trainContext, *face]
 clicks: 5
+# In the article, the figures of the centre wheel and the minute hand have
+# a button that runs the watch 120x faster, so that the centre wheel turns
+# once in 30 s (docs/article.md)
+article:
+  2:
+    speedUp: 120
+  3:
+    speedUp: 120
+  4:
+    speedUp: 120
 history: "Minute hand: c. 1656"
 ---
 
@@ -1317,6 +1330,16 @@ artClicks:
     artBand: slide
     artDim: false
 clicks: 6
+# In the article, each figure has a button that runs the watch 1440x
+# faster, so that the hour wheel and the hour hand turn once in 30 s
+# (docs/article.md)
+article:
+  2:
+    speedUp: 1440
+  5:
+    speedUp: 1440
+  6:
+    speedUp: 1440
 history: "Hour hand: c. 1350"
 ---
 

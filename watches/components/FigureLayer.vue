@@ -51,6 +51,12 @@
 // reader presses it; then it plays the step to the figure's click, as the
 // talk does (on the Mainspring slide: the stud flashes and goes, and the
 // spring uncoils). A second press shows the click before again, at once.
+//
+// THE SPEED-UP. A figure with `speedUp` has a button that runs the whole
+// mechanism at that speed-up, in step, as the Recap slide's stops do
+// (`watchLapse`, watch/lapse.ts), for a part too slow to see move: the
+// centre wheel, the hour hand. It eases up and back down; it starts at real
+// speed, and goes back to it at a click with no speed-up.
 import { injectionSlidevContext } from "@slidev/client/constants.ts";
 import {
   computed,
@@ -89,6 +95,7 @@ import type { Mesh, SlideRect } from "../webgl/scene.ts";
 import {
   BUTTON_WORDS,
   figureMarks,
+  speedUpWords,
   figureSettings,
   figureState,
   SLIDER_WORDS,
@@ -143,6 +150,8 @@ const twist = ref(0);
 const wind = ref(0);
 /** Whether the reader has pressed the `release` button. */
 const released = ref(false);
+/** Whether the reader has pressed the speed-up button. */
+const spedUp = ref(false);
 
 /** Degrees: the balance's angle at the `twist` slider's value. Negative: the
  *  coils draw in (`springPoints`). */
@@ -196,7 +205,13 @@ const clicks = computed(() =>
     ? figure.clicks.value - 1
     : figure.clicks.value,
 );
-const state = computed(() => figureState(frontmatter.value, clicks.value));
+const state = computed(() => {
+  const own = figureState(frontmatter.value, clicks.value);
+  const { speedUp } = settings.value;
+  return own && spedUp.value && speedUp !== null
+    ? { ...own, lapse: speedUp }
+    : own;
+});
 
 /** The figure's crop as a rectangle (slide px), and the canvas's place. */
 function cropRect(box: Box): SlideRect {
@@ -447,6 +462,18 @@ onChange(
   },
   { flush: "sync" },
 );
+// not a step: only the mechanism's speed changes, and it eases
+onChange(spedUp, () => {
+  if (!state.value) return;
+  model.value?.show(modelState(state.value), figure.now(), false);
+  view?.redraw();
+});
+onChange(
+  () => settings.value.speedUp,
+  () => {
+    spedUp.value = false;
+  },
+);
 onChange(windTime, (time) => {
   if (settings.value.slider === "wind") {
     model.value?.scrub(time, figure.now());
@@ -492,7 +519,7 @@ onChange(crop, (now) => {
 });
 onChange(
   settings,
-  ({ slider, button }) => {
+  ({ slider, button, speedUp }) => {
     const controls: FigureControl[] = [];
     if (slider === "curl") {
       controls.push({ kind: "slider", ...SLIDER_WORDS.curl, value: curl });
@@ -511,6 +538,13 @@ onChange(
         kind: "button",
         ...BUTTON_WORDS.release,
         pressed: released,
+      });
+    }
+    if (speedUp !== null) {
+      controls.push({
+        kind: "button",
+        ...speedUpWords(speedUp),
+        pressed: spedUp,
       });
     }
     figure.controls.value = controls;

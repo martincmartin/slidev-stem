@@ -395,12 +395,13 @@ article:
     mark: false # no mark
 ```
 
-| Key      | Values                                                                                                                                                                                                                                                                                 |
-| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `mark`   | a list of pieces, or `false`                                                                                                                                                                                                                                                           |
-| `slider` | `curl`: the diving board's curl, to the hairspring at rest (the Hairspring slide); `twist`: the hairspring's wind from rest, and a swing from there when the reader lets go (the Hairspring slide); `wind`: the Mainspring slide's story, from the bare spring through the key's turns |
-| `button` | `release`: the figure shows the click before its own; the button plays the step to its own click (the Mainspring slide's release)                                                                                                                                                      |
-| `view`   | the figure's camera, in place of the slide's, with the values of `artView`: a named view, or the pieces that a fitted view fits                                                                                                                                                        |
+| Key       | Values                                                                                                                                                                                                                                                                                 |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mark`    | a list of pieces, or `false`                                                                                                                                                                                                                                                           |
+| `slider`  | `curl`: the diving board's curl, to the hairspring at rest (the Hairspring slide); `twist`: the hairspring's wind from rest, and a swing from there when the reader lets go (the Hairspring slide); `wind`: the Mainspring slide's story, from the bare spring through the key's turns |
+| `button`  | `release`: the figure shows the click before its own; the button plays the step to its own click (the Mainspring slide's release)                                                                                                                                                      |
+| `speedUp` | a button that runs the whole mechanism this much faster, in step (`watchLapse`'s scale): `120` runs an hour in 30 s. An even whole number above 1                                                                                                                                      |
+| `view`    | the figure's camera, in place of the slide's, with the values of `artView`: a named view, or the pieces that a fitted view fits                                                                                                                                                        |
 
 **Use `view` when the slide cuts the picture across, or cuts the fitted
 pieces.** The crop stops at the slide's edge, so there the watch shows cut
@@ -450,6 +451,22 @@ the reader drag the uncoil instead of seeing the fling. A second press puts
 the wound spring back at once, as a step back in the talk does. The button
 is a `FigureButton` (`addons/narration/figure.ts`): it says what it does,
 and what a second press does.
+
+**A speed-up is a button** (`speedUp`), for a part too slow to see move:
+at real speed, the center wheel's rim moves about 0.17 px a second, and
+the hour hand's about 0.015. The Gear Train slide's figures of the center
+wheel and the minute hand run an hour in 30 s (120×); the Hour Hand
+slide's run 12 hours in 30 s (1440×). That is the Recap slide's rule: the
+slowest part that the figure is about turns once in 30 s. The whole
+mechanism runs at the speed-up, in step, as at the Recap's stops (what
+moves faster than a frame blurs), and it eases up and back down. The
+figure starts at real speed, so the reader sees the true tick first. The
+button says the speed in words, as the talk's "6 hours in 6 seconds"
+does: "Speed up: an hour in 30 seconds", then "Back to real time"
+(`speedUpWords`). Not the Recap's "120×" in the slide's corner: these
+figures are cropped to the watch, and the corner is outside the crop. The
+whole-watch figures (the cover and its kin) have no speed-up: they are
+scenery, and a button under each would be clutter.
 
 **The Recap slide is a playing figure**: a short film, where the animation
 is the point and the words are captions. It steps by itself while it is on

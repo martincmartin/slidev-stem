@@ -20,6 +20,7 @@ import {
   pictureBox,
   pictureKey,
   SLIDER_WORDS,
+  speedUpWords,
 } from "./article.ts";
 import { articleText, markdownPage } from "./article-text.ts";
 import { historyOf } from "../addons/narration/history.ts";
@@ -121,12 +122,14 @@ test("the article settings are checked", () => {
     mark: null,
     slider: null,
     button: null,
+    speedUp: null,
     view: null,
   });
   assert.deepEqual(figureSettings({ article: { 2: { slider: "curl" } } }, 2), {
     mark: null,
     slider: "curl",
     button: null,
+    speedUp: null,
     view: null,
   });
   assert.equal(
@@ -140,8 +143,25 @@ test("the article settings are checked", () => {
   assert.throws(() => figureSettings({ article: { x: {} } }, 0), /article/);
   assert.throws(
     () => figureSettings({ article: { 1: { zoom: 2 } } }, 1),
-    /mark, or slider, or button, or view/,
+    /mark, or slider, or button, or speedUp, or view/,
   );
+  assert.equal(
+    figureSettings({ article: { 5: { speedUp: 120 } } }, 5).speedUp,
+    120,
+  );
+  // its words say whole minutes: an odd speed-up would say 30.5 minutes
+  for (const wrongSpeed of [1, 61, 2.5, "fast"]) {
+    assert.throws(
+      () => figureSettings({ article: { 5: { speedUp: wrongSpeed } } }, 5),
+      /article\.5\.speedUp/,
+    );
+  }
+  assert.deepEqual(speedUpWords(120), {
+    label: "Speed up: an hour in 30 seconds",
+    undo: "Back to real time",
+  });
+  assert.equal(speedUpWords(1440).label, "Speed up: 12 hours in 30 seconds");
+  assert.equal(speedUpWords(10).label, "Speed up: 5 minutes in 30 seconds");
   assert.throws(
     () => figureSettings({ article: { 1: { view: 3 } } }, 1),
     /article\.1\.view/,
@@ -259,7 +279,11 @@ test("the text export names each figure's controls in their own words", () => {
   for (const words of Object.values(SLIDER_WORDS)) {
     assert.ok(text.includes(`"${words.label}"`), words.label);
   }
-  for (const words of Object.values(BUTTON_WORDS)) {
+  for (const words of [
+    ...Object.values(BUTTON_WORDS),
+    speedUpWords(120),
+    speedUpWords(1440),
+  ]) {
     assert.ok(text.includes(`"${words.label}"`), words.label);
   }
 });

@@ -23,6 +23,7 @@ import type {
 import { articleMarkdown } from "../addons/narration/text.ts";
 import {
   BUTTON_WORDS,
+  speedUpWords,
   defaultFigures,
   figureSettings,
   pictureKey,
@@ -101,15 +102,17 @@ export function articleText(
     const frontmatter = shown[figure.slide - 1]?.frontmatter ?? {};
     const phrases = new Set<string>();
     for (const clicks of figure.steps) {
-      const { slider, button } = figureSettings(frontmatter, clicks);
+      const { slider, button, speedUp } = figureSettings(frontmatter, clicks);
       if (slider) {
         const words = SLIDER_WORDS[slider];
         phrases.add(
           `a slider, "${words.label}", from "${words.start}" to "${words.end}"`,
         );
       }
-      if (button) {
-        const words = BUTTON_WORDS[button];
+      for (const words of [
+        ...(button ? [BUTTON_WORDS[button]] : []),
+        ...(speedUp ? [speedUpWords(speedUp)] : []),
+      ]) {
         phrases.add(
           `a button, "${words.label}"; a second press: "${words.undo}"`,
         );
