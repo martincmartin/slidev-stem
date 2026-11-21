@@ -1,0 +1,1 @@
+var e=[`center`,`left`];function t(t){if(t===void 0)return`side-center`;if(!e.includes(t))throw Error(`side: ${String(t)} is not a side; use ${e.join(` or `)}`);return`side-${String(t)}`}export{t};
