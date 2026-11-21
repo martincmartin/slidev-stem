@@ -4,6 +4,7 @@ import { INKS } from "../webgl/scene.ts";
 import {
   INK_VARIABLES,
   PAPER_VARIABLE,
+  declaredRoles,
   readPalette,
   readVariables,
   slideClasses,
@@ -25,7 +26,6 @@ const THEME = new Map([
 
 const variables = (values: ReadonlyMap<string, string>) => ({
   getPropertyValue: (name: string) => values.get(name) ?? "",
-  [Symbol.iterator]: () => values.keys(),
 });
 
 /** What a browser would give: here only the one recipe needs working out. */
@@ -85,16 +85,48 @@ test("readPalette names a variable that the theme does not set", () => {
 
 test("readVariables gives each of the theme's variables, and no other", () => {
   const style = new Map([...THEME, ["color", "red"], ["--other", "1px"]]);
-  assert.deepEqual(readVariables(variables(style)), {
+  const names = [...style.keys(), "--palette-unset"];
+  assert.deepEqual(readVariables(variables(style), names), {
     ...Object.fromEntries(THEME),
     "--palette-background": "#faf7f0",
   });
 });
 
-test("readVariables throws if the browser lists no paper", () => {
+test("readVariables throws if the sheets give no paper", () => {
   assert.throws(
-    () => readVariables(variables(new Map([["color", "red"]]))),
+    () => readVariables(variables(THEME), ["--palette-ink"]),
     new RegExp(PAPER_VARIABLE),
+  );
+});
+
+test("declaredRoles finds the theme's variables in rules, groups and imports", () => {
+  const unreadable = {
+    get cssRules(): never {
+      throw new Error("another origin");
+    },
+  };
+  const sheets = [
+    {
+      cssRules: [
+        { cssText: "", style: ["--palette-background", "color"] },
+        {
+          cssText: "",
+          cssRules: [{ cssText: "", style: ["--palette-ink", "--other"] }],
+        },
+        {
+          cssText: "",
+          styleSheet: {
+            cssRules: [{ cssText: "", style: ["--palette-muted"] }],
+          },
+        },
+        { cssText: "", styleSheet: null },
+      ],
+    },
+    unreadable,
+  ];
+  assert.deepEqual(
+    [...declaredRoles(sheets)],
+    ["--palette-background", "--palette-ink", "--palette-muted"],
   );
 });
 

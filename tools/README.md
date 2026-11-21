@@ -175,7 +175,8 @@ GPU ([browser support](../docs/talks.md#browser-support)). Full validation block
 See [browser support](../docs/talks.md#browser-support) for the requirements and limits.
 It checks startup, page errors, outside requests, navigation stalls, and completion.
 If a talk has an `art:privacy` script, full validation also runs its live-art
-startup check with canvas pixel reads blocked.
+startup check with canvas pixel reads blocked. If it has an `art:phone`
+script, full validation runs it on the built deck: a check at a phone's size.
 The house theme supplies the next and final positions from Slidev navigation.
 Quick validation has no browser walk.
 

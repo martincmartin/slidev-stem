@@ -1870,6 +1870,16 @@ paused article voyage. It checks that the live watch
 still starts in each engine. See [browser support](../../docs/talks.md#browser-support)
 for the requirements and test limits.
 
+## Theme colours in older browsers
+
+`slidePalette` also copies the theme's `--palette-*` variables to the layers
+outside a slide. It takes their names from the page's style sheets
+(`declaredRoles`), and their values from the computed style. It does not
+list the computed style's properties: Chrome before about version 142 lists
+no custom property there, so every figure and slide drew nothing, with an
+error. The Android emulator's Chrome 130 found this; Playwright's browsers
+are too new to (`../../docs/talks.md`, "Browser support").
+
 ## The browser-tab icon
 
 `art/favicon.py` owns the icon. Edit its pixel maps and run the script.

@@ -7,14 +7,16 @@ figures between the paragraphs, in the style of Bartosz Ciechanowski's
 what each page loads; how
 to write the narration and place the figures; asides; pull quotes; a slide's title
 for the article; what a figure shows, and why; the sliders,
-the button, the playing figure, and Part 2's story figures; how the code is split between the addon and the
+the button, the playing figure, and Part 2's story figures; how a page is
+checked on a phone; how the code is split between the addon and the
 talk; how to build the static page, and where it can go; how to export
 its text.
 **Read before** you write or change a slide's narration, add a click to a
 slide that has narration, add a part or a slide for every page, give a
 slide a title for the article, change
 `addons/narration/`, the figure layer
-(`components/FigureLayer.vue`, `webgl/shared.ts`, `watch/article.ts`), or
+(`components/FigureLayer.vue`, `webgl/shared.ts`, `watch/article.ts`) or
+the phone check (`art/phone-check.ts`, `art/phone.ts`), or
 build the article or export its text.
 **Tasks:**
 [`tasks/2026-10-03-narrated-export/`](../../tasks/2026-10-03-narrated-export/README.md)
@@ -88,8 +90,7 @@ cover`).
 shortcuts (`addons/narration/vite.config.ts`). Slidev has no hook to add a
 URL to its list.
 
-The page works on a desktop and on a phone. On a phone, a figure is the
-column's width, and its labels do not grow.
+The page works on a desktop and on a phone ("On a phone", below).
 
 ## Write the narration
 
@@ -478,6 +479,32 @@ A page loads only what its figures need. The numbers before and after are in
   mesh at its first draw would upload the one-step wheel in the middle of
   the live talk (the task, section 3).
 
+## On a phone
+
+**The page works on a phone.** A figure is the column's width, and its
+labels do not grow: about 10 CSS px on a 393 px screen, small but sharp on
+a phone's 3× screen.
+
+**Full validation checks it** (`pnpm art:phone DECK`, `art/phone-check.ts`).
+It loads each page as an iPhone in WebKit and as an Android phone in
+Chromium, and at the Android phone's size in Firefox. It fails on a page
+error, an error that the page logs, a request outside the deck, a page that
+scrolls sideways, an element past the screen's edge (a figure's slide runs
+past its crop by design: the check skips a figure's contents), and a touch
+target that fails WCAG 2.5.8 (`art/phone.ts`). A figure's step dots are 12
+px, too small and too close; they pass because its ‹ › buttons do the same
+(the "equivalent" exception). `--shots DIR` writes the top of each page
+and each figure as a PNG, for a person to look at: the check cannot tell
+whether a figure reads well.
+
+**Emulation is not a phone.** Its GPU, memory and touch scrolling are the
+computer's, and its browsers are the newest. Before a launch, look at the
+pages on a real phone. The Android emulator runs a real Chrome for Android,
+of the version that its system image has (Chrome 130 in
+`Pixel_7a_API_35`): it found that Chrome before about version 142 drew no
+figure (`../docs/watch.md`, "Theme colours in older browsers"). How to run
+it: `../../docs/talks.md`, "Browser support".
+
 ## How the code is split
 
 | Where                                                           | What                                                                                                                                                                                                      |
@@ -615,3 +642,7 @@ the live page has blank figures (below).
   only the figures near the screen; the others are blank, with their labels
   (Chromium, 2026-10-27).
 - Labels that grow on a phone.
+- Bigger step dots on a phone: 24 px apart, so that each passes WCAG 2.5.8
+  on its own ("On a phone").
+- A figure that comes into view on a slow GPU (the Android emulator in
+  software) shows a black box until the shared renderer draws it.

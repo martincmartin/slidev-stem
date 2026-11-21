@@ -30,8 +30,22 @@ export interface Variables {
   getPropertyValue(name: string): string;
 }
 
-/** What `getComputedStyle` gives, with the name of each property. */
-export interface ListedVariables extends Variables, Iterable<string> {}
+/** What the walk over the style sheets reads of a sheet, or of a rule that
+ *  holds rules (`@media`, `@supports`, `@layer`). */
+export interface RuleGroup {
+  readonly cssRules: Iterable<RuleLike>;
+}
+
+/** What it reads of a rule: a style rule's declarations, a group's rules,
+ *  an `@import`'s sheet. */
+export interface RuleLike {
+  /** Every rule has it: without a field in common, TypeScript takes no
+   *  CSSRule for a RuleLike. */
+  readonly cssText: string;
+  readonly style?: Iterable<string>;
+  readonly cssRules?: Iterable<RuleLike>;
+  readonly styleSheet?: RuleGroup | null;
+}
 
 /** The theme's variables, as a slide's classes change them. */
 export interface SlidePalette {
@@ -61,18 +75,50 @@ export function readPalette(variables: Variables, toHex: ToHex): Palette {
   ) as Record<InkName, string>;
 }
 
-/** Each ROLE_PREFIX variable of `variables`, and its value. */
+/** The name of each ROLE_PREFIX variable that a rule of `sheets` declares.
+ *  A computed style does not list its custom properties in every browser:
+ *  Chrome before about 142 lists none, and a figure had no colours
+ *  (../docs/watch.md, "Theme colours in older browsers"). A sheet that the page may not read
+ *  (another origin) is skipped. */
+export function declaredRoles(sheets: Iterable<RuleGroup>): Set<string> {
+  const names = new Set<string>();
+  const walk = (group: RuleGroup): void => {
+    let rules: Iterable<RuleLike>;
+    try {
+      rules = group.cssRules;
+    } catch {
+      return;
+    }
+    for (const rule of rules) {
+      for (const name of rule.style ?? []) {
+        if (name.startsWith(ROLE_PREFIX)) names.add(name);
+      }
+      if (rule.cssRules) walk({ cssRules: rule.cssRules });
+      if (rule.styleSheet) walk(rule.styleSheet);
+    }
+  };
+  for (const sheet of sheets) walk(sheet);
+  return names;
+}
+
+/** Each of `names` that is a ROLE_PREFIX variable with a value in
+ *  `variables`, and its value. */
 export function readVariables(
-  variables: ListedVariables,
+  variables: Variables,
+  names: Iterable<string>,
 ): Record<string, string> {
   const found = Object.fromEntries(
-    [...variables]
+    [...names]
       .filter((name) => name.startsWith(ROLE_PREFIX))
-      .map((name) => [name, variables.getPropertyValue(name).trim()]),
+      .map((name): [string, string] => [
+        name,
+        variables.getPropertyValue(name).trim(),
+      ])
+      .filter(([, value]) => value !== ""),
   );
   check(
     PAPER_VARIABLE in found,
-    `the browser lists no ${PAPER_VARIABLE} among the theme's variables`,
+    `the theme's style sheets give no ${PAPER_VARIABLE}`,
   );
   return found;
 }
@@ -150,7 +196,7 @@ export function slidePalette(slideClass?: unknown): SlidePalette {
     const style = getComputedStyle(probe);
     return {
       palette: readPalette(style, browserHex),
-      variables: readVariables(style),
+      variables: readVariables(style, declaredRoles(document.styleSheets)),
     };
   } finally {
     probe.remove();

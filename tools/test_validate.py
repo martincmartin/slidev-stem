@@ -103,6 +103,18 @@ def test_privacy_check_is_selected_by_talk_script(tmp_path: Path) -> None:
     assert check.command == ("pnpm", "--silent", "art:privacy", str(deck))
 
 
+def test_phone_check_is_selected_by_talk_script(tmp_path: Path) -> None:
+    talk = tmp_path / "talk"
+    talk.mkdir()
+    (talk / "package.json").write_text('{"scripts": {"art:phone": "x"}}')
+    deck = tmp_path / "deck"
+    (check,) = validate.phone_checks(talk, deck)
+    assert check.label == "phone"
+    assert check.command == ("pnpm", "--silent", "art:phone", str(deck))
+    (talk / "package.json").write_text('{"scripts": {}}')
+    assert validate.phone_checks(talk, deck) == []
+
+
 def test_a_talk_without_the_script_has_no_print_check(tmp_path: Path) -> None:
     talk = tmp_path / "talk"
     talk.mkdir()

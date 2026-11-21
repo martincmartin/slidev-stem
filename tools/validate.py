@@ -372,6 +372,14 @@ def privacy_checks(directory: Path, deck: Path) -> list[Check]:
     ]
 
 
+def phone_checks(directory: Path, deck: Path) -> list[Check]:
+    """Check the article's pages at a phone's size, if the talk supplies a
+    check (`art:phone`). It runs on the built deck."""
+    if "art:phone" not in scripts_of(directory):
+        return []
+    return [Check("phone", directory, ("pnpm", "--silent", "art:phone", str(deck)))]
+
+
 def print_inputs(directory: Path) -> list[str] | None:
     """The talk's files that only the print check tests: `print-inputs` of
     [tool.validate] in its pyproject.toml, relative to the talk. None if the
@@ -481,6 +489,7 @@ def talk_phases(
         *build,
         *map(printing, print_checks(directory, deck)),
         *map(reusable, privacy_checks(directory, deck)),
+        *map(reusable, phone_checks(directory, deck)),
     ]
     smoke = reusable(
         Check(
