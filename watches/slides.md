@@ -43,8 +43,8 @@ Martin C. Martin
 Mechanical watches have kept time for 500 years.  Many of their core parts were
 invented even earlier for giant cathedral tower clocks before being shrunk into
 portable timepieces.  This page explains how a modern one works.  I personally
-think it's fascinating that a purely mechanical device can keep time with 99.99%
-accuracy for $100.  They also changed the world and look good on your wrist.
+think it's fascinating that a well-calibrated, purely mechanical device can keep
+time with 99.99% accuracy for $100.  They also changed the world and look good on your wrist.
 
 This web page was partially inspired by Bartosz Ciechanowski's [Mechanical
 Watch](https://ciechanow.ski/mechanical-watch/) page.  You can think of this

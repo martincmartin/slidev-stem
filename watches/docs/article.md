@@ -88,8 +88,8 @@ cover`).
 shortcuts (`addons/narration/vite.config.ts`). Slidev has no hook to add a
 URL to its list.
 
-The page puts the desktop first. A phone can read it, but its figures are
-small: reading on a phone is a goal for later, not a constraint now.
+The page works on a desktop and on a phone. On a phone, a figure is the
+column's width, and its labels do not grow.
 
 ## Write the narration
 
@@ -614,4 +614,4 @@ the live page has blank figures (below).
 - A print stylesheet or a PDF of the article. A print of the live page draws
   only the figures near the screen; the others are blank, with their labels
   (Chromium, 2026-10-27).
-- Labels do not grow on a phone; reading on a phone is a later goal.
+- Labels that grow on a phone.
