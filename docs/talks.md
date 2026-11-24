@@ -329,6 +329,12 @@ song lines showed.
   `pnpm install --frozen-lockfile && uv sync --locked && pnpm build`, and run
   `uv run ../tools/validate.py --print`. Before you tag, also do the milestone
   review of the `learn-from-corrections` skill.
+- **Tag a version that you post.** When you post a talk's page or article
+  to a site, such as Hacker News, make an annotated tag,
+  `posted/<talk>/<YYYY-MM-DD>`, with the date of the post, on the commit
+  that the site then showed. Put the site and the publish run in the tag
+  message. The publish run that built the commit is the check: it built the
+  talk from its lockfiles. A push of this tag does not publish the talk.
 - **Rebuild the version that you gave.** Make a worktree at its tag:
   `git worktree add ../watches-given given/watches/2026-10-15`. Then, in the
   worktree's talk directory, run `pnpm install --frozen-lockfile` and
