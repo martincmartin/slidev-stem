@@ -52,14 +52,14 @@ Martin C. Martin
 
 Mechanical watches have kept time for 500 years. Many of their core parts were
 invented even earlier for giant cathedral tower clocks before being shrunk into
-portable timepieces. This page explains how a modern one works. I think it's
+portable timepieces. This page explains how a modern watch works. I think it's
 fascinating that a well-calibrated, purely mechanical $100 device can keep time
-with 99.99% accuracy. They also changed the world and look good on your wrist.
+with 99.99% accuracy. Mechanical watches also changed the world and look good on
+your wrist.
 
-This web page was partially inspired by Bartosz Ciechanowski's [Mechanical
-Watch](https://ciechanow.ski/mechanical-watch/) page. You can think of this page
-as a simpler introduction. When you finish this page, Bartosz's goes into more
-depth.
+This page was partially inspired by Bartosz Ciechanowski's [Mechanical
+Watch](https://ciechanow.ski/mechanical-watch/) article. Think of this page as a simpler
+introduction. When you finish here, his article goes into more depth.
 
 You can drag any of the 3D figures to turn them and see the parts from the
 side; on a phone, drag sideways.
@@ -141,18 +141,18 @@ history: "c. 1675"
 outer end is held in a small block, and its inner end is on a hub at the
 center. The spiral winds and unwinds.]
 
-Start with the part that keeps time. In 1675 Christiaan Huygens, a Dutch
-scientist, invented the _hairspring_. It is a flat spiral of steel ribbon, finer
-than a hair. Its outer end is held still, and its inner end is free to turn.
-Twist the inner end and let go, and the spiral winds and unwinds, back and
-forth, at a steady rate. In this figure, it swings once every two seconds, and
-the rest of the watch follows that beat.
+In 1675, Christiaan Huygens, a Dutch scientist, invented the _hairspring_. It is
+a flat spiral of steel ribbon, finer than a hair. Its outer end is held still,
+and its inner end is free to turn. Twist the inner end and let go, and the
+spiral winds and unwinds, back and forth, at a steady rate. In this figure, it
+swings back and forth once every two seconds (one second each way), and the rest
+of the watch follows that beat.
 
 [click]
 
 [figure: A diving board over a pool. It bends, is let go, and swings up and
-down past its straight shape, which a dashed line shows. The label reads:
-"Bend it away from straight, it pushes back".]
+down past its straight shape, which a dashed line shows. The label reads: "Bend
+it away from straight, it pushes back".]
 
 Why does a spring swing? Picture a diving board. Bend it down, and it pushes
 back. That's an _elastic restoring force_. Let go, and it won't stop once it's
@@ -173,7 +173,7 @@ shape, and let go.
 [figure 3: The hairspring at rest. Wound away from rest and let go, it swings
 back and forth.]
 
-It pushes back, overshoots and swings, just as the board did: the same
+It pushes back, overshoots and swings, just as the board did. It's the same
 physics, coiled up to fit inside a watch.
 -->
 
@@ -273,26 +273,23 @@ marked.]
 >
 > Mass at the rim counts most, like a figure skater who spins slower with her
 > arms out. Old balance wheels had screws around the rim, and watchmakers moved
-> them in or out to make the watch run slower or faster. The wheel also takes
-> about the same time per swing whether it turns through a wide angle or a
-> narrow one (_isochronism_). That comes from the spring and the mass together,
-> and it is why a watch keeps time even as it winds down.
+> them in or out to make the watch run faster or slower.
 
 A hairspring alone would oscillate far too fast. The wheel slows it to
 a pace the gears can handle.
 
 [click] Mass also makes the swing steady. Push an empty playground swing, and it
-jerks about. Put a child on it and it swings much more gracefully. A heavy wheel
-carries its own momentum, so a knock to your wrist, or flipping the watch upside
-down, barely changes its rhythm.
+jerks about. But put a child on it, and it swings much more gracefully. A heavy
+wheel carries its own momentum, so a knock to your wrist, or flipping the watch
+upside down, barely changes its rhythm.
 
 [click] How good is it? A well-calibrated mechanical watch, even an everyday
 Seiko or Citizen, is about 99.99% accurate.  A day has 86,400 seconds, so that
 watch gains or loses about nine seconds a day.
 
-I'm not particularly handy with mechanical things. If I tried to build a table
+I'm not particularly handy with mechanical things. If I tried to build a table,
 it would be wobbly and crooked because the cuts would be off by a few percent.
-So it kind of blows my mind that, for $100, I can get an everyday, purely
+So it kind of blows my mind that, for $100, I can buy a purely
 mechanical system and tune it to 99.99% accuracy!
 
  -->
@@ -402,8 +399,9 @@ The wheel's and the pallet's leaders end LEADER_GAP px outside their parts
 A second hand that just moves back and forth isn't very useful.  We need it to
 turn one way only.  The _escapement_ turns the swing into steps.
 
-The _escape wheel_ is driven by a mechanism we'll explain soon, so we've left
-that mechanism out of these figures. Without something to stop it, it would just turn and turn.
+The _escape wheel_ is driven by a mechanism we'll explain soon, left out of
+these figures for now. Without something to stop it, it would just turn and
+turn.
 
 [nofigure]
 
@@ -419,20 +417,21 @@ the escape wheel on the right. A stone at the end of the fork holds a tooth
 of the wheel. Labels: "Wheel driven by hidden mechanism" and "Pallet blocks
 wheel".]
 
-Its two prongs (called _stones_) catch the wheel's teeth: a tooth lands on a
-stone, and the wheel stops. Each time the fork rocks, one stone lets a tooth go,
-and the other stone catches the next tooth. The tooth _escapes_, and that is
-where the name comes from.
+The _stones_ at the tips of its two prongs catch the wheel's teeth. A tooth
+lands on a stone, and the wheel stops. Each time the fork rocks, one stone lets
+a tooth go, and the other stone catches the next tooth. The tooth _escapes_, and
+that is where the name comes from.
 
-[click] What rocks the fork? The balance does. Attached to its axle is a small
-_impulse jewel_, which sits in the notch at the end of the fork. It's actually a
-synthetic ruby or sapphire, so it really is a jewel, a precious stone.
+[click] What rocks the fork? The balance wheel does. Attached to its axle is a
+small _impulse jewel_, which sits in the notch at the end of the fork. It's
+actually a synthetic ruby or sapphire, so it really is a jewel, a precious
+stone.
 
 [figure: The escapement at rest, labeled: the escape wheel, the pallet
 fork, and the impulse jewel in the fork's notch.]
 
-As the balance swings through the middle, the jewel strikes the fork and flips
-it one way. On the return swing, it flips the fork the other way.
+As the balance wheel swings through the middle, the jewel strikes the fork and
+flips it one way. On the return swing, it flips the fork the other way.
 
 [click]
 
@@ -441,9 +440,9 @@ fork, the fork rocks, and the escape wheel moves on one tooth. "Tick" and
 "tock" show each time a tooth lands on a stone. Labels: "Jewel strikes
 pallet", "Wheel driven by hidden mechanism" and "Pallet blocks wheel".]
 
-So, at each swing, the balance lets the wheel take one small step.  The step
-ends when the next tooth lands on a stone, hard enough to make a sound. This is
-the tick and the tock of a watch.
+So, at each swing, the balance wheel lets the escape wheel take one small step.
+The step ends when the next tooth lands on a stone, hard enough to make a sound.
+This is the tick and the tock of a watch.
 
 -->
 
@@ -727,7 +726,7 @@ second would merge with the span (docs/watch.md, "The Gears slide"). -->
 
 The escapement gets the escape wheel turning at a precise rate.  But the second
 hand must turn once a minute, and the escape wheel turns faster than that. To
-convert a faster rotation into a slower one, a watch uses gears: a small gear
+convert a faster rotation into a slower one, a watch uses a pair of gears: a small gear
 that meshes with a big one.
 
 [nofigure]
@@ -738,16 +737,16 @@ that meshes with a big one.
 gear with sixteen. Four teeth on each gear are colored.]
 
 > [!aside] Must the teeth be the same size?
-> Strictly, the _pitch_ must match: a tooth and its gap on one wheel must be as
-> wide as a tooth and its gap on the other. One wheel can have wider teeth than
+> Strictly, the _pitch_ must match: a tooth and its gap on one gear must be as
+> wide as a tooth and its gap on the other. One gear can have wider teeth than
 > the other, as long as it has narrower gaps.
 
 The teeth on the two gears must have the same spacing, so they mesh neatly. Each
 tooth fits in a gap of the other gear, so the teeth mesh one for one, and both
 rims move at the same speed. Four teeth on each gear are colored. Those four
 teeth are half of the small gear, but only a quarter of the big one. So the
-small gear turns twice for each turn of the big one: twice the circumference,
-half the speed.
+small gear turns twice for each turn of the big one. Twice the circumference
+means half the rotational speed.
 
 [click:5]
 
@@ -757,19 +756,26 @@ gear's axle, and steps around clockwise, once a minute.]
 
 > [!aside] Why does this second hand jump, when mine sweeps?
 >
-> This watch ticks once a second, to make the hairspring slow enough to
-> see. Most real mechanical watches tick five to eight times a second, so their
-> second hands seem to sweep.
+> This watch ticks once a second to make the hairspring slow enough to see. Most
+> real mechanical watches tick five to eight times a second, so their second
+> hands seem to sweep.
 
 Now attach the smaller gear (called a _pinion_) to the escape wheel. The gears
-do not spin freely any more: they advance one tick at a time, with the escape
+do not spin freely anymore. They advance one tick at a time, with the escape
 wheel. The escapement controls the speed of the whole train of gears.
 
-The big gear pushes the pinion, and that force drives the escape wheel. What
-turns the big wheel? That's a mechanism we'll explain soon.
+The force actually flows the other way. The big gear pushes the pinion, driving
+the escape wheel. What turns the big gear is that same hidden mechanism we'll
+explain soon.
+
+> [!aside] Why "fourth"?
+>
+> Watchmakers number the wheels starting from the hidden mechanism that
+> powers the watch. We're building the watch from the other end, from the
+> part that keeps time, so the first wheel we meet is called the _fourth wheel_.
 
 In this watch, the big gear (called the _fourth wheel_) turns exactly once a
-minute: just what the second hand needs! So the second hand goes on the big
+minute, just what the second hand needs! So the second hand goes on the big
 gear's axle. It is the first part of the watch that we can read.
 
 -->
@@ -981,9 +987,9 @@ recap for anyone who missed clicks 2 and 3. -->
 
 <!-- narration
 
-The second hand turns once a minute. The minute hand must turn once an hour:
-sixty times slower. So we could try the same trick: put a small gear on the
-second hand's axle, and mesh it with a gear 60 times bigger.
+The second hand turns once a minute. The minute hand must turn once an hour, 60
+times slower. So we could try the same trick and mesh a small gear on the second
+hand's axle with a gear 60 times bigger.
 
 [nofigure]
 
@@ -995,7 +1001,7 @@ out of the case.]
 
 But there's a limit to how small you can make the small gear, so the big gear
 would be huge. And it would have hundreds of teeth, which drives up the cost.
-Plus, it would turn the wrong way, counterclockwise, because every gear turns
+Plus, it would turn the wrong way, counterclockwise, because every gear turns in
 the opposite direction from the one it meshes with.
 
 [click]
@@ -1016,14 +1022,13 @@ case.]
 > [!aside] Why is this second hand not in the middle?
 >
 > On most watches it is, but that takes more parts. Many older watches had it
-> off center, as this one does: watchmakers call it _small seconds_.
+> off center, as this one does. Watchmakers call it _small seconds_.
 
-The minute hand goes on the center wheel's axle (_arbor_), in the middle of the dial.
-It makes a full turn once an hour.
+The minute hand goes on the center wheel's axle (called an _arbor_), in the
+middle of the dial. It makes a full turn once an hour.
 
 [click] The center wheel pushes the third wheel, which pushes the fourth wheel,
-which pushes the escape wheel. Next up, the mechanism that pushes the center
-wheel and powers the whole watch. [nofigure]
+which pushes the escape wheel. [nofigure]
 
 -->
 
@@ -1189,9 +1194,9 @@ One spring to power them all
 [figure: The bare mainspring: a long ribbon of steel, coiled around its arbor,
 at rest.]
 
-This is a spiral spring, like the hairspring. But instead of swinging back and
-forth, it unwinds slowly over a day or two. In the illustration above, it's at
-rest.
+The _mainspring_ is a spiral spring, like the hairspring. But instead of
+swinging back and forth, it unwinds slowly over a day or two. In the figure
+above, it's at rest.
 
 Below, the outer end is held in place. Drag the slider to wind it up. Because
 the ribbon stays the same length, its coils pull in toward the center.
@@ -1209,11 +1214,12 @@ To unwind the mainspring, let go of the outer end by pressing the button.
 
 [figure: The wound mainspring, its outer end held by the stud.]
 
-With the outer end freed, the mainspring whips around until the spring settles
-back into its rest shape. That is the energy you put in by winding it.
+With the outer end freed, the mainspring whips around until it settles back into
+its rest shape. That rush releases the energy you put in by winding it.
 
-A watch harnesses that force by attaching the spring's outer end to a toothed
-drum called the _barrel_, invented by Jean-Antoine Lépine around 1760.
+A watch harnesses that energy by attaching the spring's outer end to a toothed
+drum called the _barrel_, invented by Jean-Antoine Lépine around 1760. The
+barrel is the watch's _first wheel_, the start of the watchmaker's count.
 
 [click]
 
@@ -1223,8 +1229,8 @@ hours pass in six seconds.]
 As the mainspring pushes the barrel, the barrel's teeth drive the gear train we
 just built.  This is the "hidden mechanism" we mentioned earlier.
 
-[click] Because the ratchet stops the arbor from turning backwards, the spring
-has only one way to unwind: its outer end has to turn the barrel. Press the
+[click] Because the ratchet stops the arbor from turning backward, the spring
+has only one way to unwind. Its outer end has to turn the barrel. Press the
 button under the figure, and six hours pass in six seconds. The barrel turns
 once, the minute hand six times, and the coils expand back out against the
 barrel wall. When the spring is completely unwound, the watch stops.
@@ -1417,12 +1423,12 @@ recap, as on the Gear Train slide. -->
 <!-- narration
 
 The hour hand must turn twice a day. That's once every twelve hours. Unlike a
-60:1 reduction, a single 12:1 gear is doable.
+60:1 reduction, a single 12:1 gear pair is doable.
 
 [nofigure]
 
-[click] But that wheel's axle (_arbor_) sits off center, so the hour hand would too! And
-it would run backward (counterclockwise): two meshing gears turn in opposite
+[click] But the big gear's axle (_arbor_) sits off center, so the hour hand would too! And
+it would run backward (counterclockwise) because two meshing gears turn in opposite
 directions.
 
 [figure 2: The movement, with a 12:1 gear beside the center wheel. The hour
@@ -1591,14 +1597,14 @@ Slidev reads a range that starts at click 0 as one that starts at click 1. -->
 
 And that's how a mechanical watch works!
 
-Here's a recap, retracing our steps in reverse, from the hour hand to the
-hairspring. The tour plays by itself, like a short film. The time scale in the
-corner says how much faster than real time each segment runs.
+This tour retraces our steps in reverse, from the hour hand to the hairspring,
+playing by itself like a short film. The time scale in the corner says how much
+faster than real time each segment runs.
 
 [figure 0-8 play: A tour of the watch's train, from the motion works to the
 balance wheel, one touch at a time.]
 
-The hour hand is driven by a two-step gear train totaling 12:1.
+The _center wheel_ drives the hour hand through a two-step 12:1 reduction.
 
 [click] The wound mainspring drives the barrel.
 
@@ -1610,9 +1616,11 @@ The hour hand is driven by a two-step gear train totaling 12:1.
 
 [click] The fourth wheel drives the _escape wheel_.
 
-[click] The escape wheel wants to turn, but the _pallet_ stops it.  Once a second, a tooth escapes, and the next one lands on the pallet, creating the ticking sound.
+[click] The escape wheel wants to turn, but the _pallet fork_ stops it. Once a
+second, a tooth escapes, and the next one lands on a pallet stone, creating the
+ticking sound.
 
-[click] The pallet moves when the _impulse jewel_ hits it.
+[click] The pallet fork moves when the _impulse jewel_ hits it.
 
 [click] The balance wheel and the hairspring swing back and forth, setting the rate of the whole watch.
 -->
