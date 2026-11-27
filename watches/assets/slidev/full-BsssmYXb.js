@@ -1,0 +1,2 @@
+import{B as e,L as t,y as n}from"../modules/shiki-BdqBXHwB.js";import{mr as r}from"../index-D_873o8a.js";var i={},a={class:`slidev-layout full w-full h-full`};function o(r,i){return t(),n(`div`,a,[e(r.$slots,`default`,{class:`w-full h-full`})])}var s=r(i,[[`render`,o]]);export{s as t};
+//# sourceMappingURL=full-BsssmYXb.js.map

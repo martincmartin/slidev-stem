@@ -1,0 +1,2 @@
+import{L as e,T as t,Z as n,_ as r,g as i,gt as a,vt as o}from"./modules/shiki-BdqBXHwB.js";import{t as s}from"./section-DhlUH2Hb.js";import{fn as c,pn as l}from"./index-D_873o8a.js";var u={__name:`slides.md__slidev_2`,setup(u){let{$slidev:d,$nav:f,$clicksContext:p,$clicks:m,$page:h,$renderContext:g,$frontmatter:_}=l();return p.setup(),(l,u)=>(e(),r(s,o(t(a(c)(a(_),1))),{default:n(()=>[...u[0]||=[i(`h1`,null,`Mechanical Marvels`,-1)]]),_:1},16))}};export{u as default};
+//# sourceMappingURL=md-aEeMinTZ.js.map
